@@ -23,7 +23,7 @@ _See tracked progress and issues on Github's [Zenhub](https://github.com/numalar
 
 ## Repository and workflow structure  
 
-![Schematic of simulation analysis worklfow](https://github.com/numalariamodeling/model-characterization/static/flowchart.png)
+![Schematic of simulation analysis worklfow](https://github.com/numalariamodeling/model-characterization/blob/main/static/flowchart.png)
 
 
 
