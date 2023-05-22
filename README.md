@@ -2,41 +2,150 @@
 
 _Model features and simulated transmission and disease dynamics_
 
+
 ## Project goal
-To have a simple framework to easily run simulations in OpenMalaria and in EMOD and compare 
-projected outputs on transmission and disease metrics for user-defined scenarios (paramter selection). 
+To characterize the basic transmission and disease dynamics of malaria simulated using EMOD and OpenMalaria.
 
+Objectives:
+1) Model characterization - basic transmission and disease dynamics:
+   - Explore and describe basic transmission and disease dynamics
+2) Model behaviour - effects of pertubation of the system: 
+   - Treatment of cases
+   - Infection and disease prophylaxis
+   - Vector control effects on mosquito life and feeding cycle
 
-## Project tasks
+_View project progress [here](https://github.com/numalariamodeling/model-characterization/issues#workspaces/emodopenmalaria-643ac4533584b28586ce8b39/roadmap)._
 
-1) Set up basic framework for EMOD and OpenMalaria
-2) Explore and describe basic transmission and disease dynamics  
-   - Severe cases and comorbidity 
-   - Transmission seasonality and relationships 
-   - Case managememt effects
-3) Explore and describe effects of pertubation of the system
-4) Explore and describe intervention impact
-5) Documentation of findings and identified questions
+## Simulation framework
 
-_See tracked progress and issues on Github's [Zenhub](https://github.com/numalariamodeling/model-characterization/issues#workspaces/emodopenmalaria-643ac4533584b28586ce8b39/roadmap)_
-
-
-## Repository and workflow structure  
-
+Conceptually:
 ![Schematic of simulation analysis worklfow](https://github.com/numalariamodeling/model-characterization/blob/main/static/flowchart.png)
 
+Implementation in this repository:
+![Simulation framework](https://github.com/numalariamodeling/model-characterization/blob/main/static/emod-om-framework.png)
+
+<details><summary><span>List of functions</span></summary>
+<p>
+
+_Table: Main scripts and functions_
+
+| launch_test.py*                                | helper.py                  |
+|------------------------------------------------|----------------------------|
+| [ parameter definitions ]                      | parse_args                 |
+| update_param_default  (emod)                   | make_dirs                  |
+| update_param_climate  (emod)                   | get_time_param             |
+| set_param_fn   (emod)                          | save_exp_scen              |
+| build_campaign   (emod)                        | get_seasonal_eir           |
+| update_campaign_multiple_parameters_ser (emod) | create_scenarios_csv       |
+| update_campaign_multiple_parameters  (emod)    | as_list                    |
+| update_eir_scale   (emod)                      | shell_header_quest         |
+| sweep_burnin_simulations  (emod)               | write_txt                  |
+| submit_create_run_EMOD  (emod)                 | submit_analyze_OpenMalaria |
+|                                                | submit_analyze_EMOD        |
+|                                                | submit_run_pyscript        |
+|                                                | emodpy_module              |
+|                                                | OM_module                  |
+|                                                | combine_emodom_results     |
+|                                                | str_to_digit               |
+|                                                | pretty_legend              |
+* ) this file includes building the "json scaffold" for EMOD, and for each new simulation experiment a new launch.py should be created.
+
+_Table: EMOD functions_   
+
+| EMOD/utils.py                  | EMOD/scaffolds               | EMOD/analyze_sim.py   |
+|--------------------------------|------------------------------|-----------------------|
+| set_param                      | forcedEIR                    | InsetChartAnalyzer    |
+| build_demog                    | interventions/treatment_camp | BenchmarkAnalyzer     |
+| build_standard_campaign_object | ...                          | MonthlyAgebinAnalyzer |
+| add_monthly_reports            |                              | AnnualAgebinAnalyzer  |
+| add_annual_reports             |                              | TransmissionReport    |
+| _get_serialized_filenames      |                              |                       |
+| _get_core_counts               |                              |                       |
+| get_workdir_from_simulations   |                              |                       |
+| create_sim_directory_map       |                              |                       |
+| build_burnin_df                |                              |                       |
+
+ 
+_Table: OpenMalaria functions_   
+
+| OpenMalaria/utils.py   | OpenMalaria/scaffolds | OpenMalaria/analyze_sim.py |
+|------------------------|-----------------------|----------------------------|
+| create_scenarios_OM    | R0000GA.xml           | to_df                      |
+| submit_run_OpenMalaria | ...                   | format_df                  |
+|                        |                       | add_measure_names          |
+|                        |                       | pivot_wider                |
+|                        |                       | InputEIRAnalyzer           |
+|                        |                       | BaseAnalyzer               |
+|                        |                       | BenchmarkAnalyzer          |
+|                        |                       | MonthlyAgebinAnalyzer      |
+|                        |                       | AnnualAgebinAnalyzer       |
+
+</p>
+</details>
 
 
-### Installation
+## Running a simulation
+- In terminal navigate to repository  `cd ~/model-characterization`
+- Run python script that defines the simulation `python launch_test.py`
+- Check simulations via `squeue -u <username>`
+- Wait for simulations to finish and process results as necessary for project
+- If you need to resubmit the `analyze_sim.py` script, it can be found in `experiments/<suite>/<exp_name>`
 
-[EMOD installation](https://docs.idmod.org/projects/emod-malaria/en/latest/install-overview.html) involves creating a
-python virtual environment.
-[OpenMalaria installation](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria) is simpler, as
-it does not require any additional software to run, although additional software will be required for the simulation and
-analysis workflow. 
+### Troubleshooting
+- No results in simulation outputs
+  - did the analyzer run, try rerunning?
+  - simulation failed? check log/error files
+- ...
+
+## Installation
 
 
+[EMODpy installation IDM](https://docs.idmod.org/projects/emodpy/en/v1.19.0/installation.html).
+[EMODpy installation additions NU for NUCLUSTER](https://numalariamodeling.github.io/FE-2023-quarto-website/guides/install_guide.html).
 
+[OpenMalaria installation STPH](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria) 
+
+<details><summary><span>OpenMalaria venv on NUCLUSTER</span></summary>
+<p>
+
+NU IT research (Scott Coughlin) built a container and sent instructions which have been edited for completeness and are shown below:
+One can build the container on Quest using the remote Sylabs build environment
+```
+module load singularity
+singularity remote login
+```
+An access token is already set for this remote. Replace it? [N/y] y
+Generate an access token at https://cloud.sylabs.io/auth/tokens, and paste it here.
+..
+..
+```
+singularity build --remote OpenMalaria.sif OpenMalaria.def
+```
+
+Because calling containers is very annoying, Scott also added a module file in this folder which wraps the call to openMalaria to make it easier to use. 
+Please see this example below which can be run in `/projects/b1139/OpenMalaria/`
+```
+cd OpenMalaria
+module use /projects/b1139/OpenMalaria/modules/
+module load openmalaria
+openMalaria -s example_scenario.xml
+```
+
+
+</p>
+</details>
+
+
+### GitHUb repositories
+EMOD, IDM  
+- [idmtools](https://github.com/InstituteforDiseaseModeling/idmtools)  
+- [emodpy-malaria](https://github.com/InstituteforDiseaseModeling/emodpy-malaria)  
+- emod-api  
+- emodpy   
+
+OpenMalaria
+- [openmalaria](https://github.com/SwissTPH/openmalaria/) 
+- ([r-openMalariaUtilities](https://github.com/SwissTPH/r-openMalariaUtilities)) 
 
 
 
