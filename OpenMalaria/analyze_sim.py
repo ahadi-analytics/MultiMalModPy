@@ -11,6 +11,7 @@ from OpenMalaria.measures import mm, mmi
 from OpenMalaria.sample_plots import *
 from benchmark_plots import *
 
+
 def parse_args():
     description = "Simulation specifications"
     parser = argparse.ArgumentParser(description=description)
@@ -60,7 +61,7 @@ def add_measure_names(df, mm):
     return adf
 
 
-def survey_to_date(df, survey_step_days=30, start_year = 0):
+def survey_to_date(df, survey_step_days=30, start_year=0):
     if survey_step_days == 30:
         df['days'] = df['survey'] * survey_step_days
         df['month'] = df['survey'] % 12
@@ -71,10 +72,10 @@ def survey_to_date(df, survey_step_days=30, start_year = 0):
         df['year'] = (df['days'] / 365).apply(np.floor)
     else:
         raise ValueError("survey_step_days must be 30 or 365")
-        
-    df['year'] = df['year']  + start_year
+
+    df['year'] = df['year'] + start_year
     df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
-            
+
     return df
 
 
@@ -91,25 +92,25 @@ def pivot_wider(df, index_cols=None, names_from=None, values_from=None):
     return wdf
 
 
-def InputEIRAnalyzer(exp, mm, start_year,  compr='infer'):
+def InputEIRAnalyzer(exp, mm, start_year, compr='infer'):
     print(f"Running InputEIRAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
     df = to_df(exp)
     df = format_df(df)
     df.drop(df[df.ageGroup > 0].index, inplace=True)
-    df = survey_to_date(df, survey_step_days=30, start_year = start_year)
-    
-    df['value'] = df['value'] * 6    # 30 days survey, 5 day timestep
+    df = survey_to_date(df, survey_step_days=30, start_year=start_year)
+
+    df['value'] = df['value'] * 6  # 30 days survey, 5 day timestep
     df_mth = add_measure_names(df, mm)
     df_mth = pivot_wider(df_mth, index_cols=['index', 'survey', 'year', 'month', 'ageGroup'])
     df_mth = df_mth.merge(scen_df, on='index', how='inner')
     df_mth = df_mth.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR'}, axis=1)
     df_mth.to_csv((os.path.join(wdir, f'OM_EIR_mth.csv')), index=False, compression=compr)
-    
+
     # Aggregate the surveys
     nyears = len(df['year'].unique())
     df_yr = df.groupby(['index', 'measure', 'ageGroup'], as_index=False).value.sum()
-    df_yr['value']  = df_yr['value'] / nyears 
+    df_yr['value'] = df_yr['value'] / nyears
     df_yr = add_measure_names(df_yr, mm)
     df_yr = pivot_wider(df_yr, index_cols=['index', 'ageGroup'])
     df_yr = df_yr.merge(scen_df, on='index', how='inner')
@@ -118,13 +119,12 @@ def InputEIRAnalyzer(exp, mm, start_year,  compr='infer'):
     df_yr.to_csv((os.path.join(wdir, f'OM_EIR.csv')), index=False, compression=compr)
 
 
-def BaseAnalyzer(exp, mm, channels=None, saveExtract=False, compr='infer'):
+def BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip'):
     print(f"Running BaseAnalyzer...", flush=True)
 
     df = to_df(exp)
     if saveExtract:
-        df.to_csv((os.path.join(wdir, f'OM_surveyoutput_raw.csv')), index=False,
-                  compression='gzip')  ## keep  default gzip
+        df.to_csv((os.path.join(wdir, f'OM_surveyoutput_raw.csv')), index=False, compression=compr)
 
     df = format_df(df)
     df.drop(df[df.ageGroup == 0].index, inplace=True)
@@ -140,61 +140,55 @@ def BaseAnalyzer(exp, mm, channels=None, saveExtract=False, compr='infer'):
     age_groups = exp.agebins
     age_group_labels = [str(age_groups[i - 1]) + "-" + str(age_groups[i]) for i in range(1, len(age_groups))]
     age_group_labels = [str(0) + "-" + str(age_groups[0])] + age_group_labels
-    age_df = pd.DataFrame({'agebin_nr': df2['agebin_nr'].unique(), 'agebin': age_groups, 'ageGroup': age_group_labels})
+    age_df = pd.DataFrame({'agebin_nr': adf['agebin_nr'].unique(), 'agebin': age_groups, 'ageGroup': age_group_labels})
 
     adf = adf.merge(age_df, on='agebin_nr', how='inner')
     print(f'Saving OM_surveyoutput_base.csv to {wdir}')
     adf.to_csv((os.path.join(wdir, f'OM_surveyoutput_base.csv')), index=False, compression=compr)
 
 
-def SurveyAllAgeAnalyzer(exp, mm,  start_year=2020, channels=None, survey_step_days=30, compr='infer'):
+def SurveyAllAgeAnalyzer(exp, mm, start_year=2020, survey_step_days=30, compr='infer'):
     print(f"Running SurveyAllAgeAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
 
     df = to_df(exp)
     df = format_df(df)
-    
+
     df0 = df.loc[df.ageGroup == 0]
     df0.drop(['ageGroup'], axis=1)
     df.drop(df[df.ageGroup == 0].index, inplace=True)
-    df['value'] = df['value'] * 6    # 30 days survey, 5 day timestep
-    
+    df['value'] = df['value'] * 6  # 30 days survey, 5 day timestep
+
     # Sum the age groups
     df = df.groupby(['index', 'survey', 'measure'], as_index=False).value.sum()
-    
 
     mm_df = pd.DataFrame.from_dict(mm, orient='index')
     mm_df['measure'] = mm_df.index
     mm_df['measure_name'] = mm_df[0]
     mm_df = mm_df[['measure', 'measure_name']]
-    
+
     df0 = df0.merge(mm_df, on='measure', how='inner')
     df0 = pivot_wider(df0, index_cols=['index', 'survey'])
-    
+
     adf = df.merge(mm_df, on='measure', how='inner')
     adf = pivot_wider(adf, index_cols=['index', 'survey'])
 
-
-    adf = adf.merge(df0, on=['index','survey'], how='inner')
+    adf = adf.merge(df0, on=['index', 'survey'], how='inner')
     adf = adf.merge(scen_df, on='index', how='inner')
     adf = adf.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR'}, axis=1)
     adf['nTreatments'] = adf['nTreatments1'] + adf['nTreatments2'] + adf['nTreatments3']
-    adf = survey_to_date(adf, survey_step_days=30, start_year = start_year)
+    adf = survey_to_date(adf, survey_step_days=survey_step_days, start_year=start_year)
 
-    
     print(f'Saving All_Age_InsetChart.csv to {wdir}')
     adf.to_csv((os.path.join(wdir, f'All_Age_InsetChart.csv')), index=False, compression=compr)
-
 
 
 def BenchmarkAnalyzer(exp, mmi, grp_channels=['ageGroup', 'index']):
     print(f"Running BenchmarkAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
     eir_df = pd.read_csv(os.path.join(wdir, 'OM_EIR.csv'))
-    eir_df = eir_df[['index','inputEIR','simulatedEIR']]
-    seasonality = scen_df['seasonality'].unique()
+    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
-    # age_groups = [int(x) for x in exp.agebins]  # must reflect the xml monitoring section
     age_groups = exp.agebins  # np.array([0.5,1,2,5,10,15,20,100])
     age_group_labels = [str(age_groups[i - 1]) + "-" + str(age_groups[i]) for i in range(1, len(age_groups))]
     age_group_labels = [str(0) + "-" + str(age_groups[0])] + age_group_labels
@@ -211,7 +205,7 @@ def BenchmarkAnalyzer(exp, mmi, grp_channels=['ageGroup', 'index']):
 
     df.loc[(df.measure == mmi['nHost']), 'value'] *= yearsAtRisk[df[(df.measure == mmi['nHost'])].ageGroup - 1]
     g = df
-    
+
     age2to10 = g['ageGroup'].apply(lambda x: age_groups[x - 1] >= 2 and age_groups[x - 1] <= 10)
 
     nHost2to10 = g[(g.measure == mmi['nHost']) & age2to10].groupby(grp_channels).value.sum()
@@ -256,27 +250,24 @@ def BenchmarkAnalyzer(exp, mmi, grp_channels=['ageGroup', 'index']):
     adf.reset_index(inplace=True)
     adf = adf.merge(scen_df, on='index', how='inner')
     adf = adf.merge(eir_df, on='index', how='inner')
-    
-    
+
     print(f'Saving OM_benchmark.csv to {wdir}')
     adf.to_csv((os.path.join(wdir, f'OM_benchmark.csv')), index=False)
 
 
-def MonthlyBenchmarkAnalyzer(exp, mmi,start_year, grp_channels=['ageGroup', 'index']):
+def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index']):
     print(f"Running MonthlyBenchmarkAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
     eir_df = pd.read_csv(os.path.join(wdir, 'OM_EIR_mth.csv'))
-    eir_df = eir_df[['index', 'month','inputEIR','simulatedEIR']]
-    seasonality = scen_df['seasonality'].unique()
+    eir_df = eir_df.groupby(['index', 'month'], as_index=False)['inputEIR', 'simulatedEIR'].mean()
 
-    # age_groups = [int(x) for x in exp.agebins]  # must reflect the xml monitoring section
     age_groups = exp.agebins  # np.array([0.5,1,2,5,10,15,20,100])
     age_group_labels = [str(age_groups[i - 1]) + "-" + str(age_groups[i]) for i in range(1, len(age_groups))]
     age_group_labels = [str(0) + "-" + str(age_groups[0])] + age_group_labels
 
     df = to_df(exp)
     df = format_df(df)
-    df = survey_to_date(df, survey_step_days=30, start_year =start_year)
+    df = survey_to_date(df, survey_step_days=30, start_year=start_year)
 
     # Sum the surveys
     df = df.groupby(['index', 'month', 'measure', 'ageGroup'], as_index=False).value.sum()
@@ -288,20 +279,18 @@ def MonthlyBenchmarkAnalyzer(exp, mmi,start_year, grp_channels=['ageGroup', 'ind
     df.loc[(df.measure == mmi['nHost']), 'value'] *= yearsAtRisk[df[(df.measure == mmi['nHost'])].ageGroup - 1]
     sdf = df
 
-
     adf = pd.DataFrame()
     for mth in range(1, 13):
         g = sdf.loc[sdf['month'] == mth]
 
         age2to10 = g['ageGroup'].apply(lambda x: age_groups[x - 1] >= 2 and age_groups[x - 1] <= 10)
-    
+
         nHost2to10 = g[(g.measure == mmi['nHost']) & age2to10].groupby(grp_channels).value.sum()
         nPatent2to10 = g[(g.measure == mmi['nPatent']) & age2to10].groupby(grp_channels).value.sum()
-    
+
         grp_channels = [ch for ch in grp_channels if ch != 'ageGroup']
         pfpr2to10 = ((nPatent2to10 / nHost2to10).groupby(grp_channels).mean()).rename("prevalence_2to10")
 
-        
         age_groups_on_plot = [[0, 5], [5, 10], [10, 15], [15, 20]]
         for i in range(0, len(age_groups_on_plot)):
             ages = age_groups_on_plot[i]
@@ -327,7 +316,7 @@ def MonthlyBenchmarkAnalyzer(exp, mmi,start_year, grp_channels=['ageGroup', 'ind
             severe_incidence = nSevereCases / (nHost / 12)  # (events per person per year) - for each month
             mortality = nDeaths / (nHost / 12)  # (events per person per year)- for each month
 
-            simdata = pd.DataFrame({'prevalence_2to10': pfpr2to10,                        
+            simdata = pd.DataFrame({'prevalence_2to10': pfpr2to10,
                                     'clinical_incidence': clinical_incidence,
                                     'severe_incidence': severe_incidence,
                                     'mortality': mortality})
@@ -338,12 +327,12 @@ def MonthlyBenchmarkAnalyzer(exp, mmi,start_year, grp_channels=['ageGroup', 'ind
     adf.reset_index(inplace=True)
     adf = adf.merge(scen_df, on='index', how='inner')
     adf = adf.merge(eir_df, on=['index', 'month'], how='inner')
-    
+
     print(f'Saving OM_benchmark_mth.csv to {wdir}')
     adf.to_csv((os.path.join(wdir, f'OM_benchmark_mth.csv')), index=False)
 
 
-def MonthlyAgebinAnalyzer(exp, mm, start_year,compr='infer'):
+def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     print(f"Running MonthlyAgebinAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
 
@@ -373,13 +362,13 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year,compr='infer'):
     age_df = pd.DataFrame({'agebin_nr': df2['agebin_nr'].unique(), 'agebin': age_groups, 'ageGroup': age_group_labels})
 
     df3 = df2.merge(age_df, on='agebin_nr', how='inner')
-    df3 = survey_to_date(df3, survey_step_days=30,start_year = start_year)
+    df3 = survey_to_date(df3, survey_step_days=30, start_year=start_year)
 
     print(f'Saving OM_surveyoutput_mth.csv to {wdir}')
     df3.to_csv((os.path.join(wdir, f'OM_surveyoutput_mth.csv')), index=False, compression=compr)
 
 
-def AnnualAgebinAnalyzer(exp, mm, start_year,compr='infer'):
+def AnnualAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     print(f"Running AnnualAgebinAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
 
@@ -409,7 +398,7 @@ def AnnualAgebinAnalyzer(exp, mm, start_year,compr='infer'):
     age_df = pd.DataFrame({'agebin_nr': df2['agebin_nr'].unique(), 'agebin': age_groups, 'ageGroup': age_group_labels})
 
     df3 = df2.merge(age_df, on='agebin_nr', how='inner')
-    df3 = survey_to_date(df3, survey_step_days=30,start_year = start_year)
+    df3 = survey_to_date(df3, survey_step_days=30, start_year=start_year)
 
     print(f'Saving OM_surveyoutput_yr to {wdir}')
     df3.to_csv((os.path.join(wdir, f'OM_surveyoutput_yr.csv')), index=False, compression=compr)
@@ -427,20 +416,21 @@ if __name__ == "__main__":
 
     # BaseAnalyzer(exp, mm)
     SurveyAllAgeAnalyzer(exp, mm, start_year=start_year)
-    InputEIRAnalyzer(exp, mm, start_year =start_year)
+    InputEIRAnalyzer(exp, mm, start_year=start_year)
     if exp.om_survey_step == '30d':
         MonthlyAgebinAnalyzer(exp, mm, start_year=start_year)
         AnnualAgebinAnalyzer(exp, mm, start_year=start_year)
         MonthlyBenchmarkAnalyzer(exp, mmi, start_year=start_year)
     BenchmarkAnalyzer(exp, mmi)
 
-    exp_tags = ['seed', 'eir', 'access' ,'seasonality']  # FIXME dont hardcode
-    channels_inset_chart = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',  'nSevere', 'nSeq', 'nIndDeaths',
-                            'nDirDeaths', 'inputEIR', 'simulatedEIR', 'expectedDirectDeaths', 
-                            'expectedSevere'] #'expectedIndirectDeaths',  
-                            
+    exp_tags = ['seed', 'eir', 'access', 'seasonality']  # FIXME dont hardcode
+    channels_inset_chart = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
+                            'nSevere', 'nSeq', 'nIndDeaths',
+                            'nDirDeaths', 'inputEIR', 'simulatedEIR', 'expectedDirectDeaths',
+                            'expectedSevere']  # 'expectedIndirectDeaths',
+
     if create_sampleplots:
         all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
         sample_plot_yr(wdir, exp_tags)
         sample_plot_mth(wdir, exp_tags)
-        #eir_to_prevalence2to10(wdir= exp.sim_out_dir, emodom=['OpenMalaria'], sweepvar ='access')
+        # eir_to_prevalence2to10(wdir= exp.sim_out_dir, emodom=['OpenMalaria'], sweepvar ='access')

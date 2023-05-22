@@ -503,7 +503,7 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
         else:
             cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables+ ['month'])
             cdf = cdf.rename(columns={"EIR_scale_factor": "inputEIR"})
-            cdf['simulatedEIR'] = cdf['inputEIR']
+            cdf['simulatedEIR'] = ''
 
         cdf = cdf.rename(columns={"Run_Number": "seed",
                                   "cm_clinical_U5": "access",
