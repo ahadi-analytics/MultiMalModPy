@@ -34,11 +34,11 @@ def get_emodom_df(wdir, emodom, mth=False):
     if mth:
         fname = 'benchmark_mth.csv'
 
-    if 'OpenMalaria':
+    if 'OpenMalaria' in emodom:
         om_df = pd.read_csv((os.path.join(wdir, f'om/OM_{fname}')))
         om_df['emodom'] = 'OpenMalaria'
         om_df['annual_input_EIR'] = om_df['eir']
-    if 'EMOD':
+    if 'EMOD' in emodom:
         em_df = pd.read_csv((os.path.join(wdir, f'em/EMOD_{fname}')))
         em_df['emodom'] = 'EMOD'
         em_df['annual_input_EIR'] = em_df['inputEIR']
@@ -257,9 +257,8 @@ def monthly_trends(wdir, emodom, channel, sweepvar='annual_input_EIR'):
 
 
 if __name__ == "__main__":
-    # args = parse_args()
-    # job_directory = args.directory
-    job_directory = "C:/Users/mrm9534/NU Malaria Modeling Dropbox/projects/EMOD_OM/simulation_outputs/model_characterization_v0_forcedEIR/test__noburnin"
+    args = parse_args()
+    job_directory = args.directory
 
     file = open(os.path.join(job_directory, "exp.obj"), "rb")
     exp = pickle.load(file)

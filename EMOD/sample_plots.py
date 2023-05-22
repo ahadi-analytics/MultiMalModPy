@@ -90,6 +90,9 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
     sweep_variables = [s for s in sweep_variables if s != 'Run_Number']
         
     df = pd.read_csv(os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv'))
+    df['day'] = 1
+    df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
+    
     ## Select 2nd last year of simulation
     df = df.loc[df['year'] == np.max(df['year'])-1]
     df = df.groupby(['date', 'age'] + sweep_variables)[channels].agg(np.mean).reset_index()
