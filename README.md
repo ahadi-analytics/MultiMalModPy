@@ -24,6 +24,8 @@ Conceptually:
 Implementation in this repository:
 ![Simulation framework](https://github.com/numalariamodeling/model-characterization/blob/main/static/emod-om-framework.png)
 
+<details><summary><span>List of functions</span></summary>
+<p>
 
 _Table: Main scripts and functions_
 
@@ -77,6 +79,9 @@ _Table: OpenMalaria functions_
 |                        |                       | BenchmarkAnalyzer          |
 |                        |                       | MonthlyAgebinAnalyzer      |
 |                        |                       | AnnualAgebinAnalyzer       |
+
+</p>
+</details>
 
 
 ## Running a simulation

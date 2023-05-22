@@ -13,16 +13,8 @@ def parse_args():
         "-d",
         "--directory",
         type=str,
-        required=True, 
+        required=True,
         help="Job Directory where exp.obj is located",
-    )
-    parser.add_argument(
-        "-i",
-        "--exp_id",
-        type=str,
-        required=False, 
-        help="Unique ID of simulation experiment, required for EMOD runs",
-        default=None
     )
     return parser.parse_args()
 
@@ -61,10 +53,13 @@ def save_exp_scen(exp, scen_df, save_dirs):
 
 def get_seasonal_eir():
   # Define functional form of non-perennial, seasonal setting
+  # season_daily =  1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365))  ## used in EMOD-OM benchmarking
   season_daily = 1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365)) / 2 + np.cos(2 * np.pi * (np.arange(0, 365) / 365)) / 2
   season_month = [season_daily[1 + int(i * (365 / 12))] for i in range(0, 12)]
-  seasonal = list(season_month / np.max(season_month))
-  perennial = list(np.ones(12))
+  seasonal =  season_month / np.max(season_month)
+  #eir_sum = sum(season_month)
+  #seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
+  perennial = [x / 12 for x in [1] * 12]
   
   return season_daily, season_month, seasonal, perennial
   
@@ -104,7 +99,7 @@ def exec(command):
 
 ###---------------------------------
 
-def shell_header_quest(A='b1139', p='b1139', t='02:00:00', N=1, ntasks_per_node=1, memG=8, job_name='myjob',
+def shell_header_quest(A='p30781', p='short', t='02:00:00', N=1, ntasks_per_node=1, memG=8, job_name='myjob',
                        arrayJob=None):
     """Requires a 'log' subfolder to write in .err and .out files, alternatively log/ needs to be removed"""
     if not os.path.exists('log'):
@@ -138,13 +133,12 @@ def write_txt(txtobj, path, fname):
     
 def submit_analyze_OpenMalaria(exp):
     header_post = shell_header_quest(job_name=f'analyze_exp', t='01:00:00')
-    openmalaria = OM_module(exp.hpc)
     pycommand = f'\ncd /home/mrm9534/model-characterization/' \
                 f'\npython OpenMalaria/analyze_sim.py --dir "{exp.job_directory}"'
 
     script_path = os.path.join(exp.job_directory, f'run_analyzer_OpenMalaria.sh')
     file = open(script_path, 'w')
-    file.write(header_post + openmalaria + pycommand)
+    file.write(header_post + pycommand)
     file.close()
 
     ## get job_id
@@ -223,13 +217,16 @@ def emodpy_module(location='NUCLUSTER'):
     return emod_venv
 
 
-def OM_module(location='NUCLUSTER'):
+def OM_module(location='NUCLUSTER', om_version=45):
     if location =='NUCLUSTER':
-        ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/modules/' \
-                   '\nmodule load openmalaria\n'
-    if location =='SCICORE':
-        ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/modules/' \
-                   '\nmodule load openmalaria\n'
+        if om_version == 43:
+            ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/modules/ \nmodule load openmalaria\n'
+        elif om_version == 45:
+            ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/om_v45/modules/ \nmodule load openmalaria\n'
+        else:
+            raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 45')
+    if location =='SCICORE':   ## FIXME
+        ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/modules/ \nmodule load openmalaria\n'
     return ommodule
 
 

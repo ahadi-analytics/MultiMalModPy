@@ -20,7 +20,6 @@ emod_pickup = False
 entomology_mode = 'dynamic'  # dynamic, forced
 event_recorder = False
 
-# scaffolds = {"R0000GA": "R0000GA"}
 om_scaffold = "R0000GA"  # build OpenMalaria XML schema- prerequisite
 om_survey_step = '30d'
 
@@ -31,15 +30,16 @@ num_seeds = 3
 burnin = 80  # Note burnin handled differently in OpenMalaria and EMOD
 
 """ Model setup """
-models_to_run = ['EMOD']  ## 'EMOD','OpenMalaria'
-suite = Suite(name = f'model_characterization_v0_{entomology_mode}EIR') # Collection of simulations, needs to be the same for burnin and pickup simulations
+models_to_run = ['EMOD', 'OpenMalaria']  ## 'EMOD','OpenMalaria'
+suite = Suite(
+    name=f'model_characterization_v0_{entomology_mode}EIR')  # Collection of simulations, needs to be the same for burnin and pickup simulations
 exp_name = f'test_suite_expID'  # name of the experiment folder
 
 ## EMOD burnin
-if entomology_mode =='forced':
-  emod_burnin_id = 'c32c30e5-d822-4854-8dd1-ba17f954a892' ### forced EIR
+if entomology_mode == 'forced':
+    emod_burnin_id = 'c32c30e5-d822-4854-8dd1-ba17f954a892'  ### forced EIR
 else:
-  emod_burnin_id =  '1b5781b0-3d51-4d00-956b-c963fab53046' ### dynamic EIR
+    emod_burnin_id = '1b5781b0-3d51-4d00-956b-c963fab53046'  ### dynamic EIR
 
 ## Name of parameters to vary
 sweep_list = ['eir', 'access', 'seasonality'] + ['seed']
@@ -55,15 +55,15 @@ if testmode:
         emod_burnin_id = '1b5781b0-3d51-4d00-956b-c963fab53046'  ### dynamic EIR
 seed = list(range(num_seeds))  ## for scenarios csv
 
-if emod_serialize:
+if emod_serialize and 'EMOD' in models_to_run:
     print('Message: Running burnin for EMOD')
     exp_name = f'{exp_name}_burnin{burnin}'
     emod_burnin_id = ''
     models_to_run = ['EMOD']
     sweep_list = ['eir', 'access', 'seasonality', 'seed']
 if not emod_pickup:
-  emod_burnin_id =None
-  
+    emod_burnin_id = None
+
 """ SIMULATION TIME """
 start_year = 2000  # start of monitoring period
 end_year = 2020  # end of monitoring period
@@ -77,12 +77,12 @@ access = [0.2029544]  # 5-day probability  ## already converted
 """ TRANSMISSION, ENTOMOLOGY """
 seasonality = ["perennial", "seasonal"]  # , "seasonal"
 eir = [4, 8, 16, 32]  # [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
-season_daily, season_month, seasonal, perennial = get_seasonal_eir()  # OpenMalaria only?
-print('Seasinality has not yet been aligned between EMOD and OpenMalaria')  # FIXME
+season_daily, season_month, seasonal, perennial = get_seasonal_eir()
 
 if entomology_mode == 'dynamic':
     lhs = np.logspace(-2, 3, len(eir))  ## to do funtcion to match eir to LHS
-    print('Dynamic EIR has not yet been aligned between EMOD and OpenMalaria')  # FIXME
+    print(
+        'Dynamic EIR has not yet been aligned between EMOD and OpenMalaria, no dynamic seasonal EIR in EMOD yet')  # FIXME
 
 """ DIRECTORIES AND POSTPROCESSING """
 job_directory, sim_out_dir = make_dirs(manifest, suite.name, exp_name)
@@ -98,7 +98,7 @@ exp.hpc = manifest.hpc
 exp.selected_platform = manifest.selected_platform
 exp.om_version = manifest.om_version
 exp.emod_build = manifest.emod_build
-exp.om_path = manifest.OpenMalaria_dir
+exp.om_path = manifest.OM_PATH
 exp.om_input_path = manifest.om_input_path
 
 for obj_name in my_obj:
@@ -116,7 +116,7 @@ save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 
 
 def update_param_default(config):
-    config.parameters.x_Base_Population = 1
+    config.parameters.x_Base_Population = pop_size / 1000
     config.parameters.Birth_Rate_Dependence = 'FIXED_BIRTH_RATE'
     config.parameters.Maternal_Antibodies_Type = 'CONSTANT_INITIAL_IMMUNITY'
     config.parameters.Climate_Model = 'CLIMATE_CONSTANT'
@@ -144,7 +144,10 @@ def set_param_fn(config):
 
     if entomology_mode == 'dynamic':
         conf.add_species(config, manifest, ["gambiae"])  # , "arabiensis", "funestus"
-        # config = update_param_climate(config) ## if specific climate files exist, otherwise use default
+        if seasonality[0] == 'perennial':
+            config.parameters.Climate_Model = 'CLIMATE_CONSTANT'
+        if seasonality[0] == 'seasonal':
+            config = update_param_climate(config)
 
     if emod_serialize:
         config.parameters.Serialized_Population_Writing_Type = "TIMESTEP"
@@ -160,11 +163,12 @@ def set_param_fn(config):
 
 
 ##--------------------
-def build_campaign(EIR_scale_factor=None, cm_cov=0.5, cm_clinical_adult=None, cm_severe=None, cm_start=1):
+def build_campaign(seasonality=None, EIR_scale_factor=None, cm_cov=0.5, cm_clinical_adult=None, cm_severe=None,
+                   cm_start=1):
     camp = build_standard_campaign_object(manifest)
     treatment_camp(camp, cm_start=cm_start, cm_clinical_U5=cm_cov)
     if EIR_scale_factor is not None:
-        set_inputEIR_seasonality(camp, EIR_scale_factor)
+        set_inputEIR_seasonality(camp, EIR_scale_factor, seasonality)
     return camp
 
 
@@ -173,11 +177,13 @@ def update_campaign_multiple_parameters_ser(simulation, df, cm_cov, cm_start, x:
     seed = int(df["Run_Number"][x])
     if entomology_mode == 'forced':
         eir = float(df["EIR_scale_factor"][x])
-        eir_dic = {"EIR_scale_factor": eir}
-        build_campaign_partial = partial(build_campaign, EIR_scale_factor=eir, cm_cov=cm_cov, cm_start=cm_start)
+        season = float(df["seasonality"][x])
+        eir_dic = {"EIR_scale_factor": eir, "seasonality": season}
+        build_campaign_partial = partial(build_campaign, seasonality=season, EIR_scale_factor=eir, cm_cov=cm_cov,
+                                         cm_start=cm_start)
     else:
         lhs = float(df["x_Temporary_Larval_Habitat"][x])
-        eir_dic = {"x_Temporary_Larval_Habitat": lhs}
+        eir_dic = {"x_Temporary_Larval_Habitat": lhs, "seasonality": 'perennial'}  ## FIXME
         build_campaign_partial = partial(build_campaign, cm_cov=cm_cov, cm_start=cm_start)
     simulation.task.create_campaign_from_callback(build_campaign_partial)
 
@@ -189,26 +195,28 @@ def update_campaign_multiple_parameters_ser(simulation, df, cm_cov, cm_start, x:
     return {**eir_dic, **{"cm_cov": cm_cov, "Run_Number": seed}}
 
 
-def update_campaign_multiple_parameters(simulation, cm_cov, cm_start, EIR_scale_factor):
-    if EIR_scale_factor is not None:
-        update_mab(simulation, mAb_vs_EIR(EIR_scale_factor))  ### eir default = 1
-        build_camp_partial = partial(build_campaign, EIR_scale_factor=EIR_scale_factor, cm_cov=cm_cov,
-                                     cm_start=cm_start)
-        rdic = {"EIR_scale_factor": EIR_scale_factor, "cm_clinical_U5": cm_cov, 'cm_start': cm_start}
-    else:
-        build_camp_partial = partial(build_campaign, cm_cov=cm_cov, cm_start=cm_start)
-        rdic = {"cm_clinical_U5": cm_cov, 'cm_start': cm_start}
+def update_campaign_multiple_parameters(simulation, cm_cov, cm_start):
+    build_camp_partial = partial(build_campaign, cm_cov=cm_cov, cm_start=cm_start)
+    rdic = {"cm_clinical_U5": cm_cov, 'cm_start': cm_start}
+    simulation.task.create_campaign_from_callback(build_camp_partial)
+    return rdic
 
+
+def update_campaign_multiple_parameters_wEIR(simulation, cm_cov, cm_start, EIR_scale_factor, season):
+    update_mab(simulation, mAb_vs_EIR(EIR_scale_factor))  ### eir default = 1
+    build_camp_partial = partial(build_campaign, seasonality=season, EIR_scale_factor=EIR_scale_factor, cm_cov=cm_cov,
+                                 cm_start=cm_start)
+    rdic = {"EIR_scale_factor": EIR_scale_factor, "seasonality": season, "cm_clinical_U5": cm_cov, 'cm_start': cm_start}
     simulation.task.create_campaign_from_callback(build_camp_partial)
     return rdic
 
 
 ##--------------------
 
-def update_eir_scale(simulation, value):
-    build_campaign_partial = partial(build_campaign, EIR_scale_factor=value)
+def update_eir_scale(simulation, value, svalue):
+    build_campaign_partial = partial(build_campaign, EIR_scale_factor=value, seasonality=svalue)
     simulation.task.create_campaign_from_callback(build_campaign_partial)
-    return {"EIR_scale_factor": value}
+    return {"EIR_scale_factor": value, "seasonality": svalue}
 
 
 def sweep_burnin_simulations(simulation, df, x: int, entomology_mode='dynamic'):
@@ -223,8 +231,8 @@ def sweep_burnin_simulations(simulation, df, x: int, entomology_mode='dynamic'):
         simulation.task.config.parameters.x_Temporary_Larval_Habitat = float(df["x_Temporary_Larval_Habitat"][x])
         transm_spec = ['x_Temporary_Larval_Habitat', float(df["x_Temporary_Larval_Habitat"][x])]
     else:
-        update_eir_scale(simulation, float(df["EIR_scale_factor"][x]))
-        transm_spec = ['EIR_scale_factor', float(df["EIR_scale_factor"][x])]
+        update_eir_scale(simulation, float(df["EIR_scale_factor"][x]), float(df["seasonality"][x]))
+        transm_spec = ['EIR_scale_factor', float(df["EIR_scale_factor"][x])]  ## FIXME
 
     return {
         "Serialized_Population_Path": os.path.join(df["serialized_file_path"][x], "output"),
@@ -281,21 +289,21 @@ def submit_create_run_EMOD(exp):
     if entomology_mode == 'dynamic':
         builder.add_sweep_definition(partial(set_param, param='x_Temporary_Larval_Habitat'), lhs)
         builder.add_multiple_parameter_sweep_definition(update_campaign_multiple_parameters,
-                                                        dict(cm_cov=access, cm_start=[1],
-                                                             EIR_scale_factor=None))
+                                                        dict(cm_cov=access, cm_start=[1]))
     else:
-        builder.add_multiple_parameter_sweep_definition(update_campaign_multiple_parameters,
+        builder.add_multiple_parameter_sweep_definition(update_campaign_multiple_parameters_wEIR,
                                                         dict(cm_cov=access, cm_start=[1],
-                                                             EIR_scale_factor=eir))
+                                                             EIR_scale_factor=eir,
+                                                             season=seasonality))
 
-    add_annual_reports(task, manifest, age_bins= agebins,sim_start_year=sim_start_year, num_year=sim_dur_years)
+    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year, num_year=sim_dur_years)
     if not emod_serialize:
-        add_monthly_reports(task, manifest,  age_bins= agebins, sim_start_year=sim_start_year, num_year=sim_dur_years)
+        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year, num_year=sim_dur_years)
 
     # Create experiment from builder and run
-    #experiment = Experiment.from_task(task, name=exp_name)
+    # experiment = Experiment.from_task(task, name=exp_name)
     experiment = Experiment.from_builder(builder, task, name=exp_name)
-    #experiment.uid = f'{exp_name}_{now_str}'
+    # experiment.uid = f'{exp_name}_{now_str}'
     suite.add_experiment(experiment)
     experiment.run(wait_until_done=False, platform=platform)
 
@@ -322,7 +330,6 @@ if __name__ == '__main__':
         from OpenMalaria.utils import *
 
         submit_run_OpenMalaria(exp, scen_df)  ## Includes creating XML files
-
 
     # if 'OpenMalaria' and 'EMOD' in models_to_run:
     #    #submit_combine_results(exp)  ## only combined benchmarking.csv, do csvs need to be combined per default?

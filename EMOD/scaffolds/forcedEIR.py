@@ -1,6 +1,7 @@
 import numpy as np
 from emodpy_malaria.interventions.inputeir import add_scheduled_input_eir
 from scipy.interpolate import interp1d
+from helper import get_seasonal_eir
 
 
 def mAb_vs_EIR(EIR):
@@ -15,17 +16,18 @@ def update_mab(simulation, value):
 
 
 
-def set_inputEIR_seasonality(camp, EIR_scale_factor=1, seasonality='constant'):
-    if seasonality == 'constant':
-        monthly_EIR = [x / 12 for x in [1] * 12]
-    elif seasonality == 'unimodal':
-        monthly_EIR = [1, 1, 1, 1, 1, 3, 10, 10, 15, 18, 10, 0.1]
-        eir_sum = sum([x for x in monthly_EIR])
-        monthly_EIR = [(x / eir_sum) for x in monthly_EIR]  # rescale to sum = 1
+def set_inputEIR_seasonality(camp, EIR_scale_factor=1, seasonality='perennial'):
+    season_daily, season_month, seasonal, perennial = get_seasonal_eir() 
+    if seasonality == 'perennial':
+        daily_EIR = [x / 365 for x in [1] * 365]
+    elif seasonality == 'seasonal':
+        daily_EIR = season_daily
+        eir_sum = sum([x for x in daily_EIR])
+        daily_EIR = [(x / eir_sum) for x in daily_EIR]  # rescale to sum = 1
     else:
         raise ValueError("Please specify valid seasonality")
 
-    daily_EIR = monthly_to_daily_EIR(monthly_EIR)
+
     add_scheduled_input_eir(campaign=camp, start_day=1, daily_eir=daily_EIR, age_dependence="SURFACE_AREA_DEPENDENT",
                             node_ids=None, scaling_factor=EIR_scale_factor)
 

@@ -1,3 +1,5 @@
+import os
+import argparse
 import pickle
 import datetime
 import time
@@ -7,13 +9,31 @@ import sys
 from idmtools.entities import IAnalyzer
 from idmtools.entities.simulation import Simulation
 
-## For plotting
 sys.path.append('../')
-
 import manifest
-from helper import parse_args
-from EMOD.benchmark_plots import *
+from benchmark_plots import *
 from EMOD.sample_plots import *
+
+def parse_args():
+    description = "Simulation specifications"
+    parser = argparse.ArgumentParser(description=description)
+
+    parser.add_argument(
+        "-d",
+        "--directory",
+        type=str,
+        required=True, 
+        help="Job Directory where exp.obj is located",
+    )
+    parser.add_argument(
+        "-i",
+        "--exp_id",
+        type=str,
+        required=False, 
+        help="Unique ID of simulation experiment, required for EMOD runs",
+        default=None
+    )
+    return parser.parse_args()
 
 
 class InsetChartAnalyzer(IAnalyzer):
@@ -238,13 +258,13 @@ class TransmissionReport(IAnalyzer):
     def map(self, data, simulation):
         simdata = pd.DataFrame({x: data[self.filenames[0]]['Channels'][x]['Data'] for x in self.channels})
         # simdata = simdata[-365:]
-        simdata['Time'] = simdata.index
-        simdata['Day'] = simdata['Time'] % 365
-        simdata['Month'] = simdata['Day'].apply(lambda x: self.monthparser((x + 1) % 365))
-        simdata['Year'] = simdata['Time'].apply(lambda x: int(x / 365) + self.start_year)
-        simdata['date'] = simdata.apply(lambda x: datetime.date(int(x['Year']), int(x['Month']), 1), axis=1)
+        simdata['time'] = simdata.index
+        simdata['day'] = simdata['time'] % 365
+        simdata['month'] = simdata['day'].apply(lambda x: self.monthparser((x + 1) % 365))
+        simdata['year'] = simdata['time'].apply(lambda x: int(x / 365) + self.start_year)
+        simdata['date'] = simdata.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
         if self.selected_year is not None:
-            simdata = simdata.loc[(simdata['Year'] == self.selected_year)]
+            simdata = simdata.loc[(simdata['year'] == self.selected_year)]
 
         for sweep_var in self.sweep_variables:
             if sweep_var in simulation.tags.keys():
@@ -264,27 +284,27 @@ class TransmissionReport(IAnalyzer):
         adf = pd.concat(selected).reset_index(drop=True)
 
         if self.burnin is not None:
-            adf = selected[adf['Year'] >= self.start_year + self.burnin]
+            adf = selected[adf['year'] >= self.start_year + self.burnin]
 
         grp_channels = self.sweep_variables  # [x for x in self.sweep_variables if x != "Run_Number"] ## Keep runs
-        adf = adf.groupby(['Time', 'date', 'Day', 'Month', 'Year'] + grp_channels)[self.channels].agg(
+        adf = adf.groupby(['time', 'date', 'day', 'month', 'year'] + grp_channels)[self.channels].agg(
             np.mean).reset_index()
         if self.daily_report:
             adf.to_csv(os.path.join(self.working_dir, f'daily_transmission_report.csv'), index=False)
 
         sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
         if self.monthly_report:
-            df = adf.groupby(['Year', 'Month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
+            df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
             df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
             df.to_csv(os.path.join(self.working_dir, f'monthly_transmission_report.csv'), index=False)
 
-        df = adf.groupby(['Year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
+        df = adf.groupby(['year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
         df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
         df.to_csv(os.path.join(self.working_dir, f'annual_transmission_report.csv'), index=False)
         
 class BenchmarkAnalyzer(IAnalyzer):
 
-    def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
+    def __init__(self, expt_name, sweep_variables=None,  working_dir='./', start_year=1920,
                  end_year=2020, burnin=None):
 
         super(BenchmarkAnalyzer, self).__init__(working_dir=working_dir,
@@ -371,20 +391,127 @@ class BenchmarkAnalyzer(IAnalyzer):
             
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
             cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables)
-            cdf = cdf.rename(columns={"x_Temporary_Larval_Habitat": "eir"}) # technicall wrong and lhs, but for consistency
+            cdf = cdf.rename(columns={"x_Temporary_Larval_Habitat": "inputEIR"}) # technicall wrong and lhs, but for consistency
             cdf['eirinput'] = "x_Temporary_Larval_Habitat"
         else:
             cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables)
-            cdf = cdf.rename(columns={"EIR_scale_factor": "eir"})
-            cdf['simulatedEIR'] = cdf['eir']
+            cdf = cdf.rename(columns={"EIR_scale_factor": "inputEIR"})
+            cdf['simulatedEIR'] = cdf['inputEIR']
 
-        cdf = cdf.rename(columns={"cm_clinical_U5": "access",
+        cdf = cdf.rename(columns={"Run_Number": "seed",
+                                  "cm_clinical_U5": "access",
                                   "nUncomp": "clinical_incidence",
                                   "nSevere": "severe_incidence"})
         cdf['mortality'] = ''
-        cdf['seasonality'] = 'perennial' # FIXME
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}')
         cdf.to_csv((os.path.join(self.working_dir, f'EMOD_benchmark.csv')), index=False)
+        
+        
+class MonthlyBenchmarkAnalyzer(IAnalyzer):
+
+    def __init__(self, expt_name, sweep_variables=None,  working_dir='./', start_year=1920,
+                 end_year=2020, burnin=None):
+
+        super(MonthlyBenchmarkAnalyzer, self).__init__(working_dir=working_dir,
+                                                filenames=[f"output/MalariaSummaryReport_Monthly_{x}.json"
+                                                                   for x in range(start_year, end_year)]
+                                                        )
+        self.sweep_variables = sweep_variables or ["Run_Number"]
+        self.expt_name = expt_name
+        self.start_year = start_year
+        self.end_year = end_year
+        self.burnin = burnin
+
+    def map(self, data, simulation: Simulation):
+
+        adf = pd.DataFrame()
+        nyears = self.end_year - self.start_year + 1
+        for year, fname in zip(range(self.start_year, self.end_year), self.filenames):
+
+            age_bins = data[fname]['Metadata']['Age Bins']
+            reports = data[fname]['DataByTime']['Time Of Report'][:12]
+            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10'][:12]
+
+            for age in list(range(0, len(age_bins))):
+                d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin'][:12]
+                clinical_cases = [x[age] for x in d]
+                d = data[fname]['DataByTimeAndAgeBins']['Annual Severe Incidence by Age Bin'][:12]
+                severe_cases = [x[age] for x in d]
+                d = data[fname]['DataByTimeAndAgeBins']['Average Population by Age Bin'][:12]
+                pop = [x[age] for x in d]
+
+                simdata = pd.DataFrame({'month': range(1, 13),
+                                        'nUncomp_annualized': clinical_cases,
+                                        'nSevere_annualized': severe_cases,
+                                        'nHost': pop})
+                simdata['year'] = year
+                simdata['age'] = age_bins[age]
+                simdata['prevalence_2to10'] = pfpr2to10
+                adf = pd.concat([adf, simdata])
+
+        for sweep_var in self.sweep_variables:
+            if sweep_var in simulation.tags.keys():
+                try:
+                    adf[sweep_var] = simulation.tags[sweep_var]
+                except:
+                    adf[sweep_var] = '-'.join([str(x) for x in simulation.tags[sweep_var]])
+
+        return adf
+
+    def reduce(self, all_data):
+
+        selected = [data for sim, data in all_data.items()]
+        if len(selected) == 0:
+            print("\nWarning: No data have been returned... Exiting...")
+            return
+        
+        df = pd.concat(selected).reset_index(drop=True)
+        df_pfpr2to10 = df.groupby(self.sweep_variables + ['month'])[['prevalence_2to10']].agg(np.mean).reset_index()
+        
+        ## Aggregate years
+        df = df.groupby(self.sweep_variables + ['age','month'])[['nUncomp_annualized', 'nSevere_annualized', 'nHost']].agg(np.mean).reset_index()
+        df['nUncomp'] = df['nUncomp_annualized'] * df['nHost']  ## total cases
+        df['nSevere'] = df['nSevere_annualized'] * df['nHost']  ## total cases
+
+
+        cdf = pd.DataFrame()
+        age_groups_on_plot = [[0, 5], [5, 10], [10, 15], [15, 20]]
+        for i in range(0, len(age_groups_on_plot)):
+            ages = age_groups_on_plot[i]
+            ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
+            adf = df[(df.age >= ages[0]) & (df.age <= ages[1])]
+            if adf.empty:
+                pass
+            else:
+                adf = adf.groupby(self.sweep_variables + ['month'])[['nUncomp', 'nSevere', 'nHost']].agg(
+                    np.sum).reset_index()
+                adf['nUncomp'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per year)
+                adf['nSevere'] = adf['nSevere'] / (adf['nHost'])  # (events per person per year)
+                adf['age_group'] = ageCond_labels
+                cdf = pd.concat([cdf, adf])
+
+        if "x_Temporary_Larval_Habitat" in self.sweep_variables:
+            time.sleep(5) 
+            eirdf = pd.read_csv(os.path.join(self.working_dir,'monthly_transmission_report.csv'))
+            eirdf = eirdf.groupby(self.sweep_variables+ ['month'])[['Monthly EIR']].agg(np.sum).reset_index()
+            eirdf = eirdf.rename(columns={"Monthly EIR": "simulatedEIR"})
+            
+            cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables+ ['month'])
+            cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables+ ['month'])
+            cdf = cdf.rename(columns={"x_Temporary_Larval_Habitat": "inputEIR"}) # technicall wrong and lhs, but for consistency
+            cdf['eirinput'] = "x_Temporary_Larval_Habitat"
+        else:
+            cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables+ ['month'])
+            cdf = cdf.rename(columns={"EIR_scale_factor": "inputEIR"})
+            cdf['simulatedEIR'] = cdf['inputEIR']
+
+        cdf = cdf.rename(columns={"Run_Number": "seed",
+                                  "cm_clinical_U5": "access",
+                                  "nUncomp": "clinical_incidence",
+                                  "nSevere": "severe_incidence"})
+        cdf['mortality'] = ''
+        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}')
+        cdf.to_csv((os.path.join(self.working_dir, f'EMOD_benchmark_mth.csv')), index=False)
         
               
 if __name__ == "__main__":
@@ -402,12 +529,12 @@ if __name__ == "__main__":
 
     exp_name = exp.exp_name
     # exp_tags =  exp.sweeps ## to do
-    if exp.entomology_mode == 'forced':
-        exp_tags = ['Run_Number', 'x_Temporary_Larval_Habitat', 'cm_clinical_U5']
+    if exp.entomology_mode == 'dynamic':
+        eirchannel = "x_Temporary_Larval_Habitat"
     else:
-        exp_tags = ['Run_Number', 'x_Temporary_Larval_Habitat', 'cm_clinical_U5']
+        eirchannel = "EIR_scale_factor"
 
-
+    exp_tags = ['Run_Number',eirchannel, 'cm_clinical_U5'] #,'seasonality'
     start_year = exp.sim_start_year
     end_year = exp.end_year - 1
     monitoring_start = end_year - exp.monitoring_years
@@ -458,13 +585,19 @@ if __name__ == "__main__":
                                                      working_dir=wdir,
                                                      start_year=start_year,
                                                      end_year=end_year,
+                                                     burnin=burnin),
+                                MonthlyBenchmarkAnalyzer(expt_name=exp_name,
+                                                     sweep_variables=exp_tags,
+                                                     working_dir=wdir,
+                                                     start_year=start_year,
+                                                     end_year=end_year,
                                                      burnin=burnin)]
                                                      
-        analyzer = all_age_analyzer + annual_analyzers  # + monthly_analyzers
+        analyzer = all_age_analyzer + annual_analyzers + monthly_analyzers
         if exp.entomology_mode == 'dynamic':
             analyzer = analyzer + eir_analyzer
             
-        analyzer = analyzer + analyzers_benchmark
+        analyzer =  analyzers_benchmark + analyzer
         manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
                                  partial_analyze_ok=True)
         manager.analyze()
@@ -472,6 +605,7 @@ if __name__ == "__main__":
         if testmode:
             all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
             sample_plot_yr(wdir, exp_tags)
-            eir_to_prevalence2to10(wdir,  sweepvar ='access')
-            # sample_plot_mth(wdir, exp_tags)
-            plot_eir_pfpr(wdir, exp_tags, eirchannel = "x_Temporary_Larval_Habitat")
+            sample_plot_mth(wdir, exp_tags)
+            eir_to_prevalence2to10(wdir= exp.sim_out_dir, emodom=['EMOD'], sweepvar ='access')
+            
+            

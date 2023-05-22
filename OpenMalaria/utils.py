@@ -43,19 +43,17 @@ def submit_run_OpenMalaria(exp, scen_df):
     ## Write bash file to submit
     array = f'#SBATCH --array=1-{str(exp.nexps)}\n'
     header_post = shell_header_quest(job_name=f'run_openmalaria', t='01:00:00', arrayJob=array)
-    module = '\n\nmodule purge all' \
-             '\nmodule use /projects/b1139/OpenMalaria/modules/\n' \
-             '\nmodule load openmalaria\n'
+    openmalaria = OM_module(exp.hpc, exp.om_version)
     path = f'export PATH=$PATH: {exp.job_directory}'
     slurmID = '${SLURM_ARRAY_TASK_ID}'
     command = f'\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
     script_path = os.path.join(exp.job_directory, f'run_sim_OpenMalaria.sh')
 
     file = open(script_path, 'w')
-    file.write(header_post + module + path + command)
+    file.write(header_post + openmalaria + path + command)
     file.close()
 
-    p = subprocess.run(['sbatch', '--parsable', 'run_sim.sh'], stdout=subprocess.PIPE,
+    p = subprocess.run(['sbatch', '--parsable', 'run_sim_OpenMalaria.sh'], stdout=subprocess.PIPE,
                        cwd=str(exp.job_directory))
     slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
 

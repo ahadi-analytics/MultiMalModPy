@@ -22,29 +22,34 @@ plugins_folder = "download/reporter_plugins"
 
 # This is where your inputs are located
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
-input_dir = os.path.join(ROOT_DIR, "inputs")
+input_dir = os.path.join(ROOT_DIR, "EMOD/inputs")
 
 # ep4_path="python_scripts"
 # requirements = "./requirements.txt"
 
 # job_directory is where your simulations and outputs will be stored
-# SIF_PATH is the path to the sisf image used to run EMOD
+# SIF_PATH is the path to the sif image used to run EMOD
+# OM_PATH is the location of the OpenMalaria dependencies (xsd schema, densities.csv, ...)
+# om_input_path is location of OpenMalaria input files, scaffolds specific to project
 if hpc == 'NUCLUSTER':
     projdir = os.path.join('/projects/b1139/emod-om/')
     job_directory = os.path.join(projdir, 'experiments')
     SIF_PATH = "--bind /projects /projects/b1139/images/dtk_run_rocky_py39.sif"
-    OpenMalaria_dir = "/projects/b1139/OpenMalaria/"
+    if om_version == 43:
+        OM_PATH = "/projects/b1139/OpenMalaria/"
+    elif om_version == 45:
+        OM_PATH = "/projects/b1139/OpenMalaria/om_v45/"
+    else:
+        raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 45')
     om_input_path = '/home/mrm9534/model-characterization/OpenMalaria/'
-elif hpc == 'SCICORE':
-    projdir = os.path.join('/projects/b1139/emod-om/')   ## TODO user specific
-    job_directory = os.path.join(projdir, 'experiments') 
-    SIF_PATH = "--bind /projects /projects/b1139/images/dtk_run_rocky_py39.sif"## TODO user specific
-    OpenMalaria_dir = "/projects/b1139/OpenMalaria/"
+elif hpc == 'SCICORE':  ## TODO update paths
+    projdir = os.path.join('/projects/b1139/emod-om/')
+    job_directory = os.path.join(projdir, 'experiments')
+    SIF_PATH = "--bind /projects /projects/b1139/images/dtk_run_rocky_py39.sif"
+    OM_PATH = "/projects/b1139/OpenMalaria/"
     om_input_path = ''
 else:
     job_directory = os.path.join(os.path.expanduser('~'), 'experiments/')
     SIF_PATH = ""
 
 os.makedirs(job_directory, exist_ok=True)
-
-
