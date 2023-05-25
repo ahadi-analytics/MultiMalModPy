@@ -111,37 +111,25 @@ exp.nexps = len(scen_df)  # * seeds ## not needed when included in sweep_list
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 
 
-def update_param_default(config):
-    config.parameters.x_Base_Population = pop_size / 1000
-    config.parameters.Birth_Rate_Dependence = 'FIXED_BIRTH_RATE'
-    config.parameters.Maternal_Antibodies_Type = 'CONSTANT_INITIAL_IMMUNITY'
-    config.parameters.Climate_Model = 'CLIMATE_CONSTANT'
-    # config.parameters.Report_Parasite_Smear_Sensitivity =  0.02
-    return config
-
-
-def update_param_climate(config):
-    seasonality_type = 'example'
-    config.parameters.Air_Temperature_Filename = os.path.join('climate',f'{seasonality_type}_air_temperature_daily.bin')
-    config.parameters.Land_Temperature_Filename = os.path.join('climate',f'{seasonality_type}_air_temperature_daily.bin')
-    config.parameters.Rainfall_Filename = os.path.join('climate',f'{seasonality_type}_rainfall_daily.bin')
-    config.parameters.Relative_Humidity_Filename = os.path.join('climate',f'{seasonality_type}_relative_humidity_daily.bin')
-    return config
-    
-
 def set_param_fn(config):
     """
     This function is a callback that is passed to emod-api.config to set config parameters, including the malaria defaults.
     """
     import emodpy_malaria.malaria_config as conf
     config = conf.set_team_defaults(config, manifest)
-    config = update_param_default(config)
+    config.parameters.x_Base_Population = pop_size / 1000
+    config.parameters.Birth_Rate_Dependence = 'FIXED_BIRTH_RATE'
+    config.parameters.Maternal_Antibodies_Type = 'CONSTANT_INITIAL_IMMUNITY'
     config.parameters.Simulation_Duration = sim_dur_years * 365
-    config = update_param_default(config)  ## see EMOD/utils.py
 
     if entomology_mode == 'dynamic':
         conf.add_species(config, manifest, ["gambiae"])  # , "arabiensis", "funestus"
-        config = update_param_climate(config) ## TO DO enable seasonality sweep via habitat multiplier
+        ## TO DO enable seasonality sweep via habitat multiplier
+        seasonality_type = 'example'
+        config.parameters.Air_Temperature_Filename = os.path.join('climate',f'{seasonality_type}_air_temperature_daily.bin')
+        config.parameters.Land_Temperature_Filename = os.path.join('climate',f'{seasonality_type}_air_temperature_daily.bin')
+        config.parameters.Rainfall_Filename = os.path.join('climate',f'{seasonality_type}_rainfall_daily.bin')
+        config.parameters.Relative_Humidity_Filename = os.path.join('climate',f'{seasonality_type}_relative_humidity_daily.bin')
 
     if emod_serialize:
         config.parameters.Serialized_Population_Writing_Type = "TIMESTEP"
