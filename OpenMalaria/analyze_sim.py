@@ -68,8 +68,8 @@ def survey_to_date(df, survey_step_days=30, start_year=0):
         df.loc[df['month'] == 0, 'month'] = 12
         df['year'] = (df['days'] / 365).apply(np.floor)
     elif survey_step_days == 365:
-        df['days'] = df['surveys'] * survey_step_days
-        df['year'] = (df['days'] / 365).apply(np.floor)
+        df['year'] = df['survey']
+        df['month'] = 12
     else:
         raise ValueError("survey_step_days must be 30 or 365")
 
@@ -92,22 +92,23 @@ def pivot_wider(df, index_cols=None, names_from=None, values_from=None):
     return wdf
 
 
-def InputEIRAnalyzer(exp, mm, start_year, compr='infer'):
+def InputEIRAnalyzer(exp, mm, start_year,survey_step_days=30,  compr='infer'):
     print(f"Running InputEIRAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
     df = to_df(exp)
     df = format_df(df)
     df.drop(df[df.ageGroup > 0].index, inplace=True)
-    df = survey_to_date(df, survey_step_days=30, start_year=start_year)
+    df = survey_to_date(df, survey_step_days=survey_step_days, start_year=start_year)
 
-    df['value'] = df['value'] * 6  # 30 days survey, 5 day timestep
-    df_mth = add_measure_names(df, mm)
-    df_mth = pivot_wider(df_mth, index_cols=['index', 'survey', 'year', 'month', 'ageGroup'])
-    df_mth = df_mth.merge(scen_df, on='index', how='inner')
-    df_mth = df_mth.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR'}, axis=1)
-    df_mth.to_csv((os.path.join(wdir, f'OM_EIR_mth.csv')), index=False, compression=compr)
+    df['value'] = df['value'] * (survey_step_days/ 5)
+    if survey_step_days==30:
+        df_mth = add_measure_names(df, mm)
+        df_mth = pivot_wider(df_mth, index_cols=['index', 'survey', 'year', 'month', 'ageGroup'])
+        df_mth = df_mth.merge(scen_df, on='index', how='inner')
+        df_mth = df_mth.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR'}, axis=1)
+        df_mth.to_csv((os.path.join(wdir, f'OM_EIR_mth.csv')), index=False, compression=compr)
 
-    # Aggregate the surveys
+    # Aggregate the surveys to years
     nyears = len(df['year'].unique())
     df_yr = df.groupby(['index', 'measure', 'ageGroup'], as_index=False).value.sum()
     df_yr['value'] = df_yr['value'] / nyears
@@ -156,9 +157,10 @@ def SurveyAllAgeAnalyzer(exp, mm, start_year=2020, survey_step_days=30, compr='i
 
     df0 = df.loc[df.ageGroup == 0]
     df0.drop(['ageGroup'], axis=1)
+    df0['value'] = df0['value']  * (survey_step_days/ 5)
+    
     df.drop(df[df.ageGroup == 0].index, inplace=True)
-    df['value'] = df['value'] * 6  # 30 days survey, 5 day timestep
-
+    
     # Sum the age groups
     df = df.groupby(['index', 'survey', 'measure'], as_index=False).value.sum()
 
@@ -368,7 +370,7 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     df3.to_csv((os.path.join(wdir, f'OM_surveyoutput_mth.csv')), index=False, compression=compr)
 
 
-def AnnualAgebinAnalyzer(exp, mm, start_year, compr='infer'):
+def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer'):
     print(f"Running AnnualAgebinAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
 
@@ -376,13 +378,22 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     df = format_df(df)
     df.drop(df[df.ageGroup == 0].index, inplace=True)
 
+    df = survey_to_date(df, survey_step_days=survey_step_days, start_year=start_year)
+    if survey_step_days ==30:
+        df = df.groupby(['index','ageGroup', 'year', 'measure'], as_index=False).value.sum()
+        df = df.loc[df['year']< np.max(df.year) ]
+    elif survey_step_days ==365:
+        df = df.groupby(['index','ageGroup', 'year', 'measure'], as_index=False).value.mean()
+    else: 
+        raise ValueError('survey_step_days must be 30 or 365')  
+        
     mm_df = pd.DataFrame.from_dict(mm, orient='index')
     mm_df['measure'] = mm_df.index
     mm_df['measure_name'] = mm_df[0]
     mm_df = mm_df[['measure', 'measure_name']]
 
     adf = df.merge(mm_df, on='measure', how='inner')
-    df1 = (adf.pivot_table(index=['index', 'survey', 'ageGroup'],
+    df1 = (adf.pivot_table(index=['index', 'year', 'ageGroup'],
                            columns=['measure_name'],
                            values=['value'],
                            aggfunc='first'))
@@ -398,7 +409,6 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     age_df = pd.DataFrame({'agebin_nr': df2['agebin_nr'].unique(), 'agebin': age_groups, 'ageGroup': age_group_labels})
 
     df3 = df2.merge(age_df, on='agebin_nr', how='inner')
-    df3 = survey_to_date(df3, survey_step_days=30, start_year=start_year)
 
     print(f'Saving OM_surveyoutput_yr to {wdir}')
     df3.to_csv((os.path.join(wdir, f'OM_surveyoutput_yr.csv')), index=False, compression=compr)
@@ -413,16 +423,20 @@ if __name__ == "__main__":
     start_year = exp.sim_start_year
     wdir = os.path.join(exp.sim_out_dir, 'om')
     create_sampleplots = True
-
-    # BaseAnalyzer(exp, mm)
-    SurveyAllAgeAnalyzer(exp, mm, start_year=start_year)
-    InputEIRAnalyzer(exp, mm, start_year=start_year)
     if exp.om_survey_step == '30d':
+        survey_steps =30
+    if exp.om_survey_step == '1y':
+        survey_steps =365
+    
+    # BaseAnalyzer(exp, mm)
+    SurveyAllAgeAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
+    InputEIRAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
+    if survey_steps == 30:
         MonthlyAgebinAnalyzer(exp, mm, start_year=start_year)
-        AnnualAgebinAnalyzer(exp, mm, start_year=start_year)
         MonthlyBenchmarkAnalyzer(exp, mmi, start_year=start_year)
-    BenchmarkAnalyzer(exp, mmi)
-
+        BenchmarkAnalyzer(exp, mmi)
+    AnnualAgebinAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
+    
     exp_tags = ['seed', 'eir', 'access', 'seasonality']  # FIXME dont hardcode
     channels_inset_chart = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
                             'nSevere', 'nSeq', 'nIndDeaths',
@@ -430,7 +444,8 @@ if __name__ == "__main__":
                             'expectedSevere']  # 'expectedIndirectDeaths',
 
     if create_sampleplots:
-        all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
+        all_age_sample_plot(wdir, exp_tags, channels_inset_chart, survey_steps=survey_steps)
         sample_plot_yr(wdir, exp_tags)
-        sample_plot_mth(wdir, exp_tags)
+        if survey_steps ==30:
+            sample_plot_mth(wdir, exp_tags)
         # eir_to_prevalence2to10(wdir= exp.sim_out_dir, emodom=['OpenMalaria'], sweepvar ='access')

@@ -45,7 +45,7 @@ class InsetChartAnalyzer(IAnalyzer):
         else:
             return datetime.datetime.strptime(str(x), '%j').month
 
-    def __init__(self, expt_name, sweep_variables=None, channels=None, working_dir=".", start_year=2022, burnin=None):
+    def __init__(self, expt_name, sweep_variables=None, channels=None, daily=False, working_dir=".", start_year=2022, burnin=None):
         super(InsetChartAnalyzer, self).__init__(working_dir=working_dir, filenames=["output/InsetChart.json"])
         self.sweep_variables = sweep_variables or ["Run_Number"]
         self.inset_channels = channels or ['Statistical Population', 'Births', 'Disease Deaths',
@@ -57,6 +57,7 @@ class InsetChartAnalyzer(IAnalyzer):
                                            'Infectious Vectors', 'Daily EIR']
         self.expt_name = expt_name
         self.start_year = start_year
+        self.daily = daily
         self.burnin = burnin
 
     def map(self, data, simulation: Simulation):
@@ -85,6 +86,20 @@ class InsetChartAnalyzer(IAnalyzer):
             selected = selected[selected['Year'] >= self.start_year + self.burnin]
 
         adf = pd.concat(selected).reset_index(drop=True)
+        adf = adf.rename(columns={'Daily Bites per Human': 'Bites per Human', 'Daily EIR': 'EIR'})
+        if self.daily:
+            adf.to_csv(os.path.join(self.working_dir, 'All_Age_InsetChart_daily.csv'), index=False)
+
+        adf['date'] = pd.to_datetime(adf['date'])
+        adf['date'] = adf['date'].dt.strftime('%b-%Y') 
+        sum_channels = ['Births', 'Disease Deaths', 'New Infections', 'Newly Symptomatic', 'New Clinical Cases',
+                         'New Severe Cases',  'Infectious Vectors', 'EIR']
+        mean_channels = ['Statistical Population', 'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
+                                           'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence',
+                                           'PfHRP2 Prevalence']
+        sdf = adf.groupby(['date'] + self.sweep_variables)[sum_channels].agg(np.sum).reset_index()
+        mdf = adf.groupby(['date'] + self.sweep_variables)[mean_channels].agg(np.mean).reset_index()
+        adf = pd.merge(left=sdf, right=mdf, on=(self.sweep_variables + ['date']))
         adf.to_csv(os.path.join(self.working_dir, 'All_Age_InsetChart.csv'), index=False)
 
 
@@ -534,7 +549,7 @@ if __name__ == "__main__":
     else:
         eirchannel = "EIR_scale_factor"
 
-    exp_tags = ['Run_Number',eirchannel, 'cm_clinical_U5'] #,'seasonality'
+    exp_tags = ['Run_Number',eirchannel,'seasonality', 'cm_clinical_U5'] #,'seasonality'
     start_year = exp.sim_start_year
     end_year = exp.end_year - 1
     monitoring_start = end_year - exp.monitoring_years
@@ -603,6 +618,11 @@ if __name__ == "__main__":
         manager.analyze()
 
         if testmode:
+            channels_inset_chart = ['Statistical Population', 'Births',  'New Infections', 'Newly Symptomatic', 
+                                  'New Clinical Cases', 'New Severe Cases',
+                                'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
+                                'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
+                                'Infectious Vectors', 'EIR']
             all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
             sample_plot_yr(wdir, exp_tags)
             sample_plot_mth(wdir, exp_tags)
