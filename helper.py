@@ -133,8 +133,8 @@ def write_txt(txtobj, path, fname):
     
 def submit_analyze_OpenMalaria(exp):
     header_post = shell_header_quest(job_name=f'analyze_exp', t='01:00:00')
-    pycommand = f'\ncd /home/mrm9534/model-characterization/' \
-                f'\npython OpenMalaria/analyze_sim.py --dir "{exp.job_directory}"'
+    pycommand = f'\ncd /home/mrm9534/model-characterization/OpenMalaria' \
+                f'\npython analyze_sim.py --dir "{exp.job_directory}"'
 
     script_path = os.path.join(exp.job_directory, f'run_analyzer_OpenMalaria.sh')
     file = open(script_path, 'w')
