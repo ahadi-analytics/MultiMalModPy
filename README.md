@@ -97,16 +97,22 @@ _Table: OpenMalaria functions_
   - simulation failed? check log/error files
 - ...
 
-## Installation
+## Installation 
 
+Note: On the NUcluster Quest OpenMalaria and EMOD are already installed and no installation needed. 
+Note: On the STPH cluster SciCore OpenMalaria is already installed and no installation needed. 
 
+If you need to installl below are the installation instructions: 
+
+<details><summary><span>Expand installation instructions</span></summary>
+<p>
+   
 [EMODpy installation IDM](https://docs.idmod.org/projects/emodpy/en/v1.19.0/installation.html).
 [EMODpy installation additions NU for NUCLUSTER](https://numalariamodeling.github.io/FE-2023-quarto-website/guides/install_guide.html).
 
 [OpenMalaria installation STPH](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria) 
 
-<details><summary><span>OpenMalaria venv on NUCLUSTER</span></summary>
-<p>
+
 
 NU IT research (Scott Coughlin) built a container and sent instructions which have been edited for completeness and are shown below:
 One can build the container on Quest using the remote Sylabs build environment
