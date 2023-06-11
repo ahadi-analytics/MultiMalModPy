@@ -217,14 +217,16 @@ def sweep_burnin_simulations(simulation, df, x: int, entomology_mode='dynamic'):
 
     if entomology_mode == 'dynamic':
         simulation.task.config.parameters.x_Temporary_Larval_Habitat = float(df["x_Temporary_Larval_Habitat"][x])
-        transm_spec = ['x_Temporary_Larval_Habitat', float(df["x_Temporary_Larval_Habitat"][x])]
+        transm_spec = ['x_Temporary_Larval_Habitat',
+                       float(df["x_Temporary_Larval_Habitat"][x])]  # FIXME, enable seasonality once calibrated
     else:
         update_eir_scale(simulation, float(df["EIR_scale_factor"][x]), float(df["seasonality"][x]))
-        transm_spec = ['EIR_scale_factor', float(df["EIR_scale_factor"][x])]  ## FIXME
+        transm_spec = ['EIR_scale_factor', float(df["EIR_scale_factor"][x])]
 
     return {
         "Serialized_Population_Path": os.path.join(df["serialized_file_path"][x], "output"),
         "Serialized_Population_Filenames": df["Serialized_Population_Filenames"][x],
+        "seasonality": df["seasonality"][x],
         "Run_Number": seed,
         transm_spec[0]: transm_spec[1]
     }
