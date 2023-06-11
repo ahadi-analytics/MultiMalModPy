@@ -31,11 +31,11 @@ def make_dirs(manifest, suite_name, exp_name):
     return job_directory, sim_out_dir
 
 
-def get_time_param(start_year, end_year, burnin, serialize):
+def get_time_param(start_year, end_year, burnin, emod_pickup):
     burnin_start_year = start_year - burnin
     monitoring_years = end_year - start_year
     
-    if serialize:
+    if not emod_pickup:
       sim_dur_years = end_year-burnin_start_year
       sim_start_year = burnin_start_year
     else:
@@ -210,10 +210,10 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
 def emodpy_module(location='NUCLUSTER'):
     if location == 'NUCLUSTER':
         emod_venv = '\n\nmodule purge all' \
-                    '\nsource activate /projects/b1139/environments/emodpy_alt\n'
+                    '\nsource /projects/b1139/environments/emodpy_alt/bin/activate\n'
     if location == 'SCICORE':
         emod_venv = '\n\nmodule purge all' \
-                    '\nsource activate /projects/b1139/environments/emodpy_alt\n'
+                    '\nsource activate /projects/b1139/environments/emodpy_alt\n' #TODO for scicore
     return emod_venv
 
 
@@ -225,7 +225,7 @@ def OM_module(location='NUCLUSTER', om_version=45):
             ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/om_v45/modules/ \nmodule load openmalaria\n'
         else:
             raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 45')
-    if location =='SCICORE':   ## FIXME
+    if location =='SCICORE':   ## TODO for scicore
         ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/modules/ \nmodule load openmalaria\n'
     return ommodule
 

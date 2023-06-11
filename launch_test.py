@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime as dt
 from functools import partial
 from emodpy.emod_task import EMODTask
 from idmtools.builders import SimulationBuilder
@@ -17,7 +18,7 @@ loaded_attr = set(dir())
 testmode = True
 emod_serialize = False
 emod_pickup = False
-entomology_mode = 'dynamic'  # dynamic, forced
+entomology_mode = 'forced'  # dynamic, forced  ## TODO enable dynamic seasonal EIR  once calibrated
 event_recorder = False
 
 om_scaffold = "R0000GA"  # build OpenMalaria XML schema- prerequisite
@@ -25,20 +26,20 @@ om_survey_step = '30d'
 
 """ Simulation population and seeds"""
 pop_size = 10000
-agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]
+agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  ## Note, keep these to ensure smooth postprocessing
 num_seeds = 3
 burnin = 80  # Note burnin handled differently in OpenMalaria and EMOD
 
 """ Model setup """
-models_to_run = ['EMOD']  ## 'EMOD','OpenMalaria'
+models_to_run = [ 'EMOD','OpenMalaria']  ## 'EMOD','OpenMalaria'
 SUITEname = f'{entomology_mode}EIR'  # Collection of simulations, needs to be the same for burnin and pickup simulations
-exp_name = f'climateData_noburnin'  # name of the experiment folder
+exp_name = f'sim_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'  # name of the experiment folder, 'test' automatically added if running in testmode'
 
 ## EMOD burnin
 if entomology_mode == 'forced':
-    emod_burnin_id = 'c32c30e5-d822-4854-8dd1-ba17f954a892'  ### forced EIR
+    emod_burnin_id = 'c32c30e5-d822-4854-8dd1-ba17f954a892'  ### forced EIR #TODO differet for SciCore and Quest, userspecific
 else:
-    emod_burnin_id = '1b5781b0-3d51-4d00-956b-c963fab53046'  ### dynamic EIR
+    emod_burnin_id = '1b5781b0-3d51-4d00-956b-c963fab53046'  ### dynamic EIR #TODO differet for SciCore and Quest, userspecific
 
 ## Name of parameters to vary
 sweep_list = ['eir', 'access', 'seasonality'] + ['seed']

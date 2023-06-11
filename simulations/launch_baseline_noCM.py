@@ -58,6 +58,7 @@ seed = list(range(num_seeds))  ## for scenarios csv
 
 if emod_serialize and 'EMOD' in models_to_run:
     print('Message: Running burnin for EMOD')
+    num_seeds = 1
     exp_name = f'{exp_name}_burnin{burnin}'
     emod_burnin_id = ''
     models_to_run = ['EMOD']
@@ -70,9 +71,11 @@ if not emod_pickup:
 start_year = 2000  # start of monitoring period
 end_year = 2020  # end of monitoring period
 sim_start_year, burnin_start_year, monitoring_years, sim_dur_years = get_time_param(start_year, end_year, burnin,
-                                                                                    emod_serialize)
+                                                                                    emod_pickup)
 
-#start_year = sim_start_year  # Start OpenMalaria Monitoring early
+#if start OpenMalaria Monitoring early
+#start_year = burnin_start_year  # Start OpenMalaria Monitoring early
+#monitoring_years = sim_dur_years  ## monitor all years
 
 
 
@@ -81,8 +84,8 @@ cm_start = 1  # [1]
 access = [0]  # 5-day probability  ## already converted
 
 """ TRANSMISSION, ENTOMOLOGY """
-seasonality = ["perennial"]  # , "seasonal"
-eir = [0.1, 1, 4, 16, 32, 124]
+seasonality = ["perennial","seasonal"]  # , "seasonal"
+eir = [0.1, 1, 4, 16, 64, 256, 1024]
 season_daily, season_month, seasonal, perennial = get_seasonal_eir()
 
 if entomology_mode == 'dynamic':
@@ -127,7 +130,7 @@ def set_config_parameters(config):
     """
     This function is a callback that is passed to emod-api.config to set config parameters, including the malaria defaults.
     """
-
+    
     config = malaria_config.set_team_defaults(config, manifest)
     config.parameters.x_Base_Population = pop_size / 1000
     config.parameters.Simulation_Duration = sim_dur_years * 365
