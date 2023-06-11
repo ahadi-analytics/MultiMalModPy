@@ -6,7 +6,6 @@ from idmtools.builders import SimulationBuilder
 from idmtools.core.platform_factory import Platform
 from idmtools.entities.experiment import Experiment
 from datetime import datetime as dt
-from idmtools.entities import Suite
 import emodpy_malaria.malaria_config as malaria_config
 
 sys.path.append('../')
@@ -34,10 +33,10 @@ num_seeds = 15
 burnin = 80
 
 """ Model setup """
-models_to_run = ['EMOD', 'OpenMalaria']  ## 'EMOD','OpenMalaria'
-suite = Suite(
-    name=f'{entomology_mode}EIR')  # Collection of simulations, needs to be the same for burnin and pickup simulations
-exp_name = f'withCM_fewEIR'  # name of the experiment folder
+models_to_run = ['EMOD','OpenMalaria']  ## 'EMOD','OpenMalaria'
+SUITEname = f'{entomology_mode}EIR' # Collection of simulations, needs to be the same for burnin and pickup simulations
+exp_name = f'baseline_allageCM20_EIRseason'  # name of the experiment folder
+
 
 ## EMOD burnin
 if entomology_mode == 'forced':
@@ -86,7 +85,7 @@ if entomology_mode == 'dynamic':
         'Dynamic EIR has not yet been aligned between EMOD and OpenMalaria, no dynamic seasonal EIR in EMOD yet')  # FIXME
 
 """ DIRECTORIES AND POSTPROCESSING """
-job_directory, sim_out_dir = make_dirs(manifest, suite.name, exp_name)
+job_directory, sim_out_dir = make_dirs(manifest, SUITEname, exp_name)
 emod_analyzer = ['analyze_sim.py']
 openmalaria_analyzer = ['analyze_sim.py']
 
@@ -237,16 +236,14 @@ def submit_create_run_EMOD(exp):
     every time we run an emod experiment.
     """
     selected_platform = exp.selected_platform
-    now_str = dt.now().strftime("%Y_%m_%d_%H_%M_%S")
-    suite.uid = suite.name
     exp_name = exp.exp_name
     emod_burnin_id = exp.emod_burnin_id
 
     # Set platform and associated values, such as the maximum number of jobs to run at one time
-    platform = Platform(selected_platform, job_directory=os.path.join(manifest.job_directory),
-                        mem_per_cpu=8048, partition='normal', time='10:00:00', account='p30781',
-                        modules=['singularity'],
-                        max_running_jobs=800)  # SUITEname,mem_per_cpu= 2048, per default
+    platform = Platform(selected_platform, job_directory=os.path.join(manifest.job_directory,SUITEname),
+                        mem_per_cpu = 8048 , partition='normal', time='10:00:00', account='p30781', modules=['singularity'],
+                        max_running_jobs=800)  # mem_per_cpu= 2048, per default
+
 
     # create EMODTask
     print("Creating EMODTask (from files)...")
@@ -295,8 +292,6 @@ def submit_create_run_EMOD(exp):
     # Create experiment from builder and run
     # experiment = Experiment.from_task(task, name=exp_name)
     experiment = Experiment.from_builder(builder, task, name=exp_name)
-    # experiment.uid = f'{exp_name}_{now_str}'
-    suite.add_experiment(experiment)
     experiment.run(wait_until_done=False, platform=platform)
 
     # Additional step to schedule analyzer

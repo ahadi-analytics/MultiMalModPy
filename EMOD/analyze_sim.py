@@ -565,7 +565,7 @@ if __name__ == "__main__":
     ## FIXME best location of output files    
     wdir = os.path.join(exp.sim_out_dir, 'em')
 
-    with Platform('SLURM_LOCAL', job_directory=manifest.job_directory) as platform:
+    with Platform('SLURM_LOCAL', job_directory=os.path.join(manifest.job_directory, exp.SUITEname)) as platform:
 
         all_age_analyzer = [InsetChartAnalyzer(expt_name=exp_name,
                                                channels=channels_inset_chart,

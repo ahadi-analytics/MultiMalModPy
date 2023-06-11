@@ -5,7 +5,6 @@ from idmtools.builders import SimulationBuilder
 from idmtools.core.platform_factory import Platform
 from idmtools.entities.experiment import Experiment
 from datetime import datetime as dt
-from idmtools.entities import Suite
 import emodpy_malaria.malaria_config as malaria_config
 import manifest
 from EMOD.scaffolds.forcedEIR import *
@@ -32,8 +31,7 @@ burnin = 80  # Note burnin handled differently in OpenMalaria and EMOD
 
 """ Model setup """
 models_to_run = ['EMOD']  ## 'EMOD','OpenMalaria'
-suite = Suite(
-    name=f'explore_{entomology_mode}EIR')  # Collection of simulations, needs to be the same for burnin and pickup simulations
+SUITEname = f'{entomology_mode}EIR'  # Collection of simulations, needs to be the same for burnin and pickup simulations
 exp_name = f'climateData_noburnin'  # name of the experiment folder
 
 ## EMOD burnin
@@ -66,7 +64,11 @@ if not emod_pickup:
 start_year = 2000  # start of monitoring period
 end_year = 2020  # end of monitoring period
 sim_start_year, burnin_start_year, monitoring_years, sim_dur_years = get_time_param(start_year, end_year, burnin,
-                                                                                    emod_serialize)
+                                                                                    emod_pickup)
+
+#if start OpenMalaria Monitoring early
+#start_year = burnin_start_year  # Start OpenMalaria Monitoring early
+#monitoring_years = sim_dur_years  ## monitor all years
 
 """ INTERVENTIONS """
 cm_start = 1  # [1]
@@ -83,7 +85,7 @@ if entomology_mode == 'dynamic':
         'Dynamic EIR has not yet been aligned between EMOD and OpenMalaria, no dynamic seasonal EIR in EMOD yet')  # FIXME
 
 """ DIRECTORIES AND POSTPROCESSING """
-job_directory, sim_out_dir = make_dirs(manifest, suite.name, exp_name)
+job_directory, sim_out_dir = make_dirs(manifest, SUITEname, exp_name)
 emod_analyzer = ['analyze_sim.py']
 openmalaria_analyzer = ['analyze_sim.py']
 
@@ -233,13 +235,11 @@ def submit_create_run_EMOD(exp):
     every time we run an emod experiment.
     """
     selected_platform = exp.selected_platform
-    now_str = dt.now().strftime("%Y_%m_%d_%H_%M_%S")
-    suite.uid = suite.name
     exp_name = exp.exp_name
     emod_burnin_id = exp.emod_burnin_id
 
     # Set platform and associated values, such as the maximum number of jobs to run at one time
-    platform = Platform(selected_platform, job_directory=os.path.join(manifest.job_directory),
+    platform = Platform(selected_platform, job_directory=os.path.join(manifest.job_directory, SUITEname),
                         mem_per_cpu=8048, partition='normal', time='10:00:00', account='p30781',
                         modules=['singularity'], max_running_jobs=500)  # mem_per_cpu default: 2048
 
@@ -290,8 +290,6 @@ def submit_create_run_EMOD(exp):
     # Create experiment from builder and run
     # experiment = Experiment.from_task(task, name=exp_name)
     experiment = Experiment.from_builder(builder, task, name=exp_name)
-    # experiment.uid = f'{exp_name}_{now_str}'
-    suite.add_experiment(experiment)
     experiment.run(wait_until_done=False, platform=platform)
 
     # Additional step to schedule analyzer
