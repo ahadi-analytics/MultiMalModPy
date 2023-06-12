@@ -20,10 +20,10 @@ def parse_args():
 
 
 def make_dirs(manifest, suite_name, exp_name):
-    job_directory = os.path.join(manifest.projdir, 'experiments', suite_name,  exp_name) 
+    job_directory = os.path.join(manifest.projdir, 'experiments', suite_name, exp_name)
     sim_out_dir = os.path.join(manifest.projdir, 'simulation_outputs', suite_name, exp_name)
     os.makedirs(os.path.relpath(job_directory), exist_ok=True)
-    os.makedirs(os.path.join(job_directory,'log'), exist_ok=True)
+    os.makedirs(os.path.join(job_directory, 'log'), exist_ok=True)
     os.makedirs(os.path.relpath(sim_out_dir), exist_ok=True)
     os.makedirs(os.path.join(sim_out_dir, 'em'), exist_ok=True)
     os.makedirs(os.path.join(sim_out_dir, 'om'), exist_ok=True)
@@ -97,9 +97,11 @@ def generate_scenario_list(o_emod):
     df = df.rename(columns={'index': 'scen_num'})
     return df
 
+
 def exec(command):
     return subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
                             universal_newlines=True, text=True)
+
 
 ###---------------------------------
 
@@ -133,8 +135,8 @@ def write_txt(txtobj, path, fname):
     file = open(os.path.join(path, fname), 'w')
     file.write(txtobj)
     file.close()
-    
-    
+
+
 def submit_analyze_OpenMalaria(exp):
     header_post = shell_header_quest(job_name=f'analyze_exp', t='01:00:00')
     pycommand = f'\ncd /home/mrm9534/model-characterization/OpenMalaria' \
@@ -156,17 +158,17 @@ def submit_analyze_OpenMalaria(exp):
     print(f'Submitted OpenMalaria analyzer - job id: {slurm_job_id}')
     write_txt(slurm_job_id, exp.job_directory, 'job_id_OManalyze.txt')
 
-    
-    
+
 def submit_analyze_EMOD(experiment, platform):
     wdir = os.path.abspath(os.path.dirname(__file__))
     ## Write bash file to submit
     header_post = shell_header_quest(job_name=f'analyze_exp', t='01:00:00')
     emodpy_venv = emodpy_module(experiment.hpc)
     ### pycommand(s) - additional python or R scripts to directly run after analyzer can be added below
-    pycommand = '\n'.join([ f'\npython {scr} -d {experiment.job_directory} -i {experiment.id}' for scr in experiment.analyzer])
+    pycommand = '\n'.join(
+        [f'\npython {scr} -d {experiment.job_directory} -i {experiment.id}' for scr in experiment.analyzer])
 
-    script_path = os.path.join(experiment.job_directory, f'run_analyzer_EMOD.sh') 
+    script_path = os.path.join(experiment.job_directory, f'run_analyzer_EMOD.sh')
     file = open(script_path, 'w')
     file.write(header_post + emodpy_venv + f'\ncd {wdir}/EMOD' + pycommand)
     file.close()
@@ -180,11 +182,11 @@ def submit_analyze_EMOD(experiment, platform):
     print(f'Submitted EMOD analyzer - job id: {slurm_job_id}')
 
     ### Write out slurn job-ids
-    write_txt(job_id,experiment.job_directory, 'job_id_EMODsim.txt')
-    write_txt(experiment.id,experiment.job_directory, 'exp_id_EMODsim.txt')
-    write_txt(slurm_job_id,experiment.job_directory, 'job_id_EMODanalyze.txt')
+    write_txt(job_id, experiment.job_directory, 'job_id_EMODsim.txt')
+    write_txt(experiment.id, experiment.job_directory, 'exp_id_EMODsim.txt')
+    write_txt(slurm_job_id, experiment.job_directory, 'job_id_EMODanalyze.txt')
     if experiment.emod_serialize:
-      write_txt(job_id,experiment.job_directory, 'job_id_burnin.txt')
+        write_txt(job_id, experiment.job_directory, 'job_id_burnin.txt')
 
 
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh', job_id=None):
@@ -194,55 +196,55 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     emodpy_venv = emodpy_module(exp.hpc)
     pycommand = f'\npython {pyscript} -d {exp.job_directory}'
     script_path = os.path.join(exp.job_directory, shname)
-    
+
     file = open(script_path, 'w')
     file.write(header_post + emodpy_venv + f'\ncd {wdir}' + pycommand)
     file.close()
-    
+
     if isinstance(job_id, str):
-      job_id = open(os.path.join(exp.job_directory,F'{job_id}.txt')).read().strip()  
+        job_id = open(os.path.join(exp.job_directory, F'{job_id}.txt')).read().strip()
     if not isinstance(job_id, str):
-      p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path], stdout=subprocess.PIPE,
-                         cwd=str(exp.job_directory))
+        p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path],
+                           stdout=subprocess.PIPE,
+                           cwd=str(exp.job_directory))
     else:
-      p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))    
-        
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0] 
-    print(f'Submitted {shname} to run {pyscript} - job id: {slurm_job_id}') 
-    
-    
+        p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
+
+    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
+    print(f'Submitted {shname} to run {pyscript} - job id: {slurm_job_id}')
+
+
 def emodpy_module(location='NUCLUSTER'):
     if location == 'NUCLUSTER':
         emod_venv = '\n\nmodule purge all' \
                     '\nsource /projects/b1139/environments/emodpy_alt/bin/activate\n'
     if location == 'SCICORE':
         emod_venv = '\n\nmodule purge all' \
-                    '\nsource activate /projects/b1139/environments/emodpy_alt\n' #TODO for scicore
+                    '\nsource activate /projects/b1139/environments/emodpy_alt\n'  # TODO for scicore
     return emod_venv
 
 
 def OM_module(location='NUCLUSTER', om_version=45):
-    if location =='NUCLUSTER':
+    if location == 'NUCLUSTER':
         if om_version == 43:
             ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/modules/ \nmodule load openmalaria\n'
         elif om_version == 45:
             ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/om_v45/modules/ \nmodule load openmalaria\n'
         else:
             raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 45')
-    if location =='SCICORE':   ## TODO for scicore
+    if location == 'SCICORE':  ## TODO for scicore
         ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/modules/ \nmodule load openmalaria\n'
     return ommodule
 
 
 def combine_emodom_results(sim_out_dir):
-  df_em =  pd.read_csv(os.path.join(sim_out_dir,'em', 'OM_benchmark.csv'))
-  df_om =  pd.read_csv(os.path.join(sim_out_dir,'om', 'EMOD_benchmark.csv'))
-  
-  df_em['emodom']= 'EMOD'
-  df_om['emodom']= 'OpenMalaria'
-  df = df_em.append(df_om)
-  df.to_csv((os.path.join(sim_out_dir,'comb',f'benchmark.csv')),  index=False)
-  
+    df_em = pd.read_csv(os.path.join(sim_out_dir, 'em', 'OM_benchmark.csv'))
+    df_om = pd.read_csv(os.path.join(sim_out_dir, 'om', 'EMOD_benchmark.csv'))
+
+    df_em['emodom'] = 'EMOD'
+    df_om['emodom'] = 'OpenMalaria'
+    df = df_em.append(df_om)
+    df.to_csv((os.path.join(sim_out_dir, 'comb', f'benchmark.csv')), index=False)
 
 
 def str_to_digit(x):
@@ -262,5 +264,3 @@ def pretty_legend(fig, ltitle, r_adj=0.80, round_values=False):
     fig.legend(by_label.values(), by_label.keys(), loc=7, title=ltitle[:20])
     fig.tight_layout()
     return fig.subplots_adjust(right=r_adj)
-
-
