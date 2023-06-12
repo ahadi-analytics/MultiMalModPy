@@ -1,12 +1,13 @@
 # Characterization and comparison of EMOD and OpenMalaria
 
-_Model features and simulated transmission and disease dynamics_
+_Disclaimer: This repository and the framework used are under active development. If encountering any bugs, please create an issue._
 
 
-## Project goal
-To characterize the basic transmission and disease dynamics of malaria simulated using EMOD and OpenMalaria.
+## Purpose
+To characterize the basic transmission and disease dynamics of malaria simulated using EMOD and OpenMalaria
+using a simple python framework and allow flexible user-specific plotting.
 
-Objectives:
+**Objectives:**
 1) Model characterization - basic transmission and disease dynamics:
    - Explore and describe basic transmission and disease dynamics
 2) Model behaviour - effects of pertubation of the system: 
@@ -16,13 +17,88 @@ Objectives:
 
 _View project progress [here](https://github.com/numalariamodeling/model-characterization/issues#workspaces/emodopenmalaria-643ac4533584b28586ce8b39/roadmap)._
 
+
+## Running a simulation
+
+- In terminal navigate to repository  `cd ~/model-characterization`
+- Run python script that defines the simulation `python launch_test.py`
+- Check simulations via `squeue -u <username>`
+- Wait for simulations to finish and process results as necessary for project
+- If you need to resubmit the `analyze_sim.py` script, it can be found in `experiments/<suite>/<exp_name>`
+  - ```
+    cd /home/mrm9534/model-characterization/EMOD  
+    python analyze_sim.py -d /projects/b1139/emod-om/experiments/forcedEIR/baseline_noCM_EIRseason -i fb508aba-2aa7-43b3-b365-ea7c227d7781  
+    ``` 
+
+
+### Folder structure and outputs
+- **.../experiments/**
+  - **SUITEname/** (i.e. `forcedEIR`)
+    - **<exp_id/>** (EMOD only, idmtools generated foldername for **EMOD simulations**: SUITE id  i.e. `0a151277-ea2a-4e3e-b621-3f586d2790aa`)
+    - <exp_name/> (i.e. `testsim_v0`, folder including scenarios.csv, shell submission scripts, config files and OpenMalaria experiments)
+
+![experiment config folder](https://github.com/numalariamodeling/model-characterization/blob/main/static/20230611_b1139.png)
+
+
+- **.../simulation_outputs/**  
+  - **comb/**
+    - any combined dataframe or generated figures can be stored here
+  - **em/** :  
+    - PfPR_ClinicalIncidence_yr.csv
+    - EMOD_benchmark.csv  
+    - EMOD_benchmark_yr.csv
+    - ...
+  - **om/** :
+    - All_Age_InsetChart.csv
+    - OM_benchmark.csv
+    - OM_benchmark_mth.csv
+    - OM_EIR.csv
+    - OM_EIR_mth.csv
+    - OM_surveyoutput_mth.csv
+    - OM_surveyoutput_yr.csv
+    - ...
+    - **Figures**
+      - InsetChart.png  
+      - PfPR_ClinicalIncidence_yr_agebin5.png  
+  - `exp.obj`
+  - `scenarios.csv`
+
+### Troubleshooting
+- No results in simulation outputs
+  - did the analyzer run, try rerunning?
+  - simulation failed? check log/error files
+  - ...
+
+
+
 ## Simulation framework
 
-Conceptually:
-![Schematic of simulation analysis worklfow](https://github.com/numalariamodeling/model-characterization/blob/main/static/flowchart.png)
-
 Implementation in this repository:
+**Option 1 (default for testing)**
+- single `launch` python script to launch the simulation experiment with parameters defined directly in the file
+- helper functions for EMOD and OpenMalaria, stored in 'utils.py' in model specific subfolders are sourced in the  `launch` python script 
+- The postprocessing via analyzers has the same structure, with analyzer files of the same name located in the model subfolders.
+- Example: directory `simulations`
+- 
+**Option 2 (alternative project specific modification)**
+- Have project specific `utils` and `analyzer` scripts within project folder and have them named differently for EMOD and OpenMalaria (i.e.  `utils_om.py / utils_om.py` and `analyzer_em.py / analyzer_em.py `.
+- This approach allows more flexible editing, i.e. when using project specific or experiment specific parameter definitions and analyzer 
+files that are not integrated into the default scripts, or would change too much.
+- Example: directory `sim_popsize`
+
+
 ![Simulation framework](https://github.com/numalariamodeling/model-characterization/blob/main/static/emod-om-framework.png)
+
+
+<details><summary><span>Expand to view conceptual figure</span></summary>
+<p>
+
+![Schematic of simulation analysis worklfow](https://github.com/numalariamodeling/model-characterization/blob/main/static/flowchart.png)
+</p>
+</details>
+
+
+
 
 <details><summary><span>List of functions</span></summary>
 <p>
@@ -84,18 +160,6 @@ _Table: OpenMalaria functions_
 </details>
 
 
-## Running a simulation
-- In terminal navigate to repository  `cd ~/model-characterization`
-- Run python script that defines the simulation `python launch_test.py`
-- Check simulations via `squeue -u <username>`
-- Wait for simulations to finish and process results as necessary for project
-- If you need to resubmit the `analyze_sim.py` script, it can be found in `experiments/<suite>/<exp_name>`
-
-### Troubleshooting
-- No results in simulation outputs
-  - did the analyzer run, try rerunning?
-  - simulation failed? check log/error files
-- ...
 
 ## Installation 
 
@@ -221,3 +285,21 @@ Table 1: Overview of model software and infrastructure
 </p>
 </details>
 
+
+
+## Change log
+
+- March 2023 - June 2023: initial python framework with CM only and forced EIR
+- March 2023: Repository created as successor of SwissTPH "MC benchmarking" framework in R
+- 
+Next:
+- calibrate dynamic EIR
+- add SMC
+- add/ improve error capturing and documentation
+- add automatic cleanup options
+- improve handling of SUITEnames and folder structure
+- fix hardcoded age groups, allow flexible age groups (error in OpenMalaria postprocessing)
+- sweep variables to be flexible in simulation script and analyzer
+
+
+See all issues here:  [/model-characterization/issues](https://github.com/numalariamodeling/model-characterization/issues#workspaces/emodopenmalaria-643ac4533584b28586ce8b39/roadmap)

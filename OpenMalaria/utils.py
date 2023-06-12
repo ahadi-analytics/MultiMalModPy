@@ -10,7 +10,7 @@ def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMala
     ### Fixed parameters
     xml = xml.replace(f"@version@", f"{exp.om_version}")
     xml = xml.replace(f"@pop_size@", f"{exp.pop_size}")
-    xml = xml.replace(f"@burnin_start_year@", f"{exp.burnin_start_year}")
+    xml = xml.replace(f"@burnin_start_year@", f"{exp.sim_start_year_om}")
     xml = xml.replace(f"@start_year@", f"{exp.start_year}")
     xml = xml.replace(f"@end_year@", f"{exp.end_year}")
     xml = xml.replace(f"@survey_step@", f"{exp.om_survey_step}")

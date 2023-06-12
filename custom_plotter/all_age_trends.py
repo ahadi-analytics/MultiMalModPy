@@ -121,12 +121,12 @@ if __name__ == "__main__":
     exp_tags_em = [eirchannel, 'cm_clinical_U5', 'seasonality']
     exp_tags_om = ['eir', 'access', 'seasonality']
 
-    channels_inset_chart_em = ['Statistical Population', 'New Infections',  'True Prevalence', 'Blood Smear Parasite Prevalence',
+    channels_em = ['Statistical Population', 'New Infections',  'True Prevalence', 'Blood Smear Parasite Prevalence',
                                'New Clinical Cases', 'New Severe Cases']
 
-    channels_inset_om = ['nHost', 'nInfect',  'totalPatentInf','nPatent', 'nUncomp', 'nSevere']
+    channels_om = ['nHost', 'nInfect',  'totalPatentInf','nPatent', 'nUncomp', 'nSevere']
 
-    channels = {'EMOD': channels_inset_chart_em, 'OpenMalaria': channels_inset_om}
+    channels = {'EMOD': channels_em, 'OpenMalaria': channels_om}
     exp_tags = {'EMOD': exp_tags_em, 'OpenMalaria': exp_tags_om}
 
     all_age_sample_plot(wdir, exp_tags, channels, seasonality='perennial')

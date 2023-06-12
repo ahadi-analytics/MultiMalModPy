@@ -1,11 +1,11 @@
 import logging
+from datetime import datetime as dt
 from functools import partial
 from emodpy.emod_task import EMODTask
 from idmtools.builders import SimulationBuilder
 from idmtools.core.platform_factory import Platform
 from idmtools.entities.experiment import Experiment
 from datetime import datetime as dt
-from idmtools.entities import Suite
 import emodpy_malaria.malaria_config as malaria_config
 import manifest
 from EMOD.scaffolds.forcedEIR import *
@@ -18,7 +18,7 @@ loaded_attr = set(dir())
 testmode = True
 emod_serialize = False
 emod_pickup = False
-entomology_mode = 'dynamic'  # dynamic, forced
+entomology_mode = 'forced'  # dynamic, forced  ## TODO enable dynamic seasonal EIR  once calibrated
 event_recorder = False
 
 om_scaffold = "R0000GA"  # build OpenMalaria XML schema- prerequisite
@@ -26,21 +26,23 @@ om_survey_step = '30d'
 
 """ Simulation population and seeds"""
 pop_size = 10000
-agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]
+agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  ## Note, keep these to ensure smooth postprocessing
 num_seeds = 3
-burnin = 80  # Note burnin handled differently in OpenMalaria and EMOD
+start_year = 2000  # start of pickup and monitoring period (sim_start_year for EMOD automatically set given burnin and serialization flags)
+end_year = 2020  # end of pickup and monitoring period
+burnin = 80 # Duration of burnin (pre-monitoring) period
+
 
 """ Model setup """
-models_to_run = ['EMOD']  ## 'EMOD','OpenMalaria'
-suite = Suite(
-    name=f'explore_{entomology_mode}EIR')  # Collection of simulations, needs to be the same for burnin and pickup simulations
-exp_name = f'climateData_noburnin'  # name of the experiment folder
+models_to_run = [ 'EMOD','OpenMalaria']  ## 'EMOD','OpenMalaria'
+SUITEname = f'{entomology_mode}EIR'  # Collection of simulations, needs to be the same for burnin and pickup simulations
+exp_name = f'sim_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'  # name of the experiment folder, 'test' automatically added if running in testmode'
 
 ## EMOD burnin
 if entomology_mode == 'forced':
-    emod_burnin_id = 'c32c30e5-d822-4854-8dd1-ba17f954a892'  ### forced EIR
+    emod_burnin_id = 'c32c30e5-d822-4854-8dd1-ba17f954a892'  ### forced EIR #TODO differet for SciCore and Quest, userspecific
 else:
-    emod_burnin_id = '1b5781b0-3d51-4d00-956b-c963fab53046'  ### dynamic EIR
+    emod_burnin_id = '1b5781b0-3d51-4d00-956b-c963fab53046'  ### dynamic EIR #TODO differet for SciCore and Quest, userspecific
 
 ## Name of parameters to vary
 sweep_list = ['eir', 'access', 'seasonality'] + ['seed']
@@ -57,16 +59,14 @@ if emod_serialize and 'EMOD' in models_to_run:
     print('Message: Running burnin for EMOD')
     exp_name = f'{exp_name}_burnin{burnin}'
     emod_burnin_id = ''
-    models_to_run = ['EMOD']
+    models_to_run = ['EMOD']  ## run burnin only for EMOD, pickup for both models
     sweep_list = ['eir', 'access', 'seasonality', 'seed']
 if not emod_pickup:
     emod_burnin_id = None
 
 """ SIMULATION TIME """
-start_year = 2000  # start of monitoring period
-end_year = 2020  # end of monitoring period
-sim_start_year, burnin_start_year, monitoring_years, sim_dur_years = get_time_param(start_year, end_year, burnin,
-                                                                                    emod_serialize)
+sim_start_year_em, monitoring_years,  sim_dur_years = get_emod_time_param(start_year, end_year, burnin, emod_serialize,emod_pickup)
+sim_start_year_om = start_year - burnin
 
 """ INTERVENTIONS """
 cm_start = 1  # [1]
@@ -83,7 +83,7 @@ if entomology_mode == 'dynamic':
         'Dynamic EIR has not yet been aligned between EMOD and OpenMalaria, no dynamic seasonal EIR in EMOD yet')  # FIXME
 
 """ DIRECTORIES AND POSTPROCESSING """
-job_directory, sim_out_dir = make_dirs(manifest, suite.name, exp_name)
+job_directory, sim_out_dir = make_dirs(manifest, SUITEname, exp_name)
 emod_analyzer = ['analyze_sim.py']
 openmalaria_analyzer = ['analyze_sim.py']
 
@@ -214,14 +214,16 @@ def sweep_burnin_simulations(simulation, df, x: int, entomology_mode='dynamic'):
 
     if entomology_mode == 'dynamic':
         simulation.task.config.parameters.x_Temporary_Larval_Habitat = float(df["x_Temporary_Larval_Habitat"][x])
-        transm_spec = ['x_Temporary_Larval_Habitat', float(df["x_Temporary_Larval_Habitat"][x])]
+        transm_spec = ['x_Temporary_Larval_Habitat',
+                       float(df["x_Temporary_Larval_Habitat"][x])]  # FIXME, enable seasonality once calibrated
     else:
         update_eir_scale(simulation, float(df["EIR_scale_factor"][x]), float(df["seasonality"][x]))
-        transm_spec = ['EIR_scale_factor', float(df["EIR_scale_factor"][x])]  ## FIXME
+        transm_spec = ['EIR_scale_factor', float(df["EIR_scale_factor"][x])]
 
     return {
         "Serialized_Population_Path": os.path.join(df["serialized_file_path"][x], "output"),
         "Serialized_Population_Filenames": df["Serialized_Population_Filenames"][x],
+        "seasonality": df["seasonality"][x],
         "Run_Number": seed,
         transm_spec[0]: transm_spec[1]
     }
@@ -233,13 +235,11 @@ def submit_create_run_EMOD(exp):
     every time we run an emod experiment.
     """
     selected_platform = exp.selected_platform
-    now_str = dt.now().strftime("%Y_%m_%d_%H_%M_%S")
-    suite.uid = suite.name
     exp_name = exp.exp_name
     emod_burnin_id = exp.emod_burnin_id
 
     # Set platform and associated values, such as the maximum number of jobs to run at one time
-    platform = Platform(selected_platform, job_directory=os.path.join(manifest.job_directory),
+    platform = Platform(selected_platform, job_directory=os.path.join(manifest.job_directory, SUITEname),
                         mem_per_cpu=8048, partition='normal', time='10:00:00', account='p30781',
                         modules=['singularity'], max_running_jobs=500)  # mem_per_cpu default: 2048
 
@@ -283,15 +283,13 @@ def submit_create_run_EMOD(exp):
                                                              EIR_scale_factor=eir,
                                                              season=seasonality))
 
-    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year, num_year=sim_dur_years)
+    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
     if not emod_serialize:
-        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year, num_year=sim_dur_years)
+        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
 
     # Create experiment from builder and run
     # experiment = Experiment.from_task(task, name=exp_name)
     experiment = Experiment.from_builder(builder, task, name=exp_name)
-    # experiment.uid = f'{exp_name}_{now_str}'
-    suite.add_experiment(experiment)
     experiment.run(wait_until_done=False, platform=platform)
 
     # Additional step to schedule analyzer
@@ -299,7 +297,7 @@ def submit_create_run_EMOD(exp):
     experiment.analyzer = exp.emod_analyzer
     experiment.job_directory = exp.job_directory
     experiment.emod_serialize = exp.emod_serialize
-    experiment.start_end = [sim_start_year, sim_start_year + sim_dur_years - 1]
+    experiment.start_end = [sim_start_year_em, sim_start_year_em + sim_dur_years - 1]
     submit_analyze_EMOD(experiment, platform)
 
     print(f"Experiment submission {experiment.uid} succeeded.")
