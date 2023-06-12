@@ -31,21 +31,40 @@ def make_dirs(manifest, suite_name, exp_name):
     return job_directory, sim_out_dir
 
 
-def get_time_param(start_year, end_year, burnin, emod_serialize=False, emod_pickup=False):
+def get_emod_time_param(start_year, end_year, burnin, emod_serialize=False, emod_pickup=False):
+    """
+    :param start_year: Monitoring start (required OpenMalaria utils)
+    :param end_year:  Monitoring and simulation end (required OpenMalaria utils)
+    :param burnin: Duration of pre-monitoring years to run
+    :param emod_serialize: Whether to serialize simulation (if running burnin in EMOD)
+    :param emod_pickup: Whether pick up serialized simulation (if having run a burnin in EMOD to pick up from)
+    :return:
+        sim_start_year: Simulation start year
+        monitoring_years: Number of years to monitor (requried in EMOD analyzer)
+        sim_dur_years: Total simulation duration years
+    """
+
     burnin_start_year = start_year - burnin
     monitoring_years = end_year - start_year
 
-    if not emod_pickup and not emod_serialize:  ## run burnin + pickup time together
+    if not emod_pickup and not emod_serialize:
+        print("Running EMOD burnin + pickup time in one simulations")
         sim_dur_years = end_year - burnin_start_year
         sim_start_year = burnin_start_year
-    elif not emod_pickup and emod_serialize:  ## run only burnin
+    elif not emod_pickup and emod_serialize:
+        print("Running EMOD burnin")
         sim_dur_years = burnin
         sim_start_year = burnin_start_year
-    else:                                      ## run only pickup
+    elif emod_pickup and not emod_serialize:
+        print("Running emod_pickup")
+        sim_dur_years = end_year - start_year
+        sim_start_year = start_year
+    else:
+        print("Running emod_pickup and serializing simulation")
         sim_dur_years = end_year - start_year
         sim_start_year = start_year
 
-    return sim_start_year, burnin_start_year, monitoring_years, sim_dur_years
+    return sim_start_year, monitoring_years, sim_dur_years
 
 
 def save_exp_scen(exp, scen_df, save_dirs):

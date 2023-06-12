@@ -15,7 +15,6 @@ from EMOD.scaffolds.interventions import treatment_camp
 from EMOD.utils import *
 from helper import *
 
-
 log = logging.getLogger(__name__)
 loaded_attr = set(dir())
 testmode = False
@@ -31,20 +30,20 @@ om_survey_step = '1y'  # 30d
 pop_size = 10000
 agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]
 num_seeds = 15
-start_year = 2000  # start of monitoring period
-end_year = 2020  # end of monitoring period
-burnin = 80  
+start_year = 2000  # start of pickup and monitoring period (sim_start_year for EMOD automatically set given burnin and serialization flags)
+end_year = 2020  # end of pickup and monitoring period
+burnin = 80 # Duration of burnin (pre-monitoring) period
 
 """ Model setup """
-models_to_run = ['EMOD','OpenMalaria']  ## 'EMOD','OpenMalaria'
-SUITEname = f'{entomology_mode}EIR' # Collection of simulations, needs to be the same for burnin and pickup simulations
+models_to_run = ['EMOD', 'OpenMalaria']  ## 'EMOD','OpenMalaria'
+SUITEname = f'{entomology_mode}EIR'  # Collection of simulations, needs to be the same for burnin and pickup simulations
 exp_name = f'baseline_noCM_EIRseason'  # name of the experiment folder
 
 ## EMOD burnin
 if entomology_mode == 'forced':
-    emod_burnin_id = '71322fa4-847e-49d2-8ed8-ea10fe467051'  
+    emod_burnin_id = '71322fa4-847e-49d2-8ed8-ea10fe467051'
 else:
-    emod_burnin_id = ''  
+    emod_burnin_id = ''
 
 ## Name of parameters to vary
 sweep_list = ['eir', 'access', 'seasonality'] + ['seed']
@@ -57,7 +56,6 @@ if testmode:
 
 seed = list(range(num_seeds))  ## for scenarios csv
 
-
 if emod_serialize and 'EMOD' in models_to_run:
     print('Message: Running burnin for EMOD')
     num_seeds = 1
@@ -68,23 +66,16 @@ if emod_serialize and 'EMOD' in models_to_run:
 if not emod_pickup:
     emod_burnin_id = None
 
-
 """ SIMULATION TIME """
-sim_start_year, burnin_start_year, monitoring_years, sim_dur_years = get_time_param(start_year, end_year, burnin,
-                                                                                   emod_serialize, emod_pickup)
-
-#if start OpenMalaria Monitoring early
-#start_year = burnin_start_year  # Start OpenMalaria Monitoring early
-#monitoring_years = sim_dur_years  ## monitor all years
-
-
+sim_start_year_em, monitoring_years,  sim_dur_years = get_emod_time_param(start_year, end_year, burnin, emod_serialize,emod_pickup)
+sim_start_year_om = start_year - burnin
 
 """ INTERVENTIONS """
 cm_start = 1  # [1]
 access = [0]  # 5-day probability  ## already converted
 
 """ TRANSMISSION, ENTOMOLOGY """
-seasonality = ["perennial","seasonal"]  # , "seasonal"
+seasonality = ["perennial", "seasonal"]  # , "seasonal"
 eir = [0.1, 1, 4, 16, 64, 256, 1024]
 season_daily, season_month, seasonal, perennial = get_seasonal_eir()
 
@@ -124,25 +115,26 @@ exp.nexps = len(scen_df)  # * seeds ## not needed when included in sweep_list
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 
 
-
-
 def set_config_parameters(config):
     """
     This function is a callback that is passed to emod-api.config to set config parameters, including the malaria defaults.
     """
-    
+
     config = malaria_config.set_team_defaults(config, manifest)
     config.parameters.x_Base_Population = pop_size / 1000
     config.parameters.Simulation_Duration = sim_dur_years * 365
 
     if entomology_mode == 'dynamic':
         malaria_config.add_species(config, manifest, ["gambiae"])  # , "arabiensis", "funestus"
-         ## TO DO enable seasonality sweep via habitat multiplier
+        ## TO DO enable seasonality sweep via habitat multiplier
         seasonality_type = 'example'
-        config.parameters.Air_Temperature_Filename = os.path.join('climate',f'{seasonality_type}_air_temperature_daily.bin')
-        config.parameters.Land_Temperature_Filename = os.path.join('climate',f'{seasonality_type}_air_temperature_daily.bin')
-        config.parameters.Rainfall_Filename = os.path.join('climate',f'{seasonality_type}_rainfall_daily.bin')
-        config.parameters.Relative_Humidity_Filename = os.path.join('climate',f'{seasonality_type}_relative_humidity_daily.bin')
+        config.parameters.Air_Temperature_Filename = os.path.join('climate',
+                                                                  f'{seasonality_type}_air_temperature_daily.bin')
+        config.parameters.Land_Temperature_Filename = os.path.join('climate',
+                                                                   f'{seasonality_type}_air_temperature_daily.bin')
+        config.parameters.Rainfall_Filename = os.path.join('climate', f'{seasonality_type}_rainfall_daily.bin')
+        config.parameters.Relative_Humidity_Filename = os.path.join('climate',
+                                                                    f'{seasonality_type}_relative_humidity_daily.bin')
 
     if emod_serialize:
         config.parameters.Serialized_Population_Writing_Type = "TIMESTEP"
@@ -178,7 +170,8 @@ def update_campaign_multiple_parameters_ser(simulation, df, cm_cov, cm_start, x:
                                          cm_start=cm_start)
     else:
         lhs = float(df["x_Temporary_Larval_Habitat"][x])
-        eir_dic = {"x_Temporary_Larval_Habitat": lhs, "seasonality": 'perennial'}  ## FIXME, enable seasonality sweep via habitat multiplier
+        eir_dic = {"x_Temporary_Larval_Habitat": lhs,
+                   "seasonality": 'perennial'}  ## FIXME, enable seasonality sweep via habitat multiplier
         build_campaign_partial = partial(build_campaign, cm_cov=cm_cov, cm_start=cm_start)
     simulation.task.create_campaign_from_callback(build_campaign_partial)
 
@@ -247,8 +240,9 @@ def submit_create_run_EMOD(exp):
     emod_burnin_id = exp.emod_burnin_id
 
     # Set platform and associated values, such as the maximum number of jobs to run at one time
-    platform = Platform(selected_platform, job_directory=os.path.join(manifest.job_directory,SUITEname),
-                        mem_per_cpu = 8048 , partition='normal', time='10:00:00', account='p30781', modules=['singularity'],
+    platform = Platform(selected_platform, job_directory=os.path.join(manifest.job_directory, SUITEname),
+                        mem_per_cpu=8048, partition='normal', time='10:00:00', account='p30781',
+                        modules=['singularity'],
                         max_running_jobs=800)  # mem_per_cpu= 2048, per default
 
     # create EMODTask
@@ -267,8 +261,8 @@ def submit_create_run_EMOD(exp):
 
     # Set the singularity image to be used when running this experiment
     task.set_sif(manifest.SIF_PATH, platform)
-    if entomology_mode =='dynamic':
-       task.common_assets.add_directory(os.path.join(manifest.input_dir, "example_weather"), relative_path="climate")
+    if entomology_mode == 'dynamic':
+        task.common_assets.add_directory(os.path.join(manifest.input_dir, "example_weather"), relative_path="climate")
 
     # Create experiment from builder
     builder = SimulationBuilder()

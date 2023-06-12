@@ -28,9 +28,10 @@ om_survey_step = '30d'
 pop_size = 10000
 agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  ## Note, keep these to ensure smooth postprocessing
 num_seeds = 3
-start_year = 2000  # start of monitoring period
-end_year = 2020  # end of monitoring period
-burnin = 80  # Note burnin handled differently in OpenMalaria and EMOD
+start_year = 2000  # start of pickup and monitoring period (sim_start_year for EMOD automatically set given burnin and serialization flags)
+end_year = 2020  # end of pickup and monitoring period
+burnin = 80 # Duration of burnin (pre-monitoring) period
+
 
 """ Model setup """
 models_to_run = [ 'EMOD','OpenMalaria']  ## 'EMOD','OpenMalaria'
@@ -64,12 +65,8 @@ if not emod_pickup:
     emod_burnin_id = None
 
 """ SIMULATION TIME """
-sim_start_year, burnin_start_year, monitoring_years, sim_dur_years = get_time_param(start_year, end_year, burnin,
-                                                                                   emod_serialize, emod_pickup)
-
-#if start OpenMalaria Monitoring early
-#start_year = burnin_start_year  # Start OpenMalaria Monitoring early
-#monitoring_years = sim_dur_years  ## monitor all years
+sim_start_year_em, monitoring_years,  sim_dur_years = get_emod_time_param(start_year, end_year, burnin, emod_serialize,emod_pickup)
+sim_start_year_om = start_year - burnin
 
 """ INTERVENTIONS """
 cm_start = 1  # [1]
@@ -286,9 +283,9 @@ def submit_create_run_EMOD(exp):
                                                              EIR_scale_factor=eir,
                                                              season=seasonality))
 
-    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year, num_year=sim_dur_years)
+    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
     if not emod_serialize:
-        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year, num_year=sim_dur_years)
+        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
 
     # Create experiment from builder and run
     # experiment = Experiment.from_task(task, name=exp_name)
@@ -300,7 +297,7 @@ def submit_create_run_EMOD(exp):
     experiment.analyzer = exp.emod_analyzer
     experiment.job_directory = exp.job_directory
     experiment.emod_serialize = exp.emod_serialize
-    experiment.start_end = [sim_start_year, sim_start_year + sim_dur_years - 1]
+    experiment.start_end = [sim_start_year_em, sim_start_year_em + sim_dur_years - 1]
     submit_analyze_EMOD(experiment, platform)
 
     print(f"Experiment submission {experiment.uid} succeeded.")
