@@ -31,42 +31,46 @@ def make_dirs(manifest, suite_name, exp_name):
     return job_directory, sim_out_dir
 
 
-def get_time_param(start_year, end_year, burnin, emod_pickup):
+def get_time_param(start_year, end_year, burnin, emod_serialize=False, emod_pickup=False):
     burnin_start_year = start_year - burnin
     monitoring_years = end_year - start_year
-    
-    if not emod_pickup:
-      sim_dur_years = end_year-burnin_start_year
-      sim_start_year = burnin_start_year
-    else:
-      sim_dur_years = end_year-start_year
-      sim_start_year = start_year
-      
-    return sim_start_year, burnin_start_year , monitoring_years, sim_dur_years
+
+    if not emod_pickup and not emod_serialize:  ## run burnin + pickup time together
+        sim_dur_years = end_year - burnin_start_year
+        sim_start_year = burnin_start_year
+    elif not emod_pickup and emod_serialize:  ## run only burnin
+        sim_dur_years = burnin
+        sim_start_year = burnin_start_year
+    else:                                      ## run only pickup
+        sim_dur_years = end_year - start_year
+        sim_start_year = start_year
+
+    return sim_start_year, burnin_start_year, monitoring_years, sim_dur_years
 
 
 def save_exp_scen(exp, scen_df, save_dirs):
-  for sdir in save_dirs:
-    scen_df.to_csv(os.path.join(sdir, 'scenarios.csv'),   index=False)
-    pickle.dump(exp, open(os.path.join(sdir, "exp.obj"), "wb"))
-  
+    for sdir in save_dirs:
+        scen_df.to_csv(os.path.join(sdir, 'scenarios.csv'), index=False)
+        pickle.dump(exp, open(os.path.join(sdir, "exp.obj"), "wb"))
+
 
 def get_seasonal_eir():
-  # Define functional form of non-perennial, seasonal setting
-  # season_daily =  1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365))  ## used in EMOD-OM benchmarking
-  season_daily = 1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365)) / 2 + np.cos(2 * np.pi * (np.arange(0, 365) / 365)) / 2
-  season_month = [season_daily[1 + int(i * (365 / 12))] for i in range(0, 12)]
-  seasonal =  season_month / np.max(season_month)
-  #eir_sum = sum(season_month)
-  #seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
-  perennial = [x / 12 for x in [1] * 12]
-  
-  return season_daily, season_month, seasonal, perennial
-  
-  
+    # Define functional form of non-perennial, seasonal setting
+    # season_daily =  1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365))  ## used in EMOD-OM benchmarking
+    season_daily = 1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365)) / 2 + np.cos(
+        2 * np.pi * (np.arange(0, 365) / 365)) / 2
+    season_month = [season_daily[1 + int(i * (365 / 12))] for i in range(0, 12)]
+    seasonal = season_month / np.max(season_month)
+    # eir_sum = sum(season_month)
+    # seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
+    perennial = [x / 12 for x in [1] * 12]
+
+    return season_daily, season_month, seasonal, perennial
+
+
 def create_scenarios_csv(exp, col_list=None):
     if col_list is None:
-        col_list =[ 'eirs', 'access', 'seasonality']
+        col_list = ['eirs', 'access', 'seasonality']
     my_attrs = [getattr(exp, attr) for attr in col_list]
     df_array = np.array(list(itertools.product(*my_attrs)))
     df = pd.DataFrame(df_array)

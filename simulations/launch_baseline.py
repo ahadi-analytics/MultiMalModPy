@@ -30,6 +30,8 @@ om_survey_step = '1y'  # 30d
 pop_size = 10000
 agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]
 num_seeds = 15
+start_year = 2000  # start of monitoring period
+end_year = 2020  # end of monitoring period
 burnin = 80
 
 """ Model setup """
@@ -66,10 +68,9 @@ if not emod_pickup:
     emod_burnin_id = None
 
 """ SIMULATION TIME """
-start_year = 2000  # start of monitoring period
-end_year = 2020  # end of monitoring period
 sim_start_year, burnin_start_year, monitoring_years, sim_dur_years = get_time_param(start_year, end_year, burnin,
-                                                                                    emod_pickup)
+                                                                                   emod_serialize, emod_pickup)
+
 
 #if start OpenMalaria Monitoring early
 #start_year = burnin_start_year  # Start OpenMalaria Monitoring early
