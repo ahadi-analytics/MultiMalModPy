@@ -79,7 +79,8 @@ Implementation in this repository:
 - helper functions for EMOD and OpenMalaria, stored in 'utils.py' in model specific subfolders are sourced in the  `launch` python script 
 - The postprocessing via analyzers has the same structure, with analyzer files of the same name located in the model subfolders.
 - Example: directory `simulations`
-- 
+
+
 **Option 2 (alternative project specific modification)**
 - Have project specific `utils` and `analyzer` scripts within project folder and have them named differently for EMOD and OpenMalaria (i.e.  `utils_om.py / utils_om.py` and `analyzer_em.py / analyzer_em.py `.
 - This approach allows more flexible editing, i.e. when using project specific or experiment specific parameter definitions and analyzer 
@@ -290,8 +291,9 @@ Table 1: Overview of model software and infrastructure
 ## Change log
 
 - March 2023 - June 2023: initial python framework with CM only and forced EIR
-- March 2023: Repository created as successor of SwissTPH "MC benchmarking" framework in R
-- 
+- March 2023: Repository created following up on the lessons learned from the SwissTPH "MC benchmarking" framework in R
+
+
 Next:
 - calibrate dynamic EIR
 - add SMC
