@@ -211,7 +211,7 @@ def exec(command):
                             universal_newlines=True, text=True)
 
 
-def shell_header_quest(A='p30781', p='short', t='02:00:00', N=1, ntasks_per_node=1, memG=8, job_name='myjob',
+def shell_header_quest(A='b1139', p='b1139', t='02:00:00', N=1, ntasks_per_node=1, memG=8, job_name='myjob',
                        arrayJob=None):
     """
     Generates a SLURM shell script header for job submission.

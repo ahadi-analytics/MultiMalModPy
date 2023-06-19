@@ -285,7 +285,7 @@ def submit_create_run_EMOD(exp):
 
     # Set platform and associated values, such as the maximum number of jobs to run at one time
     platform = Platform(selected_platform, job_directory=suite_directory,
-                        mem_per_cpu=500, partition='b1139', time='00:30:00', account='b1139',
+                        mem_per_cpu=1000, partition='b1139', time='03:00:00', account='b1139',
                         modules=['singularity'], max_running_jobs=50)  # mem_per_cpu default: 2048
 
     # create EMODTask
