@@ -33,7 +33,8 @@ input_dir = os.path.join(ROOT_DIR, "EMOD/inputs")
 # om_input_path is location of OpenMalaria input files, scaffolds specific to project
 if hpc == 'NUCLUSTER':
     projdir = os.path.join('/projects/b1139/emod-om/')
-    job_directory = os.path.join(projdir, 'experiments')
+    job_directory = os.path.join(projdir, 'experiments', user)
+    output_directory = os.path.join(projdir, 'simulation_outputs', user)
     SIF_PATH = "--bind /projects /projects/b1139/images/dtk_run_rocky_py39.sif"
     if om_version == 43:
         OM_PATH = "/projects/b1139/OpenMalaria/"

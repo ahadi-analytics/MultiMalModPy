@@ -25,9 +25,14 @@ def set_param(simulation, param, value):
 
 
 def build_demog():
+    """
+    Builds the demographic structure for the EMOD simulation.
+    """
+    # Create a Demographics object and set location and population size
     demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
     demog.SetEquilibriumVitalDynamics()
 
+    # Set the age distribution for the population
     age_distribution = Distributions.AgeDistribution_SSAfrica
     demog.SetAgeDistribution(age_distribution)
 
@@ -35,6 +40,13 @@ def build_demog():
 
 
 def build_standard_campaign_object(manifest):
+    """
+    Builds a standard campaign object for the simulation.
+    Args:
+        manifest: The manifest object containing the schema file.
+    Returns:
+        campaign_obj: The built campaign object.
+    """
     import emod_api.campaign as campaign
     campaign.set_schema(manifest.schema_file)
     return campaign
@@ -43,9 +55,30 @@ def build_standard_campaign_object(manifest):
 def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
                         yr_plusone=True, age_bins=[0.25, 2, 5, 10, 125],
                         prefix='Monthly_'):
+    """
+    Adds monthly reports to the simulation task.
+    Args:
+        task: The simulation task object.
+        manifest: The manifest object containing the necessary information.
+        sim_start_year: The starting year of the simulation.
+        num_year: The number of years to add monthly reports for.
+        tot_year: The total number of years of the simulation.
+                  If None, it is set to num_year.
+        yr_plusone: Whether to add an extra year to the reporting.
+                    If True, reports will cover num_year + 1 years.
+                    If False, reports will cover num_year years.
+        age_bins: The age bins for reporting.
+        prefix: The prefix to be used for the report filenames.
+    Raises:
+        ValueError: If num_year is greater than tot_year.
+    Returns:
+        None
+    """
     if tot_year is None: tot_year = num_year
     if (num_year > tot_year):
         raise ValueError('num_year must be <= tot_year')
+
+    # Write separate monthly reports for each year
     for year in range(num_year):
         sim_year = tot_year - num_year + year
         start = yr_plusone + 365 * sim_year
@@ -57,6 +90,25 @@ def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
 def add_annual_reports(task, manifest, sim_start_year, num_year, tot_year=None,
                        yr_plusone=True, age_bins=[0.25, 2, 5, 10, 125],
                        prefix='Annual_', ipfilter=''):
+    """
+    Adds annual reports to the simulation task.
+    Args:
+        task: The simulation task object.
+        manifest: The manifest object containing the necessary information.
+        sim_start_year: The starting year of the simulation.
+        num_year: The number of years to add monthly reports for.
+        tot_year: The total number of years of the simulation.
+                  If None, it is set to num_year.
+        yr_plusone: Whether to add an extra year to the reporting.
+                    If True, reports will cover num_year + 1 years.
+                    If False, reports will cover num_year years.
+        age_bins: The age bins for reporting.
+        prefix: The prefix to be used for the report filenames.
+    Raises:
+        ValueError: If num_year is greater than tot_year.
+    Returns:
+        None
+    """
     if tot_year is None: tot_year = num_year
     if (num_year > tot_year):
         raise ValueError('num_year must be <= tot_year')
@@ -64,15 +116,26 @@ def add_annual_reports(task, manifest, sim_start_year, num_year, tot_year=None,
     start = yr_plusone + 365 * sim_year
     desc = prefix + '%dto%d' % (sim_year + sim_start_year, tot_year + sim_start_year - 1)
 
+    # All years in one report file
     add_malaria_summary_report(task, manifest, start_day=start, end_day=start + (num_year * 365) - 1,
                                age_bins=age_bins, reporting_interval=365,
                                filename_suffix=desc, pretty_format=False)
 
 
 def _get_serialized_filenames(num_cores, timesteps):
+    """
+    Generates a list of serialized filenames based on the number of cores and timesteps.
+    Args:
+        num_cores: The number of cores used for parallel simulation.
+        timesteps: The number of timesteps.
+    Returns:
+        A list of serialized filenames.
+    """
     if num_cores == 1:
+        # For single-core simulation, use a single serialized file
         serialized_list = [f"state-{str(timesteps).zfill(5)}.dtk"]
     else:
+        # For multi-core simulation, generate serialized files for each core
         serialized_list = [f"state-{str(timesteps).zfill(5)}-{str(core_count).zfill(3)}.dtk"
                            for core_count in range(num_cores)]
     return serialized_list

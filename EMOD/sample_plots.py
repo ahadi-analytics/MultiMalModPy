@@ -14,9 +14,13 @@ import matplotlib.ticker as ticker
 
 
 def parse_args():
+    """
+    Parses command-line arguments for simulation specifications.
+    """
+    # Set the description for the argument parser
     description = "Simulation specifications"
     parser = argparse.ArgumentParser(description=description)
-
+    # Add the required argument for the job directory
     parser.add_argument(
         "-d",
         "--directory",
@@ -28,20 +32,33 @@ def parse_args():
 
 
 def all_age_sample_plot(wdir, sweep_variables, inset_channels):
+    """
+    Generate a sample plot for all age data from the 'All_Age_InsetChart.csv' file.
+    Parameters:
+    - wdir (str): Working directory.
+    - sweep_variables (list): List of sweep variables.
+    - inset_channels (list): List of channels for the InsetChart.
+    """
+    # Read the data from a CSV file
     df = pd.read_csv(os.path.join(wdir, 'All_Age_InsetChart.csv'))
     df['date'] = pd.to_datetime(df['date'])
+
+    # Group the data by date and sweep variables, and calculate the mean of the outcome channels
     df = df.groupby(['date'] + sweep_variables)[inset_channels].agg(np.mean).reset_index()
 
+    # Round numeric sweep variables shown in legend
     for sweep_var in sweep_variables:
         if df[sweep_var].dtype == np.number:
             df[sweep_var] = [round(x, 4) for x in df[sweep_var]]
         else:
             pass
 
+    # Create the plot figure
     fig = plt.figure('InsetChart', figsize=(12, 6))
     fig.subplots_adjust(hspace=0.5, left=0.08, right=0.97)
     axes = [fig.add_subplot(3, 5, x + 1) for x in range(15)]
 
+    # Plot the data for each channel
     for ch, channel in enumerate(inset_channels):
         ax = axes[ch]
         for p, pdf in df.groupby(sweep_variables):
@@ -49,32 +66,54 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels):
         ax.set_title(channel)
         ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
+    # Uncomment the following lines if you want to add a legend
     # if len(sweep_variables) > 0:
     #    axes[-1].legend(title=sweep_variables, loc=7)
+
+    # Add labels and adjust layout
     fig.text(0.5, 0.02, 'Time in years', ha='center', va='center', fontsize=12)
     fig.tight_layout(rect=[0.023, 0.025, 0.955, 0.955])
+
+    # Save the figure as 'InsetChart.png' in the working directory
     fig.savefig(os.path.join(wdir, 'InsetChart.png'))
 
 
 def sample_plot_yr(wdir, sweep_variables, agebin=5):
+    """
+    Generate a sample plot for annual  data from PfPR_ClinicalIncidence_yr.csv
+    Parameters:
+    - wdir (str): Working directory.
+    - sweep_variables (list): List of sweep variables.
+    - agebin (int): Age bin. Defaults to 5.
+    """
+    # Outcome channels to plot
     channels = ['nHost', 'nUncomp_annualized', 'nSevere_annualized', 'nInfect', 'pfpr', 'prevalence_2to10']
+
+    # Read the data from a CSV file
     df = pd.read_csv(os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv'))
     sweep_variables = [s for s in sweep_variables if s != 'Run_Number']
+
+    # Group and aggregate the data
     df = df.groupby(['year', 'age'] + sweep_variables)[channels].agg(np.mean).reset_index()
 
+    # Plot only single agebin as specified
     df = df.loc[df['age'] == agebin]
 
+    # Round numeric sweep variables shown in legend
     for sweep_var in sweep_variables:
         if df[sweep_var].dtype == np.number:
             df[sweep_var] = [round(x, 4) for x in df[sweep_var]]
         else:
             pass
 
+    # Create the figure and subplots
     fig = plt.figure('PfPR_ClinicalIncidence_yr', figsize=(10, 8))
     fig.subplots_adjust(hspace=0.5, left=0.08, right=0.97)
     fig.suptitle(f'agebin: {agebin}')
     axes = [fig.add_subplot(3, 2, x + 1) for x in range(6)]
 
+    # Plot the data for each channel
     for ch, channel in enumerate(channels):
         ax = axes[ch]
         y_lim = np.max(df[channel]) + (np.max(df[channel]) * 0.2)
@@ -85,35 +124,57 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5):
         tick_positions = np.linspace(df['year'].min(), df['year'].max(), 6)
         ax.xaxis.set_major_locator(ticker.FixedLocator(tick_positions))
         ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%d'))
+
+    # Uncomment the following lines if you want to add a legend
     # if len(sweep_variables) > 0:
     #     lg = axes[-1].legend(title=sweep_variables, bbox_to_anchor=(1.05, 1.0), loc='upper left')
-    fig.savefig(os.path.join(wdir,
-                             f'PfPR_ClinicalIncidence_yr_agebin{agebin}.png'))  # ,bbox_extra_artists=(lg,), bbox_inches='tight')
+
+    # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_yr_agebin{agebin}.png'))
 
 
 def sample_plot_mth(wdir, sweep_variables, agebin=5):
+    """
+    Generate a sample plot for monthly data from PfPR_ClinicalIncidence_mth.csv
+    Parameters:
+    - wdir (str): Working directory.
+    - sweep_variables (list): List of sweep variables.
+    - agebin (int): Age bin. Defaults to 5.
+    """
+    # Outcome channels to plot
     channels = ['nHost', 'nUncomp_annualized', 'nSevere_annualized', 'nInfect', 'pfpr', 'prevalence_2to10']
+
+    # Remove Run_Number from sweep_variables, hence aggregated runs
     sweep_variables = [s for s in sweep_variables if s != 'Run_Number']
 
+    # Read the data from a CSV file
     df = pd.read_csv(os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv'))
     df['day'] = 1
     df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
 
-    ## Select 2nd last year of simulation
+    # Select the second last year of simulation to reduce number of data points to plot on x-axis
     df = df.loc[df['year'] == np.max(df['year']) - 1]
+
+    # Group and aggregate the data
     df = df.groupby(['date', 'age'] + sweep_variables)[channels].agg(np.mean).reset_index()
+
+    # Plot only single agebin as specified
     df = df.loc[df['age'] == agebin]
 
+    # Round numeric sweep variables shown in legend
     for sweep_var in sweep_variables:
         if df[sweep_var].dtype == np.number:
             df[sweep_var] = [round(x, 4) for x in df[sweep_var]]
         else:
             pass
 
+    # Create the figure and subplots
     fig1 = plt.figure('PfPR_ClinicalIncidence_mth', figsize=(10, 8))
     fig1.subplots_adjust(hspace=0.5, left=0.08, right=0.97)
     fig1.suptitle(f'agebin: {agebin}')
     axes = [fig1.add_subplot(3, 2, x + 1) for x in range(6)]
+
+    # Plot the data for each channel
     for ch, channel in enumerate(channels):
         ax = axes[ch]
         for p, pdf in df.groupby(sweep_variables):
@@ -122,32 +183,38 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
         # ax.set_ylabel(channel)
         ax.xaxis.set_major_locator(mdates.MonthLocator(interval=12))
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
+    # Uncomment the following lines if you want to add a legend
     # if len(sweep_variables) > 0:
     #    lg = axes[-1].legend(title=sweep_variables, bbox_to_anchor=(1.05, 1.0), loc='upper left')
-    fig1.savefig(os.path.join(wdir,
-                              f'PfPR_ClinicalIncidence_mth_agebin{agebin}.png'))  # ,bbox_extra_artists=(lg,), bbox_inches='tight')
+
+    # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig1.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_mth_agebin{agebin}.png'))
 
 
 if __name__ == "__main__":
-    # args = parse_args()
-    # job_directory = args.directory
-    job_directory = '/projects/b1139/emod-om/simulation_outputs/model_characterization_v0_forcedEIR/test__noburnin/'
+    # Parse command line arguments
+    args = parse_args()
+    job_directory = args.directory
 
+    # Set wdir directory for loading and saving simulation results (for EMOD)
     wdir = os.path.join(job_directory, 'em')
 
+    # Determine whether simulation ran with forced or dynamic EIR and set eirchannel
     if 'dynamic' in job_directory:
         eirchannel = "x_Temporary_Larval_Habitat"
     else:
         eirchannel = "EIR_scale_factor"
 
-    exp_tags = [ eirchannel, 'cm_clinical_U5', 'seasonality']  # FIXME dont hardcode, 'Run_Number',
-
+    # Define tags and channels for sample plots
+    exp_tags = [eirchannel, 'cm_clinical_U5', 'seasonality']  # FIXME dont hardcode, 'Run_Number',
     channels_inset_chart = ['Statistical Population', 'Births', 'Disease Deaths',
                             'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
                             'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
                             'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
                             'Infectious Vectors', 'Daily EIR']
 
+    # Create sample plots
     all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
     sample_plot_yr(wdir, exp_tags)
     sample_plot_mth(wdir, exp_tags)

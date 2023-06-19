@@ -15,49 +15,54 @@ from EMOD.scaffolds.interventions import treatment_camp
 from EMOD.utils import *
 from helper import *
 
+# Setting up variables and flags for the simulation
 log = logging.getLogger(__name__)
-loaded_attr = set(dir())
-testmode = False
-emod_serialize = True
-emod_pickup = False
+loaded_attr = set(dir())  # Non experiiment specific objects to be excluded from exp.obj
+
+# Flag to select whether to run with (dynamic) or without vector model (forced)
+# TODO enable dynamic seasonal EIR  once calibrated
 entomology_mode = 'forced'  # dynamic, forced
-event_recorder = False
 
-om_scaffold = "R0000GA"  # build OpenMalaria XML schema- prerequisite
-om_survey_step = '1y'  # 30d
+# Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
+custom_subdir = os.getlogin()  # If None, no subdir created
+SUITEname = f'{entomology_mode}EIR'  # Can be changed depending on objective to run simulations, in subdir if not None
+exp_name = f'baseline_allageCM20_EIRseason'  # Can be changed depending on simulation purpose, in SUITE
 
-""" Simulation population and seeds"""
+# EMOD serialization or pickup flags
+emod_serialize = False
+emod_pickup = False
+
+# Define which models to run
+models_to_run = ['EMOD', 'OpenMalaria']  # 'EMOD','OpenMalaria'
+
+# Specify OpenMalaria XML and survey step
+# Note, XMLs need to exist in OpenMalaria/inputs
+om_scaffold = "R0000GA"
+om_survey_step = '1y'
+
+# Define simulation population and seeds
 pop_size = 10000
-agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]
-num_seeds = 15
-start_year = 2000  # start of pickup and monitoring period (sim_start_year for EMOD automatically set given burnin and serialization flags)
+agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
+num_seeds = 3
+seed = list(range(num_seeds))  # required for scenarios csv used in generating OpenMalaria scenarios
+start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
 end_year = 2020  # end of pickup and monitoring period
-burnin = 80 # Duration of burnin (pre-monitoring) period
+burnin = 10  # Duration of burnin (pre-monitoring) period
 
+# Simulation duration, start and end configuration
+sim_start_year_em, monitoring_years, sim_dur_years = get_emod_time_param(start_year, end_year, burnin, emod_serialize,
+                                                                         emod_pickup)
+sim_start_year_om = start_year - burnin
 
-""" Model setup """
-models_to_run = ['EMOD','OpenMalaria']  ## 'EMOD','OpenMalaria'
-SUITEname = f'{entomology_mode}EIR' # Collection of simulations, needs to be the same for burnin and pickup simulations
-exp_name = f'baseline_allageCM20_EIRseason'  # name of the experiment folder
+# Name of parameters to vary
+sweep_list = ['eir', 'access', 'seasonality'] + ['seed']
 
-
-## EMOD burnin
+# EMOD burn-in and pickup configuration
+# TODO different for SciCore and Quest, user specific
 if entomology_mode == 'forced':
     emod_burnin_id = ''
 else:
     emod_burnin_id = ''
-
-## Name of parameters to vary
-sweep_list = ['eir', 'access', 'seasonality'] + ['seed']
-
-if testmode:
-    exp_name = f'test_{exp_name}'
-    pop_size = 1000
-    num_seeds = 3
-    burnin = 30
-
-seed = list(range(num_seeds))  ## for scenarios csv
-
 if emod_serialize and 'EMOD' in models_to_run:
     print('Message: Running burnin for EMOD')
     num_seeds = 1
@@ -68,31 +73,26 @@ if emod_serialize and 'EMOD' in models_to_run:
 if not emod_pickup:
     emod_burnin_id = None
 
-""" SIMULATION TIME """
-sim_start_year_em, monitoring_years,  sim_dur_years = get_emod_time_param(start_year, end_year, burnin, emod_serialize,emod_pickup)
-sim_start_year_om = start_year - burnin
+# Define case management start and coverage
+# 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
+cm_start = 1
+access = [0.2029544]
 
-""" INTERVENTIONS """
-cm_start = 1  # [1]
-access = [0.2029544]  # 5-day probability  ## already converted
-
-""" TRANSMISSION, ENTOMOLOGY """
-seasonality = ["perennial","seasonal"]  # , "seasonal"
+# Transmission and seasonality configuration
+seasonality = ["perennial", "seasonal"]
 eir = [0.1, 1, 4, 16, 64, 256, 1024]
 season_daily, season_month, seasonal, perennial = get_seasonal_eir()
 
 if entomology_mode == 'dynamic':
     lhs = np.logspace(-2, 3, len(eir))  ## to do funtcion to match eir to LHS
-    print(
-        'Dynamic EIR has not yet been aligned between EMOD and OpenMalaria, no dynamic seasonal EIR in EMOD yet')  # FIXME
+    print('Dynamic EIR has not yet been aligned between EMOD and OpenMalaria')
 
-""" DIRECTORIES AND POSTPROCESSING """
-job_directory, sim_out_dir = make_dirs(manifest, SUITEname, exp_name)
+# Directory setup and analyzer scripts
+suite_directory, job_directory, sim_out_dir = make_dirs(manifest, SUITEname, exp_name, custom_subdir)
 emod_analyzer = ['analyze_sim.py']
 openmalaria_analyzer = ['analyze_sim.py']
 
-""" EXPERIMENT ATTRIBUTES AND SCENARIOS """
-# Save all defined attibutes into exp class object
+# Creating an Experiment object and setting its attributes, saved as exp.obj
 my_obj = set(dir()) - loaded_attr
 exp = Experiment()
 exp.my_obj = my_obj
@@ -103,6 +103,7 @@ exp.emod_build = manifest.emod_build
 exp.om_path = manifest.OM_PATH
 exp.om_input_path = manifest.om_input_path
 
+# Assigning attributes to the Experiment object and creating scenarios
 for obj_name in my_obj:
     if hasattr(locals().get(obj_name), '__call__'):
         setattr(exp, obj_name, locals().get(obj_name))
@@ -111,7 +112,7 @@ for obj_name in my_obj:
     else:
         print(f"Object {obj_name} not found in the locals environment.")
 
-## parameter names to create scenarios from
+# Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, sweep_list)
 exp.nexps = len(scen_df)  # * seeds ## not needed when included in sweep_list
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
@@ -119,9 +120,13 @@ save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 
 def set_config_parameters(config):
     """
-    This function is a callback that is passed to emod-api.config to set config parameters, including the malaria defaults.
+    This function is a callback that is passed to emod-api.config to set config parameters,
+    including the malaria defaults.
+    Parameters:
+        config (object): The configuration object to be modified.
+    Returns:
+        object: The modified configuration object.
     """
-
     config = malaria_config.set_team_defaults(config, manifest)
     config.parameters.x_Base_Population = pop_size / 1000
     config.parameters.Simulation_Duration = sim_dur_years * 365
@@ -151,7 +156,6 @@ def set_config_parameters(config):
     return config
 
 
-##--------------------
 def build_campaign(seasonality=None, EIR_scale_factor=None, cm_cov=0.5, cm_clinical_adult=None, cm_severe=None,
                    cm_start=1):
     camp = build_standard_campaign_object(manifest)
@@ -242,10 +246,10 @@ def submit_create_run_EMOD(exp):
     emod_burnin_id = exp.emod_burnin_id
 
     # Set platform and associated values, such as the maximum number of jobs to run at one time
-    platform = Platform(selected_platform, job_directory=os.path.join(manifest.job_directory,SUITEname),
-                        mem_per_cpu = 8048 , partition='normal', time='10:00:00', account='p30781', modules=['singularity'],
+    platform = Platform(selected_platform, job_directory=suite_directory,
+                        mem_per_cpu=8048, partition='normal', time='10:00:00', account='p30781',
+                        modules=['singularity'],
                         max_running_jobs=800)  # mem_per_cpu= 2048, per default
-
 
     # create EMODTask
     print("Creating EMODTask (from files)...")
@@ -287,9 +291,9 @@ def submit_create_run_EMOD(exp):
                                                              EIR_scale_factor=eir,
                                                              season=seasonality))
 
-    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year, num_year=sim_dur_years)
+    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
     if not emod_serialize:
-        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year, num_year=sim_dur_years)
+        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
 
     # Create experiment from builder and run
     # experiment = Experiment.from_task(task, name=exp_name)
@@ -301,7 +305,7 @@ def submit_create_run_EMOD(exp):
     experiment.analyzer = exp.emod_analyzer
     experiment.job_directory = exp.job_directory
     experiment.emod_serialize = exp.emod_serialize
-    experiment.start_end = [sim_start_year, sim_start_year + sim_dur_years - 1]
+    experiment.start_end = [sim_start_year_em, sim_start_year_em + sim_dur_years - 1]
     submit_analyze_EMOD(experiment, platform)
 
     print(f"Experiment submission {experiment.uid} succeeded.")
@@ -309,12 +313,14 @@ def submit_create_run_EMOD(exp):
 
 if __name__ == '__main__':
 
-    print(
-        f'Running simulations for {", ".join(models_to_run)}: {len(sweep_list)} varying parameters: {", ".join(sweep_list)}')
+    print(f' --------| Running {exp_name} for {", ".join(models_to_run)}: {len(sweep_list)} '
+          f'varying parameters: {", ".join(sweep_list)} |--------')
 
+    # Submit EMOD simulation as SLURM job, including scheduled analyzer
     if 'EMOD' in models_to_run:
         submit_create_run_EMOD(exp)
 
+    # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
     if 'OpenMalaria' in models_to_run:
         from OpenMalaria.utils import *
 

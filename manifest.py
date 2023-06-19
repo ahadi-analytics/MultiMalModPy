@@ -1,7 +1,6 @@
 import os
 
 # This is a user-modifiable Python file designed to be a set of simple input file and directory settings that you can choose and change.
-user = os.getlogin()
 om_version = 43
 emod_build = 220405
 hpc = 'NUCLUSTER'
@@ -34,6 +33,7 @@ input_dir = os.path.join(ROOT_DIR, "EMOD/inputs")
 if hpc == 'NUCLUSTER':
     projdir = os.path.join('/projects/b1139/emod-om/')
     job_directory = os.path.join(projdir, 'experiments')
+    output_directory = os.path.join(projdir, 'simulation_outputs')
     SIF_PATH = "--bind /projects /projects/b1139/images/dtk_run_rocky_py39.sif"
     if om_version == 43:
         OM_PATH = "/projects/b1139/OpenMalaria/"
