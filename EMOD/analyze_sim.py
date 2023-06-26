@@ -667,6 +667,9 @@ if __name__ == "__main__":
     # Load experiment object
     file = open(os.path.join(job_directory, "exp.obj"), "rb")
     exp = pickle.load(file)
+    # Set location of output files
+    wdir = os.path.join(exp.sim_out_dir, 'em')
+    create_sampleplots = True
 
     exp_name = exp.exp_name
     # exp_tags =  exp.sweeps ## to do
@@ -683,7 +686,6 @@ if __name__ == "__main__":
     end_year = exp.end_year - 1
     monitoring_start = end_year - exp.monitoring_years
     burnin = None  # exp.burnin  ## Years burnin
-    testmode = exp.testmode
 
     # Define which outcome metrics to process in inset_chart (all age per daily timestep)
     channels_inset_chart = ['Statistical Population', 'Births', 'Disease Deaths',
@@ -691,9 +693,6 @@ if __name__ == "__main__":
                             'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
                             'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
                             'Infectious Vectors', 'Daily EIR']
-
-    # Set location of output files
-    wdir = os.path.join(exp.sim_out_dir, 'em')
 
     # Run analyzers
     with Platform('SLURM_LOCAL', job_directory=exp.suite_directory) as platform:
@@ -749,7 +748,7 @@ if __name__ == "__main__":
         manager.analyze()
 
         # Create sample plots if specified
-        if testmode:
+        if create_sampleplots:
             channels_inset_chart = ['Statistical Population', 'Births', 'New Infections', 'Newly Symptomatic',
                                     'New Clinical Cases', 'New Severe Cases',
                                     'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
