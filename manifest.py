@@ -41,7 +41,10 @@ if hpc == 'NUCLUSTER':
         OM_PATH = "/projects/b1139/OpenMalaria/om_v45/"
     else:
         raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 45')
-    om_input_path = '/home/mrm9534/model-characterization/OpenMalaria/'
+    om_input_path = '/projects/b1139/emod-om/model-characterization/OpenMalaria/'
+    if os.name != 'posix':
+        output_directory = os.path.join(os.environ['USERPROFILE'], 'NU Malaria Modeling Dropbox/projects/EMOD_OM/simulation_outputs')
+        print(f"Setting output_directory for local use: {output_directory}")
 elif hpc == 'SCICORE':  ## TODO update paths
     projdir = os.path.join('/projects/b1139/emod-om/')
     job_directory = os.path.join(projdir, 'experiments')
