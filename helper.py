@@ -3,7 +3,7 @@ from idmtools.entities.experiment import Experiment
 import pandas as pd
 import numpy as np
 import warnings
-
+import shutil
 
 def parse_args():
     """
@@ -29,6 +29,15 @@ def parse_args():
     # Parse the command-line arguments and return the result
     return parser.parse_args()
 
+
+def copy_sim_script(target_dir):
+    # Copy simulation script to target_dir
+    script_path = os.path.abspath(__file__)
+    script_dir = os.path.dirname(script_path)
+    script_name = os.path.basename(__file__)
+    source_file = os.path.join(script_dir, script_name)
+    shutil.copy2(source_file, target_dir)
+    
 
 def make_dirs(manifest, suite_name, exp_name, custom_subdir=None):
     """
