@@ -38,7 +38,7 @@ om_scaffold = "R0000GA"
 om_survey_step = '30d'
 
 # Define simulation population and seeds
-pop_size = 10000
+pop_size = 1000
 agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
 num_seeds = 3
 seed = list(range(num_seeds)) # required for scenarios csv used in generating OpenMalaria scenarios
@@ -194,7 +194,7 @@ def update_campaign_multiple_parameters_ser(simulation, df, cm_cov, cm_start, x:
     seed = int(df["Run_Number"][x])
     if entomology_mode == 'forced':
         eir = float(df["EIR_scale_factor"][x])
-        season = float(df["seasonality"][x])
+        season = df["seasonality"][x]
         eir_dic = {"EIR_scale_factor": eir, "seasonality": season}
         build_campaign_partial = partial(build_campaign, seasonality=season, EIR_scale_factor=eir, cm_cov=cm_cov,
                                          cm_start=cm_start)
@@ -262,7 +262,7 @@ def sweep_burnin_simulations(simulation, df, x: int, entomology_mode='dynamic'):
         transm_spec = ['x_Temporary_Larval_Habitat',
                        float(df["x_Temporary_Larval_Habitat"][x])]  # FIXME, enable seasonality once calibrated
     else:
-        update_eir_scale(simulation, float(df["EIR_scale_factor"][x]), float(df["seasonality"][x]))
+        update_eir_scale(simulation, float(df["EIR_scale_factor"][x]), df["seasonality"][x])
         transm_spec = ['EIR_scale_factor', float(df["EIR_scale_factor"][x])]
 
     return {
