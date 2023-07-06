@@ -38,13 +38,13 @@ om_scaffold = "R0000GA"
 om_survey_step = '30d'
 
 # Define simulation population and seeds
-pop_size = 10000
+pop_size = 1000
 agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
 num_seeds = 3
-seed = list(range(num_seeds)) # required for scenarios csv used in generating OpenMalaria scenarios
+seed = list(range(num_seeds))  # required for scenarios csv used in generating OpenMalaria scenarios
 start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
-end_year = 2020  # end of pickup and monitoring period
-burnin = 10  # Duration of burnin (pre-monitoring) period
+end_year = 2010  # end of pickup and monitoring period
+burnin = 5  # Duration of burnin (pre-monitoring) period
 
 # Simulation duration, start and end configuration
 sim_start_year_em, monitoring_years, sim_dur_years = get_emod_time_param(start_year, end_year, burnin, emod_serialize,
@@ -364,7 +364,7 @@ if __name__ == '__main__':
 
     # Optionally, after both models aran, generate combined results
     # Note, if dataframes are very large, per default saving a combined df might not be desired to do
-    # if 'OpenMalaria' and 'EMOD' in models_to_run:
-    #    #submit_combine_results(exp)  # combined benchmarking.csv
-    #    submit_run_pyscript(exp, pyscript='benchmark_plots.py',
-    #    shname='run_benchmark_plots.sh', job_id='job_id_EMODanalyze')
+    if 'OpenMalaria' and 'EMOD' in models_to_run:
+        #    #submit_combine_results(exp)  # combined benchmarking.csv
+        submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
+                            job_id='job_id_EMODanalyze')

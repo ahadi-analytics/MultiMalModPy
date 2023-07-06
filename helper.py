@@ -360,7 +360,7 @@ def submit_analyze_EMOD(experiment, platform):
         write_txt(job_id, experiment.job_directory, 'job_id_burnin.txt')
 
 
-def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh', job_id=None):
+def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh', custom_args ='--emodom EMOD OpenMalaria', job_id=None):
     """
     Submits a job to run a Python script.
 
@@ -382,7 +382,7 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     emodpy_venv = emodpy_module(exp.hpc)
 
     # Generate the Python command to run the script
-    pycommand = f'\npython {pyscript} -d {exp.job_directory}'
+    pycommand = f'\npython {pyscript} -d {exp.sim_out_dir} {custom_args}'
 
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, shname)
@@ -394,11 +394,10 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     if isinstance(job_id, str):
         job_id = open(os.path.join(exp.job_directory, F'{job_id}.txt')).read().strip()
 
-    # Submit the job with or without dependency
-    if not isinstance(job_id, str):
+        # Submit the job with or without dependency
         p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path],
-                           stdout=subprocess.PIPE,
-                           cwd=str(exp.job_directory))
+                               stdout=subprocess.PIPE,
+                               cwd=str(exp.job_directory))
     else:
         p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
 

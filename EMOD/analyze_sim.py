@@ -184,10 +184,12 @@ class AnnualAgebinPfPRAnalyzer(IAnalyzer):
                 simdata = pd.DataFrame({'year': [x / 365 for x in reports],
                                         'pfpr': pfpr,
                                         'nInfect': new_infect,
-                                        'nUncomp_annualized': clinical_cases,
-                                        'nSevere_annualized': severe_cases,
+                                        'nUncomp_ppa': clinical_cases, # per person per year
+                                        'nSevere_ppa': severe_cases, # per person per year
                                         'nHost': pop})
                 simdata['age'] = age_bins[age]
+                simdata['nUncomp'] =  simdata['nUncomp_ppa'] * simdata['nHost']  # per total population per year in that age group
+                simdata['nSevere'] =  simdata['nSevere_ppa'] * simdata['nHost']  # per total population per year in that age group
                 simdata['prevalence_2to10'] = pfpr2to10
                 adf = pd.concat([adf, simdata])
 
@@ -272,9 +274,11 @@ class MonthlyAgebinPfPRAnalyzer(IAnalyzer):
                 simdata = pd.DataFrame({'month': range(1, 13),
                                         'pfpr': pfpr,
                                         'nInfect': new_infect,
-                                        'nUncomp_annualized': clinical_cases,
-                                        'nSevere_annualized': severe_cases,
+                                        'nUncomp_ppa': clinical_cases,  # per person per year
+                                        'nSevere_ppa': severe_cases, # per person per year
                                         'nHost': pop})
+                simdata['nUncomp'] = [x * 12 for x in   simdata['nUncomp_ppa']]  # per person per month
+                simdata['nSevere'] =  [x * 12 for x in   simdata['nSevere_ppa']] # per person per month
                 simdata['year'] = year
                 simdata['age'] = age_bins[age]
                 simdata['prevalence_2to10'] = pfpr2to10
@@ -436,6 +440,8 @@ class BenchmarkAnalyzer(IAnalyzer):
             pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10'][:nyears]
 
             for age in list(range(0, len(age_bins))):
+                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin'][:nyears]
+                pfpr = [x[age] for x in d]
                 d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin'][:nyears]
                 clinical_cases = [x[age] for x in d]
                 d = data[fname]['DataByTimeAndAgeBins']['Annual Severe Incidence by Age Bin'][:nyears]
@@ -444,8 +450,9 @@ class BenchmarkAnalyzer(IAnalyzer):
                 pop = [x[age] for x in d]
 
                 simdata = pd.DataFrame({'year': [x / 365 for x in reports],
-                                        'nUncomp_annualized': clinical_cases,
-                                        'nSevere_annualized': severe_cases,
+                                        'prevalence': pfpr,
+                                        'nUncomp_ppa': clinical_cases,
+                                        'nSevere_ppa': severe_cases,
                                         'nHost': pop})
                 simdata['age'] = age_bins[age]
                 simdata['prevalence_2to10'] = pfpr2to10
@@ -472,10 +479,11 @@ class BenchmarkAnalyzer(IAnalyzer):
         df_pfpr2to10 = df.groupby(self.sweep_variables)[['prevalence_2to10']].agg(np.mean).reset_index()
 
         ## Aggregate years
-        df = df.groupby(self.sweep_variables + ['age'])[['nUncomp_annualized', 'nSevere_annualized', 'nHost']].agg(
+        df = df.groupby(self.sweep_variables + ['age'])[['prevalence','nUncomp_ppa', 'nSevere_ppa', 'nHost']].agg(
             np.mean).reset_index()
-        df['nUncomp'] = df['nUncomp_annualized'] * df['nHost']  ## total cases
-        df['nSevere'] = df['nSevere_annualized'] * df['nHost']  ## total cases
+        df['nPatent'] = df['prevalence'] * df['nHost']   ## total patent infections
+        df['nUncomp'] = df['nUncomp_ppa'] * df['nHost']  ## total cases
+        df['nSevere'] = df['nSevere_ppa'] * df['nHost']  ## total cases
 
         cdf = pd.DataFrame()
         # Define standard age groups used in benchmarking default for plotting
@@ -489,10 +497,11 @@ class BenchmarkAnalyzer(IAnalyzer):
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables)[['nUncomp', 'nSevere', 'nHost']].agg(
+                adf = adf.groupby(self.sweep_variables)[['nPatent','nUncomp', 'nSevere', 'nHost']].agg(
                     np.sum).reset_index()
-                adf['nUncomp'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per year)
-                adf['nSevere'] = adf['nSevere'] / (adf['nHost'])  # (events per person per year)
+                adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
+                adf['nUncomp_ppa'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
+                adf['nSevere_ppa'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
                 adf['age_group'] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
@@ -515,8 +524,8 @@ class BenchmarkAnalyzer(IAnalyzer):
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed",
                                   "cm_clinical_U5": "access",
-                                  "nUncomp": "clinical_incidence",
-                                  "nSevere": "severe_incidence"})
+                                  "nUncomp_ppa": "clinical_incidence",
+                                  "nSevere_ppa": "severe_incidence"})
         cdf['mortality'] = ''
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}')
 
@@ -562,6 +571,8 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
 
             for age in list(range(0, len(age_bins))):
                 # Extract data for each age bin
+                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin'][:12]
+                pfpr = [x[age] for x in d]
                 d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin'][:12]
                 clinical_cases = [x[age] for x in d]
                 d = data[fname]['DataByTimeAndAgeBins']['Annual Severe Incidence by Age Bin'][:12]
@@ -571,8 +582,9 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
 
                 # Create a DataFrame for the simulation data
                 simdata = pd.DataFrame({'month': range(1, 13),
-                                        'nUncomp_annualized': clinical_cases,
-                                        'nSevere_annualized': severe_cases,
+                                        'prevalence': pfpr, 
+                                        'nUncomp_ppa': clinical_cases,  # per person per per annum
+                                        'nSevere_ppa': severe_cases, # per person per annum
                                         'nHost': pop})
                 simdata['year'] = year
                 simdata['age'] = age_bins[age]
@@ -600,9 +612,10 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
 
         # Aggregate years
         df = df.groupby(self.sweep_variables + ['age', 'month'])[
-            ['nUncomp_annualized', 'nSevere_annualized', 'nHost']].agg(np.mean).reset_index()
-        df['nUncomp'] = df['nUncomp_annualized'] * df['nHost']  ## total cases
-        df['nSevere'] = df['nSevere_annualized'] * df['nHost']  ## total cases
+            ['prevalence', 'nUncomp_ppa', 'nSevere_ppa', 'nHost']].agg(np.mean).reset_index()
+        df['nPatent'] = df['prevalence'] * df['nHost']   ## total patent infections
+        df['nUncomp'] = df['nUncomp_ppa'] * df['nHost']  ## total cases per annum
+        df['nSevere'] = df['nSevere_ppa'] * df['nHost']  ## total cases per annum
 
         cdf = pd.DataFrame()
 
@@ -617,10 +630,11 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables + ['month'])[['nUncomp', 'nSevere', 'nHost']].agg(
+                adf = adf.groupby(self.sweep_variables + ['month'])[['nPatent','nUncomp', 'nSevere', 'nHost']].agg(
                     np.sum).reset_index()
-                adf['nUncomp'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per year)
-                adf['nSevere'] = adf['nSevere'] / (adf['nHost'])  # (events per person per year)
+                adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
+                adf['nUncomp_ppa'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
+                adf['nSevere_ppa'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
                 adf['age_group'] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
@@ -644,13 +658,137 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed",
                                   "cm_clinical_U5": "access",
-                                  "nUncomp": "clinical_incidence",
-                                  "nSevere": "severe_incidence"})
+                                  "nUncomp_ppa": "clinical_incidence",
+                                  "nSevere_ppa": "severe_incidence"})
         cdf['mortality'] = ''
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}')
 
         # Save the processed DataFrame to a CSV file named 'EMOD_benchmark_mth.csv'
         cdf.to_csv((os.path.join(self.working_dir, f'EMOD_benchmark_mth.csv')), index=False)
+
+
+class BenchmarkAnalyzer_yr(IAnalyzer):
+    """
+    A class inherited from idmtools IAnalyzer and modified for analyzing  EMOD summary reports to generate
+    and save a results dataframe in the standards of the "Benchmark" format - but keeping year separate
+    Parameters:
+    - expt_name (str): Name of the experiment.
+    - sweep_variables (list): List of sweep variables. Defaults to None.
+    - working_dir (str): Working directory for the analysis. Defaults to './'.
+    - start_year (int): Start year of the analysis. Defaults to 1920.
+    - end_year (int): End year of the analysis. Defaults to 2020.
+    - burnin (None or int): Number of burn-in iterations. Defaults to None.
+    Returns:
+        None
+    """
+
+    def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
+                 end_year=2020, burnin=None):
+
+        super(BenchmarkAnalyzer_yr, self).__init__(working_dir=working_dir,
+                                                   filenames=[
+                                                       f"output/MalariaSummaryReport_Annual_{start_year}to{end_year}.json"])
+        self.sweep_variables = sweep_variables or ["Run_Number"]
+        self.expt_name = expt_name
+        self.start_year = start_year
+        self.end_year = end_year
+        self.burnin = burnin
+
+    def map(self, data, simulation: Simulation):
+
+        adf = pd.DataFrame()
+        nyears = self.end_year - self.start_year + 1
+        for fname in self.filenames:
+
+            age_bins = data[fname]['Metadata']['Age Bins']
+            reports = data[fname]['DataByTime']['Time Of Report'][:nyears]
+            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10'][:nyears]
+
+            for age in list(range(0, len(age_bins))):
+                # Extract data for each age bin
+                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin'][:nyears]
+                pfpr = [x[age] for x in d]
+                d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin'][:nyears]
+                clinical_cases = [x[age] for x in d]
+                d = data[fname]['DataByTimeAndAgeBins']['Annual Severe Incidence by Age Bin'][:nyears]
+                severe_cases = [x[age] for x in d]
+                d = data[fname]['DataByTimeAndAgeBins']['Average Population by Age Bin'][:nyears]
+                pop = [x[age] for x in d]
+
+                # Create a DataFrame for the simulation data
+                simdata = pd.DataFrame({'year': [x / 365 for x in reports],
+                                        'prevalence': pfpr,
+                                        'nUncomp_ppa': clinical_cases,  # per person per year
+                                        'nSevere_ppa': severe_cases, # per person per year
+                                        'nHost': pop})
+                simdata['age'] = age_bins[age]
+                simdata['prevalence_2to10'] = pfpr2to10
+                adf = pd.concat([adf, simdata])
+
+        # Add varying parameter values that describe and identify the simulation scenarios
+        for sweep_var in self.sweep_variables:
+            if sweep_var in simulation.tags.keys():
+                try:
+                    adf[sweep_var] = simulation.tags[sweep_var]
+                except:
+                    adf[sweep_var] = '-'.join([str(x) for x in simulation.tags[sweep_var]])
+
+        return adf
+
+    def reduce(self, all_data):
+
+        selected = [data for sim, data in all_data.items()]
+        if len(selected) == 0:
+            print("\nWarning: No data have been returned... Exiting...")
+            return
+
+        df = pd.concat(selected).reset_index(drop=True)
+        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year'])[['prevalence_2to10']].agg(np.mean).reset_index()
+
+        # Aggregate years
+        df = df.groupby(self.sweep_variables + ['age', 'year'])[
+            ['prevalence','nUncomp_ppa', 'nSevere_ppa', 'nHost']].agg(np.mean).reset_index()
+        df['nPatent'] = df['prevalence'] * df['nHost']   ## total patent infections
+        df['nUncomp'] = df['nUncomp_ppa'] * df['nHost']  ## total cases
+        df['nSevere'] = df['nSevere_ppa'] * df['nHost']  ## total cases
+
+        cdf = pd.DataFrame()
+        # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
+        # [[0, 5]] + [[(age_groups[i - 1]), (age_groups[i])] for i in range(1, len(age_groups))]
+        age_groups_aggregates = [[0, 5], [5, 10], [10, 15], [15, 20]]
+
+        # Loop over the age groups to aggregate agebins to the defined groups
+        for i in range(0, len(age_groups_aggregates)):
+            ages = age_groups_aggregates[i]
+            ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
+            adf = df[(df.age >= ages[0]) & (df.age <= ages[1])]
+            if adf.empty:
+                pass
+            else:
+                adf = adf.groupby(self.sweep_variables + ['year'])[['nPatent','nUncomp', 'nSevere', 'nHost']].agg(
+                    np.sum).reset_index()
+                adf['prevalence'] = adf['nPatent'] / (adf['nHost'])  
+                adf['nUncomp_ppa'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per year)
+                adf['nSevere_ppa'] = adf['nSevere'] / (adf['nHost'])  # (events per person per year)
+                adf['age_group'] = ageCond_labels
+                cdf = pd.concat([cdf, adf])
+
+        cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['year'])
+        cdf = cdf.rename(columns={"EIR_scale_factor": "eir"})
+        cdf['inputEIR'] = cdf['eir']  # to align with OM
+        cdf['simulatedEIR'] = cdf['eir']  # to align with OM columns
+
+        # Rename columns for alignment with OpenMalaria results
+        cdf = cdf.rename(columns={"Run_Number": "seed",
+                                  "cm_clinical_U5": "access",
+                                  "nUncomp_ppa": "clinical_incidence",
+                                  "nSevere_ppa": "severe_incidence"})
+        cdf['mortality'] = ''
+
+        # Save the processed DataFrame to a CSV file named 'EMOD_benchmark_yr.csv'
+        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}')
+        cdf.to_csv((os.path.join(self.working_dir, f'EMOD_benchmark_yr.csv')), index=False)
+
 
 
 if __name__ == "__main__":
@@ -757,4 +895,21 @@ if __name__ == "__main__":
             all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
             sample_plot_yr(wdir, exp_tags)
             sample_plot_mth(wdir, exp_tags)
-            eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=['EMOD'], sweepvar='access')
+            
+            emodom = ['EMOD']
+
+            sweepvar = 'annual_input_EIR'
+            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', sweepvar=sweepvar)
+            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', sweepvar=sweepvar)
+            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', sweepvar=sweepvar)
+            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence_2to10', sweepvar=sweepvar)
+            #monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
+
+            sweepvar = 'access'
+            prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', y_lim=1)
+            prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', y_lim=6)
+            prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', y_lim=0.1)
+            eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
+            eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='inputEIR')
+            input_to_simulated_eir(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar)
+
