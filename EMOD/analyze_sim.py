@@ -823,8 +823,10 @@ if __name__ == "__main__":
     start_year = exp.sim_start_year_em
     end_year = exp.end_year - 1
     monitoring_start = end_year - exp.monitoring_years
-    burnin = None  # exp.burnin  ## Years burnin
-
+    burnin = None #exp.burnin  ## Years burnin to discard when running burnin+pickup together
+    if exp.emod_serialize:
+        end_year = start_year + exp.burnin -1
+        
     # Define which outcome metrics to process in inset_chart (all age per daily timestep)
     channels_inset_chart = ['Statistical Population', 'Births', 'Disease Deaths',
                             'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
@@ -875,12 +877,17 @@ if __name__ == "__main__":
                                                         start_year=start_year,
                                                         end_year=end_year,
                                                         burnin=burnin)]
-
-        analyzer = all_age_analyzer + annual_analyzers + monthly_analyzers
+        
+        analyzer = all_age_analyzer + annual_analyzers
+        if not exp.emod_serialize: 
+            analyzer = analyzer + monthly_analyzers
+            
         if exp.entomology_mode == 'dynamic':
             analyzer = analyzer + eir_analyzer
 
-        analyzer = analyzers_benchmark + analyzer
+        if not exp.emod_serialize: 
+            analyzer = analyzer + analyzers_benchmark
+
         manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
                                  partial_analyze_ok=True)
         manager.analyze()

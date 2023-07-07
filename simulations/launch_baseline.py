@@ -329,3 +329,6 @@ if __name__ == '__main__':
     # if 'OpenMalaria' and 'EMOD' in models_to_run:
     #    #submit_combine_results(exp)  ## only combined benchmarking.csv, do csvs need to be combined per default?
     #    submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh', job_id='job_id_EMODanalyze')
+
+    # Copy simulation script to output folder
+    copy_sim_script(sim_out_dir)

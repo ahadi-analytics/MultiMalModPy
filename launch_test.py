@@ -194,7 +194,7 @@ def update_campaign_multiple_parameters_ser(simulation, df, cm_cov, cm_start, x:
     seed = int(df["Run_Number"][x])
     if entomology_mode == 'forced':
         eir = float(df["EIR_scale_factor"][x])
-        season = float(df["seasonality"][x])
+        season = df["seasonality"][x]
         eir_dic = {"EIR_scale_factor": eir, "seasonality": season}
         build_campaign_partial = partial(build_campaign, seasonality=season, EIR_scale_factor=eir, cm_cov=cm_cov,
                                          cm_start=cm_start)
@@ -262,7 +262,7 @@ def sweep_burnin_simulations(simulation, df, x: int, entomology_mode='dynamic'):
         transm_spec = ['x_Temporary_Larval_Habitat',
                        float(df["x_Temporary_Larval_Habitat"][x])]  # FIXME, enable seasonality once calibrated
     else:
-        update_eir_scale(simulation, float(df["EIR_scale_factor"][x]), float(df["seasonality"][x]))
+        update_eir_scale(simulation, float(df["EIR_scale_factor"][x]), df["seasonality"][x])
         transm_spec = ['EIR_scale_factor', float(df["EIR_scale_factor"][x])]
 
     return {
