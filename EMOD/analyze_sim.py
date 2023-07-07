@@ -886,7 +886,7 @@ if __name__ == "__main__":
         manager.analyze()
 
         # Create sample plots if specified
-        if create_sampleplots:
+        if create_sampleplots and not exp.emod_serialize:
             channels_inset_chart = ['Statistical Population', 'Births', 'New Infections', 'Newly Symptomatic',
                                     'New Clinical Cases', 'New Severe Cases',
                                     'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
