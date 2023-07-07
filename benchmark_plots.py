@@ -26,6 +26,16 @@ def parse_args():
         required=True,
         help="Job Directory where exp.obj is located",
     )
+    parser.add_argument(
+        "-m",
+        "--emodom",
+        nargs='+',
+        type=str,
+        required=True,
+        help="Name of models to compare",
+        default=['EMOD', 'OpenMalaria']
+    )
+
     return parser.parse_args()
 
 
@@ -62,7 +72,10 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_l
     df, wdir = get_emodom_df(wdir, emodom)
 
     seasonality = list(df['seasonality'].unique())
-    title = f'{channel.replace("_", " ").capitalize()} (events per person per year)'
+    title = f'{channel.replace("_", " ").capitalize()}'
+
+    if channel == 'clinical_incidence' or channel == 'severe_incidence':
+        title = f'{title} (events per person per year)'
 
     nx = len(emodom)
     ny = len(seasonality)
@@ -91,7 +104,8 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_l
             ax.set_ylim(0, y_lim)
             ax.set_xlim(0, 1)
             ax.set_xticks([0, 0.2, 0.4, 0.6, 0.8, 1])
-            if firstPlot: lg = ax.legend(loc="upper left", title="age group", title_fontproperties={"weight": "bold"})
+            if firstPlot: lg = ax.legend(loc="upper left",
+                                         title="age group")  # , title_fontproperties={"weight": "bold"}
             firstPlot = False
 
     fig.text(0.5, 0.02, '$\it{Pf}$PR$_{2-10}$ (%)', ha='center', va='center', fontsize=14)
@@ -128,7 +142,7 @@ def eir_to_prevalence2to10(wdir, emodom, sweepvar='access', eir_val='simulatedEI
         f += 1;
         sdf = df[(df.seasonality == season)]
         for p, pdf in sdf.groupby([sweepvar]):
-            # plot mean, min and max of seeds
+            # plot mean, min and max of seeds and age groups
             xmean = pdf.groupby('annual_input_EIR')[eir_val].agg(np.mean)
             ymean = pdf.groupby('annual_input_EIR')['prevalence_2to10'].agg(np.mean)
             ymin = pdf.groupby('annual_input_EIR')['prevalence_2to10'].agg(np.min)
@@ -174,7 +188,7 @@ def input_to_simulated_eir(wdir, emodom, sweepvar='access'):
         f += 1;
         sdf = df[(df.seasonality == season)]
         for p, pdf in sdf.groupby([sweepvar]):
-            # plot mean, min and max of seeds
+            # plot mean, min and max of seeds and age groups
             xmean = pdf.groupby('annual_input_EIR')['inputEIR'].agg(np.mean)
             ymean = pdf.groupby('annual_input_EIR')['simulatedEIR'].agg(np.mean)
             ymin = pdf.groupby('annual_input_EIR')['simulatedEIR'].agg(np.min)
@@ -202,9 +216,10 @@ def input_to_simulated_eir(wdir, emodom, sweepvar='access'):
     # fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,))
 
 
-def monthly_trends(wdir, emodom, channel, sweepvar='annual_input_EIR'):
+def monthly_trends(wdir, emodom, channel, sweepvar='annual_input_EIR', agegrp='0-5'):
     df, wdir = get_emodom_df(wdir, emodom, mth=True)
     df = df[(df.seasonality == 'seasonal')]
+    df = df[(df.age_group == agegrp)]
     if df.empty:
         raise ValueError('No seasonal transmission pattern specified')
     caption_txt = ''
@@ -213,7 +228,7 @@ def monthly_trends(wdir, emodom, channel, sweepvar='annual_input_EIR'):
         caption_txt = f'access: {np.min(df.access)}'
         df = df[(df.access == np.min(df.access))]
 
-    if channel == 'prevalence_2to10':
+    if channel == 'prevalence_2to10' or channel == 'prevalence':
         ylim_up = 1
         ylab = '$\it{Pf}$PR$_{2-10}$'
     else:
@@ -242,7 +257,7 @@ def monthly_trends(wdir, emodom, channel, sweepvar='annual_input_EIR'):
         ax.set_ylim(0, ylim_up)
         ax.set_xlim(0, 12)
         ax.set_xlabel('month', fontsize=14)
-        if firstPlot: lg = ax.legend(loc="upper left", title=sweepvar, title_fontproperties={"weight": "bold"})
+        if firstPlot: lg = ax.legend(loc="upper left", title=sweepvar)  # , title_fontproperties={"weight": "bold"}
         firstPlot = False
 
     fig.text(0.02, 0.5, ylab, ha='center', va='center', rotation='vertical', fontsize=14)
@@ -251,7 +266,7 @@ def monthly_trends(wdir, emodom, channel, sweepvar='annual_input_EIR'):
         fig.text(0.95, 0.25, emodom[1], ha='center', va='center', rotation=-90, fontsize=14)
     fig.tight_layout(rect=[0.023, 0.025, 0.955, 0.955])
 
-    fname = f'monthly_{channel}_by_{sweepvar}'
+    fname = f'monthly_{channel}_by_{sweepvar}_age{agegrp}'
     fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,))
     # fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,))
 
@@ -259,12 +274,11 @@ def monthly_trends(wdir, emodom, channel, sweepvar='annual_input_EIR'):
 if __name__ == "__main__":
     args = parse_args()
     job_directory = args.directory
+    emodom = args.emodom
+    if isinstance(emodom, str):
+        emodom = [emodom]
 
-    file = open(os.path.join(job_directory, "exp.obj"), "rb")
-    exp = pickle.load(file)
     wdir = job_directory
-
-    emodom = ['EMOD', 'OpenMalaria']
 
     if len(emodom) == 2:
         sweepvar = 'emodom'  ## FIXME, when using both model use them as sweepvar only possibility
@@ -273,13 +287,18 @@ if __name__ == "__main__":
 
     prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_lim=6)
     prevalence2to10_to_incidence(wdir, emodom, channel='severe_incidence', y_lim=0.1)
+    prevalence2to10_to_incidence(wdir, emodom, channel='prevalence', y_lim=1)
 
     eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
     eir_to_prevalence2to10(job_directory, emodom, sweepvar=sweepvar, eir_val='inputEIR')
     input_to_simulated_eir(wdir, emodom, sweepvar=sweepvar)
 
-    sweepvar = 'annual_input_EIR'
-    monthly_trends(wdir, emodom, channel='clinical_incidence', sweepvar=sweepvar)
-    monthly_trends(wdir, emodom, channel='severe_incidence', sweepvar=sweepvar)
-    monthly_trends(wdir, emodom, channel='prevalence_2to10', sweepvar=sweepvar)
-    monthly_trends(wdir, emodom, channel='simulatedEIR', sweepvar=sweepvar)
+    try:
+        sweepvar = 'annual_input_EIR'
+        monthly_trends(wdir, emodom, channel='prevalence', sweepvar=sweepvar)
+        monthly_trends(wdir, emodom, channel='clinical_incidence', sweepvar=sweepvar)
+        monthly_trends(wdir, emodom, channel='severe_incidence', sweepvar=sweepvar)
+        monthly_trends(wdir, emodom, channel='prevalence_2to10', sweepvar=sweepvar)
+        monthly_trends(wdir, emodom, channel='simulatedEIR', sweepvar=sweepvar)
+    except:
+        print('No monthly plots generated')

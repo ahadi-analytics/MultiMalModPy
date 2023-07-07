@@ -88,7 +88,7 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5):
     - agebin (int): Age bin. Defaults to 5.
     """
     # Outcome channels to plot
-    channels = ['nHost', 'nUncomp_annualized', 'nSevere_annualized', 'nInfect', 'pfpr', 'prevalence_2to10']
+    channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'pfpr', 'prevalence_2to10']
 
     # Read the data from a CSV file
     df = pd.read_csv(os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv'))
@@ -128,7 +128,9 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5):
     # Uncomment the following lines if you want to add a legend
     # if len(sweep_variables) > 0:
     #     lg = axes[-1].legend(title=sweep_variables, bbox_to_anchor=(1.05, 1.0), loc='upper left')
-
+    fig.text(0.02, 0.5, 'Value', ha='center', va='center', rotation='vertical', fontsize=14)
+    fig.text(0.5, 0.02, 'Simulation time (years)', ha='center', va='center', fontsize=14)
+    
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
     fig.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_yr_agebin{agebin}.png'))
 
@@ -142,7 +144,7 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
     - agebin (int): Age bin. Defaults to 5.
     """
     # Outcome channels to plot
-    channels = ['nHost', 'nUncomp_annualized', 'nSevere_annualized', 'nInfect', 'pfpr', 'prevalence_2to10']
+    channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'pfpr', 'prevalence_2to10']
 
     # Remove Run_Number from sweep_variables, hence aggregated runs
     sweep_variables = [s for s in sweep_variables if s != 'Run_Number']
@@ -153,7 +155,8 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
     df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
 
     # Select the second last year of simulation to reduce number of data points to plot on x-axis
-    df = df.loc[df['year'] == np.max(df['year']) - 1]
+    yr = np.max(df['year']) - 1
+    df = df.loc[df['year'] == yr]
 
     # Group and aggregate the data
     df = df.groupby(['date', 'age'] + sweep_variables)[channels].agg(np.mean).reset_index()
@@ -177,17 +180,20 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
     # Plot the data for each channel
     for ch, channel in enumerate(channels):
         ax = axes[ch]
+        y_lim = np.max(df[channel]) + (np.max(df[channel]) * 0.2)
         for p, pdf in df.groupby(sweep_variables):
             ax.plot(pdf['date'], pdf[channel], '-', linewidth=0.8, label=p)
         ax.set_title(channel)
         # ax.set_ylabel(channel)
-        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=12))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+        ax.set_ylim(0, y_lim)
+        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 
     # Uncomment the following lines if you want to add a legend
     # if len(sweep_variables) > 0:
     #    lg = axes[-1].legend(title=sweep_variables, bbox_to_anchor=(1.05, 1.0), loc='upper left')
-
+    fig1.text(0.02, 0.5, 'Value', ha='center', va='center', rotation='vertical', fontsize=14)
+    fig1.text(0.5, 0.02, f'Months (single year {yr})', ha='center', va='center', fontsize=14)
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
     fig1.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_mth_agebin{agebin}.png'))
 
@@ -196,7 +202,7 @@ if __name__ == "__main__":
     # Parse command line arguments
     args = parse_args()
     job_directory = args.directory
-
+    #job_directory = 'C:/Users/mrm9534/NU Malaria Modeling Dropbox/projects/EMOD_OM/simulation_outputs/sim_test_cm'
     # Set wdir directory for loading and saving simulation results (for EMOD)
     wdir = os.path.join(job_directory, 'em')
 
@@ -212,7 +218,7 @@ if __name__ == "__main__":
                             'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
                             'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
                             'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
-                            'Infectious Vectors', 'Daily EIR']
+                            'Infectious Vectors', 'EIR']
 
     # Create sample plots
     all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
