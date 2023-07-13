@@ -354,6 +354,9 @@ if __name__ == '__main__':
 
     # Submit EMOD simulation as SLURM job, including scheduled analyzer
     if 'EMOD' in models_to_run:
+        import emod_malaria.bootstrap as dtk
+        import pathlib
+        dtk.setup(pathlib.Path(manifest.eradication_path).parent)
         submit_create_run_EMOD(exp)
 
     # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
@@ -369,5 +372,3 @@ if __name__ == '__main__':
         submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
                             job_id='job_id_EMODanalyze')
 
-    # Copy simulation script to output folder
-    copy_sim_script(sim_out_dir)
