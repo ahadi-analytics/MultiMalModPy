@@ -369,5 +369,3 @@ if __name__ == '__main__':
         submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
                             job_id='job_id_EMODanalyze')
 
-    # Copy simulation script to output folder
-    copy_sim_script(sim_out_dir)
