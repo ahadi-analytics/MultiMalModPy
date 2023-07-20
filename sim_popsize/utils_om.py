@@ -38,32 +38,49 @@ def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMala
     shutil.copy(os.path.join(exp.om_path, schema), exp.job_directory)
 
 
-def submit_run_OpenMalaria(exp, scen_df):
+def submit_run_OpenMalaria(exp, scen_df, t='01:00:00', memG=8):
+    """
+    Submits OpenMalaria simulations to a high-performance computing cluster.
+    Args:
+        exp: An object containing experiment parameters and configuration.
+        scen_df: A pandas DataFrame containing scenario information.
+    Returns:
+        None
+    """
+
+    # Create necessary directories for logs, XML files, and output text files
     os.makedirs(os.path.relpath(f"{exp.job_directory}/log"), exist_ok=True)
     os.makedirs(os.path.relpath(f"{exp.job_directory}/xml"), exist_ok=True)
     os.makedirs(os.path.relpath(f"{exp.job_directory}/txt"), exist_ok=True)
+    os.makedirs(os.path.relpath(f"{exp.job_directory}/ctsout"), exist_ok=True)
 
+    # Generate OpenMalaria scenario XML files
     create_scenarios_OM(exp, scen_df)
-    # wdir = os.path.abspath(os.path.dirname(__file__))
-    ## Write bash file to submit
+
+    # Set up script for submitting OpenMalaria simulations as a SLURM array job
     array = f'#SBATCH --array=1-{str(exp.nexps)}\n'
-    header_post = shell_header_quest(job_name=f'run_openmalaria', t='01:00:00', arrayJob=array)
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=f'run_openmalaria', arrayJob=array)
     openmalaria = OM_module(exp.hpc, exp.om_version)
-    path = f'export PATH=$PATH: {exp.job_directory}'
+    path = f'export PATH=$PATH:{exp.job_directory}'
     slurmID = '${SLURM_ARRAY_TASK_ID}'
     command = f'\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
     script_path = os.path.join(exp.job_directory, f'run_sim_OpenMalaria.sh')
 
+    # Write the bash script for submitting OpenMalaria simulations
     file = open(script_path, 'w')
     file.write(header_post + openmalaria + path + command)
     file.close()
 
+    # Submit the OpenMalaria simulations as a SLURM job
     p = subprocess.run(['sbatch', '--parsable', 'run_sim_OpenMalaria.sh'], stdout=subprocess.PIPE,
                        cwd=str(exp.job_directory))
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
 
+    # Save the SLURM job ID to a file
+    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
     print(f'Submitted simulations - job id: {slurm_job_id}')
     file = open(os.path.join(exp.job_directory, f'job_id.txt'), 'w')
     file.write(slurm_job_id)
     file.close()
+
+    # Submit the job for analysis
     submit_analyze_OpenMalaria(exp)

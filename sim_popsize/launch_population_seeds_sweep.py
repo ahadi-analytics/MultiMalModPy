@@ -11,9 +11,9 @@ import emodpy_malaria.malaria_config as malaria_config
 
 sys.path.append('../')
 import manifest
+from helper import *
 from sim_popsize.utils_em import *
 from sim_popsize.utils_om import *
-from sim_popsize.helper import *
 from EMOD.scaffolds.forcedEIR import *
 from EMOD.scaffolds.interventions import treatment_camp_simple
 
