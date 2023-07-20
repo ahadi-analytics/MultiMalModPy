@@ -22,7 +22,7 @@ for (rs in c(1:100)) {
       group_by(emodom) %>%
       #filter(seed %in% rnd_seeds) %>% #%>%
       filter(seed %in% sample(seed, s)) %>%
-      group_by(eir, seasonality, access, pop_size, emodom, age_group) %>%
+      group_by(eir, seasonality, cm_clinical, pop_size, emodom, age_group) %>%
       summarize(clinical_incidence = mean(clinical_incidence),
                 severe_incidence = mean(severe_incidence),
                 prevalence_2to10 = mean(prevalence_2to10),

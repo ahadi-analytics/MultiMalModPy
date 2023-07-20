@@ -169,7 +169,7 @@ def create_scenarios_csv(exp, col_list=None):
     Args:
         exp (object): The experiment object containing the scenario attributes.
         col_list (list): List of attribute names to include in the scenarios CSV file. Default is None,
-        which includes the attributes ['eirs', 'access', 'seasonality'].
+        which includes the attributes ['eirs', 'cm_clinical', 'seasonality'].
 
     Returns:
         pandas.DataFrame: A DataFrame representing the scenarios.
@@ -177,7 +177,7 @@ def create_scenarios_csv(exp, col_list=None):
     """
 
     if col_list is None:
-        col_list = ['eirs', 'access', 'seasonality']
+        col_list = ['eirs', 'cm_clinical', 'seasonality']
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
@@ -465,7 +465,7 @@ def combine_emodom_results(sim_out_dir):
     df_om['emodom'] = 'OpenMalaria'
 
     # Append EMOD and OpenMalaria DataFrames
-    df = df_em.append(df_om)
+    df = pd.concat(df_em,df_om)
 
     # Save the combined DataFrame as a CSV file
     df.to_csv((os.path.join(sim_out_dir, 'comb', f'benchmark.csv')), index=False)

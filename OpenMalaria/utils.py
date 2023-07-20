@@ -10,6 +10,7 @@ def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMala
     Returns:
         None
     """
+
     with open(os.path.join(exp.om_input_path, 'scaffolds', f"{exp.om_scaffold}.xml"), "r") as fp:
         xml = fp.read()
 
@@ -21,13 +22,15 @@ def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMala
     xml = xml.replace(f"@end_year@", f"{exp.end_year}")
     xml = xml.replace(f"@survey_step@", f"{exp.om_survey_step}")
     xml = xml.replace(f"@entomology_mode@", f"{exp.entomology_mode}")
+    xml = xml.replace(f"@detectionLimit@", f"{exp.detectionLimit}")
 
     # Scenario sweeps and runs
+    # TODO helper function to replace all, except seed and seasonality
     for r, row in scen_df.iterrows():
         scenario = xml.replace('@seed@', str(row['seed']))
         scenario = scenario.replace('@eir@', str(row['eir']))
-        scenario = scenario.replace('@access@', str(
-            row['access']))  ## to do helper function to replace all, except seed and seasonality
+        scenario = scenario.replace('@cm_clinical@', str(row['cm_clinical']))
+        scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
         seasonality = getattr(exp, row['seasonality'])
 
         # Replace seasonality placeholders with corresponding values from the experiment object
@@ -35,7 +38,7 @@ def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMala
             scenario = scenario.replace(f'@seasonality{i}@', str(seasonality[i - 1]))
 
         # Write the scenario XML file
-        with open(f"{exp.job_directory}/xml/{row['index']}.xml", 'w') as fo:
+        with open(f"{exp.job_directory}/xml/{row['index'] + 1}.xml", 'w') as fo:
             fo.write(f"{scenario}")
 
     # Copy additional files required by OpenMalaria
@@ -58,6 +61,7 @@ def submit_run_OpenMalaria(exp, scen_df):
     os.makedirs(os.path.relpath(f"{exp.job_directory}/log"), exist_ok=True)
     os.makedirs(os.path.relpath(f"{exp.job_directory}/xml"), exist_ok=True)
     os.makedirs(os.path.relpath(f"{exp.job_directory}/txt"), exist_ok=True)
+    os.makedirs(os.path.relpath(f"{exp.job_directory}/ctsout"), exist_ok=True)
 
     # Generate OpenMalaria scenario XML files
     create_scenarios_OM(exp, scen_df)

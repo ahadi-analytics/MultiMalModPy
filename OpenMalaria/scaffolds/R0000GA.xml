@@ -28,23 +28,36 @@
             <option name="nHost"/>          <!-- id 0 -->
             <option name="nInfect"/>        <!-- id 1 -->
             <option name="nPatent"/>        <!-- id 3 -->
+            <option name="sumLogPyrogenThres"/>        <!-- id 4 -->
+            <option name="sumlogDens"/>        <!-- id 5 -->
             <option name="totalInfs"/>      <!-- id 6 -->
+            <option name="nTransmit"/>      <!-- id 7 -->
             <option name="totalPatentInf"/> <!-- id 8 -->
+            <option name="sumPyrogenThresh"/>        <!-- id 10 -->
             <option name="nTreatments1"/>   <!-- id 11 -->
             <option name="nTreatments2"/>   <!-- id 12 -->
             <option name="nTreatments3"/>   <!-- id 13 -->
             <option name="nUncomp"/>        <!-- id 14 -->
             <option name="nSevere"/>        <!-- id 15 -->
             <option name="nSeq"/>           <!-- id 16 -->
+            <!--<option name="nHospitalDeaths"/> -->         <!-- id 17 -->
             <option name="nIndDeaths"/>     <!-- id 18 -->
             <option name="nDirDeaths"/>     <!-- id 19 -->
+            <!--<option name="nMassVaccinations"/>-->     <!-- id 22 -->
+            <!--<option name="nHospitalRecovs"/>-->     <!-- id 23 -->
+            <!--<option name="annAvgK"/>  -->     <!-- id 26 -->
+            <option name="nNMFever"/>       <!-- id 27 -->
             <option name="inputEIR"/>       <!-- id 35 -->
             <option name="simulatedEIR"/>   <!-- id 36 -->
+            <option name="nNewInfections"/>  <!-- id 43 -->
+            <!--<option name="nMDAs"/> -->    <!-- id 52 -->
+            <option name="nNmfDeaths"/>       <!-- id 53 -->
+            <!--<option name="nMassGVI"/>-->        <!-- id 56 -->
             <option name="expectedDirectDeaths"/>   <!-- id 74 -->
             <option name="expectedIndirectDeaths"/> <!-- id 76 -->
             <option name="expectedSevere"/>   <!-- id 77 -->
         </SurveyOptions>
-    		<surveys detectionLimit="40">
+    		<surveys detectionLimit="@detectionLimit@">
     			<surveyTime repeatStep="@survey_step@" repeatEnd="@end_year@-01-01">
             @start_year@-01-01
     			</surveyTime>
@@ -91,11 +104,12 @@
                 </QN>
             </treatmentActions>
       
-            <pSeekOfficialCareUncomplicated1 value="@access@"/>
+            <pSeekOfficialCareUncomplicated1 value="@cm_clinical@"/>
             <pSelfTreatUncomplicated value="0.00"/>
-            <pSeekOfficialCareUncomplicated2 value="@access@"/>
-            <pSeekOfficialCareSevere value="0.48"/>
-            <!-- Value 0.48 used in Tediosi et al., 2006 for reference scenario -->
+            <pSeekOfficialCareUncomplicated2 value="@cm_clinical@"/>
+            <pSeekOfficialCareSevere value="@cm_severe@"/>
+            <!-- Default value to use 0.48 as in Tediosi et al., 2006 for reference scenario -->
+            <!-- Modified to placeholder to allow dependency to cm_clinical being greater than 0.48 -->
         </ImmediateOutcomes>
         <CFR>
             <group lowerbound="0" value="0.09189"/>
@@ -195,7 +209,7 @@
     </entomology>
     <diagnostics>
         <diagnostic name="Deterministic_diagnostic">
-            <deterministic minDensity="40"/>
+            <deterministic minDensity="@detectionLimit@"/>
         </diagnostic>
     </diagnostics>
     <model>

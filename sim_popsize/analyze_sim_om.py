@@ -40,7 +40,7 @@ if __name__ == "__main__":
     AnnualAgebinAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
 
     # Define tags and channels for sample plots
-    exp_tags = ['seed', 'eir', 'access', 'seasonality']  # FIXME dont hardcode
+    exp_tags = [x for x in exp.sweep_list if x != 'seed']
     channels_inset_chart = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
                             'nSevere', 'nSeq', 'nIndDeaths',
                             'nDirDeaths', 'inputEIR', 'simulatedEIR', 'expectedDirectDeaths',

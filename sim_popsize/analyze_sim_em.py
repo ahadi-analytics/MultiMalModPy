@@ -38,7 +38,9 @@ if __name__ == "__main__":
     eirchannel = "EIR_scale_factor"
 
     # Define tags and simulation experiment configurations
-    exp_tags = ['Run_Number', eirchannel, 'seasonality', 'cm_clinical_U5', 'x_Base_Population']  # ,'seasonality'
+    exp_tags = [x for x in exp.sweep_list if x != 'seed'] + ['Run_Number']
+    exp_tags = [eirchannel if tag == 'eir' else tag for tag in exp_tags]
+    exp_tags = ['x_Base_Population' if tag == 'pop_size' else tag for tag in exp_tags]
     start_year = exp.sim_start_year_em
     end_year = exp.end_year - 1
     monitoring_start = end_year - exp.monitoring_years

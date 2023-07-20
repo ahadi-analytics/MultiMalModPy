@@ -14,14 +14,19 @@ def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMala
     xml = xml.replace(f"@end_year@", f"{exp.end_year}")
     xml = xml.replace(f"@survey_step@", f"{exp.om_survey_step}")
     xml = xml.replace(f"@entomology_mode@", f"{exp.entomology_mode}")
+    xml = xml.replace(f"@detectionLimit@", f"{exp.detectionLimit}")
 
     ### Scenario sweeps and runs
     for r, row in scen_df.iterrows():
+        # when cm_clinical is varied, severe should always be higher
+        if row['cm_severe'] < row['cm_clinical']:
+            row['cm_severe'] = min(float(row['cm_clinical']) * 1.15, 1)
+
         scenario = xml.replace('@seed@', str(row['seed']))
         scenario = scenario.replace(f"@pop_size@", str(row['pop_size']))
         scenario = scenario.replace('@eir@', str(row['eir']))
-        scenario = scenario.replace('@access@', str( row['access']))  ## to do helper function to replace all, except seed and seasonality
-        scenario = scenario.replace('@access_severe@', str(min(float(row['access']) * 1.15, 1)))
+        scenario = scenario.replace('@cm_clinical@', str(row['cm_clinical']))
+        scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
         seasonality = getattr(exp, row['seasonality'])
         for i in range(1, 13):
             scenario = scenario.replace(f'@seasonality{i}@', str(seasonality[i - 1]))
@@ -62,5 +67,3 @@ def submit_run_OpenMalaria(exp, scen_df):
     file.write(slurm_job_id)
     file.close()
     submit_analyze_OpenMalaria(exp)
-
-

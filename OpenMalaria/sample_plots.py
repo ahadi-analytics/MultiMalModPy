@@ -3,6 +3,7 @@ import argparse
 import matplotlib as mpl
 import numpy as np
 import pandas as pd
+import pickle
 
 mpl.use('Agg')
 mpl.rcParams['pdf.fonttype'] = 42
@@ -154,14 +155,14 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
     # Read the data from a CSV file
     df = pd.read_csv(os.path.join(wdir, 'OM_surveyoutput_mth.csv'))
     df['pfpr'] = df['nPatent'] / df['nHost']
-    df['date'] = pd.to_datetime(df['date'], format ='%Y-%m-%d')
+    df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
 
     # Select the second last year of simulation to reduce number of data points to plot on x-axis
     yr = np.max(df['year']) - 1
     df = df.loc[df['year'] == yr]
 
     # Group and aggregate the data
-    df = df.groupby(['date','survey', 'agebin'] + sweep_variables)[channels].agg(np.mean).reset_index()
+    df = df.groupby(['date', 'survey', 'agebin'] + sweep_variables)[channels].agg(np.mean).reset_index()
 
     # Plot only single agebin as specified
     df = df.loc[df['agebin'] == agebin]
@@ -207,11 +208,14 @@ if __name__ == "__main__":
     args = parse_args()
     job_directory = args.directory
 
+    file = open(os.path.join(job_directory, "exp.obj"), "rb")
+    exp = pickle.load(file)
+
     # Set wdir directory for loading and saving simulation results (for OpenMalaria)
     wdir = os.path.join(job_directory, 'om')
 
     # Define tags and channels for sample plots
-    exp_tags = ['seed', 'eir', 'access', 'seasonality']  # FIXME dont hardcode
+    exp_tags = exp.sweep_list  # [x for x in exp.sweep_list if x != 'seed']
     channels_inset_chart = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
                             'nSevere', 'nSeq', 'nIndDeaths',
                             'nDirDeaths', 'inputEIR', 'simulatedEIR', 'expectedDirectDeaths',

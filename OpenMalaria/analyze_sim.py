@@ -71,6 +71,7 @@ def format_df(df):
     })
     # Drop rows with survey number 1, that include cumulative results over past simulation time not monitored
     df.drop(df[df.survey == 1].index, inplace=True)
+    df['survey'] = df['survey'] -1
     # Reset the index of the DataFrame to drop rows with NaN values
     df.reset_index(inplace=True)
     return df
@@ -106,8 +107,15 @@ def survey_to_date(df, survey_step_days=30, start_year=0):
     Raises:
         ValueError: If survey_step_days is not 30 or 365.
     """
+    # 5day timesteps
+    if survey_step_days == 5:
+        df['days'] = df['survey'] * survey_step_days
+        df['month'] = np.floor(df['days'] / (365/12))+1
+        df['month'] = df['survey'] % 12
+        df.loc[df['month'] == 0, 'month'] = 12
+        df['year'] = (df['days'] / 365).apply(np.floor)
     # Monthly timesteps
-    if survey_step_days == 30:
+    elif survey_step_days == 30:
         df['days'] = df['survey'] * survey_step_days
         df['month'] = df['survey'] % 12
         df.loc[df['month'] == 0, 'month'] = 12
@@ -115,7 +123,7 @@ def survey_to_date(df, survey_step_days=30, start_year=0):
     # Annual timesteps
     elif survey_step_days == 365:
         df['year'] = df['survey']
-        df['month'] = 12
+        df['month'] = 1
     else:
         raise ValueError("survey_step_days must be 30 or 365")
 
@@ -439,7 +447,7 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
 
     # Read the monthly EIR data from the CSV file and compute the mean for each index and month
     eir_df = pd.read_csv(os.path.join(wdir, 'OM_EIR_mth.csv'))
-    eir_df = eir_df.groupby(['index', 'month'], as_index=False)['inputEIR', 'simulatedEIR'].mean()
+    eir_df = eir_df.groupby(['index', 'month'], as_index=False)[['inputEIR', 'simulatedEIR']].mean()
 
     # Define age groups and labels
     age_groups = exp.agebins  # np.array([0.5,1,2,5,10,15,20,100])
@@ -551,6 +559,7 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
         None
     """
     print(f"Running MonthlyAgebinAnalyzer...", flush=True)
+    channels = ['index', 'survey', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp', 'nSevere']
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
@@ -579,6 +588,8 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     df1.columns = [''.join(col).replace('value', '') for col in df1.columns]
     df1 = df1.reset_index()
 
+    # only keep selected outcome columns
+    df1 = df1[channels]
     # Merge the pivoted table with the scenario data
     df2 = df1.merge(scen_df, on='index', how='inner')
     df2 = df2.rename({'ageGroup': 'agebin_nr'}, axis=1)
@@ -615,7 +626,7 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
         None
     """
     print(f"Running AnnualAgebinAnalyzer...", flush=True)
-
+    channels = ['index', 'year', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp', 'nSevere']
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
 
@@ -648,6 +659,9 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
                            aggfunc='first'))
     df1.columns = [''.join(col).replace('value', '') for col in df1.columns]
     df1 = df1.reset_index()
+
+    # only keep selected outcome columns
+    df1 = df1[channels]
 
     # Merge with scenario data
     df2 = df1.merge(scen_df, on='index', how='inner')
@@ -796,6 +810,8 @@ if __name__ == "__main__":
     create_sampleplots = True
 
     # Determine survey step size
+    if exp.om_survey_step == '5d':
+        survey_steps = 5
     if exp.om_survey_step == '30d':
         survey_steps = 30
     if exp.om_survey_step == '1y':
@@ -815,7 +831,7 @@ if __name__ == "__main__":
     AnnualAgebinAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
 
     # Define tags and channels for sample plots
-    exp_tags = ['seed', 'eir', 'access', 'seasonality']  # FIXME dont hardcode
+    exp_tags = [x for x in exp.sweep_list if x != 'seed']
     channels_inset_chart = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
                             'nSevere', 'nSeq', 'nIndDeaths',
                             'nDirDeaths', 'inputEIR', 'simulatedEIR', 'expectedDirectDeaths',
@@ -836,7 +852,7 @@ if __name__ == "__main__":
             monthly_trends(wdir= exp.sim_out_dir, emodom=emodom,  channel='prevalence_2to10', sweepvar=sweepvar)
             monthly_trends(wdir= exp.sim_out_dir,  emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
         
-        sweepvar ='access'
+        sweepvar ='cm_clinical'
         prevalence2to10_to_incidence(wdir= exp.sim_out_dir, emodom=emodom, channel='prevalence', y_lim=1)
         prevalence2to10_to_incidence(wdir= exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', y_lim=6)
         prevalence2to10_to_incidence(wdir= exp.sim_out_dir, emodom=emodom, channel='severe_incidence', y_lim=0.1)

@@ -169,7 +169,7 @@ def create_scenarios_csv(exp, col_list=None):
     Args:
         exp (object): The experiment object containing the scenario attributes.
         col_list (list): List of attribute names to include in the scenarios CSV file. Default is None,
-        which includes the attributes ['eirs', 'access', 'seasonality'].
+        which includes the attributes ['eirs', 'cm_clinical', 'seasonality'].
 
     Returns:
         pandas.DataFrame: A DataFrame representing the scenarios.
@@ -177,7 +177,7 @@ def create_scenarios_csv(exp, col_list=None):
     """
 
     if col_list is None:
-        col_list = ['eirs', 'access', 'seasonality']
+        col_list = ['eirs', 'cm_clinical', 'seasonality']
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
@@ -279,7 +279,7 @@ def submit_analyze_OpenMalaria(exp):
     """
 
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(job_name=f'analyze_exp', t='01:00:00')
+    header_post = shell_header_quest(job_name=f'analyze_OMsim', t='01:00:00')
 
     # Create the Python command to run the analyzer
     pycommand = f'\ncd /home/mrm9534/model-characterization/OpenMalaria' \
@@ -321,7 +321,7 @@ def submit_analyze_EMOD(experiment, platform):
     wdir = os.path.abspath(os.path.dirname(__file__))
 
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(job_name=f'analyze_exp', t='01:00:00')
+    header_post = shell_header_quest(job_name=f'analyze_EMODsim', t='01:00:00')
 
     # Get the EMODpy virtual environment path
     emodpy_venv = emodpy_module(experiment.hpc)
@@ -338,7 +338,7 @@ def submit_analyze_EMOD(experiment, platform):
     file.close()
 
     # Get the job ID
-    job_id = platform._op_client.get_job_id(experiment.id, experiment.item_type)
+    job_id = platform._op_client.get_job_id(experiment.id, experiment.item_type)  #[0]
 
     # Submit the job with dependency on the previous job
     p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path], stdout=subprocess.PIPE,
@@ -464,7 +464,7 @@ def combine_emodom_results(sim_out_dir):
     df_om['emodom'] = 'OpenMalaria'
 
     # Append EMOD and OpenMalaria DataFrames
-    df = df_em.append(df_om)
+    df = pd.concat(df_em,df_om)
 
     # Save the combined DataFrame as a CSV file
     df.to_csv((os.path.join(sim_out_dir, 'comb', f'benchmark.csv')), index=False)

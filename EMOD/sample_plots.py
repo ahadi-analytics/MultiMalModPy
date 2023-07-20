@@ -3,7 +3,7 @@ import argparse
 import matplotlib as mpl
 import numpy as np
 import pandas as pd
-
+import pickle
 mpl.use('Agg')
 mpl.rcParams['pdf.fonttype'] = 42
 # mpl.rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
@@ -202,7 +202,10 @@ if __name__ == "__main__":
     # Parse command line arguments
     args = parse_args()
     job_directory = args.directory
-    #job_directory = 'C:/Users/mrm9534/NU Malaria Modeling Dropbox/projects/EMOD_OM/simulation_outputs/sim_test_cm'
+
+    file = open(os.path.join(job_directory, "exp.obj"), "rb")
+    exp = pickle.load(file)
+
     # Set wdir directory for loading and saving simulation results (for EMOD)
     wdir = os.path.join(job_directory, 'em')
 
@@ -213,7 +216,8 @@ if __name__ == "__main__":
         eirchannel = "EIR_scale_factor"
 
     # Define tags and channels for sample plots
-    exp_tags = [eirchannel, 'cm_clinical_U5', 'seasonality']  # FIXME dont hardcode, 'Run_Number',
+    exp_tags = [x for x in exp.sweep_list if x != 'seed'] # + ['Run_Number']
+    exp_tags = [eirchannel if tag == 'eir' else tag for tag in exp_tags]
     channels_inset_chart = ['Statistical Population', 'Births', 'Disease Deaths',
                             'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
                             'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',

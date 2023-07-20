@@ -15,7 +15,7 @@ from sim_popsize.utils_em import *
 from sim_popsize.utils_om import *
 from sim_popsize.helper import *
 from EMOD.scaffolds.forcedEIR import *
-from EMOD.scaffolds.interventions import treatment_camp
+from EMOD.scaffolds.interventions import treatment_camp_simple
 
 # Setting up variables and flags for the simulation
 log = logging.getLogger(__name__)
@@ -59,7 +59,7 @@ start_year = sim_start_year_om  # Start OpenMalaria Monitoring early
 monitoring_years = sim_dur_years  # Monitor all years
 
 ## Name of parameters to vary
-sweep_list = ['pop_size','eir', 'access', 'seasonality'] + ['seed']
+sweep_list = ['pop_size','eir', 'cm_clinical', 'seasonality'] + ['seed']
 
 
 # EMOD burn-in and pickup configuration
@@ -73,8 +73,8 @@ if emod_serialize and 'EMOD' in models_to_run:
     print('Message: Running burnin for EMOD')
     exp_name = f'{exp_name}_burnin{burnin}'
     emod_burnin_id = ''
-    models_to_run = ['EMOD']
-    sweep_list = ['eir', 'access', 'seasonality', 'seed']
+    models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
+    sweep_list = ['eir', 'cm_clinical', 'cm_severe', 'seasonality'] + ['seed']  # If running fewer sweeps in past than in pickup
 if not emod_pickup:
     emod_burnin_id = None
 
@@ -82,7 +82,9 @@ if not emod_pickup:
 # Define case management start and coverage
 # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
 cm_start = 1
-access = [0.2029544]  # 5-day probability  ## already converted
+cm_clinical = [0.2029544]
+cm_severe = [0.48]  # as in Tediosi et al., 2006 for reference scenario
+detectionLimit = 40
 
 # Transmission and seasonality configuration
 seasonality = ["perennial","seasonal"]  # , "seasonal"
@@ -142,7 +144,8 @@ def set_config_parameters(config):
     config = malaria_config.set_team_defaults(config, manifest)
     #config.parameters.x_Base_Population = pop_size / 1000
     config.parameters.Simulation_Duration = sim_dur_years * 365
-    config.parameters.Enable_Default_Reporting = 0
+    config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = detectionLimit
+    config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = detectionLimit
 
     if entomology_mode == 'dynamic':
         malaria_config.add_species(config, manifest, ["gambiae"])  # , "arabiensis", "funestus"
@@ -174,31 +177,45 @@ def build_campaign(seasonality=None, EIR_scale_factor=None, cm_cov=0.5, cm_clini
     Parameters:
         seasonality (list or None): List of seasonality values.
         EIR_scale_factor (float or None): Scaling factor for the input EIR.
-        cm_cov (float): Coverage of case management interventions.
+        cm_cov (float): Coverage of clinical case management for all ages.
+        cm_severe_cov (float): Coverage of severe case management for all ages.
         cm_start (int): Start day for case management interventions.
     Returns:
         object: The campaign object.
     """
     camp = build_standard_campaign_object(manifest)
-    treatment_camp(camp, cm_start=cm_start, cm_clinical_U5=cm_cov)
+    treatment_camp_simple(camp, cm_start=cm_start, cm_clinical=cm_cov, cm_severe = cm_severe_cov)
     if EIR_scale_factor is not None:
         set_inputEIR_seasonality(camp, EIR_scale_factor, seasonality)
     return camp
 
 
-def update_campaign_multiple_parameters_ser(simulation, df, pop_size, cm_cov, cm_start, x: int):
+def update_campaign_multiple_parameters_ser(simulation, df, cm_cov,cm_severe_cov, cm_start, x: int):
+    """
+    Updates campaign parameters and serialization configuration for the EMOD simulation
+    Args:
+        simulation: The EMOD simulation object.
+        df: The dataframe containing simulation parameters.
+        cm_cov (float): Coverage of clinical case management for all ages.
+        cm_severe_cov (float): Coverage of severe case management for all ages.
+        cm_start: The start day for clinical management interventions.
+        x: The index of the dataframe entry to use.
+    Returns:
+        A dictionary containing the updated campaign parameters.
+    """
     path = df["serialized_file_path"][x]
     seed = int(df["Run_Number"][x])
     if entomology_mode == 'forced':
         eir = float(df["EIR_scale_factor"][x])
-        season = float(df["seasonality"][x])
+        season = df["seasonality"][x]
         eir_dic = {"EIR_scale_factor": eir, "seasonality": season}
-        build_campaign_partial = partial(build_campaign, seasonality=season, EIR_scale_factor=eir, cm_cov=cm_cov,
-                                         cm_start=cm_start)
+        build_campaign_partial = partial(build_campaign, seasonality=season, EIR_scale_factor=eir,
+                                         cm_cov=cm_cov, cm_severe_cov=cm_severe_cov, cm_start=cm_start)
     else:
         lhs = float(df["x_Temporary_Larval_Habitat"][x])
-        eir_dic = {"x_Temporary_Larval_Habitat": lhs, "seasonality": 'perennial'}  ## FIXME, enable seasonality sweep via habitat multiplier
-        build_campaign_partial = partial(build_campaign, cm_cov=cm_cov, cm_start=cm_start)
+        eir_dic = {"x_Temporary_Larval_Habitat": lhs,
+                   "seasonality": 'perennial'}  # FIXME, enable seasonality sweep via habitat multiplier
+        build_campaign_partial = partial(build_campaign, cm_cov=cm_cov,  cm_severe_cov=cm_severe_cov, cm_start=cm_start)
     simulation.task.create_campaign_from_callback(build_campaign_partial)
 
     if emod_serialize:
@@ -210,48 +227,64 @@ def update_campaign_multiple_parameters_ser(simulation, df, pop_size, cm_cov, cm
 
 
 def update_campaign_multiple_parameters(simulation, cm_cov, cm_start):
-    build_camp_partial = partial(build_campaign, cm_cov=cm_cov, cm_start=cm_start)
-    rdic = {"cm_clinical_U5": cm_cov, 'cm_start': cm_start}
+    build_camp_partial = partial(build_campaign, cm_cov=cm_cov, cm_severe_cov=cm_severe_cov, cm_start=cm_start)
+    rdic = {"cm_clinical": cm_cov, 'cm_start': cm_start}
     simulation.task.create_campaign_from_callback(build_camp_partial)
     return rdic
 
 
-def update_campaign_multiple_parameters_wEIR(simulation, cm_cov, cm_start, EIR_scale_factor, season):
-    update_mab(simulation, mAb_vs_EIR(EIR_scale_factor))  ### eir default = 1
-    build_camp_partial = partial(build_campaign, seasonality=season, EIR_scale_factor=EIR_scale_factor, cm_cov=cm_cov,
-                                 cm_start=cm_start)
-    rdic = {"EIR_scale_factor": EIR_scale_factor, "seasonality": season, "cm_clinical_U5": cm_cov, 'cm_start': cm_start}
+def update_campaign_multiple_parameters_wEIR(simulation, cm_cov,cm_severe_cov, cm_start, EIR_scale_factor, season):
+    update_mab(simulation, mAb_vs_EIR(EIR_scale_factor))  # eir default = 1
+    build_camp_partial = partial(build_campaign,
+                                 seasonality=season, EIR_scale_factor=EIR_scale_factor,
+                                 cm_cov=cm_cov, cm_severe_cov=cm_severe_cov, cm_start=cm_start)
+    rdic = {"EIR_scale_factor": EIR_scale_factor, "seasonality": season, "cm_clinical": cm_cov,
+            "cm_severe": cm_severe_cov, 'cm_start': cm_start}
     simulation.task.create_campaign_from_callback(build_camp_partial)
     return rdic
 
 
 def update_eir_scale(simulation, value, svalue):
+    """
+    Updates the EIR scale factor and seasonality parameters for an EMOD simulation.
+    Args:
+        simulation: The EMOD simulation object.
+        value: The new value for the EIR scale factor.
+        svalue: The new value for the seasonality parameter.
+    """
     build_campaign_partial = partial(build_campaign, EIR_scale_factor=value, seasonality=svalue)
     simulation.task.create_campaign_from_callback(build_campaign_partial)
     return {"EIR_scale_factor": value, "seasonality": svalue}
 
 
 def sweep_burnin_simulations(simulation, df, x: int, entomology_mode='dynamic'):
+    """
+    Args:
+        simulation: The EMOD simulation object.
+        df: The DataFrame containing simulation data.
+        x: The index of the simulation data to use.
+        entomology_mode: The mode for entomology settings ('dynamic' or other).
+    """
     path = df["serialized_file_path"][x]
     seed = int(df["Run_Number"][x])
 
     simulation.task.config.parameters.Serialized_Population_Path = os.path.join(path, "output")
     simulation.task.config.parameters.Serialized_Population_Filenames = df["Serialized_Population_Filenames"][x]
     simulation.task.config.parameters.Run_Number = seed
-    simulation.task.config.parameters.x_Base_Population = float(df["pop_size"][x])  
-    
+
     if entomology_mode == 'dynamic':
         simulation.task.config.parameters.x_Temporary_Larval_Habitat = float(df["x_Temporary_Larval_Habitat"][x])
-        transm_spec = ['x_Temporary_Larval_Habitat', float(df["x_Temporary_Larval_Habitat"][x])]
+        transm_spec = ['x_Temporary_Larval_Habitat',
+                       float(df["x_Temporary_Larval_Habitat"][x])]  # FIXME, enable seasonality once calibrated
     else:
-        update_eir_scale(simulation, float(df["EIR_scale_factor"][x]), float(df["seasonality"][x]))
-        transm_spec = ['EIR_scale_factor', float(df["EIR_scale_factor"][x])] 
+        update_eir_scale(simulation, float(df["EIR_scale_factor"][x]), df["seasonality"][x])
+        transm_spec = ['EIR_scale_factor', float(df["EIR_scale_factor"][x])]
 
     return {
         "Serialized_Population_Path": os.path.join(df["serialized_file_path"][x], "output"),
         "Serialized_Population_Filenames": df["Serialized_Population_Filenames"][x],
+        "seasonality": df["seasonality"][x],
         "Run_Number": seed,
-        "pop_size": df["pop_size"][x],
         transm_spec[0]: transm_spec[1]
     }
 

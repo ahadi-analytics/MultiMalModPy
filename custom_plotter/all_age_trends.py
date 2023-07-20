@@ -32,8 +32,7 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels, seasonality):
     df_em['date'] = pd.to_datetime(df_em['date'])
     df_em = df_em.groupby(['date'] + sweep_variables['EMOD'])[inset_channels['EMOD']].agg(np.mean).reset_index()
     df_em['emodom'] = 'EMOD'
-    df_em = df_em.rename(columns={'Run_Number': 'seed', 'EIR_scale_factor': 'eir',
-                                  'cm_clinical_U5': 'access'})
+    df_em = df_em.rename(columns={'Run_Number': 'seed', 'EIR_scale_factor': 'eir'})
 
     df_om = pd.read_csv(os.path.join(wdir, 'om', 'All_Age_InsetChart.csv'))
     df_om['date'] = pd.to_datetime(df_om['date'])
@@ -118,8 +117,8 @@ if __name__ == "__main__":
     else:
         eirchannel = "EIR_scale_factor"
 
-    exp_tags_em = [eirchannel, 'cm_clinical_U5', 'seasonality']
-    exp_tags_om = ['eir', 'access', 'seasonality']
+    exp_tags_em = [eirchannel, 'cm_clinical', 'seasonality']
+    exp_tags_om = ['eir', 'cm_clinical', 'seasonality']
 
     channels_em = ['Statistical Population', 'New Infections',  'True Prevalence', 'Blood Smear Parasite Prevalence',
                                'New Clinical Cases', 'New Severe Cases']

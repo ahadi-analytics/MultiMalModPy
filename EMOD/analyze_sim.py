@@ -377,7 +377,7 @@ class TransmissionReport(IAnalyzer):
         adf = pd.concat(selected).reset_index(drop=True)
 
         if self.burnin is not None:
-            adf = selected[adf['year'] >= self.start_year + self.burnin]
+            adf = adf[adf['year'] >= self.start_year + self.burnin]
 
         # Aggregate data and save for specified time intervals (daily, monthly, annually)
         grp_channels = self.sweep_variables  # [x for x in self.sweep_variables if x != "Run_Number"] ## Keep runs
@@ -476,6 +476,8 @@ class BenchmarkAnalyzer(IAnalyzer):
             return
 
         df = pd.concat(selected).reset_index(drop=True)
+        if self.burnin is not None:
+            df = df[df['year'] >= self.start_year + self.burnin]
         df_pfpr2to10 = df.groupby(self.sweep_variables)[['prevalence_2to10']].agg(np.mean).reset_index()
 
         ## Aggregate years
@@ -500,8 +502,8 @@ class BenchmarkAnalyzer(IAnalyzer):
                 adf = adf.groupby(self.sweep_variables)[['nPatent','nUncomp', 'nSevere', 'nHost']].agg(
                     np.sum).reset_index()
                 adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
-                adf['nUncomp_ppa'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
-                adf['nSevere_ppa'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
+                adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
+                adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
                 adf['age_group'] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
@@ -522,10 +524,7 @@ class BenchmarkAnalyzer(IAnalyzer):
             cdf['simulatedEIR'] = cdf['inputEIR']
 
         # Rename columns for alignment with OpenMalaria results
-        cdf = cdf.rename(columns={"Run_Number": "seed",
-                                  "cm_clinical_U5": "access",
-                                  "nUncomp_ppa": "clinical_incidence",
-                                  "nSevere_ppa": "severe_incidence"})
+        cdf = cdf.rename(columns={"Run_Number": "seed"})
         cdf['mortality'] = ''
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}')
 
@@ -608,6 +607,8 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
             return
 
         df = pd.concat(selected).reset_index(drop=True)
+        if self.burnin is not None:
+            df = df[df['year'] >= self.start_year + self.burnin]
         df_pfpr2to10 = df.groupby(self.sweep_variables + ['month'])[['prevalence_2to10']].agg(np.mean).reset_index()
 
         # Aggregate years
@@ -633,8 +634,8 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
                 adf = adf.groupby(self.sweep_variables + ['month'])[['nPatent','nUncomp', 'nSevere', 'nHost']].agg(
                     np.sum).reset_index()
                 adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
-                adf['nUncomp_ppa'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
-                adf['nSevere_ppa'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
+                adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
+                adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
                 adf['age_group'] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
@@ -656,10 +657,7 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
             cdf['simulatedEIR'] = ''
 
         # Rename columns for alignment with OpenMalaria results
-        cdf = cdf.rename(columns={"Run_Number": "seed",
-                                  "cm_clinical_U5": "access",
-                                  "nUncomp_ppa": "clinical_incidence",
-                                  "nSevere_ppa": "severe_incidence"})
+        cdf = cdf.rename(columns={"Run_Number": "seed"})
         cdf['mortality'] = ''
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}')
 
@@ -743,6 +741,8 @@ class BenchmarkAnalyzer_yr(IAnalyzer):
             return
 
         df = pd.concat(selected).reset_index(drop=True)
+        if self.burnin is not None:
+            df = df[df['year'] >= self.start_year + self.burnin]
         df_pfpr2to10 = df.groupby(self.sweep_variables + ['year'])[['prevalence_2to10']].agg(np.mean).reset_index()
 
         # Aggregate years
@@ -767,9 +767,9 @@ class BenchmarkAnalyzer_yr(IAnalyzer):
             else:
                 adf = adf.groupby(self.sweep_variables + ['year'])[['nPatent','nUncomp', 'nSevere', 'nHost']].agg(
                     np.sum).reset_index()
-                adf['prevalence'] = adf['nPatent'] / (adf['nHost'])  
-                adf['nUncomp_ppa'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per year)
-                adf['nSevere_ppa'] = adf['nSevere'] / (adf['nHost'])  # (events per person per year)
+                adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
+                adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per year)
+                adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per year)
                 adf['age_group'] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
@@ -779,10 +779,7 @@ class BenchmarkAnalyzer_yr(IAnalyzer):
         cdf['simulatedEIR'] = cdf['eir']  # to align with OM columns
 
         # Rename columns for alignment with OpenMalaria results
-        cdf = cdf.rename(columns={"Run_Number": "seed",
-                                  "cm_clinical_U5": "access",
-                                  "nUncomp_ppa": "clinical_incidence",
-                                  "nSevere_ppa": "severe_incidence"})
+        cdf = cdf.rename(columns={"Run_Number": "seed"})
         cdf['mortality'] = ''
 
         # Save the processed DataFrame to a CSV file named 'EMOD_benchmark_yr.csv'
@@ -819,7 +816,9 @@ if __name__ == "__main__":
         eirchannel = "EIR_scale_factor"
 
     # Define tags and simulation experiment configurations
-    exp_tags = ['Run_Number', eirchannel, 'seasonality', 'cm_clinical_U5']  # ,'seasonality'
+    exp_tags = [x for x in exp.sweep_list if x != 'seed'] + ['Run_Number']
+    exp_tags = [eirchannel if tag == 'eir' else tag for tag in exp_tags]
+    
     start_year = exp.sim_start_year_em
     end_year = exp.end_year - 1
     monitoring_start = end_year - exp.monitoring_years
@@ -912,7 +911,7 @@ if __name__ == "__main__":
             monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence_2to10', sweepvar=sweepvar)
             #monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
 
-            sweepvar = 'access'
+            sweepvar = 'cm_clinical'
             prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', y_lim=1)
             prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', y_lim=6)
             prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', y_lim=0.1)

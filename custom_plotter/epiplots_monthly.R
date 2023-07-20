@@ -26,7 +26,7 @@ dateir_mth <- fread(file.path(wdir, 'om', 'OM_EIR_mth.csv')) %>%
   filter(year < 2001 &
            eir == 64 &
            seasonality == 'seasonal') %>%
-  group_by(month, seasonality, access, eir) %>%
+  group_by(month, seasonality, cm_clinical, eir) %>%
   summarize(mean_val = mean(simulatedEIR)) %>%
   mutate(emodom = 'OpenMalaria - EIR sim') %>%
   ungroup() %>%
