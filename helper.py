@@ -1,9 +1,11 @@
 import argparse, math, os, sys, subprocess, shutil, re, itertools, pickle
 from idmtools.entities.experiment import Experiment
+from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
 import warnings
 import shutil
+
 
 def parse_args():
     """
@@ -44,7 +46,7 @@ def make_dirs(manifest, suite_name, exp_name, custom_subdir=None):
 
     # Create the required default paths
     # If custom_subdir is specified, writes directories under given name
-    if custom_subdir is not None :
+    if custom_subdir is not None:
         exp_suite_path = os.path.join(custom_subdir, suite_name)
     else:
         exp_suite_path = os.path.join(suite_name)
@@ -211,37 +213,28 @@ def exec(command):
                             universal_newlines=True, text=True)
 
 
-def shell_header_quest(A='b1139', p='b1139', t='02:00:00', N=1, ntasks_per_node=1, memG=8, job_name='myjob',
-                       arrayJob=None):
-    """
-    Generates a SLURM shell script header for job submission.
-
-    Args:
-        A (str): Account to charge the job to.
-        p (str): Partition/queue to submit the job to.
-        t (str): Wall time limit for the job.
-        N (int): Number of nodes to request.
-        ntasks_per_node (int): Number of tasks to run per node.
-        memG (int): Memory limit per node in gigabytes.
-        job_name (str): Name for the job.
-        arrayJob (str): Array job configuration. Default is None.
-
-    Returns:
-        str: The SLURM shell script header.
-
-    """
-
+def shell_header_quest(sh_account, time_str='04:00:00', memG=1, job_name='myjob', arrayJob=None, mem_scl=1):
     # Create 'log' subfolder if it doesn't exist
     if not os.path.exists('log'):
         os.makedirs(os.path.join('log'))
 
+    # If not running on buyin account, need to select partition based on time required
+    if not sh_account['buyin']:
+        t = datetime.strptime(time_str, '%H:%M:%S').time().hour
+        if t < 4:
+            sh_account["p"] = 'short'
+        if t >= 4:
+            sh_account["p"] = 'normal'
+        if t >= 12:
+            sh_account["p"] = 'long'
+
     header = f'#!/bin/bash\n' \
-             f'#SBATCH -A {A}\n' \
-             f'#SBATCH -p {p}\n' \
-             f'#SBATCH -t {t}\n' \
-             f'#SBATCH -N {N}\n' \
-             f'#SBATCH --ntasks-per-node={ntasks_per_node}\n' \
-             f'#SBATCH --mem={memG}G\n' \
+             f'#SBATCH -A {sh_account["A"]}\n' \
+             f'#SBATCH -p {sh_account["p"]}\n' \
+             f'#SBATCH -t {time_str}\n' \
+             f'#SBATCH -N 1\n' \
+             f'#SBATCH --ntasks-per-node=1\n' \
+             f'#SBATCH --mem={int(memG * mem_scl)}G\n' \
              f'#SBATCH --job-name="{job_name}"\n'
     if arrayJob is not None:
         array = arrayJob
@@ -269,7 +262,7 @@ def write_txt(txtobj, path, fname):
     file.close()
 
 
-def submit_analyze_OpenMalaria(exp):
+def submit_analyze_OpenMalaria(exp, t='01:00:00', memG=1):
     """
     Submits a job to analyze OpenMalaria simulation results.
 
@@ -279,11 +272,19 @@ def submit_analyze_OpenMalaria(exp):
     """
 
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(job_name=f'analyze_OMsim', t='01:00:00')
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=f'analyze_OMsim', mem_scl=exp.mem_increase_factor)
 
     # Create the Python command to run the analyzer
-    pycommand = f'\ncd /home/mrm9534/model-characterization/OpenMalaria' \
-                f'\npython analyze_sim.py --dir "{exp.job_directory}"'
+    if exp.hpc == 'NUCLUSTER':
+        pycommand = f'\ncd /home/mrm9534/model-characterization/OpenMalaria' \
+                    f'\npython analyze_sim.py --dir "{exp.job_directory}"'
+    elif exp.hpc == 'SCICORE':
+        pycommand = f'\ncd /scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria' \
+                    f'\n\nml Python/3.9.6-GCCcore-11.2.0-bare' \
+                    f'\nsource /scicore/home/scicore/cavelan/git/model-characterization/emodenv/bin/activate' \
+                    f'\npython analyze_sim.py --dir "{exp.job_directory}"'
+    else:
+        raise ValueError('HPC specification not available, must be NUCLUSTER or SCICORE')
 
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, f'run_analyzer_OpenMalaria.sh')
@@ -307,7 +308,7 @@ def submit_analyze_OpenMalaria(exp):
     write_txt(slurm_job_id, exp.job_directory, 'job_id_OManalyze.txt')
 
 
-def submit_analyze_EMOD(experiment, platform):
+def submit_analyze_EMOD(experiment, platform, t='01:00:00', memG=1):
     """
     Submits a job to analyze EMOD simulation results.
 
@@ -321,7 +322,8 @@ def submit_analyze_EMOD(experiment, platform):
     wdir = os.path.abspath(os.path.dirname(__file__))
 
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(job_name=f'analyze_EMODsim', t='01:00:00')
+    header_post = shell_header_quest(experiment.sh_hpc_config, t, memG, job_name=f'analyze_EMODsim',
+                                     mem_scl=experiment.mem_increase_factor)
 
     # Get the EMODpy virtual environment path
     emodpy_venv = emodpy_module(experiment.hpc)
@@ -338,7 +340,7 @@ def submit_analyze_EMOD(experiment, platform):
     file.close()
 
     # Get the job ID
-    job_id = platform._op_client.get_job_id(experiment.id, experiment.item_type)  #[0]
+    job_id = platform._op_client.get_job_id(experiment.id, experiment.item_type)[0]
 
     # Submit the job with dependency on the previous job
     p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path], stdout=subprocess.PIPE,
@@ -360,7 +362,8 @@ def submit_analyze_EMOD(experiment, platform):
         write_txt(job_id, experiment.job_directory, 'job_id_burnin.txt')
 
 
-def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh', custom_args ='--emodom EMOD OpenMalaria', job_id=None):
+def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
+                        custom_args='--emodom EMOD OpenMalaria', t='01:00:00', memG=1, job_id=None):
     """
     Submits a job to run a Python script.
 
@@ -376,7 +379,7 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     wdir = os.path.abspath(os.path.dirname(__file__))
 
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(job_name=f'pyjob', t='01:00:00')
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=f'pyjob', mem_scl=1)
 
     # Get the EMODpy virtual environment path
     emodpy_venv = emodpy_module(exp.hpc)
@@ -396,8 +399,8 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
 
         # Submit the job with or without dependency
         p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path],
-                               stdout=subprocess.PIPE,
-                               cwd=str(exp.job_directory))
+                           stdout=subprocess.PIPE,
+                           cwd=str(exp.job_directory))
     else:
         p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
 
@@ -420,8 +423,8 @@ def emodpy_module(location='NUCLUSTER'):
         emod_venv = '\n\nml singularity/3.8.1 \nml python/3.8.4' \
                     '\nsource /projects/b1139/environments/emodpy_om/bin/activate\n'
     if location == 'SCICORE':
-        emod_venv = '\n\nml singularity/3.8.1\nml python/3.8.4' \
-                    '\nsource activate /projects/b1139/environments/emodpy_om\n'  # TODO for scicore
+        emod_venv = '\n\nml Python/3.9.6-GCCcore-11.2.0-bare' \
+                    '\nsource /scicore/home/scicore/cavelan/git/model-characterization/emodenv/bin/activate\n'
     return emod_venv
 
 
@@ -444,8 +447,8 @@ def OM_module(location='NUCLUSTER', om_version=45):
             ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/om_v45/modules/ \nmodule load openmalaria\n'
         else:
             raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 45')
-    if location == 'SCICORE':  ## TODO for scicore
-        ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/modules/ \nmodule load openmalaria\n'
+    if location == 'SCICORE':
+        ommodule = '\n\nmodule load OpenMalaria/43.1-iomkl-2019.01\n'
     return ommodule
 
 
@@ -464,7 +467,7 @@ def combine_emodom_results(sim_out_dir):
     df_om['emodom'] = 'OpenMalaria'
 
     # Append EMOD and OpenMalaria DataFrames
-    df = pd.concat(df_em,df_om)
+    df = pd.concat(df_em, df_om)
 
     # Save the combined DataFrame as a CSV file
     df.to_csv((os.path.join(sim_out_dir, 'comb', f'benchmark.csv')), index=False)

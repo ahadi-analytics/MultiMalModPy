@@ -47,7 +47,7 @@ def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMala
     shutil.copy(os.path.join(exp.om_path, schema), exp.job_directory)
 
 
-def submit_run_OpenMalaria(exp, scen_df):
+def submit_run_OpenMalaria(exp, scen_df, t='01:00:00', memG=8):
     """
     Submits OpenMalaria simulations to a high-performance computing cluster.
     Args:
@@ -68,9 +68,9 @@ def submit_run_OpenMalaria(exp, scen_df):
 
     # Set up script for submitting OpenMalaria simulations as a SLURM array job
     array = f'#SBATCH --array=1-{str(exp.nexps)}\n'
-    header_post = shell_header_quest(job_name=f'run_openmalaria', t='01:00:00', arrayJob=array)
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=f'run_openmalaria', arrayJob=array)
     openmalaria = OM_module(exp.hpc, exp.om_version)
-    path = f'export PATH=$PATH: {exp.job_directory}'
+    path = f'export PATH=$PATH:{exp.job_directory}'
     slurmID = '${SLURM_ARRAY_TASK_ID}'
     command = f'\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
     script_path = os.path.join(exp.job_directory, f'run_sim_OpenMalaria.sh')
