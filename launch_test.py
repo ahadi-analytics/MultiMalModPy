@@ -19,6 +19,7 @@ loaded_attr = set(dir())  # Non experiiment specific objects to be excluded from
 # Flag to select whether to run with (dynamic) or without vector model (forced)
 # TODO enable dynamic seasonal EIR  once calibrated
 entomology_mode = 'forced'  # dynamic, forced
+mem_increase_factor = 1.0  # scaling factor on default memory requested
 
 # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
 custom_subdir = os.getlogin() # If None, no subdir created
@@ -98,6 +99,7 @@ my_obj = set(dir()) - loaded_attr
 exp = Experiment()
 exp.my_obj = my_obj
 exp.hpc = manifest.hpc
+exp.sh_hpc_config = manifest.sh_hpc_config
 exp.selected_platform = manifest.selected_platform
 exp.om_version = manifest.om_version
 exp.emod_build = manifest.emod_build
@@ -298,8 +300,8 @@ def submit_create_run_EMOD(exp):
 
     # Set platform and associated values, such as the maximum number of jobs to run at one time
     platform = Platform(selected_platform, job_directory=suite_directory,
-                        mem_per_cpu=1000, partition='b1139', time='03:00:00', account='b1139',
-                        modules=['singularity'], max_running_jobs=50)  # mem_per_cpu default: 2048
+                        mem_per_cpu=int(500 * exp.mem_increase_factor), partition=exp.sh_hpc_config['p'], time='01:00:00', account=exp.sh_hpc_config['A'],
+                        modules=[exp.sh_hpc_config['em_modules']], max_running_jobs=50)  # mem_per_cpu default: 2048
 
     # create EMODTask
     print("Creating EMODTask (from files)...")
@@ -352,6 +354,8 @@ def submit_create_run_EMOD(exp):
 
     # Additional step to schedule analyzer
     experiment.hpc = exp.hpc
+    experiment.sh_hpc_config = exp.sh_hpc_config
+    experiment.mem_increase_factor = exp.mem_increase_factor
     experiment.analyzer = exp.emod_analyzer
     experiment.job_directory = exp.job_directory
     experiment.emod_serialize = exp.emod_serialize

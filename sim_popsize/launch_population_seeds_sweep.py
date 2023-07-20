@@ -11,9 +11,9 @@ import emodpy_malaria.malaria_config as malaria_config
 
 sys.path.append('../')
 import manifest
+from helper import *
 from sim_popsize.utils_em import *
 from sim_popsize.utils_om import *
-from sim_popsize.helper import *
 from EMOD.scaffolds.forcedEIR import *
 from EMOD.scaffolds.interventions import treatment_camp_simple
 
@@ -24,7 +24,7 @@ loaded_attr = set(dir())  # Non experiiment specific objects to be excluded from
 # Flag to select whether to run with (dynamic) or without vector model (forced)
 # TODO enable dynamic seasonal EIR  once calibrated
 entomology_mode = 'forced'  # dynamic, forced
-
+mem_increase_factor = 2  # scaling factor on default memory requested
 # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
 custom_subdir = os.getlogin()  # If None, no subdir created
 SUITEname = f'{entomology_mode}EIR' # Can be changed depending on objective to run simulations, in subdir if not None
@@ -299,9 +299,10 @@ def submit_create_run_EMOD(exp):
     emod_burnin_id = exp.emod_burnin_id
 
     # Set platform and associated values, such as the maximum number of jobs to run at one time
+    # Set platform and associated values, such as the maximum number of jobs to run at one time
     platform = Platform(selected_platform, job_directory=suite_directory,
-                        mem_per_cpu = 8048 , partition='normal', time='10:00:00', account='p30781', modules=['singularity'],
-                        max_running_jobs=800)  # mem_per_cpu= 2048, per default
+                        mem_per_cpu=int(500 * exp.mem_increase_factor), partition=exp.sh_hpc_config['p'], time='08:00:00', account=exp.sh_hpc_config['A'],
+                        modules=[exp.sh_hpc_config['em_modules']], max_running_jobs=50)  # mem_per_cpu default: 2048
 
     # create EMODTask
     print("Creating EMODTask (from files)...")
