@@ -5,10 +5,8 @@ om_version = 43
 emod_build = 220405
 
 # Select cluster name
-if os.getlogin() in ['mrm9534', 'rer4177']:
-    hpc = 'NUCLUSTER'
-else:
-    hpc = 'SCICORE'
+hpc = 'NUCLUSTER'
+#hpc = 'SCICORE'
 selected_platform = 'SLURM_LOCAL'
 
 # the location of the file containing AssetCollection id for the dtk sif (singularity image)
