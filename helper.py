@@ -213,7 +213,7 @@ def exec(command):
                             universal_newlines=True, text=True)
 
 
-def shell_header_quest(sh_account, time_str='04:00:00', memG=1, job_name='myjob', arrayJob=None, mem_scl=1):
+def shell_header_quest(sh_account, time_str='04:00:00', memG=3, job_name='myjob', arrayJob=None, mem_scl=1):
     # Create 'log' subfolder if it doesn't exist
     if not os.path.exists('log'):
         os.makedirs(os.path.join('log'))
@@ -262,7 +262,7 @@ def write_txt(txtobj, path, fname):
     file.close()
 
 
-def submit_analyze_OpenMalaria(exp, t='01:00:00', memG=1):
+def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
     """
     Submits a job to analyze OpenMalaria simulation results.
 
@@ -308,7 +308,7 @@ def submit_analyze_OpenMalaria(exp, t='01:00:00', memG=1):
     write_txt(slurm_job_id, exp.job_directory, 'job_id_OManalyze.txt')
 
 
-def submit_analyze_EMOD(experiment, platform, t='01:00:00', memG=1):
+def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=3):
     """
     Submits a job to analyze EMOD simulation results.
 
