@@ -28,7 +28,7 @@ exp_name = f'sim_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}' # Can be changed depe
 
 # EMOD serialization or pickup flags
 emod_serialize = False
-emod_pickup = False
+emod_pickup = True
 
 # Define which models to run
 models_to_run = ['EMOD', 'OpenMalaria']  # 'EMOD','OpenMalaria'
@@ -41,6 +41,9 @@ om_survey_step = '30d'
 # Define simulation population and seeds
 pop_size = 1000
 agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
+
+burnin_num_seeds = 1  #burnin_num_seeds and burnin_seed are necessary, in case you would like to have a different number of stochastic randomizations between burnin and pickup
+burnin_seed = list(range(burnin_num_seeds))
 num_seeds = 3
 seed = list(range(num_seeds))  # required for scenarios csv used in generating OpenMalaria scenarios
 start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
@@ -58,7 +61,7 @@ sweep_list = ['eir', 'cm_clinical', 'seasonality'] + ['seed']
 # EMOD burn-in and pickup configuration
 # TODO different for SciCore and Quest, user specific
 if entomology_mode == 'forced':
-    emod_burnin_id = 'c32c30e5-d822-4854-8dd1-ba17f954a892'  # forced EIR
+    emod_burnin_id = '37cce48c-e60b-495b-adec-c72d2c069adc'  # forced EIR
 else:
     emod_burnin_id = '1b5781b0-3d51-4d00-956b-c963fab53046'  # dynamic EIR
 
@@ -70,11 +73,13 @@ if emod_serialize and 'EMOD' in models_to_run:
     sweep_list = ['eir', 'cm_clinical', 'seasonality'] + ['seed']  # If running fewer sweeps in past than in pickup
 if not emod_pickup:
     emod_burnin_id = None
+    num_seeds = burnin_num_seeds
+    seed = burnin_seed
 
 # Define case management start and coverage
 # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
 cm_start = 1
-cm_clinical = [0.2029544]
+cm_clinical = [0.2029544] # [0.2, 0.6, 0.8]
 cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
 detectionLimit = 40
 
@@ -163,7 +168,7 @@ def set_config_parameters(config):
         config.parameters.Serialization_Mask_Node_Write = 0
         config.parameters.Serialization_Precision = "REDUCED"
 
-    # Burnin configuration (when reading from serialized file)
+    # Pickup configuration (when reading from serialized file)
     if emod_burnin_id and not emod_serialize:
         config.parameters.Serialized_Population_Reading_Type = "READ"
         config.parameters.Serialization_Mask_Node_Read = 0
@@ -325,20 +330,22 @@ def submit_create_run_EMOD(exp):
     builder = SimulationBuilder()
 
     # Create burnin df, retrieved from burnin ID (defined above)
-    if emod_burnin_id:
+    if emod_pickup and emod_burnin_id:
         burnin_df = build_burnin_df(emod_burnin_id, platform, burnin * 365)
         builder.add_sweep_definition(partial(sweep_burnin_simulations, df=burnin_df, entomology_mode=entomology_mode),
                                      range(len(burnin_df.index)))
+        builder.add_sweep_definition(partial(set_param, param='Run_Number'), range(num_seeds))
 
     # builder.add_sweep_definition(update_eir_scale, eir)
-    builder.add_sweep_definition(partial(set_param, param='Run_Number'), range(num_seeds))
-    if entomology_mode == 'dynamic':
-        builder.add_sweep_definition(partial(set_param, param='x_Temporary_Larval_Habitat'), lhs)
-        builder.add_multiple_parameter_sweep_definition(update_campaign_multiple_parameters,
+    if emod_serialize:
+        builder.add_sweep_definition(partial(set_param, param='Run_Number'), range(num_seeds))
+        if entomology_mode == 'dynamic':
+            builder.add_sweep_definition(partial(set_param, param='x_Temporary_Larval_Habitat'), lhs)
+            builder.add_multiple_parameter_sweep_definition(update_campaign_multiple_parameters,
                                                         dict(cm_cov=cm_clinical, cm_severe_cov=[cm_severe],
                                                              cm_start=[cm_start]))
-    else:
-        builder.add_multiple_parameter_sweep_definition(update_campaign_multiple_parameters_wEIR,
+        else:
+            builder.add_multiple_parameter_sweep_definition(update_campaign_multiple_parameters_wEIR,
                                                         dict(cm_cov=cm_clinical, cm_severe_cov=[cm_severe],
                                                              cm_start=[cm_start],
                                                              EIR_scale_factor=eir, season=seasonality))
@@ -361,7 +368,8 @@ def submit_create_run_EMOD(exp):
     experiment.emod_serialize = exp.emod_serialize
     experiment.start_end = [sim_start_year_em, sim_start_year_em + sim_dur_years - 1]
     submit_analyze_EMOD(experiment, platform)
-
+    print(f'exp: {exp.emod_serialize}')
+    print(f'experiment: {experiment.emod_serialize}')
     print(f"Experiment submission {experiment.uid} succeeded.")
 
 

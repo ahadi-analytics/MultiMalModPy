@@ -5,7 +5,8 @@ import pandas as pd
 import numpy as np
 import warnings
 import shutil
-
+import os
+user = os.getlogin()
 
 def parse_args():
     """
@@ -270,13 +271,12 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
         exp (object): The experiment object containing job directory information.
 
     """
-
     # Generate the SLURM shell script header for the job
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=f'analyze_OMsim', mem_scl=exp.mem_increase_factor)
 
     # Create the Python command to run the analyzer
     if exp.hpc == 'NUCLUSTER':
-        pycommand = f'\ncd /home/mrm9534/model-characterization/OpenMalaria' \
+        pycommand = f'\ncd /home/{user}/model-characterization/OpenMalaria' \
                     f'\npython analyze_sim.py --dir "{exp.job_directory}"'
     elif exp.hpc == 'SCICORE':
         pycommand = f'\ncd /scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria' \
