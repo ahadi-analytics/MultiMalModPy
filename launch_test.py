@@ -290,7 +290,8 @@ def sweep_burnin_simulations(simulation, df, x: int, entomology_mode='dynamic'):
         "Serialized_Population_Filenames": df["Serialized_Population_Filenames"][x],
         "seasonality": df["seasonality"][x],
         "Run_Number": seed,
-        transm_spec[0]: transm_spec[1]
+        transm_spec[0]: transm_spec[1],
+        "cm_clinical": df["cm_clinical"][x]
     }
 
 
@@ -368,8 +369,6 @@ def submit_create_run_EMOD(exp):
     experiment.emod_serialize = exp.emod_serialize
     experiment.start_end = [sim_start_year_em, sim_start_year_em + sim_dur_years - 1]
     submit_analyze_EMOD(experiment, platform)
-    print(f'exp: {exp.emod_serialize}')
-    print(f'experiment: {experiment.emod_serialize}')
     print(f"Experiment submission {experiment.uid} succeeded.")
 
 
