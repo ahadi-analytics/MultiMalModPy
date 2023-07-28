@@ -41,7 +41,7 @@ if hpc == 'NUCLUSTER':
         OM_PATH = "/projects/b1139/OpenMalaria/om_v45/"
     else:
         raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 45')
-    om_input_path = '/home/mrm9534/model-characterization/OpenMalaria/'
+    om_input_path = f'/home/{user}/model-characterization/OpenMalaria/'
 elif hpc == 'SCICORE':  ## TODO update paths
     projdir = os.path.join('/projects/b1139/emod-om/')
     job_directory = os.path.join(projdir, 'experiments')
