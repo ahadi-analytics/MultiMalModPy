@@ -192,6 +192,7 @@ def create_scenarios_csv(exp, col_list=None):
     df = pd.DataFrame(df_array)
     df.columns = col_list
     df.reset_index(inplace=True)
+    df['index'] = df['index']+1
     return df
 
 

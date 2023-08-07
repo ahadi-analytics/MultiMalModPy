@@ -38,7 +38,7 @@ def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMala
             scenario = scenario.replace(f'@seasonality{i}@', str(seasonality[i - 1]))
 
         # Write the scenario XML file
-        with open(f"{exp.job_directory}/xml/{row['index'] + 1}.xml", 'w') as fo:
+        with open(f"{exp.job_directory}/xml/{row['index']}.xml", 'w') as fo:
             fo.write(f"{scenario}")
 
     # Copy additional files required by OpenMalaria
