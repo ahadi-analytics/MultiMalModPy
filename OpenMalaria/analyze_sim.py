@@ -39,17 +39,24 @@ def to_df(exp):
     Returns:
         A DataFrame containing the standard experiment output for all OpenMalaria scenarios.
     """
+
     data = []
-    for i in range(1, exp.nexps):
-        try:
-            # Read the experiment output from the TXT file
-            output = pd.read_csv(os.path.join(exp.job_directory, 'txt', f'{i}.txt'), sep="\t", header=None)
-            output.columns = ['survey', 'ageGroup', 'measure', 'value']
-            output['index'] = i
-            data.append(output)
-        # Allows exception and skip scenario if no TXT output exists
-        except Exception as e:
-            print(e)
+    if exp.nexps == 1:
+        output = pd.read_csv(os.path.join(exp.job_directory, 'txt', '1.txt'), sep="\t", header=None)
+        output.columns = ['survey', 'ageGroup', 'measure', 'value']
+        output['index'] = 1
+        data.append(output)
+    else:
+        for i in range(1, exp.nexps):
+            try:
+                # Read the experiment output from the TXT file
+                output = pd.read_csv(os.path.join(exp.job_directory, 'txt', f'{i}.txt'), sep="\t", header=None)
+                output.columns = ['survey', 'ageGroup', 'measure', 'value']
+                output['index'] = i
+                data.append(output)
+            # Allows exception and skip scenario if no TXT output exists
+            except Exception as e:
+                print(e)
 
     # Concatenate all the experiment outputs into a single DataFrame and return
     return pd.concat(data)
