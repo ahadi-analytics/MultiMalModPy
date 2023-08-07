@@ -31,8 +31,7 @@ def parse_args():
 
     # Parse the command-line arguments and return the result
     return parser.parse_args()
-
-
+    
 def make_dirs(manifest, suite_name, exp_name, custom_subdir=None):
     """
     Creates necessary directories for simulation experiment jobs and simulation outputs.
@@ -69,8 +68,16 @@ def make_dirs(manifest, suite_name, exp_name, custom_subdir=None):
     # Return the job directory path and simulation output directory path
     return suite_directory, job_directory, sim_out_dir
 
+def check_exp_inputs(exp):
+    """
+    Helper function to check a list of inputs for validity.
+    Args:
+        exp (custom class): Custom object that includes all experiment specifications
+    """
+    if exp.emod_step and exp.num_seeds_burnin >1 & exp.num_seeds_burnin is not exp.num_seeds:
+        raise ValueError('num_seeds_burnin needs to be 1 or equal to num_seeds')
 
-def get_emod_time_param(start_year, end_year, burnin, emod_serialize=False, emod_pickup=False):
+def get_emod_time_param(start_year, end_year, burnin, emod_step = None):
     """
     Calculates simulation time parameters for EMOD (OpenMalaria) based on the provided arguments.
 
@@ -78,8 +85,7 @@ def get_emod_time_param(start_year, end_year, burnin, emod_serialize=False, emod
         start_year (int): Monitoring start year (required by OpenMalaria utils).
         end_year (int): Monitoring and simulation end year (required by OpenMalaria utils).
         burnin (int): Duration of pre-monitoring years to run.
-        emod_serialize (bool): Whether to serialize the simulation (if running burn-in in EMOD).
-        emod_pickup (bool): Whether to pick up a serialized simulation (if a burn-in in EMOD has been run).
+        emod_step (string): Whether EMOD runs in one or two steps ('None' (one run), 'burnin' or 'pickup' (two separate runs)).
 
     Returns:
         tuple: A tuple containing the simulation start year, number of years to monitor (required in EMOD analyzer),
@@ -95,23 +101,20 @@ def get_emod_time_param(start_year, end_year, burnin, emod_serialize=False, emod
     # Calculate the number of years to monitor
     monitoring_years = end_year - start_year
 
-    if not emod_pickup and not emod_serialize:
-        print(" --------| Running EMOD burnin + pickup time in one simulations |--------")
+    if emod_step == None:
+        print(" --------| Running EMOD burnin + pickup time in one simulation run |--------")
         sim_dur_years = end_year - burnin_start_year
         sim_start_year = burnin_start_year
-    elif not emod_pickup and emod_serialize:
-        print(" --------| Running EMOD burnin |--------")
+    elif emod_step == 'burnin':
+        print(" --------| Running EMOD burnin (step 1) |--------")
         sim_dur_years = burnin
         sim_start_year = burnin_start_year
-    elif emod_pickup and not emod_serialize:
-        print(" --------| Running EMOD pickup |--------")
+    elif emod_step == 'pickup':
+        print(" --------| Running EMOD pickup from serialized burnin (step 2) |--------")
         sim_dur_years = end_year - start_year
         sim_start_year = start_year
     else:
-        print(" --------| Running EMOD pickup and serializing simulation |--------")
-        sim_dur_years = end_year - start_year
-        sim_start_year = start_year
-
+        raise ValueError(f'Please specify valid emod_step, {emod_step} is not valid')
     return sim_start_year, monitoring_years, sim_dur_years
 
 
@@ -356,10 +359,6 @@ def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=3):
     write_txt(job_id, experiment.job_directory, 'job_id_EMODsim.txt')
     write_txt(experiment.id, experiment.job_directory, 'exp_id_EMODsim.txt')
     write_txt(slurm_job_id, experiment.job_directory, 'job_id_EMODanalyze.txt')
-
-    # Write the job ID if EMOD serialization is enabled
-    if experiment.emod_serialize:
-        write_txt(job_id, experiment.job_directory, 'job_id_burnin.txt')
 
 
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',

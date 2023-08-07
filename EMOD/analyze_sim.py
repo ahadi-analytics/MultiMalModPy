@@ -823,7 +823,7 @@ if __name__ == "__main__":
     end_year = exp.end_year - 1
     monitoring_start = end_year - exp.monitoring_years
     burnin = None #exp.burnin  ## Years burnin to discard when running burnin+pickup together
-    if exp.emod_serialize:
+    if exp.emod_step == 'burnin':
         end_year = start_year + exp.burnin -1
         
     # Define which outcome metrics to process in inset_chart (all age per daily timestep)
@@ -878,21 +878,18 @@ if __name__ == "__main__":
                                                         burnin=burnin)]
         
         analyzer = all_age_analyzer + annual_analyzers
-        if not exp.emod_serialize: 
-            analyzer = analyzer + monthly_analyzers
+        if exp.emod_step != 'burnin':
+            analyzer = analyzer + monthly_analyzers + analyzers_benchmark
             
         if exp.entomology_mode == 'dynamic':
             analyzer = analyzer + eir_analyzer
-
-        if not exp.emod_serialize: 
-            analyzer = analyzer + analyzers_benchmark
 
         manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
                                  partial_analyze_ok=True)
         manager.analyze()
 
         # Create sample plots if specified
-        if create_sampleplots and not exp.emod_serialize:
+        if create_sampleplots:
             channels_inset_chart = ['Statistical Population', 'Births', 'New Infections', 'Newly Symptomatic',
                                     'New Clinical Cases', 'New Severe Cases',
                                     'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
@@ -900,22 +897,23 @@ if __name__ == "__main__":
                                     'Infectious Vectors', 'EIR']
             all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
             sample_plot_yr(wdir, exp_tags)
-            sample_plot_mth(wdir, exp_tags)
-            
-            emodom = ['EMOD']
 
-            sweepvar = 'annual_input_EIR'
-            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', sweepvar=sweepvar)
-            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', sweepvar=sweepvar)
-            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', sweepvar=sweepvar)
-            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence_2to10', sweepvar=sweepvar)
-            #monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
+            if exp.emod_step != 'burnin':
+                sample_plot_mth(wdir, exp_tags)
 
-            sweepvar = 'cm_clinical'
-            prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', y_lim=1)
-            prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', y_lim=6)
-            prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', y_lim=0.1)
-            eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
-            eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='inputEIR')
-            input_to_simulated_eir(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar)
+                emodom = ['EMOD']
 
+                sweepvar = 'annual_input_EIR'
+                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', sweepvar=sweepvar)
+                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', sweepvar=sweepvar)
+                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', sweepvar=sweepvar)
+                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence_2to10', sweepvar=sweepvar)
+                # monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
+
+                sweepvar = 'cm_clinical'
+                prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', y_lim=1)
+                prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', y_lim=6)
+                prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', y_lim=0.1)
+                eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
+                eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='inputEIR')
+                input_to_simulated_eir(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar)
