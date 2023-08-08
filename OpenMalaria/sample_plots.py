@@ -89,13 +89,11 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5):
     - agebin (int): Age bin. Defaults to 5.
     """
     # Outcome channels to plot
-    channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'nPatent', 'pfpr']
+    channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'nPatent', 'prevalence']
 
     # Read the data from a CSV file
-    df = pd.read_csv(os.path.join(wdir, 'OM_surveyoutput_yr.csv'))
-
+    df = pd.read_csv(os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv'))
     sweep_variables = [s for s in sweep_variables if s != 'seed']
-    df['pfpr'] = df['nPatent'] / df['nHost']
 
     # Group and aggregate the data
     df = df.groupby(['year', 'agebin'] + sweep_variables)[channels].agg(np.mean).reset_index()
@@ -147,14 +145,13 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
     - agebin (int): Age bin. Defaults to 5.
     """
     # Outcome channels to plot
-    channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'nPatent', 'pfpr']
+    channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'nPatent', 'prevalence']
 
     # Remove Run_Number from sweep_variables, hence aggregated runs
     sweep_variables = [s for s in sweep_variables if s != 'seed']
 
     # Read the data from a CSV file
-    df = pd.read_csv(os.path.join(wdir, 'OM_surveyoutput_mth.csv'))
-    df['pfpr'] = df['nPatent'] / df['nHost']
+    df = pd.read_csv(os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv'))
     df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
 
     # Select the second last year of simulation to reduce number of data points to plot on x-axis

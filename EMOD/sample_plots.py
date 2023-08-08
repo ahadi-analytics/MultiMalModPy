@@ -88,17 +88,17 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5):
     - agebin (int): Age bin. Defaults to 5.
     """
     # Outcome channels to plot
-    channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'pfpr', 'prevalence_2to10']
+    channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'prevalence', 'prevalence_2to10']
 
     # Read the data from a CSV file
     df = pd.read_csv(os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv'))
-    sweep_variables = [s for s in sweep_variables if s != 'Run_Number']
+    sweep_variables = [s for s in sweep_variables if s != 'seed']
 
     # Group and aggregate the data
-    df = df.groupby(['year', 'age'] + sweep_variables)[channels].agg(np.mean).reset_index()
+    df = df.groupby(['year', 'agebin'] + sweep_variables)[channels].agg(np.mean).reset_index()
 
     # Plot only single agebin as specified
-    df = df.loc[df['age'] == agebin]
+    df = df.loc[df['agebin'] == agebin]
 
     # Round numeric sweep variables shown in legend
     for sweep_var in sweep_variables:
@@ -144,10 +144,10 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
     - agebin (int): Age bin. Defaults to 5.
     """
     # Outcome channels to plot
-    channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'pfpr', 'prevalence_2to10']
+    channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'prevalence', 'prevalence_2to10']
 
-    # Remove Run_Number from sweep_variables, hence aggregated runs
-    sweep_variables = [s for s in sweep_variables if s != 'Run_Number']
+    # Remove seed from sweep_variables, hence aggregated runs
+    sweep_variables = [s for s in sweep_variables if s != 'seed']
 
     # Read the data from a CSV file
     df = pd.read_csv(os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv'))
@@ -159,10 +159,10 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
     df = df.loc[df['year'] == yr]
 
     # Group and aggregate the data
-    df = df.groupby(['date', 'age'] + sweep_variables)[channels].agg(np.mean).reset_index()
+    df = df.groupby(['date', 'agebin'] + sweep_variables)[channels].agg(np.mean).reset_index()
 
     # Plot only single agebin as specified
-    df = df.loc[df['age'] == agebin]
+    df = df.loc[df['agebin'] == agebin]
 
     # Round numeric sweep variables shown in legend
     for sweep_var in sweep_variables:
@@ -210,14 +210,8 @@ if __name__ == "__main__":
     wdir = os.path.join(job_directory, 'em')
 
     # Determine whether simulation ran with forced or dynamic EIR and set eirchannel
-    if 'dynamic' in job_directory:
-        eirchannel = "x_Temporary_Larval_Habitat"
-    else:
-        eirchannel = "EIR_scale_factor"
-
     # Define tags and channels for sample plots
-    exp_tags = [x for x in exp.sweep_list if x != 'seed'] # + ['Run_Number']
-    exp_tags = [eirchannel if tag == 'eir' else tag for tag in exp_tags]
+    exp_tags = [x for x in exp.sweep_list if x != 'seed'] # + ['seed']
     channels_inset_chart = ['Statistical Population', 'Births', 'Disease Deaths',
                             'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
                             'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
