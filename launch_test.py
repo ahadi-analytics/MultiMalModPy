@@ -292,7 +292,7 @@ def submit_create_run_EMOD(exp):
         serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
         builder.add_sweep_definition(partial(sweep_burnin_simulations, df=serialized_df, entomology_mode=entomology_mode),
                                      range(len(serialized_df.index)))
-        if exp.burnin_num_seeds == 1:
+        if exp.num_seeds_burnin == 1:
             builder.add_sweep_definition(partial(set_param, param='Run_Number'), range(num_seeds))
 
     else:
