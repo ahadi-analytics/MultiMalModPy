@@ -159,7 +159,20 @@ _see detailed instructions [here](https://github.com/numalariamodeling/model-cha
   - `om_input_path`: path to OpenMalaria sub-directory of this repository cloned on HPC
   - `output_directory`: path to directory where to store simulation resultr (summarized outputs), i.e. `output_directory = os.path.join(projdir, 'simulation_outputs')`
 
-
+### EMOD Serialization
+- One functional difference between EMOD and other malaria models is the process of serialization. Serialization allows us to run simulations, save them at a certain point in time, and simulate another campaign/scenario starting from the point we saved. We can run multiple simulations on the same population in series. We often use this process to save long initial simulations called burnins, during which population immunity is established. We don't want to wait for this to run everytime, so we serialize the population at the end of the burnin and then run shorter simulations, typically with additional interventions (also called "pickup" simulations). You will notice that we do not run OpenMalaria concurrently with EMOD when we are running EMOD burnin simulations.
+  
+- To run a burnin simulation you will need to modify `launch_test.py`:
+    - Set `emod_step = ‘burnin’` (around line 30).
+    - Set `burnin = <num of years>` (around line 51).
+        - This will set the duration of the burnin period.
+    - Note the experiment ID for this burnin simulation as you will need it later when you run pickup simulations. Pickup simulations cannot run without an attached experiment id.
+- To run a pickup simulation(s) you will need to modify `launch_test.py`:
+    - Set `emod_step = ‘pickup’` (around line 30)
+    - Set `emod_serialized_id = <burnin experiment id>`
+- To run a burnin and pickup simulation (without serializing) you will need to modify `launch_test.py`:
+    - Set `emod_step = None`
+      
 ### Running a simulation
 
 - In terminal navigate to repository  `cd ~/model-characterization`
