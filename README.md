@@ -1,7 +1,30 @@
-# Characterization and comparison of EMOD and OpenMalaria
-_[EMOD](https://docs.idmod.org/projects/emod-malaria/en/latest/index.html) | [OpenMalaria](https://github.com/SwissTPH/openmalaria/)_  
+# Characterization and comparison of three main malaria models: EMOD, OpenMalaria, and malariasimulation
+_[EMOD](https://docs.idmod.org/projects/emod-malaria/en/latest/index.html) | [OpenMalaria](https://github.com/SwissTPH/openmalaria/) | [malariasimulation](https://github.com/mrc-ide/malariasimulation/tree/master)_  
 
 _Disclaimer: This repository is under active development, if something is not working, please contact us - or simply create an issue on GitHub that we can follow up on._
+
+------------------------------------- 
+
+#### Table of contents
+
+1. [Goal](#goal)
+2. [Setup](#setup)
+    - [Repository structure](#repository-structure)
+    - [Programming language](#programming-language)
+    - [Simulation framework](#simulation-framework)
+    - [Model inputs and scaffolds](#model-inputs-and-scaffolds)
+    - [EMOD serialization](#emod-serialization)
+3. [Scenarios implemented](#Scenarios-implemented)
+    - [base case](#base-case)
+4. [Running simulations](#running-simulations)
+   - [Manifest configuration](#manifest-configuration)  
+   - [Simulation experiment configuration](#simulation-experiment-configuration)  
+   - [Submit run and analyze simulations](#submit-run-and-analyze-simulations)  
+   - [Output files and metrics](#output-files-and-metrics)
+   - [Customizing simulation and outputs](#customizing-simulation-and-outputs)
+6. [Installation](#installation)
+7. [Troubleshooting](#troubleshooting)
+8. [Change log](#change-log)
 
 ------------------------------------- 
 
@@ -20,51 +43,64 @@ using a simple python framework and allow flexible user-specific plotting.
     - Vector control effects on mosquito life and feeding cycle
 
 
--------------------------------------  
 
 **Repositories of malaria models used and frameworks utilized:**  
-EMOD (
-IDM): [idmtools](https://github.com/InstituteforDiseaseModeling/idmtools), [emodpy-malaria](https://github.com/InstituteforDiseaseModeling/emodpy-malaria),
+
+- **EMOD** - Institute for Disease Modeling (IDM): [idmtools](https://github.com/InstituteforDiseaseModeling/idmtools), [emodpy-malaria](https://github.com/InstituteforDiseaseModeling/emodpy-malaria),
 emod-api, emodpy   
-OpenMalaria (Swiss
-TPH): [openmalaria](https://github.com/SwissTPH/openmalaria/) , ([r-openMalariaUtilities](https://github.com/SwissTPH/r-openMalariaUtilities))   
+- **OpenMalaria** - Swiss Tropical and Public Health Institute (Swiss TPH): [openmalaria](https://github.com/SwissTPH/openmalaria/) , ([r-openMalariaUtilities](https://github.com/SwissTPH/r-openMalariaUtilities))   
+- **malariasimulation** - Imperial College London (ICL): [malariasimulation](https://github.com/mrc-ide/malariasimulation/tree/master)   
+
 
 -------------------------------------
 
-## Repository structure and simulation framework
+## Setup
 
-- **EMOD** (required, EMOD inputs and specific functions)
-- **OpenMalaria** (required, OpenMalaria inputs and specific functions)
-- **custom_plotter** (optional, unstructured collection of custom figures scripts)
-- **sim_popsize** (optional, example of a sub-question specific modification of the utilities provided in framework)
-- **simulations** (optional, directory to eventually store sub-question specfic simulation scripts (adapted from launch_test.py, i.e. with SMC etc))
-- **static** (readme images)
-- `benchmark_plots.py` (required, default plots for model comparison)
-- `functions.R` (optional, helper functions for custom R plots)
-- `helper.py` (required)
-- `launch_test.py` (define and submit a simulation experiment in EMOD and in OpenMalaria, via wrapper functions for separate submission)
-- `manifest.py` (configuration file for system defaults and directories, model versions to run, HPC account)
+### Repository structure 
+The repository has a nested structure with model specific input and helper functions within sub-directories.  
+The model-specific scripts mimic the same file names and content as much as possible to not have to search the equivalent script for each new model.  
+The main configuration `manifest.py` and test simulation script `launch_test.py` are located directly under the root directory. 
 
-Implemented simulation framework:  
-**Option 1 (default for testing)**
+    .  
+    ├─ EMOD/                            # EMOD inputs and specific functions
+    │   ├─ inputs/
+    │   │   └─ ... 
+    │   ├─ scaffolds/
+    │   │   ├─ forcedEIR.py             
+    │   │   └─ interventions.py 
+    │   ├─ analyze_sim.py
+    │   ├─ sample_plots.py
+    │   └─ utils.py 
+    ├─ OpenMalaria/                     # OpenMalaria inputs and specific functions  
+    │   ├─ scaffolds/
+    │   │   └─ ... 
+    │   ├─ analyze_sim.py  
+    │   ├─ measures.py
+    │   ├─ sample_plots.py
+    │   └─ utils.py 
+    ├─ malariasimulation/               # malariasimulation inputs and specific functions   (coming soon)
+    │   ├─ ...  
+    │   └─ ...  
+    ├─ custom_plotter/                  # Unstructured collection of custom figures scripts (optional)
+    │   └─ ...  
+    ├─ sim_popsize/                     # Alternative use of framework to sweep uncommong parameters (example)
+    │   └─ ...  
+    ├─ simulations/                     # Collection of sub-question specific simulation scripts (coming soon)  
+    │   └─ ...  
+    ├─ static/                          # Readme images 
+    │   └─ ...  
+    ├─ benchmark_plots.py               # Default plots for model comparison 
+    ├─ functions.R                      # Helper functions for custom R plots (optional)   
+    ├─ helper.py _(required)_  
+    ├─ launch_test.py                   # Base-case simulation script used for testing  
+    └─ manifest.py                      # Configuration of system defaults, HPC account, directories   
 
-- single `launch_test.py` python script to launch the simulation experiment with parameters defined directly in the file
-- helper functions for EMOD and OpenMalaria, stored in 'utils.py' in model specific subfolders are sourced in
-  the  `launch_test.py` python script
-- The postprocessing via analyzers has the same structure, with analyzer files of the same name located in the model
-  subfolders.
-- Example: directory `simulations`
-
-**Option 2 (alternative if requiring extensive modifications of default scripts)**
-
-- Have project specific `utils` and `analyzer` scripts within project folder and have them named differently for EMOD
-  and OpenMalaria (i.e.  `utils_om.py / utils_om.py` and `analyzer_em.py / analyzer_em.py `.
-- This approach allows more flexible editing, i.e. when using project specific or experiment specific parameter
-  definitions and analyzer
-  files that are not integrated into the default scripts, or would change too much.
-- Example: directory `sim_popsize`
-
-![Simulation framework](https://github.com/numalariamodeling/model-characterization/blob/main/static/emod-om-framework.png)
+ 
+### Programming language
+- Python had been selected as the main programming language, whereas previous frameworks in R do at varying extent exist for the different models. 
+- In general, the framework is aimed to be flexible enough to integrate model-specific R scripts for generating or postprocessing results, as long as integrated into the main python pipeline (i.e. via sourcing of R scripts), however full integration into python is preferred.
+- R is often preferred for generating results and plots, as seen in the sub-directory `custom_plotter`. 
+- Other software languages used for handling model inputs or HPC job submission are `XML`, `json`, and `shell` scripts, as well as `txt` and `log` text files.
 
 
 <details><summary><span>Expand to view conceptual figure</span></summary>
@@ -73,6 +109,25 @@ Implemented simulation framework:
 ![Schematic of simulation analysis worklfow](https://github.com/numalariamodeling/model-characterization/blob/main/static/flowchart.png)
 </p>
 </details>
+
+
+### Simulation framework 
+
+The repository and programming heavily follows the structure and requirements of a simulation in EMOD using IDM's programming framework (emodpy, idmtools) for generating, submitting and post-processing simulations.
+The name of some input and output names have been predominantly aligned to OpenMalaria conventions where possible.  
+
+A single `launch_test.py` python script launches the simulation experiment with parameters defined directly in the file
+Helper functions for EMOD and OpenMalaria, stored in 'utils.py' in model specific subfolders are sourced in  the  `launch_test.py` python script.   
+
+![Simulation framework](https://github.com/numalariamodeling/model-characterization/blob/main/static/emod-om-framework.png)
+
+
+Alternatively, one can have project specific `utils` and `analyzer` scripts within a project folder and have them named differently for EMOD
+and OpenMalaria (i.e.  `utils_om.py / utils_om.py` and `analyzer_em.py / analyzer_em.py `. 
+This approach allows more flexible editing, i.e. when using project specific or experiment specific parameter definitions and analyzer files that are not integrated into the default scripts, or would change too much.
+(example `sim_popsize`)
+
+
 
 
 <details><summary><span>List of functions</span></summary>
@@ -135,14 +190,47 @@ _Table: OpenMalaria functions_
 </p>
 </details>
 
+
+
+### Model inputs and scaffolds
+In OpenMalaria, the simulation setup to run is not created 'on the fly' as for EMOD, but is pre-specified in the XML file.  
+[...]
+
+
+### EMOD serialization
+One functional difference between EMOD and other malaria models is the process of serialization (to run multiple simulations on the same population in series).  
+- Serialization allows the user to run a simulation, save their status and results at a specified point in time, and start another simulation (i.e. with modified campaigns) that continues from the point saved.   
+- In EMOD, this is often applied to first run the  `burnin` the long initial simulation run, during which population immunity is established, followed by the `pickup` which defines the often typical scenario explorations.  
+- Hence, to avoid running the long initial period everytime, the user can serialize the population at the end of the burnin and then run shorter simulations on that population with varying campaign parameters (that do not affect population characteristics).   
+  
+The following parameters need editing in `launch_test.py`:
+- To run a burnin simulation :
+    - Set `emod_step = ‘burnin’` .
+    - Set `burnin = <num of years>` to define duration of the burnin period (which is also used in OpenMalaria, however runs much quicker than in EMOD).
+    - The experiment ID for this burnin simulation will be needed when running the pickup simulation (and is saved automatically in <exp_name> folder, and also printed to console).
+- To run a pickup simulation(s):
+    - Set `emod_step = ‘pickup’`
+    - Set `emod_serialized_id = <burnin experiment id>`
+    - Pickup simulations cannot run without an attached experiment id.
+- To run a burnin and pickup simulation (without serializing, as selected as default for testing):
+    - Set `emod_step = None`
+
+
+
+## Scenarios implemented
+coming soon
+
+### Base case 
+(including case management)
+coming soon
+
+
 ------------------------------------- 
-## Getting started
 
-### Installation and software
+## Running simulations
 
-- Both models are assumed to run on a linux based cluster and the framework is not designed to run simulations locally
-- Python software is used for the general framework, while R might be used as well where better suited, or for custom
-  plotting
+- Simulations are assumed to run on a linux based high performance cluster (HPC), the framework is not designed for running simulations locally
+- Main programming language is `Python` , whereas `R` might be used as well where better suited, or for custom  plotting
 - Install required software for OpenMalaria and EMOD (note on NUCLUSTER AND SciCore software has already been installed)  
 
 _see detailed instructions [here](https://github.com/numalariamodeling/model-characterization#installation)_
@@ -156,24 +244,57 @@ _see detailed instructions [here](https://github.com/numalariamodeling/model-cha
   - `job_directory`: path to directory where to store experiments, i.e. `job_directory = os.path.join(projdir, 'experiments')`
   - `SIF_PATH`: path to EMOD emodpy image (see EMOD installtion)
   - `OM_PATH`: path to OpenMalaria requirements to run model (see OpenMalaria installation)
-  - `om_input_path`: path to OpenMalaria sub-directory of this repository cloned on HPC
+  - `om_input_path`: path to OpenMalaria sub-directory of this git repository cloned on HPC
   - `output_directory`: path to directory where to store simulation resultr (summarized outputs), i.e. `output_directory = os.path.join(projdir, 'simulation_outputs')`
 
-### EMOD Serialization
-- One functional difference between EMOD and other malaria models is the process of serialization. Serialization allows us to run simulations, save them at a certain point in time, and simulate another campaign/scenario starting from the point we saved. We can run multiple simulations on the same population in series. We often use this process to save long initial simulations called burnins, during which population immunity is established. We don't want to wait for this to run everytime, so we serialize the population at the end of the burnin and then run shorter simulations, typically with additional interventions (also called "pickup" simulations). You will notice that we do not run OpenMalaria concurrently with EMOD when we are running EMOD burnin simulations.
-  
-- To run a burnin simulation you will need to modify `launch_test.py`:
-    - Set `emod_step = ‘burnin’` (around line 30).
-    - Set `burnin = <num of years>` (around line 51).
-        - This will set the duration of the burnin period.
-    - Note the experiment ID for this burnin simulation as you will need it later when you run pickup simulations. Pickup simulations cannot run without an attached experiment id.
-- To run a pickup simulation(s) you will need to modify `launch_test.py`:
-    - Set `emod_step = ‘pickup’` (around line 30)
-    - Set `emod_serialized_id = <burnin experiment id>`
-- To run a burnin and pickup simulation (without serializing) you will need to modify `launch_test.py`:
-    - Set `emod_step = None`
-      
-### Running a simulation
+
+### Simulation experiment configuration
+The simulation inputs are directly defined in the python scripts, which will generate a scenario csv, rather than writing the csv and reading it in (this option will be made available)
+The `launch_test.py` is the go-to script to get started and do test simulation runs, it does run a 'base-case' scenario with only including case management but no other interventions.  
+
+
+- [ ] **Simulation experiment name, infractructure, directories and models to run**
+  - [mem_increase_factor](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L23C1-L23C20): scaling factor on default memory requested, which usually can be left at 1 for test simulation, but may have to be 2 or 3 for larger simulations. The default memory requested also differs for the slurm job submission to run versus to analyze a simulation.
+  - [custom_subdir](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L26): If `None`, no i.e. user specific subdir created, default `os.getlogin()`
+  - [SUITEname](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L27): overall subdir to declare a group of simulations to run, default is `f'{entomology_mode}EIR'`
+  - [exp_name](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L28): name of simulation experiment to run, default is `f'sim_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'`, whereas a more meaningful name might be choosen for simulation experiments to use outputs for some result description rather than just for testing.
+  - [models_to_run](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L36): Name of models to run (case-sensitive), options are 'EMOD' and/or 'OpenMalaria'
+  - [om_scaffold](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L40): name of OpenMalaria input XML to use 
+
+
+- [ ] **Population size, agebins and seeds**
+  - [pop_size](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L44): number of individuals to simulate for human population, default for testing `1000`, which should not be used for actual simulations to generate results
+  - [agebins](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L45): age groups to monitor (select finest age groups required, can be further combined in postprocessing)
+  - [num_seeds_burnin](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L47): EMOD specific (even  if not declared as such), number of seeds to run for burnin if run separately
+  - [num_seeds](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L47): number of seeds to run for simulation (applies to all models)
+  - [sweep_list](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L58): List of parameter names that together uniquely identify a simulation scenario (and will be written into `scenarios.csv`)
+
+
+- [ ] **Simulation time and reporting intervals**
+  - [start_year](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L49): Calendar year at which monitoring period should start (after burnin)
+  - [end_year](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L49): Calendar year at which monitoring period should end 
+  - [burnin](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L51): Number of years to run prior to monitoring period (from these the simulation start year will be calculated) 
+  - [om_survey_step](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L41): survey intervals for which outcomes are reported in OpenMalaria, default is `30d`. Note, in EMOD, monthly reports are per default included in monitored simulation period. 
+  - [emod_step](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L32): EMOD allows to run burnin separate from the monitoring period (here equivalent to `pickup`), if `None` both similation times are run together, which can be computational and time-wise too extensive when running long burnin, large populations and high EIRs. 
+  - [emod_serialized_id](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L33): ID of EMOD burnin experiment to pickup from, if `emod_step ='pickup'`
+ 
+
+- [ ] **Case management parameters**    
+  - [cm_start](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L72): do not change, can be removed, case managament would always start on day 1, except of having multiple intervention deployments to simulate coverage increase over time (not applicable here)
+  - [cm_clinical](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L73): clinical case management coverage
+  - [cm_severe](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L74): do not change, will be adapted depending on clinical case management, but to be at least 48%
+  - [detectionLimit](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L75): detection limit for parasites per micoliter blood for detection of prevalent malaria infections
+
+
+- [ ] **Transmission intensity and seasonality**    
+  - [entomology_mode](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L22): select whether to run with vectors (`dynamic`) or without (`forced`)
+  - [seasonality](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L78): name of pre-defined transmission seasonality profile to simulate (current options are `["perennial", "seasonal"]`)
+  - [eir](https://github.com/numalariamodeling/model-characterization/blob/main/launch_test.py#L79): annual input EIR (when using `forced EIR`)
+
+_Note the order of parameters differs for some in the python script_
+
+
+### Submit run and analyze simulations
 
 - In terminal navigate to repository  `cd ~/model-characterization`
 - Run python script that defines the simulation i.e. `python launch_test.py` for a test run
@@ -187,14 +308,11 @@ _see detailed instructions [here](https://github.com/numalariamodeling/model-cha
      ``` 
 - Perform additional analysis or plot custom results 
 
-
-
 ![experiment config folder](https://github.com/numalariamodeling/model-characterization/blob/main/static/simulation_directories.png)
 
 
 
-
-### Output files and columns
+### Output files and metrics
 
 Several custom output csv tables that can be used to generate figures and other results for model characterization.
 The file names have been mostly aligned to EMOD, whereas the name of outcome metrics have been mostly aligned to
@@ -249,21 +367,15 @@ OpenMalaria, as 'more fixed' as in EMOD.
 | outcome          | simulatedEIR      | simulated EIR per reporting interval                                                                      | default output, all age                              | called 'EIR'   in InsetChart, not   applicable for forced EIR               |
 
 
-
 </p>
 </details>
 
-### Troubleshooting
 
-- No results in simulation outputs
-    - analyzer did not run correctly -> try rerunning by submitting corresponding sbatch file, or copy command in
-      terminal
-        - slurm job id dependency not satisfied
-        - error in analyzer script
-    - simulation failed -> check log/error files
-        - simulations cancelled due to memory or time limit issue
-        - simulation had not been submitted due to errors in the input files
-    - ...
+### Customizing simulation and outputs
+To customize a simulation, any of the defined parameters listed in [Simulation experiment configuration](https://github.com/numalariamodeling/model-characterization#simulation-experiment-configuration) can be changed.
+Commonly modified parameters are eir, seasonality, burnin period, and sometimes cm_clinical, for base-case scenario runs.
+Additional interventions are not possible using the `launch_test.py`, and instructions for simulating other interventions will come soon [Setting up new simulation scenarios](https://github.com/numalariamodeling/model-characterization#setting-up-new-simulation-scenarios)
+
 
 -------------------------------------
 
@@ -336,21 +448,21 @@ the [Swiss Tropical and Public Health Institute (Swiss TPH)](https://www.swisstp
 
 Table 1: Overview of model software and infrastructure
 
-|                   | EMOD                                                                                                   | OpenMalaria                                                                         |
-|-------------------|--------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| Documentation     | https://docs.idmod.org/projects/emod-malaria/en/latest/index.html                                      | https://github.com/SwissTPH/openmalaria/wiki                                        |
-| Accessibility     | Open source                                                                                            | Open source                                                                         |
-| Language          | C++                                                                                                    | C++                                                                                 |
-| First published   | 2013                                                                                                   | 2006-2008                                                                           |
-| Models            | Individual-based human model <br>Population based vector model  <br> PkPD submodel. <br> Spatial model | Individual-based human model <br>Population based vector model <br> (...) <br> <br> |
-| Framework         | Python (dtk-tools)                                                                                     | custom by user group                                                                |                         
-| OS                | Windows, Linux                                                                                         | Windows, Linux, (Mac OS)                                                            |              
-| Default timesteps | 1 day                                                                                                  | 5  day                                                                              |                                                             
-| Input file type   | json                                                                                                   | XML                                                                                 |                                                         
-| Output file type  | json                                                                                                   | txt                                                                                 |                                            
-| N input files     | 5+                                                                                                     | 1                                                                                   |    
-| N output files    | custom                                                                                                 | 2                                                                                   |     
-| Glossary          | [link](https://docs.idmod.org/projects/emod-malaria/en/latest/glossary.html)                           | [link](https://github.com/SwissTPH/openmalaria/wiki/Terminology)                    |    
+|                   | EMOD                                                                                                   | OpenMalaria                                                                         | Malariasimulation                                                                   |
+|-------------------|--------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| Documentation     | https://docs.idmod.org/projects/emod-malaria/en/latest/index.html                                      | https://github.com/SwissTPH/openmalaria/wiki                                        | https://github.com/mrc-ide/malariasimulation                                        |
+| Accessibility     | Open source                                                                                            | Open source                                                                         | Open source (R package)                                                             |
+| Language          | C++                                                                                                    | C++                                                                                 | C++                                                                                 |
+| First published   | 2013                                                                                                   | 2006-2008                                                                           |                                                                                     |
+| Models            | Individual-based human model <br>Population based vector model  <br> PkPD submodel. <br> Spatial model | Individual-based human model <br>Population based vector model <br> (...) <br> <br> | Individual-based human model <br>Population based vector model <br> (...) <br> <br> |
+| Framework         | Python (dtk-tools)                                                                                     | custom by user group                                                                | R >= 4.0.0                                                                          |                       
+| OS                | Windows, Linux                                                                                         | Windows, Linux, (Mac OS)                                                            |                                                                                     |            
+| Default timesteps | 1 day                                                                                                  | 5  day                                                                              |                                                                                     |                                                           
+| Input file type   | json                                                                                                   | XML                                                                                 |                                                                                     |                                                       
+| Output file type  | json                                                                                                   | txt                                                                                 |                                                                                     |                                          
+| N input files     | 5+                                                                                                     | 1                                                                                   |                                                                                     |  
+| N output files    | custom                                                                                                 | 2                                                                                   |                                                                                     |   
+| Glossary          | [link](https://docs.idmod.org/projects/emod-malaria/en/latest/glossary.html)                           | [link](https://github.com/SwissTPH/openmalaria/wiki/Terminology)                    |                                                                                     |  
 
 ### Ensemble modeling and comparisons using both models
 
@@ -378,21 +490,28 @@ Table 1: Overview of model software and infrastructure
 </p>
 </details>
 
-## Change log
 
+------------------------------------
+
+## Troubleshooting
+
+- No results in simulation outputs
+    - analyzer did not run correctly -> try rerunning by submitting corresponding sbatch file, or copy command in
+      terminal
+        - slurm job id dependency not satisfied
+        - error in analyzer script
+    - simulation failed -> check log/error files
+        - simulations cancelled due to memory or time limit issue
+        - simulation had not been submitted due to errors in the input files
+    - ...
+ 
+------------------------------------    
+
+## Change log
+- August 2023: start integrating Imperial College London's malaria model `malariasimulation`, start dynamic EIR
 - July - August 2023: bugfixes and improvements to framework, timeseries, initial parameter exploration
 - March 2023 - June 2023: initial python framework with CM only and forced EIR
 - March 2023: Repository created following up on the lessons learned from the SwissTPH "MC benchmarking" framework in R
 
-Next:
 
-- calibrate dynamic EIR
-- add SMC
-- add/ improve error capturing and documentation
-- add automatic cleanup options
-- improve handling of SUITEnames and folder structure
-- fix hardcoded age groups, allow flexible age groups (error in OpenMalaria postprocessing)
-- event plotter
-
-See all issues
-here:  [/model-characterization/issues](https://github.com/numalariamodeling/model-characterization/issues#workspaces/emodopenmalaria-643ac4533584b28586ce8b39/roadmap)
+See planned next steps and issues at:  [/model-characterization/issues](https://github.com/numalariamodeling/model-characterization/issues#workspaces/emodopenmalaria-643ac4533584b28586ce8b39/roadmap)
