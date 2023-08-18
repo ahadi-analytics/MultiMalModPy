@@ -11,6 +11,72 @@ library(scales)
 library(ggplot2)
 library(cowplot)
 
+#' Load and combine data from EMOD and/or OpenMalaria benchmark output files.
+#'
+#' This function loads and combines data from the specified EMOD and/or OpenMalaria
+#' benchmark output files.
+#'
+#' @param wdir Working directory where the data files are located.
+#' @param emodom Name of models for which result CSVs should be loaded, case sensitive.
+#' @param mth Set to TRUE if the data files have monthly data. Default is FALSE.
+#' @param timeseries Set to TRUE if the unaggregated timeseries data should be read in. Default is FALSE.
+#'
+#' @return df
+#'
+#' @raises An error if invalid emodom value is specified.
+#'
+#' @import data.table
+#'
+#' @examples
+#' wdir <- "path/to/data"
+#' emodom <- c("OpenMalaria", "EMOD")
+#' result <- get_emodom_df(wdir, emodom, mth = TRUE)
+#'
+get_emodom_df <- function(wdir, emodom, mth = FALSE, timeseries = FALSE, fname = NULL) {
+
+  # Define filename based on options
+  if (is.null(fname)) {
+    fname <- 'Benchmark.csv'
+    if (mth & !timeseries) fname <- 'Benchmark_mth.csv'
+    if (!mth & timeseries) fname <- 'PfPR_ClinicalIncidence_yr.csv'
+    if (mth & timeseries) fname <- 'PfPR_ClinicalIncidence_mth.csv'
+  }
+  # Load data for OpenMalaria if specified
+  if ('OpenMalaria' %in% emodom) {
+    om_df <- fread(file.path(wdir, 'om', fname))
+    om_df$emodom <- 'OpenMalaria'
+  }
+
+  # Load data for EMOD if specified
+  if ('EMOD' %in% emodom) {
+    em_df <- fread(file.path(wdir, 'em', fname))
+    em_df$emodom <- 'EMOD'
+  }
+
+  # Combine data based on conditions
+  if ('OpenMalaria' %in% emodom && 'EMOD' %in% emodom) {
+    df <- rbindlist(list(em_df, om_df),fill=TRUE)
+  } else if ('OpenMalaria' %in% emodom && !('EMOD' %in% emodom)) {
+    wdir <- file.path(wdir, 'om')
+    df <- om_df
+  } else if ('EMOD' %in% emodom && !('OpenMalaria' %in% emodom)) {
+    wdir <- file.path(wdir, 'em')
+    df <- em_df
+  } else {
+    stop(paste("Please specify emodom as EMOD and/or OpenMalaria (list),", paste0(emodom, collapse=','), "not valid"))
+  }
+
+  # Convert ageGroup to factor with ordered levels if present
+  if ('ageGroup' %in% colnames(df)) {
+    age_grps <- unique(df$ageGroup)
+    df$ageGroup <- factor(df$ageGroup, levels = age_grps)
+  }
+
+  # Return results as a list
+  return(df)
+}
+
+
 #' Save Plot to File
 #'
 #' This function saves a plot to a file in the specified directory, supporting multiple file formats.
@@ -174,7 +240,6 @@ f_getCustomTheme <- function(fontscl = 1) {
 
   return(customTheme)
 }
-
 
 #' Remove Legends from ggplot Objects
 #'

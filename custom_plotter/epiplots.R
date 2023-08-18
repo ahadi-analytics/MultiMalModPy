@@ -14,27 +14,19 @@ if (Sys.getenv("OS") == "Windows_NT") {
   username <- Sys.getenv('USER') #Sys.getenv('USERNAME')
   projdir <- file.path('/projects/b1139/emod-om/simulation_outputs', username)
 }
-exp_name <- 'test__noburnin' 
+
+exp_name <- 'test__noburnin'
 wdir <- file.path(projdir, 'simulation_outputs', exp_name)
 proj_fig_dir <- file.path(projdir, 'figures')
 exp_fig_dir <- file.path(wdir, 'comb')
+emodom <- c('EMOD','OpenMalaria')
 
 # Load simulation outputs  -------------------------------
-dat1 <- fread(file.path(wdir, 'om', 'OM_benchmark.csv')) %>% mutate(emodom = 'OpenMalaria')
-dat2 <- fread(file.path(wdir, 'em', 'EMOD_benchmark.csv')) %>%
-  mutate(emodom = 'EMOD') %>%
-  mutate(eir = inputEIR)
-
-# Combine dataframes (append rows)
-dat <- dat1 %>% bind_rows(dat2)
-agegrp_lbl <- c('0-5', '5-10', '10-15', '15-20')
-dat$age_group <- factor(dat$age_group,
-                        levels = agegrp_lbl,
-                        labels = agegrp_lbl)
+dat <- get_emodom_df(wdir, emodom=emodom)
 
 # Table to check entries per model and EIR
 table(dat$eir, dat$emodom, exclude = NULL)
-table(dat$age_group, dat$emodom, exclude = NULL)
+table(dat$ageGroup, dat$emodom, exclude = NULL)
 
 # Additional monthly EIR inputs and simultion outputs  -------------------------------
 # OpenMalaria extracted EIR (in forced EIR not available for EMOD)
@@ -49,28 +41,10 @@ dateir_mth <- fread(file.path(wdir, 'om', 'OM_EIR_mth.csv')) %>%
   select(eir, month, emodom, mean_val)
 
 # OpenMalaria  EIR as in OM benchmarking (aggregated over years per month)
-dat1_mth <- fread(file.path(wdir, 'om', 'OM_benchmark_mth.csv')) %>%
-  filter(age_group == '0-5' &
-           eir == 64 &
-           seed == 0 &
-           seasonality == 'seasonal') %>%
-  group_by(eir, month) %>%
-  filter(index == min(index)) %>%
-  mutate(emodom = 'OpenMalaria - EIR aggregated sim')  # FIXME, annual aggregation over mths in OM
-
-# EMOD monthly benchmarking outputs
-dat2_mth <- fread(file.path(wdir, 'em', 'EMOD_benchmark_mth.csv')) %>%
-  rename(seed = Run_Number,
-         eir = inputEIR) %>%
-  filter(age_group == '0-5' &
-           eir == 64 &
-           seed == 0 &
-           seasonality == 'seasonal') %>%
-  mutate(emodom = 'EMOD') %>%
-  select(any_of(colnames(dat1_mth)))
-
-# Combine
-dat_mth <- dat1_mth %>% bind_rows(dat2_mth)
+dat_mth <- get_emodom_df(wdir, emodom=emodom, mth=TRUE) %>%
+  filter(ageGroup == '0-5' &
+           eir == max(eir) &
+           seed == min(seed))
 
 # Check
 table(dat_mth$eir, dat_mth$emodom, exclude = NULL)
@@ -82,7 +56,7 @@ eir_seasonal_input <- c(0.89536936, 1., 0.99861637, 0.88644885, 0.69983342,
 eir_input_df <- data.frame(cbind('month' = c(1:12),
                                  'mean_val' = eir_seasonal_input,
                                  "emodom" = 'input EIR (scaled)')) %>%
-  mutate(eir = 65,
+  mutate(eir =unique( dat_mth$eir),
          mean_val = as.numeric(mean_val) * 10,
          month = as.numeric(month)) %>%
   select(eir, month, emodom, mean_val)
@@ -90,7 +64,7 @@ eir_input_df <- data.frame(cbind('month' = c(1:12),
 
 # Annual EIR by PfPR 2to10 plot  (a) -------------------------------
 p1 <- dat %>%
-  filter(age_group == '0-5') %>%
+  filter(ageGroup == '0-5') %>%
   group_by(eir, seasonality, emodom) %>%
   summarize(pfpr2to10_mean = mean(prevalence_2to10),
             pfpr2to10_min = min(prevalence_2to10),
