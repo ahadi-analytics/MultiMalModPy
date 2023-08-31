@@ -82,6 +82,11 @@ def get_emodom_df(wdir, emodom, mth=False, timeseries=False):
     else:
         raise ValueError(f"Please specify emodom as EMOD and/or OpenMalaria (list), {emodom} not valid")
 
+    if 'ageGroup' in df.columns:
+        age_grps = list(df['ageGroup'].unique())
+        df['ageGroup'] = df['ageGroup'].astype('category')
+        df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
+
     return df, wdir
 
 
@@ -550,6 +555,73 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
     # fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,))
 
 
+def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'):
+    df, wdir = get_emodom_df(wdir, emodom, mth=False, timeseries=True)
+
+    if 'cm_clinical' not in [sweepvar, facet_var]:
+        df = df[(df.cm_clinical == np.min(df.cm_clinical))]
+
+    if 'seasonality' not in [sweepvar, facet_var]:
+        df = df[(df.seasonality == df['seasonality'].unique()[0])]
+
+    if 'eir' not in [sweepvar, facet_var]:
+        df = df[(df.eir == np.max(df.eir))]
+
+    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
+        raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+
+    df = df.groupby(['ageGroup','seed',sweepvar, facet_var])[channel].agg(np.mean).reset_index()
+
+    ylim_up = np.max(df[channel])
+    if channel == 'prevalence_2to10' or channel == 'prevalence':
+        ylim_up = 1
+
+    fig, axes = plt.subplots(len(df[facet_var].unique()), 1, sharex=True, figsize=(5, 3 * len(df[facet_var].unique())))
+    firstPlot = True
+
+    unique_groups = df[sweepvar].unique()
+    unique_facets = df[facet_var].unique()
+
+    num_colors = len(unique_groups)
+    num_facets = len(unique_facets)
+
+    #color_palette = sns.color_palette('husl', num_colors)
+
+    # Iterate through each facet and plot the lines for each group
+    for i, facet_value in enumerate(unique_facets):
+        facet_data = df[df[facet_var] == facet_value]
+        ax = axes[i] if len(df[facet_var].unique()) > 1 else axes  # Handle single facet
+
+        for p, (group_val, pdf) in enumerate(facet_data.groupby([sweepvar])):
+            # plot mean, min and max of seeds
+            agg_results = pdf.groupby('ageGroup')[channel].agg(['mean', 'min', 'max']).reset_index()
+            xmean = agg_results['ageGroup']
+            ymean = agg_results['mean']
+            ymin = agg_results['min']
+            ymax = agg_results['max']
+            ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{group_val}")
+            ax.fill_between(xmean, ymin, ymax, alpha=0.25)
+
+        ax.set_ylim(0, ylim_up)
+        ax.set_xlabel('Age (years)')
+        ax.set_ylabel(channel)
+        ax.set_title(f"{facet_var} = {facet_value}")
+        if firstPlot:
+            lg = ax.legend(loc="upper left")  # , title_fontproperties={"weight": "bold"}
+        firstPlot = False
+
+        # Add a new subplot for the next facet
+        if i < num_facets - 1:
+            ax = plt.subplot(num_facets, 1, i + 1)
+
+    # Adjust layout to avoid overlapping
+    plt.tight_layout()
+
+    fname = f'agecurves_{channel}_by_{sweepvar}'
+    fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,))
+    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,))
+
+
 if __name__ == "__main__":
     args = parse_args()
     job_directory = args.directory
@@ -597,6 +669,7 @@ if __name__ == "__main__":
             if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
                 monthly_timeseries(wdir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp='5-10')
             annual_timeseries(wdir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp='5-10')
+            age_curves(wdir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var)
 
     # Additional standardized plots - line colors by sweep variable
     if sweep_plots:

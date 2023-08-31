@@ -312,7 +312,7 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
     write_txt(slurm_job_id, exp.job_directory, 'job_id_OManalyze.txt')
 
 
-def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=3):
+def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=8):
     """
     Submits a job to analyze EMOD simulation results.
 

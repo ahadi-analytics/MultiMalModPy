@@ -14,27 +14,18 @@ if (Sys.getenv("OS") == "Windows_NT") {
   username <- Sys.getenv('USER') #Sys.getenv('USERNAME')
   projdir <- file.path('/projects/b1139/emod-om/simulation_outputs', username)
 }
+
 exp_name <- 'test__noburnin'
 wdir <- file.path(projdir, 'simulation_outputs', exp_name)
 proj_fig_dir <- file.path(projdir, 'figures')
-exp_fig_dir <- file.path(wdir, 'comb')
+
 
 # Load simulation outputs  -------------------------------
-dat1 <- fread(file.path(wdir, 'om', 'OM_benchmark.csv')) %>% mutate(emodom = 'OpenMalaria')
-dat2 <- fread(file.path(wdir, 'em', 'EMOD_benchmark.csv')) %>%
-  mutate(emodom = 'EMOD') %>%
-  mutate(eir = inputEIR)
-
-# Combine dataframes (append rows)
-dat <- dat1 %>% bind_rows(dat2)
-agegrp_lbl <- c('0-5', '5-10', '10-15', '15-20')
-dat$age_group <- factor(dat$age_group,
-                        levels = agegrp_lbl,
-                        labels = agegrp_lbl)
+dat <- get_emodom_df(wdir, emodom=emodom)
 
 # Table to check entries per model and EIR
 table(dat$eir, dat$emodom, exclude = NULL)
-table(dat$age_group, dat$emodom, exclude = NULL)
+table(dat$ageGroup, dat$emodom, exclude = NULL)
 
 
 # PfPR 2to10  and PfPR by age figure  (a) -------------------------------
@@ -62,7 +53,7 @@ table(dat$age_group, dat$emodom, exclude = NULL)
 
 # PfPR 2to10  and clinical incidence by age figure  (b) -------------------------------
 p2a <- dat %>%
-  rename(age = age_group) %>%
+  rename(age = ageGroup) %>%
   group_by(eir, seasonality, emodom, age) %>%
   summarize(prevalence_2to10 = mean(prevalence_2to10),
             clinical_incidence_mean = mean(clinical_incidence),
@@ -85,7 +76,7 @@ p2a <- dat %>%
 
 # PfPR 2to10  and severe incidence by age figure (c) -------------------------------
 p2b <- dat %>%
-  rename(age = age_group) %>%
+  rename(age = ageGroup) %>%
   group_by(eir, seasonality, emodom, age) %>%
   summarize(prevalence_2to10 = mean(prevalence_2to10),
             severe_incidence_mean = mean(severe_incidence),
