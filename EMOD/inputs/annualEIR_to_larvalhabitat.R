@@ -107,11 +107,43 @@ if (fit_model2c) {
   }
 
   pred_dat_out <- pred_list %>% bind_rows()
-  
-  ggplot(data = dat) +
-    geom_point(aes(x = x1, color = as.factor(x2), y = y)) +
+
+  dat$eir_grp <- factor(dat$eir_grp, levels = c('(-Inf,5]', '(5,30]', '(30,100]', '(100, Inf]'),
+                        labels = c('EIR < 5 ', 'EIR 5-30', 'EIR 30-100', 'EIR >100'))
+
+  pred_dat_out$eir_grp <- factor(pred_dat_out$eir_grp, levels = c('(-Inf,5]', '(5,30]', '(30,100]', '(100, Inf]'),
+                                 labels = c('EIR < 5 ', 'EIR 5-30', 'EIR 30-100', 'EIR >100'))
+
+  p1a <- ggplot(data = dat) +
+    geom_point(aes(x = log(x1), fill = as.factor(x2), y = log(y)), shape = 21, col = 'grey') +
+    geom_line(data = dat, aes(x = log(x1), color = as.factor(x2), y = log(y)), linewidth = 0.3) +
+    scale_color_brewer(palette = 'Dark2') +
+    scale_fill_brewer(palette = 'Dark2') +
+    labs(title = 'Simulated points', x = 'annual EIR (log)', y = 'x_Temporary_Larval_Habitat (log)', fill = 'cm_clinical', color = 'cm_clinical') +
+    guides(colour = guide_legend(reverse = T), fill = guide_legend(reverse = T))
+
+
+  p1b <- ggplot(data = dat) +
+    geom_point(aes(x = x1, fill = as.factor(x2), y = y), shape = 21, col = 'grey') +
+    geom_line(data = dat, aes(x = (x1), color = as.factor(x2), y = (y)), linewidth = 0.3) +
+    scale_color_brewer(palette = 'Dark2') +
+    scale_fill_brewer(palette = 'Dark2') +
+    labs(x = 'annual EIR ', y = 'x_Temporary_Larval_Habitat', fill = 'cm_clinical', color = 'cm_clinical') +
+    guides(colour = guide_legend(reverse = T), fill = guide_legend(reverse = T))
+
+  p2 <- ggplot(data = dat) +
+    geom_point(aes(x = x1, fill = as.factor(x2), y = y), shape = 21, col = 'grey') +
     geom_line(data = pred_dat_out, aes(x = x1, color = as.factor(x2), y = y_pred)) +
-    facet_wrap(~eir_grp, scales = 'free')
+    facet_wrap(~eir_grp, scales = 'free') +
+    scale_color_brewer(palette = 'Dark2') +
+    scale_fill_brewer(palette = 'Dark2') +
+    labs(title = 'Linear regression', x = 'annual EIR', y = 'x_Temporary_Larval_Habitat', fill = 'cm_clinical', color = 'cm_clinical') +
+    guides(colour = guide_legend(reverse = T), fill = guide_legend(reverse = T))
+
+  p1 <- plot_combine(list(p1a, p1b), ncol = 1, labels = c('a', 'b'))
+  pplot <- plot_combine(list(p1, p2), ncol = 2, labels = c(' ', 'c'))
+
+  f_save_plot(pplot, 'eir_to_lhs', plot_dir = getwd(), height = 6, width = 13)
 
 
 }
