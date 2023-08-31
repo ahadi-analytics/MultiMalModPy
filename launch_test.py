@@ -8,6 +8,7 @@ from datetime import datetime as dt
 import emodpy_malaria.malaria_config as malaria_config
 import manifest
 from EMOD.scaffolds.forcedEIR import *
+from EMOD.scaffolds.dynamicEIR import *
 from EMOD.scaffolds.interventions import treatment_camp_simple
 from EMOD.utils import *
 from helper import *
@@ -70,20 +71,23 @@ if emod_step != 'pickup':
 # Define case management start and coverage
 # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
 cm_start = 1
-cm_clinical = [0.2029544] # [0.2, 0.6, 0.8]
+cm_clinical = [0.2]  # [0.05, 0.1, 0.3, 0.5, 0.7, 0.9] # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544] # [0.2, 0.6, 0.8]
 cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
 detectionLimit = 40
 
 # Transmission and seasonality configuration
-seasonality = ["seasonal"]  # ["perennial", "seasonal"]
-eir = [8]  # [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+seasonality = ["perennial"]  # ["perennial", "seasonal"]
+eir = [
+    8]  # [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]   #[0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024] #[0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
 # Entomology mode: Dynamic EIR configuration if selected
 season_daily, season_month, seasonal, perennial = get_seasonal_eir()
 if entomology_mode == 'dynamic':
-    # TODO function to map LHS to annual input EIR values, derives from EMOD simulation
-    lhs = np.logspace(-2, 3, len(eir))
-    print('Dynamic EIR has not yet been aligned between EMOD and OpenMalaria')
+    if len(seasonality)> 1 or len(cm_clinical)>1 or cm_clinical[0] !=0.2:
+        raise ValueError('dynamic EIR in EMOD currently only supports cm_clinical of 0.2 and one seasonality pattern per simulation experiment')
+    else:
+        lhs = eir_to_lhs(eir, cm_clinical,population=pop_size, seasonality=seasonality[0])
+
 
 # Directory setup and analyzer scripts
 suite_directory, job_directory, sim_out_dir = make_dirs(manifest, SUITEname, exp_name, custom_subdir)
@@ -119,6 +123,7 @@ scen_df['cm_clinical'] = pd.to_numeric(scen_df['cm_clinical'], errors='coerce')
 scen_df['cm_severe'] = np.where(scen_df['cm_clinical'] * 1.15 > cm_severe,
                                 np.minimum(scen_df['cm_clinical'] * 1.15, 1), cm_severe)
 scen_df['cm_severe'] = np.where(scen_df['cm_clinical'] == 0, 0, scen_df['cm_severe'])
+scen_df['x_Temporary_Larval_Habitat'] = eir_to_lhs(df=scen_df, population=pop_size)  # FIXME when adapring reading in scen_df for dynamic EIR in EMOD
 
 exp.nexps = len(scen_df)  # * seeds ## not needed when included in sweep_list
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
@@ -145,8 +150,7 @@ def set_config_parameters(config):
     if entomology_mode == 'dynamic':
         malaria_config.add_species(config, manifest, ["gambiae"])  # , "arabiensis", "funestus"
 
-        # TO DO enable seasonality sweep via habitat multiplier
-        seasonality_type = 'example'
+        seasonality_type = seasonality[0] #'perennial'  # 'seasonal', 'example'  #FIXME enable sweeping
         config.parameters.Air_Temperature_Filename = os.path.join('climate',
                                                                   f'{seasonality_type}_air_temperature_daily.bin')
         config.parameters.Land_Temperature_Filename = os.path.join('climate',
@@ -186,9 +190,10 @@ def build_campaign(seasonality=None, EIR_scale_factor=None, cm_cov=0.2029544, cm
         set_inputEIR_seasonality(camp, EIR_scale_factor, seasonality)
     return camp
 
-def update_campaign_multiple_parameters(simulation, cm_cov, cm_severe_cov, cm_start):
+
+def update_campaign_multiple_parameters(simulation, cm_cov, cm_severe_cov, cm_start, season):
     build_camp_partial = partial(build_campaign, cm_cov=cm_cov, cm_severe_cov=cm_severe_cov, cm_start=cm_start)
-    rdic = {"cm_clinical": cm_cov, "cm_severe": cm_severe_cov, 'cm_start': cm_start}
+    rdic = {"cm_clinical": cm_cov, "cm_severe": cm_severe_cov, 'cm_start': cm_start, "seasonality": season}
     simulation.task.create_campaign_from_callback(build_camp_partial)
     return rdic
 
@@ -281,6 +286,8 @@ def submit_create_run_EMOD(exp):
 
     # Set the singularity image to be used when running this experiment
     task.set_sif(manifest.SIF_PATH, platform)
+
+    # FIXME example weather not yet aligned to input monthly EIR
     if entomology_mode == 'dynamic':
         task.common_assets.add_directory(os.path.join(manifest.input_dir, "example_weather"), relative_path="climate")
 
@@ -300,8 +307,8 @@ def submit_create_run_EMOD(exp):
         if entomology_mode == 'dynamic':
             builder.add_sweep_definition(partial(set_param, param='x_Temporary_Larval_Habitat'), lhs)
             builder.add_multiple_parameter_sweep_definition(update_campaign_multiple_parameters,
-                                                        dict(cm_cov=cm_clinical, cm_severe_cov=[cm_severe],
-                                                             cm_start=[cm_start]))
+                                                            dict(cm_cov=cm_clinical, cm_severe_cov=[cm_severe],
+                                                                 cm_start=[cm_start], season=seasonality))
         else:
             builder.add_multiple_parameter_sweep_definition(update_campaign_multiple_parameters_wEIR,
                                                         dict(cm_cov=cm_clinical, cm_severe_cov=[cm_severe],

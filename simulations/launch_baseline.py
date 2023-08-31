@@ -317,7 +317,7 @@ def submit_create_run_EMOD(exp):
     # Set the singularity image to be used when running this experiment
     task.set_sif(manifest.SIF_PATH, platform)
     if entomology_mode == 'dynamic':
-        task.common_assets.add_directory(os.path.join(manifest.input_dir, "example_weather"), relative_path="climate")
+        task.common_assets.add_directory(os.path.join(manifest.input_dir, "climate"), relative_path="climate")
 
     # Create experiment from builder
     builder = SimulationBuilder()

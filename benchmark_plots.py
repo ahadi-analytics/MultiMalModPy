@@ -277,10 +277,9 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5'):
         ValueError: If no seasonal transmission pattern is specified in the data.
     """
     df, wdir = get_emodom_df(wdir, emodom, mth=True)
-    df = df[(df.seasonality == 'seasonal')]
     df = df[(df.ageGroup == agegrp)]
-    if df.empty:
-        raise ValueError('No seasonal transmission pattern specified')
+    if 'seasonal' in df.seasonality.unique():
+        df = df[(df.seasonality == 'seasonal')]
     # caption_txt = ''
 
     if sweepvar != 'cm_clinical':
@@ -354,7 +353,8 @@ def sweep_by_channel_plot(wdir, emodom, x_var, channel, sweepvar, facet_var, age
         df = df[(df.cm_clinical == np.min(df.cm_clinical))]
 
     if 'seasonality' not in [x_var, sweepvar, facet_var]:
-        df = df[(df.seasonality == df['seasonality'].unique()[0])]
+        if 'seasonal' in df.seasonality.unique():
+            df = df[(df.seasonality == 'seasonal')]
 
     if 'eir' not in [x_var, sweepvar, facet_var]:
         df = df[(df.eir == np.max(df.eir))]
@@ -423,7 +423,8 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
         df = df[(df.cm_clinical == np.min(df.cm_clinical))]
 
     if 'seasonality' not in [sweepvar, facet_var]:
-        df = df[(df.seasonality == df['seasonality'].unique()[0])]
+        if 'seasonal' in df.seasonality.unique():
+            df = df[(df.seasonality == 'seasonal')]
 
     if 'eir' not in [sweepvar, facet_var]:
         df = df[(df.eir == np.max(df.eir))]
