@@ -31,6 +31,7 @@ def set_inputEIR_seasonality(camp, EIR_scale_factor=1, seasonality='perennial'):
     add_scheduled_input_eir(campaign=camp, start_day=1, daily_eir=daily_EIR, age_dependence="SURFACE_AREA_DEPENDENT",
                             node_ids=None, scaling_factor=EIR_scale_factor)
 
+    return {'EIR_scale_factor': EIR_scale_factor,'seasonality': seasonality}
 
 def monthly_to_daily_EIR(monthly_EIR):
     '''

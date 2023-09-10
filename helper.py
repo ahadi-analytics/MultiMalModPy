@@ -6,6 +6,7 @@ import numpy as np
 import warnings
 import shutil
 import os
+from EMOD.scaffolds.dynamicEIR import eir_to_lhs
 user = os.getlogin()
 
 def parse_args():
@@ -118,6 +119,11 @@ def get_emod_time_param(start_year, end_year, burnin, emod_step = None):
     return sim_start_year, monitoring_years, sim_dur_years
 
 
+def save_scen(scen_df,fname, save_dirs=None):
+    for sdir in save_dirs:
+        scen_df.to_csv(os.path.join(sdir, fname), index=False)
+
+
 def save_exp_scen(exp, scen_df, save_dirs):
     """
     Saves the experiment and scenario data to the specified save directories.
@@ -168,7 +174,18 @@ def get_seasonal_eir():
     return season_daily, season_month, seasonal, perennial
 
 
-def create_scenarios_csv(exp, col_list=None):
+def rep_scen_df(df):
+    try:
+        df = df.drop(['index'], axis=1)
+    except:
+        pass
+    rep_df = pd.DataFrame(np.repeat(df.to_numpy(), df.num_seeds[0], axis=0), columns=df.columns)
+    rep_df.reset_index(inplace=True)
+    rep_df['index'] = rep_df['index'] + 1
+    rep_df['seed'] = rep_df.groupby('scen_id').cumcount() + 1
+    return rep_df
+
+def create_scenarios_csv(exp, col_list=None, add_cols=True):
     """
     Creates a scenarios CSV file based on the provided experiment object and column list.
 
@@ -195,7 +212,18 @@ def create_scenarios_csv(exp, col_list=None):
     df = pd.DataFrame(df_array)
     df.columns = col_list
     df.reset_index(inplace=True)
-    df['index'] = df['index']+1
+    df['index'] = df['index'] + 1
+    df['scen_id'] = df['index']
+
+    if add_cols:
+        df['entomology_mode'] = exp.entomology_mode
+        df['num_seeds'] = exp.num_seeds
+        df['cm_start'] = exp.cm_start
+        df['cm_clinical'] = pd.to_numeric(df['cm_clinical'], errors='coerce')
+        df['cm_severe'] = np.where(df['cm_clinical'] * 1.15 > exp.cm_severe,
+                                   np.minimum(df['cm_clinical'] * 1.15, 1), exp.cm_severe)
+        df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
+        df['x_Temporary_Larval_Habitat'] = eir_to_lhs(df=df, population=exp.pop_size)
     return df
 
 
@@ -290,10 +318,13 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
     else:
         raise ValueError('HPC specification not available, must be NUCLUSTER or SCICORE')
 
+    # Get the EMODpy virtual environment path
+    emodpy_venv = emodpy_module(exp.hpc)
+
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, f'run_analyzer_OpenMalaria.sh')
     file = open(script_path, 'w')
-    file.write(header_post + pycommand)
+    file.write(header_post + emodpy_venv + pycommand)
     file.close()
 
     # Read the job ID from the 'job_id.txt' file
