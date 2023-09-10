@@ -318,10 +318,13 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
     else:
         raise ValueError('HPC specification not available, must be NUCLUSTER or SCICORE')
 
+    # Get the EMODpy virtual environment path
+    emodpy_venv = emodpy_module(exp.hpc)
+
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, f'run_analyzer_OpenMalaria.sh')
     file = open(script_path, 'w')
-    file.write(header_post + pycommand)
+    file.write(header_post + emodpy_venv + pycommand)
     file.close()
 
     # Read the job ID from the 'job_id.txt' file
