@@ -58,6 +58,11 @@ def build_standard_campaign_object(manifest):
 
 
 def all_campaigns(camp, row):
+    """
+    Wrapper functions to define all campaigns to go into the campaigns.json
+    To be expanded with SMC and other interventions as needed, and use if's to define applicability
+    """
+
     if row.entomology_mode == 'forced':
         set_inputEIR_seasonality(camp, float(row.eir), row.seasonality)
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
@@ -250,6 +255,14 @@ def build_burnin_df(exp_id: str, platform, serialize_days):
 
 
 def get_burnin_exp_name(serialized_df):
+    """
+    Retrieve the name of the EMOD burnin experiment from the metadata.json file
+    Parameters:
+    serialized_df (DataFrame): A pandas DataFrame containing serialized data information.
+    Returns:
+    str: The name of the burnin experiment as defined in the serialization df from emod_serialized_id.
+    """
+
     import json
     from pathlib import Path
     metadata_path = serialized_df.serialized_file_path[0].parent / 'metadata.json'
@@ -259,20 +272,31 @@ def get_burnin_exp_name(serialized_df):
 
 
 def get_scendf_burnin(exp, emod_serialized_id, manifest, platform, burnin):
+    """
+    Load the scenarios.csv file associated with the EMOD burnin experiment.
+    Parameters:
+    exp (Experiment): An experiment object containing information about the experiment.
+    emod_serialized_id (str): The serialized ID for the EMOD input data.
+    manifest (Manifest): A manifest object containing job directory information.
+    platform (Platform): A platform object specifying the execution platform.
+    burnin (int): The duration of the burnin period in days.
+    Returns:
+    pandas.DataFrame: A DataFrame containing scenarios from the burn-in experiment.
+    """
+
     serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
     exp_name_burnin = get_burnin_exp_name(serialized_df)
     scen_df_burnin_path = os.path.join(manifest.job_directory, exp.custom_subdir,  exp.SUITEname,exp_name_burnin)
     scen_df_burnin = pd.read_csv(os.path.join(scen_df_burnin_path, 'scenarios.csv'))
     return scen_df_burnin
 
-"""
-Obtained from IDM's emodpy-snt framework that had been modified for bf-seasonal
-https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py
-"""
 
 
 def sweep_functions(simulation: Simulation, func_list: List) -> Dict[str, Any]:
     """
+    Obtained from IDM's emodpy-snt framework that had been modified for bf-seasonal
+    https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py
+
     Apply funcs on simulation.
     Args:
         simulation: idmtools Simulation
@@ -291,6 +315,9 @@ def sweep_functions(simulation: Simulation, func_list: List) -> Dict[str, Any]:
 
 class ItvFn:
     """
+    Obtained from IDM's emodpy-snt framework that had been modified for bf-seasonal
+    https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py
+
     Sweeping utility: works for sweeping on interventions.
     Requirements:
      - func is a method that takes campaign as first parameter
@@ -336,6 +363,9 @@ class ItvFn:
 
 class CfgFn:
     """
+    Obtained from IDM's emodpy-snt framework that had been modified for bf-seasonal
+    https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py
+
     Sweeping utility: works for sweeping on config parameters.
     Requirements:
      - func is a method that takes config as first parameter
