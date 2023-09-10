@@ -249,10 +249,28 @@ def build_burnin_df(exp_id: str, platform, serialize_days):
     return df
 
 
+def get_burnin_exp_name(serialized_df):
+    import json
+    from pathlib import Path
+    metadata_path = serialized_df.serialized_file_path[0].parent / 'metadata.json'
+    with open(metadata_path, 'r') as json_file:
+        metadata = json.load(json_file)
+    return metadata['name']
+
+
+def get_scendf_burnin(exp, emod_serialized_id, manifest, platform, burnin):
+    serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
+    exp_name_burnin = get_burnin_exp_name(serialized_df)
+    scen_df_burnin_path = os.path.join(manifest.job_directory, exp.custom_subdir,  exp.SUITEname,exp_name_burnin)
+    scen_df_burnin = pd.read_csv(os.path.join(scen_df_burnin_path, 'scenarios.csv'))
+    return scen_df_burnin
+
 """
 Obtained from IDM's emodpy-snt framework that had been modified for bf-seasonal
 https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py
 """
+
+
 def sweep_functions(simulation: Simulation, func_list: List) -> Dict[str, Any]:
     """
     Apply funcs on simulation.

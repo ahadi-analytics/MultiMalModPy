@@ -59,7 +59,7 @@ if emod_step == 'burnin' and 'EMOD' in models_to_run:
     exp_name = f'{exp_name}_burnin{burnin}'
     models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
     num_seeds = num_seeds_burnin
-    sweep_list = ['eir', 'cm_clinical', 'seasonality']   # If running fewer sweeps in past than in pickup
+    sweep_list = ['eir', 'cm_clinical', 'seasonality']  # If running fewer sweeps in past than in pickup to be set up
 if emod_step != 'pickup':
     emod_serialized_id = ''
 
@@ -81,6 +81,11 @@ season_daily, season_month, seasonal, perennial = get_seasonal_eir()
 suite_directory, job_directory, sim_out_dir = make_dirs(manifest, SUITEname, exp_name, custom_subdir)
 emod_analyzer = ['analyze_sim.py']
 openmalaria_analyzer = ['analyze_sim.py']
+# Set platform and associated values, such as the maximum number of jobs to run at one time
+platform = Platform(manifest.selected_platform, job_directory=suite_directory,
+                    mem_per_cpu=int(1000 * mem_increase_factor), partition=manifest.sh_hpc_config['p'],
+                    time='03:00:00', account=manifest.sh_hpc_config['A'],
+                    modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=50)  # mem_per_cpu default: 2048
 
 # Creating an Experiment object and setting its attributes, saved as exp.obj
 my_obj = set(dir()) - loaded_attr
@@ -106,6 +111,10 @@ for obj_name in my_obj:
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, sweep_list)
 exp.nexps = len(scen_df) * num_seeds
+
+if emod_step == 'pickup':
+    scen_df = get_scendf_burnin(exp, emod_serialized_id, manifest, platform,
+                                burnin)  # FIXME expand on it when additional parameter values to run in future
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 
 # Check whether defined input parameter are all valid
@@ -175,44 +184,41 @@ def set_config_parameters(config):
     return config
 
 
-def sweep_burnin_simulations(simulation, df, x: int, entomology_mode='dynamic'):
-    """
-    Updates campaign parameters and serialization configuration for the EMOD simulation
-    Is run if emod_step = 'pickup' (pickup from serialized burnin simulation).
-    Args:
-        simulation: The EMOD simulation object.
-        df: The DataFrame containing simulation data from burnin (see build_burnin_df in EMOD_utils.py).
-        x: The index of the simulation burnin data to use.
-        entomology_mode: The mode for entomology settings ('dynamic' or 'forced'), default is forced.
-    """
-    path = df["serialized_file_path"][x]
-    seed = int(df["Run_Number"][x])
+def config_sweep_builder_pickup(scen_df_pickup):
+    builder = SimulationBuilder()
+    if entomology_mode == 'forced':
+        matAP = 0.1327
+        sweeps = [[
+            ItvFn(all_campaigns, row=row),
+            partial(set_param, param='Serialized_Population_Path',
+                    value=os.path.join(row["serialized_file_path"], "output")),
+            partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
+            partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.eir)),
+            partial(set_param, param='Run_Number', value=s)]
+            for i, row in scen_df_pickup.iterrows()
+            for s in range(num_seeds)]
 
-    simulation.task.config.parameters.Serialized_Population_Path = os.path.join(path, "output")
-    simulation.task.config.parameters.Serialized_Population_Filenames = df["Serialized_Population_Filenames"][x]
-    simulation.task.config.parameters.Run_Number = seed
-
-    if entomology_mode == 'dynamic':
-        simulation.task.config.parameters.x_Temporary_Larval_Habitat = float(df["x_Temporary_Larval_Habitat"][x])
-        transm_spec = ['x_Temporary_Larval_Habitat',
-                       float(df["x_Temporary_Larval_Habitat"][x])]  # FIXME, enable seasonality once calibrated
+    elif entomology_mode == 'dynamic':
+        sweeps = [[ItvFn(all_campaigns, row=row),
+                   partial(set_param, param='Serialized_Population_Path',
+                           value=os.path.join(row["serialized_file_path"], "output")),
+                   partial(set_param, param='Serialized_Population_Filenames',
+                           value=row["Serialized_Population_Filenames"]),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.x_Temporary_Larval_Habitat),
+                   partial(set_param, param='Run_Number', value=s)]
+                  for i, row in scen_df_pickup.iterrows()
+                  for s in range(num_seeds)]
     else:
-        # update_eir_scale(simulation, float(df["EIR_scale_factor"][x]), df["seasonality"][x])
-        transm_spec = ['EIR_scale_factor', float(df["EIR_scale_factor"][x])]
+        raise ValueError(f'{entomology_mode} not valid')
 
-    return {
-        "Serialized_Population_Path": os.path.join(df["serialized_file_path"][x], "output"),
-        "Serialized_Population_Filenames": df["Serialized_Population_Filenames"][x],
-        "seasonality": df["seasonality"][x],
-        "Run_Number": seed,
-        transm_spec[0]: transm_spec[1],
-        "cm_clinical": df["cm_clinical"][x]
-    }
+    builder.add_sweep_definition(sweep_functions, sweeps)
+    print(builder.count)
+
+    return [builder]
 
 
 def config_sweep_builder():
     builder = SimulationBuilder()
-
     if entomology_mode == 'forced':
         matAP = 0.1327
         sweeps = [[ItvFn(all_campaigns, row=row),
@@ -240,15 +246,8 @@ def submit_create_run_EMOD(exp, scen_df):
     This function is designed to be a parameterized version of the sequence of things we do
     every time we run an emod experiment.
     """
-    selected_platform = exp.selected_platform
     exp_name = exp.exp_name
     emod_serialized_id = exp.emod_serialized_id
-
-    # Set platform and associated values, such as the maximum number of jobs to run at one time
-    platform = Platform(selected_platform, job_directory=suite_directory,
-                        mem_per_cpu=int(1000 * exp.mem_increase_factor), partition=exp.sh_hpc_config['p'],
-                        time='03:00:00', account=exp.sh_hpc_config['A'],
-                        modules=[exp.sh_hpc_config['em_modules']], max_running_jobs=50)  # mem_per_cpu default: 2048
 
     # create EMODTask
     print("Creating EMODTask (from files)...")
@@ -257,16 +256,11 @@ def submit_create_run_EMOD(exp, scen_df):
     if entomology_mode == 'dynamic':
         task.common_assets.add_directory(os.path.join(manifest.input_dir, "example_weather"), relative_path="climate")
 
-    # Create burnin df, retrieved from burnin ID (defined above)
     if emod_step == 'pickup':
-        builder = SimulationBuilder()
         serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
-        builder.add_sweep_definition(
-            partial(sweep_burnin_simulations, df=serialized_df, entomology_mode=entomology_mode),
-            range(len(serialized_df.index)))
-        if exp.num_seeds_burnin == 1:
-            builder.add_sweep_definition(partial(set_param, param='Run_Number'), range(num_seeds))
-
+        scen_df_pickup = scen_df.merge(serialized_df, on='scen_id',
+                                       how='inner')  ## FIXME when running expanded pickup from burnin
+        builder = config_sweep_builder_pickup(scen_df_pickup)
     else:
         builder = config_sweep_builder()
 
