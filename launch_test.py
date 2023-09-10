@@ -51,7 +51,7 @@ sim_start_year_em, monitoring_years, sim_dur_years = get_emod_time_param(start_y
 sim_start_year_om = start_year - burnin
 
 # Name of parameters to vary
-sweep_list = ['eir', 'cm_clinical', 'seasonality'] + ['seed']
+sweep_list = ['eir', 'cm_clinical', 'seasonality']
 
 # EMOD burn-in and pickup configuration
 if emod_step == 'burnin' and 'EMOD' in models_to_run:
@@ -59,7 +59,7 @@ if emod_step == 'burnin' and 'EMOD' in models_to_run:
     exp_name = f'{exp_name}_burnin{burnin}'
     models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
     num_seeds = num_seeds_burnin
-    sweep_list = ['eir', 'cm_clinical', 'seasonality'] + ['seed']  # If running fewer sweeps in past than in pickup
+    sweep_list = ['eir', 'cm_clinical', 'seasonality']   # If running fewer sweeps in past than in pickup
 if emod_step != 'pickup':
     emod_serialized_id = ''
 
@@ -81,7 +81,6 @@ season_daily, season_month, seasonal, perennial = get_seasonal_eir()
 suite_directory, job_directory, sim_out_dir = make_dirs(manifest, SUITEname, exp_name, custom_subdir)
 emod_analyzer = ['analyze_sim.py']
 openmalaria_analyzer = ['analyze_sim.py']
-seed = list(range(num_seeds))  # required for scenarios csv used in generating OpenMalaria scenarios
 
 # Creating an Experiment object and setting its attributes, saved as exp.obj
 my_obj = set(dir()) - loaded_attr
@@ -106,7 +105,7 @@ for obj_name in my_obj:
 
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, sweep_list)
-exp.nexps = len(scen_df)  # * seeds ## not needed when included in sweep_list
+exp.nexps = len(scen_df) * num_seeds
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 
 # Check whether defined input parameter are all valid

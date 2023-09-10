@@ -12,6 +12,7 @@ from OpenMalaria.sample_plots import *
 from benchmark_plots import *
 
 
+
 def parse_args():
     """
     Parses command-line arguments for simulation specifications.
@@ -185,7 +186,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
 
     """
     print(f"Running InputEIRAnalyzer...", flush=True)
-    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
 
     # Prepare and format the data
     df = to_df(exp)
@@ -273,7 +274,7 @@ def SurveyAllAgeAnalyzer(exp, mm, start_year=2020, survey_step_days=30, compr='i
     print(f"Running SurveyAllAgeAnalyzer...", flush=True)
 
     # Read the scenario data from the CSV file
-    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
 
     # Convert the experiment data to a DataFrame and format it
     df = to_df(exp)
@@ -338,7 +339,7 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
     print(f"Running BenchmarkAnalyzer...", flush=True)
 
     # Read the scenario data from the CSV file
-    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
@@ -453,7 +454,7 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
     print(f"Running MonthlyBenchmarkAnalyzer...", flush=True)
 
     # Read the scenario data from the CSV file
-    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
 
     # Read the monthly EIR data from the CSV file and compute the mean for each index and month
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
@@ -571,7 +572,7 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     channels = ['index', 'survey', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp', 'nSevere']
 
     # Read the scenario data from the CSV file
-    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
 
     # Convert the experiment data to a DataFrame and format it
     df = to_df(exp)
@@ -644,7 +645,7 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
     print(f"Running AnnualAgebinAnalyzer...", flush=True)
     channels = ['index', 'year', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp', 'nSevere']
     # Read the scenario data from the CSV file
-    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
 
     # Convert experiment data to DataFrame
     df = to_df(exp)
@@ -719,7 +720,7 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
     print(f"Running AnnualBenchmarkAnalyzer...", flush=True)
 
     # Read the scenario data from the CSV file
-    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
 
     # Read the monthly EIR data from the CSV file and compute the mean for each index and month
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))

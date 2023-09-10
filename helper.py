@@ -119,6 +119,11 @@ def get_emod_time_param(start_year, end_year, burnin, emod_step = None):
     return sim_start_year, monitoring_years, sim_dur_years
 
 
+def save_scen(scen_df,fname, save_dirs=None):
+    for sdir in save_dirs:
+        scen_df.to_csv(os.path.join(sdir, fname), index=False)
+
+
 def save_exp_scen(exp, scen_df, save_dirs):
     """
     Saves the experiment and scenario data to the specified save directories.
@@ -169,6 +174,17 @@ def get_seasonal_eir():
     return season_daily, season_month, seasonal, perennial
 
 
+def rep_scen_df(df):
+    try:
+        df = df.drop(['index'], axis=1)
+    except:
+        pass
+    rep_df = pd.DataFrame(np.repeat(df.to_numpy(), df.num_seeds[0], axis=0), columns=df.columns)
+    rep_df.reset_index(inplace=True)
+    rep_df['index'] = rep_df['index'] + 1
+    rep_df['seed'] = rep_df.groupby('scen_id').cumcount() + 1
+    return rep_df
+
 def create_scenarios_csv(exp, col_list=None, add_cols=True):
     """
     Creates a scenarios CSV file based on the provided experiment object and column list.
@@ -201,6 +217,7 @@ def create_scenarios_csv(exp, col_list=None, add_cols=True):
 
     if add_cols:
         df['entomology_mode'] = exp.entomology_mode
+        df['num_seeds'] = exp.num_seeds
         df['cm_start'] = exp.cm_start
         df['cm_clinical'] = pd.to_numeric(df['cm_clinical'], errors='coerce')
         df['cm_severe'] = np.where(df['cm_clinical'] * 1.15 > exp.cm_severe,
