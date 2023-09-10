@@ -6,6 +6,7 @@ import numpy as np
 import warnings
 import shutil
 import os
+from EMOD.scaffolds.dynamicEIR import eir_to_lhs
 user = os.getlogin()
 
 def parse_args():
@@ -168,7 +169,7 @@ def get_seasonal_eir():
     return season_daily, season_month, seasonal, perennial
 
 
-def create_scenarios_csv(exp, col_list=None):
+def create_scenarios_csv(exp, col_list=None, add_cols=True):
     """
     Creates a scenarios CSV file based on the provided experiment object and column list.
 
@@ -195,7 +196,17 @@ def create_scenarios_csv(exp, col_list=None):
     df = pd.DataFrame(df_array)
     df.columns = col_list
     df.reset_index(inplace=True)
-    df['index'] = df['index']+1
+    df['index'] = df['index'] + 1
+    df['scen_id'] = df['index']
+
+    if add_cols:
+        df['entomology_mode'] = exp.entomology_mode
+        df['cm_start'] = exp.cm_start
+        df['cm_clinical'] = pd.to_numeric(df['cm_clinical'], errors='coerce')
+        df['cm_severe'] = np.where(df['cm_clinical'] * 1.15 > exp.cm_severe,
+                                   np.minimum(df['cm_clinical'] * 1.15, 1), exp.cm_severe)
+        df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
+        df['x_Temporary_Larval_Habitat'] = eir_to_lhs(df=df, population=exp.pop_size)
     return df
 
 

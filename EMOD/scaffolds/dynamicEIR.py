@@ -1,7 +1,4 @@
 import numpy as np
-from emodpy_malaria.interventions.inputeir import add_scheduled_input_eir
-from scipy.interpolate import interp1d
-from helper import get_seasonal_eir
 
 
 def eir_to_lhs_regr(eir, cm_clinical, population, seasonality='perennial'):

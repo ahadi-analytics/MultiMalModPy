@@ -1,14 +1,19 @@
 import copy
 import os
-from typing import List, Dict
+from typing import List, Dict, Any
 import emod_api.demographics.PreDefinedDistributions as Distributions
 import emodpy_malaria.demographics.MalariaDemographics as Demographics
 import pandas as pd
+import numpy as np
 from COMPS import AuthManager
 from emodpy_malaria.reporters.builtin import *
 from idmtools.core import ItemType
 from idmtools.entities.iplatform import IPlatform
 from idmtools.entities.simulation import Simulation
+from EMOD.scaffolds.forcedEIR import *
+from EMOD.scaffolds.dynamicEIR import *
+from EMOD.scaffolds.interventions import treatment_camp_simple
+from EMOD.utils import *
 
 
 def set_param(simulation, param, value):
@@ -47,9 +52,17 @@ def build_standard_campaign_object(manifest):
     Returns:
         campaign_obj: The built campaign object.
     """
-    import emod_api.campaign as campaign
-    campaign.set_schema(manifest.schema_file)
-    return campaign
+    import emod_api.campaign as camp
+    camp.set_schema(manifest.schema_file)
+    return camp
+
+
+def all_campaigns(camp, row):
+    if row.entomology_mode == 'forced':
+        set_inputEIR_seasonality(camp, float(row.eir), row.seasonality)
+    treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
+
+    return {'scen_id': int(row.scen_id)}
 
 
 def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
@@ -234,3 +247,99 @@ def build_burnin_df(exp_id: str, platform, serialize_days):
                                                                   timesteps=burnin_length_in_days)
     df = df.reset_index(drop=True)
     return df
+
+
+"""
+Obtained from IDM's emodpy-snt framework that had been modified for bf-seasonal
+https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py
+"""
+def sweep_functions(simulation: Simulation, func_list: List) -> Dict[str, Any]:
+    """
+    Apply funcs on simulation.
+    Args:
+        simulation: idmtools Simulation
+        func_list: a list of functions
+
+    Returns:
+        dict of parameters
+    """
+    tags_updated = {}
+    for func in func_list:
+        tags = func(simulation)
+        if tags:
+            tags_updated.update(tags)
+    return tags_updated
+
+
+class ItvFn:
+    """
+    Sweeping utility: works for sweeping on interventions.
+    Requirements:
+     - func is a method that takes campaign as first parameter
+     - func return a dict
+
+    Returns:
+        dict
+    """
+
+    def __init__(self, func, *args, **kwargs):
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+
+    def __call__(self, simulation: Simulation):
+        import emod_api.campaign as campaign
+        campaign.reset()
+        md = self.func(campaign, *self.args, **self.kwargs)
+
+        # add events
+        events = campaign.campaign_dict["Events"]
+        simulation.task.campaign.add_events(events)
+
+        # update config for adhoc events
+        adhoc_events = campaign.get_adhocs()
+        if len(adhoc_events) > 0:
+            print("Found adhoc events in campaign. Needs some special processing behind the scenes.")
+            if "Custom_Individual_Events" in simulation.task.config.parameters:
+                ev_exist = set(simulation.task.config.parameters.Custom_Individual_Events)
+                ev_addhoc = set(adhoc_events.keys())
+                simulation.task.config.parameters.Custom_Individual_Events = list(ev_exist.union(ev_addhoc))
+            else:
+                simulation.task.config.parameters.Custom_Individual_Events = list(set(adhoc_events.keys()))
+
+        # Make sure we cast numpy types into normal system types
+        if md:
+            for k, v in md.items():
+                if isinstance(v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)):
+                    md[k] = v.item()
+
+        return md
+
+
+class CfgFn:
+    """
+    Sweeping utility: works for sweeping on config parameters.
+    Requirements:
+     - func is a method that takes config as first parameter
+     - func return a dict
+
+    Returns:
+        dict
+    """
+
+    def __init__(self, func, *args, **kwargs):
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+
+    def __call__(self, simulation: Simulation):
+        md = self.func(simulation.task.config, *self.args, **self.kwargs)
+
+        # Make sure we cast numpy types into normal system types
+        if md:
+            for k, v in md.items():
+                if isinstance(v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)):
+                    md[k] = v.item()
+
+        return md
+

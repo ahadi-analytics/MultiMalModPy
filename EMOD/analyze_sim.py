@@ -106,7 +106,7 @@ class InsetChartAnalyzer(IAnalyzer):
         adf = pd.concat(selected).reset_index(drop=True)
         adf = adf.rename(columns={'Daily Bites per Human': 'Bites per Human', 'Daily EIR': 'EIR'})
         if self.daily:
-            adf.to_csv(os.path.join(self.working_dir, 'All_Age_InsetChart_daily.csv'), index=False)
+            adf.to_csv(os.path.join(self.working_dir, 'em', 'All_Age_InsetChart_daily.csv'), index=False)
 
         if self.burnin is not None:
             adf = adf[adf['Year'] >= self.start_year + self.burnin]
@@ -127,13 +127,9 @@ class InsetChartAnalyzer(IAnalyzer):
         adf = pd.merge(left=sdf, right=mdf, on=(self.sweep_variables + ['date']))
 
         adf = adf.rename(columns={'Run_Number': 'seed'})
-        if "x_Temporary_Larval_Habitat" in self.sweep_variables:
-            adf['eir'] = ''
-        else:
-            adf['eir'] = adf['EIR_scale_factor']
 
         # Save the processed DataFrame to a CSV file named 'All_Age_InsetChart.csv'
-        adf.to_csv(os.path.join(self.working_dir, 'All_Age_InsetChart.csv'), index=False)
+        adf.to_csv(os.path.join(self.working_dir, 'em', 'All_Age_InsetChart.csv'), index=False)
 
 
 class AnnualAgebinAnalyzer(IAnalyzer):
@@ -219,7 +215,7 @@ class AnnualAgebinAnalyzer(IAnalyzer):
             return
         df = pd.concat(selected).reset_index(drop=True)
 
-        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}')
+        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
 
         if self.burnin is not None:
             df = df[df['year'] >= self.start_year + self.burnin]
@@ -231,15 +227,17 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         age_df = pd.DataFrame({'agebin': age_bins, 'ageGroup': age_group_labels})
         df = df.merge(age_df, on='agebin', how='inner')
 
-        if "x_Temporary_Larval_Habitat" in self.sweep_variables:
+        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
+        df = df.merge(scen_df, on='scen_id', how='inner')
+        if scen_df.entomology_mode[0] == 'dynamic':
             time.sleep(5)
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'annual_transmission_report.csv'))
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
             eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             df = pd.merge(left=df, right=eirdf, on=self.sweep_variables + ['year'])
             df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['simulatedEIR']]
         else:
-            df['eir'] = df['EIR_scale_factor']
+            df['simulatedEIR'] = df['eir']
 
             #  Reorder the DataFrame columns , by specified first columns to appear first
         df = df.rename(columns={'Run_Number': 'seed'})
@@ -247,8 +245,7 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         df = df[first_columns + df.drop(columns=first_columns).columns.tolist()]
 
         # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_yr.csv'
-        df.to_csv((os.path.join(self.working_dir, f'PfPR_ClinicalIncidence_yr.csv')),
-                  index=False)
+        df.to_csv((os.path.join(self.working_dir, 'em', f'PfPR_ClinicalIncidence_yr.csv')), index=False)
 
 
 class MonthlyAgebinAnalyzer(IAnalyzer):
@@ -330,7 +327,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
             return
         df = pd.concat(selected).reset_index(drop=True)
 
-        print(f'\nSaving outputs to: {os.path.join(self.working_dir, self.expt_name)}')
+        print(f'\nSaving outputs to: {os.path.join(self.working_dir, "em", self.expt_name)}')
 
         if self.burnin is not None:
             df = df[df['year'] >= self.start_year + self.burnin]
@@ -343,23 +340,25 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         age_df = pd.DataFrame({'agebin': age_bins, 'ageGroup': age_group_labels})
         df = df.merge(age_df, on='agebin', how='inner')
 
-        if "x_Temporary_Larval_Habitat" in self.sweep_variables:
+        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
+        df = df.merge(scen_df, on='scen_id', how='inner')
+        if scen_df.entomology_mode[0] == 'dynamic':
             time.sleep(5)
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'annual_transmission_report.csv'))
-            eirdf = eirdf.groupby(sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
+            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
             df = pd.merge(left=df, right=eirdf, on=self.sweep_variables + ['year'])
 
-            eirdf_mth = pd.read_csv(os.path.join(self.working_dir, 'monthly_transmission_report.csv'))
+            eirdf_mth = pd.read_csv(os.path.join(self.working_dir, 'em', 'monthly_transmission_report.csv'))
             eirdf_mth = eirdf_mth.groupby(self.sweep_variables + ['year', 'month'])[['Monthly EIR']].agg(
                 np.mean).reset_index()
             df = pd.merge(left=df, right=eirdf_mth, on=self.sweep_variables + ['year', 'month'])
 
-            df = df.rename(columns={"Annual EIR": "eir", "Monthly EIR": "simulatedEIR"})
-            df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['eir']]
+            df = df.rename(columns={"Monthly EIR": "simulatedEIR"})
+            df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['Annual EIR']]
         else:
-            df['eir'] = df['EIR_scale_factor']
+            df['simulatedEIR'] = ''
 
-            #  Reorder the DataFrame columns , by specified first columns to appear first
+        #  Reorder the DataFrame columns , by specified first columns to appear first
         df = df.rename(columns={'Run_Number': 'seed'})
         df['day'] = 1
         df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
@@ -367,8 +366,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
                          'nSevere']
         df = df[first_columns + df.drop(columns=first_columns).columns.tolist()]
 
-        df.to_csv((os.path.join(self.working_dir, f'PfPR_ClinicalIncidence_mth.csv')),
-                  index=False)
+        df.to_csv((os.path.join(self.working_dir, 'em', f'PfPR_ClinicalIncidence_mth.csv')), index=False)
 
 
 class TransmissionReport(IAnalyzer):
@@ -445,20 +443,20 @@ class TransmissionReport(IAnalyzer):
 
         if self.daily_report:
             # If specified, save the processed DataFrame to a CSV file named 'daily_transmission_report.csv'
-            adf.to_csv(os.path.join(self.working_dir, f'daily_transmission_report.csv'), index=False)
+            adf.to_csv(os.path.join(self.working_dir, 'em', f'daily_transmission_report.csv'), index=False)
 
         sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
         if self.monthly_report:
             df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
             df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
             # If specified, save the processed DataFrame to a CSV file named 'monthly_transmission_report.csv'
-            df.to_csv(os.path.join(self.working_dir, f'monthly_transmission_report.csv'), index=False)
+            df.to_csv(os.path.join(self.working_dir, 'em', f'monthly_transmission_report.csv'), index=False)
 
         df = adf.groupby(['year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
         df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
 
         # Save the processed DataFrame to a CSV file named 'annual_transmission_report.csv'
-        df.to_csv(os.path.join(self.working_dir, f'annual_transmission_report.csv'), index=False)
+        df.to_csv(os.path.join(self.working_dir, 'em', f'annual_transmission_report.csv'), index=False)
 
 
 class BenchmarkAnalyzer(IAnalyzer):
@@ -568,28 +566,29 @@ class BenchmarkAnalyzer(IAnalyzer):
                 cdf = pd.concat([cdf, adf])
 
         cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables)
-        if "x_Temporary_Larval_Habitat" in self.sweep_variables:
+        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
+        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
+        if scen_df.entomology_mode[0] == 'dynamic':
             time.sleep(5)
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'annual_transmission_report.csv'))
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
             eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR']].agg(
                 np.mean).reset_index()  # mean across monitoring years and runs
-            eirdf = eirdf.rename(columns={"Annual EIR": "eir"})
 
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
-            cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['eir']]
-            cdf['eir_type'] = "x_Temporary_Larval_Habitat"
+            cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
             cdf['simulatedEIR'] = cdf['eir']
+            cdf['inputEIR'] = ''
         else:
-            cdf['eir'] = cdf['EIR_scale_factor']
             cdf['simulatedEIR'] = cdf['eir']
+            cdf['inputEIR'] = cdf['eir']
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
         cdf['mortality'] = ''
-        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}')
+        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
 
         # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
-        cdf.to_csv((os.path.join(self.working_dir, f'Benchmark.csv')), index=False)
+        cdf.to_csv((os.path.join(self.working_dir, 'em', f'Benchmark.csv')), index=False)
 
 
 class MonthlyBenchmarkAnalyzer(IAnalyzer):
@@ -700,9 +699,11 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
                 adf['ageGroup'] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
-        if "x_Temporary_Larval_Habitat" in self.sweep_variables:
+        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
+        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
+        if scen_df.entomology_mode[0] == 'dynamic':
             time.sleep(5)
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'monthly_transmission_report.csv'))
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'monthly_transmission_report.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['month'])[['Monthly EIR']].agg(
                 np.mean).reset_index()  # mean across years and runs per month
             eirdf = eirdf.rename(columns={"Monthly EIR": "simulatedEIR"})
@@ -710,26 +711,24 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['month'])
             cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['month'])
 
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'annual_transmission_report.csv'))
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
             eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR']].agg(
                 np.mean).reset_index()  # mean across years and runs
-            eirdf = eirdf.rename(columns={"Annual EIR": "eir"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
-            cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['eir']]
-            cdf['eir_type'] = "x_Temporary_Larval_Habitat"
+            cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
+            cdf['inputEIR'] = ''
         else:
             cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['month'])
-            # cdf = cdf.rename(columns={"EIR_scale_factor": "eir"})
-            cdf['eir'] = cdf['EIR_scale_factor']
             cdf['simulatedEIR'] = ''
+            cdf['inputEIR'] = ''
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
         cdf['mortality'] = ''
-        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}')
+        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
 
         # Save the processed DataFrame to a CSV file named 'Benchmark_mth.csv'
-        cdf.to_csv((os.path.join(self.working_dir, f'Benchmark_mth.csv')), index=False)
+        cdf.to_csv((os.path.join(self.working_dir, 'em', f'Benchmark_mth.csv')), index=False)
 
 
 class AnnualBenchmarkAnalyzer(IAnalyzer):
@@ -841,25 +840,28 @@ class AnnualBenchmarkAnalyzer(IAnalyzer):
                 cdf = pd.concat([cdf, adf])
 
         cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['year'])
-        if "x_Temporary_Larval_Habitat" in self.sweep_variables:
+        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
+        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
+        if scen_df.entomology_mode[0] == 'dynamic':
             time.sleep(5)
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'annual_transmission_report.csv'))
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
-            eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
+
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
-            cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['simulatedEIR']]
-            cdf['eir_type'] = "x_Temporary_Larval_Habitat"
+            cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
+            cdf['simulatedEIR'] = cdf['eir']
+            cdf['inputEIR'] = ''
         else:
-            cdf['eir'] = cdf['EIR_scale_factor']
-            cdf['simulatedEIR'] = ''
+            cdf['simulatedEIR'] = cdf['eir']
+            cdf['inputEIR'] = cdf['eir']
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
         cdf['mortality'] = ''
 
         # Save the processed DataFrame to a CSV file named 'Benchmark_yr.csv'
-        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}')
-        cdf.to_csv((os.path.join(self.working_dir, f'Benchmark_yr.csv')), index=False)
+        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
+        cdf.to_csv((os.path.join(self.working_dir, 'em', f'Benchmark_yr.csv')), index=False)
 
 
 if __name__ == "__main__":
@@ -877,21 +879,13 @@ if __name__ == "__main__":
     file = open(os.path.join(job_directory, "exp.obj"), "rb")
     exp = pickle.load(file)
     # Set location of output files
-    wdir = os.path.join(exp.sim_out_dir, 'em')
+    wdir = exp.sim_out_dir
     create_sampleplots = True
 
     exp_name = exp.exp_name
-    # exp_tags =  exp.sweeps ## to do
-
-    # Set name of eirchannel
-    if exp.entomology_mode == 'dynamic':
-        eirchannel = "x_Temporary_Larval_Habitat"
-    else:
-        eirchannel = "EIR_scale_factor"
 
     # Define tags and simulation experiment configurations
-    exp_tags = [x for x in exp.sweep_list if x != 'seed'] + ['Run_Number']
-    exp_tags = [eirchannel if tag == 'eir' else tag for tag in exp_tags]
+    exp_tags = ['scen_id', 'Run_Number']
 
     start_year = exp.sim_start_year_em
     end_year = exp.end_year
@@ -977,24 +971,25 @@ if __name__ == "__main__":
                                     'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
                                     'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
                                     'Infectious Vectors', 'EIR']
-            all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
-            sample_plot_yr(wdir, exp_tags)
+            all_age_sample_plot(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags,
+                                inset_channels=channels_inset_chart)
+            sample_plot_yr(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags)
 
             if exp.emod_step != 'burnin':
-                sample_plot_mth(wdir, exp_tags)
+                sample_plot_mth(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags)
 
                 emodom = ['EMOD']
-                sweepvar = eirchannel
-                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', sweepvar=sweepvar)
-                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', sweepvar=sweepvar)
-                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', sweepvar=sweepvar)
-                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence_2to10', sweepvar=sweepvar)
-                # monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
+                sweepvar = 'eir'
+                monthly_trends(wdir, emodom, channel='clinical_incidence', sweepvar=sweepvar)
+                monthly_trends(wdir, emodom, channel='severe_incidence', sweepvar=sweepvar)
+                monthly_trends(wdir, emodom, channel='prevalence', sweepvar=sweepvar)
+                monthly_trends(wdir, emodom, channel='prevalence_2to10', sweepvar=sweepvar)
+                # monthly_trends(wdir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
 
                 sweepvar = 'cm_clinical'
-                prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', y_lim=1)
-                prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', y_lim=6)
-                prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', y_lim=0.1)
-                eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
-                eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='inputEIR')
-                input_to_simulated_eir(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar)
+                prevalence2to10_to_incidence(wdir, emodom, channel='prevalence', y_lim=1)
+                prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_lim=6)
+                prevalence2to10_to_incidence(wdir, emodom, channel='severe_incidence', y_lim=0.1)
+                eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
+                eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='inputEIR')
+                input_to_simulated_eir(wdir, emodom, sweepvar=sweepvar)
