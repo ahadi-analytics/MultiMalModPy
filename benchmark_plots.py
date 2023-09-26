@@ -36,7 +36,7 @@ def parse_args():
         type=str,
         required=False,
         help="Name of models to compare",
-        default=['EMOD', 'OpenMalaria']
+        default=['EMOD', 'OpenMalaria','MalSim']
     )
 
     return parser.parse_args()
@@ -60,6 +60,8 @@ def get_emodom_df(wdir, emodom, mth=False, timeseries=False):
     if mth:
         fname = 'Benchmark_mth.csv'
     if timeseries:
+        if 'MalSim' in emodom: #TODO if we get malsim to have these csv's then we will remove this if statement
+            emodom.remove('MalSim')
         fname = 'PfPR_ClinicalIncidence_yr.csv'
         if mth:
             fname = 'PfPR_ClinicalIncidence_mth.csv'
@@ -70,17 +72,33 @@ def get_emodom_df(wdir, emodom, mth=False, timeseries=False):
     if 'EMOD' in emodom:
         em_df = pd.read_csv((os.path.join(wdir, f'em/{fname}')))
         em_df['emodom'] = 'EMOD'
-
-    if 'OpenMalaria' in emodom and 'EMOD' in emodom:
+    if 'MalSim' in emodom:
+        ms_df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')))
+        ms_df['emodom'] = 'MalSim' 
+        ms_df['simulatedEIR'] = ms_df['initial_EIR']    
+        ms_df['eir'] = ms_df['initial_EIR']
+                                   
+    if 'EMOD' in emodom and 'OpenMalaria' in emodom and 'MalSim' in emodom:
         df = em_df.append(om_df)
-    elif 'OpenMalaria' and not 'EMOD' in emodom:
+        df = df.append(ms_df)
+        df.to_csv('out.csv', index=False)
+    elif 'OpenMalaria' in emodom and 'EMOD' in emodom and not 'MalSim' in emodom:
+        df = em_df.append(om_df)
+    elif 'OpenMalaria' in emodom and 'MalSim' in emodom and not 'EMOD' in emodom:
+        df = ms_df.append(om_df)
+    elif 'EMOD' in emodom and 'MalSim' in emodom and not 'OpenMalaria' in emodom:
+        df = om_df.append(ms_df)
+    elif 'OpenMalaria' and not 'EMOD' in emodom and not 'MalSim' in emodom:
         wdir = os.path.join(wdir, 'om')
         df = om_df
-    elif 'EMOD' and not 'OpenMalaria' in emodom:
+    elif 'EMOD' and not 'OpenMalaria' in emodom and not 'MalSim' in emodom:
         wdir = os.path.join(wdir, 'em')
         df = em_df
+    elif 'MalSim' and not 'OpenMalaria' in emodom and not 'EMOD' in emodom:
+        wdir = os.path.join(wdir, 'MalSim')
+        df = ms_df
     else:
-        raise ValueError(f"Please specify emodom as EMOD and/or OpenMalaria (list), {emodom} not valid")
+        raise ValueError(f"Please specify emodom as some combination of EMOD, OpenMalaria, and MalSim (list), {emodom} not valid")
 
     if 'ageGroup' in df.columns:
         age_grps = list(df['ageGroup'].unique())
@@ -102,6 +120,9 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_l
         None (plots are saved to disk).
     """
     df, wdir = get_emodom_df(wdir, emodom)
+    print(emodom)
+    for col in df.columns:
+        print(col)
 
     seasonality = list(df['seasonality'].unique())
     title = f'{channel.replace("_", " ").capitalize()}'
@@ -124,10 +145,12 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_l
             sdf = df[(df.seasonality == season) & (df.emodom == model)]
             for p, pdf in sdf.groupby(['ageGroup']):
                 ages = pdf['ageGroup'].unique()
-
+                print(model)
                 # plot mean, min and max of seeds
                 xvalues = pdf.groupby('eir')['prevalence_2to10'].agg(np.mean)
+                print(xvalues)
                 ymean = pdf.groupby('eir')[channel].agg(np.mean)
+                print(ymean)
                 ymin = pdf.groupby('eir')[channel].agg(np.min)
                 ymax = pdf.groupby('eir')[channel].agg(np.max)
                 ax.plot(xvalues, ymean, label=ages[0] if firstPlot else "")

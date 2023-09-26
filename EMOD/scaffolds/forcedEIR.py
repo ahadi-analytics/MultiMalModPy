@@ -6,7 +6,8 @@ from helper import get_seasonal_eir
 
 def mAb_vs_EIR(EIR):
     # Rough cut at function from eyeballing a few BinnedReport outputs parsed into antibody fractions
-    mAb = 0.9 * (1e-4 * EIR * EIR + 0.7 * EIR) / (0.7 * EIR + 2)
+    eir = float(EIR)
+    mAb = 0.9 * (1e-4 * eir * eir + 0.7 * eir) / (0.7 * eir + 2.0)
     return min(mAb, 1.0)
 
 

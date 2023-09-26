@@ -20,8 +20,8 @@ mem_increase_factor = 1.0  # scaling factor on default memory requested
 
 # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
 custom_subdir = os.getlogin()  # If None, no subdir created
-SUITEname = f'test'  # Can be changed depending on objective to run simulations, in subdir if not None
-exp_name = f'test_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'  # Can be changed depending on simulation purpose, in SUITE
+SUITEname = f'test_sims'  # Can be changed depending on objective to run simulations, in subdir if not None
+exp_name = f'test_sims_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'  # Can be changed depending on simulation purpose, in SUITE
 
 # EMOD flags for how to run simulations (in one run or separated into burnin + pickup)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
@@ -29,7 +29,7 @@ emod_step = None  # emod_step expects a string, either None, 'burnin' or 'pickup
 emod_serialized_id = '6ad52475-082a-413a-b35f-15be265a325e'  # example, insert your exp_id!
 
 # Define which models to run
-models_to_run = ['EMOD', 'OpenMalaria']  # 'EMOD','OpenMalaria'
+models_to_run = ['MalSim', 'OpenMalaria', 'EMOD']  # 'EMOD','OpenMalaria', 'MalSim'
 
 # Specify OpenMalaria XML and survey step
 # Note, XMLs need to exist in OpenMalaria/inputs
@@ -47,7 +47,7 @@ end_year = 2005  # end of pickup and monitoring period
 burnin = 5  # Duration of burnin (pre-monitoring) period
 
 # Simulation duration, start and end configuration
-sim_start_year_em, monitoring_years, sim_dur_years = get_emod_time_param(start_year, end_year, burnin, emod_step)
+sim_start_year_em, monitoring_years, sim_dur_years = get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step)
 sim_start_year_om = start_year - burnin
 
 # Name of parameters to vary
@@ -71,8 +71,8 @@ cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be update
 detectionLimit = 40
 
 # Transmission and seasonality configuration
-seasonality = ["perennial"]  # ["perennial", "seasonal"]
-eir = [8]  # [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+seasonality = ["seasonal"]  # ["perennial", "seasonal"]
+eir = [0.1,1,2,4,8,16,32,64,128,256,512] #[0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
 # Entomology mode: Dynamic EIR configuration if selected
 season_daily, season_month, seasonal, perennial = get_seasonal_eir()
@@ -81,6 +81,7 @@ season_daily, season_month, seasonal, perennial = get_seasonal_eir()
 suite_directory, job_directory, sim_out_dir = make_dirs(manifest, SUITEname, exp_name, custom_subdir)
 emod_analyzer = ['analyze_sim.py']
 openmalaria_analyzer = ['analyze_sim.py']
+
 # Set platform and associated values, such as the maximum number of jobs to run at one time
 platform = Platform(manifest.selected_platform, job_directory=suite_directory,
                     mem_per_cpu=int(1000 * mem_increase_factor), partition=manifest.sh_hpc_config['p'],
@@ -98,6 +99,9 @@ exp.om_version = manifest.om_version
 exp.emod_build = manifest.emod_build
 exp.om_path = manifest.OM_PATH
 exp.om_input_path = manifest.om_input_path
+exp.sim_out_dir = sim_out_dir
+exp.MalSim_duration = sim_dur_years - 1
+exp.job_directory = job_directory
 
 # Assigning attributes to the Experiment object and creating scenarios
 for obj_name in my_obj:
@@ -212,7 +216,6 @@ def config_sweep_builder_pickup(scen_df_pickup):
         raise ValueError(f'{entomology_mode} not valid')
 
     builder.add_sweep_definition(sweep_functions, sweeps)
-    print(builder.count)
 
     return [builder]
 
@@ -236,7 +239,6 @@ def config_sweep_builder():
         raise ValueError(f'{entomology_mode} not valid')
 
     builder.add_sweep_definition(sweep_functions, sweeps)
-    print(builder.count)
 
     return [builder]
 
@@ -300,12 +302,15 @@ if __name__ == '__main__':
     # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
     if 'OpenMalaria' in models_to_run:
         from OpenMalaria.utils import *
-
         submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files
+        
+    if 'MalSim' in models_to_run:
+        from MalSim.utils import *
+        submit_run_MalSim(exp)
 
     # Optionally, after both models aran, generate combined results
     # Note, if dataframes are very large, per default saving a combined df might not be desired to do
-    if 'OpenMalaria' and 'EMOD' in models_to_run:
+    if 'OpenMalaria' in models_to_run and 'EMOD' in models_to_run and 'MalSim' in models_to_run:
         #    #submit_combine_results(exp)  # combined benchmarking.csv
         submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                            job_id='job_id_EMODanalyze')
+                            job_id_EMOD='job_id_EMODanalyze', job_id_MalSim = 'job_id_MalSim_analyze')

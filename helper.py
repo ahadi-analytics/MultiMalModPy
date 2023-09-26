@@ -64,6 +64,7 @@ def make_dirs(manifest, suite_name, exp_name, custom_subdir=None):
     # Create subdirectories ('em', 'om', 'comb') inside the simulation output directory if they don't exist
     os.makedirs(os.path.join(sim_out_dir, 'em'), exist_ok=True)
     os.makedirs(os.path.join(sim_out_dir, 'om'), exist_ok=True)
+    os.makedirs(os.path.join(sim_out_dir, 'MalSim'), exist_ok = True)
     os.makedirs(os.path.join(sim_out_dir, 'comb'), exist_ok=True)
 
     # Return the job directory path and simulation output directory path
@@ -78,7 +79,7 @@ def check_exp_inputs(exp):
     if exp.emod_step and exp.num_seeds_burnin >1 & exp.num_seeds_burnin is not exp.num_seeds:
         raise ValueError('num_seeds_burnin needs to be 1 or equal to num_seeds')
 
-def get_emod_time_param(start_year, end_year, burnin, emod_step = None):
+def get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step = None):
     """
     Calculates simulation time parameters for EMOD (OpenMalaria) based on the provided arguments.
 
@@ -103,15 +104,18 @@ def get_emod_time_param(start_year, end_year, burnin, emod_step = None):
     monitoring_years = end_year - start_year
 
     if emod_step == None:
-        print(" --------| Running EMOD burnin + pickup time in one simulation run |--------")
+        if 'EMOD' in models_to_run:
+            print(" --------| Running EMOD burnin + pickup time in one simulation run |--------")
         sim_dur_years = end_year - burnin_start_year
         sim_start_year = burnin_start_year
     elif emod_step == 'burnin':
-        print(" --------| Running EMOD burnin (step 1) |--------")
+        if 'EMOD' in models_to_run:
+            print(" --------| Running EMOD burnin (step 1) |--------")
         sim_dur_years = burnin
         sim_start_year = burnin_start_year
     elif emod_step == 'pickup':
-        print(" --------| Running EMOD pickup from serialized burnin (step 2) |--------")
+        if 'EMOD' in models_to_run:
+            print(" --------| Running EMOD pickup from serialized burnin (step 2) |--------")
         sim_dur_years = end_year - start_year
         sim_start_year = start_year
     else:
@@ -394,7 +398,7 @@ def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=8):
 
 
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                        custom_args='--emodom EMOD OpenMalaria', t='01:00:00', memG=1, job_id=None):
+                        custom_args='--emodom EMOD OpenMalaria MalSim', t='01:00:00', memG=1, job_id_EMOD=None, job_id_MalSim=None):
     """
     Submits a job to run a Python script.
 
@@ -425,11 +429,12 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     file.close()
 
     # Check if job_id is provided as a string
-    if isinstance(job_id, str):
-        job_id = open(os.path.join(exp.job_directory, F'{job_id}.txt')).read().strip()
+    if isinstance(job_id_EMOD, str) and isinstance(job_id_MalSim,str):
+        job_id_EMOD = open(os.path.join(exp.job_directory, f'{job_id_EMOD}.txt')).read().strip()
+        job_id_MalSim = open(os.path.join(exp.job_directory, f'{job_id_MalSim}.txt')).read().strip()
 
         # Submit the job with or without dependency
-        p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path],
+        p = subprocess.run(['sbatch', '--parsable', f'--dependency={job_id_EMOD},{job_id_MalSim}', script_path],
                            stdout=subprocess.PIPE,
                            cwd=str(exp.job_directory))
     else:
@@ -492,13 +497,16 @@ def combine_emodom_results(sim_out_dir):
     # Read EMOD and OpenMalaria benchmark CSV files
     df_em = pd.read_csv(os.path.join(sim_out_dir, 'em', 'OM_benchmark.csv'))
     df_om = pd.read_csv(os.path.join(sim_out_dir, 'om', 'EMOD_benchmark.csv'))
+    df_ms = pd.read_csv(os.path.join(sim_out_dir, 'MalSim', 'Benchmark.csv'))
 
     # Add 'emodom' column to identify the source of the results
     df_em['emodom'] = 'EMOD'
     df_om['emodom'] = 'OpenMalaria'
+    df_ms['emodom'] = 'MalSim'
+    
 
     # Append EMOD and OpenMalaria DataFrames
-    df = pd.concat(df_em, df_om)
+    df = pd.concat(df_em, df_om, df_ms)
 
     # Save the combined DataFrame as a CSV file
     df.to_csv((os.path.join(sim_out_dir, 'comb', f'benchmark.csv')), index=False)

@@ -88,7 +88,7 @@ def submit_run_OpenMalaria(exp, scen_df, t='01:00:00', memG=8):
 
     # Save the SLURM job ID to a file
     slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
-    print(f'Submitted simulations - job id: {slurm_job_id}')
+    print(f'Submitted OpenMalaria simulations - job id: {slurm_job_id}')
     file = open(os.path.join(exp.job_directory, f'job_id.txt'), 'w')
     file.write(slurm_job_id)
     file.close()
