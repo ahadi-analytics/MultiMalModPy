@@ -10,7 +10,7 @@ convert_malsim_to_long <- function(age_min, age_max, output) {
         # seasonality inputs/settings:
         index = output$index,
         seed = output$seed,
-        initial_EIR = output$initial_EIR,
+        eir = output$eir,
         cm_clinical = output$cm_clinical,
         seasonality = output$seasonality,
         
@@ -45,7 +45,7 @@ convert_malsim_to_long <- function(age_min, age_max, output) {
         severe_incidence = output[,paste0('n_inc_severe_', age_min[[i]], '_',age_max[[i]])],
         
         # Add column for the prevalence in age groups 2-10 years old:
-        pfpr210 = output$prev_730_3650)
+        prevalence_2to10 = output$prev_730_3650)
     }
   )
   

@@ -60,8 +60,6 @@ def get_emodom_df(wdir, emodom, mth=False, timeseries=False):
     if mth:
         fname = 'Benchmark_mth.csv'
     if timeseries:
-        if 'MalSim' in emodom: #TODO if we get malsim to have these csv's then we will remove this if statement
-            emodom.remove('MalSim')
         fname = 'PfPR_ClinicalIncidence_yr.csv'
         if mth:
             fname = 'PfPR_ClinicalIncidence_mth.csv'
@@ -75,8 +73,8 @@ def get_emodom_df(wdir, emodom, mth=False, timeseries=False):
     if 'MalSim' in emodom:
         ms_df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')))
         ms_df['emodom'] = 'MalSim' 
-        ms_df['simulatedEIR'] = ms_df['initial_EIR']    
-        ms_df['eir'] = ms_df['initial_EIR']
+        ms_df['simulatedEIR'] = ms_df['eir'] 
+        ms_df['inputEIR'] = ms_df['eir']   
                                    
     if 'EMOD' in emodom and 'OpenMalaria' in emodom and 'MalSim' in emodom:
         df = em_df.append(om_df)
@@ -120,10 +118,6 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_l
         None (plots are saved to disk).
     """
     df, wdir = get_emodom_df(wdir, emodom)
-    print(emodom)
-    for col in df.columns:
-        print(col)
-
     seasonality = list(df['seasonality'].unique())
     title = f'{channel.replace("_", " ").capitalize()}'
 
@@ -145,12 +139,9 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_l
             sdf = df[(df.seasonality == season) & (df.emodom == model)]
             for p, pdf in sdf.groupby(['ageGroup']):
                 ages = pdf['ageGroup'].unique()
-                print(model)
                 # plot mean, min and max of seeds
                 xvalues = pdf.groupby('eir')['prevalence_2to10'].agg(np.mean)
-                print(xvalues)
                 ymean = pdf.groupby('eir')[channel].agg(np.mean)
-                print(ymean)
                 ymin = pdf.groupby('eir')[channel].agg(np.min)
                 ymax = pdf.groupby('eir')[channel].agg(np.max)
                 ax.plot(xvalues, ymean, label=ages[0] if firstPlot else "")
@@ -429,8 +420,7 @@ def sweep_by_channel_plot(wdir, emodom, x_var, channel, sweepvar, facet_var, age
         firstPlot = False
 
         # Add a new subplot for the next facet
-        if i < num_facets - 1:
-            ax = plt.subplot(num_facets, 1, i + 1)
+        ax = plt.subplot(num_facets, 1, i)
 
     # Adjust layout to avoid overlapping
     plt.tight_layout()
@@ -580,7 +570,6 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
 
 def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'):
     df, wdir = get_emodom_df(wdir, emodom, mth=False, timeseries=True)
-
     if 'cm_clinical' not in [sweepvar, facet_var]:
         df = df[(df.cm_clinical == np.min(df.cm_clinical))]
 
@@ -625,10 +614,10 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
             ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{group_val}")
             ax.fill_between(xmean, ymin, ymax, alpha=0.25)
 
-        ax.set_ylim(0, ylim_up)
-        ax.set_xlabel('Age (years)')
-        ax.set_ylabel(channel)
-        ax.set_title(f"{facet_var} = {facet_value}")
+            ax.set_ylim(0, ylim_up)
+            ax.set_xlabel('Age (years)')
+            ax.set_ylabel(channel)
+            ax.set_title(f"{facet_var} = {facet_value}")
         if firstPlot:
             lg = ax.legend(loc="upper left")  # , title_fontproperties={"weight": "bold"}
         firstPlot = False

@@ -27,9 +27,8 @@ for(i in 1:length(list.files(".", pattern = ".R"))) {
 }
 
 # Store the min/max ages (days):
-min_ages <- (seq(0, 15, by = 5) * 365) + 1; min_ages[1] <- 0
-max_ages <- seq(5, 20, by = 5) * 365
-
+  min_ages <- (round(c(0,0.5,1,2,5,10,15,20)*365))+1; min_ages[1] <- 0
+  max_ages <- (round(c(0.5,1,2,5,10,15,20,100)*365))
 # Get the number of days in each month (non leap year: 2023):
 days_per_month <- days_in_month(seq(from = dmy("01-01-2023"), length.out = 12, by = "months"))
 
@@ -54,6 +53,6 @@ processed_malsim_outputs <- malsim_post_processing(simulation_outputs_raw = simu
                                                    max_ages = max_ages)
 
 # Write the outputs to .csv's:
-write_csv(x = processed_malsim_outputs[[1]], file = sprintf("%s/Benchmark_daily.csv",arguments[4]))
-write_csv(x = processed_malsim_outputs[[2]], file = sprintf("%s/Benchmark_mth.csv",arguments[4]))
-write_csv(x = processed_malsim_outputs[[3]], file = sprintf("%s/Benchmark.csv",arguments[4]))
+write_csv(x = processed_malsim_outputs[[1]], file = sprintf("%s/daily.csv",arguments[4]))
+write_csv(x = processed_malsim_outputs[[2]], file = sprintf("%s/mth.csv",arguments[4]))
+write_csv(x = processed_malsim_outputs[[3]], file = sprintf("%s/yr.csv",arguments[4]))
