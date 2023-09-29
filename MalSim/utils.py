@@ -42,6 +42,7 @@ def submit_run_MalSim(exp, t ='01:00:00', memG=8):
     r_folder_path = os.path.join(ROOT_DIR, 'R_functions/')
     scen_directory = os.path.join(exp.job_directory, 'scenarios_wseeds.csv')
     #scen_directory = os.path.join(exp.job_directory, 'scenarios.csv')
+    #num_years = str(1)
     num_years = str(exp.MalSim_duration)
     script_path = os.path.join(exp.job_directory, f'run_MalSim.sh')
     file = open(script_path, 'w')

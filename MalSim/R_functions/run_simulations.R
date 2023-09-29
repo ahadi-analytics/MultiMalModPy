@@ -7,9 +7,11 @@ run_simulations <- function(timesteps, parameter_table) {
   simulation_outputs_list <- list()
   
   # Specify the min and max ages to render:
-  min_ages <- (seq(0, 15, by = 5) * 365) + 1; min_ages[1] <- 0
-  max_ages <- seq(5, 20, by = 5) * 365
+  #min_ages <- (seq(0, 15, by = 5) * 365) + 1; min_ages[1] <- 0
+  #max_ages <- seq(5, 20, by = 5) * 365
   
+  min_ages <- (round(c(0,0.5,1,2,5,10,15,20)*365))+1; min_ages[1] <- 0
+  max_ages <- (round(c(0.5,1,2,5,10,15,20,100)*365))
   # Run through each row of the input dataframe, parameterise the model, and run the simulation:
   for(i in 1:nrow(parameter_table)) {
     
@@ -32,8 +34,8 @@ run_simulations <- function(timesteps, parameter_table) {
         average_age = 23 * 365,
         
         # Render prevalence in age groups 0-5, 5-10, 10-15, and 15-20, and 2-10 (for PfPR_2-10)
-        prevalence_rendering_min_ages = c(min_ages, (2 * 365)),    
-        prevalence_rendering_max_ages = c(max_ages, (10 * 365)),
+        prevalence_rendering_min_ages = c(min_ages, (2*365)),    
+        prevalence_rendering_max_ages = c(max_ages, (10*365)),
         
         # Render incidence in age groups 0-5, 5-10, 10-15, and 15-20:
         incidence_rendering_min_ages = min_ages,
@@ -66,7 +68,7 @@ run_simulations <- function(timesteps, parameter_table) {
       
       # Add simulation identifiers to the output data frame:
       simulation_outputs_list[[i]]$index <- parameter_table[i,]$index
-      simulation_outputs_list[[i]]$initial_EIR <- parameter_table[i,]$eir
+      simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
       simulation_outputs_list[[i]]$cm_clinical <- parameter_table[i,]$cm_clinical
       simulation_outputs_list[[i]]$seasonality  <- parameter_table[i,]$seasonality
       simulation_outputs_list[[i]]$seed <- parameter_table[i,]$seed
@@ -121,7 +123,7 @@ run_simulations <- function(timesteps, parameter_table) {
       
       # Add simulation identifiers to the output data frame:
       simulation_outputs_list[[i]]$index <- parameter_table[i,]$index
-      simulation_outputs_list[[i]]$initial_EIR <- parameter_table[i,]$eir
+      simulation_outputs_list[[i]]$eir_EIR <- parameter_table[i,]$eir
       simulation_outputs_list[[i]]$cm_clinical <- parameter_table[i,]$cm_clinical
       simulation_outputs_list[[i]]$seasonality  <- parameter_table[i,]$seasonality
       simulation_outputs_list[[i]]$seed <- parameter_table[i,]$seed
