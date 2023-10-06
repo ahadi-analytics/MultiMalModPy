@@ -10,6 +10,7 @@ import sys
 sys.path.append('../')
 import manifest
 from benchmark_plots import *
+from MalSim.sample_plots import *
 
 #TODO ADD FUNCTIONS THAT WILL CONVERT MALSIM VALUES TO APPROPRIATE VALUES
 #TO COMPARE TO EMOD AND OPENMALARIA
@@ -103,26 +104,40 @@ if __name__ == "__main__":
     args = parse_args()
     wdir = args.output_dir
     malsim_conversions(wdir)
-    
-    exp_tags = ['eir', 'cm_clinical', 'seasonality']
-      
-    emodom = ['MalSim']
-    sweepvar = 'eir'
-    monthly_trends(wdir, emodom, channel='clinical_incidence', sweepvar=sweepvar)
-    monthly_trends(wdir, emodom, channel='severe_incidence', sweepvar=sweepvar)
-    monthly_trends(wdir, emodom, channel='prevalence', sweepvar=sweepvar)
-    monthly_trends(wdir, emodom, channel='prevalence_2to10', sweepvar=sweepvar)
-    monthly_trends(wdir, emodom=emodom, channel='eir', sweepvar=sweepvar)
-    
-    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence']
-    for channel in channel_list:
-        monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='eir', agegrp='5-10')
-    
-    
-    sweepvar = 'cm_clinical'
-    prevalence2to10_to_incidence(wdir, emodom, channel='prevalence', y_lim=1)
-    prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_lim=25)
-    prevalence2to10_to_incidence(wdir, emodom, channel='severe_incidence', y_lim=1)
-    eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='eir')
-    eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='eir')
-    input_to_simulated_eir(wdir, emodom, sweepvar=sweepvar)
+
+    create_sampleplots = True
+
+    # Create sample plots if specified
+    if create_sampleplots:
+        #file = open(os.path.join(job_directory, "exp.obj"), "rb")
+        #exp = pickle.load(file)
+        #exp_tags = [x for x in exp.sweep_list if x != 'seed']  # + ['seed']
+
+        exp_tags = ['eir', 'cm_clinical', 'seasonality']
+
+        channels_inset_chart =['nPopulation', 'nHost', 'prevalence',
+                            'incidence', 'clinical_incidence',
+                            'severe_incidence', 'prevalence_2to10']
+        all_age_sample_plot(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags, inset_channels=channels_inset_chart, time_interval='daily')
+        sample_plot_yr(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags)
+        sample_plot_mth(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags)
+
+        emodom = ['MalSim']
+        sweepvar = 'eir'
+        monthly_trends(wdir, emodom, channel='clinical_incidence', sweepvar=sweepvar)
+        monthly_trends(wdir, emodom, channel='severe_incidence', sweepvar=sweepvar)
+        monthly_trends(wdir, emodom, channel='prevalence', sweepvar=sweepvar)
+        monthly_trends(wdir, emodom, channel='prevalence_2to10', sweepvar=sweepvar)
+        monthly_trends(wdir, emodom=emodom, channel='eir', sweepvar=sweepvar)
+
+        channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence']
+        for channel in channel_list:
+            monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='eir', agegrp='5-10')
+
+        sweepvar = 'cm_clinical'
+        prevalence2to10_to_incidence(wdir, emodom, channel='prevalence', y_lim=1)
+        prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_lim=25)
+        prevalence2to10_to_incidence(wdir, emodom, channel='severe_incidence', y_lim=1)
+        eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='eir')
+        eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='eir')
+        input_to_simulated_eir(wdir, emodom, sweepvar=sweepvar)
