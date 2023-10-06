@@ -26,7 +26,7 @@ exp_name = f'test_sims_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'  # Can be chang
 # EMOD flags for how to run simulations (in one run or separated into burnin + pickup)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
 emod_step = None  # emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
-emod_serialized_id = '6ad52475-082a-413a-b35f-15be265a325e'  # example, insert your exp_id!
+emod_serialized_id = 'c6849b29-1d9c-4bb5-8af4-4f6537384c09'  # example, insert your exp_id!
 
 # Define which models to run
 models_to_run = ['MalSim', 'OpenMalaria', 'EMOD']  # 'EMOD','OpenMalaria', 'MalSim'
@@ -37,7 +37,7 @@ om_scaffold = "R0000GA"
 om_survey_step = '30d'
 
 # Define simulation population and seeds
-pop_size = 1000
+pop_size = 10000 #1000
 agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
 
 num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
@@ -100,7 +100,6 @@ exp.emod_build = manifest.emod_build
 exp.om_path = manifest.OM_PATH
 exp.om_input_path = manifest.om_input_path
 exp.sim_out_dir = sim_out_dir
-exp.MalSim_duration = sim_dur_years - 1
 exp.job_directory = job_directory
 
 # Assigning attributes to the Experiment object and creating scenarios
