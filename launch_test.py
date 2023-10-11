@@ -37,11 +37,11 @@ om_scaffold = "R0000GA"
 om_survey_step = '30d'
 
 # Define simulation population and seeds
-pop_size = 10000 #1000
+pop_size = 10000  # 1000 for testing
 agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
 
 num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
-num_seeds = 1  # used for all other simulations except EMOD burnin
+num_seeds = 3  # suggested minimum 3
 start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
 end_year = 2005  # end of pickup and monitoring period
 burnin = 5  # Duration of burnin (pre-monitoring) period
@@ -66,13 +66,13 @@ if emod_step != 'pickup':
 # Define case management start and coverage
 # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
 cm_start = 1
-cm_clinical = [0.2, 0.4]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
+cm_clinical = [0.2]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
 cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
 detectionLimit = 40
 
 # Transmission and seasonality configuration
 seasonality = ["seasonal"]  # ["perennial", "seasonal"]
-eir = [0.1,1,2,4,8,16,32,64,128,256,512] #[0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+eir = [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512]  # [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
 # Entomology mode: Dynamic EIR configuration if selected
 season_daily, season_month, seasonal, perennial = get_seasonal_eir()
