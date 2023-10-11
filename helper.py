@@ -189,6 +189,29 @@ def rep_scen_df(df):
     rep_df['seed'] = rep_df.groupby('scen_id').cumcount() + 1
     return rep_df
 
+
+def create_simsetup_csv(exp):
+    setup_dic = {'job_directory': exp.job_directory,
+                 'sim_out_dir': exp.sim_out_dir,
+                 'nexps': exp.nexps,
+                 'sweep_list': exp.sweep_list,
+                 'monitoring_years': exp.monitoring_years,
+                 'pop_size': exp.pop_size,
+                 'agebins': exp.agebins,
+                 'start_year': exp.start_year,
+                 'end_year': exp.end_year,
+                 'burnin': exp.burnin,
+                 'sim_start_year_om': exp.sim_start_year_om,
+                 'sim_start_year_em': exp.sim_start_year_em,
+                 }
+
+    setup_df = pd.DataFrame.from_dict(setup_dic, orient='index', columns=['Value'])
+    setup_df['parameter'] = setup_df.index
+    save_dirs = [exp.job_directory, exp.sim_out_dir]
+    for sdir in save_dirs:
+        setup_df.to_csv(os.path.join(sdir, 'exp_setup_df.csv'), index=False)
+
+
 def create_scenarios_csv(exp, col_list=None, add_cols=True):
     """
     Creates a scenarios CSV file based on the provided experiment object and column list.
