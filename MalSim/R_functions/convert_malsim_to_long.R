@@ -8,12 +8,9 @@ convert_malsim_to_long <- function(age_min, age_max, output) {
         
         # Add columns containing the index, seed, initial EIR, case management coverage and
         # seasonality inputs/settings:
-        index = output$index,
+        index = output$index, # unique identifier across seeds & parameter sweep combinations
         seed = output$seed,
-        eir = output$eir,
-        cm_clinical = output$cm_clinical,
-        seasonality = output$seasonality,
-        
+
         # Add columns for the timesteps (day, month, year)
         timestep = output$timestep,
         month = output$month,
@@ -45,7 +42,11 @@ convert_malsim_to_long <- function(age_min, age_max, output) {
         severe_incidence = output[,paste0('n_inc_severe_', age_min[[i]], '_',age_max[[i]])],
         
         # Add column for the prevalence in age groups 2-10 years old:
-        prevalence_2to10 = output$prev_730_3650)
+        prevalence_2to10 = output$prev_730_3650,
+
+        # Add column for the EIR:
+        EIR_gamb = output$EIR_gamb)  #FIXME when running with multiple or other vectors, will need to be adapted, perhaps add to exp object?
+
     }
   )
   

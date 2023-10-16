@@ -13,8 +13,6 @@ from benchmark_plots import *
 from MalSim.sample_plots import *
 
 
-# TODO ADD FUNCTIONS THAT WILL CONVERT MALSIM VALUES TO APPROPRIATE VALUES
-# TO COMPARE TO EMOD AND OPENMALARIA
 def parse_args():
     """
     Parses command-line arguments for simulation specifications.
@@ -39,9 +37,44 @@ def get_age_group_labels(age_bins):
     return age_group_labels
 
 
+def SurveyAllAgeAnalyzer(wdir, sweep_variables, sim_start=2000):
+    """
+    Run the SurveyAllAgeAnalyzer for malariasimulation experiments.
+    """
+    print(f"Running SurveyAllAgeAnalyzer...", flush=True)
+
+    # Read the scenario data from the CSV file
+    scen_df = pd.read_csv(os.path.join(wdir, 'scenarios_wseeds.csv'))
+
+    # Read experiment data daily
+    df = pd.read_csv(os.path.join(wdir, f'MalSim/daily.csv'))
+    df['agebin'] = round(df['age_upper'] / 365, 1)
+    df['day'] = df['timestep'] % 365
+    df['year'] = df['timestep'].apply(lambda x: int(x / 365) + sim_start)
+    df['date'] = df.apply(lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(int(x['day']) - 1), axis=1)
+
+
+    # Sum the values of the age groups
+    # Aggregate data per date and sweep_variables using sum and mean specific to outcome channel
+    sum_channels = ['clinical_incidence', 'incidence', 'severe_incidence','nHost']
+    mean_channels = ['nPopulation', 'prevalence_2to10', 'prevalence']
+
+    sdf = df.groupby(['date'] + sweep_variables)[sum_channels].agg(np.sum).reset_index()
+    mdf = df.groupby(['date'] + sweep_variables)[mean_channels].agg(np.mean).reset_index()
+    adf = pd.merge(left=sdf, right=mdf, on=(sweep_variables + ['date']))
+
+    # Merge with the scenario data
+    adf = adf.merge(scen_df, on='index', how='inner')
+
+    # Save the processed DataFrame to a CSV file named 'All_Age_InsetChart.csv'
+    print(f'Saving All_Age_InsetChart.csv to {wdir}')
+    adf.to_csv((os.path.join(wdir,'MalSim', f'All_Age_InsetChart.csv')), index=False)
+
+
+
 def BenchmarkAnalyzer(wdir, sweep_variables):
     """
-    Run the BenchmarkAnalyzer equivalent of EMOD for OpenMalaria experiments.
+    Run the BenchmarkAnalyzer equivalent of EMOD for malariasimulation experiments.
     Saves: CSV dataframe in 'benchmark' format of selected simulation outcome metrics per fixed agegroup and grp_channels
            all surveys aggregated
     """
@@ -104,7 +137,7 @@ def BenchmarkAnalyzer(wdir, sweep_variables):
 
 def MonthlyBenchmarkAnalyzer(wdir, sweep_variables):
     """
-    Run the BenchmarkAnalyzer equivalent of EMOD for OpenMalaria experiments.
+    Run the BenchmarkAnalyzer equivalent of EMOD for malariasimulation experiments.
     Saves: CSV dataframe in 'benchmark' format of selected simulation outcome metrics per fixed agegroup and grp_channels
            all surveys aggregated
     """
@@ -228,9 +261,9 @@ def AnnualBenchmarkAnalyzer(wdir, sweep_variables):
     cdf.to_csv((os.path.join(wdir, 'MalSim', f'Benchmark_yr.csv')), index=False)
 
 
-def MonthlyAgebinAnalyzer(wdir, sweep_variables):
+def MonthlyAgebinAnalyzer(wdir, sweep_variables, sim_start):
     """
-    Run the MonthlyAgebinAnalyzer equivalent for OpenMalaria experiments.
+    Run the MonthlyAgebinAnalyzer equivalent for malariasimulation experiments.
     Args:
         exp: The experiment object.
         mm: The measure map object.
@@ -249,7 +282,6 @@ def MonthlyAgebinAnalyzer(wdir, sweep_variables):
     df['ageGroup'] = df['ageGroup'].astype('category')
     df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
     df['day'] = 1
-    df['year'] = df['year'] + 1999
     df['ageGroup'] = df['ageGroup'].replace('0-0', '0-0.5')
     df['ageGroup'] = df['ageGroup'].replace('0-1', '0.5-1')
 
@@ -274,12 +306,12 @@ def MonthlyAgebinAnalyzer(wdir, sweep_variables):
 
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_mth.csv to {wdir}')
-    df_mth.to_csv((os.path.join(wdir, f'PfPR_ClinicalIncidence_mth.csv')), index=False)
+    df_mth.to_csv((os.path.join(wdir, 'MalSim', f'PfPR_ClinicalIncidence_mth.csv')), index=False)
 
 
-def AnnualAgebinAnalyzer(wdir, sweep_variables):
+def AnnualAgebinAnalyzer(wdir, sweep_variables, sim_start):
     """
-    Run the MonthlyAgebinAnalyzer equivalent for OpenMalaria experiments.
+    Run the MonthlyAgebinAnalyzer equivalent for malariasimulation experiments.
     Args:
         exp: The experiment object.
         mm: The measure map object.
@@ -299,7 +331,6 @@ def AnnualAgebinAnalyzer(wdir, sweep_variables):
     df['ageGroup'] = df['ageGroup'].astype('category')
     df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
     df['day'] = 1
-    df['year'] = df['year'] + 1999
     df['ageGroup'] = df['ageGroup'].replace('0-0', '0-0.5')
     df['ageGroup'] = df['ageGroup'].replace('0-1', '0.5-1')
 
@@ -323,7 +354,7 @@ def AnnualAgebinAnalyzer(wdir, sweep_variables):
 
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_yr.csv to {wdir}')
-    df_yr.to_csv((os.path.join(wdir, f'PfPR_ClinicalIncidence_yr.csv')), index=False)
+    df_yr.to_csv((os.path.join(wdir,'MalSim',  f'PfPR_ClinicalIncidence_yr.csv')), index=False)
 
 
 if __name__ == "__main__":
@@ -335,12 +366,14 @@ if __name__ == "__main__":
     exp = pickle.load(file)
     sweep_variables = ['index']
     create_sampleplots = True #False
+    sim_start = exp.sim_start_year_om
 
+    SurveyAllAgeAnalyzer(wdir, sweep_variables, sim_start)
     BenchmarkAnalyzer(wdir, sweep_variables)
     MonthlyBenchmarkAnalyzer(wdir, sweep_variables)
     AnnualBenchmarkAnalyzer(wdir, sweep_variables)
-    MonthlyAgebinAnalyzer(wdir, sweep_variables)
-    AnnualAgebinAnalyzer(wdir, sweep_variables)
+    MonthlyAgebinAnalyzer(wdir, sweep_variables, sim_start)
+    AnnualAgebinAnalyzer(wdir, sweep_variables, sim_start)
 
     # Create sample plots if specified
     if create_sampleplots:
@@ -351,8 +384,8 @@ if __name__ == "__main__":
 
         channels_inset_chart = ['nPopulation', 'nHost', 'prevalence',
                                 'incidence', 'clinical_incidence',
-                                'severe_incidence', 'prevalence_2to10']
-        all_age_sample_plot(wdir=os.path.join(wdir, 'MalSim'), sweep_variables=exp_tags,
+                                'severe_incidence', 'prevalence_2to10','EIR_gamb']
+        all_age_sample_plot(wdir=os.path.join(wdir, 'MalSim'), sweep_variables=['index'],
                             inset_channels=channels_inset_chart)
         sample_plot_yr(wdir=os.path.join(wdir, 'MalSim'), sweep_variables=exp_tags)
         sample_plot_mth(wdir=os.path.join(wdir, 'MalSim'), sweep_variables=exp_tags)

@@ -32,9 +32,10 @@ emod_serialized_id = 'c6849b29-1d9c-4bb5-8af4-4f6537384c09'  # example, insert y
 models_to_run = ['MalSim', 'OpenMalaria', 'EMOD']  # 'EMOD','OpenMalaria', 'MalSim'
 
 # Specify OpenMalaria XML and survey step
-# Note, XMLs need to exist in OpenMalaria/inputs
-om_scaffold = "R0000GA"
+om_scaffold = "R0000GA" # defining which OpenMalaria XML scaffold to use
 om_survey_step = '30d'
+MalSim_script = 'malsim_benchmarking_exercise.R'  # defining which simulation setup, interventions etc to run
+MalSim_run_burnin = False
 
 # Define simulation population and seeds
 pop_size = 10000  # 1000 for testing
@@ -49,6 +50,10 @@ burnin = 5  # Duration of burnin (pre-monitoring) period
 # Simulation duration, start and end configuration
 sim_start_year_em, monitoring_years, sim_dur_years = get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step)
 sim_start_year_om = start_year - burnin
+sim_start_year_ms = sim_start_year_om
+
+if not MalSim_run_burnin:
+    sim_start_year_ms = start_year
 
 # Name of parameters to vary
 sweep_list = ['eir', 'cm_clinical', 'seasonality']
@@ -111,6 +116,9 @@ for obj_name in my_obj:
     else:
         print(f"Object {obj_name} not found in the locals environment.")
 
+# Check whether defined input parameter are all valid
+check_exp_inputs(exp)  # TODO add more validity checks as needed
+
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, sweep_list)
 exp.nexps = len(scen_df) * num_seeds
@@ -119,9 +127,10 @@ if emod_step == 'pickup':
     scen_df = get_scendf_burnin(exp, emod_serialized_id, manifest, platform,
                                 burnin)  # FIXME expand on it when additional parameter values to run in future
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
+save_scen(rep_scen_df(scen_df), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
 
-# Check whether defined input parameter are all valid
-check_exp_inputs(exp)  # TODO add more validity checks as needed
+# Write out simulation setup (primarily for MalSim)
+create_simsetup_csv(exp)
 
 
 def config_task(platform):

@@ -203,6 +203,7 @@ def create_simsetup_csv(exp):
                  'burnin': exp.burnin,
                  'sim_start_year_om': exp.sim_start_year_om,
                  'sim_start_year_em': exp.sim_start_year_em,
+                 'sim_start_year_ms': exp.sim_start_year_ms,
                  }
 
     setup_df = pd.DataFrame.from_dict(setup_dic, orient='index', columns=['Value'])

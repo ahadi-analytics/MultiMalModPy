@@ -46,9 +46,9 @@ if hpc == 'NUCLUSTER':
     else:
         raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 45')
     om_input_path = '/projects/b1139/emod-om/model-characterization/OpenMalaria/'
+    ms_input_path = '/projects/b1139/emod-om/model-characterization/MalSim/'
     if os.name != 'posix':
-        output_directory = os.path.join(os.environ['USERPROFILE'],
-                                        'NU Malaria Modeling Dropbox/projects/EMOD_OM/simulation_outputs')
+        output_directory = os.path.join(os.environ['USERPROFILE'], 'NU Malaria Modeling Dropbox/projects/EMOD_OM/simulation_outputs')
         print(f"Setting output_directory for local use: {output_directory}")
 elif hpc == 'SCICORE':
     sh_hpc_config = {'A': 'penny', 'p': 'scicore', 'em_modules': '', 'buyin': True}
@@ -57,6 +57,7 @@ elif hpc == 'SCICORE':
     SIF_PATH = "/scicore/home/scicore/cavelan/git/emodpy/dtk_run_rocky_py39.sif"
     OM_PATH = "/scicore/home/penny/GROUP/OpenMalaria/OM_schema43/"
     om_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria/'
+    ms_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/MalSim/'
     output_directory = os.path.join(projdir, 'simulation_outputs')
 else:
     job_directory = os.path.join(os.path.expanduser('~'), 'experiments/')

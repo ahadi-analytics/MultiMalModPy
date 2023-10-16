@@ -61,7 +61,7 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels, sim_start=2000):
             pass
 
     # Create the plot figure
-    fig = plt.figure('InsetChart', figsize=(20, 6))
+    fig = plt.figure('InsetChart', figsize=(20, 10))
     fig.subplots_adjust(hspace=0.5, left=0.08, right=0.97)
     axes = [fig.add_subplot(3, 3, x + 1) for x in range(8)]
 
@@ -233,10 +233,11 @@ if __name__ == "__main__":
 
     # Determine whether simulation ran with forced or dynamic EIR and set eirchannel
     # Define tags and channels for sample plots
-    exp_tags = [x for x in exp.sweep_list if x != 'seed']  # + ['seed']
+    #exp_tags = [x for x in exp.sweep_list if x != 'seed']  # + ['seed']
+    exp_tags = ['index'] #TODO, add scenarios to daily?
     channels_inset_chart = ['nPopulation', 'nHost', 'prevalence',
                             'incidence', 'clinical_incidence',
-                            'severe_incidence', 'prevalence_2to10']
+                            'severe_incidence', 'prevalence_2to10','EIR_gamb']
 
     # Create sample plots
     all_age_sample_plot(wdir, exp_tags, channels_inset_chart, sim_start=sim_start)
