@@ -12,7 +12,6 @@ from OpenMalaria.sample_plots import *
 from benchmark_plots import *
 
 
-
 def parse_args():
     """
     Parses command-line arguments for simulation specifications.
@@ -205,7 +204,18 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
         df_mth = df_mth.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR'}, axis=1)
         df_mth.to_csv((os.path.join(wdir, f'EIR_mth.csv')), index=False, compression=compr)
 
-    # Yearly aggregation
+    # Yearly aggregation - keep years
+    nyears = len(df['year'].unique())
+    df_yr = df.groupby(['index', 'year', 'measure', 'ageGroup'], as_index=False).value.sum()
+    df_yr = add_measure_names(df_yr, mm)
+    df_yr = pivot_wider(df_yr, index_cols=['index', 'year', 'ageGroup'])
+    df_yr = df_yr.merge(scen_df, on='index', how='inner')
+    df_yr = df_yr.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR'}, axis=1)
+
+    print(f'Saving EIR_yr.csv to {wdir}')
+    df_yr.to_csv((os.path.join(wdir, f'EIR_yr.csv')), index=False, compression=compr)  ## annual average
+
+    # Yearly aggregation - mean
     nyears = len(df['year'].unique())
     df_yr = df.groupby(['index', 'measure', 'ageGroup'], as_index=False).value.sum()
     df_yr['value'] = df_yr['value'] / nyears
@@ -215,7 +225,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
     df_yr = df_yr.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR'}, axis=1)
 
     print(f'Saving EIR.csv to {wdir}')
-    df_yr.to_csv((os.path.join(wdir, f'EIR.csv')), index=False, compression=compr)
+    df_yr.to_csv((os.path.join(wdir, f'EIR.csv')), index=False, compression=compr)  ## annual average
 
 
 def BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip'):
@@ -723,8 +733,8 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
 
     # Read the monthly EIR data from the CSV file and compute the mean for each index and month
-    eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
-    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
+    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
+    eir_df = eir_df[['index', 'year', 'inputEIR', 'simulatedEIR']]
 
     # Define age groups and labels
     age_bins = exp.agebins
@@ -768,7 +778,6 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
         grp_channels = [ch for ch in grp_channels if ch != 'ageGroup']
         pfpr2to10 = ((nPatent2to10 / nHost2to10).groupby(grp_channels).mean()).rename("prevalence_2to10")
 
-        adf = pd.DataFrame()
         # Analyze data for each age group on the plot
         for i in range(0, len(age_groups_aggregates)):
             ages = age_groups_aggregates[i]
@@ -800,19 +809,20 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
             mortality = nDeaths / nHost  # (events per person per year)
 
             # Create a DataFrame with the analysis results for the current age group
-            simdata = pd.DataFrame({'nHost': nHost / num_years,
+            simdata = pd.DataFrame({'nHost': nHost,
                                     'prevalence_2to10': pfpr2to10,
                                     'prevalence': prevalence,
                                     'clinical_incidence': clinical_incidence,
                                     'severe_incidence': severe_incidence,
                                     'mortality': mortality})
             simdata['ageGroup'] = ageCond_labels
+            simdata['year'] = yr
             adf = pd.concat([adf, simdata])
 
     # Merge the analysis results with the scenario and EIR data
     adf.reset_index(inplace=True)
     adf = adf.merge(scen_df, on='index', how='inner')
-    adf = adf.merge(eir_df, on='index', how='inner')
+    adf = adf.merge(eir_df, on=['index', 'year'], how='inner')
 
     # Save the processed DataFrame to a CSV file named 'Benchmark_yr.csv'
     print(f'Saving Benchmark_yr.csv to {wdir}')
