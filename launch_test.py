@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 loaded_attr = set(dir())  # Non experiiment specific objects to be excluded from exp.obj
 
 # Flag to select whether to run with (dynamic) or without vector model (forced)
-entomology_mode = 'forced'  # dynamic, forced
+entomology_mode = 'dynamic'  # dynamic, forced
 mem_increase_factor = 1.0  # scaling factor on default memory requested
 
 # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
@@ -38,7 +38,7 @@ MalSim_script = 'malsim_benchmarking_exercise.R'  # defining which simulation se
 MalSim_run_burnin = False
 
 # Define simulation population and seeds
-pop_size = 10000  # 1000 for testing
+pop_size = 1000  # 1000 for testing
 agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
 
 num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
@@ -77,7 +77,7 @@ detectionLimit = 40
 
 # Transmission and seasonality configuration
 seasonality = ["seasonal"]  # ["perennial", "seasonal"]
-eir = [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512]  # [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+eir = [0.1, 1, 2, 4, 8, 16, 32]  # [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
 # Entomology mode: Dynamic EIR configuration if selected
 season_daily, season_month, seasonal, perennial = get_seasonal_eir()
