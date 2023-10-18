@@ -8,9 +8,6 @@ malsim_post_processing <- function(simulation_outputs_raw, days_per_month, exp, 
   # Append columns for month, date, and prevalence (by age group):
   combined_malsim_outputs_modified <- add_dates_and_prevalence(combined_output = combined_malsim_outputs, days_per_month = days_per_month)
 
-  # If burnin, discard (optional, for i.e. long burnins)
-  if(exp$burnin_discard) combined_malsim_outputs_modified <- combined_malsim_outputs_modified[combined_malsim_outputs_modified$timestep> exp$burnin *365, ]
-
   # Create a long-form data frame with (some of - work in progress) the columns required aggregated
   # by age group:
   malsim_output_long_daily <- convert_malsim_to_long(age_min = min_ages, age_max = max_ages, output = combined_malsim_outputs_modified)

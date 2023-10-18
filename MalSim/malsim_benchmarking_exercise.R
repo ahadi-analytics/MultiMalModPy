@@ -40,16 +40,13 @@ exp$pop_size <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'pop_size', 'V
 exp$burnin <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'burnin', 'Value'])
 exp$monitoring_years <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'monitoring_years', 'Value'])
 exp$start_year <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'start_year', 'Value'])
-exp$sim_start_year_ms <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'sim_start_year_ms', 'Value'])
+exp$sim_start_year_ms <- exp$start_year# as.numeric(exp_setup_df[exp_setup_df$parameter == 'sim_start_year_ms', 'Value'])
 exp$agebins <- exp_setup_df[exp_setup_df$parameter == 'agebins', 'Value']
 exp$agebins <- as.numeric(unlist(strsplit(gsub("\\[|\\]", "", exp$agebins), ", ")))
 exp$min_ages <- (round(c(0,exp$agebins[1:length(exp$agebins)-1])*365))+1
 exp$min_ages[1] <- 0
 exp$max_ages <- (round(exp$agebins *365))
-
-exp$burnin_discard = True #FIXME hardcoding
-if(exp$sim_start_year_ms == exp$start_year) exp$burnin = 0
-exp$years_to_simulate <- (exp$monitoring_years + exp$burnin)
+exp$years_to_simulate <- exp$monitoring_years
 
 
 # Store the min/max ages (days):
