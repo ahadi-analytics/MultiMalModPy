@@ -78,9 +78,14 @@ The main configuration `manifest.py` and test simulation script `launch_test.py`
     │   ├─ measures.py
     │   ├─ sample_plots.py
     │   └─ utils.py 
-    ├─ malariasimulation/               # malariasimulation inputs and specific functions   (coming soon)
-    │   ├─ ...  
-    │   └─ ...  
+    ├─ MalSim/               # malariasimulation inputs and specific functions   (coming soon)
+    │   ├─ R_functions/      # malariasimulation specific r functions
+    │   │   └─ ...
+    │   ├─ scaffolds/        # Might be used for intervention specific functions
+    │   │   └─ ... 
+    │   ├─ analyze_sim.py  
+    │   ├─ sample_plots.py
+    │   └─ utils.py 
     ├─ custom_plotter/                  # Unstructured collection of custom figures scripts (optional)
     │   └─ ...  
     ├─ sim_popsize/                     # Alternative use of framework to sweep uncommong parameters (example)
@@ -119,7 +124,7 @@ The name of some input and output names have been predominantly aligned to OpenM
 A single `launch_test.py` python script launches the simulation experiment with parameters defined directly in the file
 Helper functions for EMOD and OpenMalaria, stored in 'utils.py' in model specific subfolders are sourced in  the  `launch_test.py` python script.   
 
-![Simulation framework](https://github.com/numalariamodeling/model-characterization/blob/main/static/emod-om-framework.png)
+![Simulation framework](https://github.com/numalariamodeling/model-characterization/blob/main/static/script-framework.png)
 
 
 Alternatively, one can have project specific `utils` and `analyzer` scripts within a project folder and have them named differently for EMOD
@@ -381,8 +386,9 @@ Additional interventions are not possible using the `launch_test.py`, and instru
 
 ## Installation
 
-On the NU cluster `Quest` OpenMalaria and EMOD are already installed and accessible for all users in group.
+On the NU cluster `Quest` OpenMalaria and  EMOD are already installed and accessible for all users in group.
 On the STPH cluster `SciCore` OpenMalaria and EMOD are already installed and accessible for all users in group.
+Using malariasimulation requires installing an R package to the user specific or group specific R library used.
 
 If you need to installl, below are the installation instructions:
 
@@ -393,6 +399,7 @@ If you need to installl, below are the installation instructions:
 [EMODpy installation additions NU for NUCLUSTER](https://numalariamodeling.github.io/FE-2023-quarto-website/guides/install_guide.html).
 
 [OpenMalaria installation STPH](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria)
+[malariasimulation installation](https://github.com/numalariamodeling/model-characterization/tree/main/MalSim#requirements-for-running-malsim-r-scripts)
 
 NU IT research (Scott Coughlin) built a container and sent instructions which have been edited for completeness and are
 shown below:
@@ -508,6 +515,7 @@ Table 1: Overview of model software and infrastructure
 ------------------------------------    
 
 ## Change log
+- Sep - Oct 2023: refinment in framework and outcome alignment for `malariasimulation` outcomes
 - August 2023: start integrating Imperial College London's malaria model `malariasimulation`, start dynamic EIR
 - July - August 2023: bugfixes and improvements to framework, timeseries, initial parameter exploration
 - March 2023 - June 2023: initial python framework with CM only and forced EIR
