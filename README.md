@@ -124,7 +124,7 @@ The name of some input and output names have been predominantly aligned to OpenM
 A single `launch_test.py` python script launches the simulation experiment with parameters defined directly in the file
 Helper functions for EMOD and OpenMalaria, stored in 'utils.py' in model specific subfolders are sourced in  the  `launch_test.py` python script.   
 
-![Simulation framework](https://github.com/numalariamodeling/model-characterization/blob/main/static/script-framework.png)
+![Simulation framework](https://github.com/numalariamodeling/model-characterization/blob/main/static/script_framework.png)
 
 
 Alternatively, one can have project specific `utils` and `analyzer` scripts within a project folder and have them named differently for EMOD
