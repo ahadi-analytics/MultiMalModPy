@@ -4,8 +4,7 @@ add_dates_and_prevalence <- function(combined_output, days_per_month) {
   combined_output %>%
     
     # Add a column with the month for each of the 365 days per year (from a non-leap year)
-    add_column(month = rep(rep(rep(x = 1:12, days_per_month), max(combined_output$timestep)/365), max(combined_output$index))) %>%
-    
+    add_column(month = rep(rep(rep(x = 1:12, days_per_month), max(combined_output$timestep)/365))) %>%
     # Add a column for the year of the simulation for each timestep - use floor with start year 0, to align with EMOD and OpenMalaria
     mutate(year = floor(timestep / 365)) %>%
     

@@ -299,8 +299,8 @@ def shell_header_quest(sh_account, time_str='04:00:00', memG=3, job_name='myjob'
              f'#SBATCH --job-name="{job_name}"\n'
     if arrayJob is not None:
         array = arrayJob
-        err = '#SBATCH --error=log/slurm_%A_%a.err\n'
-        out = '#SBATCH --output=log/slurm_%A_%a.out\n'
+        err = f'#SBATCH --error=log/{job_name}_%A_%a.err\n'
+        out = f'#SBATCH --output=log/{job_name}_%A_%a.out\n'
         header = header + array + err + out
     else:
         err = f'#SBATCH --error=log/{job_name}.%j.err\n'

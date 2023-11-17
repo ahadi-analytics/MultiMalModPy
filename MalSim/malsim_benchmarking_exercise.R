@@ -30,7 +30,7 @@ for(i in 1:length(list.files(".", pattern = ".R"))) {
 days_per_month <- days_in_month(seq(from = dmy("01-01-2023"), length.out = 12, by = "months"))
 
 # Load in the .csv of parameters as a data frame:
-scenarios_to_run <- read.csv(file.path(arguments[2], 'scenarios_wseeds.csv'))
+scenarios_to_run <- read.csv(file.path(arguments[2], paste0(arguments[3],'.csv')))
 exp_setup_df <- read.csv(file.path(arguments[2], 'exp_setup_df.csv'))
 
 exp <- list()
@@ -65,4 +65,4 @@ processed_malsim_outputs <- malsim_post_processing(simulation_outputs_raw = simu
                                                    timeout=timeout)
 
 # Write the outputs to .csv's:
-write_csv(x = processed_malsim_outputs, file = file.path(exp$sim_out_dir, 'MalSim', paste0(timeout,".csv")))
+write_csv(x = processed_malsim_outputs, file = file.path(exp$sim_out_dir, 'MalSim', paste0(timeout, "_",arguments[4],".csv")))

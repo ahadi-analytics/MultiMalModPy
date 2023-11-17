@@ -356,6 +356,15 @@ def AnnualAgebinAnalyzer(wdir, sweep_variables, sim_start):
     print(f'Saving PfPR_ClinicalIncidence_yr.csv to {wdir}')
     df_yr.to_csv((os.path.join(wdir,'MalSim',  f'PfPR_ClinicalIncidence_yr.csv')), index=False)
 
+def combine_outputs(wdir):
+    daily = pd.DataFrame()
+    print(exp.nexps)
+    for i in range(1, exp.nexps+1):
+        print(i)
+        i_df = pd.read_csv(os.path.join(wdir, f'MalSim/daily_{i}.csv'))
+        daily = pd.concat([daily, i_df],axis=0)
+        os.remove(os.path.join(wdir, f'MalSim/daily_{i}.csv'))
+    daily.to_csv((os.path.join(wdir,'MalSim', 'daily.csv')), index=False)
 
 if __name__ == "__main__":
     args = parse_args()
@@ -368,6 +377,7 @@ if __name__ == "__main__":
     create_sampleplots = True #False
     sim_start = exp.sim_start_year_om
 
+    combine_outputs(wdir)
     SurveyAllAgeAnalyzer(wdir, sweep_variables, sim_start)
     BenchmarkAnalyzer(wdir, sweep_variables)
     MonthlyBenchmarkAnalyzer(wdir, sweep_variables)
