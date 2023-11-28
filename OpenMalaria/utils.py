@@ -1,5 +1,5 @@
 from helper import *
-
+import shutil
 
 def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMalaria models
     """

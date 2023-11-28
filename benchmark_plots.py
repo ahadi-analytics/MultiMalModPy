@@ -43,7 +43,6 @@ def parse_args():
 def custom_sort_key(age_group):
     return int(age_group.split('-')[0])
 
-
 def get_emodom_df(wdir, emodom, mth=False, timeseries=False):
     """
     Load and combine data from the specified EMOD and/or OpenMalaria benchmark output files.
@@ -110,7 +109,6 @@ def get_emodom_df(wdir, emodom, mth=False, timeseries=False):
             age_grps = list(df['ageGroup'].unique())
         df['ageGroup'] = df['ageGroup'].astype('category')
         df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
-
     return df, wdir
 
 
@@ -159,7 +157,6 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_l
     # for each age group, plot x = prevalence 2_to_10, y = incidences
 
     for si, season in enumerate(seasonality):
-        upper_ylim = -1
         for agroup in df['ageGroup'].unique():
             ax = fig.add_subplot(ny, nx, f)
             f += 1

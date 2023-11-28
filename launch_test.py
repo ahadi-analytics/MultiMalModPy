@@ -9,6 +9,7 @@ import emodpy_malaria.malaria_config as malaria_config
 import manifest
 from EMOD.utils import *
 from helper import *
+import os
 
 # Setting up variables and flags for the simulation
 log = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ mem_increase_factor = 1.0  # scaling factor on default memory requested
 
 # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
 custom_subdir = os.getlogin()  # If None, no subdir created
-SUITEname = f'test_sims'  # Can be changed depending on objective to run simulations, in subdir if not None
+SUITEname = 'test_sims'  # Can be changed depending on objective to run simulations, in subdir if not None
 exp_name = f'test_sims_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'  # Can be changed depending on simulation purpose, in SUITE
 
 # EMOD flags for how to run simulations (in one run or separated into burnin + pickup)
@@ -71,13 +72,13 @@ if emod_step != 'pickup':
 # Define case management start and coverage
 # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
 cm_start = 1
-cm_clinical = [0.2]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
+cm_clinical = [0.2, 0.4]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
 cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
 detectionLimit = 40
 
 # Transmission and seasonality configuration
 seasonality = ["seasonal"]  # ["perennial", "seasonal"]
-eir = [0.1, 1, 2, 4, 8, 16, 32]  # [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+eir = [0.1]#, 1, 2, 4, 8, 16, 32, 64]  # [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
 # Entomology mode: Dynamic EIR configuration if selected
 season_daily, season_month, seasonal, perennial = get_seasonal_eir()
@@ -129,9 +130,10 @@ if emod_step == 'pickup':
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 save_scen(rep_scen_df(scen_df), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
 
+
 # Write out simulation setup (primarily for MalSim)
 create_simsetup_csv(exp)
-
+save_eir_month(exp.job_directory, season_month)
 
 def config_task(platform):
     print("Creating EMODTask (from files)...")

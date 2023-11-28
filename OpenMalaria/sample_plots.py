@@ -4,15 +4,13 @@ import matplotlib as mpl
 import numpy as np
 import pandas as pd
 import pickle
-
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import matplotlib.ticker as ticker
 mpl.use('Agg')
 mpl.rcParams['pdf.fonttype'] = 42
 # mpl.rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
 # mpl.rc('text', usetex=True)
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import matplotlib.ticker as ticker
-
 
 def parse_args():
     """

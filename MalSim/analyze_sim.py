@@ -2,15 +2,12 @@ import os
 import argparse
 import pickle
 import datetime
-import time
 import pandas as pd
 import numpy as np
+from sample_plots import *
 import sys
-
 sys.path.append('../')
-import manifest
 from benchmark_plots import *
-from MalSim.sample_plots import *
 
 
 def parse_args():
@@ -41,13 +38,13 @@ def SurveyAllAgeAnalyzer(wdir, sweep_variables, sim_start=2000):
     """
     Run the SurveyAllAgeAnalyzer for malariasimulation experiments.
     """
-    print(f"Running SurveyAllAgeAnalyzer...", flush=True)
+    print("Running SurveyAllAgeAnalyzer...", flush=True)
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(wdir, 'scenarios_wseeds.csv'))
 
     # Read experiment data daily
-    df = pd.read_csv(os.path.join(wdir, f'MalSim/daily.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'MalSim/daily.csv'))
     df['agebin'] = round(df['age_upper'] / 365, 1)
     df['day'] = df['timestep'] % 365
     df['year'] = df['timestep'].apply(lambda x: int(x / 365) + sim_start)
@@ -68,7 +65,7 @@ def SurveyAllAgeAnalyzer(wdir, sweep_variables, sim_start=2000):
 
     # Save the processed DataFrame to a CSV file named 'All_Age_InsetChart.csv'
     print(f'Saving All_Age_InsetChart.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir,'MalSim', f'All_Age_InsetChart.csv')), index=False)
+    adf.to_csv((os.path.join(wdir,'MalSim', 'All_Age_InsetChart.csv')), index=False)
 
 
 
@@ -78,20 +75,18 @@ def BenchmarkAnalyzer(wdir, sweep_variables):
     Saves: CSV dataframe in 'benchmark' format of selected simulation outcome metrics per fixed agegroup and grp_channels
            all surveys aggregated
     """
-    print(f"Running BenchmarkAnalyzer...", flush=True)
+    print("Running BenchmarkAnalyzer...", flush=True)
 
     # Read the EIR data from the CSV file
     # eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
     # eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
-    df = pd.read_csv(os.path.join(wdir, f'MalSim/daily.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'MalSim/daily.csv'))
     df['agebin'] = round(df['age_upper'] / 365, 1)
 
     df_pfpr2to10 = df.groupby(sweep_variables + ['agebin'])[['prevalence_2to10']].agg(np.mean).reset_index()
-    # get number of years aggregated
-    n_surveys_per_year = np.floor((365 / 1))
-    num_years = np.floor(len(df['timestep'].unique()) / n_surveys_per_year)
+
 
     ## Aggregate years
     df = df.groupby(sweep_variables + ['agebin'])[
@@ -132,7 +127,7 @@ def BenchmarkAnalyzer(wdir, sweep_variables):
     print(f'\nSaving outputs to: {os.path.join(wdir)}/MalSim')
 
     # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
-    cdf.to_csv((os.path.join(wdir, 'MalSim', f'Benchmark.csv')), index=False)
+    cdf.to_csv((os.path.join(wdir, 'MalSim', 'Benchmark.csv')), index=False)
 
 
 def MonthlyBenchmarkAnalyzer(wdir, sweep_variables):
@@ -141,20 +136,17 @@ def MonthlyBenchmarkAnalyzer(wdir, sweep_variables):
     Saves: CSV dataframe in 'benchmark' format of selected simulation outcome metrics per fixed agegroup and grp_channels
            all surveys aggregated
     """
-    print(f"Running BenchmarkAnalyzer...", flush=True)
+    print("Running BenchmarkAnalyzer...", flush=True)
 
     # Read the EIR data from the CSV file
     # eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
     # eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
-    df = pd.read_csv(os.path.join(wdir, f'MalSim/daily.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'MalSim/daily.csv'))
     df['agebin'] = round(df['age_upper'] / 365, 1)
 
     df_pfpr2to10 = df.groupby(sweep_variables + ['agebin', 'month'])[['prevalence_2to10']].agg(np.mean).reset_index()
-    # get number of years aggregated
-    n_surveys_per_year = np.floor((365 / 1))
-    num_years = np.floor(len(df['timestep'].unique()) / n_surveys_per_year)
 
     ## Aggregate years
     df = df.groupby(sweep_variables + ['agebin', 'month'])[
@@ -195,7 +187,7 @@ def MonthlyBenchmarkAnalyzer(wdir, sweep_variables):
     print(f'\nSaving outputs to: {os.path.join(wdir)}/MalSim')
 
     # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
-    cdf.to_csv((os.path.join(wdir, 'MalSim', f'Benchmark_mth.csv')), index=False)
+    cdf.to_csv((os.path.join(wdir, 'MalSim', 'Benchmark_mth.csv')), index=False)
 
 
 def AnnualBenchmarkAnalyzer(wdir, sweep_variables):
@@ -204,20 +196,17 @@ def AnnualBenchmarkAnalyzer(wdir, sweep_variables):
     Saves: CSV dataframe in 'benchmark' format of selected simulation outcome metrics per fixed agegroup and grp_channels
            all surveys aggregated
     """
-    print(f"Running BenchmarkAnalyzer...", flush=True)
+    print("Running BenchmarkAnalyzer...", flush=True)
 
     # Read the EIR data from the CSV file
     # eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
     # eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
-    df = pd.read_csv(os.path.join(wdir, f'MalSim/daily.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'MalSim/daily.csv'))
     df['agebin'] = round(df['age_upper'] / 365, 1)
 
     df_pfpr2to10 = df.groupby(sweep_variables + ['agebin', 'year'])[['prevalence_2to10']].agg(np.mean).reset_index()
-    # get number of years aggregated
-    n_surveys_per_year = np.floor((365 / 1))
-    num_years = np.floor(len(df['timestep'].unique()) / n_surveys_per_year)
 
     ## Aggregate years
     df = df.groupby(sweep_variables + ['agebin', 'year'])[
@@ -258,7 +247,7 @@ def AnnualBenchmarkAnalyzer(wdir, sweep_variables):
     print(f'\nSaving outputs to: {os.path.join(wdir)}/MalSim')
 
     # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
-    cdf.to_csv((os.path.join(wdir, 'MalSim', f'Benchmark_yr.csv')), index=False)
+    cdf.to_csv((os.path.join(wdir, 'MalSim', 'Benchmark_yr.csv')), index=False)
 
 
 def MonthlyAgebinAnalyzer(wdir, sweep_variables, sim_start):
@@ -274,10 +263,10 @@ def MonthlyAgebinAnalyzer(wdir, sweep_variables, sim_start):
     Returns:
         None
     """
-    print(f"Running MonthlyAgebinAnalyzer...", flush=True)
+    print("Running MonthlyAgebinAnalyzer...", flush=True)
 
     # Convert the experiment data to a DataFrame and format it
-    df = pd.read_csv(os.path.join(wdir, f'MalSim/daily.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'MalSim/daily.csv'))
     age_grps = list(df['ageGroup'].unique())
     df['ageGroup'] = df['ageGroup'].astype('category')
     df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
@@ -306,7 +295,7 @@ def MonthlyAgebinAnalyzer(wdir, sweep_variables, sim_start):
 
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_mth.csv to {wdir}')
-    df_mth.to_csv((os.path.join(wdir, 'MalSim', f'PfPR_ClinicalIncidence_mth.csv')), index=False)
+    df_mth.to_csv((os.path.join(wdir, 'MalSim', 'PfPR_ClinicalIncidence_mth.csv')), index=False)
 
 
 def AnnualAgebinAnalyzer(wdir, sweep_variables, sim_start):
@@ -323,10 +312,10 @@ def AnnualAgebinAnalyzer(wdir, sweep_variables, sim_start):
     Returns:
         None
     """
-    print(f"Running AnnualAgebinAnalyzer...", flush=True)
+    print("Running AnnualAgebinAnalyzer...", flush=True)
 
     # Convert the experiment data to a DataFrame and format it
-    df = pd.read_csv(os.path.join(wdir, f'MalSim/daily.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'MalSim/daily.csv'))
     age_grps = list(df['ageGroup'].unique())
     df['ageGroup'] = df['ageGroup'].astype('category')
     df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
@@ -354,7 +343,7 @@ def AnnualAgebinAnalyzer(wdir, sweep_variables, sim_start):
 
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_yr.csv to {wdir}')
-    df_yr.to_csv((os.path.join(wdir,'MalSim',  f'PfPR_ClinicalIncidence_yr.csv')), index=False)
+    df_yr.to_csv((os.path.join(wdir,'MalSim',  'PfPR_ClinicalIncidence_yr.csv')), index=False)
 
 def combine_outputs(wdir):
     daily = pd.DataFrame()
@@ -364,6 +353,7 @@ def combine_outputs(wdir):
         i_df = pd.read_csv(os.path.join(wdir, f'MalSim/daily_{i}.csv'))
         daily = pd.concat([daily, i_df],axis=0)
         os.remove(os.path.join(wdir, f'MalSim/daily_{i}.csv'))
+    daily['eir_gamb'] = daily['eir_gamb'] / 365
     daily.to_csv((os.path.join(wdir,'MalSim', 'daily.csv')), index=False)
 
 if __name__ == "__main__":

@@ -5,12 +5,10 @@ import datetime
 import time
 import pandas as pd
 import numpy as np
-import sys
 from idmtools.entities import IAnalyzer
 from idmtools.entities.simulation import Simulation
-
+import sys
 sys.path.append('../')
-import manifest
 from benchmark_plots import *
 from EMOD.sample_plots import *
 
@@ -166,7 +164,6 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         for fname in self.filenames:
 
             age_bins = data[fname]['Metadata']['Age Bins']
-            reports = data[fname]['DataByTime']['Time Of Report'][:nyears]
             pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10'][:nyears]
 
             for age in list(range(0, len(age_bins))):
@@ -245,7 +242,7 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         df = df[first_columns + df.drop(columns=first_columns).columns.tolist()]
 
         # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_yr.csv'
-        df.to_csv((os.path.join(self.working_dir, 'em', f'PfPR_ClinicalIncidence_yr.csv')), index=False)
+        df.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_yr.csv')), index=False)
 
 
 class MonthlyAgebinAnalyzer(IAnalyzer):
@@ -366,7 +363,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
                          'nSevere']
         df = df[first_columns + df.drop(columns=first_columns).columns.tolist()]
 
-        df.to_csv((os.path.join(self.working_dir, 'em', f'PfPR_ClinicalIncidence_mth.csv')), index=False)
+        df.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_mth.csv')), index=False)
 
 
 class TransmissionReport(IAnalyzer):
@@ -443,20 +440,20 @@ class TransmissionReport(IAnalyzer):
 
         if self.daily_report:
             # If specified, save the processed DataFrame to a CSV file named 'daily_transmission_report.csv'
-            adf.to_csv(os.path.join(self.working_dir, 'em', f'daily_transmission_report.csv'), index=False)
+            adf.to_csv(os.path.join(self.working_dir, 'em', 'daily_transmission_report.csv'), index=False)
 
         sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
         if self.monthly_report:
             df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
             df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
             # If specified, save the processed DataFrame to a CSV file named 'monthly_transmission_report.csv'
-            df.to_csv(os.path.join(self.working_dir, 'em', f'monthly_transmission_report.csv'), index=False)
+            df.to_csv(os.path.join(self.working_dir, 'em', 'monthly_transmission_report.csv'), index=False)
 
         df = adf.groupby(['year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
         df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
 
         # Save the processed DataFrame to a CSV file named 'annual_transmission_report.csv'
-        df.to_csv(os.path.join(self.working_dir, 'em', f'annual_transmission_report.csv'), index=False)
+        df.to_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'), index=False)
 
 
 class BenchmarkAnalyzer(IAnalyzer):
@@ -493,7 +490,6 @@ class BenchmarkAnalyzer(IAnalyzer):
         for fname in self.filenames:
 
             age_bins = data[fname]['Metadata']['Age Bins']
-            reports = data[fname]['DataByTime']['Time Of Report'][:nyears]
             pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10'][:nyears]
 
             for age in list(range(0, len(age_bins))):
@@ -588,7 +584,7 @@ class BenchmarkAnalyzer(IAnalyzer):
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
 
         # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
-        cdf.to_csv((os.path.join(self.working_dir, 'em', f'Benchmark.csv')), index=False)
+        cdf.to_csv((os.path.join(self.working_dir, 'em', 'Benchmark.csv')), index=False)
 
 
 class MonthlyBenchmarkAnalyzer(IAnalyzer):
@@ -728,7 +724,7 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
 
         # Save the processed DataFrame to a CSV file named 'Benchmark_mth.csv'
-        cdf.to_csv((os.path.join(self.working_dir, 'em', f'Benchmark_mth.csv')), index=False)
+        cdf.to_csv((os.path.join(self.working_dir, 'em', 'Benchmark_mth.csv')), index=False)
 
 
 class AnnualBenchmarkAnalyzer(IAnalyzer):
@@ -765,7 +761,6 @@ class AnnualBenchmarkAnalyzer(IAnalyzer):
         for fname in self.filenames:
 
             age_bins = data[fname]['Metadata']['Age Bins']
-            reports = data[fname]['DataByTime']['Time Of Report'][:nyears]
             pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10'][:nyears]
 
             for age in list(range(0, len(age_bins))):
@@ -861,7 +856,7 @@ class AnnualBenchmarkAnalyzer(IAnalyzer):
 
         # Save the processed DataFrame to a CSV file named 'Benchmark_yr.csv'
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
-        cdf.to_csv((os.path.join(self.working_dir, 'em', f'Benchmark_yr.csv')), index=False)
+        cdf.to_csv((os.path.join(self.working_dir, 'em', 'Benchmark_yr.csv')), index=False)
 
 
 if __name__ == "__main__":

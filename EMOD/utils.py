@@ -92,7 +92,8 @@ def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
     Returns:
         None
     """
-    if tot_year is None: tot_year = num_year
+    if tot_year is None: 
+        tot_year = num_year
     if (num_year > tot_year):
         raise ValueError('num_year must be <= tot_year')
 
@@ -127,7 +128,8 @@ def add_annual_reports(task, manifest, sim_start_year, num_year, tot_year=None,
     Returns:
         None
     """
-    if tot_year is None: tot_year = num_year
+    if tot_year is None: 
+        tot_year = num_year
     if (num_year > tot_year):
         raise ValueError('num_year must be <= tot_year')
     sim_year = tot_year - num_year
@@ -264,7 +266,6 @@ def get_burnin_exp_name(serialized_df):
     """
 
     import json
-    from pathlib import Path
     metadata_path = serialized_df.serialized_file_path[0].parent / 'metadata.json'
     with open(metadata_path, 'r') as json_file:
         metadata = json.load(json_file)

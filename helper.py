@@ -1,11 +1,11 @@
-import argparse, math, os, sys, subprocess, shutil, re, itertools, pickle
-from idmtools.entities.experiment import Experiment
-from datetime import datetime, timedelta
+import argparse 
+import os
+import subprocess 
+import itertools 
+import pickle
+from datetime import datetime
 import pandas as pd
 import numpy as np
-import warnings
-import shutil
-import os
 from EMOD.scaffolds.dynamicEIR import eir_to_lhs
 user = os.getlogin()
 
@@ -103,7 +103,7 @@ def get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step =
     # Calculate the number of years to monitor
     monitoring_years = end_year - start_year
 
-    if emod_step == None:
+    if emod_step is None:
         if 'EMOD' in models_to_run:
             print(" --------| Running EMOD burnin + pickup time in one simulation run |--------")
         sim_dur_years = end_year - burnin_start_year
@@ -127,6 +127,13 @@ def save_scen(scen_df,fname, save_dirs=None):
     for sdir in save_dirs:
         scen_df.to_csv(os.path.join(sdir, fname), index=False)
 
+
+def save_eir_month(save_dir, eir_months):
+    eirs = []
+    for i, month in enumerate(eir_months):
+        eirs.append([i+1,month])
+    df = pd.DataFrame(eirs,columns=['Month','EIR'])
+    df.to_csv(os.path.join(save_dir,'eir_months.csv'), index=False)
 
 def save_exp_scen(exp, scen_df, save_dirs):
     """
@@ -332,7 +339,7 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
 
     """
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=f'analyze_OMsim', mem_scl=exp.mem_increase_factor)
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OMsim', mem_scl=exp.mem_increase_factor)
 
     # Create the Python command to run the analyzer
     if exp.hpc == 'NUCLUSTER':
@@ -350,7 +357,7 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
     emodpy_venv = emodpy_module(exp.hpc)
 
     # Write the shell script to a file
-    script_path = os.path.join(exp.job_directory, f'run_analyzer_OpenMalaria.sh')
+    script_path = os.path.join(exp.job_directory, 'run_analyzer_OpenMalaria.sh')
     file = open(script_path, 'w')
     file.write(header_post + emodpy_venv + pycommand)
     file.close()
@@ -385,7 +392,7 @@ def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=8):
     wdir = os.path.abspath(os.path.dirname(__file__))
 
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(experiment.sh_hpc_config, t, memG, job_name=f'analyze_EMODsim',
+    header_post = shell_header_quest(experiment.sh_hpc_config, t, memG, job_name='analyze_EMODsim',
                                      mem_scl=experiment.mem_increase_factor)
 
     # Get the EMODpy virtual environment path
@@ -397,7 +404,7 @@ def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=8):
         [f'\npython {scr} -d {experiment.job_directory} -i {experiment.id}' for scr in experiment.analyzer])
 
     # Write the shell script to a file
-    script_path = os.path.join(experiment.job_directory, f'run_analyzer_EMOD.sh')
+    script_path = os.path.join(experiment.job_directory, 'run_analyzer_EMOD.sh')
     file = open(script_path, 'w')
     file.write(header_post + emodpy_venv + f'\ncd {wdir}/EMOD' + pycommand)
     file.close()
@@ -438,7 +445,7 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     wdir = os.path.abspath(os.path.dirname(__file__))
 
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=f'pyjob', mem_scl=1)
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='pyjob', mem_scl=1)
 
     # Get the EMODpy virtual environment path
     emodpy_venv = emodpy_module(exp.hpc)
@@ -533,7 +540,7 @@ def combine_emodom_results(sim_out_dir):
     df = pd.concat(df_em, df_om, df_ms)
 
     # Save the combined DataFrame as a CSV file
-    df.to_csv((os.path.join(sim_out_dir, 'comb', f'benchmark.csv')), index=False)
+    df.to_csv((os.path.join(sim_out_dir, 'comb', 'benchmark.csv')), index=False)
 
 
 def str_to_digit(x):

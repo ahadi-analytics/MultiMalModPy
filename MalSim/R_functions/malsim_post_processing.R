@@ -1,4 +1,4 @@
-malsim_post_processing <- function(simulation_outputs_raw, days_per_month, exp, timeout ='daily', write_test_outputs=FALSE) {
+malsim_post_processing <- function(simulation_outputs_raw, days_per_month, exp, timeout = 'daily', write_test_outputs=FALSE) {
 
   min_ages <- exp$min_ages
   max_ages <- exp$max_ages

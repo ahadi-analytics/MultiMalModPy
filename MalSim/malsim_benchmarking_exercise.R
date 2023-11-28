@@ -15,7 +15,7 @@
 
 # Load in the requisite packages:
 library(malariasimulation); library(malariaEquilibrium); library(lubridate)
-library(dplyr); library(tibble); library(readr)
+library(dplyr); library(tibble); library(readr); library(umbrella)
 
 arguments <- commandArgs(trailingOnly= TRUE)
 # Change the working directory:
@@ -48,21 +48,31 @@ exp$min_ages[1] <- 0
 exp$max_ages <- (round(exp$agebins *365))
 exp$years_to_simulate <- exp$monitoring_years
 
-
 # Store the min/max ages (days):
 min_ages <- exp$min_ages # (round(c(0, 0.5, 1, 2, 5, 10, 15, 20) * 365)) + 1; min_ages[1] <- 0
 max_ages <- exp$max_ages #(round(c(0.5, 1, 2, 5, 10, 15, 20, 100) * 365))
 
+# Load the monthly seasonal EIRs to map seasonal rainfall to:
+seasonal_eirs <- read_csv(arguments[5])
+
+# Generate the approximate seasonal parameters required to generate similar seasonal rainfall profile
+malsim_seasonal_coefficients <- umbrella::fit_fourier(rainfall = seasonal_eirs$EIR, t = 15 + (0:11 * 30))
+# Store the seasonality coefficients in the malariasimulation experimental setup parameters list:
+exp$g0 <- as.numeric(malsim_seasonal_coefficients$coefficients[1])
+exp$g <- as.numeric(malsim_seasonal_coefficients$coefficients[2:4])
+exp$h <- as.numeric(malsim_seasonal_coefficients$coefficients[5:7])
+exp$floor <- as.numeric(malsim_seasonal_coefficients$floor)
+
 # Run the simulations or load example:
 simulation_outputs_raw <- run_simulations(exp = exp, parameter_table = scenarios_to_run)
+
 
 
 # Run the post-processing function to create a list of monthly and annually aggregated outputs:
 timeout='daily' # return daily output other options "mth" or "yr"
 processed_malsim_outputs <- malsim_post_processing(simulation_outputs_raw = simulation_outputs_raw,
                                                    days_per_month = days_per_month,
-                                                   exp=exp,
-                                                   timeout=timeout)
+                                                   exp=exp)
 
 # Write the outputs to .csv's:
-write_csv(x = processed_malsim_outputs, file = file.path(exp$sim_out_dir, 'MalSim', paste0(timeout, "_",arguments[4],".csv")))
+write_csv(x = processed_malsim_outputs, file = file.path(exp$sim_out_dir, 'MalSim', paste0("daily_",arguments[4],".csv")))

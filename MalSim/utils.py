@@ -35,9 +35,10 @@ def create_malsim_scenarios(exp):
 
 def submit_run_MalSim(exp, t ='01:00:00', memG=8):
     array = f'#SBATCH --array=1-{str(exp.nexps)}\n'
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=f'run_malsim', arrayJob=array)
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='run_malsim', arrayJob=array)
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
     r_file_path = os.path.join(ROOT_DIR, exp.MalSim_script)
+    eir_file_path = os.path.join(exp.job_directory, 'eir_months.csv')
     r_folder_path = os.path.join(ROOT_DIR, 'R_functions/')
     script_path = os.path.join(exp.job_directory, 'run_MalSim.sh')
     ms_input_path = f'/home/{user}/model-characterization/MalSim'  # might need to switch to manifest defined ms_input_path if running elsewhere? 
@@ -51,7 +52,7 @@ def submit_run_MalSim(exp, t ='01:00:00', memG=8):
     #    3) the inputs we want in our Rscript
     file = open(script_path, 'w')
     file.write(header_post + f'\ncd {ms_input_path}') 
-    file.write(f'\nRscript {r_file_path} {r_folder_path} {exp.job_directory} malsim_jobs/{slurmID} {slurmID}')
+    file.write(f'\nRscript {r_file_path} {r_folder_path} {exp.job_directory} malsim_jobs/{slurmID} {slurmID} {eir_file_path}')
     file.close()
 
     # Now we can run the rscript as a subprocess via sbatch

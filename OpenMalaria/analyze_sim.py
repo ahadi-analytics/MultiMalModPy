@@ -1,14 +1,13 @@
 import pickle
 import os
-import sys
 import datetime
 import numpy as np
 import pandas as pd
 import argparse
-
+from measures import mm, mmi
+from sample_plots import *
+import sys
 sys.path.append('../')
-from OpenMalaria.measures import mm, mmi
-from OpenMalaria.sample_plots import *
 from benchmark_plots import *
 
 
@@ -152,9 +151,12 @@ def pivot_wider(df, index_cols=None, names_from=None, values_from=None):
         A pivoted DataFrame in wide format.
     """
     # Set defaults if not specified
-    if index_cols is None: index_cols = ['index', 'survey', 'ageGroup']
-    if names_from is None: names_from = ['measure_name']
-    if values_from is None: values_from = ['value']
+    if index_cols is None: 
+        index_cols = ['index', 'survey', 'ageGroup']
+    if names_from is None: 
+        names_from = ['measure_name']
+    if values_from is None: 
+        values_from = ['value']
 
     # Transform dataframe long to wide
     wdf = (df.pivot_table(index=index_cols,
@@ -184,7 +186,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
         compr: The compression method for saving the output CSV files (default: 'infer').
 
     """
-    print(f"Running InputEIRAnalyzer...", flush=True)
+    print("Running InputEIRAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
 
     # Prepare and format the data
@@ -202,7 +204,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
         df_mth = pivot_wider(df_mth, index_cols=['index', 'survey', 'year', 'month', 'ageGroup'])
         df_mth = df_mth.merge(scen_df, on='index', how='inner')
         df_mth = df_mth.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR'}, axis=1)
-        df_mth.to_csv((os.path.join(wdir, f'EIR_mth.csv')), index=False, compression=compr)
+        df_mth.to_csv((os.path.join(wdir, 'EIR_mth.csv')), index=False, compression=compr)
 
     # Yearly aggregation - keep years
     nyears = len(df['year'].unique())
@@ -213,7 +215,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
     df_yr = df_yr.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR'}, axis=1)
 
     print(f'Saving EIR_yr.csv to {wdir}')
-    df_yr.to_csv((os.path.join(wdir, f'EIR_yr.csv')), index=False, compression=compr)  ## annual average
+    df_yr.to_csv((os.path.join(wdir, 'EIR_yr.csv')), index=False, compression=compr)  ## annual average
 
     # Yearly aggregation - mean
     nyears = len(df['year'].unique())
@@ -225,7 +227,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
     df_yr = df_yr.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR'}, axis=1)
 
     print(f'Saving EIR.csv to {wdir}')
-    df_yr.to_csv((os.path.join(wdir, f'EIR.csv')), index=False, compression=compr)  ## annual average
+    df_yr.to_csv((os.path.join(wdir, 'EIR.csv')), index=False, compression=compr)  ## annual average
 
 
 def BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip'):
@@ -237,13 +239,13 @@ def BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip'):
         saveExtract: Whether to save the raw survey output DataFrame (default: False).
         compr: The compression method for saving the output CSV files (default: 'gzip').
     """
-    print(f"Running BaseAnalyzer...", flush=True)
+    print("Running BaseAnalyzer...", flush=True)
 
     # Read the experiment data into a DataFrame
     df = to_df(exp)
     if saveExtract:
         # Save the raw survey output if saveExtract is True
-        df.to_csv((os.path.join(wdir, f'Surveyoutput_raw.csv')), index=False, compression=compr)
+        df.to_csv((os.path.join(wdir, 'Surveyoutput_raw.csv')), index=False, compression=compr)
 
     # Format and filter the DataFrame
     df = format_df(df)
@@ -268,7 +270,7 @@ def BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip'):
 
     # Save the processed DataFrame to a CSV file named 'Surveyoutput_base.csv'
     print(f'Saving Surveyoutput_base.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir, f'Surveyoutput_base.csv')), index=False, compression=compr)
+    adf.to_csv((os.path.join(wdir, 'Surveyoutput_base.csv')), index=False, compression=compr)
 
 
 def SurveyAllAgeAnalyzer(exp, mm, start_year=2020, survey_step_days=30, compr='infer'):
@@ -281,7 +283,7 @@ def SurveyAllAgeAnalyzer(exp, mm, start_year=2020, survey_step_days=30, compr='i
         survey_step_days: The survey step size in days (default: 30).
         compr: The compression method for saving the output CSV files (default: 'infer').
     """
-    print(f"Running SurveyAllAgeAnalyzer...", flush=True)
+    print("Running SurveyAllAgeAnalyzer...", flush=True)
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
@@ -330,7 +332,7 @@ def SurveyAllAgeAnalyzer(exp, mm, start_year=2020, survey_step_days=30, compr='i
 
     # Save the processed DataFrame to a CSV file named 'All_Age_InsetChart.csv'
     print(f'Saving All_Age_InsetChart.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir, f'All_Age_InsetChart.csv')), index=False, compression=compr)
+    adf.to_csv((os.path.join(wdir, 'All_Age_InsetChart.csv')), index=False, compression=compr)
 
 
 def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', 'index']):
@@ -346,7 +348,7 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
     Returns:
         None
     """
-    print(f"Running BenchmarkAnalyzer...", flush=True)
+    print("Running BenchmarkAnalyzer...", flush=True)
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
@@ -357,7 +359,6 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
 
     # Define age groups and labels
     age_bins = exp.agebins
-    age_group_labels = get_age_group_labels(age_bins)
 
     # Convert the experiment data to a DataFrame and format it
     df = to_df(exp)
@@ -444,7 +445,7 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
 
     # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
     print(f'Saving Benchmark.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir, f'Benchmark.csv')), index=False)
+    adf.to_csv((os.path.join(wdir, 'Benchmark.csv')), index=False)
 
 
 def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index']):
@@ -461,7 +462,7 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
         None
     """
 
-    print(f"Running MonthlyBenchmarkAnalyzer...", flush=True)
+    print("Running MonthlyBenchmarkAnalyzer...", flush=True)
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
@@ -472,7 +473,6 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
 
     # Define age groups and labels
     age_bins = exp.agebins
-    age_group_labels = get_age_group_labels(age_bins)
 
     # Convert the experiment data to a DataFrame and format it
     df = to_df(exp)
@@ -562,7 +562,7 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
 
     # Save the processed DataFrame to a CSV file named 'Benchmark_mth.csv'
     print(f'Saving Benchmark_mth.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir, f'Benchmark_mth.csv')), index=False)
+    adf.to_csv((os.path.join(wdir, 'Benchmark_mth.csv')), index=False)
 
 
 def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
@@ -578,7 +578,7 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     Returns:
         None
     """
-    print(f"Running MonthlyAgebinAnalyzer...", flush=True)
+    print("Running MonthlyAgebinAnalyzer...", flush=True)
     channels = ['index', 'survey', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp', 'nSevere']
 
     # Read the scenario data from the CSV file
@@ -635,7 +635,7 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
 
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_mth.csv to {wdir}')
-    df3.to_csv((os.path.join(wdir, f'PfPR_ClinicalIncidence_mth.csv')), index=False, compression=compr)
+    df3.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv')), index=False, compression=compr)
 
 
 def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer'):
@@ -652,7 +652,7 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
     Returns:
         None
     """
-    print(f"Running AnnualAgebinAnalyzer...", flush=True)
+    print("Running AnnualAgebinAnalyzer...", flush=True)
     channels = ['index', 'year', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp', 'nSevere']
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
@@ -711,7 +711,7 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
 
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_yr to {wdir}')
-    df3.to_csv((os.path.join(wdir, f'PfPR_ClinicalIncidence_yr.csv')), index=False, compression=compr)
+    df3.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv')), index=False, compression=compr)
 
 
 def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_channels=['ageGroup', 'index']):
@@ -727,7 +727,7 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
     Returns:
         None
     """
-    print(f"Running AnnualBenchmarkAnalyzer...", flush=True)
+    print("Running AnnualBenchmarkAnalyzer...", flush=True)
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
@@ -738,7 +738,6 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
 
     # Define age groups and labels
     age_bins = exp.agebins
-    age_group_labels = get_age_group_labels(age_bins)
 
     # Convert the experiment data to a DataFrame and format it
     df = to_df(exp)
@@ -747,7 +746,6 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
 
     # get number of years aggregated
     n_surveys_per_year = np.floor((365 / survey_step_days))
-    num_years = np.floor(len(df['survey'].unique()) / n_surveys_per_year)
 
     # Sum the surveys for each measure, year, and age group
     df = df.groupby(['index', 'year', 'measure', 'ageGroup'], as_index=False).value.sum()
@@ -826,7 +824,7 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
 
     # Save the processed DataFrame to a CSV file named 'Benchmark_yr.csv'
     print(f'Saving Benchmark_yr.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir, f'Benchmark_yr.csv')), index=False)
+    adf.to_csv((os.path.join(wdir, 'Benchmark_yr.csv')), index=False)
 
 
 if __name__ == "__main__":
