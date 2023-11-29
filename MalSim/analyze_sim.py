@@ -353,7 +353,7 @@ def combine_outputs(wdir):
         i_df = pd.read_csv(os.path.join(wdir, f'MalSim/daily_{i}.csv'))
         daily = pd.concat([daily, i_df],axis=0)
         os.remove(os.path.join(wdir, f'MalSim/daily_{i}.csv'))
-    daily['eir_gamb'] = daily['eir_gamb'] / 365
+    daily['EIR_gamb'] = daily['EIR_gamb'] / 365
     daily.to_csv((os.path.join(wdir,'MalSim', 'daily.csv')), index=False)
 
 if __name__ == "__main__":
