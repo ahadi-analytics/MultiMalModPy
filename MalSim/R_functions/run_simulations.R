@@ -9,7 +9,7 @@ run_simulations <- function(exp, parameter_table, write_output_txt = FALSE) {
   # Specify the min and max ages to render:
   min_ages <- exp$min_ages
   max_ages <- exp$max_ages
-  timesteps <- exp$years_to_simulate * 365
+  timesteps <- exp$monitoring_years * 365
 
   # Run through each row of the input dataframe, parameterise the model, and run the simulation:
   for(i in 1:nrow(parameter_table)) {
@@ -25,9 +25,10 @@ run_simulations <- function(exp, parameter_table, write_output_txt = FALSE) {
 
         # Turn seasonality on and parameterise a seasonal rainfall pattern:
         model_seasonality = TRUE,
-        g0 =  0.284596,
-        g = c(-0.317878,-0.0017527,0.116455),
-        h = c(-0.331361,0.293128,-0.0617547),
+        g0 = exp$g0, 
+        g = exp$g,
+        h = exp$h,
+        rainfall_floor = exp$floor,
 
         # Average age of human population (affects demographic make-up)
         average_age = 23 * 365,

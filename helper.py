@@ -65,7 +65,7 @@ def make_dirs(manifest, suite_name, exp_name, custom_subdir=None):
     os.makedirs(os.path.join(sim_out_dir, 'em'), exist_ok=True)
     os.makedirs(os.path.join(sim_out_dir, 'om'), exist_ok=True)
     os.makedirs(os.path.join(sim_out_dir, 'MalSim'), exist_ok = True)
-    os.makedirs(os.path.join(sim_out_dir, 'comb'), exist_ok=True)
+    #os.makedirs(os.path.join(sim_out_dir, 'comb'), exist_ok=True)
 
     # Return the job directory path and simulation output directory path
     return suite_directory, job_directory, sim_out_dir
@@ -128,10 +128,11 @@ def save_scen(scen_df,fname, save_dirs=None):
         scen_df.to_csv(os.path.join(sdir, fname), index=False)
 
 
-def save_eir_month(save_dir, eir_months):
+def save_eir_month(save_dir):
     eirs = []
-    for i, month in enumerate(eir_months):
-        eirs.append([i+1,month])
+    eir_months = [0.89536936, 1., 0.99861637, 0.88644885, 0.69983342,    0.4785287, 0.29422502, 0.18798817, 0.18941683, 0.29804822,   0.4907383, 0.70506627]
+    for i, eir in enumerate(eir_months):
+        eirs.append([i+1,eir])
     df = pd.DataFrame(eirs,columns=['Month','EIR'])
     df.to_csv(os.path.join(save_dir,'eir_months.csv'), index=False)
 

@@ -75,8 +75,8 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels):
     fig.text(0.5, 0.02, 'Time in years', ha='center', va='center', fontsize=12)
     fig.tight_layout(rect=[0.023, 0.025, 0.955, 0.955])
 
-    # Save the figure as 'InsetChart.png' in the working directory
-    fig.savefig(os.path.join(wdir, 'InsetChart.png'))
+    # Save the figure as 'InsetChart.pdf' in the working directory
+    fig.savefig(os.path.join(wdir, 'InsetChart.pdf'))
 
 
 def sample_plot_yr(wdir, sweep_variables, agebin=5):
@@ -132,7 +132,7 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5):
     fig.text(0.5, 0.02, 'Simulation time (years)', ha='center', va='center', fontsize=14)
     
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
-    fig.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_yr_agebin{agebin}.png'))
+    fig.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_yr_agebin{agebin}.pdf'))
 
 
 def sample_plot_mth(wdir, sweep_variables, agebin=5):
@@ -195,7 +195,7 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
     fig1.text(0.02, 0.5, 'Value', ha='center', va='center', rotation='vertical', fontsize=14)
     fig1.text(0.5, 0.02, f'Months (single year {yr})', ha='center', va='center', fontsize=14)
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
-    fig1.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_mth_agebin{agebin}.png'))
+    fig1.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_mth_agebin{agebin}.pdf'))
 
 
 if __name__ == "__main__":

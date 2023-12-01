@@ -28,10 +28,51 @@ def parse_args():
     return parser.parse_args()
 
 
-def get_age_group_labels(age_bins):
-    age_group_labels = [str(age_bins[i - 1]) + "-" + str(age_bins[i]) for i in range(1, len(age_bins))]
-    age_group_labels = [str(0) + "-" + str(age_bins[0])] + age_group_labels
-    return age_group_labels
+def Combine_Outputs(wdir, job_directory):
+    daily = pd.DataFrame()
+    for i in range(1, exp.nexps+1):
+        i_df = pd.read_csv(os.path.join(job_directory, f'malsim_jobs/daily_{i}.csv'))
+        daily = pd.concat([daily, i_df],axis=0)
+    daily.to_csv((os.path.join(wdir,'MalSim', 'daily.csv')), index=False)
+
+    
+def InputEIRAnalyzer(wdir):
+    """
+    Run the InputEIRAnalyzer for Malariasimulation experiments.
+    """
+    print("Running InputEIRAnalyzer...", flush=True)
+    scen_df = pd.read_csv(os.path.join(wdir, 'scenarios_wseeds.csv'))
+    scen_df =scen_df.drop('x_Temporary_Larval_Habitat', axis=1)
+    df = pd.read_csv(os.path.join(wdir, 'MalSim/daily.csv'))
+    df = df[df['ageGroup'] == '0-0']
+    df = df[['index','timestep', 'month', 'year','sim_year','EIR_gamb']]
+    df['EIR_gamb'] = df['EIR_gamb'] /365
+
+    # Yearly aggregation - keep years
+    df_yr = df.groupby(['index', 'year'], as_index=False)['EIR_gamb'].sum()
+    df_yr = df_yr.merge(scen_df, on='index', how='inner')
+    df_yr = df_yr.rename({'EIR_gamb': 'simulatedEIR', 'eir': 'inputEIR'}, axis=1)
+
+    print(f'Saving EIR_yr.csv to {wdir}')
+    df_yr.to_csv((os.path.join(wdir, 'MalSim/EIR_yr.csv')), index=False)
+
+    # Monthly aggregation - keep months
+    df_mth = df.groupby(['index','month'], as_index=False)['EIR_gamb'].sum()
+    df_mth = df_mth.merge(scen_df, on='index', how='inner')
+    df_mth = df_mth.rename({'EIR_gamb':'simulatedEIR', 'eir':'inputEIR'}, axis=1)
+    
+    print(f'Saving EIR_mth.csv to {wdir}')
+    df_mth.to_csv((os.path.join(wdir,'MalSim/EIR_mth.csv')), index=False)
+
+    # Yearly aggregation - mean
+    nyears = len(df['year'].unique())
+    df_yr = df.groupby(['index'], as_index=False)['EIR_gamb'].sum()
+    df_yr['EIR_gamb'] = df_yr['EIR_gamb'] / nyears
+    df_yr = df_yr.merge(scen_df, on='index', how='inner')
+    df_yr = df_yr.rename({'EIR_gamb': 'simulatedEIR', 'eir': 'inputEIR'}, axis=1)
+
+    print(f'Saving EIR.csv to {wdir}')
+    df_yr.to_csv((os.path.join(wdir, 'MalSim/EIR.csv')), index=False)
 
 
 def SurveyAllAgeAnalyzer(wdir, sweep_variables, sim_start=2000):
@@ -68,7 +109,6 @@ def SurveyAllAgeAnalyzer(wdir, sweep_variables, sim_start=2000):
     adf.to_csv((os.path.join(wdir,'MalSim', 'All_Age_InsetChart.csv')), index=False)
 
 
-
 def BenchmarkAnalyzer(wdir, sweep_variables):
     """
     Run the BenchmarkAnalyzer equivalent of EMOD for malariasimulation experiments.
@@ -78,8 +118,8 @@ def BenchmarkAnalyzer(wdir, sweep_variables):
     print("Running BenchmarkAnalyzer...", flush=True)
 
     # Read the EIR data from the CSV file
-    # eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
-    # eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
+    eir_df = pd.read_csv(os.path.join(wdir, 'MalSim/EIR.csv'))
+    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
     df = pd.read_csv(os.path.join(wdir, 'MalSim/daily.csv'))
@@ -119,8 +159,7 @@ def BenchmarkAnalyzer(wdir, sweep_variables):
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables)
     scen_df = pd.read_csv(os.path.join(wdir, 'scenarios_wseeds.csv'))
     cdf = cdf.merge(scen_df, on='index', how='inner')
-    cdf['simulatedEIR'] = cdf['eir']  ## FIXME, add actual simulatedEIR
-    cdf['inputEIR'] = cdf['eir']
+    cdf = cdf.merge(eir_df, on = 'index', how='inner')
 
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
@@ -139,8 +178,8 @@ def MonthlyBenchmarkAnalyzer(wdir, sweep_variables):
     print("Running BenchmarkAnalyzer...", flush=True)
 
     # Read the EIR data from the CSV file
-    # eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
-    # eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
+    eir_df = pd.read_csv(os.path.join(wdir, 'MalSim/EIR_mth.csv'))
+    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
     df = pd.read_csv(os.path.join(wdir, 'MalSim/daily.csv'))
@@ -179,8 +218,7 @@ def MonthlyBenchmarkAnalyzer(wdir, sweep_variables):
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['month'])
     scen_df = pd.read_csv(os.path.join(wdir, 'scenarios_wseeds.csv'))
     cdf = cdf.merge(scen_df, on='index', how='inner')
-    cdf['simulatedEIR'] = cdf['eir']  ## FIXME, add actual simulatedEIR
-    cdf['inputEIR'] = cdf['eir']
+    cdf = cdf.merge(eir_df, on = 'index', how='inner')
 
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
@@ -199,8 +237,8 @@ def AnnualBenchmarkAnalyzer(wdir, sweep_variables):
     print("Running BenchmarkAnalyzer...", flush=True)
 
     # Read the EIR data from the CSV file
-    # eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
-    # eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
+    eir_df = pd.read_csv(os.path.join(wdir, 'MalSim/EIR_yr.csv'))
+    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
     df = pd.read_csv(os.path.join(wdir, 'MalSim/daily.csv'))
@@ -239,8 +277,7 @@ def AnnualBenchmarkAnalyzer(wdir, sweep_variables):
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['year'])
     scen_df = pd.read_csv(os.path.join(wdir, 'scenarios_wseeds.csv'))
     cdf = cdf.merge(scen_df, on='index', how='inner')
-    cdf['simulatedEIR'] = cdf['eir']  ## FIXME, add actual simulatedEIR
-    cdf['inputEIR'] = cdf['eir']
+    cdf = cdf.merge(eir_df, on = 'index', how='inner')
 
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
@@ -345,17 +382,7 @@ def AnnualAgebinAnalyzer(wdir, sweep_variables, sim_start):
     print(f'Saving PfPR_ClinicalIncidence_yr.csv to {wdir}')
     df_yr.to_csv((os.path.join(wdir,'MalSim',  'PfPR_ClinicalIncidence_yr.csv')), index=False)
 
-def combine_outputs(wdir):
-    daily = pd.DataFrame()
-    print(exp.nexps)
-    for i in range(1, exp.nexps+1):
-        print(i)
-        i_df = pd.read_csv(os.path.join(wdir, f'MalSim/daily_{i}.csv'))
-        daily = pd.concat([daily, i_df],axis=0)
-        os.remove(os.path.join(wdir, f'MalSim/daily_{i}.csv'))
-    daily['EIR_gamb'] = daily['EIR_gamb'] / 365
-    daily.to_csv((os.path.join(wdir,'MalSim', 'daily.csv')), index=False)
-
+    
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.output_dir
@@ -365,9 +392,11 @@ if __name__ == "__main__":
     exp = pickle.load(file)
     sweep_variables = ['index']
     create_sampleplots = True #False
-    sim_start = exp.sim_start_year_om
+    sim_start = exp.sim_start_year_om 
 
-    combine_outputs(wdir)
+    # Execute all analyzers
+    Combine_Outputs(wdir, exp.job_directory)
+    InputEIRAnalyzer(wdir)
     SurveyAllAgeAnalyzer(wdir, sweep_variables, sim_start)
     BenchmarkAnalyzer(wdir, sweep_variables)
     MonthlyBenchmarkAnalyzer(wdir, sweep_variables)

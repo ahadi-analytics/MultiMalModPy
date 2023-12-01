@@ -77,8 +77,8 @@ cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be update
 detectionLimit = 40
 
 # Transmission and seasonality configuration
-seasonality = ["seasonal"]  # ["perennial", "seasonal"]
-eir = [0.1]#, 1, 2, 4, 8, 16, 32, 64]  # [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+seasonality = ["seasonal"] # ["perennial", "seasonal"]
+eir = [0.1, 1, 2, 4, 8, 16, 32]# [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
 # Entomology mode: Dynamic EIR configuration if selected
 season_daily, season_month, seasonal, perennial = get_seasonal_eir()
@@ -133,7 +133,7 @@ save_scen(rep_scen_df(scen_df), fname='scenarios_wseeds.csv', save_dirs=[exp.job
 
 # Write out simulation setup (primarily for MalSim)
 create_simsetup_csv(exp)
-save_eir_month(exp.job_directory, season_month)
+save_eir_month(exp.job_directory)
 
 def config_task(platform):
     print("Creating EMODTask (from files)...")
@@ -311,11 +311,11 @@ if __name__ == '__main__':
 
     # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
     if 'OpenMalaria' in models_to_run:
-        from OpenMalaria.utils import *
+        from OpenMalaria.utils import submit_run_OpenMalaria
         submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files
         
     if 'MalSim' in models_to_run:
-        from MalSim.utils import *
+        from MalSim.utils import submit_run_MalSim
         submit_run_MalSim(exp)
 
     # Optionally, after both models aran, generate combined results

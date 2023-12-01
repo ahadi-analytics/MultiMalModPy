@@ -76,9 +76,6 @@ def get_emodom_df(wdir, emodom, mth=False, timeseries=False):
     if 'MalSim' in emodom:
         ms_df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')))
         ms_df['emodom'] = 'MalSim'
-        # This will later be replaced with the actual values of simulated EIR
-        ms_df['simulatedEIR'] = ms_df['eir']
-        ms_df['inputEIR'] = ms_df['eir']
 
     if 'EMOD' in emodom and 'OpenMalaria' in emodom and 'MalSim' in emodom:
         df = pd.concat([em_df, om_df])
@@ -150,7 +147,6 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_l
 
     unique_groups = df['emodom'].unique()
     unique_groups = np.sort(unique_groups)
-    print(unique_groups)
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('husl', num_colors)
 

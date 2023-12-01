@@ -13,7 +13,7 @@ malsim_post_processing <- function(simulation_outputs_raw, days_per_month, exp, 
   malsim_output_long_daily <- convert_malsim_to_long(age_min = min_ages, age_max = max_ages, output = combined_malsim_outputs_modified)
   malsim_output_long_daily$sim_year <- malsim_output_long_daily$year # years of simulation, starting at 0
   malsim_output_long_daily$year <- malsim_output_long_daily$sim_year + exp$sim_start_year # year in calendar time
-  malsim_output_long_daily <- malsim_output_long_daily[malsim_output_long_daily$sim_year < exp$years_to_simulate, ] # remove last year
+  malsim_output_long_daily <- malsim_output_long_daily[malsim_output_long_daily$sim_year < exp$monitoring_years, ] # remove last year
 
   # Aggregate (some of) the outputs by month:
   if(timeout=='mth')malsim_output_long <- summarise_by_month(output_long = malsim_output_long_daily)
