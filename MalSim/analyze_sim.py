@@ -104,9 +104,9 @@ def SurveyAllAgeAnalyzer(wdir, sweep_variables, sim_start=2000):
     # Merge with the scenario data
     adf = adf.merge(scen_df, on='index', how='inner')
 
-    # Save the processed DataFrame to a CSV file named 'All_Age_InsetChart.csv'
-    print(f'Saving All_Age_InsetChart.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir,'MalSim', 'All_Age_InsetChart.csv')), index=False)
+    # Save the processed DataFrame to a CSV file named 'All_Age_Outputs.csv'
+    print(f'Saving All_Age_Outputs.csv to {wdir}')
+    adf.to_csv((os.path.join(wdir,'MalSim', 'All_Age_Outputs.csv')), index=False)
 
 
 def BenchmarkAnalyzer(wdir, sweep_variables):
@@ -411,11 +411,11 @@ if __name__ == "__main__":
         exp_tags = [x for x in exp.sweep_list if x != 'seed']  # + ['seed']
         #exp_tags = ['eir', 'cm_clinical', 'seasonality']
 
-        channels_inset_chart = ['nPopulation', 'nHost', 'prevalence',
+        channels_sample_chart = ['nPopulation', 'nHost', 'prevalence',
                                 'incidence', 'clinical_incidence',
                                 'severe_incidence', 'prevalence_2to10','EIR_gamb']
         all_age_sample_plot(wdir=os.path.join(wdir, 'MalSim'), sweep_variables=['index'],
-                            inset_channels=channels_inset_chart)
+                            sample_channels=channels_sample_chart)
         sample_plot_yr(wdir=os.path.join(wdir, 'MalSim'), sweep_variables=exp_tags)
         sample_plot_mth(wdir=os.path.join(wdir, 'MalSim'), sweep_variables=exp_tags)
 

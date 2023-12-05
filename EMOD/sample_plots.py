@@ -7,8 +7,11 @@ import pickle
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.ticker as ticker
+
 mpl.use('Agg')
 mpl.rcParams['pdf.fonttype'] = 42
+
+
 # mpl.rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
 # mpl.rc('text', usetex=True)
 
@@ -31,7 +34,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def all_age_sample_plot(wdir, sweep_variables, inset_channels):
+def all_age_sample_plot(wdir, sweep_variables, inset_channels, fts=8):
     """
     Generate a sample plot for all age data from the 'All_Age_InsetChart.csv' file.
     Parameters:
@@ -54,7 +57,7 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels):
             pass
 
     # Create the plot figure
-    fig = plt.figure('InsetChart', figsize=(12, 6))
+    fig = plt.figure('AllAge_sample_plot', figsize=(12, 6))
     fig.subplots_adjust(hspace=0.5, left=0.08, right=0.97)
     axes = [fig.add_subplot(3, 5, x + 1) for x in range(15)]
 
@@ -63,23 +66,28 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels):
         ax = axes[ch]
         for p, pdf in df.groupby(sweep_variables):
             ax.plot(pdf['date'], pdf[channel], '-', linewidth=0.8, label=p)
-        ax.set_title(channel)
-        ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
+        ax.set_title(channel, fontsize=fts)
+        ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=5))
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
 
-    # Uncomment the following lines if you want to add a legend
+    # Adjust font size for x-axis and y-axis tick labels for all subplots
+    for ax in axes:
+        ax.tick_params(axis='x', labelsize=fts)
+        ax.tick_params(axis='y', labelsize=fts)
+
+        # Uncomment the following lines if you want to add a legend
     # if len(sweep_variables) > 0:
     #    axes[-1].legend(title=sweep_variables, loc=7)
 
     # Add labels and adjust layout
-    fig.text(0.5, 0.02, 'Time in years', ha='center', va='center', fontsize=12)
+    fig.text(0.5, 0.02, 'Time in years', ha='center', va='center', fontsize=fts)
     fig.tight_layout(rect=[0.023, 0.025, 0.955, 0.955])
 
-    # Save the figure as 'InsetChart.pdf' in the working directory
-    fig.savefig(os.path.join(wdir, 'InsetChart.pdf'))
+    # Save the figure as 'AllAge_sample_plot.pdf' in the working directory
+    fig.savefig(os.path.join(wdir, 'AllAge_sample_plot.pdf'))
 
 
-def sample_plot_yr(wdir, sweep_variables, agebin=5):
+def sample_plot_yr(wdir, sweep_variables, agebin=5, fts=8):
     """
     Generate a sample plot for annual  data from PfPR_ClinicalIncidence_yr.csv
     Parameters:
@@ -119,23 +127,28 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5):
         y_lim = np.max(df[channel]) + (np.max(df[channel]) * 0.2)
         for p, pdf in df.groupby(sweep_variables):
             ax.plot(pdf['year'], pdf[channel], '-', linewidth=0.8, label=p)
-        ax.set_title(channel)
+        ax.set_title(channel, fontsize=fts)
         ax.set_ylim(0, y_lim)
         tick_positions = np.linspace(df['year'].min(), df['year'].max(), 6)
         ax.xaxis.set_major_locator(ticker.FixedLocator(tick_positions))
         ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%d'))
 
-    # Uncomment the following lines if you want to add a legend
+    # Adjust font size for x-axis and y-axis tick labels for all subplots
+    for ax in axes:
+        ax.tick_params(axis='x', labelsize=fts)
+        ax.tick_params(axis='y', labelsize=fts)
+
+        # Uncomment the following lines if you want to add a legend
     # if len(sweep_variables) > 0:
     #     lg = axes[-1].legend(title=sweep_variables, bbox_to_anchor=(1.05, 1.0), loc='upper left')
-    fig.text(0.02, 0.5, 'Value', ha='center', va='center', rotation='vertical', fontsize=14)
-    fig.text(0.5, 0.02, 'Simulation time (years)', ha='center', va='center', fontsize=14)
-    
+    fig.text(0.02, 0.5, 'Value', ha='center', va='center', rotation='vertical', fontsize=fts)
+    fig.text(0.5, 0.02, 'Simulation time (years)', ha='center', va='center', fontsize=fts)
+
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
     fig.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_yr_agebin{agebin}.pdf'))
 
 
-def sample_plot_mth(wdir, sweep_variables, agebin=5):
+def sample_plot_mth(wdir, sweep_variables, agebin=5, fts=8):
     """
     Generate a sample plot for monthly data from PfPR_ClinicalIncidence_mth.csv
     Parameters:
@@ -183,17 +196,22 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
         y_lim = np.max(df[channel]) + (np.max(df[channel]) * 0.2)
         for p, pdf in df.groupby(sweep_variables):
             ax.plot(pdf['date'], pdf[channel], '-', linewidth=0.8, label=p)
-        ax.set_title(channel)
+        ax.set_title(channel, fontsize=fts)
         # ax.set_ylabel(channel)
         ax.set_ylim(0, y_lim)
         ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 
-    # Uncomment the following lines if you want to add a legend
+    # Adjust font size for x-axis and y-axis tick labels for all subplots
+    for ax in axes:
+        ax.tick_params(axis='x', labelsize=fts)
+        ax.tick_params(axis='y', labelsize=fts)
+
+        # Uncomment the following lines if you want to add a legend
     # if len(sweep_variables) > 0:
     #    lg = axes[-1].legend(title=sweep_variables, bbox_to_anchor=(1.05, 1.0), loc='upper left')
-    fig1.text(0.02, 0.5, 'Value', ha='center', va='center', rotation='vertical', fontsize=14)
-    fig1.text(0.5, 0.02, f'Months (single year {yr})', ha='center', va='center', fontsize=14)
+    fig1.text(0.02, 0.5, 'Value', ha='center', va='center', rotation='vertical', fontsize=fts)
+    fig1.text(0.5, 0.02, f'Months (single year {yr})', ha='center', va='center', fontsize=fts)
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
     fig1.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_mth_agebin{agebin}.pdf'))
 
@@ -211,7 +229,7 @@ if __name__ == "__main__":
 
     # Determine whether simulation ran with forced or dynamic EIR and set eirchannel
     # Define tags and channels for sample plots
-    exp_tags = [x for x in exp.sweep_list if x != 'seed'] # + ['seed']
+    exp_tags = [x for x in exp.sweep_list if x != 'seed']  # + ['seed']
     channels_inset_chart = ['Statistical Population', 'Births', 'Disease Deaths',
                             'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
                             'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',

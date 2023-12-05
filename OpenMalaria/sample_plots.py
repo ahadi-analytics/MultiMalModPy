@@ -30,20 +30,20 @@ def parse_args():
     return parser.parse_args()
 
 
-def all_age_sample_plot(wdir, sweep_variables, inset_channels):
+def all_age_sample_plot(wdir, sweep_variables, sample_channels):
     """
-    Generate a sample plot for all age data from the 'All_Age_InsetChart.csv' file.
+    Generate a sample plot for all age data from the 'All_Age_SamplePlot.csv' file.
     Parameters:
     - wdir (str): Working directory.
     - sweep_variables (list): List of sweep variables.
-    - inset_channels (list): List of channels for the InsetChart.
+    - sample_channels (list): List of channels for the All Age sample plot.
     """
     # Read the data from a CSV file
-    df = pd.read_csv(os.path.join(wdir, 'All_Age_InsetChart.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'All_Age_sample_outputs.csv'))
     df['date'] = pd.to_datetime(df['date'])
 
     # Group the data by date and sweep variables, and calculate the mean of the outcome channels
-    df = df.groupby(['date'] + sweep_variables)[inset_channels].agg(np.mean).reset_index()
+    df = df.groupby(['date'] + sweep_variables)[sample_channels].agg(np.mean).reset_index()
 
     # Round numeric sweep variables shown in legend
     for sweep_var in sweep_variables:
@@ -53,12 +53,12 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels):
             pass
 
     # Create the plot figure
-    fig = plt.figure('InsetChart', figsize=(12, 6))
+    fig = plt.figure('AllAge_sample_plot', figsize=(12, 6))
     fig.subplots_adjust(hspace=0.5, left=0.08, right=0.97)
     axes = [fig.add_subplot(3, 5, x + 1) for x in range(15)]
 
     # Plot the data for each channel
-    for ch, channel in enumerate(inset_channels):
+    for ch, channel in enumerate(sample_channels):
         ax = axes[ch]
         for p, pdf in df.groupby(sweep_variables):
             ax.plot(pdf['date'], pdf[channel], '-', linewidth=0.8, label=p)
@@ -74,8 +74,8 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels):
     fig.text(0.5, 0.02, 'Time in years', ha='center', va='center', fontsize=12)
     fig.tight_layout(rect=[0.023, 0.025, 0.955, 0.955])
 
-    # Save the figure as 'InsetChart.pdf in the working directory
-    fig.savefig(os.path.join(wdir, 'InsetChart.pdf'))
+    # Save the figure as 'AllAge_sample_plot.pdf in the working directory
+    fig.savefig(os.path.join(wdir, 'AllAge_sample_plot.pdf'))
 
 
 def sample_plot_yr(wdir, sweep_variables, agebin=5):
@@ -211,12 +211,12 @@ if __name__ == "__main__":
 
     # Define tags and channels for sample plots
     exp_tags = exp.sweep_list  # [x for x in exp.sweep_list if x != 'seed']
-    channels_inset_chart = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
+    sample_channels = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
                             'nSevere', 'nSeq', 'nIndDeaths',
                             'nDirDeaths', 'inputEIR', 'simulatedEIR', 'expectedDirectDeaths',
                             'expectedSevere']  # 'expectedIndirectDeaths',
 
     # Create sample plots
-    all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
+    all_age_sample_plot(wdir, exp_tags, sample_channels)
     sample_plot_yr(wdir, exp_tags)
     sample_plot_mth(wdir, exp_tags)

@@ -33,13 +33,13 @@ def parse_args():
     return parser.parse_args()
 
 
-def all_age_sample_plot(wdir, sweep_variables, inset_channels, sim_start=2000):
+def all_age_sample_plot(wdir, sweep_variables, sample_channels, sim_start=2000):
     """
-    Generate a sample plot for all age data from the 'All_Age_InsetChart.csv' file.
+    Generate a sample plot for all age data from the 'All_Age_sample_plot.csv' file.
     Parameters:
     - wdir (str): Working directory.
     - sweep_variables (list): List of sweep variables.
-    - inset_channels (list): List of channels for the InsetChart.
+    - sample_channels (list): List of channels for the All Age sample plot.
     """
     # Read the data from a CSV file
     df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
@@ -49,8 +49,8 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels, sim_start=2000):
     df['date'] = df.apply(lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(int(x['day']) - 1), axis=1)
 
     # Group the data by date and sweep variables, and calculate the mean of the outcome channels
-    inset_channels = [ch for ch in inset_channels if ch in df.columns]
-    df = df.groupby(['date'] + sweep_variables)[inset_channels].agg(
+    sample_channels = [ch for ch in sample_channels if ch in df.columns]
+    df = df.groupby(['date'] + sweep_variables)[sample_channels].agg(
         np.mean).reset_index()  ## aggregate age and seeds, taking mean
 
     # Round numeric sweep variables shown in legend
@@ -61,12 +61,12 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels, sim_start=2000):
             pass
 
     # Create the plot figure
-    fig = plt.figure('InsetChart', figsize=(20, 10))
+    fig = plt.figure('AllAge_sample_plot', figsize=(20, 10))
     fig.subplots_adjust(hspace=0.5, left=0.08, right=0.97)
     axes = [fig.add_subplot(3, 3, x + 1) for x in range(8)]
 
     # Plot the data for each channel
-    for ch, channel in enumerate(inset_channels):
+    for ch, channel in enumerate(sample_channels):
         ax = axes[ch]
         for p, pdf in df.groupby(sweep_variables):
             ax.plot(pdf['date'], pdf[channel], '-', linewidth=0.8, label=p)
@@ -82,8 +82,8 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels, sim_start=2000):
     fig.text(0.5, 0.02, 'Time in years', ha='center', va='center', fontsize=12)
     fig.tight_layout(rect=[0.023, 0.025, 0.955, 0.955])
 
-    # Save the figure as 'InsetChart.pdf' in the working directory
-    fig.savefig(os.path.join(wdir, f'InsetChart.pdf'))
+    # Save the figure as 'AllAge_sample_plot.pdf' in the working directory
+    fig.savefig(os.path.join(wdir, f'AllAge_sample_plot.pdf'))
 
 
 def sample_plot_yr(wdir, sweep_variables, agebin=5):
@@ -235,11 +235,11 @@ if __name__ == "__main__":
     # Define tags and channels for sample plots
     #exp_tags = [x for x in exp.sweep_list if x != 'seed']  # + ['seed']
     exp_tags = ['index'] #TODO, add scenarios to daily?
-    channels_inset_chart = ['nPopulation', 'nHost', 'prevalence',
+    sample_channels = ['nPopulation', 'nHost', 'prevalence',
                             'incidence', 'clinical_incidence',
                             'severe_incidence', 'prevalence_2to10','EIR_gamb']
 
     # Create sample plots
-    all_age_sample_plot(wdir, exp_tags, channels_inset_chart, sim_start=sim_start)
+    all_age_sample_plot(wdir, exp_tags, sample_channels, sim_start=sim_start)
     sample_plot_yr(wdir, exp_tags)
     sample_plot_mth(wdir, exp_tags)

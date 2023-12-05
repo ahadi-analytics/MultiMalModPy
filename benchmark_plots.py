@@ -515,7 +515,6 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
 
     if facet_var != 'ageGroup':
         df = df[(df.ageGroup == agegrp)]
-    df['date'] = pd.to_datetime(df['date'])
 
     caption_txt = ''
     if 'cm_clinical' not in [sweepvar, facet_var]:
@@ -786,14 +785,13 @@ if __name__ == "__main__":
         channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence']  # 'simulatedEIR', 'prevalence_2to10'
 
         sweepvar = 'emodom'
+        facet_var = 'ageGroup'
         if len(exp.eir) > 1 & len(exp.eir) <= 3:
             facet_var = 'eir'
-        elif len(exp.cm_clinical) > 1:
+        if facet_var == 'ageGroup' & len(exp.cm_clinical) > 1:
             facet_var = 'cm_clinical'
-        elif len(exp.seasonality) > 1:
+        if facet_var == 'ageGroup' & len(exp.seasonality) > 1:
             facet_var = 'seasonality'
-        else:
-            facet_var = 'ageGroup'
 
         for channel in channel_list:
             if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
