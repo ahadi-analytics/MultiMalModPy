@@ -126,8 +126,8 @@ class InsetChartAnalyzer(IAnalyzer):
 
         adf = adf.rename(columns={'Run_Number': 'seed'})
 
-        # Save the processed DataFrame to a CSV file named 'All_Age_InsetChart.csv'
-        adf.to_csv(os.path.join(self.working_dir, 'em', 'All_Age_InsetChart.csv'), index=False)
+        # Save the processed DataFrame to a CSV file named 'All_Age_Outputs.csv'
+        adf.to_csv(os.path.join(self.working_dir, 'em', 'All_Age_Outputs.csv'), index=False)
 
 
 class AnnualAgebinAnalyzer(IAnalyzer):
@@ -232,7 +232,7 @@ class AnnualAgebinAnalyzer(IAnalyzer):
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
             eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             df = pd.merge(left=df, right=eirdf, on=self.sweep_variables + ['year'])
-            df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['simulatedEIR']]
+            #df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['simulatedEIR']]
         else:
             df['simulatedEIR'] = df['eir']
 
@@ -324,12 +324,11 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
             return
         df = pd.concat(selected).reset_index(drop=True)
 
-        print(f'\nSaving outputs to: {os.path.join(self.working_dir, "em", self.expt_name)}')
+        print(f'\nSaving outputs to: {os.path.join(self.working_dir, "em")}')
 
         if self.burnin is not None:
             df = df[df['year'] >= self.start_year + self.burnin]
 
-        # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_mth.csv'
         # Age group labels
         age_bins = [int(x) if x == int(x) else x for x in df['agebin'].unique()]
         age_group_labels = [str(age_bins[i - 1]) + "-" + str(age_bins[i]) for i in range(1, len(age_bins))]
@@ -351,7 +350,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
             df = pd.merge(left=df, right=eirdf_mth, on=self.sweep_variables + ['year', 'month'])
 
             df = df.rename(columns={"Monthly EIR": "simulatedEIR"})
-            df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['Annual EIR']]
+            #df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['Annual EIR']]
         else:
             df['simulatedEIR'] = ''
 
@@ -869,7 +868,6 @@ if __name__ == "__main__":
     args = parse_args()
     job_directory = args.directory
     exp_id = args.exp_id
-
     # Load experiment object
     file = open(os.path.join(job_directory, "exp.obj"), "rb")
     exp = pickle.load(file)
@@ -885,11 +883,16 @@ if __name__ == "__main__":
     start_year = exp.sim_start_year_em
     end_year = exp.end_year
     monitoring_start = end_year - exp.monitoring_years
-    burnin = int(exp.burnin)  ## Years burnin to discard when running burnin+pickup together
+
     if exp.emod_step == 'burnin':
         end_year = start_year + exp.burnin
+        burnin = 0  ## Keep all years
+    elif exp.emod_step == 'pickup':
+        burnin = 0
+    else:
+        burnin = int(exp.burnin)  ## Years burnin to discard when running burnin+pickup together
 
-        # Define which outcome metrics to process in inset_chart (all age per daily timestep)
+    # Define which outcome metrics to process in inset_chart (all age per daily timestep)
     channels_inset_chart = ['Statistical Population', 'Births', 'Disease Deaths',
                             'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
                             'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',

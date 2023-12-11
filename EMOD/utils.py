@@ -1,5 +1,6 @@
 import copy
 import os
+import sys
 from typing import List, Dict, Any
 import emod_api.demographics.PreDefinedDistributions as Distributions
 import emodpy_malaria.demographics.MalariaDemographics as Demographics
@@ -13,8 +14,14 @@ from idmtools.entities.simulation import Simulation
 from EMOD.scaffolds.forcedEIR import *
 from EMOD.scaffolds.dynamicEIR import *
 from EMOD.scaffolds.interventions import treatment_camp_simple
-from EMOD.utils import *
-
+from functools import partial
+from emodpy.emod_task import EMODTask
+from idmtools.builders import SimulationBuilder
+import emodpy_malaria.malaria_config as malaria_config
+from idmtools.entities.experiment import Experiment
+sys.path.append('../')
+import manifest
+from helper import submit_analyze_EMOD
 
 def set_param(simulation, param, value):
     """
@@ -44,7 +51,7 @@ def build_demog():
     return demog
 
 
-def build_standard_campaign_object(manifest):
+def build_standard_campaign_object():
     """
     Builds a standard campaign object for the simulation.
     Args:
@@ -392,3 +399,170 @@ class CfgFn:
 
         return md
 
+
+def config_task(platform, emod_exp):
+    print("Creating EMODTask (from files)...")
+    task = EMODTask.from_default2(
+        config_path="config.json",
+        eradication_path=manifest.eradication_path,
+        campaign_builder=build_standard_campaign_object,
+        schema_path=manifest.schema_file,
+        param_custom_cb=set_config_parameters,#(config = config, emod_exp = emod_exp),
+        ep4_custom_cb=None,
+        demog_builder=build_demog,
+        plugin_report=None
+    )
+    set_emod_exp_parameters(task.config, emod_exp)
+    task.set_sif(manifest.SIF_PATH, emod_exp.platform)
+    return task
+
+
+def set_config_parameters(config):
+    """
+    This function is a callback that is passed to emod-api.config to set config parameters,
+    including the malaria defaults.
+    Parameters:
+        config (object): The configuration object to be modified.
+    Returns:
+        object: The modified configuration object.
+    """
+    config = malaria_config.set_team_defaults(config, manifest)
+    return config
+
+def set_emod_exp_parameters(config, emod_exp):
+    config.parameters.x_Base_Population = emod_exp.pop_size / 1000
+    config.parameters.Simulation_Duration = emod_exp.sim_dur_years * 365
+    config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = emod_exp.detectionLimit
+    config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = emod_exp.detectionLimit
+
+    # Parameter configurations on climate for dynamic EIR
+    if emod_exp.entomology_mode == 'dynamic':
+        malaria_config.add_species(config, manifest, ["gambiae"])  # , "arabiensis", "funestus"
+
+        seasonality_type = emod_exp.seasonality[0]  # 'perennial'  # 'seasonal', 'example'  #FIXME enable sweeping
+        config.parameters.Air_Temperature_Filename = os.path.join('climate',
+                                                                  f'{seasonality_type}_air_temperature_daily.bin')
+        config.parameters.Land_Temperature_Filename = os.path.join('climate',
+                                                                   f'{seasonality_type}_air_temperature_daily.bin')
+        config.parameters.Rainfall_Filename = os.path.join('climate', f'{seasonality_type}_rainfall_daily.bin')
+        config.parameters.Relative_Humidity_Filename = os.path.join('climate',
+                                                                    f'{seasonality_type}_relative_humidity_daily.bin')
+
+    # Serialization configuration
+    if emod_exp.emod_step == 'burnin':
+        config.parameters.Serialized_Population_Writing_Type = "TIMESTEP"
+        config.parameters.Serialization_Time_Steps = [emod_exp.sim_dur_years * 365]
+        config.parameters.Serialization_Mask_Node_Write = 0
+        config.parameters.Serialization_Precision = "REDUCED"
+    if emod_exp.emod_step == 'pickup':
+        config.parameters.Serialized_Population_Reading_Type = "READ"
+        config.parameters.Serialization_Mask_Node_Read = 0
+        config.parameters.Serialization_Time_Steps = [emod_exp.burnin * 365]
+
+def config_sweep_builder_pickup(emod_exp, scen_df_pickup):
+    builder = SimulationBuilder()
+    if emod_exp.entomology_mode == 'forced':
+        matAP = 0.1327
+        sweeps = [[
+            ItvFn(all_campaigns, row=row),
+            partial(set_param, param='Serialized_Population_Path',
+                    value=os.path.join(row["serialized_file_path"], "output")),
+            partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
+            partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.eir)),
+            partial(set_param, param='Run_Number', value=s)]
+            for i, row in scen_df_pickup.iterrows()
+            for s in range(emod_exp.num_seeds)]
+
+    elif emod_exp.entomology_mode == 'dynamic':
+        sweeps = [[ItvFn(all_campaigns, row=row),
+                   partial(set_param, param='Serialized_Population_Path',
+                           value=os.path.join(row["serialized_file_path"], "output")),
+                   partial(set_param, param='Serialized_Population_Filenames',
+                           value=row["Serialized_Population_Filenames"]),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.x_Temporary_Larval_Habitat),
+                   partial(set_param, param='Run_Number', value=s)]
+                  for i, row in scen_df_pickup.iterrows()
+                  for s in range(emod_exp.num_seeds)]
+    else:
+        raise ValueError(f'{emod_exp.entomology_mode} not valid')
+
+    builder.add_sweep_definition(sweep_functions, sweeps)
+
+    return [builder]
+
+
+def config_sweep_builder(emod_exp, scen_df):
+    builder = SimulationBuilder()
+    if emod_exp.entomology_mode == 'forced':
+        matAP = 0.1327
+        sweeps = [[ItvFn(all_campaigns, row=row),
+                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.eir)),
+                   partial(set_param, param='Run_Number', value=s)]
+                  for i, row in scen_df.iterrows()
+                  for s in range(emod_exp.num_seeds)]
+    elif emod_exp.entomology_mode == 'dynamic':
+        sweeps = [[ItvFn(all_campaigns, row=row),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.x_Temporary_Larval_Habitat),
+                   partial(set_param, param='Run_Number', value=s)]
+                  for i, row in scen_df.iterrows()
+                  for s in range(emod_exp.num_seeds)]
+    else:
+        raise ValueError(f'{emod_exp.entomology_mode} not valid')
+
+    builder.add_sweep_definition(sweep_functions, sweeps)
+
+    return [builder]
+
+
+def submit_run_EMOD(exp, emod_exp, scen_df):
+    """
+    This function is designed to be a parameterized version of the sequence of things we do
+    every time we run an emod experiment.
+    """
+    exp_name = exp.exp_name
+    emod_serialized_id = exp.emod_serialized_id
+    sim_dur_years = emod_exp.sim_dur_years
+    entomology_mode = emod_exp.entomology_mode
+    emod_step = emod_exp.emod_step
+    burnin = emod_exp.burnin
+    platform = emod_exp.platform
+    agebins = emod_exp.agebins
+    sim_start_year_em = emod_exp.sim_start_year_em
+
+    # create EMODTask
+    print("Creating EMODTask (from files)...")
+    task = config_task(platform, emod_exp)
+
+    if entomology_mode == 'dynamic':
+        task.common_assets.add_directory(os.path.join(manifest.input_dir, "example_weather"), relative_path="climate")
+
+    if emod_step == 'pickup':
+        serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
+        serialized_df = serialized_df.drop(columns=['x_Temporary_Larval_Habitat'])
+        serialized_df.to_csv(os.path.join("seridf.csv"))
+        scen_df.to_csv("scen_df.csv")
+        scen_df_pickup = scen_df.merge(serialized_df, on=['scen_id'],
+                                       how='inner')  ## FIXME when running expanded pickup from burnin
+        scen_df_pickup.to_csv(os.path.join("pickup.csv"))
+        builder = config_sweep_builder_pickup(emod_exp, scen_df_pickup)
+    else:
+        builder = config_sweep_builder(emod_exp, scen_df)
+
+    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
+    if emod_step != 'burnin':  # do not generate monthly reports for burnin
+        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
+
+    # Create experiment from builder and run
+    experiment = Experiment.from_builder(builder, task, name=exp_name)
+    experiment.run(wait_until_done=False, platform=platform)
+
+    # Additional step to schedule analyzer
+    experiment.hpc = exp.hpc
+    experiment.sh_hpc_config = exp.sh_hpc_config
+    experiment.mem_increase_factor = exp.mem_increase_factor
+    experiment.analyzer = exp.emod_analyzer
+    experiment.job_directory = exp.job_directory
+    experiment.emod_step = exp.emod_step
+    experiment.start_end = [sim_start_year_em, sim_start_year_em + sim_dur_years - 1]
+    submit_analyze_EMOD(experiment, platform)
+    print(f"Experiment submission {experiment.uid} succeeded.")

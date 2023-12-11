@@ -39,7 +39,7 @@ def all_age_sample_plot(wdir, sweep_variables, sample_channels):
     - sample_channels (list): List of channels for the All Age sample plot.
     """
     # Read the data from a CSV file
-    df = pd.read_csv(os.path.join(wdir, 'All_Age_sample_outputs.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'All_Age_Outputs.csv'))
     df['date'] = pd.to_datetime(df['date'])
 
     # Group the data by date and sweep variables, and calculate the mean of the outcome channels

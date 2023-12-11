@@ -71,8 +71,6 @@ def get_emodom_df(wdir, emodom, mth=False, timeseries=False):
     if 'EMOD' in emodom:
         em_df = pd.read_csv((os.path.join(wdir, f'em/{fname}')))
         em_df['emodom'] = 'EMOD'
-        # This will later be replaced with the actual values of simulated EIR
-        em_df['simulatedEIR'] = em_df['eir']
     if 'MalSim' in emodom:
         ms_df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')))
         ms_df['emodom'] = 'MalSim'
@@ -201,7 +199,7 @@ def eir_to_prevalence2to10(wdir, emodom, sweepvar='cm_clinical', eir_val='simula
 
     unique_groups = df['emodom'].unique()
     num_colors = len(unique_groups)
-    color_palette = sns.color_palette('husl', num_colors)
+    color_palette = sns.color_palette('husl', num_colors + 1)
     firstPlot = True
     nx = 1
     ny = len(seasonality)
@@ -252,7 +250,7 @@ def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical', use_std=False):
 
     unique_groups = df['emodom'].unique()
     num_colors = len(unique_groups)
-    color_palette = sns.color_palette('husl', num_colors)
+    color_palette = sns.color_palette('husl', num_colors + 1)
     firstPlot = True
 
     if sweepvar != 'cm_clinical':
@@ -471,13 +469,16 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
     unique_groups = df[sweepvar].unique()
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
+    #This is code meant for the current stage of our project, to show only the max sweepvar we requested in the monthly timeseries plots
+    #if you delete this code, it will show all sweepvar's requested
+    if len(unique_facets) >= 2:
+        unique_facets = unique_facets[-2:]
 
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('husl', num_colors)
     firstPlot = True
-    upper_ylim = np.max(df[channel])
-
-    fig, axes = plt.subplots(int(len(df[facet_var].unique()) / 3), 3, sharex=True,sharey=True,  figsize=(16, 6))
+    #changing the 2 next to sharex=True, will increase the number of columns 
+    fig, axes = plt.subplots(max(int(len(unique_facets) / 3),1), 2, sharex=True,sharey=True,  figsize=(16, 6))
     # Iterate through each facet and plot the lines for each group
     for facet_value, ax in zip(unique_facets, axes.ravel()):
         facet_data = df[df[facet_var] == facet_value]
@@ -488,15 +489,14 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
             ymean, ylow, yup = get_ysumstats(pdf, 'date', channel, use_std)
             ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{group_val}", color=color_palette[p])
             ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[p])
-            # if max(yup) > upper_ylim:
-            #     upper_ylim = max(yup)
+            upper_ylim = np.max(pdf[channel])
             ax.set_ylim(bottom=0, top=max(round(upper_ylim * 1.25, 3), .1))
             ax.set_xlabel('Year')
             ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
             ax.set_title(f"{facet_var} = {facet_value}")
         if firstPlot:
-            lg = ax.legend(loc='upper left')  # , title='Model'
+            lg = ax.legend(loc='upper left')
             ax.set_ylabel(channel)
             firstPlot = False
 
@@ -538,13 +538,18 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
     unique_groups = df[sweepvar].unique()
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
+    #This is code meant for the current stage of our project, to show only the max sweepvar we requested in the annual timeseries plots
+    #if you delete this code, it will show all sweepvar's requested
+    if len(unique_facets) >= 2:
+        unique_facets = unique_facets[-2:]
 
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('husl', num_colors)
     firstPlot = True
     upper_ylim = np.max(df[channel])
 
-    fig, axes = plt.subplots(int(len(df[facet_var].unique()) / 3), 3, sharex=True, sharey=True, figsize=(16, 6))
+    # changing the 2 before sharex=True will increase the number of columns
+    fig, axes = plt.subplots(max(int(len(unique_facets) / 3),1), 2, sharex=True, sharey=True, figsize=(16, 6))
     for facet_value, ax in zip(unique_facets, axes.ravel()):
         facet_data = df[df[facet_var] == facet_value]
         for p, (group_val, pdf) in enumerate(facet_data.groupby([sweepvar])):
@@ -608,9 +613,9 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
 
     # Create subplots, always two, but modify the second subplot when there's only one facet
     if len(unique_facets) == 1:
-        fig, axes = plt.subplots(2, 1, figsize=(12, 12))
+        fig, axes = plt.subplots(2, 1, figsize=(16, 8))
     else:
-        fig, axes = plt.subplots(int(len(df[facet_var].unique()) / 3), 3, sharex=True, figsize=(12, 12))
+        fig, axes = plt.subplots(int(len(df[facet_var].unique()) / 3), 3, sharex=True, figsize=(16, 8))
 
     for facet_value, ax in zip(unique_facets, axes.ravel()):
         facet_data = df[df[facet_var] == facet_value]
@@ -624,6 +629,7 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
             ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{group_val}", color=color_palette[p])
             ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[p])
             ax.set_ylim(bottom=0, top=max(round(upper_ylim * 1.1, 3), 0.1))
+            ax.tick_params(axis='x', labelrotation = 45)
             ax.set_xlabel('Age (years)')
             ax.set_ylabel(channel)
             ax.set_title(f"{facet_var} = {facet_value}")
@@ -634,11 +640,11 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
     # Remove the second subplot when there's only one facet
     if len(unique_facets) == 1:
         plt.delaxes(axes[1])
-        plt.subplots_adjust(bottom=0.1, top=0.9, left=0.15, right=0.95, hspace=0.4)
+        plt.subplots_adjust(bottom=0.15, top=0.9, left=0.15, right=0.95, hspace=0.3)
     else:
-        plt.subplots_adjust(left=0.13, right=0.95, bottom=0.15, top=0.9, wspace=0.4, hspace=0.4)
+        plt.subplots_adjust(bottom=0.15,  top=0.9, left=0.13, right=0.95, wspace=0.3, hspace=0.3)
 
-    plt.text(0.4, -0.35, f'{caption_txt}', rotation=-0, fontsize=12)
+    plt.text(0.4, -0.35, f'{caption_txt}', rotation=-0, fontsize=12) # fix caption ylabel overlap
 
     # Adjust layout to avoid overlapping
     # plt.tight_layout()
@@ -738,12 +744,11 @@ def rmse(wdir, emodom):
 
 if __name__ == "__main__":
     args = parse_args()
-    job_directory = args.directory
+    out_dir = args.directory
     emodom = args.emodom
     if isinstance(emodom, str):
         emodom = [emodom]
-    wdir = job_directory
-    file = open(os.path.join(job_directory, "exp.obj"), "rb")
+    file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
     eir_relationship_plots = False  # reads in 'Benchmark.csv' output files
@@ -752,8 +757,8 @@ if __name__ == "__main__":
     if len(emodom) == 3:
         # Currently RMSE and ANOVAS are hard coded to require all three models
         print('#----- Calculating RMSE Values and ANOVAs -----#')
-        rmse(wdir, emodom)
-        anovas(wdir, emodom)
+        rmse(out_dir, emodom)
+        anovas(out_dir, emodom)
 
     if len(exp.eir) >= 3:
         eir_relationship_plots = True
@@ -761,44 +766,45 @@ if __name__ == "__main__":
     if eir_relationship_plots:
         print('#----- Start running pfpr-eir-incidence relationship plots -----#')
         sweepvar = 'emodom'
-        eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
+        eir_to_prevalence2to10(out_dir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
         # eir_to_prevalence2to10(job_directory, emodom, sweepvar=sweepvar, eir_val='inputEIR')
-        input_to_simulated_eir(wdir, emodom, sweepvar=sweepvar)
+        input_to_simulated_eir(out_dir, emodom, sweepvar=sweepvar)
 
         channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence']
         ymaxlist = [6, 0.1, 1]
         for c, channel in enumerate(channel_list):
-            prevalence2to10_to_incidence(wdir, emodom, channel=channel, y_lim=ymaxlist[c])
+            prevalence2to10_to_incidence(out_dir, emodom, channel=channel, y_lim=ymaxlist[c])
 
         if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
             channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR', 'prevalence_2to10']
             sweepvar = 'eir'
             for channel in channel_list:
                 try:
-                    monthly_trends(wdir, emodom, channel=channel, sweepvar=sweepvar)
+                    monthly_trends(out_dir, emodom, channel=channel, sweepvar=sweepvar)
                 except:
                     print(f'{channel} not found in dataframe')
-
+                    
     # Additional standardized plots - timeseries
     if timeseries_plots:
         print('#----- Running timeseries_plots -----#')
-        channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence']  # 'simulatedEIR', 'prevalence_2to10'
-
+        channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']  # 'prevalence_2to10'
         sweepvar = 'emodom'
         facet_var = 'ageGroup'
         if len(exp.eir) > 1 & len(exp.eir) <= 3:
             facet_var = 'eir'
-        if facet_var == 'ageGroup' & len(exp.cm_clinical) > 1:
+        if facet_var == 'ageGroup' and len(exp.cm_clinical) > 1:
             facet_var = 'cm_clinical'
-        if facet_var == 'ageGroup' & len(exp.seasonality) > 1:
+        if facet_var == 'ageGroup' and len(exp.seasonality) > 1:
             facet_var = 'seasonality'
 
         for channel in channel_list:
             if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
-                monthly_timeseries(wdir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp='5-10')
-            annual_timeseries(wdir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp='5-10')
-            age_curves(wdir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var)
-
+                monthly_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp='5-10')
+            annual_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp='5-10')
+            
+            if not channel =='simulatedEIR':
+              age_curves(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var)
+            
     # Additional standardized plots - line colors by sweep variable
     if sweep_plots:
         print('#----- Running sweep_plots -----#')
@@ -807,4 +813,4 @@ if __name__ == "__main__":
         sweepvar = 'emodom'
         facet_var = 'eir'
         for channel in channel_list:
-            sweep_by_channel_plot(wdir, emodom, x_var=x_var, channel=channel, sweepvar=sweepvar, facet_var=facet_var)
+            sweep_by_channel_plot(out_dir, emodom, x_var=x_var, channel=channel, sweepvar=sweepvar, facet_var=facet_var)

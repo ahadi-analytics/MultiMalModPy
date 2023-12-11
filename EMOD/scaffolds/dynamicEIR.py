@@ -67,8 +67,7 @@ def eir_to_lhs(eir=None, cm_clinical=None, population=None, seasonality='perenni
                           'cm0.4': [1.14, 1.67, 2.25, 3.42, 6.53, 14.18, 29.12, 64.62, 132.00, 286.00, 595.00, 1212.00],
                           'cm0.6': [1.61, 2.16, 2.77, 3.99, 7.83, 16.18, 32.98, 72.08, 154.00, 326.00, 672.00, 1364.00],
                           'cm0.8': [3.31, 3.76, 4.26, 5.26, 9.34, 18.73, 39.37, 86.05, 170.00, 380.00, 802.00, 1646.00],
-                          'cm1': [None, None, None, None, 10.76, 26.40, 55.41, 112.00, 242.00, 514.00, 1059.00,
-                                  2147.00]}
+                          'cm1': [None, None, None, None, 10.76, 26.40, 55.41, 112.00, 242.00, 514.00, 1059.00,  2147.00]}
 
     lhs_dict_seasonal = {'eir': [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024],
                          'cm0': [3.89, 6.89, 10.2, 16.9, 30.5, 69.0, 130, 326, 697, 1369, 2713, None],
@@ -78,21 +77,26 @@ def eir_to_lhs(eir=None, cm_clinical=None, population=None, seasonality='perenni
                          'cm0.8': [13.8, 23.8, 34.8, 56.9, 50.9, 107, 208, 502, 1008, 2164, 4476, None],
                          'cm1': [68.2, 74.4, 81.4, 95.3, 134, 193, 301, 655, 1321, 2812, 5795, None]}
 
-    # Choose the appropriate LHS dictionary based on seasonality
-    lhs_dict = lhs_dict_perennial
-    if seasonality == 'seasonal':
+    if seasonality == 'perennial':
+        lhs_dict = lhs_dict_perennial
+    elif seasonality == 'seasonal':
         lhs_dict = lhs_dict_seasonal
-
-    if eir is not None and cm_clinical is not None:
+    else:
+        print(f'Warning: seasonality is currently set to {seasonality}. Please set it to either perennial or seasonal')
+        
+    # Choose the appropriate LHS dictionary based on seasonality
+    if eir is not None and cm_clinical is not None and seasonality is not None:
         # Calculate based on eir and cm_clinical
         lhs = calculate_from_eir_cm(eir, cm_clinical, lhs_dict)
 
     elif df is not None:
         # Calculate based on scen_df
+        if df['seasonality'][0] == 'seasonal':
+            lhs_dict = lhs_dict_seasonal
         lhs = calculate_from_df(df, lhs_dict)
 
     else:
-        raise ValueError("Either eir and cm_clinical, or scen_df must be provided.")
+        raise ValueError("Either eir, cm_clinical, and seasonality, or scen_df must be provided.")
 
     ## these were run for a population of 5000 people
     lhs = [l / (5000 / population) for l in lhs]

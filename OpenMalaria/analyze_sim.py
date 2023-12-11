@@ -330,9 +330,9 @@ def SurveyAllAgeAnalyzer(exp, mm, start_year=2020, survey_step_days=30, compr='i
     # Convert survey dates to actual dates based on the survey step size and start year
     adf = survey_to_date(adf, survey_step_days=survey_step_days, start_year=start_year)
 
-    # Save the processed DataFrame to a CSV file named 'All_Age_InsetChart.csv'
-    print(f'Saving All_Age_InsetChart.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir, 'All_Age_InsetChart.csv')), index=False, compression=compr)
+    # Save the processed DataFrame to a CSV file
+    print(f'Saving All_Age_Outputs.csv to {wdir}')
+    adf.to_csv((os.path.join(wdir, 'All_Age_Outputs.csv')), index=False, compression=compr)
 
 
 def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', 'index']):
@@ -632,6 +632,9 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     first_columns = ['seed', 'date', 'year', 'month', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
                      'severe_incidence']
     df3 = df3[first_columns + df3.drop(columns=first_columns).columns.tolist()]
+    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
+    eir_df = eir_df[['index','month','year', 'simulatedEIR', 'inputEIR']]
+    df3 = df3.merge(eir_df, on = ['index', 'month', 'year'], how='inner')
 
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_mth.csv to {wdir}')
@@ -708,7 +711,9 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
     first_columns = ['seed', 'year', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
                      'severe_incidence']
     df3 = df3[first_columns + df3.drop(columns=first_columns).columns.tolist()]
-
+    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
+    eir_df = eir_df[['index','year', 'simulatedEIR', 'inputEIR']]
+    df3 = df3.merge(eir_df, on = ['index','year'], how='inner')
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_yr to {wdir}')
     df3.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv')), index=False, compression=compr)
@@ -830,12 +835,12 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
 if __name__ == "__main__":
     # Parse command line arguments
     args = parse_args()
-    job_directory = args.directory
+    jdir = args.directory
 
     # Load experiment object
-    file = open(os.path.join(job_directory, "exp.obj"), "rb")
+    file = open(os.path.join(jdir, "exp.obj"), "rb")
     exp = pickle.load(file)
-    start_year = exp.start_year  # exp.sim_start_year_om refers to simulation not monitoring start
+    start_year = exp.start_year
     wdir = os.path.join(exp.sim_out_dir, 'om')
     create_sampleplots = True
 
@@ -862,14 +867,14 @@ if __name__ == "__main__":
 
     # Define tags and channels for sample plots
     exp_tags = [x for x in exp.sweep_list if x != 'seed']
-    channels_inset_chart = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
+    sample_channels = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
                             'nSevere', 'nSeq', 'nIndDeaths',
                             'nDirDeaths', 'inputEIR', 'simulatedEIR', 'expectedDirectDeaths',
                             'expectedSevere']  # 'expectedIndirectDeaths',
 
     # Create sample plots if specified
     if create_sampleplots:
-        all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
+        all_age_sample_plot(wdir, exp_tags, sample_channels)
         sample_plot_yr(wdir, exp_tags)
         emodom = ['OpenMalaria']
         if survey_steps == 30:
@@ -881,7 +886,11 @@ if __name__ == "__main__":
             monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', sweepvar=sweepvar)
             monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence_2to10', sweepvar=sweepvar)
             monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
-
+        
+        channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
+        for channel in channel_list:
+            monthly_timeseries(wdir=exp.sim_out_dir, emodom=emodom, channel=channel, sweepvar='emodom', facet_var='eir', agegrp='5-10')
+        
         sweepvar = 'cm_clinical'
         prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', y_lim=1)
         prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', y_lim=6)

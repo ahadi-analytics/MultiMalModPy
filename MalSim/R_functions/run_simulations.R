@@ -1,4 +1,4 @@
-run_simulations <- function(exp, parameter_table, write_output_txt = FALSE) {
+run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
 
   # Open a list to store the simulation parameter lists in:
   simparams <- list()
@@ -73,13 +73,12 @@ run_simulations <- function(exp, parameter_table, write_output_txt = FALSE) {
       simulation_outputs_list[[i]]$seasonality  <- parameter_table[i,]$seasonality
       simulation_outputs_list[[i]]$seed <- parameter_table[i,]$seed
 
-      if(write_output_txt){
-        dir.create(file.path(exp$job_directory, 'ms_out'), showWarnings = FALSE, unless.exists = TRUE)
-        writeLines(simulation_outputs_list[[i]], file.path(exp$wdir, 'ms_out',paste0(i, '.txt')))
+      if (write_raw_output) {
+        write_csv(simulation_outputs_list[[i]], file.path(exp$job_directory, 'malsim_jobs', paste0(parameter_table[i,]$index, '_out.csv')))
       }
 
       # Print the function progress:
-      print(paste0("Simulation ", i, " complete (", round(x = i/nrow(parameter_table)*100, digits = 3), "% complete)"))
+      print(paste0("Simulation ", parameter_table[i,]$index, " complete (", round(x = i / nrow(parameter_table) * 100, digits = 3), "% complete)"))
 
       # For rows with perennial malaria:  
     } else if (parameter_table[i,]$seasonality == "perennial") {
@@ -128,18 +127,17 @@ run_simulations <- function(exp, parameter_table, write_output_txt = FALSE) {
 
       # Add simulation identifiers to the output data frame:
       simulation_outputs_list[[i]]$index <- parameter_table[i,]$index
-      simulation_outputs_list[[i]]$eir_EIR <- parameter_table[i,]$eir
+      simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
       simulation_outputs_list[[i]]$cm_clinical <- parameter_table[i,]$cm_clinical
       simulation_outputs_list[[i]]$seasonality  <- parameter_table[i,]$seasonality
       simulation_outputs_list[[i]]$seed <- parameter_table[i,]$seed
 
-      if(write_output_txt){
-        dir.create(file.path(exp$job_directory, 'ms_out'), showWarnings = FALSE, unless.exists = TRUE)
-        writeLines(simulation_outputs_list[[i]], file.path(exp$wdir, 'ms_out',paste0(i, '.txt')))
+      if (write_raw_output) {
+        write_csv(simulation_outputs_list[[i]], file.path(exp$job_directory, 'malsim_jobs', paste0(parameter_table[i,]$index, '_out.csv')))
       }
 
       # Print the function progress:
-      print(paste0("Simulation ", i, " complete (", round(x = i/nrow(parameter_table)*100, digits = 3), "% complete)"))
+      print(paste0("Simulation ", parameter_table[i,]$index, " complete (", round(x = i / nrow(parameter_table) * 100, digits = 3), "% complete)"))
 
     } else {
 

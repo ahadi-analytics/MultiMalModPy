@@ -33,7 +33,8 @@ def parse_args():
     return parser.parse_args()
 
 
-def all_age_sample_plot(wdir, sweep_variables, sample_channels, sim_start=2000):
+
+def all_age_sample_plot( wdir, sweep_variables, sample_channels):
     """
     Generate a sample plot for all age data from the 'All_Age_sample_plot.csv' file.
     Parameters:
@@ -42,16 +43,11 @@ def all_age_sample_plot(wdir, sweep_variables, sample_channels, sim_start=2000):
     - sample_channels (list): List of channels for the All Age sample plot.
     """
     # Read the data from a CSV file
-    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
-
-    df['day'] = df['timestep'] % 365
-    df['year'] = df['timestep'].apply(lambda x: int(x / 365) + sim_start)
-    df['date'] = df.apply(lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(int(x['day']) - 1), axis=1)
+    df = pd.read_csv(os.path.join(wdir, 'All_Age_Outputs.csv'))
 
     # Group the data by date and sweep variables, and calculate the mean of the outcome channels
     sample_channels = [ch for ch in sample_channels if ch in df.columns]
-    df = df.groupby(['date'] + sweep_variables)[sample_channels].agg(
-        np.mean).reset_index()  ## aggregate age and seeds, taking mean
+    df = df.groupby(['date'] + sweep_variables)[sample_channels].agg( np.mean).reset_index()  ## aggregate age and seeds, taking mean
 
     # Round numeric sweep variables shown in legend
     for sweep_var in sweep_variables:
@@ -140,7 +136,7 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5):
     # if len(sweep_variables) > 0:
     #     lg = axes[-1].legend(title=sweep_variables, bbox_to_anchor=(1.05, 1.0), loc='upper left')
     fig.text(0.02, 0.5, 'Value', ha='center', va='center', rotation='vertical', fontsize=14)
-    fig.text(0.5, 0.02, 'Simulation time (years)', ha='center', va='center', fontsize=14)
+    fig.text(0.5, 0.02, '', ha='center', va='center', fontsize=14)
 
     # Adjust layout to avoid overlapping
     fig.tight_layout()
@@ -234,12 +230,12 @@ if __name__ == "__main__":
     # Determine whether simulation ran with forced or dynamic EIR and set eirchannel
     # Define tags and channels for sample plots
     #exp_tags = [x for x in exp.sweep_list if x != 'seed']  # + ['seed']
-    exp_tags = ['index'] #TODO, add scenarios to daily?
+    exp_tags = ['index']
     sample_channels = ['nPopulation', 'nHost', 'prevalence',
                             'incidence', 'clinical_incidence',
                             'severe_incidence', 'prevalence_2to10','EIR_gamb']
 
     # Create sample plots
-    all_age_sample_plot(wdir, exp_tags, sample_channels, sim_start=sim_start)
+    all_age_sample_plot(wdir, exp_tags, sample_channels)
     sample_plot_yr(wdir, exp_tags)
     sample_plot_mth(wdir, exp_tags)

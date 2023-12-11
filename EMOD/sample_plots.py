@@ -34,20 +34,20 @@ def parse_args():
     return parser.parse_args()
 
 
-def all_age_sample_plot(wdir, sweep_variables, inset_channels, fts=8):
+def all_age_sample_plot(wdir, sweep_variables, sample_channels, fts=8):
     """
-    Generate a sample plot for all age data from the 'All_Age_InsetChart.csv' file.
+    Generate a sample plot for all age data from the 'All_Age_Outputs.csv' file.
     Parameters:
     - wdir (str): Working directory.
     - sweep_variables (list): List of sweep variables.
-    - inset_channels (list): List of channels for the InsetChart.
+    - sample_channels (list): List of channels for the Figure.
     """
     # Read the data from a CSV file
-    df = pd.read_csv(os.path.join(wdir, 'All_Age_InsetChart.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'All_Age_Outputs.csv'))
     df['date'] = pd.to_datetime(df['date'])
 
     # Group the data by date and sweep variables, and calculate the mean of the outcome channels
-    df = df.groupby(['date'] + sweep_variables)[inset_channels].agg(np.mean).reset_index()
+    df = df.groupby(['date'] + sweep_variables)[sample_channels].agg(np.mean).reset_index()
 
     # Round numeric sweep variables shown in legend
     for sweep_var in sweep_variables:
@@ -62,7 +62,7 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels, fts=8):
     axes = [fig.add_subplot(3, 5, x + 1) for x in range(15)]
 
     # Plot the data for each channel
-    for ch, channel in enumerate(inset_channels):
+    for ch, channel in enumerate(sample_channels):
         ax = axes[ch]
         for p, pdf in df.groupby(sweep_variables):
             ax.plot(pdf['date'], pdf[channel], '-', linewidth=0.8, label=p)
@@ -230,13 +230,13 @@ if __name__ == "__main__":
     # Determine whether simulation ran with forced or dynamic EIR and set eirchannel
     # Define tags and channels for sample plots
     exp_tags = [x for x in exp.sweep_list if x != 'seed']  # + ['seed']
-    channels_inset_chart = ['Statistical Population', 'Births', 'Disease Deaths',
+    sample_channels = ['Statistical Population', 'Births', 'Disease Deaths',
                             'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
                             'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
                             'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
                             'Infectious Vectors', 'EIR']
 
     # Create sample plots
-    all_age_sample_plot(wdir, exp_tags, channels_inset_chart)
+    all_age_sample_plot(wdir, exp_tags, sample_channels)
     sample_plot_yr(wdir, exp_tags)
     sample_plot_mth(wdir, exp_tags)

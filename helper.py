@@ -128,14 +128,6 @@ def save_scen(scen_df,fname, save_dirs=None):
         scen_df.to_csv(os.path.join(sdir, fname), index=False)
 
 
-def save_eir_month(save_dir):
-    eirs = []
-    eir_months = [0.89536936, 1., 0.99861637, 0.88644885, 0.69983342,    0.4785287, 0.29422502, 0.18798817, 0.18941683, 0.29804822,   0.4907383, 0.70506627]
-    for i, eir in enumerate(eir_months):
-        eirs.append([i+1,eir])
-    df = pd.DataFrame(eirs,columns=['Month','EIR'])
-    df.to_csv(os.path.join(save_dir,'eir_months.csv'), index=False)
-
 def save_exp_scen(exp, scen_df, save_dirs):
     """
     Saves the experiment and scenario data to the specified save directories.
@@ -197,7 +189,6 @@ def rep_scen_df(df):
     rep_df['seed'] = rep_df.groupby('scen_id').cumcount() + 1
     return rep_df
 
-
 def create_simsetup_csv(exp):
     setup_dic = {'job_directory': exp.job_directory,
                  'sim_out_dir': exp.sim_out_dir,
@@ -206,6 +197,9 @@ def create_simsetup_csv(exp):
                  'monitoring_years': exp.monitoring_years,
                  'pop_size': exp.pop_size,
                  'agebins': exp.agebins,
+                 'seasonality': exp.seasonality[0],
+                 'seasonal':  ';'.join(map(str, exp.seasonal)),
+                 'perennial': ';'.join(map(str, exp.perennial)),
                  'start_year': exp.start_year,
                  'end_year': exp.end_year,
                  'burnin': exp.burnin,
@@ -236,7 +230,7 @@ def create_scenarios_csv(exp, col_list=None, add_cols=True):
     """
 
     if col_list is None:
-        col_list = ['eirs', 'cm_clinical', 'seasonality']
+        col_list = ['eir', 'cm_clinical', 'seasonality']
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
