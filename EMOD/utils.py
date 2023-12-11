@@ -539,11 +539,8 @@ def submit_run_EMOD(exp, emod_exp, scen_df):
     if emod_step == 'pickup':
         serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
         serialized_df = serialized_df.drop(columns=['x_Temporary_Larval_Habitat'])
-        serialized_df.to_csv(os.path.join("seridf.csv"))
-        scen_df.to_csv("scen_df.csv")
         scen_df_pickup = scen_df.merge(serialized_df, on=['scen_id'],
                                        how='inner')  ## FIXME when running expanded pickup from burnin
-        scen_df_pickup.to_csv(os.path.join("pickup.csv"))
         builder = config_sweep_builder_pickup(emod_exp, scen_df_pickup)
     else:
         builder = config_sweep_builder(emod_exp, scen_df)
