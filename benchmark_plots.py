@@ -289,7 +289,7 @@ def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical', use_std=False):
     fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,))
 
 
-def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5', use_std=False):
+def monthly_trends_former(wdir, emodom, channel, sweepvar='eir', agegrp='0-5', use_std=False):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
     Note, assumed single occurence per month, i.e. aggregated across years (reads in benchmark_mth.csv)
@@ -361,6 +361,72 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5', use_std=
 
     # fig.savefig(os.path.join(wdir, f'{fname}_legend.pdf'), bbox_extra_artists=(lg,))
 
+def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5', use_std=False):
+    """
+    Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
+    Note, assumed single occurence per month, i.e. aggregated across years (reads in benchmark_mth.csv)
+    Parameters:
+        wdir (str): Working directory where the plot will be saved.
+        emodom (str or list of str): Name of models for which result dataframes should be loaded.
+        channel (str): Variable representing the y-axis data to be plotted.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
+        agegrp (str, optional): Age group filter for the data. Default is '0-5'.
+    Returns:
+        None (plots are saved to disk).
+    Raises:
+        ValueError: If no seasonal transmission pattern is specified in the data.
+    """
+    df, wdir = get_emodom_df(wdir, emodom, mth=True)
+    df = df[(df.ageGroup == agegrp)]
+    if 'seasonal' in df.seasonality.unique():
+        df = df[(df.seasonality == 'seasonal')]
+
+    if sweepvar != 'cm_clinical':
+        df = df[(df.cm_clinical == np.min(df.cm_clinical))]
+
+    if channel == 'prevalence_2to10':
+        ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
+    else:
+        ylab = channel
+
+    unique_groups = df['emodom'].unique()
+    unique_sweep_var = df[channel].unique()
+    num_colors = len(unique_groups) + len(unique_sweep_var)
+    color_palette = sns.color_palette(cc.glasbey, n_colors=num_colors)
+    nx = 1
+    ny = len(df[sweepvar].unique())
+    f = 1
+    firstPlot = True
+    fig = plt.figure(figsize=(12, 12))
+    for si, var in enumerate(df[sweepvar].unique()):
+        ax = fig.add_subplot(ny, nx, f)
+        f += 1
+        sdf = df[(df[sweepvar] == var)]
+        max_ylim = []
+        for i, (m,mdf) in enumerate(sdf.groupby('emodom')):
+            # plot mean, min and max of seeds
+            ylim_up = np.max(mdf[channel])*1.1
+            if channel == 'prevalence' or channel == 'prevalence_2to10':
+                ylim_up = min(ylim_up, 1)
+            max_ylim.append(ylim_up)
+            xmean = mdf.groupby('month')['month'].agg(np.mean)
+            ymean, ylow, yup = get_ysumstats(mdf, 'month', channel, use_std)
+            ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{m}", color=color_palette[i + 3])
+            ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[i + 3])
+            ax.title.set_text(f'EIR = {var}')
+        if firstPlot:
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))
+            firstPlot = False
+        ax.set_ylim(0, max(max_ylim))
+        ax.set_xlim(0, 12)
+        ax.set_xlabel('month')
+        ax.set_ylabel(ylab)
+
+    fname = f'monthly_{channel}_by_{sweepvar}_age{agegrp}'
+    plt.tight_layout()
+    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,), bbox_inches='tight')
+
+    # fig.savefig(os.path.join(wdir, f'{fname}_legend.pdf'), bbox_extra_artists=(lg,))
 
 # Plots by sweeps and channels
 def sweep_by_channel_plot(wdir, emodom, x_var, channel, sweepvar, facet_var, agegrp='0-5', use_std=False):

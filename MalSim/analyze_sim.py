@@ -31,7 +31,7 @@ def parse_args():
 
 def load_combined_daily_output(job_directory, channels=None, save_daily=False):
     daily = pd.DataFrame()
-    nSims = int(exp.nexps/exp.num_seeds)
+    nSims = exp.nexps
     for i in range(1, nSims + 1):
         i_df = pd.read_csv(os.path.join(job_directory, f'malsim_jobs/daily_{i}.csv'))
         if channels is not None:
@@ -440,7 +440,7 @@ if __name__ == "__main__":
 
     # Execute all analyzers
     InputEIRAnalyzer(jdir, wdir)
-    SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables, sim_start)
+    SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables)
     BenchmarkAnalyzer(jdir, wdir, sweep_variables)
     MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables)
     AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables)

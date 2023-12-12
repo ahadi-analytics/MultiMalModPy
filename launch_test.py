@@ -22,8 +22,8 @@ exp_name = f'test_sims_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'  # Can be chang
 
 # EMOD flags for how to run simulations (in one run or separated into burnin + pickup)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
-emod_step = 'pickup'  # emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
-emod_serialized_id = 'fa1b9bbd-4e38-4dc5-bd13-ded82ac19b46'  # example, insert your exp_id!
+emod_step = None  # emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
+emod_serialized_id = 'f8e9d866-23f7-45ac-8bc5-ef1ade863c10'  # example, insert your exp_id!
 
 # Define which models to run
 models_to_run = ['MalSim', 'OpenMalaria', 'EMOD']  # 'EMOD','OpenMalaria', 'MalSim'
@@ -44,7 +44,7 @@ num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
 num_seeds = 3  # suggested minimum 3
 start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
 end_year = 2005  # end of pickup and monitoring period
-burnin = 80  # Duration of burnin (pre-monitoring) period
+burnin = 5  # Duration of burnin (pre-monitoring) period
 
 # Simulation duration, start and end configuration
 sim_start_year_em, monitoring_years, sim_dur_years = get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step)
@@ -77,7 +77,7 @@ detectionLimit = 40
 # Transmission and seasonality configuration
 seasonality = ["seasonal"] # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
 
-eir = [0.1,1,4,8,16,32]# [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+eir = [0.1,1,2,4,8,16,32]# [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 
 # Entomology mode: Dynamic EIR configuration if selected
 season_daily, season_month, seasonal, perennial = get_seasonal_eir()
@@ -101,6 +101,8 @@ exp.om_input_path = manifest.om_input_path
 exp.suite_directory = suite_directory
 exp.job_directory = job_directory
 exp.sim_out_dir = sim_out_dir
+#exp.seasonal = seasonal
+#exp.perennial = perennial
 
 # Assigning attributes to the Experiment object and creating scenarios
 for obj_name in my_obj:
