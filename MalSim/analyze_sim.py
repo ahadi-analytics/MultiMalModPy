@@ -31,7 +31,10 @@ def parse_args():
 
 def load_combined_daily_output(job_directory, channels=None, save_daily=False):
     daily = pd.DataFrame()
-    nSims = exp.nexps
+    if exp.emod_step is None: 
+        nSims = exp.nexps
+    else:
+        nSims = int(exp.nexps/exp.num_seeds)
     for i in range(1, nSims + 1):
         i_df = pd.read_csv(os.path.join(job_directory, f'malsim_jobs/daily_{i}.csv'))
         if channels is not None:

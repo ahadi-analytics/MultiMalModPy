@@ -394,33 +394,33 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5', use_std=
     num_colors = len(unique_groups) + len(unique_sweep_var)
     color_palette = sns.color_palette(cc.glasbey, n_colors=num_colors)
     nx = 1
-    ny = len(df[sweepvar].unique())
+    ny = 1 #df[sweepvar].unique()
     f = 1
     firstPlot = True
-    fig = plt.figure(figsize=(12, 12))
-    for si, var in enumerate(df[sweepvar].unique()):
-        ax = fig.add_subplot(ny, nx, f)
-        f += 1
-        sdf = df[(df[sweepvar] == var)]
-        max_ylim = []
-        for i, (m,mdf) in enumerate(sdf.groupby('emodom')):
-            # plot mean, min and max of seeds
-            ylim_up = np.max(mdf[channel])*1.1
-            if channel == 'prevalence' or channel == 'prevalence_2to10':
-                ylim_up = min(ylim_up, 1)
-            max_ylim.append(ylim_up)
-            xmean = mdf.groupby('month')['month'].agg(np.mean)
-            ymean, ylow, yup = get_ysumstats(mdf, 'month', channel, use_std)
-            ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{m}", color=color_palette[i + 3])
-            ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[i + 3])
-            ax.title.set_text(f'EIR = {var}')
-        if firstPlot:
-            lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))
-            firstPlot = False
-        ax.set_ylim(0, max(max_ylim))
-        ax.set_xlim(0, 12)
-        ax.set_xlabel('month')
-        ax.set_ylabel(ylab)
+    fig = plt.figure(figsize=(12, 6))
+    max_sweep = max(df[sweepvar].unique())
+    sdf = df[(df[sweepvar] == max_sweep)]
+    ax = fig.add_subplot(ny, nx, f)
+    f += 1
+    max_ylim = []
+    for i, (m,mdf) in enumerate(sdf.groupby('emodom')):
+        # plot mean, min and max of seeds
+        ylim_up = np.max(mdf[channel])*1.1
+        if channel == 'prevalence' or channel == 'prevalence_2to10':
+            ylim_up = min(ylim_up, 1)
+        max_ylim.append(ylim_up)
+        xmean = mdf.groupby('month')['month'].agg(np.mean)
+        ymean, ylow, yup = get_ysumstats(mdf, 'month', channel, use_std)
+        ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{m}", color=color_palette[i + 3])
+        ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[i + 3])
+        ax.title.set_text(f'{sweepvar} = {max_sweep}')
+    if firstPlot:
+        lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))
+        firstPlot = False
+    ax.set_ylim(0, max(max_ylim))
+    ax.set_xlim(0, 12)
+    ax.set_xlabel('month')
+    ax.set_ylabel(ylab)
 
     fname = f'monthly_{channel}_by_{sweepvar}_age{agegrp}'
     plt.tight_layout()
