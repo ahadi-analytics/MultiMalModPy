@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
 mpl.rcParams['pdf.fonttype'] = 42
-plt.rcParams.update({'font.size': 18})
+plt.rcParams.update({'font.size': 16})
 plt.rcParams.update({'font.sans-serif': "Arial"})
 
 
@@ -116,10 +116,10 @@ def get_ysumstats(df, grpvar, channel, use_std=False):
         ystd = ystd * 2
         ylow = ymean - ystd
         yup = ymean + ystd
-    return [ymean, ylow, yup]
+    return ymean, ylow, yup
 
 
-def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_lim=6, use_std=False):
+def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', use_std=False):
     """
     Generates line plots for PfPR2to10 and either clinical or severe incidence per sweepvar as colors and emodom as panels.
     Parameters:
@@ -131,51 +131,55 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_l
         None (plots are saved to disk).
     """
     df, wdir = get_emodom_df(wdir, emodom)
+    ylab = channel.replace('_', ' ')
     seasonality = list(df['seasonality'].unique())
-    title = f'{channel.replace("_", " ").capitalize()}'
-
-    if channel == 'clinical_incidence' or channel == 'severe_incidence':
-        title = f'{title} (events per person per year)'
-
-    nx = len(df['ageGroup'].unique())
-    ny = len(seasonality)
+    #title = f'{channel.replace("_", " ").capitalize()}'
+    #if channel == 'clinical_incidence' or channel == 'severe_incidence':
+        #title = f'{title} (events per person per year)'
+    nx = 1
+    ny = len(df['ageGroup'].unique())
     f = 1
     firstPlot = True
-    fig = plt.figure(figsize=(20, 4))
+    fig = plt.figure(figsize=(10, 10*ny))
 
     unique_groups = df['emodom'].unique()
     unique_groups = np.sort(unique_groups)
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('husl', num_colors)
 
-    # for each age group, plot x = prevalence 2_to_10, y = incidences
-
+    # for each age group, plot x = prevalence 2_to_10, y = incidences (or prevalence)
     for si, season in enumerate(seasonality):
         for agroup in df['ageGroup'].unique():
             ax = fig.add_subplot(ny, nx, f)
             f += 1
+            adf = df[df.ageGroup == agroup]
             for mi, model in enumerate(unique_groups):
-                pdf = df[(df.seasonality == season) & (df.emodom == model) & (df.ageGroup == agroup)]
+                pdf = adf[(adf.seasonality == season) & (adf.emodom == model)]
                 # plot mean, min and max of seeds
                 xvalues = pdf.groupby('eir')['prevalence_2to10'].agg(np.mean)
                 ymean, ylow, yup = get_ysumstats(pdf, 'eir', channel, use_std)
                 ax.plot(xvalues, ymean, label=model, color=color_palette[mi])
                 ax.fill_between(xvalues, ylow, yup, alpha=0.1, color=color_palette[mi])
+            if channel == "prevalence":
+                y_lim = 1
+            else:
+                y_lim = max(adf[channel])*1.1
             ax.set_ylim(0, y_lim)
             ax.set_xlim(0, 1)
             ax.set_xticks([0, 0.2, 0.4, 0.6, 0.8, 1])
             ax.title.set_text(f'{agroup}')
+            ax.set_ylabel(ylab)
+            ax.set_xlabel('$\it{Pf}$PR$_{2-10}$ (%)')
             if firstPlot:
-                lg = ax.legend(loc='upper left')  # , title='Model'
+                lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))
                 firstPlot = False
-                ax.set_ylabel(channel)
-    fig.text(0.5, 0.01, '$\it{Pf}$PR$_{2-10}$ (%)', ha='center')
-    if ny == 2:
-        fig.text(0.98, 0.25, seasonality[1], ha='center', va='center', rotation=-90, fontsize=14)
+    #fig.text(0.5, 0.01, , ha='center')
+    #if ny == 2:
+    #    fig.text(0.98, 0.25, seasonality[1], ha='center', va='center', rotation=-90, fontsize=14)
     fname = f'pfpr2to10_to_{channel}'
-    plt.tight_layout()
+    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    plt.close()
 
-    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,))
 
 
 def eir_to_prevalence2to10(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR', use_std=False):
@@ -191,15 +195,15 @@ def eir_to_prevalence2to10(wdir, emodom, sweepvar='cm_clinical', eir_val='simula
     """
     df, wdir = get_emodom_df(wdir, emodom)
     seasonality = list(df['seasonality'].unique())
-    # caption_txt = ''
 
+    # caption_txt = ''
     if sweepvar != 'cm_clinical':
         # caption_txt = f'cm_clinical: {np.min(df.cm_clinical)}'
         df = df[(df.cm_clinical == np.min(df.cm_clinical))]
 
     unique_groups = df['emodom'].unique()
     num_colors = len(unique_groups)
-    color_palette = sns.color_palette('husl', num_colors + 1)
+    color_palette = sns.color_palette('husl', num_colors)
     firstPlot = True
     nx = 1
     ny = len(seasonality)
@@ -216,21 +220,20 @@ def eir_to_prevalence2to10(wdir, emodom, sweepvar='cm_clinical', eir_val='simula
             ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{p}", color=color_palette[i])
             ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[i])
         if firstPlot:
-            lg = ax.legend(loc='upper left')  # , title='Model'
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))  # , title='Model'
             firstPlot = False
         ax.set_ylim(0, 1)
         ax.set_xlim(0.1, 1000)
         ax.set_xscale('symlog')
         ax.set_xlabel(f'{eir_val.replace("EIR", " annual EIR")}', fontsize=14)
+        ax.set_ylabel('$\it{Pf}$PR$_{2-10}$ (%)')
 
-    fig.text(0.02, 0.5, '$\it{Pf}$PR$_{2-10}$ (%)', ha='center', va='center', rotation='vertical', fontsize=14)
-    fig.text(0.95, 0.75, seasonality[0], ha='center', va='center', rotation=-90, fontsize=14)
-    if ny == 2:
-        fig.text(0.95, 0.25, seasonality[1], ha='center', va='center', rotation=-90, fontsize=14)
-    fig.tight_layout()
-
+    #fig.text(0.95, 0.75, seasonality[0], ha='center', va='center', rotation=-90, fontsize=14)
+    #if ny == 2:
+    #    fig.text(0.95, 0.25, seasonality[1], ha='center', va='center', rotation=-90, fontsize=14)
     fname = f'{eir_val}_to_pfpr2to10_by_{sweepvar}'
-    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,))
+    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    plt.close()
 
 
 def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical', use_std=False):
@@ -250,7 +253,7 @@ def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical', use_std=False):
 
     unique_groups = df['emodom'].unique()
     num_colors = len(unique_groups)
-    color_palette = sns.color_palette('husl', num_colors + 1)
+    color_palette = sns.color_palette('husl', num_colors)
     firstPlot = True
 
     if sweepvar != 'cm_clinical':
@@ -272,94 +275,20 @@ def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical', use_std=False):
             ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{p}", color=color_palette[i])
             ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[i])
         if firstPlot:
-            lg = ax.legend(loc='upper left')  # , title='Model'
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))  # , title='Model'
             firstPlot = False
         ax.set_ylim(0.1, 100000)
         ax.set_xlim(0.1, 100000)
         ax.set_yscale('symlog')
         ax.set_xscale('symlog')
-
-    plt.xlabel('Input Annual EIR')
+    plt.xlabel('Input EIR')
     plt.ylabel('Simulated Annual EIR')
-    if ny == 2:
-        fig.text(0.95, 0.25, seasonality[1], ha='center', va='center', rotation=-90, fontsize=14)
-    fig.tight_layout()
-
+    #if ny == 2:
+    #    fig.text(0.95, 0.25, seasonality[1], ha='center', va='center', rotation=-90, fontsize=14)
     fname = f'input_to_simulated_eir_by_{sweepvar}'
-    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,))
-
-
-def monthly_trends_former(wdir, emodom, channel, sweepvar='eir', agegrp='0-5', use_std=False):
-    """
-    Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
-    Note, assumed single occurence per month, i.e. aggregated across years (reads in benchmark_mth.csv)
-    Parameters:
-        wdir (str): Working directory where the plot will be saved.
-        emodom (str or list of str): Name of models for which result dataframes should be loaded.
-        channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
-        agegrp (str, optional): Age group filter for the data. Default is '0-5'.
-    Returns:
-        None (plots are saved to disk).
-    Raises:
-        ValueError: If no seasonal transmission pattern is specified in the data.
-    """
-    df, wdir = get_emodom_df(wdir, emodom, mth=True)
-    df = df[(df.ageGroup == agegrp)]
-    if 'seasonal' in df.seasonality.unique():
-        df = df[(df.seasonality == 'seasonal')]
-
-    if sweepvar != 'cm_clinical':
-        df = df[(df.cm_clinical == np.min(df.cm_clinical))]
-
-    if channel == 'prevalence_2to10':
-        ylim_up = 1
-        ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
-    elif channel == 'prevalence':
-        ylim_up = 1
-        ylab = channel
-    elif channel == 'simulatedEIR':
-        ylim_up = np.max(df[channel]) * 1.015
-        ylab = channel
-    else:
-        ylim_up = np.max(df[channel])
-        ylab = channel
-
-    unique_groups = df['emodom'].unique()
-    unique_sweep_var = df[channel].unique()
-    num_colors = len(unique_groups) + len(unique_sweep_var)
-    color_palette = sns.color_palette(cc.glasbey, n_colors=num_colors)
-    nx = 1
-    ny = len(emodom)
-    f = 1
-    firstPlot = True
-    fig = plt.figure(figsize=(12, 12))
-    for mi, model in enumerate(emodom):
-        ax = fig.add_subplot(ny, nx, f)
-        f += 1
-        sdf = df[(df.emodom == model)]
-        for i, (p, pdf) in enumerate(sdf.groupby([sweepvar])):
-            # plot mean, min and max of seeds
-            xmean = pdf.groupby('month')['month'].agg(np.mean)
-            ymean, ylow, yup = get_ysumstats(pdf, 'month', channel, use_std)
-            ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{p}", color=color_palette[i + 3])
-            ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[i + 3])
-            ax.title.set_text(f'{model}')
-        if firstPlot:
-            lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))
-            firstPlot = False
-        ax.set_ylim(0, ylim_up)
-        ax.set_xlim(0, 12)
-        ax.set_xlabel('month')
-        ax.set_ylabel(ylab)
-    if ny == 2:
-        fig.text(0.95, 0.25, emodom[1], ha='center', va='center', rotation=-90, fontsize=14)
-
-    fname = f'monthly_{channel}_by_{sweepvar}_age{agegrp}'
-    plt.tight_layout()
     fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    plt.close()
 
-    # fig.savefig(os.path.join(wdir, f'{fname}_legend.pdf'), bbox_extra_artists=(lg,))
 
 def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5', use_std=False):
     """
@@ -387,46 +316,42 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5', use_std=
     if channel == 'prevalence_2to10':
         ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
     else:
-        ylab = channel
+        ylab = channel.replace('_', ' ')
 
     unique_groups = df['emodom'].unique()
-    unique_sweep_var = df[channel].unique()
-    num_colors = len(unique_groups) + len(unique_sweep_var)
-    color_palette = sns.color_palette(cc.glasbey, n_colors=num_colors)
+    num_colors = len(unique_groups)
+    color_palette = sns.color_palette('husl', num_colors)
     nx = 1
-    ny = 1 #df[sweepvar].unique()
+    ny = len(df[sweepvar].unique())
     f = 1
     firstPlot = True
-    fig = plt.figure(figsize=(12, 6))
-    max_sweep = max(df[sweepvar].unique())
-    sdf = df[(df[sweepvar] == max_sweep)]
-    ax = fig.add_subplot(ny, nx, f)
-    f += 1
-    max_ylim = []
-    for i, (m,mdf) in enumerate(sdf.groupby('emodom')):
-        # plot mean, min and max of seeds
-        ylim_up = np.max(mdf[channel])*1.1
-        if channel == 'prevalence' or channel == 'prevalence_2to10':
-            ylim_up = min(ylim_up, 1)
-        max_ylim.append(ylim_up)
-        xmean = mdf.groupby('month')['month'].agg(np.mean)
-        ymean, ylow, yup = get_ysumstats(mdf, 'month', channel, use_std)
-        ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{m}", color=color_palette[i + 3])
-        ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[i + 3])
-        ax.title.set_text(f'{sweepvar} = {max_sweep}')
-    if firstPlot:
-        lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))
-        firstPlot = False
-    ax.set_ylim(0, max(max_ylim))
-    ax.set_xlim(0, 12)
-    ax.set_xlabel('month')
-    ax.set_ylabel(ylab)
-
+    fig = plt.figure(figsize=(10, 8*ny))
+    for s in df[sweepvar].unique():
+        sdf = df[(df[sweepvar] == s)]
+        ax = fig.add_subplot(ny, nx, f)
+        f += 1
+        max_ylim = []
+        for i, (m,mdf) in enumerate(sdf.groupby('emodom')):
+            # plot mean, min and max of seeds
+            ylim_up = np.max(mdf[channel])*1.1
+            if channel == 'prevalence' or channel == 'prevalence_2to10':
+                ylim_up = min(ylim_up, 1)
+            max_ylim.append(ylim_up)
+            xmean = mdf.groupby('month')['month'].agg(np.mean)
+            ymean, ylow, yup = get_ysumstats(mdf, 'month', channel, use_std)
+            ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{m}", color=color_palette[i])
+            ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[i])
+            ax.title.set_text(f'{sweepvar} = {s}')
+        if firstPlot:
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))
+            firstPlot = False
+        ax.set_ylim(0, max(max_ylim))
+        ax.set_xlim(1, 12)
+        ax.set_xlabel('month')
+        ax.set_ylabel(ylab)
     fname = f'monthly_{channel}_by_{sweepvar}_age{agegrp}'
-    plt.tight_layout()
-    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,), bbox_inches='tight')
-
-    # fig.savefig(os.path.join(wdir, f'{fname}_legend.pdf'), bbox_extra_artists=(lg,))
+    fig.savefig(os.path.join(wdir, f'{fname}.pdf'),bbox_extra_artists=(lg,), bbox_inches='tight')
+    plt.close()
 
 # Plots by sweeps and channels
 def sweep_by_channel_plot(wdir, emodom, x_var, channel, sweepvar, facet_var, agegrp='0-5', use_std=False):
@@ -506,14 +431,19 @@ def sweep_by_channel_plot(wdir, emodom, x_var, channel, sweepvar, facet_var, age
 def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp=None, use_std=False):
     df, wdir = get_emodom_df(wdir, emodom, mth=True, timeseries=True)
 
+    if channel == 'prevalence_2to10':
+        ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
+    else:
+        ylab = channel.replace('_', ' ')
+
     if facet_var != 'ageGroup':
         df = df[(df.ageGroup == agegrp)]
     df['date'] = pd.to_datetime(df['date'])
 
-    caption_txt = ''
+    #caption_txt = ''
     if 'cm_clinical' not in [sweepvar, facet_var]:
         selected_cm = np.min(df.cm_clinical)
-        caption_txt = caption_txt + f'cm = {selected_cm}; '
+        #caption_txt = caption_txt + f'cm = {selected_cm}; '
         df = df[(df.cm_clinical == selected_cm)]
 
     if 'seasonality' not in [sweepvar, facet_var]:
@@ -521,12 +451,12 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
             selected_season = 'seasonal'
         else:
             selected_season = df['seasonality'].unique()[0]
-        caption_txt = caption_txt + f'season = {selected_season}; '
+        #caption_txt = caption_txt + f'season = {selected_season}; '
         df = df[(df.seasonality == selected_season)]
 
     if 'eir' not in [sweepvar, facet_var]:
         selected_eir = np.max(df.eir)
-        caption_txt = caption_txt + f'annual eir = {selected_eir}; '
+        #caption_txt = caption_txt + f'annual eir = {selected_eir}; '
         df = df[(df.eir == selected_eir)]
 
     if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
@@ -534,68 +464,77 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
 
     unique_groups = df[sweepvar].unique()
     unique_facets = df[facet_var].unique()
+    unique_facets = sorted(unique_facets)
     unique_facets = np.sort(unique_facets)
-    #This is code meant for the current stage of our project, to show only the max sweepvar we requested in the monthly timeseries plots
-    #if you delete this code, it will show all sweepvar's requested
-    if len(unique_facets) >= 2:
-        unique_facets = unique_facets[-2:]
 
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('husl', num_colors)
     firstPlot = True
-    #changing the 2 next to sharex=True, will increase the number of columns 
-    fig, axes = plt.subplots(max(int(len(unique_facets) / 3),1), 2, sharex=True,sharey=True,  figsize=(16, 6))
+    nx = 1
+    ny = len(df[facet_var].unique())
+    f = 1
+    fig = plt.figure(figsize=(10, 10*ny))
     # Iterate through each facet and plot the lines for each group
-    for facet_value, ax in zip(unique_facets, axes.ravel()):
-        facet_data = df[df[facet_var] == facet_value]
-        for p, (group_val, pdf) in enumerate(facet_data.groupby([sweepvar])):
+    for fi in unique_facets:
+        fdf = df[df[facet_var] == fi]
+        ax = fig.add_subplot(ny,nx,f)
+        f += 1
+        max_ylim = []
+        for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
+            ylim_up = np.max(sdf[channel]) * 1.1
+            if channel == 'prevalence' or channel == 'prevalence_2to10':
+                ylim_up = min(ylim_up, 1)
+            max_ylim.append(ylim_up)
             # plot mean, min and max of seeds
-            agg_results = pdf.groupby('date')[channel].agg(['mean']).reset_index()
+            agg_results = sdf.groupby('date')[channel].agg(['mean']).reset_index()
             xmean = agg_results['date']
-            ymean, ylow, yup = get_ysumstats(pdf, 'date', channel, use_std)
-            ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{group_val}", color=color_palette[p])
-            ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[p])
-            upper_ylim = np.max(pdf[channel])
-            ax.set_ylim(bottom=0, top=max(round(upper_ylim * 1.25, 3), .1))
-            ax.set_xlabel('Year')
-            ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
-            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-            ax.set_title(f"{facet_var} = {facet_value}")
+            ymean, ylow, yup = get_ysumstats(sdf, 'date', channel, use_std)
+            ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{s}", color=color_palette[i])
+            ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[i])
         if firstPlot:
-            lg = ax.legend(loc='upper left')
-            ax.set_ylabel(channel)
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))
             firstPlot = False
-
-    plt.subplots_adjust(left=0.13, right=0.95, bottom=0.15, top=0.9, wspace=0.15, hspace=0.4)
-    plt.text(0.4, -0.35, f'{caption_txt}', rotation=-0, fontsize=12)
-
-    # Adjust layout to avoid overlapping
-    # fig.tight_layout()
-
+        ax.set_ylabel(ylab)
+        ax.set_ylim(0, max(max_ylim))
+        ax.set_xlabel('Year')
+        ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+        ax.set_title(f"{facet_var} = {fi}")
+    #plt.subplots_adjust(left=0.13, right=0.95, bottom=0.15, top=0.9, wspace=0.15, hspace=0.4)
+    #plt.text(0.4, -0.35, f'{caption_txt}', rotation=-0, fontsize=12)
     fname = f'timeseries_monthly_{channel}_by_{sweepvar}_age{agegrp}'
-    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,))
+    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    plt.close()
 
 
 def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp=None, use_std=False):
     df, wdir = get_emodom_df(wdir, emodom, mth=False, timeseries=True)
 
+    if channel == 'prevalence_2to10':
+        ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
+    else:
+        ylab = channel.replace('_', ' ')
+
     if facet_var != 'ageGroup':
         df = df[(df.ageGroup == agegrp)]
 
-    caption_txt = ''
+    #caption_txt = ''
     if 'cm_clinical' not in [sweepvar, facet_var]:
         selected_cm = np.min(df.cm_clinical)
-        caption_txt = caption_txt + f'cm = {selected_cm}; '
+        #caption_txt = caption_txt + f'cm = {selected_cm}; '
         df = df[(df.cm_clinical == selected_cm)]
 
     if 'seasonality' not in [sweepvar, facet_var]:
-        selected_season = df['seasonality'].unique()[0]
-        caption_txt = caption_txt + f'season = {selected_season}; '
+        if 'seasonal' in df.seasonality.unique():
+            selected_season = 'seasonal'
+        else:
+            selected_season = df['seasonality'].unique()[0]
+        #caption_txt = caption_txt + f'season = {selected_season}; '
         df = df[(df.seasonality == selected_season)]
 
     if 'eir' not in [sweepvar, facet_var]:
         selected_eir = np.max(df.eir)
-        caption_txt = caption_txt + f'annual eir = {selected_eir}; '
+        #caption_txt = caption_txt + f'annual eir = {selected_eir}; '
         df = df[(df.eir == selected_eir)]
 
     if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
@@ -603,68 +542,69 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
 
     unique_groups = df[sweepvar].unique()
     unique_facets = df[facet_var].unique()
+    unique_facets = sorted(unique_facets)
     unique_facets = np.sort(unique_facets)
-    #This is code meant for the current stage of our project, to show only the max sweepvar we requested in the annual timeseries plots
-    #if you delete this code, it will show all sweepvar's requested
-    if len(unique_facets) >= 2:
-        unique_facets = unique_facets[-2:]
-
+    
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('husl', num_colors)
     firstPlot = True
-    upper_ylim = np.max(df[channel])
-
-    # changing the 2 before sharex=True will increase the number of columns
-    fig, axes = plt.subplots(max(int(len(unique_facets) / 3),1), 2, sharex=True, sharey=True, figsize=(16, 6))
-    for facet_value, ax in zip(unique_facets, axes.ravel()):
-        facet_data = df[df[facet_var] == facet_value]
-        for p, (group_val, pdf) in enumerate(facet_data.groupby([sweepvar])):
+    nx = 1
+    ny = len(unique_facets)
+    f = 1
+    fig = plt.figure(figsize=(10,10*ny))
+    for fi in unique_facets:
+        fdf = df[df[facet_var] == fi]
+        ax = fig.add_subplot(ny,nx,f)
+        f += 1
+        max_ylim = []
+        for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
+            ylim_up = np.max(sdf[channel]) * 1.1
+            if channel == 'prevalence' or channel == 'prevalence_2to10':
+                ylim_up = min(ylim_up,1)
+            max_ylim.append(ylim_up)
             # plot mean, min and max of seeds
-            agg_results = pdf.groupby('year')[channel].agg(['mean']).reset_index()
+            agg_results = sdf.groupby('year')[channel].agg(['mean']).reset_index()
             xmean = agg_results['year']
-            ymean, ylow, yup = get_ysumstats(pdf, 'year', channel, use_std)
-            ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{group_val}", color=color_palette[p])
-            ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[p])
-            # if max(yup) > upper_ylim:
-            #     upper_ylim = max(yup)
-            ax.set_ylim(bottom=0, top=max(round(upper_ylim * 1.25, 3), .1))
-            ax.set_xlabel('Year')
-            ax.set_title(f"{facet_var} = {facet_value}")
+            ymean, ylow, yup = get_ysumstats(sdf, 'year', channel, use_std)
+            ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{s}", color=color_palette[i])
+            ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[i])
         if firstPlot:
-            lg = ax.legend(loc='upper left')  # , title='Model'
-            ax.set_ylabel(channel)
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))  # , title='Model'
             firstPlot = False
-
-    plt.subplots_adjust(left=0.13, right=0.95, bottom=0.15, top=0.9, wspace=0.15, hspace=0.4)
-    plt.text(0.4, -0.35, f'{caption_txt}', rotation=-0, fontsize=12)
-    # Adjust layout to avoid overlapping
-    # plt.tight_layout()
-
+        ax.set_ylabel(channel)
+        ax.set_ylim(0, max(max_ylim))       
+        ax.set_xlabel('Year')
+        ax.set_ylabel(ylab)
+        ax.set_title(f"{facet_var} = {f}")
+    #plt.subplots_adjust(left=0.13, right=0.95, bottom=0.15, top=0.9, wspace=0.15, hspace=0.4)
+    #plt.text(0.4, -0.35, f'{caption_txt}', rotation=-0, fontsize=12)
     fname = f'timeseries_annual_{channel}_by_{sweepvar}_age{agegrp}'
-    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,))
+    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    plt.close()
 
-
-def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality', use_std=False):
+def old_age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality', use_std=False):
     df, wdir = get_emodom_df(wdir, emodom, mth=False, timeseries=True)
-    caption_txt = ''
-
+    
+    if channel == 'prevalence_2to10':
+        ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
+    else:
+        ylab = channel.replace('_', ' ')
+    
+    #caption_txt = ''
     if facet_var == 'ageGroup':
         facet_var = 'eir'
     if 'cm_clinical' not in [sweepvar, facet_var]:
         selected_cm = np.min(df.cm_clinical)
-        caption_txt = caption_txt + f'cm = {selected_cm}; '
+        #caption_txt = caption_txt + f'cm = {selected_cm}; '
         df = df[(df.cm_clinical == selected_cm)]
-
     if 'seasonality' not in [sweepvar, facet_var]:
         selected_season = df['seasonality'].unique()[0]
-        caption_txt = caption_txt + f'season = {selected_season}; '
+        #caption_txt = caption_txt + f'season = {selected_season}; '
         df = df[(df.seasonality == selected_season)]
-
     if 'eir' not in [sweepvar, facet_var]:
         selected_eir = np.max(df.eir)
-        caption_txt = caption_txt + f'annual eir = {selected_eir}; '
+        #caption_txt = caption_txt + f'annual eir = {selected_eir}; '
         df = df[(df.eir == selected_eir)]
-
     if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
         raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
 
@@ -694,14 +634,14 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
                 upper_ylim = max(yup)
             ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{group_val}", color=color_palette[p])
             ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[p])
-            ax.set_ylim(bottom=0, top=max(round(upper_ylim * 1.1, 3), 0.1))
-            ax.tick_params(axis='x', labelrotation = 45)
-            ax.set_xlabel('Age (years)')
-            ax.set_ylabel(channel)
-            ax.set_title(f"{facet_var} = {facet_value}")
         if firstPlot:
-            lg = ax.legend(loc='upper left')  # , title='Model'
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))  # , title='Model'
             firstPlot = False
+        ax.set_ylim(bottom=0, top=max(round(upper_ylim * 1.1, 3), 0.1))
+        ax.tick_params(axis='x', labelrotation = 45)
+        ax.set_xlabel('Age (years)')
+        ax.set_ylabel(ylab)
+        ax.set_title(f"{facet_var} = {facet_value}")
 
     # Remove the second subplot when there's only one facet
     if len(unique_facets) == 1:
@@ -710,13 +650,81 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
     else:
         plt.subplots_adjust(bottom=0.15,  top=0.9, left=0.13, right=0.95, wspace=0.3, hspace=0.3)
 
-    plt.text(0.4, -0.35, f'{caption_txt}', rotation=-0, fontsize=12) # fix caption ylabel overlap
+    fname = f'agecurves_{channel}_by_{sweepvar}'
+    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    plt.close()
 
-    # Adjust layout to avoid overlapping
-    # plt.tight_layout()
+def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality', use_std=False):
+    df, wdir = get_emodom_df(wdir, emodom, mth=False, timeseries=True)
+    
+    if channel == 'prevalence_2to10':
+        ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
+    else:
+        ylab = channel.replace('_', ' ')
+    
+    #caption_txt = ''
+    if facet_var == 'ageGroup':
+        facet_var = 'eir'
+    if 'cm_clinical' not in [sweepvar, facet_var]:
+        selected_cm = np.min(df.cm_clinical)
+        #caption_txt = caption_txt + f'cm = {selected_cm}; '
+        df = df[(df.cm_clinical == selected_cm)]
+
+    if 'seasonality' not in [sweepvar, facet_var]:
+        selected_season = df['seasonality'].unique()[0]
+        #caption_txt = caption_txt + f'season = {selected_season}; '
+        df = df[(df.seasonality == selected_season)]
+
+    if 'eir' not in [sweepvar, facet_var]:
+        selected_eir = np.max(df.eir)
+        #caption_txt = caption_txt + f'annual eir = {selected_eir}; '
+        df = df[(df.eir == selected_eir)]
+
+    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
+        raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+
+    df = df.groupby(['ageGroup', 'seed', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
+
+    firstPlot = True
+    unique_groups = df[sweepvar].unique()
+    unique_facets = df[facet_var].unique()
+    unique_facets = sorted(unique_facets)
+
+    num_colors = len(unique_groups)
+    color_palette = sns.color_palette('husl', num_colors)
+
+    # Create subplots, always two, but modify the second subplot when there's only one facet
+    nx = 1
+    ny = len(unique_facets)
+    f = 1
+    fig = plt.figure(figsize=(10,10*ny))
+    for fi in unique_facets:
+        fdf = df[df[facet_var] == fi]
+        ax = fig.add_subplot(ny,nx,f)
+        f += 1
+        max_ylim = []
+        for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
+            ylim_up = np.max(sdf[channel])*1.1
+            if channel == 'prevalence' or channel == 'prevalence_2to10':
+                ylim_up = min(ylim_up,1)
+            max_ylim.append(ylim_up)
+            agg_results = sdf.groupby('ageGroup')[channel].agg(['mean']).reset_index()
+            xmean = agg_results['ageGroup']
+            ymean, ylow, yup = get_ysumstats(sdf, 'ageGroup', channel, use_std)
+            ax.plot(xmean, ymean, '-', linewidth=0.8, label=f"{s}", color=color_palette[i])
+            ax.fill_between(xmean, ylow, yup, alpha=0.1, color=color_palette[i])
+        if firstPlot:
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1))  # , title='Model'
+            firstPlot = False
+        ax.set_ylim(0, max(max_ylim))
+        ax.tick_params(axis='x', labelrotation = 45)
+        ax.set_xlabel('Age (years)')
+        ax.set_ylabel(ylab)
+        ax.set_title(f"{facet_var} = {f}")
 
     fname = f'agecurves_{channel}_by_{sweepvar}'
-    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,))
+    fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    plt.close()
 
 
 def anovas(wdir, emodom):
@@ -809,9 +817,11 @@ def rmse(wdir, emodom):
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    out_dir = args.directory
-    emodom = args.emodom
+    #args = parse_args()
+    #out_dir = args.directory
+    #emodom = args.emodom
+    out_dir = "/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims/test_sims_2023_12_11_23_04_03/"
+    emodom = ['EMOD', 'OpenMalaria', 'MalSim']
     if isinstance(emodom, str):
         emodom = [emodom]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
@@ -833,13 +843,11 @@ if __name__ == "__main__":
         print('#----- Start running pfpr-eir-incidence relationship plots -----#')
         sweepvar = 'emodom'
         eir_to_prevalence2to10(out_dir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
-        # eir_to_prevalence2to10(job_directory, emodom, sweepvar=sweepvar, eir_val='inputEIR')
         input_to_simulated_eir(out_dir, emodom, sweepvar=sweepvar)
 
         channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence']
-        ymaxlist = [6, 0.1, 1]
         for c, channel in enumerate(channel_list):
-            prevalence2to10_to_incidence(out_dir, emodom, channel=channel, y_lim=ymaxlist[c])
+            prevalence2to10_to_incidence(out_dir, emodom, channel=channel)
 
         if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
             channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR', 'prevalence_2to10']
