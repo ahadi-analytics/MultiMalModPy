@@ -817,11 +817,9 @@ def rmse(wdir, emodom):
 
 
 if __name__ == "__main__":
-    #args = parse_args()
-    #out_dir = args.directory
-    #emodom = args.emodom
-    out_dir = "/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims/test_sims_2023_12_11_23_04_03/"
-    emodom = ['EMOD', 'OpenMalaria', 'MalSim']
+    args = parse_args()
+    out_dir = args.directory
+    emodom = args.emodom
     if isinstance(emodom, str):
         emodom = [emodom]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
