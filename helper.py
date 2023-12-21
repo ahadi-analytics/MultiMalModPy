@@ -6,7 +6,7 @@ import pickle
 from datetime import datetime
 import pandas as pd
 import numpy as np
-from EMOD.scaffolds.dynamicEIR import eir_to_lhs
+from EMOD.scaffolds.dynamicEIR import eir_to_lhs, eir_to_lhs_regr
 from scipy.interpolate import interp1d
 user = os.getlogin()
 
@@ -77,7 +77,7 @@ def check_exp_inputs(exp):
     Args:
         exp (custom class): Custom object that includes all experiment specifications
     """
-    if exp.emod_step and exp.num_seeds_burnin >1 & exp.num_seeds_burnin is not exp.num_seeds:
+    if (exp.emod_step and exp.num_seeds_burnin >1) and (exp.num_seeds_burnin != exp.num_seeds):
         raise ValueError('num_seeds_burnin needs to be 1 or equal to num_seeds')
 
 def get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step = None):
@@ -273,7 +273,7 @@ def create_scenarios_csv(exp, col_list=None, add_cols=True):
         df['cm_severe'] = np.where(df['cm_clinical'] * 1.15 > exp.cm_severe,
                                    np.minimum(df['cm_clinical'] * 1.15, 1), exp.cm_severe)
         df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
-        df['x_Temporary_Larval_Habitat'] = eir_to_lhs(df=df, population=exp.pop_size)
+        df['x_Temporary_Larval_Habitat'] = eir_to_lhs_regr(df,population=exp.pop_size)
     return df
 
 

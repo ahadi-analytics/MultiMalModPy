@@ -294,7 +294,7 @@ def get_scendf_burnin(exp, emod_serialized_id, manifest, platform, burnin):
 
     serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
     exp_name_burnin = get_burnin_exp_name(serialized_df)
-    scen_df_burnin_path = os.path.join(manifest.job_directory, exp.custom_subdir,  exp.SUITEname,exp_name_burnin)
+    scen_df_burnin_path = os.path.join(exp.suite_directory, exp_name_burnin)
     scen_df_burnin = pd.read_csv(os.path.join(scen_df_burnin_path, 'scenarios.csv'))
     return scen_df_burnin
 

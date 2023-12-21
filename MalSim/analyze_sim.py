@@ -267,7 +267,6 @@ def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables):
     eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
-
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
                         'age_upper','clinical_incidence', 'incidence', 'severe_incidence', 'nHost', 'nPopulation', 'prevalence_2to10', 'prevalence']
     df = load_combined_daily_output(jdir, channels_to_keep)
@@ -472,9 +471,9 @@ if __name__ == "__main__":
             monthly_timeseries(wdir=exp.sim_out_dir, emodom=emodom, channel=channel, sweepvar='emodom', facet_var='eir', agegrp='5-10')
 
         sweepvar = 'cm_clinical'
-        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', y_lim=1)
-        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', y_lim=25)
-        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', y_lim=1)
+        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence')
+        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence')
+        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence')
         input_to_simulated_eir(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar)
         eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='eir')
         eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='eir')

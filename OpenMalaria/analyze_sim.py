@@ -1,9 +1,9 @@
-import pickle
 import os
-import datetime
-import numpy as np
-import pandas as pd
 import argparse
+import pickle
+import datetime
+import pandas as pd
+import numpy as np
 from measures import mm, mmi
 from sample_plots import *
 import sys
@@ -32,7 +32,7 @@ def parse_args():
 
 def to_df(exp):
     """
-    Combined single OpenMalaria experiment outputs across scenarios into a  DataFrame.
+    Combined single OpenMalaria experiment outputs across scenarios into a DataFrame.
     Args:
         exp: The experiment object including information about the job_directory where outputs are stored and number of scenarios to expect
     Returns:
@@ -892,9 +892,9 @@ if __name__ == "__main__":
             monthly_timeseries(wdir=exp.sim_out_dir, emodom=emodom, channel=channel, sweepvar='emodom', facet_var='eir', agegrp='5-10')
         
         sweepvar = 'cm_clinical'
-        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', y_lim=1)
-        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', y_lim=6)
-        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', y_lim=0.1)
+        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence')
+        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence')
+        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence')
         eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
         eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='inputEIR')
         input_to_simulated_eir(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar)

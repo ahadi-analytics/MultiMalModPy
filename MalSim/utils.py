@@ -6,7 +6,7 @@ import pandas as pd
 user = os.getlogin()
 
 
-def submit_analyze_MalSim(exp, t='01:00:00', memG=4):
+def submit_analyze_MalSim(exp, t='01:00:00', memG=7):
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_MSim',
                                      mem_scl=exp.mem_increase_factor)
     pycommand = f'\ncd /home/{user}/model-characterization/MalSim' \
