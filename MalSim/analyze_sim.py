@@ -30,11 +30,7 @@ def parse_args():
 
 def load_combined_daily_output(job_directory, channels=None, save_daily=False):
     daily = pd.DataFrame()
-    if exp.emod_step is None: 
-        nSims = exp.nexps
-    else:
-        nSims = int(exp.nexps/exp.num_seeds)
-    for i in range(1, nSims + 1):
+    for i in range(1, exp.nexps + 1):
         i_df = pd.read_csv(os.path.join(job_directory, f'malsim_jobs/daily_{i}.csv'))
         if channels is not None:
             i_df = i_df[channels]
@@ -55,6 +51,7 @@ def InputEIRAnalyzer(jdir, wdir):
 
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'nPopulation', 'EIR_gamb']
     df = load_combined_daily_output(jdir, channels_to_keep + ['ageGroup'])
+    df = df[df['ageGroup'] == '0-0']
 
     df = df[channels_to_keep]
     df['EIR_gamb'] = df['EIR_gamb'] / df['nPopulation']
