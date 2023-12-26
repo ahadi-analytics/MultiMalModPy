@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 from sample_plots import *
 import sys
-
 sys.path.append('../')
 from benchmark_plots import *
 
@@ -31,7 +30,10 @@ def parse_args():
 
 def load_combined_daily_output(job_directory, channels=None, save_daily=False):
     daily = pd.DataFrame()
-    nSims = int(exp.nexps/exp.num_seeds)
+    if exp.emod_step is None: 
+        nSims = exp.nexps
+    else:
+        nSims = int(exp.nexps/exp.num_seeds)
     for i in range(1, nSims + 1):
         i_df = pd.read_csv(os.path.join(job_directory, f'malsim_jobs/daily_{i}.csv'))
         if channels is not None:
@@ -53,7 +55,7 @@ def InputEIRAnalyzer(jdir, wdir):
 
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'nPopulation', 'EIR_gamb']
     df = load_combined_daily_output(jdir, channels_to_keep + ['ageGroup'])
-    df = df[df['ageGroup'] == '0-0']
+
     df = df[channels_to_keep]
     df['EIR_gamb'] = df['EIR_gamb'] / df['nPopulation']
 
@@ -203,10 +205,9 @@ def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables):
     eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
-    sum_channels = ['clinical_incidence', 'incidence', 'severe_incidence', 'nHost']
-    mean_channels = ['nPopulation', 'prevalence_2to10', 'prevalence']
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
-                        'age_upper'] + sum_channels + mean_channels
+                        'age_upper','clinical_incidence', 'incidence', 'severe_incidence', 
+                        'nHost','nPopulation', 'prevalence_2to10', 'prevalence']
     df = load_combined_daily_output(jdir, channels_to_keep)
     df['agebin'] = round(df['age_upper'] / 365, 1)
 
@@ -266,10 +267,9 @@ def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables):
     eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
-    sum_channels = ['clinical_incidence', 'incidence', 'severe_incidence', 'nHost']
-    mean_channels = ['nPopulation', 'prevalence_2to10', 'prevalence']
+
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
-                        'age_upper'] + sum_channels + mean_channels
+                        'age_upper','clinical_incidence', 'incidence', 'severe_incidence', 'nHost', 'nPopulation', 'prevalence_2to10', 'prevalence']
     df = load_combined_daily_output(jdir, channels_to_keep)
     df['agebin'] = round(df['age_upper'] / 365, 1)
 
@@ -440,7 +440,7 @@ if __name__ == "__main__":
 
     # Execute all analyzers
     InputEIRAnalyzer(jdir, wdir)
-    SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables, sim_start)
+    SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables)
     BenchmarkAnalyzer(jdir, wdir, sweep_variables)
     MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables)
     AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables)

@@ -570,7 +570,7 @@ class BenchmarkAnalyzer(IAnalyzer):
                 np.mean).reset_index()  # mean across monitoring years and runs
 
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
-            cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
+            #cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
             cdf['simulatedEIR'] = cdf['eir']
             cdf['inputEIR'] = ''
         else:
@@ -710,7 +710,7 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
             eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR']].agg(
                 np.mean).reset_index()  # mean across years and runs
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
-            cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
+            #cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
             cdf['inputEIR'] = ''
         else:
             cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['month'])
@@ -842,7 +842,7 @@ class AnnualBenchmarkAnalyzer(IAnalyzer):
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
 
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
-            cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
+            #cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
             cdf['simulatedEIR'] = cdf['eir']
             cdf['inputEIR'] = ''
         else:
@@ -970,7 +970,7 @@ if __name__ == "__main__":
                                     'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
                                     'Infectious Vectors', 'EIR']
             all_age_sample_plot(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags,
-                                inset_channels=channels_inset_chart)
+                                sample_channels=channels_inset_chart)
             sample_plot_yr(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags)
 
             if exp.emod_step != 'burnin':

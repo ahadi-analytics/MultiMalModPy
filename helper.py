@@ -7,6 +7,7 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 from EMOD.scaffolds.dynamicEIR import eir_to_lhs
+from scipy.interpolate import interp1d
 user = os.getlogin()
 
 def parse_args():
@@ -162,20 +163,39 @@ def get_seasonal_eir():
         - seasonal: season_month rescaled within 0 to 1
         - perennial: perennial values per month
     """
-
     # Define the functional form of the non-perennial, seasonal setting
     # season_daily =  1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365))  ## used in EMOD-OM benchmarking
-    season_daily = 1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365)) / 2 + np.cos(
-        2 * np.pi * (np.arange(0, 365) / 365)) / 2
+    season_month = [56.40649336, 37.27189056, 37.52493552, 36.99289173, 36.58402723, 33.48317104, 33.38009291, 33.906819, 37.87905792, 43.51349906, 60.33004287, 62.49708256]
+    season_daily = monthly_to_daily_EIR(season_month)
+    seasonal = [0.110650869, 0.073115112, 0.073611502, 0.072567808, 0.071765752, 0.065682898, 0.065480693, 0.066513955, 0.074306173, 0.085359082, 0.118347574, 0.122598589]
 
-    season_month = [season_daily[1 + int(i * (365 / 12))] for i in range(0, 12)]
-
-    seasonal = season_month / np.max(season_month)
     # eir_sum = sum(season_month)
     # seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
     perennial = [x / 12 for x in [1] * 12]
 
     return season_daily, season_month, seasonal, perennial
+
+def monthly_to_daily_EIR(monthly_EIR):
+    '''
+    takes monthly EIR list and converts to daily using cubic spline interpolation
+    :param monthly_EIR: list of monthly EIRs
+    :type monthly_EIR: list of floats
+    :return: list of daily EIRs
+    :rtype: list of floats
+    '''
+    if len(monthly_EIR) == 12:
+        monthly_EIR.append((monthly_EIR[0] + monthly_EIR[-1]) / 2)
+    elif len(monthly_EIR) != 13:
+        raise Exception('Monthly EIR should have 12 or 13 values')
+    x_monthly = np.linspace(0, 364, num=13, endpoint=True)
+    x_daily = np.linspace(0, 364, num=365, endpoint=True)
+    EIR = interp1d(x_monthly, monthly_EIR, kind='cubic')
+    daily_EIR = EIR(x_daily)
+    daily_EIR /= 30
+    daily_EIR = daily_EIR.tolist()
+    daily_EIR = [max(x, 0) for x in daily_EIR]
+
+    return daily_EIR
 
 
 def rep_scen_df(df):
