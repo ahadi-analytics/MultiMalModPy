@@ -22,11 +22,11 @@ exp_name = f'test_sims_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'  # Can be chang
 
 # EMOD flags for how to run simulations (in one run or separated into burnin + pickup)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
-emod_step = 'None'  # emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
+emod_step = None  # emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
 emod_serialized_id = ''  # example, insert your exp_id!
 
 # Define which models to run
-models_to_run = ['MalSim', 'OpenMalaria', 'EMOD']  # 'EMOD','OpenMalaria', 'MalSim'
+models_to_run = ['EMOD','OpenMalaria','MalSim']  # 'EMOD','OpenMalaria', 'MalSim'
 
 # Specify OpenMalaria XML and survey step
 om_scaffold = "R0000GA" # defining which OpenMalaria XML scaffold to use
@@ -41,10 +41,10 @@ pop_size = 1000  # 1000 for testing
 agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
 
 num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
-num_seeds = 3  # suggested minimum 3
+num_seeds = 5  # suggested minimum 3, in production 5-10
 start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
 end_year = 2005  # end of pickup and monitoring period
-burnin = 80  # Duration of burnin (pre-monitoring) period
+burnin = 5  # Duration of burnin (pre-monitoring) period
 
 # Simulation duration, start and end configuration
 sim_start_year_em, monitoring_years, sim_dur_years = get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step)
@@ -70,20 +70,23 @@ if emod_step != 'pickup':
 # Define case management start and coverage
 # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
 cm_start = 1
-cm_clinical = [0.2, 0.4]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
+cm_clinical = [0.0]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
 cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
 detectionLimit = 40
 
 # Transmission and seasonality configuration
 seasonality = ["seasonal"] # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
-
-eir = [0.1,4,16,64,128,256]# [0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+#eir = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,
+       #52.36,92.85,164.09,290.00,512.52,905.79,1600.82,2829.15,5000.00] #np.logspace(-1,3.69897000434,20) This is for x_temp_larval
+#eir = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25,
+       #30, 35, 40, 45, 50, 65, 70, 80, 90, 100, 120, 150, 200, 250, 500, 750, 1000] #Aurelien's suggested EIRS
+eir = [1,128,256]
 
 # Entomology mode: Dynamic EIR configuration if selected
 season_daily, season_month, seasonal, perennial = get_seasonal_eir()
 
 # Directory setup and analyzer scripts
-suite_directory, job_directory, sim_out_dir = make_dirs(manifest, SUITEname, exp_name, custom_subdir)
+suite_directory, job_directory, sim_out_dir = make_dirs(manifest, SUITEname, exp_name, custom_subdir) # we are currenlty only going to run one seasonality at a time
 emod_analyzer = ['analyze_sim.py']
 openmalaria_analyzer = ['analyze_sim.py']
 
@@ -123,9 +126,9 @@ exp.num_seeds = num_seeds # needed so MalSim doesn't do additional jobs
 
 # Set platform and associated values, such as the maximum number of jobs to run at one time
 platform = Platform(manifest.selected_platform, job_directory=suite_directory,
-                    mem_per_cpu=int(1000 * mem_increase_factor), partition=manifest.sh_hpc_config['p'],
+                    mem_per_cpu=int(5000 * mem_increase_factor), partition=manifest.sh_hpc_config['p'],
                     time='03:00:00', account=manifest.sh_hpc_config['A'],
-                    modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=50)  # mem_per_cpu default: 2048
+                    modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=300)  # mem_per_cpu default: 2048
 
 if emod_step == 'pickup':
     scen_df = get_scendf_burnin(exp, emod_serialized_id, manifest, platform,

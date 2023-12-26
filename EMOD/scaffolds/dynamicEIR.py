@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def eir_to_lhs_regr(eir, cm_clinical, population, seasonality='perennial'):
+def eir_to_lhs_regr(df=None, population=1000):
     """
     Estimates Larval habitat scalar (LHS) value using a regression model based on
     Entomological Inoculation Rate (EIR),  clinical case management (cm) and seasonality.
@@ -14,36 +14,41 @@ def eir_to_lhs_regr(eir, cm_clinical, population, seasonality='perennial'):
     Returns:
     - lhs (float): The estimated larval habitat scalar.
     """
-
     # model coefficients, preliminary
     # there is certainly a better more efficient and robust way of determining lhs from eir and cm by seasonality
-
     # Regression model coefficients based on cm_clinical and seasonality
-    if seasonality == 'perennial':
-        ## these were run for a population of 5000 people
-        glm_bycm = {0: [-10.278, 0.996],
-                    0.2: [-8.09, 1.07],
-                    0.4: [-22.755, 1.206],
-                    0.6: [-19.437, 1.351],
-                    0.8: [-41.455, 1.648],
-                    1: [-29.721, 2.126]}
+    output = []
+    for index, row in df.iterrows():
+        seasonality = row['seasonality']
+        eir = row['eir']
+        cm_clinical = row['cm_clinical']
+        if seasonality == 'perennial':
+            ## these were run for a population of 5000 people
+            glm_bycm = {0: [-37.53061, 5.637571]} #the new values for 0 don't look all that good old values were: -10.278,0.996
+                        #0.2: [-8.09, 1.07],
+                        #0.4: [-22.755, 1.206],
+                        #0.6: [-19.437, 1.351],
+                        #0.8: [-41.455, 1.648],
+                        #1: [-29.721, 2.126]}
 
-    elif seasonality == 'seasonal':
-        ## these were run for a population of 5000 people
-        glm_bycm = {0: [24.772, 5.251],
-                    0.2: [34.785, 5.665],
-                    0.4: [1.479, 6.219],
-                    0.6: [-46.094, 7.312],
-                    0.8: [-148.27, 9.031],
-                    1: [-170.58, 11.65]}
-    else:
-        raise ValueError(f'{seasonality} is not a valid seasonality')
+        elif seasonality == 'seasonal':
+            ## these were run for a population of 5000 people
+            glm_bycm = {0: [-11.27711, 4.956666]} #old values were: 24.772, 5.251
+                        #0.2: [34.785, 5.665],
+                        #0.4: [1.479, 6.219],
+                        #0.6: [-46.094, 7.312],
+                        #0.8: [-148.27, 9.031],
+                        #1: [-170.58, 11.65]}
+        else:
+            raise ValueError(f'{seasonality} is not a valid seasonality')
 
-    # Calculate LHS using regression model
-    lhs = glm_bycm[cm_clinical][0] + eir * glm_bycm[cm_clinical][1]
-    lhs = [l / (5000 / population) for l in lhs]
-
-    return lhs
+        # Calculate LHS using regression model
+        lhs = glm_bycm[cm_clinical][0] + float(eir) * glm_bycm[cm_clinical][1]
+        lhs = lhs / (5000 / population)
+        if lhs < 0:
+            lhs = 0
+        output.append(lhs)
+    return output
 
 
 def eir_to_lhs(eir=None, cm_clinical=None, population=None, seasonality='perennial', df=None):

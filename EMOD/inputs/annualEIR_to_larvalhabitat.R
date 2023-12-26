@@ -7,31 +7,9 @@ library(tidyr)
 theme_set(theme_bw())
 datetoday <- Sys.Date()
 
-if (Sys.getenv("OS") == "Windows_NT") {
-  box <- 'NU Malaria Modeling Dropbox'
-  projdir <- file.path(Sys.getenv('USERPROFILE'), box, 'projects/EMOD_OM')
-}else {
-  username <- Sys.getenv('USER') #Sys.getenv('USERNAME')
-  projdir <- file.path('/projects/b1139/emod-om/simulation_outputs', username)
-}
+wdir <- "/projects/b1139/emod-om/simulation_outputs/rer4177/larval_habitat_calibration/test_sims_2023_12_15_12_43_16/"
 
-
-#exp_name <- 'sim_EMOD_dynamic_lhm_cm_sweep'
-exp_name <- 'sim_EMOD_dynamic_exampleShift3m_LHSsweep'
-subdir = 'seasonal_sims'  #'perennial_sims'
-wdir <- file.path(projdir, 'simulation_outputs', subdir)
-proj_fig_dir <- file.path(projdir, 'figures')
-
-# dat <- fread(file.path(wdir, exp_name,  'em', 'annual_transmission_report.csv')) %>% mutate(exp_name = exp_name)
-# dat_addon <- fread(file.path(wdir, 'sim_EMOD_dynamic_lhm_cm_sweep_cor', 'em', 'annual_transmission_report.csv')) %>% mutate(exp_name = 'addon')
-# dat_addon2 <- fread(file.path(wdir, 'sim_EMOD_dynamic_lhm_cm_sweep_addon', 'em', 'annual_transmission_report.csv')) %>% mutate(exp_name = 'addon2')
-dat <- fread(file.path(projdir, 'simulation_outputs/seasonal_sims', exp_name, 'em', 'annual_transmission_report.csv')) %>% mutate(exp_name = exp_name)
-dat_addon <- fread(file.path(projdir, 'simulation_outputs/seasonal_sims', 'sim_EMOD_dynamic_exampleShift3m_LHSsweep_addon', 'em', 'annual_transmission_report.csv')) %>% mutate(exp_name = 'addon')
-dat_addon2 <- fread(file.path(projdir, 'simulation_outputs/seasonal_sims', 'sim_EMOD_dynamic_exampleShift3m_LHSsweep_addon2', 'em', 'annual_transmission_report.csv')) %>% mutate(exp_name = 'addon2')
-
-dat <- dat %>%
-  bind_rows(dat_addon) %>%
-  bind_rows(dat_addon2)
+dat <- fread(file.path(wdir, 'em', 'annual_transmission_report_larval.csv'))
 
 dat$x_Temporary_Larval_Habitat <- round(dat$x_Temporary_Larval_Habitat, 3)
 
@@ -59,7 +37,7 @@ dat <- dat %>%
          eir_grp2 = cut(annualEIR, c(-Inf, 5, Inf)))
 
 
-eir_values <- c(0.1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024)
+eir_values <- c(0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40, 45, 50, 65, 70, 80, 90, 100, 120, 150, 200, 250, 500, 750, 1000)
 xvalues = unique(dat$annualEIR)
 x1_new <- unique(ifelse(xvalues < 1, round(xvalues, 1),
                         ifelse(xvalues < 100, round(xvalues, 0), round(xvalues, -1))))

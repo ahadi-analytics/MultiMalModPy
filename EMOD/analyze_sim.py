@@ -2,15 +2,14 @@ import os
 import argparse
 import pickle
 import datetime
-import time
 import pandas as pd
 import numpy as np
 from idmtools.entities import IAnalyzer
 from idmtools.entities.simulation import Simulation
+from sample_plots import *
 import sys
 sys.path.append('../')
 from benchmark_plots import *
-from EMOD.sample_plots import *
 
 
 def parse_args():
@@ -227,7 +226,6 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         df = df.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
-            time.sleep(5)
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
             eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
@@ -339,7 +337,6 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         df = df.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
-            time.sleep(5)
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
             df = pd.merge(left=df, right=eirdf, on=self.sweep_variables + ['year'])
@@ -445,12 +442,20 @@ class TransmissionReport(IAnalyzer):
         if self.monthly_report:
             df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
             df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
+            
+            #Add Larval Habitat Multipliers into the monthly report
+            xLarval_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
+            df = df.merge(xLarval_df, on='scen_id', how='inner')
+            
             # If specified, save the processed DataFrame to a CSV file named 'monthly_transmission_report.csv'
             df.to_csv(os.path.join(self.working_dir, 'em', 'monthly_transmission_report.csv'), index=False)
 
         df = adf.groupby(['year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
         df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
-
+        #Add Larval Habitat Multipliers into the monthly report
+        xLarval_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
+        df = df.merge(xLarval_df, on='scen_id', how='inner')
+        
         # Save the processed DataFrame to a CSV file named 'annual_transmission_report.csv'
         df.to_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'), index=False)
 
@@ -564,15 +569,12 @@ class BenchmarkAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
-            time.sleep(5)
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
             eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR']].agg(
                 np.mean).reset_index()  # mean across monitoring years and runs
-
+            eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
             #cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
-            cdf['simulatedEIR'] = cdf['eir']
-            cdf['inputEIR'] = ''
         else:
             cdf['simulatedEIR'] = cdf['eir']
             cdf['inputEIR'] = cdf['eir']
@@ -697,7 +699,6 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
-            time.sleep(5)
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'monthly_transmission_report.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['month'])[['Monthly EIR']].agg(
                 np.mean).reset_index()  # mean across years and runs per month
@@ -711,7 +712,6 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
                 np.mean).reset_index()  # mean across years and runs
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
             #cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
-            cdf['inputEIR'] = ''
         else:
             cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['month'])
             cdf['simulatedEIR'] = ''
@@ -837,14 +837,11 @@ class AnnualBenchmarkAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
-            time.sleep(5)
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
-
+            eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
             #cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
-            cdf['simulatedEIR'] = cdf['eir']
-            cdf['inputEIR'] = ''
         else:
             cdf['simulatedEIR'] = cdf['eir']
             cdf['inputEIR'] = cdf['eir']
@@ -898,9 +895,8 @@ if __name__ == "__main__":
                             'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
                             'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
                             'Infectious Vectors', 'Daily EIR']
-
     # Run analyzers
-    with Platform('SLURM_LOCAL', job_directory=exp.suite_directory) as platform:
+    with Platform('SLURM_LOCAL', job_directory=exp.suite_directory,mem_per_cpu=int(5000)) as platform:
 
         all_age_analyzer = [InsetChartAnalyzer(expt_name=exp_name,
                                                channels=channels_inset_chart,
@@ -960,34 +956,36 @@ if __name__ == "__main__":
         manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
                                  partial_analyze_ok=True)
         manager.analyze()
+    
+    # Create sample plots if specified
+    if create_sampleplots:
+        exp_tags = [tag for tag in exp_tags if tag != 'Run_Number'] + ['seed']
+        channels_inset_chart = ['Statistical Population', 'Births', 'New Infections', 'Newly Symptomatic',
+                                'New Clinical Cases', 'New Severe Cases',
+                                'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
+                                'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
+                                'Infectious Vectors', 'EIR']
+        all_age_sample_plot(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags,
+                            sample_channels=channels_inset_chart)
+        sample_plot_yr(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags)
 
-        # Create sample plots if specified
-        if create_sampleplots:
-            exp_tags = [tag for tag in exp_tags if tag != 'Run_Number'] + ['seed']
-            channels_inset_chart = ['Statistical Population', 'Births', 'New Infections', 'Newly Symptomatic',
-                                    'New Clinical Cases', 'New Severe Cases',
-                                    'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
-                                    'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
-                                    'Infectious Vectors', 'EIR']
-            all_age_sample_plot(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags,
-                                sample_channels=channels_inset_chart)
-            sample_plot_yr(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags)
+        if exp.emod_step != 'burnin':
+            sample_plot_mth(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags)
 
-            if exp.emod_step != 'burnin':
-                sample_plot_mth(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags)
+            emodom = ['EMOD']
+            sweepvar = 'eir'
+            monthly_trends(wdir, emodom, channel='clinical_incidence', sweepvar=sweepvar)
+            monthly_trends(wdir, emodom, channel='severe_incidence', sweepvar=sweepvar)
+            monthly_trends(wdir, emodom, channel='prevalence', sweepvar=sweepvar)
+            monthly_trends(wdir, emodom, channel='prevalence_2to10', sweepvar=sweepvar)
+            monthly_trends(wdir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
 
-                emodom = ['EMOD']
-                sweepvar = 'eir'
-                monthly_trends(wdir, emodom, channel='clinical_incidence', sweepvar=sweepvar)
-                monthly_trends(wdir, emodom, channel='severe_incidence', sweepvar=sweepvar)
-                monthly_trends(wdir, emodom, channel='prevalence', sweepvar=sweepvar)
-                monthly_trends(wdir, emodom, channel='prevalence_2to10', sweepvar=sweepvar)
-                # monthly_trends(wdir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
+            channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR','x_Temporary_Larval_Habitat']
+            for channel in channel_list:
+                monthly_timeseries(wdir=exp.sim_out_dir, emodom=emodom, channel=channel, sweepvar='emodom', facet_var='eir', agegrp='5-10')
 
-                sweepvar = 'cm_clinical'
-                prevalence2to10_to_incidence(wdir, emodom, channel='prevalence', y_lim=1)
-                prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', y_lim=6)
-                prevalence2to10_to_incidence(wdir, emodom, channel='severe_incidence', y_lim=0.1)
-                eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
-                eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='inputEIR')
-                input_to_simulated_eir(wdir, emodom, sweepvar=sweepvar)
+            sweepvar = 'cm_clinical'
+            prevalence2to10_to_incidence(wdir, emodom, channel='prevalence')
+            prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence')
+            prevalence2to10_to_incidence(wdir, emodom, channel='severe_incidence')
+            eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
