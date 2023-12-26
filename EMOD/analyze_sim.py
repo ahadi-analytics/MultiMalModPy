@@ -8,6 +8,7 @@ from idmtools.entities import IAnalyzer
 from idmtools.entities.simulation import Simulation
 from sample_plots import *
 import sys
+
 sys.path.append('../')
 from benchmark_plots import *
 
@@ -37,6 +38,8 @@ def parse_args():
         default=None
     )
     return parser.parse_args()
+
+
 
 
 class InsetChartAnalyzer(IAnalyzer):
@@ -226,11 +229,11 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         df = df.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
             eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             df = pd.merge(left=df, right=eirdf, on=self.sweep_variables + ['year'])
-            #df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['simulatedEIR']]
+            # df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['simulatedEIR']]
         else:
             df['simulatedEIR'] = df['eir']
 
@@ -337,17 +340,17 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         df = df.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
             df = pd.merge(left=df, right=eirdf, on=self.sweep_variables + ['year'])
 
-            eirdf_mth = pd.read_csv(os.path.join(self.working_dir, 'em', 'monthly_transmission_report.csv'))
+            eirdf_mth = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_mth.csv'))
             eirdf_mth = eirdf_mth.groupby(self.sweep_variables + ['year', 'month'])[['Monthly EIR']].agg(
                 np.mean).reset_index()
             df = pd.merge(left=df, right=eirdf_mth, on=self.sweep_variables + ['year', 'month'])
 
             df = df.rename(columns={"Monthly EIR": "simulatedEIR"})
-            #df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['Annual EIR']]
+            # df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['Annual EIR']]
         else:
             df['simulatedEIR'] = ''
 
@@ -361,8 +364,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
 
         df.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_mth.csv')), index=False)
 
-
-class TransmissionReport(IAnalyzer):
+class InputEIRAnalyzer(IAnalyzer):
     """
       A class inherited from idmtools IAnalyzer for generating results dataframe on transmission outcome metrics.
      Parameters:
@@ -386,8 +388,8 @@ class TransmissionReport(IAnalyzer):
 
     def __init__(self, expt_name, channels=None, sweep_variables=None, working_dir='./', start_year=2010,
                  selected_year=None, daily_report=False, monthly_report=False, burnin=None):
-        super(TransmissionReport, self).__init__(working_dir=working_dir,
-                                                 filenames=["output/InsetChart.json"])  # ReportMalariaFiltered
+        super(InputEIRAnalyzer, self).__init__(working_dir=working_dir,
+                                               filenames=["output/InsetChart.json"])  # ReportMalariaFiltered
         self.sweep_variables = sweep_variables or ["Run_Number"]
         self.channels = channels or ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
         self.start_year = start_year
@@ -434,30 +436,35 @@ class TransmissionReport(IAnalyzer):
         adf = adf.groupby(['time', 'date', 'day', 'month', 'year'] + grp_channels)[self.channels].agg(
             np.mean).reset_index()
 
+        # Add Larval Habitat Multipliers and sweep variables to EIR dataframe
+        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
+        adf = adf.merge(scen_df, on='scen_id', how='inner')
+        grp_channels = list(set(grp_channels + list(scen_df.columns)))
+
         if self.daily_report:
             # If specified, save the processed DataFrame to a CSV file named 'daily_transmission_report.csv'
-            adf.to_csv(os.path.join(self.working_dir, 'em', 'daily_transmission_report.csv'), index=False)
+            adf.to_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'), index=False)
 
         sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
+
+        # Monthly aggregation - keep months and years
         if self.monthly_report:
             df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
             df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
-            
-            #Add Larval Habitat Multipliers into the monthly report
-            xLarval_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
-            df = df.merge(xLarval_df, on='scen_id', how='inner')
-            
-            # If specified, save the processed DataFrame to a CSV file named 'monthly_transmission_report.csv'
-            df.to_csv(os.path.join(self.working_dir, 'em', 'monthly_transmission_report.csv'), index=False)
+            df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_mth.csv'), index=False)
 
+        # Yearly aggregation - keep years
         df = adf.groupby(['year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
         df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
-        #Add Larval Habitat Multipliers into the monthly report
-        xLarval_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
-        df = df.merge(xLarval_df, on='scen_id', how='inner')
-        
-        # Save the processed DataFrame to a CSV file named 'annual_transmission_report.csv'
-        df.to_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'), index=False)
+        df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'), index=False)
+
+        # Mean over monitoring period
+        nyears = len(adf['year'].unique())
+        df = adf.groupby(grp_channels)[sum_channels].agg(np.sum).reset_index()
+        df['Daily EIR'] = df['Daily EIR'] / nyears
+        df['Daily Bites per Human'] = df['Daily Bites per Human'] / nyears
+        df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
+        df.to_csv(os.path.join(self.working_dir, 'em', 'EIR.csv'), index=False)
 
 
 class BenchmarkAnalyzer(IAnalyzer):
@@ -569,12 +576,12 @@ class BenchmarkAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'))
             eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR']].agg(
                 np.mean).reset_index()  # mean across monitoring years and runs
             eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
-            #cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
+            # cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
         else:
             cdf['simulatedEIR'] = cdf['eir']
             cdf['inputEIR'] = cdf['eir']
@@ -699,7 +706,7 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'monthly_transmission_report.csv'))
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_mth.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['month'])[['Monthly EIR']].agg(
                 np.mean).reset_index()  # mean across years and runs per month
             eirdf = eirdf.rename(columns={"Monthly EIR": "simulatedEIR"})
@@ -707,11 +714,11 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['month'])
             cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['month'])
 
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'))
             eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR']].agg(
                 np.mean).reset_index()  # mean across years and runs
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
-            #cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
+            # cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
         else:
             cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['month'])
             cdf['simulatedEIR'] = ''
@@ -724,6 +731,7 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
 
         # Save the processed DataFrame to a CSV file named 'Benchmark_mth.csv'
         cdf.to_csv((os.path.join(self.working_dir, 'em', 'Benchmark_mth.csv')), index=False)
+
 
 
 class AnnualBenchmarkAnalyzer(IAnalyzer):
@@ -837,11 +845,11 @@ class AnnualBenchmarkAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'annual_transmission_report.csv'))
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
             eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
-            #cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
+            # cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
         else:
             cdf['simulatedEIR'] = cdf['eir']
             cdf['inputEIR'] = cdf['eir']
@@ -896,7 +904,7 @@ if __name__ == "__main__":
                             'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
                             'Infectious Vectors', 'Daily EIR']
     # Run analyzers
-    with Platform('SLURM_LOCAL', job_directory=exp.suite_directory,mem_per_cpu=int(5000)) as platform:
+    with Platform('SLURM_LOCAL', job_directory=exp.suite_directory, mem_per_cpu=int(5000)) as platform:
 
         all_age_analyzer = [InsetChartAnalyzer(expt_name=exp_name,
                                                channels=channels_inset_chart,
@@ -905,12 +913,12 @@ if __name__ == "__main__":
                                                burnin=burnin,
                                                working_dir=wdir)]
 
-        eir_analyzer = [TransmissionReport(expt_name=exp_name,
-                                           sweep_variables=exp_tags,
-                                           start_year=start_year,
-                                           monthly_report=True,
-                                           burnin=burnin,
-                                           working_dir=wdir)]
+        eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
+                                         sweep_variables=exp_tags,
+                                         start_year=start_year,
+                                         monthly_report=True,
+                                         burnin=burnin,
+                                         working_dir=wdir)]
 
         annual_analyzers = [AnnualAgebinAnalyzer(expt_name=exp_name,
                                                  sweep_variables=exp_tags,
@@ -956,7 +964,7 @@ if __name__ == "__main__":
         manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
                                  partial_analyze_ok=True)
         manager.analyze()
-    
+
     # Create sample plots if specified
     if create_sampleplots:
         exp_tags = [tag for tag in exp_tags if tag != 'Run_Number'] + ['seed']
@@ -980,9 +988,11 @@ if __name__ == "__main__":
             monthly_trends(wdir, emodom, channel='prevalence_2to10', sweepvar=sweepvar)
             monthly_trends(wdir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
 
-            channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR','x_Temporary_Larval_Habitat']
+            channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR',
+                            'x_Temporary_Larval_Habitat']
             for channel in channel_list:
-                monthly_timeseries(wdir=exp.sim_out_dir, emodom=emodom, channel=channel, sweepvar='emodom', facet_var='eir', agegrp='5-10')
+                monthly_timeseries(wdir=exp.sim_out_dir, emodom=emodom, channel=channel, sweepvar='emodom',
+                                   facet_var='eir', agegrp='5-10')
 
             sweepvar = 'cm_clinical'
             prevalence2to10_to_incidence(wdir, emodom, channel='prevalence')

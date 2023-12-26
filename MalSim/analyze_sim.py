@@ -56,6 +56,15 @@ def InputEIRAnalyzer(jdir, wdir):
     df = df[channels_to_keep]
     df['EIR_gamb'] = df['EIR_gamb'] / df['nPopulation']
 
+
+    # Monthly aggregation - keep months and years
+    df_mth = df.groupby(['index', 'month', 'year'], as_index=False)['EIR_gamb'].sum()
+    df_mth = df_mth.merge(scen_df, on='index', how='inner')
+    df_mth = df_mth.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
+    df_mth['inputEIR'] = df_mth['eir']  # if inputEIR not available from simulations, use 'eir'
+    print(f'Saving EIR_mth.csv to {wdir}')
+    df_mth.to_csv((os.path.join(wdir, 'EIR_mth.csv')), index=False)
+
     # Yearly aggregation - keep years
     df_yr = df.groupby(['index', 'year'], as_index=False)['EIR_gamb'].sum()
     df_yr = df_yr.merge(scen_df, on='index', how='inner')
@@ -64,23 +73,7 @@ def InputEIRAnalyzer(jdir, wdir):
     print(f'Saving EIR_yr.csv to {wdir}')
     df_yr.to_csv((os.path.join(wdir, 'EIR_yr.csv')), index=False)
 
-    # Monthly aggregation - keep months
-    df_mth = df.groupby(['index', 'month'], as_index=False)['EIR_gamb'].sum()
-    df_mth = df_mth.merge(scen_df, on='index', how='inner')
-    df_mth = df_mth.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
-    df_mth['inputEIR'] = df_mth['eir']  # if inputEIR not available from simulations, use 'eir'
-    print(f'Saving EIR_mth.csv to {wdir}')
-    df_mth.to_csv((os.path.join(wdir, 'EIR_mth.csv')), index=False)
-
-    #Yearly and Monthly aggregation - keep years and months
-    df_mthyr = df.groupby(['index', 'month', 'year'], as_index = False)['EIR_gamb'].sum()
-    df_mthyr = df_mthyr.merge(scen_df, on = 'index', how='inner')
-    df_mthyr = df_mthyr.rename({'EIR_gamb': 'simulatedEIR'}, axis = 1)
-    df_mthyr['inputEIR'] = df_mthyr['eir']  # if inputEIR not available from simulations, use 'eir'
-    print(f'Saving EIR_mthyr.csv to {wdir}')
-    df_mthyr.to_csv((os.path.join(wdir, 'EIR_mthyr.csv')), index=False)
-    
-    # Yearly aggregation - mean
+    # Mean over monitoring period
     nyears = len(df['year'].unique())
     df_yr = df.groupby(['index'], as_index=False)['EIR_gamb'].sum()
     df_yr['EIR_gamb'] = df_yr['EIR_gamb'] / nyears
@@ -199,6 +192,8 @@ def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables):
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
+    eir_df = eir_df.groupby(sweep_variables + ['month'])[['simulatedEIR', 'inputEIR']].agg(
+        np.mean).reset_index()  # mean across years and runs per month
     eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
@@ -359,9 +354,9 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, sim_start):
     ## Add scenarios variables
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
     df_mth = df_mth.merge(scen_df, on='index', how='inner')
-    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mthyr.csv'))
-    eir_df = eir_df[['index','month','year', 'simulatedEIR', 'inputEIR']]
-    df_mth = df_mth.merge(eir_df, on = ['index', 'month', 'year'], how='inner')
+    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
+    eir_df = eir_df[['index', 'month', 'year', 'simulatedEIR', 'inputEIR']]
+    df_mth = df_mth.merge(eir_df, on=['index', 'month', 'year'], how='inner')
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_mth.csv to {wdir}')
     df_mth.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv')), index=False)
@@ -415,8 +410,8 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, sim_start):
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
     df_yr = df_yr.merge(scen_df, on='index', how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
-    eir_df = eir_df[['index','year', 'simulatedEIR', 'inputEIR']]
-    df_yr = df_yr.merge(eir_df, on = ['index', 'year'], how='inner')
+    eir_df = eir_df[['index', 'year', 'simulatedEIR', 'inputEIR']]
+    df_yr = df_yr.merge(eir_df, on=['index', 'year'], how='inner')
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_yr.csv to {wdir}')
     df_yr.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv')), index=False)
