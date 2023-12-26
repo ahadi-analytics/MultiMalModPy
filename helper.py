@@ -406,58 +406,12 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
     write_txt(slurm_job_id, exp.job_directory, 'job_id_OManalyze.txt')
 
 
-def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=8):
-    """
-    Submits a job to analyze EMOD simulation results.
 
-    Args:
-        experiment (object): The experiment object containing job directory and other information.
-        platform (object): The platform object representing the HPC platform.
-
-    """
-
-    # Get the current working directory
-    wdir = os.path.abspath(os.path.dirname(__file__))
-
-    # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(experiment.sh_hpc_config, t, memG, job_name='analyze_EMODsim',
-                                     mem_scl=experiment.mem_increase_factor)
-
-    # Get the EMODpy virtual environment path
-    emodpy_venv = emodpy_module(experiment.hpc)
-
-    # Generate the Python commands to run additional scripts
-    # If any, add  python or R scripts to directly run after analyzer can be added below
-    pycommand = '\n'.join(
-        [f'\npython {scr} -d {experiment.job_directory} -i {experiment.id}' for scr in experiment.analyzer])
-
-    # Write the shell script to a file
-    script_path = os.path.join(experiment.job_directory, 'run_analyzer_EMOD.sh')
-    file = open(script_path, 'w')
-    file.write(header_post + emodpy_venv + f'\ncd {wdir}/EMOD' + pycommand)
-    file.close()
-
-    # Get the job ID
-    job_id = platform._op_client.get_job_id(experiment.id, experiment.item_type)[0]
-
-    # Submit the job with dependency on the previous job
-    p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path], stdout=subprocess.PIPE,
-                       cwd=str(experiment.job_directory))
-
-    # Extract the SLURM job ID from the output
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
-
-    # Print the submitted job ID
-    print(f'Submitted EMOD analyzer - job id: {slurm_job_id}')
-
-    # Write out the job IDs and experiment ID to files
-    write_txt(job_id, experiment.job_directory, 'job_id_EMODsim.txt')
-    write_txt(experiment.id, experiment.job_directory, 'exp_id_EMODsim.txt')
-    write_txt(slurm_job_id, experiment.job_directory, 'job_id_EMODanalyze.txt')
 
 
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                        custom_args='--emodom EMOD OpenMalaria MalSim', t='01:00:00', memG=1, job_id_EMOD=None, job_id_MalSim=None):
+                        custom_args='--emodom EMOD OpenMalaria MalSim', t='01:00:00', memG=1, job_id_EMOD=None, job_id_MalSim=None,
+                        job='pyjob'):
     """
     Submits a job to run a Python script.
 

@@ -1,6 +1,7 @@
 import copy
 import os
 import sys
+import subprocess 
 from typing import List, Dict, Any
 import emod_api.demographics.PreDefinedDistributions as Distributions
 import emodpy_malaria.demographics.MalariaDemographics as Demographics
@@ -21,8 +22,10 @@ import emodpy_malaria.malaria_config as malaria_config
 from idmtools.entities.experiment import Experiment
 sys.path.append('../')
 import manifest
-from helper import submit_analyze_EMOD
+from helper import shell_header_quest, emodpy_module, write_txt
 
+    
+    
 def set_param(simulation, param, value):
     """
     Set specific parameter value
@@ -561,5 +564,58 @@ def submit_run_EMOD(exp, emod_exp, scen_df):
     experiment.job_directory = exp.job_directory
     experiment.emod_step = exp.emod_step
     experiment.start_end = [sim_start_year_em, sim_start_year_em + sim_dur_years - 1]
+    
     submit_analyze_EMOD(experiment, platform)
     print(f"Experiment submission {experiment.uid} succeeded.")
+    return experiment.id
+    
+
+def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=8):
+    """
+    Submits a job to analyze EMOD simulation results.
+
+    Args:
+        experiment (object): The experiment object containing job directory and other information.
+        platform (object): The platform object representing the HPC platform.
+
+    """
+
+    # Get the current working directory
+    wdir = os.path.abspath(os.path.dirname(__file__))
+
+    # Generate the SLURM shell script header for the job
+    header_post = shell_header_quest(experiment.sh_hpc_config, t, memG, job_name='analyze_EMODsim',
+                                     mem_scl=experiment.mem_increase_factor)
+
+    # Get the EMODpy virtual environment path
+    emodpy_venv = emodpy_module(experiment.hpc)
+
+    # Generate the Python commands to run additional scripts
+    # If any, add  python or R scripts to directly run after analyzer can be added below
+    pycommand = '\n'.join(
+        [f'\npython {scr} -d {experiment.job_directory} -i {experiment.id}' for scr in experiment.analyzer])
+
+    # Write the shell script to a file
+    script_path = os.path.join(experiment.job_directory, 'run_analyzer_EMOD.sh')
+    file = open(script_path, 'w')
+    file.write(header_post + emodpy_venv + f'\ncd {wdir}/EMOD' + pycommand)
+    file.close()
+
+    # Get the job ID
+    job_id = platform._op_client.get_job_id(experiment.id, experiment.item_type)[0]
+
+    # Submit the job with dependency on the previous job
+    p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path], stdout=subprocess.PIPE,
+                       cwd=str(experiment.job_directory))
+
+    # Extract the SLURM job ID from the output
+    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
+
+    # Print the submitted job ID
+    print(f'Submitted EMOD analyzer - job id: {slurm_job_id}')
+
+    # Write out the job IDs and experiment ID to files
+    write_txt(job_id, experiment.job_directory, 'job_id_EMODsim.txt')
+    write_txt(experiment.id, experiment.job_directory, 'exp_id_EMODsim.txt')
+    write_txt(slurm_job_id, experiment.job_directory, 'job_id_EMODanalyze.txt')
+    
