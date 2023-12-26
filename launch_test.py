@@ -29,14 +29,29 @@ def parse_launch_args():
     parser = argparse.ArgumentParser(description="Description of your script.")
 
     # Define command-line arguments with default values
-    parser.add_argument("-d", "--directory", type=str, required=False,
+    parser.add_argument("-d", "--directory",
+                        type=str,
+                        required=False,
                         help="dummy, not required but automatically generated in submission script")
-    parser.add_argument('--suite', type=str, default='test_sims_Dec25_emodstep', help='Description of SUITEname')
-    parser.add_argument('--expname', type=str, default=f'test_sims_emodstep_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}',
+    parser.add_argument('--suite',
+                        type=str,
+                        default='test_sims_Dec25_emodstep',
+                        help='Description of SUITEname')
+    parser.add_argument('--expname',
+                        type=str,
+                        default=f'test_sims_emodstep_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}',
                         help='Description of exp_name')
-    parser.add_argument('--emodstep', type=str, default=None, help='Description of emod_step')
-    parser.add_argument('--serializedid', type=str, default='', help='Description of emod_serialized_id')
-    parser.add_argument('--models', nargs='+', default=['EMOD', 'OpenMalaria', 'MalSim'],
+    parser.add_argument('--emodstep',
+                        type=str,
+                        default=None,
+                        help='Description of emod_step')
+    parser.add_argument('--serializedid',
+                        type=str,
+                        default='',
+                        help='Description of emod_serialized_id')
+    parser.add_argument('--models',
+                        nargs='+',
+                        default=['EMOD', 'OpenMalaria', 'MalSim'],
                         help='Description of models_to_run')
 
     return parser.parse_args()
@@ -198,9 +213,11 @@ if __name__ == '__main__':
         emod_exp = submit_run_EMOD(exp, emod_exp, scen_df)
 
         if emod_step == 'burnin':
-            exp_name_pickup = exp_name.replace(f'burnin{burnin}', '')
+            exp_name_pickup = exp_name.replace(f'_burnin{burnin}', '')
             submit_run_pyscript(exp, pyscript='launch_test_emodstep.py', shname='launch_pickup.sh',
-                                custom_args=f"--suite {SUITEname} --expname {exp_name_pickup} --emodstep pickup --serializedid {emod_exp.id} --models {models_to_run_pickup} ",
+                                custom_args=f"--suite {SUITEname} --expname {exp_name_pickup} "
+                                            f"--emodstep pickup --serializedid {emod_exp.id} "
+                                            f"--models {' '.join([m for m in models_to_run_pickup])} ",
                                 job_id_EMOD='job_id_EMODanalyze', job='pickup_launch')
 
     # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
