@@ -17,8 +17,8 @@ entomology_mode = 'dynamic'  # dynamic, forced
 mem_increase_factor = 3.0  # scaling factor on default memory requested
 
 # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
-custom_subdir = os.getlogin()  # If None, no subdir created
-
+user =  os.environ.get('USER')
+custom_subdir =user # If None, no subdir created
 
 # EMOD flags for how to run simulations (in one run or separated into burnin + pickup)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
@@ -168,6 +168,7 @@ create_simsetup_csv(exp)
 
 #The emod_exp object helps transfer necessary emod inputs from launch_test.py to EMOD/utils.py
 emod_exp = Experiment()
+emod_exp.user = user
 emod_exp.pop_size = pop_size
 emod_exp.sim_dur_years = sim_dur_years
 emod_exp.detectionLimit = detectionLimit

@@ -8,7 +8,6 @@ import pandas as pd
 import numpy as np
 from EMOD.scaffolds.dynamicEIR import eir_to_lhs, eir_to_lhs_regr
 from scipy.interpolate import interp1d
-user = os.getlogin()
 
 def parse_args():
     """
@@ -371,7 +370,7 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
 
     # Create the Python command to run the analyzer
     if exp.hpc == 'NUCLUSTER':
-        pycommand = f'\ncd /home/{user}/model-characterization/OpenMalaria' \
+        pycommand = f'\ncd /home/{exp.user}/model-characterization/OpenMalaria' \
                     f'\npython analyze_sim.py --dir "{exp.job_directory}"'
     elif exp.hpc == 'SCICORE':
         pycommand = f'\ncd /scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria' \
@@ -451,11 +450,11 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
             dependencies = f'--dependency={job_id_EMOD},{job_id_MalSim}'
         else:
             dependencies = f'--dependency={job_id_EMOD}'
+        # Submit job  with dependency
+        p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
     else:
-        dependencies = ''
-    
-    # Submit the job with or without dependency
-    p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
+        # Submit job  without dependency
+        p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
 
     # Extract the SLURM job ID from the output
     slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
