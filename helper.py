@@ -427,7 +427,7 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     wdir = os.path.abspath(os.path.dirname(__file__))
 
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='pyjob', mem_scl=1)
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=job, mem_scl=1)
 
     # Get the EMODpy virtual environment path
     emodpy_venv = emodpy_module(exp.hpc)
@@ -441,17 +441,21 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     file.write(header_post + emodpy_venv + f'\ncd {wdir}' + pycommand)
     file.close()
 
-    # Check if job_id is provided as a string
-    if isinstance(job_id_EMOD, str) and isinstance(job_id_MalSim,str):
+    # Check if job_id is provided as a string to define dependendies
+    if isinstance(job_id_EMOD, str):
         job_id_EMOD = open(os.path.join(exp.job_directory, f'{job_id_EMOD}.txt')).read().strip()
-        job_id_MalSim = open(os.path.join(exp.job_directory, f'{job_id_MalSim}.txt')).read().strip()
-
-        # Submit the job with or without dependency
-        p = subprocess.run(['sbatch', '--parsable', f'--dependency={job_id_EMOD},{job_id_MalSim}', script_path],
-                           stdout=subprocess.PIPE,
-                           cwd=str(exp.job_directory))
+    
+        # Check if job_id_MalSim is provided as a string
+        if isinstance(job_id_MalSim, str):
+            job_id_MalSim = open(os.path.join(exp.job_directory, f'{job_id_MalSim}.txt')).read().strip()
+            dependencies = f'--dependency={job_id_EMOD},{job_id_MalSim}'
+        else:
+            dependencies = f'--dependency={job_id_EMOD}'
     else:
-        p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
+        dependencies = ''
+    
+    # Submit the job with or without dependency
+    p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
 
     # Extract the SLURM job ID from the output
     slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]

@@ -6,6 +6,7 @@ from idmtools.core.platform_factory import Platform
 from helper import *
 from EMOD.utils import get_scendf_burnin
 import os
+import argparse
 
 # Setting up variables and flags for the simulation
 log = logging.getLogger(__name__)
@@ -13,23 +14,46 @@ loaded_attr = set(dir())  # Non experiiment specific objects to be excluded from
 
 # Flag to select whether to run with (dynamic) or without vector model (forced)
 entomology_mode = 'dynamic'  # dynamic, forced
-mem_increase_factor = 1.0  # scaling factor on default memory requested
+mem_increase_factor = 3.0  # scaling factor on default memory requested
 
 # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
 custom_subdir = os.getlogin()  # If None, no subdir created
-SUITEname = 'test_sims'  # Can be changed depending on objective to run simulations, in subdir if not None
-exp_name = f'test_sims_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'  # Can be changed depending on simulation purpose, in SUITE
+
 
 # EMOD flags for how to run simulations (in one run or separated into burnin + pickup)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
-emod_step = None  # emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
-emod_serialized_id = ''  # example, insert your exp_id!
+# emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
 
-# Define which models to run
-models_to_run = ['EMOD','OpenMalaria','MalSim']  # 'EMOD','OpenMalaria', 'MalSim'
+
+def parse_launch_args():
+    parser = argparse.ArgumentParser(description="Description of your script.")
+
+    # Define command-line arguments with default values
+    parser.add_argument("-d", "--directory", type=str, required=False,
+                        help="dummy, not required but automatically generated in submission script")
+    parser.add_argument('--suite', type=str, default='test_sims_Dec25_emodstep', help='Description of SUITEname')
+    parser.add_argument('--expname', type=str, default=f'test_sims_emodstep_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}',
+                        help='Description of exp_name')
+    parser.add_argument('--emodstep', type=str, default=None, help='Description of emod_step')
+    parser.add_argument('--serializedid', type=str, default='', help='Description of emod_serialized_id')
+    parser.add_argument('--models', nargs='+', default=['EMOD', 'OpenMalaria', 'MalSim'],
+                        help='Description of models_to_run')
+
+    return parser.parse_args()
+
+
+# Retrieve parsed arguments
+args = parse_launch_args()
+
+# Access arguments directly
+SUITEname = args.suite
+exp_name = args.expname
+emod_step = args.emodstep
+emod_serialized_id = args.serializedid
+models_to_run = args.models
 
 # Specify OpenMalaria XML and survey step
-om_scaffold = "R0000GA" # defining which OpenMalaria XML scaffold to use
+om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
 om_survey_step = '30d'
 
 # Specify MalSim simulation setup, interventions etc to run
@@ -44,10 +68,11 @@ num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
 num_seeds = 5  # suggested minimum 3, in production 5-10
 start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
 end_year = 2005  # end of pickup and monitoring period
-burnin = 5  # Duration of burnin (pre-monitoring) period
+burnin = 10  # Duration of burnin (pre-monitoring) period
 
 # Simulation duration, start and end configuration
-sim_start_year_em, monitoring_years, sim_dur_years = get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step)
+sim_start_year_em, monitoring_years, sim_dur_years = get_emod_time_param(start_year, end_year, burnin, models_to_run,
+                                                                         emod_step)
 sim_start_year_om = start_year - burnin
 sim_start_year_ms = sim_start_year_om
 
@@ -61,6 +86,7 @@ sweep_list = ['eir', 'cm_clinical', 'seasonality']
 if emod_step == 'burnin' and 'EMOD' in models_to_run:
     print('Message: Running burnin for EMOD')
     exp_name = f'{exp_name}_burnin{burnin}'
+    models_to_run_pickup = models_to_run  # Models to run in pickup
     models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
     num_seeds = num_seeds_burnin
     sweep_list = ['eir', 'cm_clinical', 'seasonality']  # If running fewer sweeps in past than in pickup to be set up
@@ -164,22 +190,35 @@ if __name__ == '__main__':
     if 'EMOD' in models_to_run:
         import emod_malaria.bootstrap as dtk
         import pathlib
+
         dtk.setup(pathlib.Path(manifest.eradication_path).parent)
         from EMOD.utils import submit_run_EMOD
-        submit_run_EMOD(exp, emod_exp, scen_df)
+
+        emod_exp = submit_run_EMOD(exp, emod_exp, scen_df)
+
+        if emod_step == 'burnin':
+            exp_name_pickup = exp_name.replace(f'burnin{burnin}', '')
+            submit_run_pyscript(exp, pyscript='launch_test_emodstep.py', shname='launch_pickup.sh',
+                                custom_args=f"--suite {SUITEname} --expname {exp_name_pickup} --emodstep pickup --serializedid {emod_exp.id} --models {models_to_run_pickup} ",
+                                job_id_EMOD='job_id_EMODanalyze', job='pickup_launch')
 
     # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
     if 'OpenMalaria' in models_to_run:
         from OpenMalaria.utils import submit_run_OpenMalaria
+
         submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files
-        
+
     if 'MalSim' in models_to_run:
         from MalSim.utils import submit_run_MalSim
+
         submit_run_MalSim(exp)
 
     # Optionally, create submission script for standardized plots and run after last simulations finished
     if 'OpenMalaria' in models_to_run and 'EMOD' in models_to_run and 'MalSim' in models_to_run:
         submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                            job_id_EMOD='job_id_EMODanalyze', job_id_MalSim = 'job_id_MalSim_analyze')
+                            job_id_EMOD='job_id_EMODanalyze', job_id_MalSim='job_id_MalSim_analyze',
+                            job='benchmark_plots')
     else:
-        submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh', custom_args=f"--emodom {' '.join([x for x in models_to_run])}")
+        submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
+                            custom_args=f"--emodom {' '.join([x for x in models_to_run])}",
+                            job='benchmark_plots')

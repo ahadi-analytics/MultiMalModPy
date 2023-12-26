@@ -567,7 +567,7 @@ def submit_run_EMOD(exp, emod_exp, scen_df):
     
     submit_analyze_EMOD(experiment, platform)
     print(f"Experiment submission {experiment.uid} succeeded.")
-    return experiment.id
+    return experiment
     
 
 def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=8):
