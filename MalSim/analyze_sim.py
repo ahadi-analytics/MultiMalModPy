@@ -307,7 +307,7 @@ def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables):
     cdf.to_csv((os.path.join(wdir,'Benchmark_yr.csv')), index=False)
 
 
-def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, sim_start):
+def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables):
     """
     Run the MonthlyAgebinAnalyzer equivalent for malariasimulation experiments.
     Args:
@@ -362,7 +362,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, sim_start):
     df_mth.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv')), index=False)
 
 
-def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, sim_start):
+def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables):
     """
     Run the MonthlyAgebinAnalyzer equivalent for malariasimulation experiments.
     Args:
@@ -427,7 +427,7 @@ if __name__ == "__main__":
     sweep_variables = ['index']
     create_sampleplots = True  # False
     all_age_sp = True # False 
-    sim_start = exp.sim_start_year_ms
+    #sim_start = exp.sim_start_year_ms
 
     # Execute all analyzers
     InputEIRAnalyzer(jdir, wdir)
@@ -435,8 +435,8 @@ if __name__ == "__main__":
     BenchmarkAnalyzer(jdir, wdir, sweep_variables)
     MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables)
     AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables)
-    MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, sim_start)
-    AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, sim_start)
+    MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables)
+    AnnualAgebinAnalyzer(jdir, wdir, sweep_variables)
 
     # Create sample plots if specified
     if create_sampleplots:
