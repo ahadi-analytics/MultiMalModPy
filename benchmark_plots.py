@@ -575,7 +575,7 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
         ax.set_ylim(0, max(max_ylim))       
         ax.set_xlabel('Year')
         ax.set_ylabel(ylab)
-        ax.set_title(f"{facet_var} = {f}")
+        ax.set_title(f"{facet_var} = {fi}")
     #plt.subplots_adjust(left=0.13, right=0.95, bottom=0.15, top=0.9, wspace=0.15, hspace=0.4)
     #plt.text(0.4, -0.35, f'{caption_txt}', rotation=-0, fontsize=12)
     fname = f'timeseries_annual_{channel}_by_{sweepvar}_age{agegrp}'
@@ -720,7 +720,7 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
         ax.tick_params(axis='x', labelrotation = 45)
         ax.set_xlabel('Age (years)')
         ax.set_ylabel(ylab)
-        ax.set_title(f"{facet_var} = {f}")
+        ax.set_title(f"{facet_var} = {fi}")
 
     fname = f'agecurves_{channel}_by_{sweepvar}'
     fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_extra_artists=(lg,), bbox_inches='tight')
