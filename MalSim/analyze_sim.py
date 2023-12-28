@@ -140,7 +140,7 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables):
     df = load_combined_daily_output(jdir, channels_to_keep)
     df['agebin'] = round(df['age_upper'] / 365, 1)
 
-    df_pfpr2to10 = df.groupby(sweep_variables + ['agebin'])[['prevalence_2to10']].agg(np.mean).reset_index()
+    df_pfpr2to10 = df.groupby(sweep_variables)[['prevalence_2to10']].agg(np.mean).reset_index()
 
     ## Aggregate years
     df = df.groupby(sweep_variables + ['agebin'])[
@@ -172,7 +172,7 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables):
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables)
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    cdf = cdf.merge(scen_df, on='index', how='inner')
+    cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on='index', how='inner')
 
     # Rename columns for alignment with OpenMalaria results
@@ -194,7 +194,7 @@ def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables):
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
     eir_df = eir_df.groupby(sweep_variables + ['month'])[['simulatedEIR', 'inputEIR']].agg(
         np.mean).reset_index()  # mean across years and runs per month
-    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
+    eir_df = eir_df[['index','month', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
@@ -203,7 +203,7 @@ def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables):
     df = load_combined_daily_output(jdir, channels_to_keep)
     df['agebin'] = round(df['age_upper'] / 365, 1)
 
-    df_pfpr2to10 = df.groupby(sweep_variables + ['agebin', 'month'])[['prevalence_2to10']].agg(np.mean).reset_index()
+    df_pfpr2to10 = df.groupby(sweep_variables + ['month'])[['prevalence_2to10']].agg(np.mean).reset_index()
 
     ## Aggregate years
     df = df.groupby(sweep_variables + ['agebin', 'month'])[
@@ -235,8 +235,8 @@ def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables):
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['month'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    cdf = cdf.merge(scen_df, on='index', how='inner')
-    cdf = cdf.merge(eir_df, on='index', how='inner')
+    cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
+    cdf = cdf.merge(eir_df, on=['index','month'], how='inner')
 
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
@@ -256,7 +256,7 @@ def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables):
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
-    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
+    eir_df = eir_df[['index','year', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
@@ -264,7 +264,7 @@ def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables):
     df = load_combined_daily_output(jdir, channels_to_keep)
     df['agebin'] = round(df['age_upper'] / 365, 1)
 
-    df_pfpr2to10 = df.groupby(sweep_variables + ['agebin', 'year'])[['prevalence_2to10']].agg(np.mean).reset_index()
+    df_pfpr2to10 = df.groupby(sweep_variables + ['year'])[['prevalence_2to10']].agg(np.mean).reset_index()
 
     ## Aggregate years
     df = df.groupby(sweep_variables + ['agebin', 'year'])[
@@ -296,8 +296,8 @@ def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables):
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['year'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    cdf = cdf.merge(scen_df, on='index', how='inner')
-    cdf = cdf.merge(eir_df, on='index', how='inner')
+    cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
+    cdf = cdf.merge(eir_df, on=['index','year'], how='inner')
 
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
@@ -353,7 +353,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables):
 
     ## Add scenarios variables
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    df_mth = df_mth.merge(scen_df, on='index', how='inner')
+    df_mth = df_mth.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
     eir_df = eir_df[['index', 'month', 'year', 'simulatedEIR', 'inputEIR']]
     df_mth = df_mth.merge(eir_df, on=['index', 'month', 'year'], how='inner')
@@ -408,7 +408,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables):
     df_yr = df_yr[first_columns + df_yr.drop(columns=first_columns).columns.tolist()]
 
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    df_yr = df_yr.merge(scen_df, on='index', how='inner')
+    df_yr = df_yr.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
     eir_df = eir_df[['index', 'year', 'simulatedEIR', 'inputEIR']]
     df_yr = df_yr.merge(eir_df, on=['index', 'year'], how='inner')
