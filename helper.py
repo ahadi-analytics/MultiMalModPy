@@ -77,8 +77,21 @@ def check_exp_inputs(exp):
     Args:
         exp (custom class): Custom object that includes all experiment specifications
     """
-    if (exp.emod_step and exp.num_seeds_burnin >1) and (exp.num_seeds_burnin != exp.num_seeds):
+    if exp.emod_step and exp.num_seeds_burnin > 1 and exp.num_seeds_burnin != exp.num_seeds:
         raise ValueError('num_seeds_burnin needs to be 1 or equal to num_seeds')
+
+    if len(exp.seasonality) > 1:
+        raise ValueError(
+            f'Current framework only allows one seasonality pattern, but {len(exp.seasonality)} specified.')
+
+    ## Applies to all models, to establish immunity levels in simulated population
+    if exp.burnin < 80 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
+                            'EMOD' not in exp.models_to_run):
+        print(f'/!\ WARNING Short burnin period of {exp.burnin},'
+              f' results may not be valid. Burnin of 80 years is recommended.')
+
+    if np.max(exp.cm_clinical) > 0 and exp.entomology_mode == 'dynamic' and 'EMOD' in exp.models_to_run:
+        raise ValueError('EMOD is not set up to run dynamic EIR for non-zero CM-levels currently.')
 
 def get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step = None):
     """
