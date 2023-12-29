@@ -3,13 +3,11 @@ import subprocess
 from helper import *
 import pandas as pd
 
-user = os.getlogin()
-
 
 def submit_analyze_MalSim(exp, t='01:00:00', memG=7):
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_MSim',
                                      mem_scl=exp.mem_increase_factor)
-    pycommand = f'\ncd /home/{user}/model-characterization/MalSim' \
+    pycommand = f'\ncd /home/{exp.user}/model-characterization/MalSim' \
                 f'\npython analyze_sim.py --job_dir "{exp.job_directory}"'
     script_path = os.path.join(exp.job_directory, 'run_analyzer_MalSim.sh')
     file = open(script_path, 'w')
@@ -42,7 +40,7 @@ def submit_run_MalSim(exp, t='01:00:00', memG=8):
     r_file_path = os.path.join(ROOT_DIR, exp.MalSim_script)
     r_folder_path = os.path.join(ROOT_DIR, 'R_functions/')
     script_path = os.path.join(exp.job_directory, 'run_MalSim.sh')
-    ms_input_path = f'/home/{user}/model-characterization/MalSim'  # might need to switch to manifest defined ms_input_path if running elsewhere? 
+    ms_input_path = f'/home/{exp.user}/model-characterization/MalSim'  # might need to switch to manifest defined ms_input_path if running elsewhere? 
     slurmID = '${SLURM_ARRAY_TASK_ID}'
     create_malsim_scenarios(exp)
 
