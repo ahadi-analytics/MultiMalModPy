@@ -15,9 +15,6 @@ ml python/3.8.4
 source /projects/b1139/environments/emodpy_om/bin/activate
 
 cd /home/mrm9534/model-characterization
-python launch_test_emodstep.py --emodstep burnin --models EMOD MalSim OpenMalaria 
+python launch_test.py --emodstep burnin --models EMOD MalSim OpenMalaria
 
-
-
-#cd /home/mrm9534/model-characterization
-#python simulations/launch_baseline.py 
+#python simulations/launch_baseline.py  --emodstep None --models EMOD MalSim OpenMalaria
