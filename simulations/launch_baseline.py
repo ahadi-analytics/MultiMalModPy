@@ -11,32 +11,10 @@ import argparse
 # Setting up variables and flags for the simulation
 log = logging.getLogger(__name__)
 
-# Creating an Experiment object and setting its attributes, saved as exp.obj
-exp = Experiment()
-exp.hpc = manifest.hpc
-exp.sh_hpc_config = manifest.sh_hpc_config
-exp.selected_platform = manifest.selected_platform
-exp.om_version = manifest.om_version
-exp.emod_build = manifest.emod_build
-exp.om_path = manifest.OM_PATH
-exp.om_input_path = manifest.om_input_path
-exp.job_directory_manifest = manifest.job_directory
-exp.output_directory_manifest = manifest.output_directory
-
-# Flag to select whether to run with (dynamic) or without vector model (forced)
-exp.entomology_mode = 'dynamic'  # dynamic, forced
-exp.seasonality = ["seasonal"]  # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
-exp.mem_increase_factor = 8.0  # scaling factor on default memory requested
-
-# Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
-exp.user = os.environ.get('USER')
-exp.custom_subdir = exp.user  # If None, no subdir created
-
 
 # EMOD flags for how to run simulations (in one run or separated into burnin + pickup)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
 # emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
-
 
 def parse_launch_args():
     parser = argparse.ArgumentParser(description="Description of your script.")
@@ -45,7 +23,7 @@ def parse_launch_args():
     parser.add_argument("-d", "--directory",
                         type=str,
                         required=False,
-                        help="dummy, not required but automatically generated in submission script")
+                        help="Jobdirectory of burnin, if no EMOD burnin, is ignored")
     parser.add_argument('--suite',
                         type=str,
                         default=f'baseline_sims_{dt.now().strftime("%Y%m%d")}',
@@ -69,79 +47,112 @@ def parse_launch_args():
 
     return parser.parse_args()
 
+
 # Retrieve parsed arguments
 args = parse_launch_args()
 
-# Access arguments directly
-exp.SUITEname = args.suite
-exp.exp_name = args.expname
-exp.emod_step = args.emodstep
-exp.emod_serialized_id = args.serializedid
-exp.models_to_run = args.models
+if args.emodstep == 'pickup':
+    file = open(os.path.join(args.directory, "exp.obj"), "rb")
+    exp = pickle.load(file)
 
-# Specify OpenMalaria XML and survey step
-exp.om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
-exp.om_survey_step = '30d'
+    ## Update arguments
+    exp.SUITEname = args.suite
+    exp.exp_name = args.expname
+    exp.emod_step = args.emodstep
+    exp.models_to_run = args.models
+    exp.emod_serialized_id = args.serializedid
+else:
+    # Creating an Experiment object and setting its attributes, saved as exp.obj
+    exp = Experiment()
 
-# Specify MalSim simulation setup, interventions etc to run
-exp.MalSim_script = 'malsim_benchmarking_exercise.R'
-exp.MalSim_run_burnin = True
+    exp.SUITEname = args.suite
+    exp.exp_name = args.expname
+    exp.emod_step = args.emodstep
+    exp.models_to_run = args.models
 
-# Define simulation population and seeds
-exp.pop_size = 10000  # 1000 for testing
-exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
+    exp.hpc = manifest.hpc
+    exp.sh_hpc_config = manifest.sh_hpc_config
+    exp.selected_platform = manifest.selected_platform
+    exp.om_version = manifest.om_version
+    exp.emod_build = manifest.emod_build
+    exp.om_path = manifest.OM_PATH
+    exp.om_input_path = manifest.om_input_path
+    exp.job_directory_manifest = manifest.job_directory
+    exp.output_directory_manifest = manifest.output_directory
 
-exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
-exp.num_seeds = 5  # suggested minimum 3, in production 5-10
-exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
-exp.end_year = 2005  # end of pickup and monitoring period
-exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
+    # Flag to select whether to run with (dynamic) or without vector model (forced)
+    exp.entomology_mode = 'dynamic'  # dynamic, forced
+    exp.seasonality = [
+        "seasonal"]  # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
+    exp.mem_increase_factor = 3.0  # scaling factor on default memory requested
 
+    # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
+    exp.user = os.environ.get('USER')
+    exp.custom_subdir = exp.user  # If None, no subdir created
+
+    # Specify OpenMalaria XML and survey step
+    exp.om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
+    exp.om_survey_step = '30d'
+
+    # Specify MalSim simulation setup, interventions etc to run
+    exp.MalSim_script = 'malsim_benchmarking_exercise.R'
+    exp.MalSim_run_burnin = True
+
+    # Define simulation population and seeds
+    exp.pop_size = 1000  # 1000 for testing
+    exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
+
+    exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
+    exp.num_seeds = 5  # suggested minimum 3, in production 5-10
+    exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
+    exp.end_year = 2005  # end of pickup and monitoring period
+    exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
+
+    # Name of parameters to vary
+    exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']
+
+    # Define case management start and coverage
+    # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
+    exp.cm_start = 1
+    exp.cm_clinical = [0.0]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
+    exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
+    exp.detectionLimit = 40
+
+    # Transmission and seasonality configuration
+    # eir = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,
+    # 52.36,92.85,164.09,290.00,512.52,905.79,1600.82,2829.15,5000.00] #np.logspace(-1,3.69897000434,20) This is for x_temp_larval
+    # eir = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25,
+    # 30, 35, 40, 45, 50, 65, 70, 80, 90, 100, 120, 150, 200, 250, 500, 750, 1000] #Aurelien's suggested EIRS
+    exp.eir = [1, 128, 256]
+
+    # Entomology mode: Dynamic EIR configuration if selected
+    exp = get_seasonal_eir(exp)
+
+    # EMOD burn-in and pickup configuration
+    exp.emod_serialized_id = ''
+    if exp.emod_step == 'burnin':
+        print('Message: Running burnin for EMOD')
+        exp.exp_name = f'{exp.exp_name}_burnin{exp.burnin}'
+        exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
+        exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
+        exp.sweep_list = ['eir', 'cm_clinical',
+                          'seasonality']  # If running fewer sweeps in past than in pickup to be set up
+
+    # Parameter names to create scenarios from
+    scen_df = create_scenarios_csv(exp, exp.sweep_list)
+    exp.nexps = len(scen_df) * exp.num_seeds
+
+    # Directory setup and analyzer scripts
+    exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
+    exp.emod_analyzer = ['analyze_sim.py']
+    exp.openmalaria_analyzer = ['analyze_sim.py']
+
+## Arguments that chage for pickup
 # Simulation duration, start and end configuration
 exp = get_emod_time_param(exp)
 
-
-# Name of parameters to vary
-exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']
-
-# EMOD burn-in and pickup configuration
-if exp.emod_step == 'burnin' and 'EMOD' in exp.models_to_run:
-    print('Message: Running burnin for EMOD')
-    exp.exp_name = f'{exp.exp_name}_burnin{exp.burnin}'
-    exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
-    exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
-    exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']  # If running fewer sweeps in past than in pickup to be set up
-if exp.emod_step != 'pickup':
-    exp.emod_serialized_id = ''
-
-# Define case management start and coverage
-# 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
-exp.cm_start = 1
-exp.cm_clinical = [0.0]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
-exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
-exp.detectionLimit = 40
-
-# Transmission and seasonality configuration
-# eir = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,
-# 52.36,92.85,164.09,290.00,512.52,905.79,1600.82,2829.15,5000.00] #np.logspace(-1,3.69897000434,20) This is for x_temp_larval
-# eir = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25,
-# 30, 35, 40, 45, 50, 65, 70, 80, 90, 100, 120, 150, 200, 250, 500, 750, 1000] #Aurelien's suggested EIRS
-exp.eir = [1, 128, 256]
-
-# Entomology mode: Dynamic EIR configuration if selected
-exp = get_seasonal_eir(exp)
-
-# Directory setup and analyzer scripts
-exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
-exp.emod_analyzer = ['analyze_sim.py']
-exp.openmalaria_analyzer = ['analyze_sim.py']
-
 # Check whether defined input parameter are all valid
 check_exp_inputs(exp)  # TODO add more validity checks as needed
-
-# Parameter names to create scenarios from
-scen_df = create_scenarios_csv(exp, exp.sweep_list)
-exp.nexps = len(scen_df) * exp.num_seeds
 
 # Set platform and associated values, such as the maximum number of jobs to run at one time
 platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
@@ -152,13 +163,13 @@ platform = Platform(manifest.selected_platform, job_directory=exp.suite_director
 if exp.emod_step == 'pickup':
     scen_df = get_scendf_burnin(exp, exp.emod_serialized_id, manifest, platform,
                                 exp.burnin)  # FIXME expand on it when additional parameter values to run in future
+
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 save_scen(rep_scen_df(scen_df), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
 
 # Write out simulation setup (required for MalSim)
 create_simsetup_csv(exp)
 exp.platform = platform
-
 
 if __name__ == '__main__':
 
