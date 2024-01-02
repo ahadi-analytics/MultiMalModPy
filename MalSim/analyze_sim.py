@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 from sample_plots import *
 import sys
+
 sys.path.append('../')
 from benchmark_plots import *
 
@@ -47,7 +48,7 @@ def InputEIRAnalyzer(jdir, wdir):
     """
     print("Running InputEIRAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop('x_Temporary_Larval_Habitat', axis=1)
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat','entomology_mode'], axis=1)  ## EMOD specific, entomology_mode  not applicable
 
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'nPopulation', 'EIR_gamb']
     df = load_combined_daily_output(jdir, channels_to_keep + ['ageGroup'])
@@ -92,10 +93,11 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat','entomology_mode'], axis=1)  ## EMOD specific, entomology_mode  not applicable
 
     # Read experiment data daily
-    sum_channels = ['clinical_incidence', 'incidence', 'severe_incidence', 'nHost']
-    mean_channels = ['nPopulation', 'prevalence_2to10', 'prevalence']
+    sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
+    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
     df = load_combined_daily_output(jdir, channels_to_keep)
@@ -133,22 +135,22 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables):
     eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
 
     # Convert the experiment data to a DataFrame and format it
-    sum_channels = ['clinical_incidence', 'incidence', 'severe_incidence', 'nHost']
-    mean_channels = ['nPopulation', 'prevalence_2to10', 'prevalence']
+    sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
+    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
     df = load_combined_daily_output(jdir, channels_to_keep)
     df['agebin'] = round(df['age_upper'] / 365, 1)
+    df['n_prev'] = df['prev'] * df['n']
 
     df_pfpr2to10 = df.groupby(sweep_variables)[['prevalence_2to10']].agg(np.mean).reset_index()
 
     ## Aggregate years
-    df = df.groupby(sweep_variables + ['agebin'])[
-        ['prevalence', 'clinical_incidence', 'severe_incidence', 'nHost']].agg(
-        np.mean).reset_index()
-    df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
-    df['nUncomp'] = df['clinical_incidence'] * df['nHost']  ## total cases per annum
-    df['nSevere'] = df['severe_incidence'] * df['nHost']  ## total cases per annum
+    n_surveys = round(len(df['timestep'].unique()),0)
+    n_years = round(n_surveys/365,0)
+    df = df.groupby(sweep_variables + ['agebin', 'year'])[['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
+    df['n'] = df['n'] / n_surveys
+    df['n_prev'] = df['n_prev'] / n_surveys
 
     cdf = pd.DataFrame()
     # Define standard age groups used in benchmarking default for plotting
@@ -162,25 +164,31 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables):
         if adf.empty:
             pass
         else:
-            adf = adf.groupby(sweep_variables)[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg(
-                np.sum).reset_index()
-            adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
-            adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
-            adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
+            adf = adf.groupby(sweep_variables)[['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
+            adf['prevalence'] = adf['n_prev'] / (adf['n'])
+
+            # (events per person per annum)
+            #adf['incidence'] = adf['n_inc'] / ( (adf['n'] * n_years))
+            adf['clinical_incidence'] = adf['n_inc_clinical'] / ( (adf['n'] * n_years))
+            adf['severe_incidence'] = adf['n_inc_severe'] / ((adf['n'] * n_years))
             adf['ageGroup'] = ageCond_labels
             cdf = pd.concat([cdf, adf])
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables)
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat','entomology_mode'], axis=1)  ## EMOD specific, entomology_mode  not applicable
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on='index', how='inner')
 
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
-    print(f'\nSaving outputs to: {wdir}')
+    cdf = cdf.rename({'n': 'nHost'}, axis=1)
+    cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
 
+    print(f'\nSaving outputs to: {wdir}')
     # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
     cdf.to_csv((os.path.join(wdir,'Benchmark.csv')), index=False)
+
 
 def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables):
     """
@@ -196,22 +204,20 @@ def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables):
         np.mean).reset_index()  # mean across years and runs per month
     eir_df = eir_df[['index','month', 'inputEIR', 'simulatedEIR']]
 
+
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
-                        'age_upper','clinical_incidence', 'incidence', 'severe_incidence', 
-                        'nHost','nPopulation', 'prevalence_2to10', 'prevalence']
+                        'age_upper', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10',
+                        'prev']
     df = load_combined_daily_output(jdir, channels_to_keep)
     df['agebin'] = round(df['age_upper'] / 365, 1)
+    df['n_prev'] = df['prev'] * df['n']
 
     df_pfpr2to10 = df.groupby(sweep_variables + ['month'])[['prevalence_2to10']].agg(np.mean).reset_index()
 
     ## Aggregate years
     df = df.groupby(sweep_variables + ['agebin', 'month'])[
-        ['prevalence', 'clinical_incidence', 'severe_incidence', 'nHost']].agg(
-        np.mean).reset_index()
-    df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
-    df['nUncomp'] = df['clinical_incidence'] * df['nHost']  ## total cases per annum
-    df['nSevere'] = df['severe_incidence'] * df['nHost']  ## total cases per annum
+        ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
 
     cdf = pd.DataFrame()
     # Define standard age groups used in benchmarking default for plotting
@@ -225,25 +231,31 @@ def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables):
         if adf.empty:
             pass
         else:
-            adf = adf.groupby(sweep_variables + ['month'])[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg(
-                np.sum).reset_index()
-            adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
-            adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
-            adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
+            adf = adf.groupby(sweep_variables + ['month'])[
+                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
+
+            adf['prevalence'] = adf['n_prev'] / (adf['n'])
+            # events per person per annum (annualized)
+            #adf['incidence'] = (adf['n_inc'] / adf['n'] * (365 / 12)) * 12
+            adf['clinical_incidence'] = (adf['n_inc_clinical'] / adf['n'] * (365 / 12)) * 12
+            adf['severe_incidence'] = (adf['n_inc_severe'] / adf['n'] * (365 / 12)) * 12
             adf['ageGroup'] = ageCond_labels
             cdf = pd.concat([cdf, adf])
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['month'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat','entomology_mode'], axis=1)  ## EMOD specific, entomology_mode  not applicable
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index','month'], how='inner')
 
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
-    print(f'\nSaving outputs to: {wdir}')
+    cdf = cdf.rename({'n': 'nHost'}, axis=1)
+    cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
 
+    print(f'\nSaving outputs to: {wdir}')
     # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
-    cdf.to_csv((os.path.join(wdir,'Benchmark_mth.csv')), index=False)
+    cdf.to_csv((os.path.join(wdir, 'Benchmark_mth.csv')), index=False)
 
 
 def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables):
@@ -260,19 +272,20 @@ def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables):
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
-                        'age_upper','clinical_incidence', 'incidence', 'severe_incidence', 'nHost', 'nPopulation', 'prevalence_2to10', 'prevalence']
+                        'age_upper', 'prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation',
+                        'prevalence_2to10']
     df = load_combined_daily_output(jdir, channels_to_keep)
     df['agebin'] = round(df['age_upper'] / 365, 1)
+    df['n_prev'] = df['prev'] * df['n']
 
     df_pfpr2to10 = df.groupby(sweep_variables + ['year'])[['prevalence_2to10']].agg(np.mean).reset_index()
 
     ## Aggregate years
+    n_surveys_per_year = int(round(len(df['timestep'].unique())/ len(df['year'].unique()),0))
     df = df.groupby(sweep_variables + ['agebin', 'year'])[
-        ['prevalence', 'clinical_incidence', 'severe_incidence', 'nHost']].agg(
-        np.mean).reset_index()
-    df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
-    df['nUncomp'] = df['clinical_incidence'] * df['nHost']  ## total cases per annum
-    df['nSevere'] = df['severe_incidence'] * df['nHost']  ## total cases per annum
+        ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
+    df['n'] = df['n'] / n_surveys_per_year
+    df['n_prev'] = df['n_prev'] / n_surveys_per_year
 
     cdf = pd.DataFrame()
     # Define standard age groups used in benchmarking default for plotting
@@ -286,25 +299,32 @@ def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables):
         if adf.empty:
             pass
         else:
-            adf = adf.groupby(sweep_variables + ['year'])[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg(
-                np.sum).reset_index()
-            adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
-            adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
-            adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
+            adf = adf.groupby(sweep_variables + ['year'])[
+                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
+
+            adf['prevalence'] = adf['n_prev'] / (adf['n'])
+
+            # (events per person per annum)
+            #adf['incidence'] = adf['n_inc'] / (adf['n'])
+            adf['clinical_incidence'] = adf['n_inc_clinical'] / (adf['n'])
+            adf['severe_incidence'] = adf['n_inc_severe'] / (adf['n'])
             adf['ageGroup'] = ageCond_labels
             cdf = pd.concat([cdf, adf])
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['year'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat','entomology_mode'], axis=1)  ## EMOD specific, entomology_mode  not applicable
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index','year'], how='inner')
 
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
-    print(f'\nSaving outputs to: {wdir}')
+    cdf = cdf.rename({'n': 'nHost'}, axis=1)
+    cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
 
+    print(f'\nSaving outputs to: {wdir}')
     # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
-    cdf.to_csv((os.path.join(wdir,'Benchmark_yr.csv')), index=False)
+    cdf.to_csv((os.path.join(wdir, 'Benchmark_yr.csv')), index=False)
 
 
 def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables):
@@ -323,27 +343,40 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables):
     print("Running MonthlyAgebinAnalyzer...", flush=True)
 
     # Convert the experiment data to a DataFrame and format it
-    sum_channels = ['clinical_incidence', 'incidence', 'severe_incidence', 'nHost']
-    mean_channels = ['nPopulation', 'prevalence_2to10', 'prevalence']
+    sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
+    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
     df = load_combined_daily_output(jdir, channels_to_keep)
+    df['n_prev'] = df['prev'] * df['n']
 
     age_grps = list(df['ageGroup'].unique())
     df['ageGroup'] = df['ageGroup'].astype('category')
     df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
-    df['day'] = 1
     df['ageGroup'] = df['ageGroup'].replace('0-0', '0-0.5')
     df['ageGroup'] = df['ageGroup'].replace('0-1', '0.5-1')
 
     # Create PfPR Monthly df, calculate Columns necessary, save to csv
-    df_mth = df.groupby(sweep_variables + ['year', 'month', 'ageGroup'])[
-        ['nHost', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence', 'day']].agg(
-        np.mean).reset_index()
-    df_mth['nPatent'] = df_mth['prevalence'] * df_mth['nHost']
-    df_mth['nUncomp'] = df_mth['clinical_incidence'] * df_mth['nHost']
-    df_mth['nSevere'] = df_mth['severe_incidence'] * df_mth['nHost']
-    df_mth['date'] = pd.to_datetime(dict(year=df_mth.year, month=df_mth.month, day=df_mth.day))
+    n_surveys_mth = int(round(len(df['timestep'].unique())/ len(df['year'].unique()),0)) / 12
+
+    df_mth_mean = df.groupby(sweep_variables + ['year', 'month', 'ageGroup'])[
+        ['nPopulation', 'prevalence_2to10']].agg(np.mean).reset_index()
+    df_mth_sum = df.groupby(sweep_variables + ['year', 'month', 'ageGroup'])[
+        ['n','n_prev' ,'n_inc', 'n_inc_clinical', 'n_inc_severe']].agg(
+        np.sum).reset_index()
+
+    df_mth = df_mth_sum.merge(df_mth_mean, on=['index', 'year', 'month', 'ageGroup'], how='inner')
+    df_mth['prev'] = (df_mth['n_prev'] / df_mth['n'])
+    # per person per year (annualized)
+    df_mth['incidence'] = (df_mth['n_inc'] / df_mth['n'] * n_surveys_mth) * 12
+    df_mth['clinical_incidence'] = (df_mth['n_inc_clinical'] / df_mth['n'] * n_surveys_mth) * 12
+    df_mth['severe_incidence'] = (df_mth['n_inc_severe'] / df_mth['n'] * n_surveys_mth) * 12
+
+    # Align to common output terminology used
+    df_mth = df_mth.rename({'n': 'nHost', 'n_inc': 'nInfect', 'n_inc_clinical': 'nUncomp', 'n_inc_severe': 'nSevere',
+                            'prev': 'prevalence'}, axis=1)
+
+    df_mth['date'] = pd.to_datetime(dict(year=df_mth.year, month=df_mth.month, day=1))
     df_mth[['agebin_low', 'agebin']] = df_mth['ageGroup'].str.split('-', expand=True)
 
     # Reorder outcome columns
@@ -353,6 +386,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables):
 
     ## Add scenarios variables
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat','entomology_mode'], axis=1)  ## EMOD specific, entomology_mode  not applicable
     df_mth = df_mth.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
     eir_df = eir_df[['index', 'month', 'year', 'simulatedEIR', 'inputEIR']]
@@ -379,26 +413,38 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables):
     print("Running AnnualAgebinAnalyzer...", flush=True)
 
     # Convert the experiment data to a DataFrame and format it
-    sum_channels = ['clinical_incidence', 'incidence', 'severe_incidence', 'nHost']
-    mean_channels = ['nPopulation', 'prevalence_2to10', 'prevalence']
+    sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
+    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
     df = load_combined_daily_output(jdir, channels_to_keep)
+    df['n_prev'] = df['prev'] * df['n']
+    n_surveys_per_year = int(round(len(df['timestep'].unique())/ len(df['year'].unique()),0))
 
     age_grps = list(df['ageGroup'].unique())
     df['ageGroup'] = df['ageGroup'].astype('category')
     df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
-    df['day'] = 1
     df['ageGroup'] = df['ageGroup'].replace('0-0', '0-0.5')
     df['ageGroup'] = df['ageGroup'].replace('0-1', '0.5-1')
 
-    # Create PfPR Monthly df, calculate Columns necessary, save to csv
-    df_yr = df.groupby(sweep_variables + ['year', 'ageGroup'])[
-        ['nHost', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence', 'day']].agg(
-        np.mean).reset_index()
-    df_yr['nPatent'] = df_yr['prevalence'] * df_yr['nHost']
-    df_yr['nUncomp'] = df_yr['clinical_incidence'] * df_yr['nHost']
-    df_yr['nSevere'] = df_yr['severe_incidence'] * df_yr['nHost']
+    # Create PfPR yearly df, calculate Columns necessary, save to csv
+    df_yr_mean = df.groupby(sweep_variables + ['year', 'ageGroup'])[['nPopulation', 'prevalence_2to10']].agg(np.mean).reset_index()
+    df_yr_sum = df.groupby(sweep_variables + ['year', 'ageGroup'])[[ 'n','n_prev','n_inc', 'n_inc_clinical', 'n_inc_severe']].agg(
+        np.sum).reset_index()
+
+    df_yr = df_yr_sum.merge(df_yr_mean, on=['index', 'year', 'ageGroup'], how='inner')
+    df_yr['n'] = df_yr['n'] / n_surveys_per_year
+    df_yr['n_prev'] = df_yr['n_prev'] /n_surveys_per_year
+
+    df_yr['prev'] = df_yr['n_prev'] / df_yr['n']
+    df_yr['incidence'] = df_yr['n_inc'] / df_yr['n']
+    df_yr['clinical_incidence'] = df_yr['n_inc_clinical'] / df_yr['n']
+    df_yr['severe_incidence'] = df_yr['n_inc_severe'] / df_yr['n']
+
+    # Align to common output terminology used
+    df_yr = df_yr.rename({'n': 'nHost', 'n_inc': 'nInfect', 'n_inc_clinical': 'nUncomp', 'n_inc_severe': 'nSevere',
+                          'prev': 'prevalence'}, axis=1)
+
     df_yr['date'] = pd.to_datetime(dict(year=df_yr.year, month=1, day=1))
     df_yr[['agebin_low', 'agebin']] = df_yr['ageGroup'].str.split('-', expand=True)
 
@@ -408,6 +454,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables):
     df_yr = df_yr[first_columns + df_yr.drop(columns=first_columns).columns.tolist()]
 
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat','entomology_mode'], axis=1)  ## EMOD specific, entomology_mode  not applicable
     df_yr = df_yr.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
     eir_df = eir_df[['index', 'year', 'simulatedEIR', 'inputEIR']]
@@ -423,11 +470,11 @@ if __name__ == "__main__":
     # Load experiment object
     file = open(os.path.join(jdir, "exp.obj"), "rb")
     exp = pickle.load(file)
-    wdir = os.path.join(exp.sim_out_dir,'MalSim')
+    wdir = os.path.join(exp.sim_out_dir, 'MalSim')
     sweep_variables = ['index']
     create_sampleplots = True  # False
-    all_age_sp = True # False 
-    #sim_start = exp.sim_start_year_ms
+    all_age_sp = True  # False
+    # sim_start = exp.sim_start_year_ms
 
     # Execute all analyzers
     InputEIRAnalyzer(jdir, wdir)
@@ -444,10 +491,10 @@ if __name__ == "__main__":
         # exp_tags = ['eir', 'cm_clinical', 'seasonality']
 
         channels_sample_chart = ['nPopulation', 'nHost', 'prevalence',
-                                'incidence', 'clinical_incidence',
-                                'severe_incidence', 'prevalence_2to10', 'EIR_gamb']
+                                 'incidence', 'clinical_incidence',
+                                 'severe_incidence', 'prevalence_2to10', 'EIR_gamb']
         if all_age_sp:
-            all_age_sample_plot( wdir, sweep_variables=['index'], sample_channels=channels_sample_chart)
+            all_age_sample_plot(wdir, sweep_variables=['index'], sample_channels=channels_sample_chart)
         sample_plot_yr(wdir, sweep_variables=exp_tags)
         sample_plot_mth(wdir, sweep_variables=exp_tags)
 
@@ -460,7 +507,8 @@ if __name__ == "__main__":
 
         channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
         for channel in channel_list:
-            monthly_timeseries(wdir=exp.sim_out_dir, emodom=emodom, channel=channel, sweepvar='emodom', facet_var='eir', agegrp='5-10')
+            monthly_timeseries(wdir=exp.sim_out_dir, emodom=emodom, channel=channel, sweepvar='emodom', facet_var='eir',
+                               agegrp='5-10')
 
         sweepvar = 'cm_clinical'
         prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence')
