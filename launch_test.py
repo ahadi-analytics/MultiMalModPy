@@ -108,18 +108,19 @@ else:
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']  # If running fewer sweeps in past than in pickup to be set up
 
-    # Parameter names to create scenarios from
-    scen_df = create_scenarios_csv(exp, exp.sweep_list)
-    exp.nexps = len(scen_df) * exp.num_seeds
+
+    # Update exp_name
+    exp.exp_name = exp.exp_name.replace('seasonality', exp.seasonality[0])
+    exp.exp_name = exp.exp_name.replace('entomologymode', exp.entomology_mode)
 
     # Directory setup and analyzer scripts
-    exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
     exp.emod_analyzer = ['analyze_sim.py']
     exp.openmalaria_analyzer = ['analyze_sim.py']
 
 
-
 ## Arguments that chage for pickup
+exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
+
 # Simulation duration, start and end configuration
 exp = get_emod_time_param(exp)
 
@@ -127,15 +128,15 @@ exp = get_emod_time_param(exp)
 # Check whether defined input parameter are all valid
 check_exp_inputs(exp)  # TODO add more validity checks as needed
 
+# Parameter names to create scenarios from
+scen_df = create_scenarios_csv(exp, exp.sweep_list)
+exp.nexps = len(scen_df) * exp.num_seeds
+
 # Set platform and associated values, such as the maximum number of jobs to run at one time
 platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
                     mem_per_cpu=int(5000 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
                     time='03:00:00', account=manifest.sh_hpc_config['A'],
                     modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=300)  # mem_per_cpu default: 2048
-
-if exp.emod_step == 'pickup':
-    scen_df = get_scendf_burnin(exp, exp.emod_serialized_id, manifest, platform,
-                                exp.burnin)  # FIXME expand on it when additional parameter values to run in future
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 save_scen(rep_scen_df(scen_df), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])

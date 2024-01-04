@@ -20,7 +20,6 @@ log = logging.getLogger(__name__)
 
 # Retrieve parsed arguments
 args = parse_launch_args()
-args.expname = args.expname.replace('test','baseline')
 
 if args.emodstep == 'pickup':
     file = open(os.path.join(args.directory, "exp.obj"), "rb")
@@ -29,6 +28,7 @@ if args.emodstep == 'pickup':
     ## Update arguments
     exp.SUITEname = args.suite
     exp.exp_name = args.expname
+
     exp.emod_step = args.emodstep
     exp.models_to_run = args.models
     exp.emod_serialized_id = args.serializedid
@@ -38,6 +38,7 @@ else:
 
     exp.SUITEname = args.suite
     exp.exp_name = args.expname
+    exp.exp_name = exp.exp_name.replace('test', 'baseline')
     exp.emod_step = args.emodstep
     exp.models_to_run = args.models
 
@@ -113,12 +114,18 @@ else:
     scen_df = create_scenarios_csv(exp, exp.sweep_list)
     exp.nexps = len(scen_df) * exp.num_seeds
 
+    # Update exp_name
+    exp.exp_name = exp.exp_name.replace('seasonality', exp.seasonality[0])
+    exp.exp_name = exp.exp_name.replace('entomologymode', exp.entomology_mode)
+
     # Directory setup and analyzer scripts
     exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
     exp.emod_analyzer = ['analyze_sim.py']
     exp.openmalaria_analyzer = ['analyze_sim.py']
 
 ## Arguments that chage for pickup
+exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
+
 # Simulation duration, start and end configuration
 exp = get_emod_time_param(exp)
 
@@ -130,10 +137,6 @@ platform = Platform(manifest.selected_platform, job_directory=exp.suite_director
                     mem_per_cpu=int(5000 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
                     time='03:00:00', account=manifest.sh_hpc_config['A'],
                     modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=300)  # mem_per_cpu default: 2048
-
-if exp.emod_step == 'pickup':
-    scen_df = get_scendf_burnin(exp, exp.emod_serialized_id, manifest, platform,
-                                exp.burnin)  # FIXME expand on it when additional parameter values to run in future
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 save_scen(rep_scen_df(scen_df), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])

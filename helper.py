@@ -4,6 +4,7 @@ import subprocess
 import itertools
 import pickle
 from datetime import datetime
+from datetime import datetime as dt
 import pandas as pd
 import numpy as np
 from EMOD.scaffolds.dynamicEIR import eir_to_lhs, eir_to_lhs_regr
@@ -24,7 +25,7 @@ def parse_launch_args():
                         help='Description of SUITEname')
     parser.add_argument('--expname',
                         type=str,
-                        default=f'sims_{exp.entomology_mode}_{exp.seasonality[0]}_{dt.now().strftime("%H_%M_%S")}',
+                        default=f'sims_entomologymode_seasonality_{dt.now().strftime("%H_%M_%S")}',
                         help='Description of exp_name')
     parser.add_argument('--emodstep',
                         type=str,
@@ -37,23 +38,8 @@ def parse_launch_args():
     parser.add_argument('--models',
                         nargs='+',
                         default=['EMOD', 'OpenMalaria', 'MalSim'],
-                        options=['EMOD', 'OpenMalaria', 'MalSim'],
+                        choices=['EMOD', 'OpenMalaria', 'MalSim'],
                         help='Description of models_to_run')
-    parser.add_argument('--seasonality',
-                        type=str,
-                        default='seasonal',
-                        options=['seasonal', 'perennial'],
-                        help='Transmission seasonality to run')
-    parser.add_argument('--ent',
-                        '--entomology_mode',
-                        type=str,
-                        default='dynamic',
-                        options=['dynamic','forced'],
-                        help='Dynamic or forced EIR to run')
-    parser.add_argument('--burnin',
-                        type=int,
-                        default=80,
-                        help='Number of burnin years to run (applies to all models)')
     return parser.parse_args()
 
 
@@ -102,8 +88,10 @@ def make_dirs(exp):
         exp_suite_path = os.path.join(exp.SUITEname)
 
     # Define the job directory path and simulation output directory path
-    exp.suite_directory = os.path.join(exp.job_directory_manifest, exp_suite_path)  # Grouping folder for simulation exps
-    exp.job_directory = os.path.join(exp.job_directory_manifest, exp_suite_path, exp.exp_name)  # stores simulation files to run
+    exp.suite_directory = os.path.join(exp.job_directory_manifest,
+                                       exp_suite_path)  # Grouping folder for simulation exps
+    exp.job_directory = os.path.join(exp.job_directory_manifest, exp_suite_path,
+                                     exp.exp_name)  # stores simulation files to run
     exp.sim_out_dir = os.path.join(exp.output_directory_manifest, exp_suite_path,
                                    exp.exp_name)  # stores results csvs and figures
 
@@ -127,12 +115,13 @@ def check_exp_inputs(exp):
     Args:
         exp (custom class): Custom object that includes all experiment specifications
     """
+
     if exp.emod_step:
-        if len(exp.num_seeds_burnin) > 1:
+        if exp.num_seeds_burnin > 1:
             raise ValueError(f'Current framework only allows 1 seed for EMOD burnin')
 
-         if exp.num_seeds_burnin > 1 and exp.num_seeds_burnin != exp.num_seeds:
-                raise ValueError('num_seeds_burnin needs to be 1 or equal to num_seeds')
+        if exp.num_seeds_burnin > 1 and exp.num_seeds_burnin != exp.num_seeds:
+            raise ValueError('num_seeds_burnin needs to be 1 or equal to num_seeds')
 
     if len(exp.seasonality) > 1:
         raise ValueError(
@@ -197,12 +186,12 @@ def get_emod_time_param(exp):
         raise ValueError(f'Please specify valid emod_step, {emod_step} is not valid')
 
     exp.sim_start_year_em = sim_start_year
-    exp.sim_start_year_om  = start_year - burnin
-    exp.sim_start_year_ms  = exp.sim_start_year_om
-    
+    exp.sim_start_year_om = start_year - burnin
+    exp.sim_start_year_ms = exp.sim_start_year_om
+
     if not exp.MalSim_run_burnin:
-      exp.sim_start_year_ms = exp.start_year
-    
+        exp.sim_start_year_ms = exp.start_year
+
     exp.monitoring_years = monitoring_years
     exp.sim_dur_years = sim_dur_years
 
