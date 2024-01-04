@@ -37,15 +37,15 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
         prevalence_rendering_min_ages = c(min_ages, (2*365)),
         prevalence_rendering_max_ages = c(max_ages, (10*365)),
 
-        # Render incidence in age groups 0-5, 5-10, 10-15, and 15-20:
+        # Render incidence (n_inc) in age groups 0-5, 5-10, 10-15, and 15-20:
         incidence_rendering_min_ages = min_ages,
         incidence_rendering_max_ages = max_ages,
 
-        # Render clinical incidence in age groups 0-5, 5-10, 10-15, and 15-20:
+        # Render clinical incidence (n_inc_clinical) in age groups 0-5, 5-10, 10-15, and 15-20:
         clinical_incidence_rendering_min_ages = min_ages,
         clinical_incidence_rendering_max_ages = max_ages,
 
-        # Render severe incidence in age groups 0-5, 5-10, 10-15, and 15-20:
+        # Render severe incidence (n_inc_severe) in age groups 0-5, 5-10, 10-15, and 15-20:
         severe_incidence_rendering_min_ages = min_ages,
         severe_incidence_rendering_max_ages = max_ages
       ))
