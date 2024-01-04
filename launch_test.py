@@ -16,36 +16,6 @@ log = logging.getLogger(__name__)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
 # emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
 
-def parse_launch_args():
-    parser = argparse.ArgumentParser(description="Description of your script.")
-
-    # Define command-line arguments with default values
-    parser.add_argument("-d", "--directory",
-                        type=str,
-                        required=False,
-                        help="Jobdirectory of burnin, if no EMOD burnin, is ignored")
-    parser.add_argument('--suite',
-                        type=str,
-                        default=f'test_sims_{dt.now().strftime("%Y%m%d")}',
-                        help='Description of SUITEname')
-    parser.add_argument('--expname',
-                        type=str,
-                        default=f'sims_{exp.entomology_mode}_{exp.seasonality[0]}_{dt.now().strftime("%H_%M_%S")}',
-                        help='Description of exp_name')
-    parser.add_argument('--emodstep',
-                        type=str,
-                        default=None,
-                        help='Description of emod_step')
-    parser.add_argument('--serializedid',
-                        type=str,
-                        default='',
-                        help='Description of emod_serialized_id')
-    parser.add_argument('--models',
-                        nargs='+',
-                        default=['EMOD', 'OpenMalaria', 'MalSim'],
-                        help='Description of models_to_run')
-
-    return parser.parse_args()
 
 # Retrieve parsed arguments
 args = parse_launch_args()
