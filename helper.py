@@ -102,8 +102,10 @@ def make_dirs(exp, overwrite=False):
 
     # Create subdirectories ('em', 'om', 'comb') inside the simulation output directory if they don't exist
     os.makedirs(os.path.join(exp.sim_out_dir, 'em'), exist_ok=overwrite)
-    os.makedirs(os.path.join(exp.sim_out_dir, 'om'), exist_ok=overwrite)
-    os.makedirs(os.path.join(exp.sim_out_dir, 'MalSim'), exist_ok=overwrite)
+
+    if exp.emod_step !='burnin':
+        os.makedirs(os.path.join(exp.sim_out_dir, 'om'), exist_ok=overwrite)
+        os.makedirs(os.path.join(exp.sim_out_dir, 'MalSim'), exist_ok=overwrite)
     return exp
 
 
