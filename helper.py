@@ -398,7 +398,7 @@ def shell_header_quest(sh_account, time_str='04:00:00', memG=3, job_name='myjob'
              f'#SBATCH -t {time_str}\n' \
              f'#SBATCH -N 1\n' \
              f'#SBATCH --ntasks-per-node=1\n' \
-             f'#SBATCH --mem={int(memG * mem_scl)}G\n' \
+             f'#SBATCH --mem-per-cpu={int(memG * mem_scl)}G\n' \
              f'#SBATCH --job-name="{job_name}"\n'
     if arrayJob is not None:
         array = arrayJob
