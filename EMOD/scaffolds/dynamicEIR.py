@@ -20,7 +20,7 @@ def eir_to_lhs_regr(df=None, population=1000):
     output = []
     for index, row in df.iterrows():
         seasonality = row['seasonality']
-        eir = int(row['eir'])
+        eir = float(row['eir'])
         if eir >= 100:
             eir_range = 100
         elif eir >= 30:
