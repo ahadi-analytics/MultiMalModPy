@@ -7,7 +7,9 @@ library(tidyr)
 theme_set(theme_bw())
 datetoday <- Sys.Date()
 
-wdir <- "/projects/b1139/emod-om/simulation_outputs/rer4177/larval_habitat_calibration/test_sims_2023_12_15_12_43_16/"
+wdir <- "/projects/b1139/emod-om/simulation_outputs/rer4177/larval_habitat_calibration/test_sims_2023_12_15_15_38_43/"
+  #perennial comes from: "/projects/b1139/emod-om/simulation_outputs/rer4177/larval_habitat_calibration/test_sims_2023_12_15_15_38_43/"
+  #seasonal comes from: "/projects/b1139/emod-om/simulation_outputs/rer4177/larval_habitat_calibration/test_sims_2023_12_15_12_43_16/"
 
 dat <- fread(file.path(wdir, 'em', 'annual_transmission_report_larval.csv'))
 
@@ -81,6 +83,7 @@ if (fit_model2c) {
       pred_dat_sub2$eir_grp <- grp
       pred_list[[length(pred_list) + 1]] <- pred_dat_sub2
       rm(pred_dat_sub2)
+      print(glmmodel)
     }
   }
 

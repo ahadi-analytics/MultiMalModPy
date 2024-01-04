@@ -20,33 +20,31 @@ def eir_to_lhs_regr(df=None, population=1000):
     output = []
     for index, row in df.iterrows():
         seasonality = row['seasonality']
-        eir = row['eir']
-        cm_clinical = row['cm_clinical']
+        eir = int(row['eir'])
+        if eir >= 100:
+            eir_range = 100
+        elif eir >= 30:
+            eir_range = 30
+        elif eir >= 5:
+            eir_range = 5
+        else: 
+            eir_range = 0
         if seasonality == 'perennial':
             ## these were run for a population of 5000 people
-            glm_bycm = {0: [-37.53061, 5.637571]} #the new values for 0 don't look all that good old values were: -10.278,0.996
-                        #0.2: [-8.09, 1.07],
-                        #0.4: [-22.755, 1.206],
-                        #0.6: [-19.437, 1.351],
-                        #0.8: [-41.455, 1.648],
-                        #1: [-29.721, 2.126]}
+            glm_byeir = {0: [1.409,4.056], 5: [-1.310,4.494], 30: [-7.675,5.304], 100: [-26.841,5.261]}
 
         elif seasonality == 'seasonal':
             ## these were run for a population of 5000 people
-            glm_bycm = {0: [-11.27711, 4.956666]} #old values were: 24.772, 5.251
-                        #0.2: [34.785, 5.665],
-                        #0.4: [1.479, 6.219],
-                        #0.6: [-46.094, 7.312],
-                        #0.8: [-148.27, 9.031],
-                        #1: [-170.58, 11.65]}
+            glm_byeir = {0: [3.456, 3.286], 5: [1.616,3.956], 30: [-10.247, 4.843], 100: [-11.277, 4.957]} 
+            
         else:
             raise ValueError(f'{seasonality} is not a valid seasonality')
-
+            
         # Calculate LHS using regression model
-        lhs = glm_bycm[cm_clinical][0] + float(eir) * glm_bycm[cm_clinical][1]
+        lhs = glm_byeir[eir_range][0] + float(eir) * glm_byeir[eir_range][1]
         lhs = lhs / (5000 / population)
-        if lhs < 0:
-            lhs = 0
+        if lhs <= 0:
+            lhs = 0.5 #this is a precaution, however we don't expect lhs values to be less than 0.5, we just don't want them to be 0.
         output.append(lhs)
     return output
 
