@@ -575,7 +575,7 @@ def submit_run_EMOD(exp, scen_df):
     return experiment
 
 
-def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=8):
+def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=12):
     """
     Submits a job to analyze EMOD simulation results.
 
