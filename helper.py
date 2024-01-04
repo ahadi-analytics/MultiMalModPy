@@ -68,7 +68,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def make_dirs(exp):
+def make_dirs(exp, overwrite=False):
     """
     Creates necessary directories for simulation experiment jobs and simulation outputs.
     Args:
@@ -96,16 +96,14 @@ def make_dirs(exp):
                                    exp.exp_name)  # stores results csvs and figures
 
     # Create directories
-    os.makedirs(os.path.relpath(exp.job_directory), exist_ok=True)
-    os.makedirs(os.path.join(exp.job_directory, 'log'), exist_ok=True)
-    os.makedirs(os.path.relpath(exp.sim_out_dir), exist_ok=True)
+    os.makedirs(os.path.relpath(exp.job_directory), exist_ok=overwrite)
+    os.makedirs(os.path.join(exp.job_directory, 'log'), exist_ok=overwrite)
+    os.makedirs(os.path.relpath(exp.sim_out_dir), exist_ok=overwrite)
 
     # Create subdirectories ('em', 'om', 'comb') inside the simulation output directory if they don't exist
-    os.makedirs(os.path.join(exp.sim_out_dir, 'em'), exist_ok=True)
-    os.makedirs(os.path.join(exp.sim_out_dir, 'om'), exist_ok=True)
-    os.makedirs(os.path.join(exp.sim_out_dir, 'MalSim'), exist_ok=True)
-    # os.makedirs(os.path.join(sim_out_dir, 'comb'), exist_ok=True)
-
+    os.makedirs(os.path.join(exp.sim_out_dir, 'em'), exist_ok=overwrite)
+    os.makedirs(os.path.join(exp.sim_out_dir, 'om'), exist_ok=overwrite)
+    os.makedirs(os.path.join(exp.sim_out_dir, 'MalSim'), exist_ok=overwrite)
     return exp
 
 
@@ -517,9 +515,9 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
         # Check if job_id_MalSim is provided as a string
         if isinstance(job_id_MalSim, str):
             job_id_MalSim = open(os.path.join(exp.job_directory, f'{job_id_MalSim}.txt')).read().strip()
-            dependencies = f'--dependency={job_id_EMOD},{job_id_MalSim}'
+            dependencies = f'--dependency=afterany:{job_id_EMOD},{job_id_MalSim}'
         else:
-            dependencies = f'--dependency={job_id_EMOD}'
+            dependencies = f'--dependency=afterany:{job_id_EMOD}'
         # Submit job  with dependency
         p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE,
                            cwd=str(exp.job_directory))
