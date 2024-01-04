@@ -1,14 +1,47 @@
-import argparse 
+import argparse
 import os
-import subprocess 
-import itertools 
+import subprocess
+import itertools
 import pickle
 from datetime import datetime
+from datetime import datetime as dt
 import pandas as pd
 import numpy as np
 from EMOD.scaffolds.dynamicEIR import eir_to_lhs, eir_to_lhs_regr
 from scipy.interpolate import interp1d
-user = os.getlogin()
+
+
+def parse_launch_args():
+    parser = argparse.ArgumentParser(description="Description of your script.")
+
+    # Define command-line arguments with default values
+    parser.add_argument("-d", "--directory",
+                        type=str,
+                        required=False,
+                        help="Jobdirectory of burnin, if no EMOD burnin, is ignored")
+    parser.add_argument('--suite',
+                        type=str,
+                        default=f'test_sims_{dt.now().strftime("%Y%m%d")}',
+                        help='Description of SUITEname')
+    parser.add_argument('--expname',
+                        type=str,
+                        default=f'sims_entomologymode_seasonality_{dt.now().strftime("%H_%M_%S")}',
+                        help='Description of exp_name')
+    parser.add_argument('--emodstep',
+                        type=str,
+                        default=None,
+                        help='Description of emod_step')
+    parser.add_argument('--serializedid',
+                        type=str,
+                        default='',
+                        help='Description of emod_serialized_id')
+    parser.add_argument('--models',
+                        nargs='+',
+                        default=['EMOD', 'OpenMalaria', 'MalSim'],
+                        choices=['EMOD', 'OpenMalaria', 'MalSim'],
+                        help='Description of models_to_run')
+    return parser.parse_args()
+
 
 def parse_args():
     """
@@ -33,13 +66,14 @@ def parse_args():
 
     # Parse the command-line arguments and return the result
     return parser.parse_args()
-    
-def make_dirs(manifest, suite_name, exp_name, custom_subdir=None):
+
+
+def make_dirs(exp, overwrite=False):
     """
     Creates necessary directories for simulation experiment jobs and simulation outputs.
     Args:
     manifest (Manifest): The manifest object containing project directory information.
-    suite_name (str): The name of the suite.
+    SUITEname (str): The name of the suite.
     exp_name (str): The name of the experiment.
     custom_subdir (str): The name of an additional sub-directory (optional) Defaults to None.
     Returns:
@@ -48,28 +82,32 @@ def make_dirs(manifest, suite_name, exp_name, custom_subdir=None):
 
     # Create the required default paths
     # If custom_subdir is specified, writes directories under given name
-    if custom_subdir is not None:
-        exp_suite_path = os.path.join(custom_subdir, suite_name)
+    if exp.custom_subdir is not None:
+        exp_suite_path = os.path.join(exp.custom_subdir, exp.SUITEname)
     else:
-        exp_suite_path = os.path.join(suite_name)
+        exp_suite_path = os.path.join(exp.SUITEname)
 
-    suite_directory = os.path.join(manifest.job_directory, exp_suite_path)  # Grouping folder for simulation exps
-    job_directory = os.path.join(manifest.job_directory, exp_suite_path, exp_name)  # stores simulation files to run
-    sim_out_dir = os.path.join(manifest.output_directory, exp_suite_path, exp_name)  # stores results csvs and figures
+    # Define the job directory path and simulation output directory path
+    exp.suite_directory = os.path.join(exp.job_directory_manifest,
+                                       exp_suite_path)  # Grouping folder for simulation exps
+    exp.job_directory = os.path.join(exp.job_directory_manifest, exp_suite_path,
+                                     exp.exp_name)  # stores simulation files to run
+    exp.sim_out_dir = os.path.join(exp.output_directory_manifest, exp_suite_path,
+                                   exp.exp_name)  # stores results csvs and figures
 
     # Create directories
-    os.makedirs(os.path.relpath(job_directory), exist_ok=True)
-    os.makedirs(os.path.join(job_directory, 'log'), exist_ok=True)
-    os.makedirs(os.path.relpath(sim_out_dir), exist_ok=True)
+    os.makedirs(os.path.relpath(exp.job_directory), exist_ok=overwrite)
+    os.makedirs(os.path.join(exp.job_directory, 'log'), exist_ok=overwrite)
+    os.makedirs(os.path.relpath(exp.sim_out_dir), exist_ok=overwrite)
 
     # Create subdirectories ('em', 'om', 'comb') inside the simulation output directory if they don't exist
-    os.makedirs(os.path.join(sim_out_dir, 'em'), exist_ok=True)
-    os.makedirs(os.path.join(sim_out_dir, 'om'), exist_ok=True)
-    os.makedirs(os.path.join(sim_out_dir, 'MalSim'), exist_ok = True)
-    #os.makedirs(os.path.join(sim_out_dir, 'comb'), exist_ok=True)
+    os.makedirs(os.path.join(exp.sim_out_dir, 'em'), exist_ok=overwrite)
 
-    # Return the job directory path and simulation output directory path
-    return suite_directory, job_directory, sim_out_dir
+    if exp.emod_step !='burnin':
+        os.makedirs(os.path.join(exp.sim_out_dir, 'om'), exist_ok=overwrite)
+        os.makedirs(os.path.join(exp.sim_out_dir, 'MalSim'), exist_ok=overwrite)
+    return exp
+
 
 def check_exp_inputs(exp):
     """
@@ -77,8 +115,13 @@ def check_exp_inputs(exp):
     Args:
         exp (custom class): Custom object that includes all experiment specifications
     """
-    if exp.emod_step and exp.num_seeds_burnin > 1 and exp.num_seeds_burnin != exp.num_seeds:
-        raise ValueError('num_seeds_burnin needs to be 1 or equal to num_seeds')
+
+    if exp.emod_step:
+        if exp.num_seeds_burnin > 1:
+            raise ValueError(f'Current framework only allows 1 seed for EMOD burnin')
+
+        if exp.num_seeds_burnin > 1 and exp.num_seeds_burnin != exp.num_seeds:
+            raise ValueError('num_seeds_burnin needs to be 1 or equal to num_seeds')
 
     if len(exp.seasonality) > 1:
         raise ValueError(
@@ -87,13 +130,14 @@ def check_exp_inputs(exp):
     ## Applies to all models, to establish immunity levels in simulated population
     if exp.burnin < 80 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
                             'EMOD' not in exp.models_to_run):
-        print(f'/!\ WARNING Short burnin period of {exp.burnin},'
+        print(f'/!\ WARNING Short burnin period of {exp.burnin} years,'
               f' results may not be valid. Burnin of 80 years is recommended.')
 
     if np.max(exp.cm_clinical) > 0 and exp.entomology_mode == 'dynamic' and 'EMOD' in exp.models_to_run:
         raise ValueError('EMOD is not set up to run dynamic EIR for non-zero CM-levels currently.')
 
-def get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step = None):
+
+def get_emod_time_param(exp):
     """
     Calculates simulation time parameters for EMOD (OpenMalaria) based on the provided arguments.
 
@@ -110,6 +154,12 @@ def get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step =
         - monitoring_years: Number of years to monitor (requried in EMOD analyzer)
         - sim_dur_years: Total simulation duration years
     """
+
+    start_year = exp.start_year
+    burnin = exp.burnin
+    end_year = exp.end_year
+    models_to_run = exp.models_to_run
+    emod_step = exp.emod_step
 
     # Calculate the burn-in start year
     burnin_start_year = start_year - burnin
@@ -134,10 +184,21 @@ def get_emod_time_param(start_year, end_year, burnin, models_to_run, emod_step =
         sim_start_year = start_year
     else:
         raise ValueError(f'Please specify valid emod_step, {emod_step} is not valid')
-    return sim_start_year, monitoring_years, sim_dur_years
+
+    exp.sim_start_year_em = sim_start_year
+    exp.sim_start_year_om = start_year - burnin
+    exp.sim_start_year_ms = exp.sim_start_year_om
+
+    if not exp.MalSim_run_burnin:
+        exp.sim_start_year_ms = exp.start_year
+
+    exp.monitoring_years = monitoring_years
+    exp.sim_dur_years = sim_dur_years
+
+    return exp
 
 
-def save_scen(scen_df,fname, save_dirs=None):
+def save_scen(scen_df, fname, save_dirs=None):
     for sdir in save_dirs:
         scen_df.to_csv(os.path.join(sdir, fname), index=False)
 
@@ -162,7 +223,7 @@ def save_exp_scen(exp, scen_df, save_dirs):
         pickle.dump(exp, open(os.path.join(sdir, "exp.obj"), "wb"))
 
 
-def get_seasonal_eir():
+def get_seasonal_eir(exp):
     """
     Generates seasonal EIR (Entomological Inoculation Rate) values.
 
@@ -178,15 +239,23 @@ def get_seasonal_eir():
     """
     # Define the functional form of the non-perennial, seasonal setting
     # season_daily =  1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365))  ## used in EMOD-OM benchmarking
-    season_month = [56.40649336, 37.27189056, 37.52493552, 36.99289173, 36.58402723, 33.48317104, 33.38009291, 33.906819, 37.87905792, 43.51349906, 60.33004287, 62.49708256]
+    season_month = [56.40649336, 37.27189056, 37.52493552, 36.99289173, 36.58402723, 33.48317104, 33.38009291,
+                    33.906819, 37.87905792, 43.51349906, 60.33004287, 62.49708256]
     season_daily = monthly_to_daily_EIR(season_month)
-    seasonal = [0.110650869, 0.073115112, 0.073611502, 0.072567808, 0.071765752, 0.065682898, 0.065480693, 0.066513955, 0.074306173, 0.085359082, 0.118347574, 0.122598589]
+    seasonal = [0.110650869, 0.073115112, 0.073611502, 0.072567808, 0.071765752, 0.065682898, 0.065480693, 0.066513955,
+                0.074306173, 0.085359082, 0.118347574, 0.122598589]
 
     # eir_sum = sum(season_month)
     # seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
     perennial = [x / 12 for x in [1] * 12]
 
-    return season_daily, season_month, seasonal, perennial
+    exp.season_daily = season_daily
+    exp.season_month = season_month
+    exp.seasonal = seasonal
+    exp.perennial = perennial
+
+    return exp
+
 
 def monthly_to_daily_EIR(monthly_EIR):
     '''
@@ -222,6 +291,7 @@ def rep_scen_df(df):
     rep_df['seed'] = rep_df.groupby('scen_id').cumcount() + 1
     return rep_df
 
+
 def create_simsetup_csv(exp):
     setup_dic = {'job_directory': exp.job_directory,
                  'sim_out_dir': exp.sim_out_dir,
@@ -231,7 +301,7 @@ def create_simsetup_csv(exp):
                  'pop_size': exp.pop_size,
                  'agebins': exp.agebins,
                  'seasonality': exp.seasonality[0],
-                 'seasonal':  ';'.join(map(str, exp.seasonal)),
+                 'seasonal': ';'.join(map(str, exp.seasonal)),
                  'perennial': ';'.join(map(str, exp.perennial)),
                  'start_year': exp.start_year,
                  'end_year': exp.end_year,
@@ -286,7 +356,7 @@ def create_scenarios_csv(exp, col_list=None, add_cols=True):
         df['cm_severe'] = np.where(df['cm_clinical'] * 1.15 > exp.cm_severe,
                                    np.minimum(df['cm_clinical'] * 1.15, 1), exp.cm_severe)
         df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
-        df['x_Temporary_Larval_Habitat'] = eir_to_lhs_regr(df,population=exp.pop_size)
+        df['x_Temporary_Larval_Habitat'] = eir_to_lhs_regr(df, population=exp.pop_size)
     return df
 
 
@@ -330,7 +400,7 @@ def shell_header_quest(sh_account, time_str='04:00:00', memG=3, job_name='myjob'
              f'#SBATCH -t {time_str}\n' \
              f'#SBATCH -N 1\n' \
              f'#SBATCH --ntasks-per-node=1\n' \
-             f'#SBATCH --mem={int(memG * mem_scl)}G\n' \
+             f'#SBATCH --mem-per-cpu={int(memG * mem_scl)}G\n' \
              f'#SBATCH --job-name="{job_name}"\n'
     if arrayJob is not None:
         array = arrayJob
@@ -367,11 +437,12 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
 
     """
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OMsim', mem_scl=exp.mem_increase_factor)
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OMsim',
+                                     mem_scl=exp.mem_increase_factor)
 
     # Create the Python command to run the analyzer
     if exp.hpc == 'NUCLUSTER':
-        pycommand = f'\ncd /home/{user}/model-characterization/OpenMalaria' \
+        pycommand = f'\ncd /home/{exp.user}/model-characterization/OpenMalaria' \
                     f'\npython analyze_sim.py --dir "{exp.job_directory}"'
     elif exp.hpc == 'SCICORE':
         pycommand = f'\ncd /scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria' \
@@ -406,58 +477,10 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
     write_txt(slurm_job_id, exp.job_directory, 'job_id_OManalyze.txt')
 
 
-def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=8):
-    """
-    Submits a job to analyze EMOD simulation results.
-
-    Args:
-        experiment (object): The experiment object containing job directory and other information.
-        platform (object): The platform object representing the HPC platform.
-
-    """
-
-    # Get the current working directory
-    wdir = os.path.abspath(os.path.dirname(__file__))
-
-    # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(experiment.sh_hpc_config, t, memG, job_name='analyze_EMODsim',
-                                     mem_scl=experiment.mem_increase_factor)
-
-    # Get the EMODpy virtual environment path
-    emodpy_venv = emodpy_module(experiment.hpc)
-
-    # Generate the Python commands to run additional scripts
-    # If any, add  python or R scripts to directly run after analyzer can be added below
-    pycommand = '\n'.join(
-        [f'\npython {scr} -d {experiment.job_directory} -i {experiment.id}' for scr in experiment.analyzer])
-
-    # Write the shell script to a file
-    script_path = os.path.join(experiment.job_directory, 'run_analyzer_EMOD.sh')
-    file = open(script_path, 'w')
-    file.write(header_post + emodpy_venv + f'\ncd {wdir}/EMOD' + pycommand)
-    file.close()
-
-    # Get the job ID
-    job_id = platform._op_client.get_job_id(experiment.id, experiment.item_type)[0]
-
-    # Submit the job with dependency on the previous job
-    p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path], stdout=subprocess.PIPE,
-                       cwd=str(experiment.job_directory))
-
-    # Extract the SLURM job ID from the output
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
-
-    # Print the submitted job ID
-    print(f'Submitted EMOD analyzer - job id: {slurm_job_id}')
-
-    # Write out the job IDs and experiment ID to files
-    write_txt(job_id, experiment.job_directory, 'job_id_EMODsim.txt')
-    write_txt(experiment.id, experiment.job_directory, 'exp_id_EMODsim.txt')
-    write_txt(slurm_job_id, experiment.job_directory, 'job_id_EMODanalyze.txt')
-
-
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                        custom_args='--emodom EMOD OpenMalaria MalSim', t='01:00:00', memG=1, job_id_EMOD=None, job_id_MalSim=None):
+                        custom_args='--emodom EMOD OpenMalaria MalSim', t='01:00:00', memG=1, job_id_EMOD=None,
+                        job_id_MalSim=None,
+                        job='pyjob'):
     """
     Submits a job to run a Python script.
 
@@ -473,7 +496,7 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     wdir = os.path.abspath(os.path.dirname(__file__))
 
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='pyjob', mem_scl=1)
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=job, mem_scl=1)
 
     # Get the EMODpy virtual environment path
     emodpy_venv = emodpy_module(exp.hpc)
@@ -487,16 +510,21 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     file.write(header_post + emodpy_venv + f'\ncd {wdir}' + pycommand)
     file.close()
 
-    # Check if job_id is provided as a string
-    if isinstance(job_id_EMOD, str) and isinstance(job_id_MalSim,str):
+    # Check if job_id is provided as a string to define dependendies
+    if isinstance(job_id_EMOD, str):
         job_id_EMOD = open(os.path.join(exp.job_directory, f'{job_id_EMOD}.txt')).read().strip()
-        job_id_MalSim = open(os.path.join(exp.job_directory, f'{job_id_MalSim}.txt')).read().strip()
 
-        # Submit the job with or without dependency
-        p = subprocess.run(['sbatch', '--parsable', f'--dependency={job_id_EMOD},{job_id_MalSim}', script_path],
-                           stdout=subprocess.PIPE,
+        # Check if job_id_MalSim is provided as a string
+        if isinstance(job_id_MalSim, str):
+            job_id_MalSim = open(os.path.join(exp.job_directory, f'{job_id_MalSim}.txt')).read().strip()
+            dependencies = f'--dependency=afterany:{job_id_EMOD},{job_id_MalSim}'
+        else:
+            dependencies = f'--dependency=afterany:{job_id_EMOD}'
+        # Submit job  with dependency
+        p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE,
                            cwd=str(exp.job_directory))
     else:
+        # Submit job  without dependency
         p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
 
     # Extract the SLURM job ID from the output
@@ -562,7 +590,6 @@ def combine_emodom_results(sim_out_dir):
     df_em['emodom'] = 'EMOD'
     df_om['emodom'] = 'OpenMalaria'
     df_ms['emodom'] = 'MalSim'
-    
 
     # Append EMOD and OpenMalaria DataFrames
     df = pd.concat(df_em, df_om, df_ms)
