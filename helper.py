@@ -40,6 +40,21 @@ def parse_launch_args():
                         default=['EMOD', 'OpenMalaria', 'MalSim'],
                         choices=['EMOD', 'OpenMalaria', 'MalSim'],
                         help='Description of models_to_run')
+    parser.add_argument('--user',
+                        type=str,
+                        default=os.environ.get('USER'),
+                        help='Subdirectory for simulations by user (or b1139 on NUCLUSTER)')
+    parser.add_argument('--no_malsim_burnin',
+                        action='store_false',
+                        help='MalSim_run_burnin, if no_malsim_burnin specified no burnin is run')
+    parser.add_argument('--csv',
+                        type=str,
+                        required=False,
+                        help='Name of scenario csv')
+    parser.add_argument('--rownum',
+                        type=int,
+                        required=False,
+                        help='Row number of specified scenario csv')
     return parser.parse_args()
 
 
@@ -67,6 +82,21 @@ def parse_args():
     # Parse the command-line arguments and return the result
     return parser.parse_args()
 
+
+def get_param(df,name, listparam=False):
+    """
+    Helper function to return correct format from csv to store in exp
+    Returns:
+    out, parameter value as list or not list
+    """
+    value = df[name][0]
+
+    try:
+        out = value.replace(' ','').split(',') if listparam else value
+    except:
+        out = [value] if listparam else value
+
+    return out
 
 def make_dirs(exp, overwrite=False):
     """
@@ -96,9 +126,9 @@ def make_dirs(exp, overwrite=False):
                                    exp.exp_name)  # stores results csvs and figures
 
     # Create directories
-    os.makedirs(os.path.relpath(exp.job_directory), exist_ok=overwrite)
+    os.makedirs(exp.job_directory, exist_ok=overwrite)
     os.makedirs(os.path.join(exp.job_directory, 'log'), exist_ok=overwrite)
-    os.makedirs(os.path.relpath(exp.sim_out_dir), exist_ok=overwrite)
+    os.makedirs(exp.sim_out_dir, exist_ok=overwrite)
 
     # Create subdirectories ('em', 'om', 'comb') inside the simulation output directory if they don't exist
     os.makedirs(os.path.join(exp.sim_out_dir, 'em'), exist_ok=overwrite)

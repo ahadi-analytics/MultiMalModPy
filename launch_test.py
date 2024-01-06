@@ -16,11 +16,8 @@ log = logging.getLogger(__name__)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
 # emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
 
-
 # Retrieve parsed arguments
 args = parse_launch_args()
-
-
 
 if args.emodstep =='pickup':
     file = open(os.path.join(args.directory, "exp.obj"), "rb")
@@ -40,7 +37,13 @@ else:
     exp.exp_name = args.expname
     exp.emod_step = args.emodstep
     exp.models_to_run = args.models
+    exp.MalSim_run_burnin = args.no_malsim_burnin ## bool on whether to run burnin or not, default if not specified is True
 
+    # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
+    exp.user = args.user
+    exp.custom_subdir = exp.user  # If None, no subdir created
+
+    ## Manifest objects
     exp.hpc = manifest.hpc
     exp.sh_hpc_config = manifest.sh_hpc_config
     exp.selected_platform = manifest.selected_platform
@@ -57,17 +60,12 @@ else:
         "seasonal"]  # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
     exp.mem_increase_factor = 3.0  # scaling factor on default memory requested
 
-    # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
-    exp.user = os.environ.get('USER')
-    exp.custom_subdir = exp.user  # If None, no subdir created
-
     # Specify OpenMalaria XML and survey step
     exp.om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
     exp.om_survey_step = '30d'
 
     # Specify MalSim simulation setup, interventions etc to run
     exp.MalSim_script = 'malsim_benchmarking_exercise.R'
-    exp.MalSim_run_burnin = True
 
     # Define simulation population and seeds
     exp.pop_size = 1000  # 1000 for testing
@@ -113,7 +111,7 @@ else:
     exp.exp_name = exp.exp_name.replace('seasonality', exp.seasonality[0])
     exp.exp_name = exp.exp_name.replace('entomologymode', exp.entomology_mode)
 
-    # Directory setup and analyzer scripts
+    # Analyzer scripts
     exp.emod_analyzer = ['analyze_sim.py']
     exp.openmalaria_analyzer = ['analyze_sim.py']
 
