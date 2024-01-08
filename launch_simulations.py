@@ -23,7 +23,6 @@ if args.emodstep == 'pickup':
     exp = pickle.load(file)
 
     ## Update arguments
-    exp.SUITEname = args.suite
     exp.exp_name = args.expname
     exp.emod_step = args.emodstep
     exp.models_to_run = args.models
@@ -56,30 +55,31 @@ else:
     exp_scen_df = pd.read_csv(os.path.join(f'scenario_csvs/{args.csv}.csv'))
     exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == args.rownum]
 
-    exp.exp_name = f'{exp_scen_df.exp_name[0]}_{dt.now().strftime("%H_%M_%S")}'
-
+    exp.SUITEname =  f'{args.csv}_{dt.now().strftime("%Y%m%d")}'
+    exp.exp_name = f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
+    
     # Flag to select whether to run with (dynamic) or without vector model (forced)
-    exp.entomology_mode = exp_scen_df.entomology_mode[0]
+    exp.entomology_mode = exp_scen_df.entomology_mode.iat[0]
     exp.seasonality = get_param(exp_scen_df, 'seasonality',
                                 listparam=True)  ## currently allowing only 1 seasonality pattern, keep for now as list
-    exp.mem_increase_factor = exp_scen_df.mem_increase_factor[0]  # scaling factor on default memory requested
+    exp.mem_increase_factor = exp_scen_df.mem_increase_factor.iat[0]  # scaling factor on default memory requested
 
     # Specify OpenMalaria XML and survey step
-    exp.om_scaffold = exp_scen_df.om_scaffold[0]  # defining which OpenMalaria XML scaffold to use
+    exp.om_scaffold = exp_scen_df.om_scaffold.iat[0]  # defining which OpenMalaria XML scaffold to use
     exp.om_survey_step = '30d'
 
     # Specify MalSim simulation setup, interventions etc to run
-    exp.MalSim_script = exp_scen_df.MalSim_script[0]
+    exp.MalSim_script = exp_scen_df.MalSim_script.iat[0]
 
     # Define simulation population and seeds
-    exp.pop_size = exp_scen_df.population[0]
+    exp.pop_size = exp_scen_df.population.iat[0]
     exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
 
     exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
-    exp.num_seeds = exp_scen_df.num_seeds[0]  # suggested minimum 3, in production 5-10
+    exp.num_seeds = exp_scen_df.num_seeds.iat[0]  # suggested minimum 3, in production 5-10
     exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
-    exp.end_year = int(exp.start_year + exp_scen_df.monitoring[0])  # end of pickup and monitoring period
-    exp.burnin = int(exp_scen_df.burnin[0])  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
+    exp.end_year = int(exp.start_year + exp_scen_df.monitoring.iat[0])  # end of pickup and monitoring period
+    exp.burnin = int(exp_scen_df.burnin.iat[0])  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
 
     # Name of parameters to vary
     exp.sweep_list = get_param(exp_scen_df, 'sweep_list', listparam=True)

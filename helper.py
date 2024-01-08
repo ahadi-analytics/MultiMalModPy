@@ -89,7 +89,7 @@ def get_param(df,name, listparam=False):
     Returns:
     out, parameter value as list or not list
     """
-    value = df[name][0]
+    value = df[name].iat[0]
 
     try:
         out = value.replace(' ','').split(',') if listparam else value
@@ -253,7 +253,7 @@ def save_exp_scen(exp, scen_df, save_dirs):
         pickle.dump(exp, open(os.path.join(sdir, "exp.obj"), "wb"))
 
 
-def get_seasonal_eir(exp):
+def get_seasonal_eir(exp=None):
     """
     Generates seasonal EIR (Entomological Inoculation Rate) values.
 
@@ -279,12 +279,14 @@ def get_seasonal_eir(exp):
     # seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
     perennial = [x / 12 for x in [1] * 12]
 
-    exp.season_daily = season_daily
-    exp.season_month = season_month
-    exp.seasonal = seasonal
-    exp.perennial = perennial
-
-    return exp
+    if exp is not None:
+        exp.season_daily = season_daily
+        exp.season_month = season_month
+        exp.seasonal = seasonal
+        exp.perennial = perennial
+        return exp
+    else:
+        return season_daily, season_month, seasonal, perennial
 
 
 def monthly_to_daily_EIR(monthly_EIR):
