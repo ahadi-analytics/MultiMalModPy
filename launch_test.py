@@ -58,7 +58,7 @@ else:
     exp.entomology_mode = 'dynamic'  # dynamic, forced
     exp.seasonality = [
         "seasonal"]  # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
-    exp.mem_increase_factor = 3.0  # scaling factor on default memory requested
+    exp.mem_increase_factor = 5.0  # scaling factor on default memory requested
 
     # Specify OpenMalaria XML and survey step
     exp.om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
@@ -133,7 +133,7 @@ exp.nexps = len(scen_df) * exp.num_seeds
 # Set platform and associated values, such as the maximum number of jobs to run at one time
 platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
                     mem_per_cpu=int(5000 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
-                    time='03:00:00', account=manifest.sh_hpc_config['A'],
+                    time='06:00:00', account=manifest.sh_hpc_config['A'],
                     modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=300)  # mem_per_cpu default: 2048
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
