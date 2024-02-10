@@ -166,6 +166,19 @@ def check_exp_inputs(exp):
     if np.max(exp.cm_clinical) > 0 and exp.entomology_mode == 'dynamic' and 'EMOD' in exp.models_to_run:
         raise ValueError('EMOD is not set up to run dynamic EIR for non-zero CM-levels currently.')
 
+    # Check if any attribute in list_attributes_nGT1 is not in sweep_list
+    attributes_dict = exp.__dict__
+    list_attributes_nGT1 = list()
+
+    for key, value in attributes_dict.items():
+        # Check if the attribute is a list
+        if isinstance(value, list) and len(value) > 1:
+            if key not in ['agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial']:
+                list_attributes_nGT1.append(key)
+
+    list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
+    if list_attr_notsweep:
+        raise ValueError(f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
 
 def get_emod_time_param(exp):
     """

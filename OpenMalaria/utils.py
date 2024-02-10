@@ -27,7 +27,6 @@ def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMala
     # Scenario sweeps and runs
     # TODO helper function to replace all, except seed and seasonality
     df = rep_scen_df(scen_df)
-    save_scen( df, fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
     for r, row in df.iterrows():
         scenario = xml.replace('@seed@', str(row['seed']))
         scenario = scenario.replace('@eir@', str(row['eir']))
