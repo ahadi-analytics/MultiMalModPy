@@ -85,18 +85,16 @@ directory.
     │   ├─ measures.py
     │   ├─ sample_plots.py
     │   └─ utils.py 
-    ├─ MalSim/               # malariasimulation inputs and specific functions   (coming soon)
-    │   ├─ R_functions/      # malariasimulation specific r functions
+    ├─ MalSim/                          # malariasimulation inputs and specific functions
+    │   ├─ R_functions/                 # malariasimulation specific r functions
     │   │   └─ ...
-    │   ├─ scaffolds/        # Might be used for intervention specific functions
+    │   ├─ scaffolds/                   # Might be used for intervention specific functions
     │   │   └─ ... 
     │   ├─ analyze_sim.py  
     │   ├─ sample_plots.py
     │   └─ utils.py 
     ├─ custom_plotter/                  # Unstructured collection of custom figures scripts (optional)
-    │   └─ ...  
-    ├─ sim_popsize/                     # Outdated folder with simulation that varied population sizes inthe same experiment (example for custom use of framework)
-    │   └─ ...  
+    │   └─ ...
     ├─ scenario_csvs/                   # Collection of csv files that specify simulation scenarios to run per objective 
     │   └─ ...  
     ├─ static/                          # Readme images 
@@ -149,12 +147,9 @@ imported into the launch python script.
 
 ![Simulation framework](https://github.com/numalariamodeling/model-characterization/blob/main/static/script_framework.png)
 
-An alternative structure, based on an outdated example, could be to have project specific `utils` and `analyzer` scripts
-within a project folder and have them named
-differently for EMOD and OpenMalaria (i.e.  `utils_om.py / utils_om.py` and `analyzer_em.py / analyzer_em.py `.
-This approach allows more flexible editing, i.e. when using project specific or experiment specific parameter
-definitions and analyzer files that are not integrated into the default scripts, or would change too much.
-(example `sim_popsize`). However this approach is not updated or maintaind in this repository.
+An alternative structure for more flexible editing when using project specific parameter definitions and analyzer files 
+that are not integrated into the default framework could be to have specified `utils` and `analyzer` scripts
+within a project folder (i.e.  `utils_om.py, utils_em.py` and `analyzer_om.py, analyzer_em.py`.
 
 
 <details><summary><span>List of functions</span></summary>

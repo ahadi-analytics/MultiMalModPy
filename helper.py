@@ -83,34 +83,44 @@ def parse_args():
     return parser.parse_args()
 
 
-def get_param(df,name, listparam=False):
+def get_param(df, name, listparam=False):
     """
-    Helper function to return correct format from csv to store in exp
+    Retrieves a parameter value from a DataFrame and returns it in the correct format for storage in an experiment object (exp).
+
+    Example:
+        exp.seasonality = get_param(exp_scen_df, 'seasonality', listparam=True)
+
+    Args:
+        df (pandas.DataFrame): The DataFrame containing the parameter value.
+        name (str): The name of the parameter.
+        listparam (bool, optional): Indicates whether the parameter value should be returned as a list. Defaults to False.
+
     Returns:
-    out, parameter value as list or not list
+        Union[list, str]: The parameter value, either as a list or a string, based on the 'listparam' argument.
     """
     value = df[name].iat[0]
 
     try:
-        out = value.replace(' ','').split(',') if listparam else value
+        out = value.replace(' ', '').split(',') if listparam else value
     except:
         out = [value] if listparam else value
 
     return out
 
+
 def make_dirs(exp, overwrite=False):
     """
-    Creates necessary directories for simulation experiment jobs and simulation outputs.
+    Creates necessary directories for a simulation experiment.
+
     Args:
-    manifest (Manifest): The manifest object containing project directory information.
-    SUITEname (str): The name of the suite.
-    exp_name (str): The name of the experiment.
-    custom_subdir (str): The name of an additional sub-directory (optional) Defaults to None.
+    exp (Experiment): The experiment object containing project directory information.
+    overwrite (bool, optional): If True, existing directories will be overwritten. Defaults to False.
+
     Returns:
-    tuple: A tuple containing the job directory path and simulation output directory path.
+    exp (Experiment): The experiment object with updated directory paths.
     """
 
-    # Create the required default paths
+    # Define paths based on experiment parameters
     # If custom_subdir is specified, writes directories under given name
     if exp.custom_subdir is not None:
         exp_suite_path = os.path.join(exp.custom_subdir, exp.SUITEname)
@@ -130,60 +140,79 @@ def make_dirs(exp, overwrite=False):
     os.makedirs(os.path.join(exp.job_directory, 'log'), exist_ok=overwrite)
     os.makedirs(exp.sim_out_dir, exist_ok=overwrite)
 
-    # Create subdirectories ('em', 'om', 'comb') inside the simulation output directory if they don't exist
-    os.makedirs(os.path.join(exp.sim_out_dir, 'em'), exist_ok=overwrite)
+    # Create subdirectories for specific simulation models included in exp.models_to_run
+    if 'EMOD' in exp.models_to_run:
+        os.makedirs(os.path.join(exp.sim_out_dir, 'em'), exist_ok=overwrite)
 
-    if exp.emod_step !='burnin':
-        os.makedirs(os.path.join(exp.sim_out_dir, 'om'), exist_ok=overwrite)
-        os.makedirs(os.path.join(exp.sim_out_dir, 'MalSim'), exist_ok=overwrite)
+    if exp.emod_step != 'burnin':
+        if 'OpenMalaria' in exp.models_to_run:
+            os.makedirs(os.path.join(exp.sim_out_dir, 'om'), exist_ok=overwrite)
+        if 'MalSim' in exp.models_to_run:
+            os.makedirs(os.path.join(exp.sim_out_dir, 'MalSim'), exist_ok=overwrite)
     return exp
 
 
 def check_exp_inputs(exp):
     """
-    Helper function to check a list of inputs for validity.
+    Helper function to validate experiment inputs.
+
     Args:
-        exp (custom class): Custom object that includes all experiment specifications
+        exp (Experiment): Custom object containing experiment specifications.
+
+    Raises:
+        ValueError: If input parameters are invalid.
     """
 
     if exp.emod_step:
-        if exp.num_seeds_burnin > 1:
-            raise ValueError(f'Current framework only allows 1 seed for EMOD burnin')
+        if exp.num_seeds_burnin != 1:
+            raise ValueError('Current framework only allows 1 seed for EMOD burnin')
 
-        if exp.num_seeds_burnin > 1 and exp.num_seeds_burnin != exp.num_seeds:
-            raise ValueError('num_seeds_burnin needs to be 1 or equal to num_seeds')
+        # Obsolete if num_seeds_burnin requires to be 1, as if 1, multiple num_seeds are allowed
+        #if exp.num_seeds_burnin != 1 and exp.num_seeds_burnin != exp.num_seeds:
+        #    raise ValueError('num_seeds_burnin must be 1 or equal to num_seeds')
 
     if len(exp.seasonality) > 1:
-        raise ValueError(
-            f'Current framework only allows one seasonality pattern, but {len(exp.seasonality)} specified.')
+        raise ValueError(f'Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.')
 
-    ## Applies to all models, to establish immunity levels in simulated population
     if exp.burnin < 80 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
                             'EMOD' not in exp.models_to_run):
-        print(f'/!\ WARNING Short burnin period of {exp.burnin} years,'
-              f' results may not be valid. Burnin of 80 years is recommended.')
+        print(f'WARNING: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
 
     if np.max(exp.cm_clinical) > 0 and exp.entomology_mode == 'dynamic' and 'EMOD' in exp.models_to_run:
         raise ValueError('EMOD is not set up to run dynamic EIR for non-zero CM-levels currently.')
 
+    # Check if any attribute in list_attributes_nGT1 is not in sweep_list
+    attributes_dict = exp.__dict__
+    list_attributes_nGT1 = list()
 
-def get_emod_time_param(exp):
+    for key, value in attributes_dict.items():
+        # Check if the attribute is a list
+        if isinstance(value, list) and len(value) > 1:
+            if key not in ['agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial']:
+                list_attributes_nGT1.append(key)
+
+    list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
+    if list_attr_notsweep:
+        raise ValueError(f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
+
+def get_simulation_time_params(exp):
     """
-    Calculates simulation time parameters for EMOD (OpenMalaria) based on the provided arguments.
+    Calculates simulation time parameters for EMOD, OpenMalaria and malariasimulation based on the provided arguments.
 
     Args:
-        start_year (int): Monitoring start year (required by OpenMalaria utils).
-        end_year (int): Monitoring and simulation end year (required by OpenMalaria utils).
-        burnin (int): Duration of pre-monitoring years to run.
-        emod_step (string): Whether EMOD runs in one or two steps ('None' (one run), 'burnin' or 'pickup' (two separate runs)).
+        exp (Experiment): Experiment object containing experiment specifications.
+            - start_year (int): Monitoring start year (required by OpenMalaria utils).
+            - end_year (int): Monitoring and simulation end year (required by OpenMalaria utils).
+            - burnin (int): Duration of pre-monitoring years to run.
+            - emod_step (str): Whether EMOD runs in one or two steps ('None' (one run), 'burnin', or 'pickup' (two separate runs)).
 
     Returns:
-        tuple: A tuple containing the simulation start year, number of years to monitor (required in EMOD analyzer),
-        and the total simulation duration in years.
-        - sim_start_year: Simulation start year
-        - monitoring_years: Number of years to monitor (requried in EMOD analyzer)
-        - sim_dur_years: Total simulation duration years
+        exp (Experiment): Experiment object with updated simulation time parameters.
+            - sim_start_year: Simulation start year
+            - monitoring_years: Number of years to monitor (requried in EMOD analyzer)
+            - sim_dur_years: Total simulation duration years
     """
+
 
     start_year = exp.start_year
     burnin = exp.burnin
@@ -191,7 +220,7 @@ def get_emod_time_param(exp):
     models_to_run = exp.models_to_run
     emod_step = exp.emod_step
 
-    # Calculate the burn-in start year
+    # Calculate the burn-in start year (per default set to be not monitored)
     burnin_start_year = start_year - burnin
 
     # Calculate the number of years to monitor
@@ -215,13 +244,12 @@ def get_emod_time_param(exp):
     else:
         raise ValueError(f'Please specify valid emod_step, {emod_step} is not valid')
 
+    # Update experiment object with simulation start year and duration
     exp.sim_start_year_em = sim_start_year
     exp.sim_start_year_om = start_year - burnin
     exp.sim_start_year_ms = exp.sim_start_year_om
-
     if not exp.MalSim_run_burnin:
         exp.sim_start_year_ms = exp.start_year
-
     exp.monitoring_years = monitoring_years
     exp.sim_dur_years = sim_dur_years
 
@@ -229,6 +257,13 @@ def get_emod_time_param(exp):
 
 
 def save_scen(scen_df, fname, save_dirs=None):
+    """
+    Saves a scenario DataFrame to a CSV file in the specified directories.
+    Args:
+        scen_df (pandas.DataFrame): The DataFrame containing the scenario data.
+        fname (str): The name of the CSV file to be saved.
+        save_dirs (list of str, optional): List of directories to save the CSV file. Defaults to None.
+    """
     for sdir in save_dirs:
         scen_df.to_csv(os.path.join(sdir, fname), index=False)
 
@@ -236,14 +271,10 @@ def save_scen(scen_df, fname, save_dirs=None):
 def save_exp_scen(exp, scen_df, save_dirs):
     """
     Saves the experiment and scenario data to the specified save directories.
-
     Args:
-        exp (object): The experiment object to be saved.
+        exp (Experiment): Experiment object containing experiment specifications.
         scen_df (pandas.DataFrame): The scenario data to be saved.
         save_dirs (list): List of directories to save the data.
-
-    Returns:
-        None
     """
     for sdir in save_dirs:
         # Save the scenario data as a CSV file
@@ -257,18 +288,29 @@ def get_seasonal_eir(exp=None):
     """
     Generates seasonal EIR (Entomological Inoculation Rate) values.
 
+    Examples:
+        season_daily, season_month, seasonal, perennial = get_seasonal_eir()
+        exp = get_seasonal_eir(exp)
+
     Args:
-        None (yet)
+        exp (Experiment, optional): Experiment object containing experiment specifications.
 
     Returns:
-        tuple: A tuple containing the daily, monthly, seasonal, and perennial EIR values.
-        - season_daily: defined seasonal shape
-        - season_month: season_daily aggregated to months
-        - seasonal: season_month rescaled within 0 to 1
-        - perennial: perennial values per month
+        tuple or Experiment: A tuple containing the daily, monthly, seasonal, and perennial EIR values if exp is None.
+        If exp is provided, the Experiment object with updated seasonal EIR attributes is returned.
+
+        If exp is None:
+        - season_daily (list): Defined seasonal shape of daily EIR values.
+        - season_month (list): Monthly EIR values calculated from the seasonal pattern.
+        - seasonal (list): Seasonal EIR values rescaled within 0 to 1.
+        - perennial (list): Perennial EIR values per month.
+
+        If exp is provided:
+        -  exp (Experiment): Experiment object with updated seasonality attributes.
     """
-    # Define the functional form of the non-perennial, seasonal setting
-    # season_daily =  1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365))  ## used in EMOD-OM benchmarking
+
+    # Define the seasonal setting
+    # season_daily =  1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365))  ## functional form used in EMOD-OM benchmarking
     season_month = [56.40649336, 37.27189056, 37.52493552, 36.99289173, 36.58402723, 33.48317104, 33.38009291,
                     33.906819, 37.87905792, 43.51349906, 60.33004287, 62.49708256]
     season_daily = monthly_to_daily_EIR(season_month)
@@ -290,13 +332,16 @@ def get_seasonal_eir(exp=None):
 
 
 def monthly_to_daily_EIR(monthly_EIR):
-    '''
-    takes monthly EIR list and converts to daily using cubic spline interpolation
-    :param monthly_EIR: list of monthly EIRs
-    :type monthly_EIR: list of floats
-    :return: list of daily EIRs
-    :rtype: list of floats
-    '''
+    """
+    Convert monthly EIR values to daily using cubic spline interpolation.
+
+    Args:
+        monthly_EIR (list of floats): List of monthly EIRs.
+
+    Returns:
+        list of floats: List of daily EIRs.
+    """
+
     if len(monthly_EIR) == 12:
         monthly_EIR.append((monthly_EIR[0] + monthly_EIR[-1]) / 2)
     elif len(monthly_EIR) != 13:
@@ -313,6 +358,17 @@ def monthly_to_daily_EIR(monthly_EIR):
 
 
 def rep_scen_df(df):
+    """
+    Repeats scenario data in a DataFrame based on the number of seeds.
+
+    Args:
+        df (pandas.DataFrame): The DataFrame containing the scenario data.
+
+    Returns:
+        pandas.DataFrame: A DataFrame with repeated scenario data based on the number of seeds.
+    """
+
+
     try:
         df = df.drop(['index'], axis=1)
     except:
@@ -325,6 +381,13 @@ def rep_scen_df(df):
 
 
 def create_simsetup_csv(exp):
+    """
+    Creates a CSV file containing simulation setup parameters.
+    Args:
+        exp (Experiment): Experiment object containing experiment specifications.
+    """
+
+    # If other parameters should be savedm these need to be added to setup_dic
     setup_dic = {'job_directory': exp.job_directory,
                  'sim_out_dir': exp.sim_out_dir,
                  'nexps': exp.nexps,
@@ -350,22 +413,20 @@ def create_simsetup_csv(exp):
         setup_df.to_csv(os.path.join(sdir, 'exp_setup_df.csv'), index=False)
 
 
-def create_scenarios_csv(exp, col_list=None, add_cols=True):
+def create_scenarios_csv(exp, col_list, add_cols=True):
     """
     Creates a scenarios CSV file based on the provided experiment object and column list.
 
     Args:
-        exp (object): The experiment object containing the scenario attributes.
-        col_list (list): List of attribute names to include in the scenarios CSV file. Default is None,
-        which includes the attributes ['eirs', 'cm_clinical', 'seasonality'].
+        exp (Experiment): The experiment object containing the scenario attributes.
+        col_list (list): List of attribute names to include in the scenarios CSV file.
+            Example: ['eirs', 'cm_clinical', 'seasonality'].
+        add_cols (bool, optional): Whether to add additional columns such as 'entomology_mode',
+            'num_seeds', etc. Default is True.
 
     Returns:
         pandas.DataFrame: A DataFrame representing the scenarios.
-
     """
-
-    if col_list is None:
-        col_list = ['eir', 'cm_clinical', 'seasonality']
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
@@ -385,10 +446,13 @@ def create_scenarios_csv(exp, col_list=None, add_cols=True):
         df['num_seeds'] = exp.num_seeds
         df['cm_start'] = exp.cm_start
         df['cm_clinical'] = pd.to_numeric(df['cm_clinical'], errors='coerce')
+
+        # Parameters requiring adjustment:
         df['cm_severe'] = np.where(df['cm_clinical'] * 1.15 > exp.cm_severe,
                                    np.minimum(df['cm_clinical'] * 1.15, 1), exp.cm_severe)
         df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
-        df['x_Temporary_Larval_Habitat'] = eir_to_lhs_regr(df, population=exp.pop_size)
+        if exp.entomology_mode =='dynamic':
+            df['x_Temporary_Larval_Habitat'] = eir_to_lhs_regr(df, population=exp.pop_size)
     return df
 
 
@@ -412,6 +476,21 @@ def exec(command):
 
 
 def shell_header_quest(sh_account, time_str='04:00:00', memG=3, job_name='myjob', arrayJob=None, mem_scl=1):
+    """
+    Generates the SLURM shell script header for submitting jobs to a high-performance computing cluster.
+
+    Args:
+        sh_account (dict): Dictionary containing account information for SLURM.
+        time_str (str, optional): Time limit for the job in the format 'HH:MM:SS'. Defaults to '04:00:00'.
+        memG (int, optional): Memory required for the job in gigabytes. Defaults to 3.
+        job_name (str, optional): Name of the job. Defaults to 'myjob'.
+        arrayJob (str, optional): Specification for array jobs. Defaults to None.
+        mem_scl (float, optional): Memory scaling factor. Defaults to 1.
+
+    Returns:
+        str: The SLURM shell script header.
+    """
+
     # Create 'log' subfolder if it doesn't exist
     if not os.path.exists('log'):
         os.makedirs(os.path.join('log'))
@@ -463,10 +542,8 @@ def write_txt(txtobj, path, fname):
 def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
     """
     Submits a job to analyze OpenMalaria simulation results.
-
     Args:
         exp (object): The experiment object containing job directory information.
-
     """
     # Generate the SLURM shell script header for the job
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OMsim',
@@ -517,11 +594,15 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     Submits a job to run a Python script.
 
     Args:
-        exp (object): The experiment object containing job directory and other information.
+        exp (Experiment): The experiment object containing job directory and other information.
         pyscript (str, optional): The name of the Python script to run. Defaults to 'benchmark_plots.py'.
         shname (str, optional): The name of the shell script to submit. Defaults to 'run_benchmark_plots.sh'.
-        job_id (str or None, optional): The job ID to set as dependency. Defaults to None.
-
+        custom_args (str, optional): Custom arguments to pass to the Python script. Defaults to '--emodom EMOD OpenMalaria MalSim'.
+        t (str, optional): Wall time for the job in the format 'HH:MM:SS'. Defaults to '01:00:00'.
+        memG (int, optional): Memory required for the job in GB. Defaults to 1.
+        job_id_EMOD (str or None, optional): The job ID to set as dependency for EMOD. Defaults to None.
+        job_id_MalSim (str or None, optional): The job ID to set as dependency for MalSim. Defaults to None.
+        job (str, optional): Name of the job. Defaults to 'pyjob'.
     """
 
     # Get the current working directory
@@ -552,11 +633,11 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
             dependencies = f'--dependency=afterany:{job_id_EMOD},{job_id_MalSim}'
         else:
             dependencies = f'--dependency=afterany:{job_id_EMOD}'
-        # Submit job  with dependency
+        # Submit job with dependency
         p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE,
                            cwd=str(exp.job_directory))
     else:
-        # Submit job  without dependency
+        # Submit job without dependency
         p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
 
     # Extract the SLURM job ID from the output
@@ -643,37 +724,3 @@ def str_to_digit(x):
     except:
         x = x
     return x
-
-
-def pretty_legend(fig, ltitle, r_adj=0.80, round_values=False):
-    """
-    Adds a legend to a matplotlib figure with prettified labels and title.
-
-    Args:
-        fig (matplotlib.figure.Figure): The figure to add the legend to.
-        ltitle (str): The title of the legend.
-        r_adj (float, optional): The adjustment parameter for the legend's position on the right. Defaults to 0.80.
-        round_values (bool, optional): Whether to round the legend labels to two decimal places. Defaults to False.
-
-    Returns:
-        matplotlib.figure.Figure: The updated figure with the legend.
-
-    """
-
-    # Get handles and labels from the figure's current axes
-    handles, labels = fig.gca().get_legend_handles_labels()
-
-    # Round the labels if required
-    if round_values:
-        labels = [str_to_digit(x) for x in labels]
-        labels = [round(x, 2) for x in labels]
-
-    # Create a dictionary mapping labels to handles
-    by_label = dict(zip(labels, handles))
-
-    # Add the legend to the figure
-    fig.legend(by_label.values(), by_label.keys(), loc=7, title=ltitle[:20])
-    fig.tight_layout()
-
-    # Adjust the position of the legend on the right and return
-    return fig.subplots_adjust(right=r_adj)
