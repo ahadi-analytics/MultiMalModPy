@@ -116,7 +116,7 @@ else:
 exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
 
 # Simulation duration, start and end configuration
-exp = get_emod_time_param(exp)
+exp = get_simulation_time_params(exp)
 
 # Check whether defined input parameter are all valid
 check_exp_inputs(exp)  # TODO add more validity checks as needed

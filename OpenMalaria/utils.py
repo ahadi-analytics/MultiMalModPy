@@ -1,7 +1,7 @@
 from helper import *
 import shutil
 
-def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMalaria models
+def create_scenarios_OM(exp, scen_df):
     """
     Creates OpenMalaria scenarios based on a dataframe containing scenario parameters.
     Args:
@@ -51,9 +51,13 @@ def create_scenarios_OM(exp, scen_df):  ## to do, add back in different OpenMala
 def submit_run_OpenMalaria(exp, scen_df, t='01:00:00', memG=8):
     """
     Submits OpenMalaria simulations to a high-performance computing cluster.
+
     Args:
-        exp: An object containing experiment parameters and configuration.
-        scen_df: A pandas DataFrame containing scenario information.
+        exp (Experiment): An object containing experiment parameters and configuration.
+        scen_df (pandas.DataFrame): A DataFrame containing scenario information.
+        t (str, optional): Wall time for the job in the format 'HH:MM:SS'. Defaults to '01:00:00'.
+        memG (int, optional): Memory required for the job in GB. Defaults to 8.
+
     Returns:
         None
     """
