@@ -527,13 +527,14 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df_pickup.iterrows()
                   for s in range(nseeds)]
+    else:
+        raise ValueError(f'{exp.entomology_mode} not valid')
         
     if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.
         from EMOD.scaffolds.calib_params import get_emod_calib_params
         calib_params = get_emod_calib_params(exp,scen_df_pickup)
         sweeps = sweeps + calib_params
-    else:
-        raise ValueError(f'{exp.entomology_mode} not valid')
+
 
     builder.add_sweep_definition(sweep_functions, sweeps)
 
