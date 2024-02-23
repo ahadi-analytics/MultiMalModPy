@@ -3,22 +3,23 @@ import os
 import sys
 import subprocess
 from typing import List, Dict, Any
-import emod_api.demographics.PreDefinedDistributions as Distributions
-import emodpy_malaria.demographics.MalariaDemographics as Demographics
 import pandas as pd
 import numpy as np
 from COMPS import AuthManager
-from emodpy_malaria.reporters.builtin import *
-from idmtools.core import ItemType
-from idmtools.entities.iplatform import IPlatform
-from idmtools.entities.simulation import Simulation
+from functools import partial
 from EMOD.scaffolds.forcedEIR import *
 from EMOD.scaffolds.dynamicEIR import *
 from EMOD.scaffolds.interventions import treatment_camp_simple
-from functools import partial
+import emod_api.demographics.PreDefinedDistributions as Distributions
+from emodpy_malaria.reporters.builtin import *
+import emodpy_malaria.demographics.MalariaDemographics as Demographics
+import emodpy_malaria.malaria_config as malaria_config
+from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
 from emodpy.emod_task import EMODTask
 from idmtools.builders import SimulationBuilder
-import emodpy_malaria.malaria_config as malaria_config
+from idmtools.core import ItemType
+from idmtools.entities.iplatform import IPlatform
+from idmtools.entities.simulation import Simulation
 from idmtools.entities.experiment import Experiment
 
 sys.path.append('../')
@@ -67,7 +68,7 @@ def build_standard_campaign_object():
     return camp
 
 
-def all_campaigns(camp, row):
+def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
     """
     Wrapper functions to define all campaigns to go into the campaigns.json
     To be expanded with SMC and other interventions as needed, and use if's to define applicability
@@ -76,12 +77,51 @@ def all_campaigns(camp, row):
     if row.entomology_mode == 'forced':
         set_inputEIR_seasonality(camp, float(row.eir), row.seasonality)
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
-
+    if 'cc_step' in intervention_list and emod_step == 'pickup': #Make sure to include the cc_step change only at pickup simulations.
+        eir_df = pd.DataFrame({'WATER_VEGETATION':[row.eir_scalar_emod]}) #TODO: Change our habitat type from water_veg to constant
+        add_scale_larval_habitats(camp, df=eir_df,
+                                  start_day=row.eir_scalar_timestep_daily,
+                                  repetitions = 1)
     return {'scen_id': int(row.scen_id)}
 
 
+def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
+                        yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15,20, 125],
+                        prefix='Daily_'):
+    """
+    Adds daily reports to the simulation task.
+    Args:
+        task: The simulation task object.
+        manifest: The manifest object containing the necessary information.
+        sim_start_year: The starting year of the simulation.
+        num_year: The number of years to add monthly reports for.
+        tot_year: The total number of years of the simulation.
+                  If None, it is set to num_year.
+        yr_plusone: Whether to add an extra year to the reporting.
+                    If True, reports will cover num_year + 1 years.
+                    If False, reports will cover num_year years.
+        age_bins: The age bins for reporting.
+        prefix: The prefix to be used for the report filenames.
+    Raises:
+        ValueError: If num_year is greater than tot_year.
+    Returns:
+        None
+    """
+    if tot_year is None:
+        tot_year = num_year
+    if (num_year > tot_year):
+        raise ValueError('num_year must be <= tot_year')
+
+    # Write separate monthly reports for each year
+    for year in range(num_year):
+        sim_year = tot_year - num_year + year
+        start = yr_plusone + 365 * sim_year
+        desc = prefix + '%d' % (sim_year + sim_start_year)
+        add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365 - 1, age_bins=age_bins,
+                                   max_number_reports = 366, reporting_interval=1, filename_suffix=desc, pretty_format=False)
+
 def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
-                        yr_plusone=True, age_bins=[0.25, 2, 5, 10, 125],
+                        yr_plusone=True, age_bins=[0.5,1, 2, 5, 10, 15,20,125],
                         prefix='Monthly_'):
     """
     Adds monthly reports to the simulation task.
@@ -117,7 +157,7 @@ def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
 
 
 def add_annual_reports(task, manifest, sim_start_year, num_year, tot_year=None,
-                       yr_plusone=True, age_bins=[0.25, 2, 5, 10, 125],
+                       yr_plusone=True, age_bins=[0.5,1, 2, 5, 10, 15, 20, 125],
                        prefix='Annual_', ipfilter=''):
     """
     Adds annual reports to the simulation task.
@@ -251,8 +291,6 @@ def build_burnin_df(exp_id: str, platform, serialize_days):
     df = create_sim_directory_map(exp_id, platform)
     # add Num_Cores to df
     df["Num_Cores"] = df["simid"].apply(_get_core_counts, platform=platform)
-    # print(list(df.columns))
-    # print(df.head())
 
     # try:
     burnin_length_in_days = serialize_days  # int(df["Serialization_Time_Steps"].iloc[0].strip('[]'))
@@ -430,13 +468,14 @@ def set_config_parameters(config):
     """
     config = malaria_config.set_team_defaults(config, manifest)
     return config
-
+ 
 
 def set_emod_exp_parameters(config, exp):
     config.parameters.x_Base_Population = exp.pop_size / 1000
     config.parameters.Simulation_Duration = exp.sim_dur_years * 365
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
+
 
     # Parameter configurations on climate for dynamic EIR
     if exp.entomology_mode == 'dynamic':
@@ -469,7 +508,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
         sweeps = [[
-            ItvFn(all_campaigns, row=row),
+            ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
             partial(set_param, param='Serialized_Population_Path',
                     value=os.path.join(row["serialized_file_path"], "output")),
             partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
@@ -479,7 +518,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             for s in range(nseeds)]
 
     elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, row=row),
+        sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
                    partial(set_param, param='Serialized_Population_Path',
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',
@@ -488,6 +527,11 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df_pickup.iterrows()
                   for s in range(nseeds)]
+        
+    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.
+        from EMOD.scaffolds.calib_params import get_emod_calib_params
+        calib_params = get_emod_calib_params(exp,scen_df_pickup)
+        sweeps = sweeps + calib_params
     else:
         raise ValueError(f'{exp.entomology_mode} not valid')
 
@@ -516,6 +560,12 @@ def config_sweep_builder(exp, scen_df):
                   for s in range(nseeds)]
     else:
         raise ValueError(f'{exp.entomology_mode} not valid')
+    
+    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
+        from EMOD.scaffolds.calib_params import get_emod_calib_params
+        calib_params = get_emod_calib_params(exp,scen_df)
+        sweeps = sweeps + calib_params
+    
 
     builder.add_sweep_definition(sweep_functions, sweeps)
 
@@ -555,8 +605,11 @@ def submit_run_EMOD(exp, scen_df):
 
     add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
     if emod_step != 'burnin':  # do not generate monthly reports for burnin
+        if 'cc_step' in exp.intervention_list:
+            add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years) #We shouldn't generate daily reports unless necessary (and right now its only necessary with cc_step perterbation)
         add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
-
+        
+   
     # Create experiment from builder and run
     experiment = Experiment.from_builder(builder, task, name=exp_name)
     experiment.run(wait_until_done=False, platform=platform)
@@ -575,7 +628,7 @@ def submit_run_EMOD(exp, scen_df):
     return experiment
 
 
-def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=12):
+def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=0):
     """
     Submits a job to analyze EMOD simulation results.
 

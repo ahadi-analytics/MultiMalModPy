@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def eir_to_lhs_regr(df=None, population=1000):
     """
     Estimates Larval habitat scalar (LHS) value using a regression model based on
@@ -20,6 +17,7 @@ def eir_to_lhs_regr(df=None, population=1000):
     output = []
     for index, row in df.iterrows():
         seasonality = row['seasonality']
+
         eir = float(row['eir'])
         if eir >= 100:
             eir_range = 100
@@ -45,6 +43,9 @@ def eir_to_lhs_regr(df=None, population=1000):
         lhs = lhs / (5000 / population)
         if lhs <= 0:
             lhs = 0.5 #this is a precaution, however we don't expect lhs values to be less than 0.5, we just don't want them to be 0.
+        if lhs >= 10000:
+            lhs = 9999
+            print("Warning, the xtemp is over 10000 and that most likely is a problem")
         output.append(lhs)
     return output
 

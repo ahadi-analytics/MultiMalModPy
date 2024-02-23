@@ -10,6 +10,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
   min_ages <- exp$min_ages
   max_ages <- exp$max_ages
   timesteps <- exp$monitoring_years * 365
+  intervention_list <- exp$intervention_list
 
   # Run through each row of the input dataframe, parameterise the model, and run the simulation:
   for(i in 1:nrow(parameter_table)) {
@@ -58,20 +59,41 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
                                                drug = 1,
                                                timesteps = 1,
                                                coverages = parameter_table[i,]$cm_clinical)
-
-      # Calibrate to the initial EIR:
-      simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
+      if ("cc_step" %in% intervention_list){ 
+        # Calibrate to the initial EIR (eirs unique to each model, based on which eir creates the high,
+        # medium and low prevalences required):
+        simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
+                                        init_EIR = parameter_table[i,]$eir_malsim)
+        # Get the mosquito carrying capacity:
+        mosquito_carrying_capacity <- get_init_carrying_capacity(parameters = simparams[[i]])
+        
+        # Parameterise the changes in mosquito population carrying capacity (for EIR step change):
+        simparams[[i]] <- set_carrying_capacity(parameters = simparams[[i]], 
+                                                timesteps = parameter_table[i,]$eir_scalar_timestep_daily, 
+                                                carrying_capacity = matrix(mosquito_carrying_capacity * 
+                                                parameter_table[i,]$eir_scalar_malsim, ncol = 1))}
+      else{
+        # Calibrate to the initial EIR (same across models):
+        simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
                                         init_EIR = parameter_table[i,]$eir)
-
+      }
+      
       # Run the simulations:
       simulation_outputs_list[[i]] <- run_simulation(timesteps = timesteps, parameters = simparams[[i]])
 
       # Add simulation identifiers to the output data frame:
       simulation_outputs_list[[i]]$index <- parameter_table[i,]$index
-      simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
       simulation_outputs_list[[i]]$cm_clinical <- parameter_table[i,]$cm_clinical
       simulation_outputs_list[[i]]$seasonality  <- parameter_table[i,]$seasonality
       simulation_outputs_list[[i]]$seed <- parameter_table[i,]$seed
+      if ("cc_step" %in% intervention_list) {
+        simulation_outputs_list[[i]]$eir_malsim <- parameter_table[i,]$eir_malsim
+        simulation_outputs_list[[i]]$eir_scalar_malsim <- parameter_table[i,]$eir_scalar_malsim
+        simulation_outputs_list[[i]]$eir_scalar_timestep_daily <- parameter_table[i,]$eir_scalar_timestep_daily
+        simulation_outputs_list[[i]]$carrying_capacity_step <- parameter_table[i,]$carrying_capacity_step}
+      else{
+        simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
+      }
 
       if (write_raw_output) {
         write_csv(simulation_outputs_list[[i]], file.path(exp$job_directory, 'malsim_jobs', paste0(parameter_table[i,]$index, '_out.csv')))
@@ -119,19 +141,38 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
                                                coverages = parameter_table[i,]$cm_clinical)
 
       # Calibrate to the initial EIR:
-      simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                        init_EIR = parameter_table[i,]$eir)
-
+      if ("cc_step" %in% intervention_list){ 
+        # Calibrate to the initial EIR (eirs unique to each model, based on which eir creates the high, medium and low prevalences required):
+        simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
+                                        init_EIR = parameter_table[i,]$eir_malsim)
+        # Get the mosquito carrying capacity:
+        mosquito_carrying_capacity <- get_init_carrying_capacity(parameters = simparams[[i]])
+        
+        # Parameterise the changes in mosquito population carrying capacity (for EIR step change):
+        simparams[[i]] <- set_carrying_capacity(parameters = simparams[[i]], 
+                                                timesteps = parameter_table[i,]$eir_scalar_timestep_daily, 
+                                                carrying_capacity = matrix(mosquito_carrying_capacity * parameter_table[i,]$eir_scalar_malsim, ncol = 1))}
+      else{
+        # Calibrate to the initial EIR (same across models):
+        simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
+                                        init_EIR = parameter_table[i,]$eir)}
       # Run the simulations:
       simulation_outputs_list[[i]] <- run_simulation(timesteps = timesteps, parameters = simparams[[i]])
 
       # Add simulation identifiers to the output data frame:
       simulation_outputs_list[[i]]$index <- parameter_table[i,]$index
-      simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
       simulation_outputs_list[[i]]$cm_clinical <- parameter_table[i,]$cm_clinical
       simulation_outputs_list[[i]]$seasonality  <- parameter_table[i,]$seasonality
       simulation_outputs_list[[i]]$seed <- parameter_table[i,]$seed
-
+      if ("cc_step" %in% intervention_list) {
+        simulation_outputs_list[[i]]$eir_malsim <- parameter_table[i,]$eir_malsim
+        simulation_outputs_list[[i]]$eir_scalar_malsim <- parameter_table[i,]$eir_scalar_malsim
+        simulation_outputs_list[[i]]$eir_scalar_timestep_daily <- parameter_table[i,]$eir_scalar_timestep_daily
+        simulation_outputs_list[[i]]$carrying_capacity_step <- parameter_table[i,]$carrying_capacity_step}
+      else{
+        simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
+      }
+      
       if (write_raw_output) {
         write_csv(simulation_outputs_list[[i]], file.path(exp$job_directory, 'malsim_jobs', paste0(parameter_table[i,]$index, '_out.csv')))
       }

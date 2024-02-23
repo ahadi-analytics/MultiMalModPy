@@ -1,5 +1,6 @@
 from helper import *
 import shutil
+import numpy as np
 
 def create_scenarios_OM(exp, scen_df):
     """
@@ -10,7 +11,6 @@ def create_scenarios_OM(exp, scen_df):
     Returns:
         None
     """
-
     with open(os.path.join(exp.om_input_path, 'scaffolds', f"{exp.om_scaffold}.xml"), "r") as fp:
         xml = fp.read()
 
@@ -23,15 +23,20 @@ def create_scenarios_OM(exp, scen_df):
     xml = xml.replace("@survey_step@", f"{exp.om_survey_step}")
     xml = xml.replace("@entomology_mode@", f"{exp.entomology_mode}")
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
-
+    
     # Scenario sweeps and runs
     # TODO helper function to replace all, except seed and seasonality
     df = rep_scen_df(scen_df)
     for r, row in df.iterrows():
         scenario = xml.replace('@seed@', str(row['seed']))
-        scenario = scenario.replace('@eir@', str(row['eir']))
         scenario = scenario.replace('@cm_clinical@', str(row['cm_clinical']))
         scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
+        if 'cc_step' in exp.intervention_list:
+            scenario = scenario.replace('@eir@', str(row['eir_om']))
+            scenario = scenario.replace('@EIR_reduction@', str(row['eir_scalar_om']))
+            scenario = scenario.replace('@step_change_time@', str(row['eir_scalar_timestep_5day']))
+        else:
+            scenario = scenario.replace('@eir@', str(row['eir']))
         seasonality = getattr(exp, row['seasonality'])
 
         # Replace seasonality placeholders with corresponding values from the experiment object
@@ -48,7 +53,7 @@ def create_scenarios_OM(exp, scen_df):
     shutil.copy(os.path.join(exp.om_path, schema), exp.job_directory)
 
 
-def submit_run_OpenMalaria(exp, scen_df, t='01:00:00', memG=8):
+def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=8):
     """
     Submits OpenMalaria simulations to a high-performance computing cluster.
 

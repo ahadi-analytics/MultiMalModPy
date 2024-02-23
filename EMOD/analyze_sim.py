@@ -40,8 +40,6 @@ def parse_args():
     return parser.parse_args()
 
 
-
-
 class InsetChartAnalyzer(IAnalyzer):
     """
     A class inherited from idmtools IAnalyzer for analyzing inset chart report output specific to EMOD.
@@ -364,6 +362,114 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
 
         df.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_mth.csv')), index=False)
 
+
+class DailyAgebinAnalyzer(IAnalyzer):
+    """
+    A class inherited from idmtools IAnalyzer for analyzing summary report output specific to EMOD.
+    It saves a dataframe per month and yeat from monthly summary reports for each agebin specified in the report.
+    Parameters:
+    - expt_name (str): Name of the experiment.
+    - sweep_variables (list): List of sweep variables. Defaults to None.
+    - working_dir (str): Working directory for the analysis. Defaults to "./".
+    - start_year (int): Start year of the simulation. Defaults to 2022.
+    - end_year (int): End year of the simulation. Defaults to 2022.
+    - burnin (None or int): Number of burn-in years to remove from results data. Defaults to None.
+    """
+
+    def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=2000,
+                 end_year=2020, burnin=None):
+
+        super(DailyAgebinAnalyzer, self).__init__(working_dir=working_dir,
+                                                    filenames=[f"output/MalariaSummaryReport_Daily_{x}.json"
+                                                               for x in range(start_year, end_year)]
+                                                    )
+        self.sweep_variables = sweep_variables or ["Run_Number"]
+        self.expt_name = expt_name
+        self.start_year = start_year
+        self.end_year = end_year
+        self.burnin = burnin
+
+    def map(self, data, simulation: Simulation):
+
+        adf = pd.DataFrame()
+        # Loop over summary reports (separate ones for each year)
+        for year, fname in zip(range(self.start_year, self.end_year), self.filenames):
+
+            age_bins = data[fname]['Metadata']['Age Bins']
+            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10']
+
+            for age in list(range(0, len(age_bins))):
+                # Extract data per agebin
+                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin']
+                pfpr = [x[age] for x in d]
+                d = data[fname]['DataByTimeAndAgeBins']['New Infections by Age Bin']
+                new_infect = [x[age] for x in d]
+                d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin']
+                clinical_cases = [x[age] for x in d]
+                d = data[fname]['DataByTimeAndAgeBins']['Annual Severe Incidence by Age Bin']
+                severe_cases = [x[age] for x in d]
+                d = data[fname]['DataByTimeAndAgeBins']['Average Population by Age Bin']
+                pop = [x[age] for x in d]
+                
+
+                # Combine extracted data into a dataframe
+                simdata = pd.DataFrame({'day': range(1, 365),
+                                        'prevalence': pfpr,
+                                        'nInfect': new_infect,
+                                        'clinical_incidence': clinical_cases,  # per person per year
+                                        'severe_incidence': severe_cases,  # per person per year
+                                        'nHost': pop})
+                simdata['nUncomp'] = [x for x in simdata['clinical_incidence']]  # per person per 1 day period
+                simdata['nSevere'] = [x for x in simdata['severe_incidence']]  # per person per 1 day period
+                simdata['year'] = year
+                simdata['agebin'] = age_bins[age]
+                simdata['prevalence_2to10'] = pfpr2to10
+                adf = pd.concat([adf, simdata])
+
+        # Add varying parameter values that describe and identify the simulation scenarios
+        for sweep_var in self.sweep_variables:
+            if sweep_var in simulation.tags.keys():
+                try:
+                    adf[sweep_var] = simulation.tags[sweep_var]
+                except:
+                    adf[sweep_var] = '-'.join([str(x) for x in simulation.tags[sweep_var]])
+        return adf
+
+    def reduce(self, all_data):
+
+        selected = [data for sim, data in all_data.items()]
+        if len(selected) == 0:
+            print("\nWarning: No data have been returned... Exiting...")
+            return
+        df = pd.concat(selected).reset_index(drop=True)
+
+        print(f'\nSaving outputs to: {os.path.join(self.working_dir, "em")}')
+
+        if self.burnin is not None:
+            df = df[df['year'] >= self.start_year + self.burnin]
+
+        # Age group labels
+        age_bins = [int(x) if x == int(x) else x for x in df['agebin'].unique()]
+        age_group_labels = [str(age_bins[i - 1]) + "-" + str(age_bins[i]) for i in range(1, len(age_bins))]
+        age_group_labels = [str(0) + "-" + str(age_bins[0])] + age_group_labels
+        age_df = pd.DataFrame({'agebin': age_bins, 'ageGroup': age_group_labels})
+        df = df.merge(age_df, on='agebin', how='inner')
+
+        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
+        scen_df = scen_df.drop(['eir_malsim', 'eir_om', 'eir_scalar_timestep_5day', 'eir_scalar_timestep_daily', 'eir_scalar_emod','eir_scalar_om', 'eir_scalar_malsim'], axis=1)  ## Other model specific, entomology_mode  not applicable
+        df = df.merge(scen_df, on='scen_id', how='inner')
+        if scen_df.entomology_mode[0] == 'dynamic':
+            eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'))
+            df = pd.merge(left=df, right=eirdf, on=self.sweep_variables + ['day','year', 'eir'])
+            # df['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in df['Annual EIR']]
+        else:
+            df['simulatedEIR'] = ''
+
+        #  Reorder the DataFrame columns , by specified first columns to appear first
+        df = df.rename(columns={'Run_Number': 'seed'})
+        df.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_daily.csv')), index=False)
+
+
 class InputEIRAnalyzer(IAnalyzer):
     """
       A class inherited from idmtools IAnalyzer for generating results dataframe on transmission outcome metrics.
@@ -442,9 +548,12 @@ class InputEIRAnalyzer(IAnalyzer):
         grp_channels = list(set(grp_channels + list(scen_df.columns)))
 
         if self.daily_report:
-            # If specified, save the processed DataFrame to a CSV file named 'daily_transmission_report.csv'
-            adf.to_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'), index=False)
-
+            df = adf[['scen_id','Run_Number','time','day','month','year','eir', 'Daily EIR', 'eir_scalar_timestep_daily', 'eir_scalar_emod']]
+            df = df.rename({'Daily EIR': 'simulatedEIR','time':'timestep', 'eir_scalar_timestep_daily':'eir_scalar_timestep','eir_scalar_emod':'eir_scalar'}, axis=1) 
+            df['day'] = df['day']+1
+            df['timestep'] = df['timestep']+1
+            df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'), index=False)
+        
         sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
 
         # Monthly aggregation - keep months and years
@@ -465,7 +574,6 @@ class InputEIRAnalyzer(IAnalyzer):
         df['Daily Bites per Human'] = df['Daily Bites per Human'] / nyears
         df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
         df.to_csv(os.path.join(self.working_dir, 'em', 'EIR.csv'), index=False)
-
 
 class BenchmarkAnalyzer(IAnalyzer):
     """
@@ -554,7 +662,7 @@ class BenchmarkAnalyzer(IAnalyzer):
 
         cdf = pd.DataFrame()
         # Define standard age groups used in benchmarking default for plotting
-        age_groups_on_plot = [[0, 5], [5, 10], [10, 15], [15, 20]]
+        age_groups_on_plot = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
 
         # Loop over age groups to aggregate results data
         for i in range(0, len(age_groups_on_plot)):
@@ -593,7 +701,7 @@ class BenchmarkAnalyzer(IAnalyzer):
 
         # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
         cdf.to_csv((os.path.join(self.working_dir, 'em', 'Benchmark.csv')), index=False)
-
+        
 
 class MonthlyBenchmarkAnalyzer(IAnalyzer):
     """
@@ -685,7 +793,7 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
         cdf = pd.DataFrame()
 
         # Define standard age groups used in benchmarking default for plotting
-        age_groups_on_plot = [[0, 5], [5, 10], [10, 15], [15, 20]]
+        age_groups_on_plot = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
 
         # Loop over the age groups to aggregate agebins to the defined groups
         for i in range(0, len(age_groups_on_plot)):
@@ -731,7 +839,6 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
 
         # Save the processed DataFrame to a CSV file named 'Benchmark_mth.csv'
         cdf.to_csv((os.path.join(self.working_dir, 'em', 'Benchmark_mth.csv')), index=False)
-
 
 
 class AnnualBenchmarkAnalyzer(IAnalyzer):
@@ -823,11 +930,11 @@ class AnnualBenchmarkAnalyzer(IAnalyzer):
         cdf = pd.DataFrame()
         # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
         # [[0, 5]] + [[(age_groups[i - 1]), (age_groups[i])] for i in range(1, len(age_groups))]
-        age_groups_aggregates = [[0, 5], [5, 10], [10, 15], [15, 20]]
+        age_groups_on_plot = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
 
         # Loop over the age groups to aggregate agebins to the defined groups
-        for i in range(0, len(age_groups_aggregates)):
-            ages = age_groups_aggregates[i]
+        for i in range(0, len(age_groups_on_plot)):
+            ages = age_groups_on_plot[i]
             ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
             adf = df[(df.agebin >= ages[0]) & (df.agebin <= ages[1])]
             if adf.empty:
@@ -873,12 +980,15 @@ if __name__ == "__main__":
     args = parse_args()
     job_directory = args.directory
     exp_id = args.exp_id
+    #job_directory = 
+    #exp_id = 
+
     # Load experiment object
     file = open(os.path.join(job_directory, "exp.obj"), "rb")
     exp = pickle.load(file)
     # Set location of output files
     wdir = exp.sim_out_dir
-    create_sampleplots = True
+    create_sampleplots = False
 
     exp_name = exp.exp_name
 
@@ -905,7 +1015,6 @@ if __name__ == "__main__":
                             'Infectious Vectors', 'Daily EIR']
     # Run analyzers
     with Platform('SLURM_LOCAL', job_directory=exp.suite_directory, mem_per_cpu=int(5000)) as platform:
-
         all_age_analyzer = [InsetChartAnalyzer(expt_name=exp_name,
                                                channels=channels_inset_chart,
                                                sweep_variables=exp_tags,
@@ -916,10 +1025,11 @@ if __name__ == "__main__":
         eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
                                          sweep_variables=exp_tags,
                                          start_year=start_year,
+                                         daily_report=False,
                                          monthly_report=True,
                                          burnin=burnin,
                                          working_dir=wdir)]
-
+        
         annual_analyzers = [AnnualAgebinAnalyzer(expt_name=exp_name,
                                                  sweep_variables=exp_tags,
                                                  working_dir=wdir,
@@ -933,7 +1043,13 @@ if __name__ == "__main__":
                                                    sweep_variables=exp_tags,
                                                    working_dir=wdir,
                                                    burnin=burnin)]
-
+        daily_analyzers = [DailyAgebinAnalyzer(expt_name=exp_name,
+                                                   start_year=start_year,
+                                                   end_year=end_year,
+                                                   sweep_variables=exp_tags,
+                                                   working_dir=wdir,
+                                                   burnin=burnin)]
+        
         analyzers_benchmark = [BenchmarkAnalyzer(expt_name=exp_name,
                                                  sweep_variables=exp_tags,
                                                  working_dir=wdir,
@@ -954,19 +1070,33 @@ if __name__ == "__main__":
                                                         burnin=burnin)]
 
         if exp.entomology_mode == 'dynamic':
-            analyzer = eir_analyzer + all_age_analyzer + annual_analyzers
-        else:
-            analyzer = all_age_analyzer + annual_analyzers
-
+            manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer, # we run eir_analyzers first to avoid any of the other analyzers running without this dependency completed.
+                                 partial_analyze_ok=True)
+            manager.analyze()
+            analyzer = annual_analyzers
+        
         if exp.emod_step != 'burnin':
             analyzer = analyzer + monthly_analyzers + analyzers_benchmark
-
+            if 'cc_step' in exp.intervention_list: # for now if the intervention cc_step step is present, we do not want to run any of the other analyzers
+                daily_eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
+                                         sweep_variables=exp_tags,
+                                         start_year=start_year,
+                                         daily_report=True,
+                                         monthly_report=False,
+                                         burnin=burnin,
+                                         working_dir=wdir)]
+                manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=daily_eir_analyzer,
+                                 partial_analyze_ok=True)
+                manager.analyze()
+                
+                analyzer = daily_analyzers
+        
         manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
                                  partial_analyze_ok=True)
         manager.analyze()
 
     # Create sample plots if specified
-    if create_sampleplots:
+    if create_sampleplots and 'cc_step' not in exp.intervention_list: #For daily we shouldn't request anything beyond the daily_EIR and daily_analyzers
         exp_tags = [tag for tag in exp_tags if tag != 'Run_Number'] + ['seed']
         channels_inset_chart = ['Statistical Population', 'Births', 'New Infections', 'Newly Symptomatic',
                                 'New Clinical Cases', 'New Severe Cases',
@@ -998,4 +1128,4 @@ if __name__ == "__main__":
             prevalence2to10_to_incidence(wdir, emodom, channel='prevalence')
             prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence')
             prevalence2to10_to_incidence(wdir, emodom, channel='severe_incidence')
-            eir_to_prevalence2to10(wdir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
+            eir_to_outcome(wdir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR')

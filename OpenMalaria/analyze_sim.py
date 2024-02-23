@@ -45,8 +45,8 @@ def to_df(exp):
         output.columns = ['survey', 'ageGroup', 'measure', 'value']
         output['index'] = 1
         data.append(output)
-    else:
-        for i in range(1, exp.nexps):
+    else:        
+        for i in range(1, exp.nexps+1): #Ricky recently changed this to be exp.nexps+1 to include all scenarios, we will have to see if this has always been a problem.
             try:
                 # Read the experiment output from the TXT file
                 output = pd.read_csv(os.path.join(exp.job_directory, 'txt', f'{i}.txt'), sep="\t", header=None)
@@ -117,7 +117,7 @@ def survey_to_date(df, survey_step_days=30, start_year=0):
     if survey_step_days == 5:
         df['days'] = df['survey'] * survey_step_days
         df['month'] = np.floor(df['days'] / (365 / 12)) + 1
-        df['month'] = df['survey'] % 12
+        df['month'] = df['month'] % 12 # Ricky recently updated this line (df['survey'] % 12) to correctly reflect the months
         df.loc[df['month'] == 0, 'month'] = 12
         df['year'] = (df['days'] / 365).apply(np.floor)
     # Monthly timesteps
@@ -132,10 +132,8 @@ def survey_to_date(df, survey_step_days=30, start_year=0):
         df['month'] = 1
     else:
         raise ValueError("survey_step_days must be 30 or 365")
-
     df['year'] = df['year'] + start_year
     df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
-
     return df
 
 
@@ -198,12 +196,34 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
     # Adjust the values based on the survey step interval
     df['value'] = df['value'] * (survey_step_days / 5)
 
+    if survey_step_days == 5:
+        df_day = add_measure_names(df,mm)
+        df_day = pivot_wider(df_day, index_cols=['index', 'survey', 'days','year', 'ageGroup'])
+        df_day = df_day.merge(scen_df, on='index', how='inner')
+        #If we created different eirs for each simulation, we need to parse it out here, so all the models can eventually be aligned
+        #The only difference between these two dfs is if eir_om (om specific eir) or eir (general to all models) is used.
+        if 'eir_om' in df_day:
+            df_day = df_day[['index', 'seed','survey','days','year','ageGroup','InputEIR','SimulatedEIR','nTransmit','cm_clinical',
+                         'seasonality','scen_id','entomology_mode','num_seeds','cm_start','cm_severe',	
+                         'eir_om','eir_scalar_timestep_5day','eir_scalar_om', 'carrying_capacity_step']]
+            df_day = df_day.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR', 'days':'timestep',
+                                'eir_scalar_timestep_5day':'eir_scalar_timestep','eir_scalar_om':'eir_scalar','eir_om':'eir'}, axis=1) 
+        else:
+            df_day = df_day[['index', 'seed','survey','days','year','ageGroup','InputEIR','SimulatedEIR','nTransmit','cm_clinical',
+                         'seasonality','scen_id','entomology_mode','num_seeds','cm_start','cm_severe',	
+                         'eir','eir_scalar_timestep_5day','eir_scalar_om', 'carrying_capacity_step']]
+            df_day = df_day.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR', 'days':'timestep',
+                                'eir_scalar_timestep_5day':'eir_scalar_timestep','eir_scalar_om':'eir_scalar'}, axis=1) 
+        print(f'Saving EIR_daily.csv to {wdir}')
+        df_day.to_csv((os.path.join(wdir, 'EIR_daily.csv')), index=False, compression=compr)
+    
     if survey_step_days == 30:
         # Monthly aggregation
         df_mth = add_measure_names(df, mm)
         df_mth = pivot_wider(df_mth, index_cols=['index', 'survey', 'year', 'month', 'ageGroup'])
         df_mth = df_mth.merge(scen_df, on='index', how='inner')
         df_mth = df_mth.rename({'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR'}, axis=1)
+        print(f'Saving EIR_mth.csv to {wdir}')
         df_mth.to_csv((os.path.join(wdir, 'EIR_mth.csv')), index=False, compression=compr)
 
     # Yearly aggregation - keep years
@@ -395,8 +415,7 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
 
     # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframe to write out
     # [[0, 5]] + [[(age_groups[i - 1]), (age_groups[i])] for i in range(1, len(age_groups))]
-    age_groups_aggregates = [[0, 5], [5, 10], [10, 15], [15, 20]]
-
+    age_groups_aggregates = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
     # Analyze data for each age group on the plot
     for i in range(0, len(age_groups_aggregates)):
         ages = age_groups_aggregates[i]
@@ -498,7 +517,7 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
 
     # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
     # [[0, 5]] + [[(age_groups[i - 1]), (age_groups[i])] for i in range(1, len(age_groups))]
-    age_groups_aggregates = [[0, 5], [5, 10], [10, 15], [15, 20]]
+    age_groups_aggregates = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
 
     adf = pd.DataFrame()
     # Iterate over each month
@@ -636,6 +655,21 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     eir_df = eir_df[['index','month','year', 'simulatedEIR', 'inputEIR']]
     df3 = df3.merge(eir_df, on = ['index', 'month', 'year'], how='inner')
 
+    age_groups_2to10 = [5,10] # I added in pfpr2to10 because EMOD and Malsim have pfpr2to10 in their monthlyagebinanalyzers and I want that to be consistent.
+    g = df3[df3['agebin'].isin(age_groups_2to10)]
+    rdf = pd.DataFrame()
+    dates = g['date'].unique()
+    for dt in dates: 
+        tgs = g[g['date'] == dt]
+        
+        nHost2to10 = tgs.groupby('seed')['nHost'].agg(np.sum).reset_index()
+        nPatent2to10 = tgs.groupby('seed')['nPatent'].agg(np.sum).reset_index()
+        pfpr2to10 = nPatent2to10.merge(nHost2to10, on='seed', how = 'inner')
+        pfpr2to10['prevalence_2to10'] = pfpr2to10['nPatent'] / pfpr2to10['nHost']
+        pfpr2to10['date'] = dt
+        pfpr2to10 = pfpr2to10[['prevalence_2to10','date','seed']]
+        rdf = pd.concat([rdf,pfpr2to10])
+    df3 = df3.merge(rdf, on=['seed','date'], how = 'inner')
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_mth.csv to {wdir}')
     df3.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv')), index=False, compression=compr)
@@ -667,7 +701,9 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
 
     # Convert survey data to dates
     df = survey_to_date(df, survey_step_days=survey_step_days, start_year=start_year)
-    if survey_step_days == 30:
+    if survey_step_days == 5:
+        df = df.groupby(['index', 'ageGroup', 'month', 'year', 'measure'], as_index=False).value.sum()
+    elif survey_step_days == 30:
         df = df.groupby(['index', 'ageGroup', 'year', 'measure'], as_index=False).value.sum()
     elif survey_step_days == 365:
         df = df.groupby(['index', 'ageGroup', 'year', 'measure'], as_index=False).value.mean()
@@ -714,6 +750,22 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
     eir_df = eir_df[['index','year', 'simulatedEIR', 'inputEIR']]
     df3 = df3.merge(eir_df, on = ['index','year'], how='inner')
+    grp_channels = ['seed'] 
+    age_groups_2to10 = [5,10]  # I added in pfpr2to10 because EMOD and Malsim have pfpr2to10 in their annualagebinanalyzers and I want that to be consistent.
+    g = df3[df3['agebin'].isin(age_groups_2to10)]
+    rdf = pd.DataFrame()
+    years = g['year'].unique()
+    for dt in years: 
+        tgs = g[g['year'] == dt]
+        nHost2to10 = tgs.groupby(grp_channels)['nHost'].agg(np.sum).reset_index()
+        nPatent2to10 = tgs.groupby(grp_channels)['nPatent'].agg(np.sum).reset_index()
+        pfpr2to10 = nPatent2to10.merge(nHost2to10, on =grp_channels, how = 'inner')
+        pfpr2to10['prevalence_2to10'] = pfpr2to10['nPatent'] / pfpr2to10['nHost']
+        pfpr2to10['year'] = dt
+        pfpr2to10 = pfpr2to10[['prevalence_2to10','year','seed']]
+        rdf = pd.concat([rdf,pfpr2to10])
+    df3 = df3.merge(rdf, on=['year','seed'], how = 'inner')
+    
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_yr to {wdir}')
     df3.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv')), index=False, compression=compr)
@@ -766,7 +818,7 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
 
     # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
     # [[0, 5]] + [[(age_groups[i - 1]), (age_groups[i])] for i in range(1, len(age_groups))]
-    age_groups_aggregates = [[0, 5], [5, 10], [10, 15], [15, 20]]
+    age_groups_aggregates = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
 
     adf = pd.DataFrame()
     # Iterate over each year
@@ -832,11 +884,107 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
     adf.to_csv((os.path.join(wdir, 'Benchmark_yr.csv')), index=False)
 
 
+def DailyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
+    """
+    Run the MonthlyAgebinAnalyzer equivalent for OpenMalaria experiments.
+    Args:
+        exp: The experiment object.
+        mm: The measure map object.
+        start_year: The starting year for the analysis.
+        compr: The compression type for saving the output CSV file (default: 'infer').
+    Saves: CSV dataframe of simulation outcome metrics per agebin, month and grp_channels
+           surveys aggregated per surveytimestep (year and month)
+    Returns:
+        None
+    """
+    print("Running DailyAgebinAnalyzer...", flush=True)
+    channels = ['index', 'survey', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp', 'nSevere']
+
+    # Read the scenario data from the CSV file
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
+
+    # Convert the experiment data to a DataFrame and format it
+    df = to_df(exp)
+    df = format_df(df)
+
+    # Remove rows with ageGroup 0 ('all age')
+    df.drop(df[df.ageGroup == 0].index, inplace=True)
+
+    # Convert the measure map to a DataFrame
+    mm_df = pd.DataFrame.from_dict(mm, orient='index')
+    mm_df['measure'] = mm_df.index
+    mm_df['measure_name'] = mm_df[0]
+    mm_df = mm_df[['measure', 'measure_name']]
+
+    # Merge the experiment data with the measure map on the measure column
+    adf = df.merge(mm_df, on='measure', how='inner')
+
+    # Pivot the table to have measures as columns and values as cells
+    df1 = (adf.pivot_table(index=['index', 'survey', 'ageGroup'],
+                           columns=['measure_name'],
+                           values=['value'],
+                           aggfunc='first'))
+    df1.columns = [''.join(col).replace('value', '') for col in df1.columns]
+    df1 = df1.reset_index()
+
+    # only keep selected outcome columns
+    df1 = df1[channels]
+    # Merge the pivoted table with the scenario data
+    df2 = df1.merge(scen_df, on='index', how='inner')
+
+    df2 = df2.rename({'ageGroup': 'agebin_nr'}, axis=1)
+
+    # Define age groups and labels
+    age_group_labels = get_age_group_labels(exp.agebins)
+    age_df = pd.DataFrame({'agebin_nr': df2['agebin_nr'].unique(), 'agebin': exp.agebins, 'ageGroup': age_group_labels})
+
+    # Merge the age group data with the previous DataFrame
+    df3 = df2.merge(age_df, on='agebin_nr', how='inner')
+
+    # Convert survey data to dates and set the start year
+    df3 = survey_to_date(df3, survey_step_days=5, start_year=start_year)
+
+    n_surveys_per_year = np.floor((365 / 30))
+    df3['prevalence'] = df3['nPatent'] / df3['nHost']
+    df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
+    df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
+
+    first_columns = ['seed', 'year', 'month', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
+                     'severe_incidence']
+    df3 = df3[first_columns + df3.drop(columns=first_columns).columns.tolist()]
+    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
+    eir_df = eir_df[['index','survey','year', 'simulatedEIR', 'inputEIR']]
+    df3 = df3.merge(eir_df, on = ['index', 'survey','year'], how='inner')
+    if 'eir_om' in df3: 
+        df3 = df3[['scen_id','index','seed','cm_start', 'cm_severe','cm_clinical','seasonality','survey','days','month', 'year','agebin','ageGroup',
+              'nHost','eir_om','inputEIR','simulatedEIR', 'prevalence','clinical_incidence','severe_incidence','nPatent','nInfect','nUncomp',
+              'nSevere','eir_scalar_timestep_5day','eir_scalar_om', 'carrying_capacity_step']]
+        df3 = df3.rename({'days':'timestep', 'eir_om':'eir', 'eir_scalar_timestep_5day':'eir_scalar_timestep', 'eir_scalar_om':'eir_scalar' }, axis=1) 
+    else:
+        df3 = df3[['scen_id','index','seed','cm_start', 'cm_severe','cm_clinical','seasonality','survey','days','month', 'year','agebin','ageGroup',
+              'nHost','eir','inputEIR','simulatedEIR', 'prevalence','clinical_incidence','severe_incidence','nPatent','nInfect','nUncomp',
+              'nSevere','eir_scalar_timestep_5day','eir_scalar_om', 'carrying_capacity_step']]
+        df3 = df3.rename({'days':'timestep', 'eir_scalar_timestep_5day':'eir_scalar_timestep', 'eir_scalar_om':'eir_scalar' }, axis=1) 
+    
+    grp_channels = ['index', 'timestep']
+    age_groups_2to10 = [5,10]  # I added in pfpr2to10 because EMOD and Malsim have pfpr2to10 in their Dailyagebinanalyzers and I want that to be consistent.
+    g = df3[df3['agebin'].isin(age_groups_2to10)]
+    nHost2to10 = g.groupby(grp_channels)['nHost'].agg(np.sum).reset_index()
+    nPatent2to10 = g.groupby(grp_channels)['nPatent'].agg(np.sum).reset_index()
+    pfpr2to10 = nPatent2to10.merge(nHost2to10, on=grp_channels, how = 'inner')
+    pfpr2to10['prevalence_2to10'] = pfpr2to10['nPatent'] / pfpr2to10['nHost']
+    pfpr2to10 = pfpr2to10[['prevalence_2to10','timestep','index']]
+    df3 = df3.merge(pfpr2to10, on=['timestep','index'], how = 'inner')
+    # Save the processed DataFrame to a CSV file
+    print(f'Saving PfPR_ClinicalIncidence_daily.csv to {wdir}')
+    df3.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_daily.csv')), index=False, compression=compr)
+
+
 if __name__ == "__main__":
     # Parse command line arguments
-    args = parse_args()
+    args = parse_args()    
     jdir = args.directory
-
+    #jdir = 
     # Load experiment object
     file = open(os.path.join(jdir, "exp.obj"), "rb")
     exp = pickle.load(file)
@@ -853,48 +1001,50 @@ if __name__ == "__main__":
         survey_steps = 365
 
     # Run analyzers
-    BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip')
-    SurveyAllAgeAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
     InputEIRAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
 
+    if survey_steps == 5:
+        DailyAgebinAnalyzer(exp,mm, start_year=start_year)
+
     if survey_steps == 30:
+        BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip')
+        SurveyAllAgeAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
         MonthlyAgebinAnalyzer(exp, mm, start_year=start_year)
         MonthlyBenchmarkAnalyzer(exp, mmi, start_year=start_year)
+        BenchmarkAnalyzer(exp, mmi, survey_step_days=survey_steps)
+        AnnualBenchmarkAnalyzer(exp, mmi, start_year=start_year, survey_step_days=survey_steps)
+        AnnualAgebinAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
 
-    BenchmarkAnalyzer(exp, mmi, survey_step_days=survey_steps)
-    AnnualBenchmarkAnalyzer(exp, mmi, start_year=start_year, survey_step_days=survey_steps)
-    AnnualAgebinAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
+        # Define tags and channels for sample plots
+        exp_tags = [x for x in exp.sweep_list if x != 'seed']
+        sample_channels = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
+                                'nSevere', 'nSeq', 'nIndDeaths',
+                                'nDirDeaths', 'inputEIR', 'simulatedEIR', 'expectedDirectDeaths',
+                                'expectedSevere']  # 'expectedIndirectDeaths',
 
-    # Define tags and channels for sample plots
-    exp_tags = [x for x in exp.sweep_list if x != 'seed']
-    sample_channels = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
-                            'nSevere', 'nSeq', 'nIndDeaths',
-                            'nDirDeaths', 'inputEIR', 'simulatedEIR', 'expectedDirectDeaths',
-                            'expectedSevere']  # 'expectedIndirectDeaths',
+        # Create sample plots if specified
+        if create_sampleplots:
+            all_age_sample_plot(wdir, exp_tags, sample_channels)
+            sample_plot_yr(wdir, exp_tags)
+            emodom = ['OpenMalaria']
+            if survey_steps == 30:
+                sample_plot_mth(wdir, exp_tags)
 
-    # Create sample plots if specified
-    if create_sampleplots:
-        all_age_sample_plot(wdir, exp_tags, sample_channels)
-        sample_plot_yr(wdir, exp_tags)
-        emodom = ['OpenMalaria']
-        if survey_steps == 30:
-            sample_plot_mth(wdir, exp_tags)
-
-            sweepvar = 'eir'
-            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', sweepvar=sweepvar)
-            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', sweepvar=sweepvar)
-            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', sweepvar=sweepvar)
-            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence_2to10', sweepvar=sweepvar)
-            monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
-        
-        channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
-        for channel in channel_list:
-            monthly_timeseries(wdir=exp.sim_out_dir, emodom=emodom, channel=channel, sweepvar='emodom', facet_var='eir', agegrp='5-10')
-        
-        sweepvar = 'cm_clinical'
-        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence')
-        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence')
-        prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence')
-        eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
-        eir_to_prevalence2to10(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='inputEIR')
-        input_to_simulated_eir(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar)
+                sweepvar = 'eir'
+                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence', sweepvar=sweepvar)
+                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence', sweepvar=sweepvar)
+                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence', sweepvar=sweepvar)
+                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence_2to10', sweepvar=sweepvar)
+                monthly_trends(wdir=exp.sim_out_dir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
+            
+                channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
+                for channel in channel_list:
+                    monthly_timeseries(wdir=exp.sim_out_dir, emodom=emodom, channel=channel, sweepvar='emodom', facet_var='eir', agegrp='5-10')
+            
+            sweepvar = 'cm_clinical'
+            prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='prevalence')
+            prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='clinical_incidence')
+            prevalence2to10_to_incidence(wdir=exp.sim_out_dir, emodom=emodom, channel='severe_incidence')
+            eir_to_outcome(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
+            eir_to_outcome(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar, eir_val='inputEIR')
+            input_to_simulated_eir(wdir=exp.sim_out_dir, emodom=emodom, sweepvar=sweepvar)

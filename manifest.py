@@ -45,6 +45,7 @@ if hpc == 'NUCLUSTER':
         OM_PATH = "/projects/b1139/OpenMalaria/om_v45/"
     else:
         raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 45')
+    emod_input_path = '/projects/b1139/emod-om/model-characterization/EMOD/inputs/'
     om_input_path = '/projects/b1139/emod-om/model-characterization/OpenMalaria/'
     ms_input_path = '/projects/b1139/emod-om/model-characterization/MalSim/'
     if os.name != 'posix':
@@ -56,6 +57,7 @@ elif hpc == 'SCICORE':
     job_directory = os.path.join(projdir, 'experiments')
     SIF_PATH = "/scicore/home/scicore/cavelan/git/emodpy/dtk_run_rocky_py39.sif"
     OM_PATH = "/scicore/home/penny/GROUP/OpenMalaria/OM_schema43/"
+    emod_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/EMOD/inputs/'
     om_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria/'
     ms_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/MalSim/'
     output_directory = os.path.join(projdir, 'simulation_outputs')

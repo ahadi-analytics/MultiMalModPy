@@ -20,3 +20,4 @@ python launch_test.py  --models EMOD MalSim OpenMalaria
 ### EMOD burnin separate from pickup
 #python launch_test.py --emodstep burnin --models EMOD MalSim OpenMalaria
 
+#python launch_test.py --emodstep burnin --models EMOD MalSim OpenMalaria  --interventions cc_step

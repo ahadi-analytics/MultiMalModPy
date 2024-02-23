@@ -25,3 +25,7 @@ python launch_simulations.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv
 
 ### EMOD burnin separate from pickup
 #python launch_simulations.py  --emodstep burnin  --models EMOD MalSim OpenMalaria  --rownum 1 --csv baseline_eirsweep_noCM --user b1139
+
+
+### EMOD ccstep
+#python launch_simulations.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test

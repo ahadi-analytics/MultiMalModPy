@@ -1,5 +1,4 @@
 import logging
-from idmtools.entities.experiment import Experiment
 from datetime import datetime as dt
 import manifest
 from idmtools.core.platform_factory import Platform
@@ -29,75 +28,24 @@ if args.emodstep == 'pickup':
     exp.emod_serialized_id = args.serializedid
 else:
     # Creating an Experiment object and setting its attributes, saved as exp.obj
-    exp = Experiment()
-
-    exp.SUITEname = args.suite
-    exp.emod_step = args.emodstep
-    exp.models_to_run = args.models
-    exp.MalSim_run_burnin = args.no_malsim_burnin  ## bool on whether to run burnin or not, default if not specified is True
-
-    # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
-    exp.user = args.user
-    exp.custom_subdir = exp.user  # If None, no subdir created
-
-    ## Manifest objects
-    exp.hpc = manifest.hpc
-    exp.sh_hpc_config = manifest.sh_hpc_config
-    exp.selected_platform = manifest.selected_platform
-    exp.om_version = manifest.om_version
-    exp.emod_build = manifest.emod_build
-    exp.om_path = manifest.OM_PATH
-    exp.om_input_path = manifest.om_input_path
-    exp.job_directory_manifest = manifest.job_directory
-    exp.output_directory_manifest = manifest.output_directory
+    exp = initialize_exp(args,manifest)
 
     ### Experiment scenario parameter definitions
-    exp_scen_df = pd.read_csv(os.path.join(f'scenario_csvs/{args.csv}.csv'))
+    exp_scen_df = pd.read_csv(os.path.join(f'scenario_inputs/{args.csv}.csv'))
     exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == args.rownum]
 
     exp.SUITEname =  f'{args.csv}_{dt.now().strftime("%Y%m%d")}'
     exp.exp_name = f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
-    
-    # Flag to select whether to run with (dynamic) or without vector model (forced)
-    exp.entomology_mode = exp_scen_df.entomology_mode.iat[0]
-    exp.seasonality = get_param(exp_scen_df, 'seasonality',
-                                listparam=True)  ## currently allowing only 1 seasonality pattern, keep for now as list
-    exp.mem_increase_factor = exp_scen_df.mem_increase_factor.iat[0]  # scaling factor on default memory requested
 
-    # Specify OpenMalaria XML and survey step
-    exp.om_scaffold = exp_scen_df.om_scaffold.iat[0]  # defining which OpenMalaria XML scaffold to use
-    exp.om_survey_step = '30d'
-
-    # Specify MalSim simulation setup, interventions etc to run
-    exp.MalSim_script = exp_scen_df.MalSim_script.iat[0]
-
-    # Define simulation population and seeds
-    exp.pop_size = exp_scen_df.population.iat[0]
-    exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
-
-    exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
-    exp.num_seeds = exp_scen_df.num_seeds.iat[0]  # suggested minimum 3, in production 5-10
-    exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
-    exp.end_year = int(exp.start_year + exp_scen_df.monitoring.iat[0])  # end of pickup and monitoring period
-    exp.burnin = int(exp_scen_df.burnin.iat[0])  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
-
-    # Name of parameters to vary
-    exp.sweep_list = get_param(exp_scen_df, 'sweep_list', listparam=True)
-
-    # Define case management start and coverage
-    # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
-    exp.cm_start = 1
-    exp.cm_clinical = get_param(exp_scen_df, 'cm_clinical', listparam=True)
-    exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
-    exp.detectionLimit = 40
-
-    # Transmission and seasonality configuration
-    exp.eir = get_param(exp_scen_df, 'eir', listparam=True)
-    exp.eir = [float(x) for x in exp.eir]
+    ## Overwriting default parameters with parameters specific in scenario csv file
+    not_param_columns = ['rownum', 'exp_short', 'exp_name', 'py_script']
+    for col in exp_scen_df.columns:
+        if col not in not_param_columns:
+            setattr(exp, col, get_param_from_dataframe(exp_scen_df,col))
 
     # Entomology mode: Dynamic EIR configuration if selected
     exp = get_seasonal_eir(exp)
-
+    
     # EMOD burn-in and pickup configuration
     exp.emod_serialized_id = ''
     if exp.emod_step == 'burnin':
@@ -105,12 +53,8 @@ else:
         exp.exp_name = f'{exp.exp_name}_burnin{exp.burnin}'
         exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
-        exp.sweep_list = ['eir', 'cm_clinical',
-                          'seasonality']  # If running fewer sweeps in past than in pickup to be set up
+        exp.sweep_list = ['eir', 'cm_clinical',  'seasonality']  # If running fewer sweeps in past than in pickup to be set up
 
-    # Analyzer scripts
-    exp.emod_analyzer = ['analyze_sim.py']
-    exp.openmalaria_analyzer = ['analyze_sim.py']
 
 ## Arguments that chage for pickup
 exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
@@ -119,7 +63,7 @@ exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a 
 exp = get_simulation_time_params(exp)
 
 # Check whether defined input parameter are all valid
-check_exp_inputs(exp)  # TODO add more validity checks as needed
+check_exp_inputs(exp)
 
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, exp.sweep_list)

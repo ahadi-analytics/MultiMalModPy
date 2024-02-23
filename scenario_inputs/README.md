@@ -1,5 +1,5 @@
 
-## scenario_csvs
+## scenario_inputs
 
 CSV files that specify different simulation experiments to run.
 

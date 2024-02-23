@@ -95,7 +95,7 @@ directory.
     │   └─ utils.py 
     ├─ custom_plotter/                  # Unstructured collection of custom figures scripts (optional)
     │   └─ ...
-    ├─ scenario_csvs/                   # Collection of csv files that specify simulation scenarios to run per objective 
+    ├─ scenario_inputs/                   # Collection of csv files that specify simulation scenarios to run per objective 
     │   └─ ...  
     ├─ static/                          # Readme images 
     │   └─ ...  
@@ -103,7 +103,7 @@ directory.
     ├─ functions.R                      # Helper functions for custom R plots (optional)   
     ├─ helper.py                        # Mostly model-agnostic helper functions required for overall framework
     ├─ launch_test.py                   # Simulation script used for testing, parameters are defined directly in script
-    ├─ launch_simulations.py            # Simulation script, reading in parameters as defined in csv files stored in /scenario_csvs
+    ├─ launch_simulations.py            # Simulation script, reading in parameters as defined in csv files stored in /scenario_inputs
     ├─ manifest.py                      # Configuration of system defaults, HPC account, directories   
     ├─ run_launch_test.py               # Shell script or use as lookup script for terminal commands to run launch_test.py with arguments (SBATCH configured fo NUCLUSTER)
     └─ run_launch_simulations.sh        # Shell script or use as lookup script for terminal commands  to run launch_simulations.py with arguments (SBATCH configured fo NUCLUSTER)
@@ -262,7 +262,7 @@ in `helper.py/launch_parse_args`:
 
 ## Scenarios implemented
 
-Scenarios csvs are stored in the `scenario_csvs` sub-directory:
+Scenarios csvs are stored in the `scenario_inputs` sub-directory:
 
 - `baseline_eirsweep_noCM.csv`: most basic simulation without any interventions or treatment of cases  
   Forthcoming examples may include:
@@ -272,7 +272,7 @@ Scenarios csvs are stored in the `scenario_csvs` sub-directory:
 - ...
 
 Details provided
-in [scenario_csvs/README](https://github.com/numalariamodeling/model-characterization/blob/main/scenario_csvs/README.md)
+in [scenario_inputs/README](https://github.com/numalariamodeling/model-characterization/blob/main/scenario_inputs/README.md)
 
 ------------------------------------- 
 

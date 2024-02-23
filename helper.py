@@ -7,9 +7,9 @@ from datetime import datetime
 from datetime import datetime as dt
 import pandas as pd
 import numpy as np
-from EMOD.scaffolds.dynamicEIR import eir_to_lhs, eir_to_lhs_regr
+from EMOD.scaffolds.dynamicEIR import eir_to_lhs_regr
 from scipy.interpolate import interp1d
-
+from idmtools.entities.experiment import Experiment
 
 def parse_launch_args():
     parser = argparse.ArgumentParser(description="Description of your script.")
@@ -25,7 +25,7 @@ def parse_launch_args():
                         help='Description of SUITEname')
     parser.add_argument('--expname',
                         type=str,
-                        default=f'sims_entomologymode_seasonality_{dt.now().strftime("%H_%M_%S")}',
+                        default=f'sims_entomologymode_seasonality_intervention_{dt.now().strftime("%H_%M_%S")}',
                         help='Description of exp_name')
     parser.add_argument('--emodstep',
                         type=str,
@@ -51,6 +51,11 @@ def parse_launch_args():
                         type=str,
                         required=False,
                         help='Name of scenario csv')
+    parser.add_argument('-i', '--interventions',
+                        nargs='+',
+                        default=[],
+                        choices=['cc_step', 'smc'],
+                        help='Specify which interventions to run, if any')
     parser.add_argument('--rownum',
                         type=int,
                         required=False,
@@ -83,7 +88,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def get_param(df, name, listparam=False):
+def get_param_from_dataframe(df, name):
     """
     Retrieves a parameter value from a DataFrame and returns it in the correct format for storage in an experiment object (exp).
 
@@ -97,15 +102,101 @@ def get_param(df, name, listparam=False):
 
     Returns:
         Union[list, str]: The parameter value, either as a list or a string, based on the 'listparam' argument.
+
     """
+
+    # list of parameters expecting list format  # FIXME, better way to do?
+    listparams = ['seasonality', 'sweep_list', 'cm_clinical', 'eir', 'intervention_list', 'agebins',
+                  'eir_scalar_malsim', 'eir_malsim', 'eir_scalar_om', 'eir_scalar_emod', 'eir_om', 'eir_scalar_om',
+                  'carrying_capacity_step']
+
     value = df[name].iat[0]
 
-    try:
-        out = value.replace(' ', '').split(',') if listparam else value
-    except:
-        out = [value] if listparam else value
+    if name in listparams:
+        try:
+            out = value.replace(' ', '').split(',')
+            out = [float(i) if i.isdigit() else i for i in out]  # some might require int?
+        except:
+            out = [value]
+    else:
+        out = value
 
     return out
+
+
+def initialize_exp(args, manifest):
+    exp = Experiment()
+    exp.SUITEname = args.suite
+    exp.exp_name = args.expname
+    exp.emod_step = args.emodstep
+    exp.models_to_run = args.models
+    exp.MalSim_run_burnin = args.no_malsim_burnin  ## bool on whether to run burnin or not, default if not specified is True
+    exp.intervention_list = args.interventions
+
+    # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
+    exp.user = args.user
+    exp.custom_subdir = exp.user  # If None, no subdir created
+
+    ## Manifest objects
+    exp.hpc = manifest.hpc
+    exp.sh_hpc_config = manifest.sh_hpc_config
+    exp.selected_platform = manifest.selected_platform
+    exp.om_version = manifest.om_version
+    exp.emod_build = manifest.emod_build
+    exp.om_path = manifest.OM_PATH
+    exp.om_input_path = manifest.om_input_path
+    exp.job_directory_manifest = manifest.job_directory
+    exp.output_directory_manifest = manifest.output_directory
+
+    # Specify OpenMalaria XML and survey step, MalSim simulation setup
+    # Note if, interventions are specified in intervention_list, these will get updated via get_intervention_params
+    exp.om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
+    exp.om_survey_step = '30d'
+    exp.MalSim_script = 'malsim_benchmarking_exercise.R'
+    exp.emod_analyzer = ['analyze_sim.py']
+    exp.openmalaria_analyzer = ['analyze_sim.py']
+
+    # Flag to select whether to run with (dynamic) or without vector model (forced)
+    exp.entomology_mode = 'dynamic'  # dynamic, forced
+    exp.seasonality = [
+        'seasonal']  # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
+    exp.mem_increase_factor = 5.0  # scaling factor on default memory requested
+
+    # Define simulation population and seeds
+    exp.pop_size = 10000  # 1000 for testing
+    exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
+
+    exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
+    exp.num_seeds = 20  # suggested minimum 3, in production 5-10
+    exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
+    exp.end_year = 2005  # end of pickup and monitoring period
+    exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
+
+    # Name of parameters to vary
+    exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']
+    exp.emod_calib_params = False  # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
+    
+    if exp.emod_calib_params:
+        exp.calib_config_pointer = range(0, 3)  # define rows from calib_params df to run
+        exp.sweep_list = exp.sweep_list + ['calib_config_pointer']
+
+    # Define case management start and coverage
+    # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
+    exp.cm_start = 1
+    exp.cm_clinical = [0.0]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
+    exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
+    exp.detectionLimit = 40
+    exp.eir = [32]
+
+    # Whether to pass along NU's within-host framework recalibrated parameters.
+    exp.emod_calib_params = False
+
+    return (exp)
+
+
+def get_intervention_params(exp):
+    from scenario_inputs.intervention_params import exp_params_to_update
+    return exp_params_to_update(exp)
 
 
 def make_dirs(exp, overwrite=False):
@@ -168,7 +259,7 @@ def check_exp_inputs(exp):
             raise ValueError('Current framework only allows 1 seed for EMOD burnin')
 
         # Obsolete if num_seeds_burnin requires to be 1, as if 1, multiple num_seeds are allowed
-        #if exp.num_seeds_burnin != 1 and exp.num_seeds_burnin != exp.num_seeds:
+        # if exp.num_seeds_burnin != 1 and exp.num_seeds_burnin != exp.num_seeds:
         #    raise ValueError('num_seeds_burnin must be 1 or equal to num_seeds')
 
     if len(exp.seasonality) > 1:
@@ -185,15 +276,22 @@ def check_exp_inputs(exp):
     attributes_dict = exp.__dict__
     list_attributes_nGT1 = list()
 
+    # Check if any attribute in list_attributes_nGT1 is not in sweep_list
+    attributes_dict = exp.__dict__
+    list_attributes_nGT1 = list()
+
     for key, value in attributes_dict.items():
         # Check if the attribute is a list
         if isinstance(value, list) and len(value) > 1:
-            if key not in ['agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial']:
+            if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om', 'eir_scalar_om', 'carrying_capacity_step',
+                           'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial']:
                 list_attributes_nGT1.append(key)
 
     list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
     if list_attr_notsweep:
-        raise ValueError(f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
+        raise ValueError(
+            f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
+
 
 def get_simulation_time_params(exp):
     """
@@ -212,7 +310,6 @@ def get_simulation_time_params(exp):
             - monitoring_years: Number of years to monitor (requried in EMOD analyzer)
             - sim_dur_years: Total simulation duration years
     """
-
 
     start_year = exp.start_year
     burnin = exp.burnin
@@ -368,7 +465,6 @@ def rep_scen_df(df):
         pandas.DataFrame: A DataFrame with repeated scenario data based on the number of seeds.
     """
 
-
     try:
         df = df.drop(['index'], axis=1)
     except:
@@ -404,6 +500,7 @@ def create_simsetup_csv(exp):
                  'sim_start_year_om': exp.sim_start_year_om,
                  'sim_start_year_em': exp.sim_start_year_em,
                  'sim_start_year_ms': exp.sim_start_year_ms,
+                 'intervention_list': exp.intervention_list
                  }
 
     setup_df = pd.DataFrame.from_dict(setup_dic, orient='index', columns=['Value'])
@@ -428,6 +525,9 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         pandas.DataFrame: A DataFrame representing the scenarios.
     """
 
+    if col_list is None:
+        col_list = ['eir', 'cm_clinical', 'seasonality']
+
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
 
@@ -451,7 +551,16 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         df['cm_severe'] = np.where(df['cm_clinical'] * 1.15 > exp.cm_severe,
                                    np.minimum(df['cm_clinical'] * 1.15, 1), exp.cm_severe)
         df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
-        if exp.entomology_mode =='dynamic':
+        if 'cc_step' in exp.intervention_list:
+            df['eir_malsim'] = exp.eir_malsim
+            df['eir_om'] = exp.eir_om
+            df['eir_scalar_timestep_5day'] = exp.eir_scalar_timestep_5day
+            df['eir_scalar_timestep_daily'] = exp.eir_scalar_timestep_daily
+            df['eir_scalar_emod'] = exp.eir_scalar_emod
+            df['eir_scalar_om'] = exp.eir_scalar_om
+            df['eir_scalar_malsim'] = exp.eir_scalar_malsim
+            df['carrying_capacity_step'] = exp.carrying_capacity_step
+        if exp.entomology_mode == 'dynamic':
             df['x_Temporary_Larval_Habitat'] = eir_to_lhs_regr(df, population=exp.pop_size)
     return df
 
@@ -475,7 +584,7 @@ def exec(command):
                             universal_newlines=True, text=True)
 
 
-def shell_header_quest(sh_account, time_str='04:00:00', memG=3, job_name='myjob', arrayJob=None, mem_scl=1):
+def shell_header_quest(sh_account, time_str='6:00:00', memG=3, job_name='myjob', arrayJob=None, mem_scl=1):
     """
     Generates the SLURM shell script header for submitting jobs to a high-performance computing cluster.
 
@@ -539,7 +648,7 @@ def write_txt(txtobj, path, fname):
     file.close()
 
 
-def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
+def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=0):
     """
     Submits a job to analyze OpenMalaria simulation results.
     Args:
@@ -587,7 +696,7 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=3):
 
 
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                        custom_args='--emodom EMOD OpenMalaria MalSim', t='01:00:00', memG=1, job_id_EMOD=None,
+                        custom_args='--emodom EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=None,
                         job_id_MalSim=None,
                         job='pyjob'):
     """
@@ -686,29 +795,6 @@ def OM_module(location='NUCLUSTER', om_version=45):
     if location == 'SCICORE':
         ommodule = '\n\nmodule load OpenMalaria/43.1-iomkl-2019.01\n'
     return ommodule
-
-
-def combine_emodom_results(sim_out_dir):
-    """
-    Combines EMOD and OpenMalaria benchmark results into a single DataFrame and saves it as a CSV file.
-    Args:
-        sim_out_dir (str): The directory containing the simulation output.
-    """
-    # Read EMOD and OpenMalaria benchmark CSV files
-    df_em = pd.read_csv(os.path.join(sim_out_dir, 'em', 'OM_benchmark.csv'))
-    df_om = pd.read_csv(os.path.join(sim_out_dir, 'om', 'EMOD_benchmark.csv'))
-    df_ms = pd.read_csv(os.path.join(sim_out_dir, 'MalSim', 'Benchmark.csv'))
-
-    # Add 'emodom' column to identify the source of the results
-    df_em['emodom'] = 'EMOD'
-    df_om['emodom'] = 'OpenMalaria'
-    df_ms['emodom'] = 'MalSim'
-
-    # Append EMOD and OpenMalaria DataFrames
-    df = pd.concat(df_em, df_om, df_ms)
-
-    # Save the combined DataFrame as a CSV file
-    df.to_csv((os.path.join(sim_out_dir, 'comb', 'benchmark.csv')), index=False)
 
 
 def str_to_digit(x):
