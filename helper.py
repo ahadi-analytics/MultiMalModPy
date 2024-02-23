@@ -648,7 +648,7 @@ def write_txt(txtobj, path, fname):
     file.close()
 
 
-def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=0):
+def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=20):
     """
     Submits a job to analyze OpenMalaria simulation results.
     Args:
