@@ -53,7 +53,7 @@ def create_scenarios_OM(exp, scen_df):
     shutil.copy(os.path.join(exp.om_path, schema), exp.job_directory)
 
 
-def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=8):
+def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
     """
     Submits OpenMalaria simulations to a high-performance computing cluster.
 
