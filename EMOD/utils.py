@@ -548,13 +548,13 @@ def config_sweep_builder(exp, scen_df):
         nseeds = exp.num_seeds_burnin
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
-        sweeps = [[ItvFn(all_campaigns, row=row),
+        sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
                    partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.eir)),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, row=row),
+        sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
                    partial(set_param, param='x_Temporary_Larval_Habitat', value=row.x_Temporary_Larval_Habitat),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
