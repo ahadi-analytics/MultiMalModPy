@@ -661,15 +661,14 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     dates = g['date'].unique()
     for dt in dates: 
         tgs = g[g['date'] == dt]
-        
-        nHost2to10 = tgs.groupby('seed')['nHost'].agg(np.sum).reset_index()
-        nPatent2to10 = tgs.groupby('seed')['nPatent'].agg(np.sum).reset_index()
-        pfpr2to10 = nPatent2to10.merge(nHost2to10, on='seed', how = 'inner')
+        nHost2to10 = tgs.groupby('index')['nHost'].agg(np.sum).reset_index()
+        nPatent2to10 = tgs.groupby('index')['nPatent'].agg(np.sum).reset_index()
+        pfpr2to10 = nPatent2to10.merge(nHost2to10, on='index', how = 'inner')
         pfpr2to10['prevalence_2to10'] = pfpr2to10['nPatent'] / pfpr2to10['nHost']
         pfpr2to10['date'] = dt
-        pfpr2to10 = pfpr2to10[['prevalence_2to10','date','seed']]
+        pfpr2to10 = pfpr2to10[['prevalence_2to10','date','index']]
         rdf = pd.concat([rdf,pfpr2to10])
-    df3 = df3.merge(rdf, on=['seed','date'], how = 'inner')
+    df3 = df3.merge(rdf, on=['index','date'], how = 'inner')
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_mth.csv to {wdir}')
     df3.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv')), index=False, compression=compr)
@@ -750,7 +749,7 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
     eir_df = eir_df[['index','year', 'simulatedEIR', 'inputEIR']]
     df3 = df3.merge(eir_df, on = ['index','year'], how='inner')
-    grp_channels = ['seed'] 
+    grp_channels = ['index'] 
     age_groups_2to10 = [5,10]  # I added in pfpr2to10 because EMOD and Malsim have pfpr2to10 in their annualagebinanalyzers and I want that to be consistent.
     g = df3[df3['agebin'].isin(age_groups_2to10)]
     rdf = pd.DataFrame()
@@ -762,9 +761,9 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
         pfpr2to10 = nPatent2to10.merge(nHost2to10, on =grp_channels, how = 'inner')
         pfpr2to10['prevalence_2to10'] = pfpr2to10['nPatent'] / pfpr2to10['nHost']
         pfpr2to10['year'] = dt
-        pfpr2to10 = pfpr2to10[['prevalence_2to10','year','seed']]
+        pfpr2to10 = pfpr2to10[['prevalence_2to10','year','index']]
         rdf = pd.concat([rdf,pfpr2to10])
-    df3 = df3.merge(rdf, on=['year','seed'], how = 'inner')
+    df3 = df3.merge(rdf, on=['year','index'], how = 'inner')
     
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_yr to {wdir}')
@@ -886,7 +885,7 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
 
 def DailyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     """
-    Run the MonthlyAgebinAnalyzer equivalent for OpenMalaria experiments.
+    Run the DailyAgebinAnalyzer equivalent for OpenMalaria experiments.
     Args:
         exp: The experiment object.
         mm: The measure map object.
