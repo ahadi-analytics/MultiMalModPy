@@ -4,7 +4,7 @@ from helper import *
 import pandas as pd
 
 
-def submit_analyze_MalSim(exp, t='01:00:00', memG=30):
+def submit_analyze_MalSim(exp, t='01:00:00', memG=4):
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_MSim',
                                      mem_scl=exp.mem_increase_factor)
     pycommand = f'\ncd /home/{exp.user}/model-characterization/MalSim' \
@@ -33,7 +33,7 @@ def create_malsim_scenarios(exp):
     return
 
 
-def submit_run_MalSim(exp, t='10:00:00', memG=8):
+def submit_run_MalSim(exp, t='10:00:00', memG=3):
     array = f'#SBATCH --array=1-{str(exp.nexps)}\n'
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='run_malsim', arrayJob=array)
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
