@@ -647,6 +647,7 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     df3['prevalence'] = df3['nPatent'] / df3['nHost']
     df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
     df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
+    df3['nHost'] = (df3['nHost'] / n_surveys_per_year)
 
     first_columns = ['seed', 'date', 'year', 'month', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
                      'severe_incidence']
@@ -742,6 +743,7 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
     df3['prevalence'] = df3['nPatent'] / df3['nHost']
     df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
     df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
+    df3['nHost'] = (df3['nHost'] / n_surveys_per_year)
 
     first_columns = ['seed', 'year', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
                      'severe_incidence']
@@ -947,6 +949,7 @@ def DailyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     df3['prevalence'] = df3['nPatent'] / df3['nHost']
     df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
     df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
+    df3['nHost'] = (df3['nHost'] / n_surveys_per_year)
 
     first_columns = ['seed', 'year', 'month', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
                      'severe_incidence']
