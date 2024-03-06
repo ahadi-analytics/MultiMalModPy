@@ -402,7 +402,7 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
     g = df
 
     # Filter and aggregate data for age groups 2 to 10
-    age2to10 = g['ageGroup'].apply(lambda x: age_bins[x - 1] >= 2 and age_bins[x - 1] <= 10)
+    age2to10 = g['ageGroup'].apply(lambda x: age_bins[x - 1] > 2 and age_bins[x - 1] <= 10)
     nHost2to10 = g[(g.measure == mmi['nHost']) & age2to10].groupby(grp_channels).value.sum()
     nPatent2to10 = g[(g.measure == mmi['nPatent']) & age2to10].groupby(grp_channels).value.sum()
 
@@ -525,7 +525,7 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
         g = sdf.loc[sdf['month'] == mth]
 
         # Filter and aggregate data for age groups 2 to 10
-        age2to10 = g['ageGroup'].apply(lambda x: age_bins[x - 1] >= 2 and age_bins[x - 1] <= 10)
+        age2to10 = g['ageGroup'].apply(lambda x: age_bins[x - 1] > 2 and age_bins[x - 1] <= 10)
         nHost2to10 = g[(g.measure == mmi['nHost']) & age2to10].groupby(grp_channels).value.sum()
         nPatent2to10 = g[(g.measure == mmi['nPatent']) & age2to10].groupby(grp_channels).value.sum()
 
@@ -825,7 +825,7 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
         g = df.loc[df['year'] == yr]
 
         # Filter and aggregate data for age groups 2 to 10
-        age2to10 = g['ageGroup'].apply(lambda x: age_bins[x - 1] >= 2 and age_bins[x - 1] <= 10)
+        age2to10 = g['ageGroup'].apply(lambda x: age_bins[x - 1] > 2 and age_bins[x - 1] <= 10)
         nHost2to10 = g[(g.measure == mmi['nHost']) & age2to10].groupby(grp_channels).value.sum()
         nPatent2to10 = g[(g.measure == mmi['nPatent']) & age2to10].groupby(grp_channels).value.sum()
 
