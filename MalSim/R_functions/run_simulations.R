@@ -32,7 +32,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
         rainfall_floor = exp$floor,
 
         # Average age of human population (affects demographic make-up)
-        average_age = 23 * 365,
+        average_age = 21 * 365,
 
         # Render prevalence in age groups 0-5, 5-10, 10-15, and 15-20, and 2-10 (for PfPR_2-10)
         prevalence_rendering_min_ages = c(min_ages, (2*365)),
@@ -112,7 +112,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
         human_population = exp$pop_size,
 
         # Average age of human population (affects demographic make-up)
-        average_age = 23 * 365,
+        average_age = 21 * 365,
 
         # Render prevalence in age groups 0-5, 5-10, 10-15, and 15-20, and 2-10 (for PfPR_2-10)
         prevalence_rendering_min_ages = c(min_ages, (2 * 365)),
