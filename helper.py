@@ -649,52 +649,6 @@ def write_txt(txtobj, path, fname):
     file.close()
 
 
-def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
-    """
-    Submits a job to analyze OpenMalaria simulation results.
-    Args:
-        exp (object): The experiment object containing job directory information.
-    """
-    # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OMsim',
-                                     mem_scl=exp.mem_increase_factor)
-
-    # Create the Python command to run the analyzer
-    if exp.hpc == 'NUCLUSTER':
-        pycommand = f'\ncd /home/{exp.user}/model-characterization/OpenMalaria' \
-                    f'\npython analyze_sim.py --dir "{exp.job_directory}"'
-    elif exp.hpc == 'SCICORE':
-        pycommand = f'\ncd /scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria' \
-                    f'\n\nml Python/3.9.6-GCCcore-11.2.0-bare' \
-                    f'\nsource /scicore/home/scicore/cavelan/git/model-characterization/emodenv/bin/activate' \
-                    f'\npython analyze_sim.py --dir "{exp.job_directory}"'
-    else:
-        raise ValueError('HPC specification not available, must be NUCLUSTER or SCICORE')
-
-    # Get the EMODpy virtual environment path
-    emodpy_venv = emodpy_module(exp.hpc)
-
-    # Write the shell script to a file
-    script_path = os.path.join(exp.job_directory, 'run_analyzer_OpenMalaria.sh')
-    file = open(script_path, 'w')
-    file.write(header_post + emodpy_venv + pycommand)
-    file.close()
-
-    # Read the job ID from the 'job_id.txt' file
-    job_id_path = os.path.join(exp.job_directory, 'job_id.txt')
-    job_id = open(job_id_path).read().strip()
-
-    # Submit the job with dependency on the previous job
-    p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path], stdout=subprocess.PIPE,
-                       cwd=str(exp.job_directory))
-
-    # Extract the SLURM job ID from the output
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
-
-    # Print the submitted job ID and save it to a file
-    print(f'Submitted OpenMalaria analyzer - job id: {slurm_job_id}')
-    write_txt(slurm_job_id, exp.job_directory, 'job_id_OManalyze.txt')
-
 
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
                         custom_args='--emodom EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=None,
