@@ -165,6 +165,7 @@ def initialize_exp(args, manifest):
     # Define simulation population and seeds
     exp.pop_size = 10000  # 1000 for testing
     exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
+    exp.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
 
     exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
     exp.num_seeds = 20  # suggested minimum 3, in production 5-10

@@ -146,13 +146,17 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
     adf.to_csv((os.path.join(wdir,'All_Age_Outputs.csv')), index=False)
 
 
-def BenchmarkAnalyzer(jdir, wdir, sweep_variables):
+def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates = None):
     """
     Run the BenchmarkAnalyzer equivalent of EMOD for malariasimulation experiments.
     Saves: CSV dataframe in 'benchmark' format of selected simulation outcome metrics per fixed agegroup and grp_channels
            all surveys aggregated
     """
     print("Running BenchmarkAnalyzer...", flush=True)
+
+    if not age_groups_aggregates:
+        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
+
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
@@ -179,12 +183,10 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables):
     df['n_prev'] = df['n_prev'] / n_surveys
 
     cdf = pd.DataFrame()
-    # Define standard age groups used in benchmarking default for plotting
-    age_groups_on_plot = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
 
     # Loop over age groups to aggregate results data
-    for i in range(0, len(age_groups_on_plot)):
-        ages = age_groups_on_plot[i]
+    for i in range(0, len(age_groups_aggregates)):
+        ages = age_groups_aggregates[i]
         ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
         adf = df[(df.agebin >= ages[0]) & (df.agebin <= ages[1])]
         if adf.empty:
@@ -216,13 +218,16 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables):
     cdf.to_csv((os.path.join(wdir,'Benchmark.csv')), index=False)
    
 
-def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables):
+def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates= None):
     """
     Run the BenchmarkAnalyzer equivalent of EMOD for malariasimulation experiments.
     Saves: CSV dataframe in 'benchmark' format of selected simulation outcome metrics per fixed agegroup and grp_channels
            all surveys aggregated
     """
     print("Running BenchmarkAnalyzer...", flush=True)
+
+    if not age_groups_aggregates:
+        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
@@ -248,12 +253,10 @@ def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables):
         ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
 
     cdf = pd.DataFrame()
-    # Define standard age groups used in benchmarking default for plotting
-    age_groups_on_plot = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
 
     # Loop over age groups to aggregate results data
-    for i in range(0, len(age_groups_on_plot)):
-        ages = age_groups_on_plot[i]
+    for i in range(0, len(age_groups_aggregates)):
+        ages = age_groups_aggregates[i]
         ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
         adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
         if adf.empty:
@@ -286,13 +289,16 @@ def MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables):
     cdf.to_csv((os.path.join(wdir, 'Benchmark_mth.csv')), index=False)
 
 
-def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables):
+def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates = None):
     """
     Run the BenchmarkAnalyzer equivalent of EMOD for OpenMalaria experiments.
     Saves: CSV dataframe in 'benchmark' format of selected simulation outcome metrics per fixed agegroup and grp_channels
            all surveys aggregated
     """
     print("Running BenchmarkAnalyzer...", flush=True)
+
+    if not age_groups_aggregates:
+        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
@@ -318,12 +324,10 @@ def AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables):
     df['n_prev'] = df['n_prev'] / n_surveys_per_year
 
     cdf = pd.DataFrame()
-    # Define standard age groups used in benchmarking default for plotting
-    age_groups_on_plot = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
 
     # Loop over age groups to aggregate results data
-    for i in range(0, len(age_groups_on_plot)):
-        ages = age_groups_on_plot[i]
+    for i in range(0, len(age_groups_aggregates)):
+        ages = age_groups_aggregates[i]
         ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
         adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
         if adf.empty:
@@ -559,12 +563,16 @@ if __name__ == "__main__":
     # Load experiment object 
     file = open(os.path.join(jdir, "exp.obj"), "rb")
     exp = pickle.load(file)
+
     wdir = os.path.join(exp.sim_out_dir, 'MalSim')
     sweep_variables = ['index']
     create_sampleplots = True  # False
     all_age_sp = False  # False
     seeds = exp.num_seeds
+    age_groups_aggregates = exp.age_groups_aggregates
+
     daily_path = os.path.join(jdir, 'malsim_jobs/daily.csv')
+
     if not os.path.isfile(daily_path):
         load_combined_daily_output(jdir, seeds)
     # Execute all analyzers
@@ -574,11 +582,12 @@ if __name__ == "__main__":
     else:
         InputEIRAnalyzer(jdir, wdir) 
         #SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables) # I commented this out because we don't need to run it every time.
-        BenchmarkAnalyzer(jdir, wdir, sweep_variables)
-        MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables)
-        AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables)
+        BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
+        MonthlyBenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
+        AnnualBenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
         MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables)
         AnnualAgebinAnalyzer(jdir, wdir, sweep_variables)
+        
         # Create sample plots if specified
         if create_sampleplots:
             exp_tags = [x for x in exp.sweep_list if x != 'seed']  # + ['seed']
