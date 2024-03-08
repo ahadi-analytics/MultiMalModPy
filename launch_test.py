@@ -40,12 +40,18 @@ else:
     exp.om_survey_step = '30d'
 
     # Define simulation population and seeds
-    exp.pop_size = 10000  # 1000 for testing
+    overwrite_setup = False # Specified in helper.py, including test option
+    if overwrite_setup:
+        exp.pop_size = 10000  # 1000 for testing
+        exp.num_seeds = 20  # suggested minimum 3, in production 5-10
+        exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
+        exp.end_year = 2005  # end of pickup and monitoring period
+        exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
 
-    exp.num_seeds = 20  # suggested minimum 3, in production 5-10
-    exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
-    exp.end_year = 2005  # end of pickup and monitoring period
-    exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
+        # Transmission and seasonality configuration
+        # exp.eir = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,52.36,92.85,164.09,290.00,512.52,905.79,1600.82,2829.15,5000.00] #np.logspace(-1,3.69897000434,20) This is for x_temp_larval
+        # exp.eir = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40, 45, 50, 65, 70, 80, 90, 100, 120, 150, 200, 250, 500, 750, 1000] #Aurelien's suggested EIRS
+        exp.eir = [1, 5, 10, 50, 200, 1000]
 
     # Name of parameters to vary
     exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']
@@ -55,11 +61,6 @@ else:
     exp.cm_start = 1
     exp.cm_clinical = [0.0]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
-
-    # Transmission and seasonality configuration
-    # exp.eir = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,52.36,92.85,164.09,290.00,512.52,905.79,1600.82,2829.15,5000.00] #np.logspace(-1,3.69897000434,20) This is for x_temp_larval
-    # exp.eir = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40, 45, 50, 65, 70, 80, 90, 100, 120, 150, 200, 250, 500, 750, 1000] #Aurelien's suggested EIRS
-    exp.eir = [1, 5, 10, 50, 200, 1000]
 
     # Entomology mode: Dynamic EIR configuration if selected
     exp = get_seasonal_eir(exp)
