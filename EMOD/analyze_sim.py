@@ -497,7 +497,7 @@ class InputEIRAnalyzer(IAnalyzer):
         super(InputEIRAnalyzer, self).__init__(working_dir=working_dir,
                                                filenames=["output/InsetChart.json"])  # ReportMalariaFiltered
         self.sweep_variables = sweep_variables or ["Run_Number"]
-        self.channels = channels or ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
+        self.channels = channels or ['Daily Bites per Human', 'Daily EIR', 'Rainfall', 'Adult Vectors', 'Infectious Vectors']
         self.start_year = start_year
         self.selected_year = selected_year
         self.daily_report = daily_report
@@ -533,7 +533,7 @@ class InputEIRAnalyzer(IAnalyzer):
             return
 
         adf = pd.concat(selected).reset_index(drop=True)
-
+        adf['Infectious Vectors'] = round(adf['Infectious Vectors'] * adf['Adult Vectors'],0)
         if self.burnin is not None:
             adf = adf[adf['year'] >= self.start_year + self.burnin]
 
@@ -547,31 +547,40 @@ class InputEIRAnalyzer(IAnalyzer):
         adf = adf.merge(scen_df, on='scen_id', how='inner')
         grp_channels = list(set(grp_channels + list(scen_df.columns)))
 
+        adf = adf.rename(columns={'Adult Vectors':'n_total_mos_pop','Infectious Vectors':'n_infectious_mos'})
         if self.daily_report:
-            df = adf[['scen_id','Run_Number','time','day','month','year','eir', 'Daily EIR', 'eir_scalar_timestep_daily', 'eir_scalar_emod']]
-            df = df.rename({'Daily EIR': 'simulatedEIR','time':'timestep', 'eir_scalar_timestep_daily':'eir_scalar_timestep','eir_scalar_emod':'eir_scalar'}, axis=1) 
-            df['day'] = df['day']+1
+            df = adf[['scen_id','Run_Number','time','day','month','year','eir', 'Daily EIR', 'n_total_mos_pop', 'n_infectious_mos','eir_scalar_timestep_daily', 'eir_scalar_emod']]
+            df = df.rename(columns={'Daily EIR': 'simulatedEIR','time':'timestep', 'eir_scalar_timestep_daily':'eir_scalar_timestep','eir_scalar_emod':'eir_scalar'}) df['day'] = df['day']+1
             df['timestep'] = df['timestep']+1
             df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'), index=False)
         
         sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
+        mean_channels = ['n_total_mos_pop', 'n_infectious_mos']
 
         # Monthly aggregation - keep months and years
         if self.monthly_report:
             df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
             df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
+            vdf = adf.groupby(['year', 'month'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
+            df = df.merge(vdf, on=(['year', 'month'] + grp_channels), how = 'inner')
             df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_mth.csv'), index=False)
 
         # Yearly aggregation - keep years
         df = adf.groupby(['year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
+        vdf = adf.groupby(['year'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
+        df = df.merge(vdf, on=(['year'] + grp_channels), how = 'inner')
         df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
         df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'), index=False)
 
         # Mean over monitoring period
         nyears = len(adf['year'].unique())
         df = adf.groupby(grp_channels)[sum_channels].agg(np.sum).reset_index()
+        vdf = adf.groupby(grp_channels)[mean_channels].agg(np.mean).reset_index()
+        df = df.merge(vdf, on=grp_channels, how = 'inner')
         df['Daily EIR'] = df['Daily EIR'] / nyears
         df['Daily Bites per Human'] = df['Daily Bites per Human'] / nyears
+        df['n_total_mos_pop'] = df['n_total_mos_pop'] / nyears
+        df['n_infectious_mos'] = df['n_infectious_mos'] / nyears
         df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
         df.to_csv(os.path.join(self.working_dir, 'em', 'EIR.csv'), index=False)
 
