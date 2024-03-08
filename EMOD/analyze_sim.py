@@ -668,7 +668,7 @@ class BenchmarkAnalyzer(IAnalyzer):
         for i in range(0, len(age_groups_on_plot)):
             ages = age_groups_on_plot[i]
             ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
-            adf = df[(df.agebin >= ages[0]) & (df.agebin <= ages[1])]
+            adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
             if adf.empty:
                 pass
             else:
@@ -799,7 +799,7 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
         for i in range(0, len(age_groups_on_plot)):
             ages = age_groups_on_plot[i]
             ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
-            adf = df[(df.agebin >= ages[0]) & (df.agebin <= ages[1])]
+            adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
             if adf.empty:
                 pass
             else:
@@ -936,7 +936,7 @@ class AnnualBenchmarkAnalyzer(IAnalyzer):
         for i in range(0, len(age_groups_on_plot)):
             ages = age_groups_on_plot[i]
             ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
-            adf = df[(df.agebin >= ages[0]) & (df.agebin <= ages[1])]
+            adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
             if adf.empty:
                 pass
             else:

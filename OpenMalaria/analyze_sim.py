@@ -535,7 +535,7 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
         # Analyze data for each age group on the plot
         for i in range(0, len(age_groups_aggregates)):
             ages = age_groups_aggregates[i]
-            ageCond = g['ageGroup'].apply(lambda x: age_bins[x - 1] >= ages[0] and age_bins[x - 1] <= ages[1])
+            ageCond = g['ageGroup'].apply(lambda x: age_bins[x - 1] > ages[0] and age_bins[x - 1] <= ages[1])
 
             ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
 
@@ -837,7 +837,7 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
         # Analyze data for each age group on the plot
         for i in range(0, len(age_groups_aggregates)):
             ages = age_groups_aggregates[i]
-            ageCond = g['ageGroup'].apply(lambda x: age_bins[x - 1] >= ages[0] and age_bins[x - 1] <= ages[1])
+            ageCond = g['ageGroup'].apply(lambda x: age_bins[x - 1] > ages[0] and age_bins[x - 1] <= ages[1])
             ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
 
             # Compute various measures for the current age group
