@@ -560,6 +560,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             df['eir_scalar_om'] = exp.eir_scalar_om
             df['eir_scalar_malsim'] = exp.eir_scalar_malsim
             df['carrying_capacity_step'] = exp.carrying_capacity_step
+            df['added_importation'] = exp.added_importation
         if exp.entomology_mode == 'dynamic':
             df['x_Temporary_Larval_Habitat'] = eir_to_lhs_regr(df, population=exp.pop_size)
     return df
