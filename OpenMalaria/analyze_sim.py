@@ -953,7 +953,7 @@ def DailyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     # Convert survey data to dates and set the start year
     df3 = survey_to_date(df3, survey_step_days=5, start_year=start_year)
 
-    n_surveys_per_year = np.floor((365 / 30))
+    n_surveys_per_year = np.floor((365 / 5))
     df3['prevalence'] = df3['nPatent'] / df3['nHost']
     df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
     df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
