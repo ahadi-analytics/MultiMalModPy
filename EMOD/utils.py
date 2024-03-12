@@ -15,6 +15,7 @@ from emodpy_malaria.reporters.builtin import *
 import emodpy_malaria.demographics.MalariaDemographics as Demographics
 import emodpy_malaria.malaria_config as malaria_config
 from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
+from emodpy_malaria.interventions.outbreak import add_outbreak_individual
 from emodpy.emod_task import EMODTask
 from idmtools.builders import SimulationBuilder
 from idmtools.core import ItemType
@@ -82,6 +83,9 @@ def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
         add_scale_larval_habitats(camp, df=eir_df,
                                   start_day=row.eir_scalar_timestep_daily,
                                   repetitions = 1)
+    if 'cc_step' in intervention_list and row.added_importation:
+        add_outbreak_individual(camp, start_day = 1, demographic_coverage=0.005,
+                                repetitions=-1, timesteps_between_repetitions=365)
     return {'scen_id': int(row.scen_id)}
 
 

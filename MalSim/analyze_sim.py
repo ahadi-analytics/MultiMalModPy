@@ -33,7 +33,7 @@ def load_combined_daily_output(job_directory, num_seeds):
     daily = pd.DataFrame()
     temp_daily = pd.DataFrame()
     needed_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n','nPopulation', 'prevalence_2to10', 'prev',
-                       'index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup', 'age_upper', 'EIR_gamb'] 
+                       'index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup', 'age_upper', 'EIR_gamb', 'n_infectious_mos', 'n_total_mos_pop'] 
     for i in range(1, exp.nexps + 1):
         i_df = pd.read_csv(os.path.join(job_directory, f'malsim_jobs/daily_{i}.csv'))
         i_df = i_df.filter(items=needed_channels)
@@ -53,7 +53,7 @@ def InputEIRAnalyzer(jdir, wdir, daily = False):
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'], axis=1)  ## EMOD specific, entomology_mode  not applicable
 
-    channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'nPopulation', 'EIR_gamb']
+    channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'nPopulation', 'EIR_gamb', 'n_infectious_mos','n_total_mos_pop']
     #df = load_combined_daily_output(jdir, channels_to_keep + ['ageGroup'])
     df = pd.read_csv(os.path.join(jdir, 'malsim_jobs','daily.csv'))
     df = df[channels_to_keep+['ageGroup']]
@@ -66,7 +66,7 @@ def InputEIRAnalyzer(jdir, wdir, daily = False):
         if 'eir_malsim' in df_daily: #if the user sets different values between Malsim and EMOD, this should catch if the 
             df_daily = df_daily[['index', 'seed','timestep','month','year','nPopulation','EIR_gamb',
                             'cm_clinical', 'seasonality','scen_id','num_seeds','cm_start','cm_severe',	
-                            'eir_malsim','eir_scalar_timestep_daily','eir_scalar_malsim']]
+                            'eir_malsim','eir_scalar_timestep_daily','eir_scalar_malsim','n_infectious_mos','n_total_mos_pop']]
             df_daily['inputEIR'] = df_daily['eir_malsim']
             df_daily = df_daily.rename({'EIR_gamb': 'simulatedEIR','eir_scalar_timestep_daily':'eir_scalar_timestep','eir_scalar_malsim':'eir_scalar'}, axis=1) 
         else: 
@@ -74,14 +74,17 @@ def InputEIRAnalyzer(jdir, wdir, daily = False):
         # If that were the case we could use the following code to help implement that.
             df_daily = df_daily[['index', 'seed','timestep','month','year','nPopulation','EIR_gamb',
                             'cm_clinical', 'seasonality','scen_id','num_seeds','cm_start','cm_severe',	
-                            'eir','eir_scalar_timestep_daily','eir_scalar_malsim']]
+                            'eir','eir_scalar_timestep_daily','eir_scalar_malsim', 'n_infectious_mos','n_total_mos_pop']]
             df_daily['inputEIR'] = df_daily['eir']
         df_daily = df_daily.rename({'EIR_gamb': 'simulatedEIR','eir_scalar_timestep_daily':'eir_scalar_timestep','eir_scalar_malsim':'eir_scalar'}, axis=1)
         print(f'Saving EIR_daily.csv to {wdir}')
         df_daily.to_csv((os.path.join(wdir, 'EIR_daily.csv')), index=False)
     else:
         # Monthly aggregation - keep months and years
+        mean_channels = ['n_infectious_mos','n_total_mos_pop']
         df_mth = df.groupby(['index', 'month', 'year'], as_index=False)['EIR_gamb'].sum()
+        vdf_mth = df.groupby(['index', 'month', 'year'], as_index=False)[mean_channels].mean()
+        df_mth = df_mth.merge(vdf_mth, on=['index', 'month', 'year'], how='inner')
         df_mth = df_mth.merge(scen_df, on='index', how='inner')
         df_mth = df_mth.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
         df_mth['inputEIR'] = df_mth['eir']  # if inputEIR not available from simulations, use 'eir'
@@ -90,6 +93,8 @@ def InputEIRAnalyzer(jdir, wdir, daily = False):
 
         # Yearly aggregation - keep years
         df_yr = df.groupby(['index', 'year'], as_index=False)['EIR_gamb'].sum()
+        vdf_yr = df.groupby(['index', 'year'], as_index=False)[mean_channels].mean()
+        df_yr = df_yr.merge(vdf_yr, on=['index', 'year'], how='inner')
         df_yr = df_yr.merge(scen_df, on='index', how='inner')
         df_yr = df_yr.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
         df_yr['inputEIR'] = df_yr['eir']  # if inputEIR not available from simulations, use 'eir'
@@ -99,7 +104,11 @@ def InputEIRAnalyzer(jdir, wdir, daily = False):
         # Mean over monitoring period
         nyears = len(df['year'].unique())
         df_yr = df.groupby(['index'], as_index=False)['EIR_gamb'].sum()
+        vdf_yr = df.groupby(['index'], as_index=False)[mean_channels].mean()
+        df_yr = df_yr.merge(vdf_yr, on=['index'], how='inner')
         df_yr['EIR_gamb'] = df_yr['EIR_gamb'] / nyears
+        df_yr['n_infectious_mos'] = df_yr['n_infectious_mos'] / nyears
+        df_yr['n_total_mos_pop'] = df_yr['n_total_mos_pop'] / nyears
         df_yr = df_yr.merge(scen_df, on='index', how='inner')
         df_yr = df_yr.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
         df_yr['inputEIR'] = df_yr['eir']  # if inputEIR not available from simulations, use 'eir'
@@ -377,7 +386,7 @@ def DailyAgebinAnalyzer(jdir, wdir, sweep_variables):
 
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
-    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
+    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev','n_infectious_mos','n_total_mos_pop']
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
     #df = load_combined_daily_output(jdir, channels_to_keep)
@@ -407,7 +416,7 @@ def DailyAgebinAnalyzer(jdir, wdir, sweep_variables):
     eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'inputEIR']]
     df = df.merge(eir_df, on=['index', 'timestep','month', 'year'], how='inner')
     #Let's limit the output of daily, so its a little more reasonable for us to process.
-    df = df[['index','seed','ageGroup','timestep','eir_malsim','simulatedEIR', 'clinical_incidence', 'severe_incidence','prevalence','prevalence_2to10','carrying_capacity_step','eir_scalar_timestep_daily','eir_scalar_malsim']]
+    df = df[['index','seed','ageGroup','timestep','eir_malsim','simulatedEIR','n_infectious_mos','n_total_mos_pop', 'clinical_incidence', 'severe_incidence','prevalence','prevalence_2to10','carrying_capacity_step','eir_scalar_timestep_daily','eir_scalar_malsim']]
     df = df.rename({'eir_malsim':'eir','eir_scalar_timestep_daily':'eir_scalar_timestep', 'eir_scalar_malsim':'eir_scalar' })
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_daily.csv to {wdir}')
