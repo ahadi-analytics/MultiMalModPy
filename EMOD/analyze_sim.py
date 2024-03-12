@@ -600,7 +600,7 @@ class BenchmarkAnalyzer(IAnalyzer):
     """
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
-                 end_year=2020, burnin=None):
+                 end_year=2020, age_groups_aggregates=None, burnin=None):
 
         super(BenchmarkAnalyzer, self).__init__(working_dir=working_dir,
                                                 filenames=[
@@ -609,6 +609,9 @@ class BenchmarkAnalyzer(IAnalyzer):
         self.expt_name = expt_name
         self.start_year = start_year
         self.end_year = end_year
+        self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
+                                                         [15, 20], [20, 100],
+                                                         [0, 5], [0, 100]]
         self.burnin = burnin
 
     def map(self, data, simulation: Simulation):
@@ -670,14 +673,12 @@ class BenchmarkAnalyzer(IAnalyzer):
         df['nSevere'] = df['severe_incidence'] * df['nHost']  ## total cases per annum
 
         cdf = pd.DataFrame()
-        # Define standard age groups used in benchmarking default for plotting
-        age_groups_on_plot = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
 
         # Loop over age groups to aggregate results data
-        for i in range(0, len(age_groups_on_plot)):
-            ages = age_groups_on_plot[i]
+        for i in range(0, len(self.age_groups_aggregates)):
+            ages = self.age_groups_aggregates[i]
             ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
-            adf = df[(df.agebin >= ages[0]) & (df.agebin <= ages[1])]
+            adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
             if adf.empty:
                 pass
             else:
@@ -728,7 +729,7 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
     """
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
-                 end_year=2020, burnin=None):
+                 end_year=2020, age_groups_aggregates=None, burnin=None):
         super(MonthlyBenchmarkAnalyzer, self).__init__(working_dir=working_dir,
                                                        filenames=[f"output/MalariaSummaryReport_Monthly_{x}.json"
                                                                   for x in range(start_year, end_year)]
@@ -737,6 +738,8 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
         self.expt_name = expt_name
         self.start_year = start_year
         self.end_year = end_year
+        self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
+                                                         [15, 20], [20, 100], [0, 5], [0, 100]]
         self.burnin = burnin
 
     def map(self, data, simulation: Simulation):
@@ -801,14 +804,11 @@ class MonthlyBenchmarkAnalyzer(IAnalyzer):
 
         cdf = pd.DataFrame()
 
-        # Define standard age groups used in benchmarking default for plotting
-        age_groups_on_plot = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
-
         # Loop over the age groups to aggregate agebins to the defined groups
-        for i in range(0, len(age_groups_on_plot)):
-            ages = age_groups_on_plot[i]
+        for i in range(0, len(self.age_groups_aggregates)):
+            ages = self.age_groups_aggregates[i]
             ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
-            adf = df[(df.agebin >= ages[0]) & (df.agebin <= ages[1])]
+            adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
             if adf.empty:
                 pass
             else:
@@ -866,7 +866,7 @@ class AnnualBenchmarkAnalyzer(IAnalyzer):
     """
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
-                 end_year=2020, burnin=None):
+                 end_year=2020, age_groups_aggregates=None, burnin=None):
 
         super(AnnualBenchmarkAnalyzer, self).__init__(working_dir=working_dir,
                                                       filenames=[
@@ -875,6 +875,8 @@ class AnnualBenchmarkAnalyzer(IAnalyzer):
         self.expt_name = expt_name
         self.start_year = start_year
         self.end_year = end_year
+        self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
+                                                         [15, 20], [20, 100], [0, 5], [0, 100]]
         self.burnin = burnin
 
     def map(self, data, simulation: Simulation):
@@ -937,15 +939,12 @@ class AnnualBenchmarkAnalyzer(IAnalyzer):
         df['nSevere'] = df['severe_incidence'] * df['nHost']  ## total cases per annum
 
         cdf = pd.DataFrame()
-        # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
-        # [[0, 5]] + [[(age_groups[i - 1]), (age_groups[i])] for i in range(1, len(age_groups))]
-        age_groups_on_plot = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
 
         # Loop over the age groups to aggregate agebins to the defined groups
-        for i in range(0, len(age_groups_on_plot)):
-            ages = age_groups_on_plot[i]
+        for i in range(0, len(self.age_groups_aggregates)):
+            ages = self.age_groups_aggregates[i]
             ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
-            adf = df[(df.agebin >= ages[0]) & (df.agebin <= ages[1])]
+            adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
             if adf.empty:
                 pass
             else:
@@ -989,8 +988,6 @@ if __name__ == "__main__":
     args = parse_args()
     job_directory = args.directory
     exp_id = args.exp_id
-    #job_directory = 
-    #exp_id = 
 
     # Load experiment object
     file = open(os.path.join(job_directory, "exp.obj"), "rb")
@@ -1000,6 +997,7 @@ if __name__ == "__main__":
     create_sampleplots = False
 
     exp_name = exp.exp_name
+    age_groups_aggregates = exp.age_groups_aggregates
 
     # Define tags and simulation experiment configurations
     exp_tags = ['scen_id', 'Run_Number']
@@ -1053,59 +1051,64 @@ if __name__ == "__main__":
                                                    working_dir=wdir,
                                                    burnin=burnin)]
         daily_analyzers = [DailyAgebinAnalyzer(expt_name=exp_name,
-                                                   start_year=start_year,
-                                                   end_year=end_year,
-                                                   sweep_variables=exp_tags,
-                                                   working_dir=wdir,
-                                                   burnin=burnin)]
-        
+                                               start_year=start_year,
+                                               end_year=end_year,
+                                               sweep_variables=exp_tags,
+                                               working_dir=wdir,
+                                               burnin=burnin)]
+
         analyzers_benchmark = [BenchmarkAnalyzer(expt_name=exp_name,
                                                  sweep_variables=exp_tags,
                                                  working_dir=wdir,
                                                  start_year=start_year,
                                                  end_year=end_year - 1,
+                                                 age_groups_aggregates=age_groups_aggregates,
                                                  burnin=burnin),
                                AnnualBenchmarkAnalyzer(expt_name=exp_name,
                                                        sweep_variables=exp_tags,
                                                        working_dir=wdir,
                                                        start_year=start_year,
                                                        end_year=end_year - 1,
+                                                       age_groups_aggregates=age_groups_aggregates,
                                                        burnin=burnin),
                                MonthlyBenchmarkAnalyzer(expt_name=exp_name,
                                                         sweep_variables=exp_tags,
                                                         working_dir=wdir,
                                                         start_year=start_year,
                                                         end_year=end_year,
+                                                        age_groups_aggregates=age_groups_aggregates,
                                                         burnin=burnin)]
 
         if exp.entomology_mode == 'dynamic':
-            manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer, # we run eir_analyzers first to avoid any of the other analyzers running without this dependency completed.
-                                 partial_analyze_ok=True)
+            manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
+                                     # we run eir_analyzers first to avoid any of the other analyzers running without this dependency completed.
+                                     partial_analyze_ok=True)
             manager.analyze()
             analyzer = annual_analyzers
-        
+
         if exp.emod_step != 'burnin':
             analyzer = analyzer + monthly_analyzers + analyzers_benchmark
-            if 'cc_step' in exp.intervention_list: # for now if the intervention cc_step step is present, we do not want to run any of the other analyzers
+            if 'cc_step' in exp.intervention_list:  # for now if the intervention cc_step step is present, we do not want to run any of the other analyzers
                 daily_eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
-                                         sweep_variables=exp_tags,
-                                         start_year=start_year,
-                                         daily_report=True,
-                                         monthly_report=False,
-                                         burnin=burnin,
-                                         working_dir=wdir)]
-                manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=daily_eir_analyzer,
-                                 partial_analyze_ok=True)
+                                                       sweep_variables=exp_tags,
+                                                       start_year=start_year,
+                                                       daily_report=True,
+                                                       monthly_report=False,
+                                                       burnin=burnin,
+                                                       working_dir=wdir)]
+                manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)],
+                                         analyzers=daily_eir_analyzer,
+                                         partial_analyze_ok=True)
                 manager.analyze()
-                
+
                 analyzer = daily_analyzers
-        
+
         manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
                                  partial_analyze_ok=True)
         manager.analyze()
 
     # Create sample plots if specified
-    if create_sampleplots and 'cc_step' not in exp.intervention_list: #For daily we shouldn't request anything beyond the daily_EIR and daily_analyzers
+    if create_sampleplots and 'cc_step' not in exp.intervention_list:  # For daily we shouldn't request anything beyond the daily_EIR and daily_analyzers
         exp_tags = [tag for tag in exp_tags if tag != 'Run_Number'] + ['seed']
         channels_inset_chart = ['Statistical Population', 'Births', 'New Infections', 'Newly Symptomatic',
                                 'New Clinical Cases', 'New Severe Cases',

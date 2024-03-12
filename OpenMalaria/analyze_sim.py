@@ -355,7 +355,7 @@ def SurveyAllAgeAnalyzer(exp, mm, start_year=2020, survey_step_days=30, compr='i
     adf.to_csv((os.path.join(wdir, 'All_Age_Outputs.csv')), index=False, compression=compr)
 
 
-def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', 'index']):
+def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', 'index'], age_groups_aggregates = None):
     """
     Run the BenchmarkAnalyzer equivalent of EMOD for OpenMalaria experiments.
     Args:
@@ -369,6 +369,10 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
         None
     """
     print("Running BenchmarkAnalyzer...", flush=True)
+
+    # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
+    if not age_groups_aggregates:
+        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
@@ -467,7 +471,7 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
     adf.to_csv((os.path.join(wdir, 'Benchmark.csv')), index=False)
 
 
-def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index']):
+def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index'], age_groups_aggregates = None):
     """
     Run the MonthlyBenchmarkAnalyzer for OpenMalaria experiments to create Benchmark type output keeping the months separate
     Args:
@@ -482,6 +486,10 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
     """
 
     print("Running MonthlyBenchmarkAnalyzer...", flush=True)
+
+    # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
+    if not age_groups_aggregates:
+        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
@@ -743,6 +751,7 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
     df3['prevalence'] = df3['nPatent'] / df3['nHost']
     df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
     df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
+    df3['nHost'] = (df3['nHost'] / n_surveys_per_year)
 
     first_columns = ['seed', 'year', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
                      'severe_incidence']
@@ -771,7 +780,7 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
     df3.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv')), index=False, compression=compr)
 
 
-def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_channels=['ageGroup', 'index']):
+def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_channels=['ageGroup', 'index'], age_groups_aggregates = None):
     """
     Run the AnnualBenchmarkAnalyzer for OpenMalaria experiments to create Benchmark type output keeping the years separate
     Args:
@@ -785,6 +794,10 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
         None
     """
     print("Running AnnualBenchmarkAnalyzer...", flush=True)
+
+    # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
+    if not age_groups_aggregates:
+        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
@@ -816,9 +829,6 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
     yearsAtRisk[yearsAtRisk > 1] = 1
     df.loc[(df.measure == mmi['nHost']), 'value'] *= yearsAtRisk[df[(df.measure == mmi['nHost'])].ageGroup - 1]
 
-    # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
-    # [[0, 5]] + [[(age_groups[i - 1]), (age_groups[i])] for i in range(1, len(age_groups))]
-    age_groups_aggregates = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
     adf = pd.DataFrame()
     # Iterate over each year
     for yr in df['year'].unique():
@@ -943,10 +953,11 @@ def DailyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     # Convert survey data to dates and set the start year
     df3 = survey_to_date(df3, survey_step_days=5, start_year=start_year)
 
-    n_surveys_per_year = np.floor((365 / 30))
+    n_surveys_per_year = np.floor((365 / 5))
     df3['prevalence'] = df3['nPatent'] / df3['nHost']
     df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
     df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
+    df3['nHost'] = (df3['nHost'] / n_surveys_per_year)
 
     first_columns = ['seed', 'year', 'month', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
                      'severe_incidence']
@@ -1013,9 +1024,9 @@ if __name__ == "__main__":
         BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip')
         SurveyAllAgeAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
         MonthlyAgebinAnalyzer(exp, mm, start_year=start_year)
-        MonthlyBenchmarkAnalyzer(exp, mmi, start_year=start_year)
-        BenchmarkAnalyzer(exp, mmi, survey_step_days=survey_steps)
-        AnnualBenchmarkAnalyzer(exp, mmi, start_year=start_year, survey_step_days=survey_steps)
+        MonthlyBenchmarkAnalyzer(exp, mmi, start_year=start_year,  age_groups_aggregates=age_groups_aggregates)
+        BenchmarkAnalyzer(exp, mmi, survey_step_days=survey_steps,  age_groups_aggregates=age_groups_aggregates)
+        AnnualBenchmarkAnalyzer(exp, mmi, start_year=start_year, survey_step_days=survey_steps,  age_groups_aggregates=age_groups_aggregates)
         AnnualAgebinAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
 
         # Define tags and channels for sample plots

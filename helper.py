@@ -11,6 +11,7 @@ from EMOD.scaffolds.dynamicEIR import eir_to_lhs_regr
 from scipy.interpolate import interp1d
 from idmtools.entities.experiment import Experiment
 
+
 def parse_launch_args():
     parser = argparse.ArgumentParser(description="Description of your script.")
 
@@ -60,6 +61,9 @@ def parse_launch_args():
                         type=int,
                         required=False,
                         help='Row number of specified scenario csv')
+    parser.add_argument('--test',
+                        action='store_true',
+                        help='Specify whether to run a test, population and burnin and seeds will be only a few per default')
     return parser.parse_args()
 
 
@@ -132,6 +136,7 @@ def initialize_exp(args, manifest):
     exp.models_to_run = args.models
     exp.MalSim_run_burnin = args.no_malsim_burnin  ## bool on whether to run burnin or not, default if not specified is True
     exp.intervention_list = args.interventions
+    exp.testrun = args.test
 
     # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
     exp.user = args.user
@@ -162,20 +167,32 @@ def initialize_exp(args, manifest):
         'seasonal']  # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
     exp.mem_increase_factor = 5.0  # scaling factor on default memory requested
 
-    # Define simulation population and seeds
-    exp.pop_size = 10000  # 1000 for testing
+    # Define age groups to report/monitor in simulations and to aggregate in output
     exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
+    exp.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],[0, 100]]
 
-    exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
-    exp.num_seeds = 20  # suggested minimum 3, in production 5-10
-    exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
-    exp.end_year = 2005  # end of pickup and monitoring period
-    exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
+    # Define simulation population and seeds
+    if not exp.testrun:
+        exp.pop_size = 10000  # 1000 for testing
+        exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
+        exp.num_seeds = 20  # suggested minimum 3, in production 5-10
+        exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
+        exp.end_year = 2005  # end of pickup and monitoring period
+        exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
+    else:
+        exp.pop_size = 1000
+        exp.num_seeds_burnin = 1
+        exp.num_seeds = 3
+        exp.start_year = 2000
+        exp.end_year = 2005
+        exp.burnin = 10
+        if  exp.hpc =='NUCLUSTER':
+            exp.sh_hpc_config['p'] = 'b1139testnode'  # Use test allocation
 
     # Name of parameters to vary
     exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']
     exp.emod_calib_params = False  # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
-    
+
     if exp.emod_calib_params:
         exp.calib_config_pointer = range(0, 3)  # define rows from calib_params df to run
         exp.sweep_list = exp.sweep_list + ['calib_config_pointer']
@@ -283,7 +300,8 @@ def check_exp_inputs(exp):
     for key, value in attributes_dict.items():
         # Check if the attribute is a list
         if isinstance(value, list) and len(value) > 1:
-            if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om', 'eir_scalar_om', 'carrying_capacity_step',
+            if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om',
+                           'eir_scalar_om', 'carrying_capacity_step','age_groups_aggregates',
                            'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial']:
                 list_attributes_nGT1.append(key)
 
@@ -647,53 +665,6 @@ def write_txt(txtobj, path, fname):
     file = open(os.path.join(path, fname), 'w')
     file.write(txtobj)
     file.close()
-
-
-def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
-    """
-    Submits a job to analyze OpenMalaria simulation results.
-    Args:
-        exp (object): The experiment object containing job directory information.
-    """
-    # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OMsim',
-                                     mem_scl=exp.mem_increase_factor)
-
-    # Create the Python command to run the analyzer
-    if exp.hpc == 'NUCLUSTER':
-        pycommand = f'\ncd /home/{exp.user}/model-characterization/OpenMalaria' \
-                    f'\npython analyze_sim.py --dir "{exp.job_directory}"'
-    elif exp.hpc == 'SCICORE':
-        pycommand = f'\ncd /scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria' \
-                    f'\n\nml Python/3.9.6-GCCcore-11.2.0-bare' \
-                    f'\nsource /scicore/home/scicore/cavelan/git/model-characterization/emodenv/bin/activate' \
-                    f'\npython analyze_sim.py --dir "{exp.job_directory}"'
-    else:
-        raise ValueError('HPC specification not available, must be NUCLUSTER or SCICORE')
-
-    # Get the EMODpy virtual environment path
-    emodpy_venv = emodpy_module(exp.hpc)
-
-    # Write the shell script to a file
-    script_path = os.path.join(exp.job_directory, 'run_analyzer_OpenMalaria.sh')
-    file = open(script_path, 'w')
-    file.write(header_post + emodpy_venv + pycommand)
-    file.close()
-
-    # Read the job ID from the 'job_id.txt' file
-    job_id_path = os.path.join(exp.job_directory, 'job_id.txt')
-    job_id = open(job_id_path).read().strip()
-
-    # Submit the job with dependency on the previous job
-    p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path], stdout=subprocess.PIPE,
-                       cwd=str(exp.job_directory))
-
-    # Extract the SLURM job ID from the output
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
-
-    # Print the submitted job ID and save it to a file
-    print(f'Submitted OpenMalaria analyzer - job id: {slurm_job_id}')
-    write_txt(slurm_job_id, exp.job_directory, 'job_id_OManalyze.txt')
 
 
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
