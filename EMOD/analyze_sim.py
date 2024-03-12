@@ -550,7 +550,8 @@ class InputEIRAnalyzer(IAnalyzer):
         adf = adf.rename(columns={'Adult Vectors':'n_total_mos_pop','Infectious Vectors':'n_infectious_mos'})
         if self.daily_report:
             df = adf[['scen_id','Run_Number','time','day','month','year','eir', 'Daily EIR', 'n_total_mos_pop', 'n_infectious_mos','eir_scalar_timestep_daily', 'eir_scalar_emod']]
-            df = df.rename(columns={'Daily EIR': 'simulatedEIR','time':'timestep', 'eir_scalar_timestep_daily':'eir_scalar_timestep','eir_scalar_emod':'eir_scalar'}) df['day'] = df['day']+1
+            df = df.rename(columns={'Daily EIR': 'simulatedEIR','time':'timestep', 'eir_scalar_timestep_daily':'eir_scalar_timestep','eir_scalar_emod':'eir_scalar'})
+            df['day'] = df['day']+1
             df['timestep'] = df['timestep']+1
             df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'), index=False)
         
