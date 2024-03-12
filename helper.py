@@ -301,7 +301,7 @@ def check_exp_inputs(exp):
         # Check if the attribute is a list
         if isinstance(value, list) and len(value) > 1:
             if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om',
-                           'eir_scalar_om', 'carrying_capacity_step',
+                           'eir_scalar_om', 'carrying_capacity_step','age_groups_aggregates',
                            'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial']:
                 list_attributes_nGT1.append(key)
 
