@@ -417,9 +417,7 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
     # Prepare an empty DataFrame for storing the analysis results
     adf = pd.DataFrame()
 
-    # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframe to write out
-    # [[0, 5]] + [[(age_groups[i - 1]), (age_groups[i])] for i in range(1, len(age_groups))]
-    age_groups_aggregates = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
+
     # Analyze data for each age group on the plot
     for i in range(0, len(age_groups_aggregates)):
         ages = age_groups_aggregates[i]
@@ -523,9 +521,7 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
     df.loc[(df.measure == mmi['nHost']), 'value'] *= yearsAtRisk[df[(df.measure == mmi['nHost'])].ageGroup - 1]
     sdf = df
 
-    # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
-    # [[0, 5]] + [[(age_groups[i - 1]), (age_groups[i])] for i in range(1, len(age_groups))]
-    age_groups_aggregates = [[0,0.5],[0.5,1],[1,2],[2,5], [5, 10], [10, 15], [15, 20], [20,100], [0,5],[0,100]]
+
 
     adf = pd.DataFrame()
     # Iterate over each month
@@ -1005,6 +1001,7 @@ if __name__ == "__main__":
     start_year = exp.start_year
     wdir = os.path.join(exp.sim_out_dir, 'om')
     create_sampleplots = True
+    age_groups_aggregates = exp.age_groups_aggregates
 
     # Determine survey step size
     if exp.om_survey_step == '5d':
