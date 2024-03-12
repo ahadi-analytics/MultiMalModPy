@@ -47,6 +47,8 @@
             <!--<option name="nHospitalRecovs"/>-->     <!-- id 23 -->
             <!--<option name="annAvgK"/>  -->     <!-- id 26 -->
             <option name="nNMFever"/>       <!-- id 27 -->
+            <option name="Vector_Nv"/>       <!-- id 32 --> 
+            <option name="Vector_Sv"/>       <!-- id 34 -->
             <option name="inputEIR"/>       <!-- id 35 -->
             <option name="simulatedEIR"/>   <!-- id 36 -->
             <option name="nNewInfections"/>  <!-- id 43 -->
@@ -97,6 +99,11 @@
                 </timed>
             </intervention>
         </vectorPop>
+        <importedInfections>
+            <timed>
+                <rate time="0" value="@importation_rate@"/>
+            </timed>
+        </importedInfections>
     </interventions>
     <healthSystem>
         <ImmediateOutcomes name="Tanzania ACT">

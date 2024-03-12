@@ -35,6 +35,10 @@ def create_scenarios_OM(exp, scen_df):
             scenario = scenario.replace('@eir@', str(row['eir_om']))
             scenario = scenario.replace('@EIR_reduction@', str(row['eir_scalar_om']))
             scenario = scenario.replace('@step_change_time@', str(row['eir_scalar_timestep_5day']))
+            if row['added_importation']:
+                scenario = scenario.replace('@importation_rate@', str(5))
+            else:
+                scenario = scenario.replace('@importation_rate@', str(0))
         else:
             scenario = scenario.replace('@eir@', str(row['eir']))
         seasonality = getattr(exp, row['seasonality'])
@@ -103,3 +107,10 @@ def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
 
     # Submit the job for analysis
     submit_analyze_OpenMalaria(exp)
+
+#if __name__ == "__main__":
+    #wdir = 
+    #file = open(os.path.join(wdir, "exp.obj"), "rb")
+    #exp = pickle.load(file)
+    #scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
+    #create_scenarios_OM(exp, scen_df)

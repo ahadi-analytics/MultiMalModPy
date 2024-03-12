@@ -48,6 +48,12 @@ convert_malsim_to_long <- function(age_min, age_max, output) {
         # Add column for the prevalence in age groups 2-10 years old:
         prevalence_2to10 = output$prev_730_3650,
 
+         # Add column for the amount of Infectious vectors present per age group.
+        n_infectious_mos = output$Im_gamb_count,
+
+        # Add column for the total amount of adult female mosquitos present per age group.
+        n_total_mos_pop = output$Sm_gamb_count + output$Pm_gamb_count + output$Im_gamb_count, 
+
         # Add column for the EIR:
         EIR_gamb = output$EIR_gamb)  #FIXME when running with multiple or other vectors, will need to be adapted, perhaps add to exp object?
 
