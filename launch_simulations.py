@@ -55,6 +55,13 @@ else:
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.sweep_list = ['eir', 'cm_clinical',  'seasonality']  # If running fewer sweeps in past than in pickup to be set up
 
+## Arguments to define analyzer and plotters to run
+if exp.emod_step != 'burnin':
+    exp.plots_to_run = []
+else:
+    if 'cc_step' in exp.intervention_list:
+        exp.plots_to_run = ['benchmark','ccstep']
+    #else, running ['benchmark','timeseries','agecurves']  per default
 
 ## Arguments that chage for pickup
 exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
@@ -130,3 +137,4 @@ if __name__ == '__main__':
                                 job='benchmark_plots')
         else:
             pass
+    submit_run_plotters(exp)  ## Submit plotters to run using wrapper function in helper.py

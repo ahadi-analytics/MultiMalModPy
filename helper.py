@@ -208,6 +208,8 @@ def initialize_exp(args, manifest):
     # Whether to pass along NU's within-host framework recalibrated parameters.
     exp.emod_calib_params = False
 
+    # Output flags for analyzer and plotting
+    exp.plots_to_run = ['sample_plots', 'benchmark', 'timeseries', 'agecurves']  # 'all'
     return (exp)
 
 
@@ -301,7 +303,7 @@ def check_exp_inputs(exp):
         # Check if the attribute is a list
         if isinstance(value, list) and len(value) > 1:
             if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om',
-                           'eir_scalar_om', 'carrying_capacity_step','age_groups_aggregates',
+                           'eir_scalar_om', 'carrying_capacity_step', 'age_groups_aggregates', 'plots_to_run',
                            'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial']:
                 list_attributes_nGT1.append(key)
 
@@ -666,11 +668,10 @@ def write_txt(txtobj, path, fname):
     file.write(txtobj)
     file.close()
 
-
-def submit_run_pyscript(exp, pyscript='plot_benchmark.py', shname='run_benchmark_plots.sh',
+def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
                         custom_args='--emodom EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=None,
                         job_id_MalSim=None,
-                        job='pyjob'):
+                        job='pyjob', write_only=False):
     """
     Submits a job to run a Python script.
 
@@ -705,28 +706,57 @@ def submit_run_pyscript(exp, pyscript='plot_benchmark.py', shname='run_benchmark
     file.close()
 
     # Check if job_id is provided as a string to define dependendies
-    if isinstance(job_id_EMOD, str):
-        job_id_EMOD = open(os.path.join(exp.job_directory, f'{job_id_EMOD}.txt')).read().strip()
+    if not write_only:
+        if isinstance(job_id_EMOD, str):
+            job_id_EMOD = open(os.path.join(exp.job_directory, f'{job_id_EMOD}.txt')).read().strip()
 
-        # Check if job_id_MalSim is provided as a string
-        if isinstance(job_id_MalSim, str):
-            job_id_MalSim = open(os.path.join(exp.job_directory, f'{job_id_MalSim}.txt')).read().strip()
-            dependencies = f'--dependency=afterany:{job_id_EMOD},{job_id_MalSim}'
+            # Check if job_id_MalSim is provided as a string
+            if isinstance(job_id_MalSim, str):
+                job_id_MalSim = open(os.path.join(exp.job_directory, f'{job_id_MalSim}.txt')).read().strip()
+                dependencies = f'--dependency=afterany:{job_id_EMOD},{job_id_MalSim}'
+            else:
+                dependencies = f'--dependency=afterany:{job_id_EMOD}'
+            # Submit job with dependency
+            p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE,
+                               cwd=str(exp.job_directory))
         else:
-            dependencies = f'--dependency=afterany:{job_id_EMOD}'
-        # Submit job with dependency
-        p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE,
-                           cwd=str(exp.job_directory))
+            # Submit job without dependency
+            p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
+
+        # Extract the SLURM job ID from the output
+        slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
+
+        # Print the submitted job ID
+        print(f'Submitted {shname} to run {pyscript} - job id: {slurm_job_id}')
+
+
+def submit_run_plotters(exp):
+    # Optionally, create submission script for standardized plots and run after last simulations finished
+    if 'OpenMalaria' in exp.models_to_run and 'EMOD' in exp.models_to_run and 'MalSim' in exp.models_to_run:
+        job_id_EMOD = 'job_id_EMODanalyze'
+        job_id_MalSim = 'job_id_MalSim_analyze'
     else:
-        # Submit job without dependency
-        p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
+        job_id_EMOD = None
+        job_id_MalSim = None
 
-    # Extract the SLURM job ID from the output
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
+    plot_names_all = ['benchmark', 'timeseries', 'agecurves', 'ccstep']
 
-    # Print the submitted job ID
-    print(f'Submitted {shname} to run {pyscript} - job id: {slurm_job_id}')
+    ## Write all, even if not running
+    for plot_name in plot_names_all:
+        pyscript_name = f'plot_{plot_name}.py'
+        submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
+                            job=f'{plot_name}_plots', write_only=True)
 
+    plots_to_run = [p for p in exp.plots_to_run if not p =='sample_plot']  # sample_plot are model specific and added to utils.py
+    if exp.plots_to_run[0] == 'all':
+        plots_to_run = plot_names_all
+
+    ## Overwriting and submitting those to run
+    for plot_name in plots_to_run:
+        pyscript_name = f'plot_{plot_name}.py'
+        submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
+                            job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim,
+                            job=f'{plot_name}_plots')
 
 def emodpy_module(location='NUCLUSTER'):
     """

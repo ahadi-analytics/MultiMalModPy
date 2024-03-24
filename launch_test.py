@@ -158,3 +158,4 @@ if __name__ == '__main__':
                                 job='benchmark_plots', memG=20)
         else:
             pass
+    submit_run_plotters(exp)  ## Submit plotters to run using wrapper function in helper.py
