@@ -204,7 +204,7 @@ def initialize_exp(args, manifest):
     exp.cm_clinical = [0.0]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
-    exp.eir = [32]
+    exp.eir = [4, 8,32]
 
     # Whether to pass along NU's within-host framework recalibrated parameters.
     exp.emod_calib_params = False
