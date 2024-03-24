@@ -1,4 +1,4 @@
-# Characterization and comparison of three main malaria models: EMOD, OpenMalaria, and malariasimulation
+# Characterization and comparison of EMOD, OpenMalaria, and malariasimulation
 
 _[EMOD](https://docs.idmod.org/projects/emod-malaria/en/latest/index.html) | [OpenMalaria](https://github.com/SwissTPH/openmalaria/) | [malariasimulation](https://github.com/mrc-ide/malariasimulation/tree/master)_
 
@@ -18,6 +18,8 @@ create an issue on GitHub that we can follow up on._
     - [EMOD serialization](#emod-serialization)
 3. [Scenarios implemented](#Scenarios-implemented)
     - [base case](#base-case)
+    - [CC step](#cc-step)
+    - [SMC (in process)]
 4. [Running simulations](#running-simulations)
     - [Manifest configuration](#manifest-configuration)
     - [Simulation experiment configuration](#simulation-experiment-configuration)
@@ -32,17 +34,18 @@ create an issue on GitHub that we can follow up on._
 
 ## Goal
 
-To characterize the basic transmission and disease dynamics of malaria simulated using **EMOD**, **OpenMalaria** and *
-*malariasimulation**
-using a simple python framework and allow flexible user-specific plotting.
+To characterize and compare the simulated transmission and disease dynamics of malaria in **EMOD**, **OpenMalaria** and *
+*malariasimulation** using a customized python framework that facilitates alignment and comparison of inputs and outputs.
 
 **Objectives:**
 
-1) Model characterization - basic transmission and disease dynamics:
+1) To align models for comparability of model outcomes
     - Explore and describe basic transmission and disease dynamics
-2) Model behaviour - effects of perturbation of the system:
-    - Treatment of cases and contribution of cases to onward transmission
-    - Infection clearance, short and long term prevention
+2) To understand model behaviour at baseline 
+3) To understand model response to perturbation of the system:
+    - Change in carrying capacity (`CC step`)
+    - Infection clearance and short term prevention (`SMC`)
+    - Treatment of cases and contribution of cases to onward transmission 
     - Vector control effects on mosquito life and feeding cycle
 
 **Repositories of malaria models used and frameworks utilized:**
@@ -65,8 +68,9 @@ The repository has a nested structure with model specific input and helper funct
 The model-specific scripts mimic the same file names and content as much as possible for consistency while maintaining
 model specific structures and terminology where necessary.  
 The main configuration `manifest.py` and simulation scripts `launch_test.py` or `launch_simulations.py` are located
-directly under the root
-directory.
+directly under the root directory.
+
+Additional custom scripts exist to facilitate testing new functionalities, such as `launch_ccstep.py`, whereas all custom simulations are aimed to be run via `launch_simulations.py` and defined scenario_inputs.
 
     .  
     ├─ EMOD/                            # EMOD inputs and specific functions
@@ -74,13 +78,15 @@ directory.
     │   │   └─ ... 
     │   ├─ scaffolds/
     │   │   ├─ forcedEIR.py             
+    │   │   ├─ dynamicEIR.py             
     │   │   └─ interventions.py 
     │   ├─ analyze_sim.py
     │   ├─ sample_plots.py
     │   └─ utils.py 
     ├─ OpenMalaria/                     # OpenMalaria inputs and specific functions  
     │   ├─ scaffolds/
-    │   │   └─ ... 
+    │   │   ├─ R0000GA.xml              # New functionality often translates into a new version of an XML being used
+    │   │   └─ R0000GA_CC_STEP.xml
     │   ├─ analyze_sim.py  
     │   ├─ measures.py
     │   ├─ sample_plots.py
@@ -99,23 +105,29 @@ directory.
     │   └─ ...  
     ├─ static/                          # Readme images 
     │   └─ ...  
-    ├─ benchmark_plots.py               # Default plots for model comparison 
+    ├─ plot_<type>.py                   # Multiple plotting scripts, for convenience kept under main directory, with type of plot often linked to type of analyzer or simulation run.
+    ├   ─ plot_helper.py                # Helper functions for standard model characterization and comparison plots            
+    ├   ─ plot_benchmark.py             # To describe relationships and dynamics in modelled outcomes (i.e. EIR to PfPR , or to incidence)
+    ├   ─ plot_agecurves.py             # Age curves (age on x axis)
+    ├   ─ plot_timeseries.py            # Any timeseries plots by month or annual (exception daily)
+    ├   ─ plot_ccstep.py                # Specific plot linked to simulations including a step change in carrying capacity
+    ├   ─ ...
     ├─ functions.R                      # Helper functions for custom R plots (optional)   
     ├─ helper.py                        # Mostly model-agnostic helper functions required for overall framework
-    ├─ launch_test.py                   # Simulation script used for testing, parameters are defined directly in script
-    ├─ launch_simulations.py            # Simulation script, reading in parameters as defined in csv files stored in /scenario_inputs
     ├─ manifest.py                      # Configuration of system defaults, HPC account, directories   
     ├─ run_launch_test.py               # Shell script or use as lookup script for terminal commands to run launch_test.py with arguments (SBATCH configured fo NUCLUSTER)
-    └─ run_launch_simulations.sh        # Shell script or use as lookup script for terminal commands  to run launch_simulations.py with arguments (SBATCH configured fo NUCLUSTER)
+    ├─ run_launch_simulations.sh        # Shell script or use as lookup script for terminal commands  to run launch_simulations.py with arguments (SBATCH configured fo NUCLUSTER)
+    ├─ launch_test.sh                  # Simulation script used for testing, parameters are defined directly in script
+    └─ launch_simulations.sh            # Simulation script, reading in parameters as defined in csv files stored in /scenario_inputs
 
 ### Programming language
 
 - Python had been selected as the main programming language, whereas previous frameworks in R do at varying extent exist
-  for the different models.
-- In general, the framework is aimed to be flexible enough to integrate model-specific R scripts for generating or
+  for the different models and much of malariasimulations framework has been kept in R.
+- The framework aims to be flexible enough to integrate model-specific R scripts for generating or
   postprocessing results, as long as integrated into the main python pipeline (i.e. via sourcing of R scripts), however
   full integration into python is preferred.
-- The sub-directory `custom_plotter` allows to store R scripts tha generate additional results and plots.
+- The sub-directory `custom_plotter` allows to store scripts (can be in R, or Python or other) that generate additional results and plots.
 - Other software languages used for handling model inputs or HPC job submission are `XML`, `json`, and `shell` scripts,
   as well as `txt` and `log` text files.
 
@@ -134,8 +146,7 @@ directory.
 ### Simulation framework
 
 The repository and programming framework relies on IDM's programming framework (emodpy, idmtools) for running simulation
-in EMOD that facilitate
-generating, submitting and post-processing simulations, while custom wrapper functions handle model submission for all
+in EMOD that facilitate generating, submitting and post-processing simulations, while custom wrapper functions handle model submission for all
 three models.
 The name of some input and output names have been predominantly aligned to OpenMalaria conventions where possible,
 maintaining model-specific names where necessary.
@@ -191,6 +202,8 @@ _Table: EMOD functions_
 | get_workdir_from_simulations   |                              |                                                                       |
 | create_sim_directory_map       |                              |                                                                       |
 | build_burnin_df                |                              |                                                                       |
+| ...                            |                              |                                                                       |
+
 
 _Table: OpenMalaria functions_
 
@@ -225,9 +238,9 @@ _Table: malariasimulation functions_
 
 ### Model inputs and scaffolds
 
-- EMOD: simulation setup is predefined by various functions
+- EMOD: simulation setup is specified by various functions that are generating JSON files 
 - OpenMalaria: simulation setup is pre-specified in XML files
-- malariasimulation: simulation setup is pre-specified in the R script
+- malariasimulation: simulation setup is specified directly in the R scripts
 
 ### EMOD serialization
 
@@ -268,6 +281,7 @@ Scenarios csvs are stored in the `scenario_inputs` sub-directory:
   Forthcoming examples may include:
 - `baseline_eirsweep_CM.csv`:
 - `baseline_eirchange_noCM.csv`:
+- `cc_step_test.csv`: ...
 - `smc_eirsweep_noCM.csv`: ...
 - ...
 
@@ -283,9 +297,9 @@ in [scenario_inputs/README](https://github.com/numalariamodeling/model-character
 - When running for the first time, model specific software will need to be installed first (note on NUCLUSTER AND
   SciCore software has already been installed)
 - Installed and supported verions:
-    - OpenMalaria v45
+    - OpenMalaria v43 or v46
     - EMOD (emodpy)
-    - malariasimulation (R>= 4.0.0))
+    - malariasimulation (R>= 4.0.0)
 
 _[go to installations instructions](https://github.com/numalariamodeling/model-characterization#installation)_
 
@@ -311,11 +325,14 @@ writing the csv and reading it in.
 
 The `launch_test.py` is the go-to script to get started and do test simulation runs, with the possibility to change and
 edit parameters directly in the python script.
-The `launch_simulations.py` is the script for more 'advanced' simulation runs, as it reads in experiment defining
+The `launch_simulations.py` is the script for more complex as well as multiple simulation experiments at once, as it reads in experiment defining
 parameters from a csv file.
-Both launch python script currently include only case management but no other interventions, expected to be expanded.
 
-- [ ] **Simulation experiment name, infractructure, directories and models to run**
+
+The configuration had been moved to the helper.py script, allowing the launch python script to overwrite parameters as needed.
+
+Parameter specifications for framework and simulation setup:
+- [ ] **Simulation experiment name, infrastructure, directories and models to run**
     - `mem_increase_factor`: scaling factor on default memory requested, which usually can be left at 1 for test
       simulation, but may have to be
       4 or 8 for larger simulations. The default memory requested also differs for the slurm job submission to run
@@ -330,20 +347,17 @@ Both launch python script currently include only case management but no other in
     - `om_scaffold`: name of **OpenMalaria** input XML to use
     - `MalSim_script`: name of **malariasimulation** R script to use
 
-
 - [ ] **Population size, agebins and seeds**
     - `pop_size`: number of individuals to simulate for human population, default for testing `1000`, which should not
       be used for actual
       simulations to generate results
     - `agebins`: age groups to monitor (select finest age groups required, can be further combined in postprocessing)
+    - `age_groups_aggregates`: Age groups to aggregate to in postprocessing
     - `num_seeds_burnin`: EMOD specific (even if not declared as such), number of seeds to run for burnin if run
       separately
     - `num_seeds`: number of
       seeds to run for simulation (applies to all models)
-    - `sweep_list`: List of parameter names that together uniquely identify a simulation scenario (and will be written
-      into `scenarios.csv`)
-
-
+  
 - [ ] **Simulation time and reporting intervals**
     - `start_year`: Calendar year at which monitoring period should start (after burnin)
     - `end_year`: Calendar year at which monitoring period should end
@@ -357,6 +371,12 @@ Both launch python script currently include only case management but no other in
       populations and high EIRs.
     - `emod_serialized_id`: ID of EMOD burnin experiment to pickup from, if `emod_step ='pickup'`
 
+- [ ] **Transmission intensity and seasonality**
+    - `entomology_mode`:    select whether to run with vectors (`dynamic`) or without (`forced`)
+    - `seasonality`: name of pre-defined transmission seasonality profile to simulate (current options
+      are `["perennial", "seasonal"]`)
+    - `eir`: annual input EIR (or equivalent, depending on model and entomology mode)
+
 
 - [ ] **Case management parameters**
     - `cm_start`: do not change, can be removed, case managament would always start on day 1, except of having multiple
@@ -364,14 +384,18 @@ Both launch python script currently include only case management but no other in
       deployments to simulate coverage increase over time (not applicable here)
     - `cm_clinical`: clinical case management coverage
     - `cm_severe`: do not change, will be adapted depending on clinical case management, but to be at least 48%
-    - `detectionLimit`: detection limit for parasites per micoliter blood for detection of prevalent malaria infections
+    - `detectionLimit`: detection limit for parasites per micoliter blood for detection of prevalent malaria infections 
 
+- [ ] **CC step parameters**
+    - `carrying_capacity_step`: Defined the step change from to in a list, example `['10%-25%', '10%-50%', '25%-10%', '25%-50%', '50%-10%', '50%-25%']`
+    - `eir_scalar_emod`: defines the scalar for each carrying_capacity_step defined that will achieve the desired step change for EMOD
+    - `eir_scalar_malsim`: defines the scalar for each carrying_capacity_step defined that will achieve the desired step change for malariasimulation
+    - `eir_scalar_om`: defines the scalar for each carrying_capacity_step defined that will achieve the desired step change for OpenMalaria
 
-- [ ] **Transmission intensity and seasonality**
-    - `entomology_mode`:    select whether to run with vectors (`dynamic`) or without (`forced`)
-    - `seasonality`: name of pre-defined transmission seasonality profile to simulate (current options
-      are `["perennial", "seasonal"]`)
-    - `eir`: annual input EIR (or equivalent, depending on model and entomology mode)
+- [ ] **Simulation experiment setup of sweeps and postprocessing**
+    - `sweep_list`: List of parameter names that together uniquely identify a simulation scenario (and will be written
+      into `scenarios.csv`)
+    - `plots_to_run`: List of types of plots to run automatically after the simulations finished
 
 
 ### Submit run and analyze simulations
@@ -391,9 +415,8 @@ Both launch python script currently include only case management but no other in
      ``` 
 - Perform additional analysis or plot custom results
 
-![experiment config folder](https://github.com/numalariamodeling/model-characterization/blob/main/static/simulation_directories.png)
 
-### Output files and metrics
+### Output files and metrics 
 
 Several custom output csv tables that can be used to generate figures and other results for model characterization.
 The file names have been mostly aligned to EMOD, whereas the name of outcome metrics have been mostly aligned to
@@ -409,15 +432,16 @@ OpenMalaria, as 'more fixed' as in EMOD.
 
 - `Benchmark.csv`: _Age-group_ specific key malaria outcomes* and transmission outcomes**, aggregated over whole
   monitoring period
+
+ Will be deprecated in future PR:
 - `Benchmark_mth.csv` _Age-group_ specific key malaria outcomes* and transmission outcomes**, aggregated per month over
-  whole monitoring period  (CAUTION: this can have issues, when simulation changes over time and no true equilibrium was achieved)
+  whole monitoring period  (CAUTION: this can have issues, when simulation changes over time and no true equilibrium was achieved) 
 - `Benchmark_yr.csv` _Age-group_ specific key malaria outcomes* and transmission outcomes**, aggregated per year over
-  whole monitoring period
+  whole monitoring period  
 
 **Additional output files:**
 
-- `EIR.csv`, `EIR_yr.csv` and `EIR_mth.csv`: All age simulated EIR (added to benchmark output csvs), currently specific to OpenMalaria
-  as not applicable to forced EIR in EMOD
+- `EIR.csv`, `EIR_yr.csv` and `EIR_mth.csv`: All age simulated EIR (added to benchmark output csvs)
 - `Surveyoutput_base.csv`: Raw output for OpenMalaria from concatenating survey outputs, optional i.e. for testing.
 - `Event reporters ..` to be added
 
@@ -674,7 +698,7 @@ Table 1: Overview of model software and infrastructure
 
 ## Change log
 
-- March 2024 - Carrying capacity step change and additional vector outcomes, switch to OpenMalaria v46
+- March 2024 - Carrying capacity step change and additional vector outcomes, switch to OpenMalaria v46, separation of plotting scripts
 - Jan 2024: refinement in framework to support flexible simulations, further bugfixes in model specific scripts
 - Oct - Dec 2023: refinement in framework for dynamic EIR and seasonality across all three models
 - Sep - Oct 2023: refinement in framework and outcome alignment for `malariasimulation` outcomes
