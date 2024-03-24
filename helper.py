@@ -169,7 +169,8 @@ def initialize_exp(args, manifest):
 
     # Define age groups to report/monitor in simulations and to aggregate in output
     exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
-    exp.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],[0, 100]]
+    exp.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
+                                 [0, 100]]
 
     # Define simulation population and seeds
     if not exp.testrun:
@@ -186,7 +187,7 @@ def initialize_exp(args, manifest):
         exp.start_year = 2000
         exp.end_year = 2005
         exp.burnin = 10
-        if  exp.hpc =='NUCLUSTER':
+        if exp.hpc == 'NUCLUSTER':
             exp.sh_hpc_config['p'] = 'b1139testnode'  # Use test allocation
 
     # Name of parameters to vary
@@ -210,7 +211,7 @@ def initialize_exp(args, manifest):
 
     # Output flags for analyzer and plotting
     # 'all', 'ccstep' , 'sampleplots', 'benchmark', 'timeseries', 'agecurves'
-    exp.plots_to_run = ['benchmark', 'timeseries',  'agecurves']
+    exp.plots_to_run = ['benchmark', 'timeseries', 'agecurves']
     return (exp)
 
 
@@ -669,6 +670,7 @@ def write_txt(txtobj, path, fname):
     file.write(txtobj)
     file.close()
 
+
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
                         custom_args='--emodom EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=None,
                         job_id_MalSim=None,
@@ -722,7 +724,8 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
                                cwd=str(exp.job_directory))
         else:
             # Submit job without dependency
-            p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
+            p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE,
+                               cwd=str(exp.job_directory))
 
         # Extract the SLURM job ID from the output
         slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
@@ -733,20 +736,27 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
 
 def submit_run_plotters(exp):
     # Optionally, create submission script for standardized plots and run after last simulations finished
-    if 'OpenMalaria' in exp.models_to_run and 'EMOD' in exp.models_to_run and 'MalSim' in exp.models_to_run:
+    job_id_EMOD = None
+    job_id_MalSim = None
+    if 'EMOD' in exp.models_to_run:
         job_id_EMOD = 'job_id_EMODanalyze'
+    if 'MalSim' in exp.models_to_run:
         job_id_MalSim = 'job_id_MalSim_analyze'
-    else:
-        job_id_EMOD = None
-        job_id_MalSim = None
 
     plot_names_all = ['sampleplots', 'benchmark', 'timeseries', 'agecurves', 'ccstep']
+    # plot_memrequests_all = {'sampleplots' : 10,'benchmark' :10,'agecurves' :10 ,'ccstep' :20}
 
     ## Write  shell submission script for all, even if not running
     for plot_name in plot_names_all:
         pyscript_name = f'plot_{plot_name}.py'
+
+        plot_memG = 20  # current default in submit_run_pyscript
+        if plot_name == 'ccstep':
+            plot_memG = 20  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
+
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
-                            job=f'{plot_name}_plots', write_only=True)
+                            custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
+                            job=f'{plot_name}_plots', memG=plot_memG, write_only=True)
 
     ## Write and run plots specified in exp.plots_to_run
     plots_to_run = exp.plots_to_run  # [p for p in exp.plots_to_run if not p =='sampleplots']
@@ -756,9 +766,16 @@ def submit_run_plotters(exp):
     ## Overwriting and submitting those to run
     for plot_name in plots_to_run:
         pyscript_name = f'plot_{plot_name}.py'
+
+        plot_memG = 20  # current default in submit_run_pyscript
+        if plot_name == 'ccstep':
+            plot_memG = 20  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
+
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
+                            custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
                             job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim,
-                            job=f'{plot_name}_plots')
+                            job=f'{plot_name}_plots', memG=plot_memG)
+
 
 def emodpy_module(location='NUCLUSTER'):
     """

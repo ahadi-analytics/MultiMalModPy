@@ -147,4 +147,6 @@ if __name__ == '__main__':
         submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files
 
     ## Submit plotters to run using wrapper function in helper.py
-    submit_run_plotters(exp)
+    if exp.emod_step != 'burnin':
+        submit_run_plotters(exp)
+
