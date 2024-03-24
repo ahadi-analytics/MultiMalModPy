@@ -8,7 +8,7 @@ from measures import mm, mmi
 from sample_plots import *
 import sys
 sys.path.append('../')
-from benchmark_plots import *
+from plot_benchmark import *
 
 
 def parse_args():

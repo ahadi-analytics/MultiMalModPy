@@ -667,7 +667,7 @@ def write_txt(txtobj, path, fname):
     file.close()
 
 
-def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
+def submit_run_pyscript(exp, pyscript='plot_benchmark.py', shname='run_benchmark_plots.sh',
                         custom_args='--emodom EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=None,
                         job_id_MalSim=None,
                         job='pyjob'):
@@ -676,7 +676,7 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
 
     Args:
         exp (Experiment): The experiment object containing job directory and other information.
-        pyscript (str, optional): The name of the Python script to run. Defaults to 'benchmark_plots.py'.
+        pyscript (str, optional): The name of the Python script to run. Defaults to 'plot_benchmark.py'.
         shname (str, optional): The name of the shell script to submit. Defaults to 'run_benchmark_plots.sh'.
         custom_args (str, optional): Custom arguments to pass to the Python script. Defaults to '--emodom EMOD OpenMalaria MalSim'.
         t (str, optional): Wall time for the job in the format 'HH:MM:SS'. Defaults to '01:00:00'.

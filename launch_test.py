@@ -148,12 +148,12 @@ if __name__ == '__main__':
 
     # Optionally, create submission script for standardized plots and run after last simulations finished
     if 'OpenMalaria' in exp.models_to_run and 'EMOD' in exp.models_to_run and 'MalSim' in exp.models_to_run:
-        submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
+        submit_run_pyscript(exp, pyscript='plot_benchmark.py', shname='run_benchmark_plots.sh',
                             job_id_EMOD='job_id_EMODanalyze', job_id_MalSim='job_id_MalSim_analyze',
                             job='benchmark_plots', memG=20)
     else:
         if exp.emod_step != 'burnin':
-            submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
+            submit_run_pyscript(exp, pyscript='plot_benchmark.py', shname='run_benchmark_plots.sh',
                                 custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
                                 job='benchmark_plots', memG=20)
         else:
