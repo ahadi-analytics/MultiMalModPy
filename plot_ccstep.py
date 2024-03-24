@@ -18,7 +18,7 @@ from plot_helper import *
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_daily.csv
-def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='ageGroup', use_std=False, agegrp='5-10'):
+def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='ageGroup', agegrp='5-10'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -26,7 +26,6 @@ def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='a
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
-        use_std (bool, optional): Do you use two standard deviations for the fill (True) or percentiles (False). Default False.
         agegrp (str, optional): Age group filter for the data. Default is '5-10'.
     Returns:
         None (plots are saved to disk).
@@ -111,8 +110,7 @@ def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='a
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_daily.csv
-def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', facet_var='ageGroup', use_std=False,
-                             agegrp='5-10'):
+def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', facet_var='ageGroup', agegrp='5-10'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -120,7 +118,6 @@ def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', face
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
-        use_std (bool, optional): Do you use two standard deviations for the fill (True) or percentiles (False). Default False.
         agegrp (str, optional): Age group filter for the data. Default is '5-10'.
     Returns:
         None (plots are saved to disk).
@@ -195,7 +192,7 @@ def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', face
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_daily.csv
-def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', use_std=False, agegrp='5-10'):
+def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp='5-10'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -203,7 +200,6 @@ def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup'
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
-        use_std (bool, optional): Do you use two standard deviations for the fill (True) or percentiles (False). Default False.
         agegrp (str, optional): Age group filter for the data. Default is '5-10'.
     Returns:
         None (plots are saved to disk).

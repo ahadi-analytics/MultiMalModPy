@@ -17,14 +17,13 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plot_helper import *
 
 # Plots prevalence 2 to 10 by output variable, requires benchmark.csv
-def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', use_std=False):
+def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence'):
     """
     Generates line plots for PfPR2to10 and either clinical or severe incidence per sweepvar as colors and emodom as panels.
     Parameters:
         wdir (str): Working directory where the plot will be saved.
         emodom (str or list of str): Name of models for which result dataframes should be loaded.
         channel (str): Variable representing the y-axis data to be plotted.
-        use_std (bool, optional): Do you use two standard deviations for the fill (True) or percentiles (False). Default False.
     Returns:
         None (plots are saved to disk).
     """
@@ -53,7 +52,7 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', use
                 pdf = adf[adf.emodom == model]
                 if not pd.isnull(pdf['prevalence_2to10']).all():
                 # plot mean, min and max of seeds
-                    xmean, ymean = get_x_y(pdf, 'eir', 'prevalence_2to10', channel, use_std)
+                    xmean, ymean = get_x_y(pdf, 'eir', 'prevalence_2to10', channel)
                     merge_df = pd.merge(left = xmean, right = ymean, on = 'eir')
                     if channel == 'simulatedEIR':
                         merge_df.sort_values(by='eir', inplace=True)
@@ -81,14 +80,13 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence', use
 
 # Plots prevalence 2 to 10 by incidence, with subplots seperated by 3 age groups. These graphs were requested by Narimane to reflect 
 # figure 1 in https://www.nature.com/articles/ncomms9170
-def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, channel='clinical_incidence', use_std=False):
+def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, channel='clinical_incidence'):
     """
     Generates line plots for PfPR2to10 and either clinical or severe incidence as panels seperated by model (columns) and ages (rows).
     Parameters:
         wdir (str): Working directory where the plot will be saved.
         emodom (str or list of str): Name of models for which result dataframes should be loaded.
         channel (str): Variable representing the y-axis data to be plotted.
-        use_std (bool, optional): Do you use two standard deviations for the fill (True) or percentiles (False). Default False.
     Returns:
         None (plots are saved to disk).
     """
@@ -121,7 +119,7 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, channel='clinica
                 mdf = mdf.groupby(['seed','eir'])[mean_vars].agg(np.mean).reset_index()
                 if not pd.isnull(mdf['prevalence_2to10']).all():
                 # plot mean, min and max of seeds
-                    xmean, ymean = get_x_y(mdf, 'eir', 'prevalence_2to10', channel, use_std)
+                    xmean, ymean = get_x_y(mdf, 'eir', 'prevalence_2to10', channel)
                     merge_df = pd.merge(left = xmean, right = ymean, on = 'eir')
                     merge_df.sort_values(by='prevalence_2to10', inplace=True)
                     ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=model, color=color_palette[mi])
@@ -141,7 +139,7 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, channel='clinica
     plt.close()
 
 # Plots simulated eir vs output variable, requires benchmark.csv
-def eir_to_outcome(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR', channel = 'prevalence_2to10', use_std=False, agegrp = '0-5'):
+def eir_to_outcome(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR', channel = 'prevalence_2to10', agegrp = '0-5'):
     """
     Generates line plots for EIR (input or simulated) and a requested outcome variable per emodom as colors and sweepvar as panels.
     Parameters:
@@ -150,7 +148,6 @@ def eir_to_outcome(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR',
         sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'cm_clinical'.
         eir_val (str, optional): The EIR (entomological inoculation rate) value to be used for plotting. Default is 'simulatedEIR'.
         channel (str, optional): the outcome variable to compare to eir
-        use_std (bool, optional): Do you use two standard deviations for the fill (True) or percentiles (False). Default False.
         agegrp (str, optional): Limits the resulting graphs to the selected age group. Default 0-5.
     Returns:
         None (plots are saved to disk).
@@ -171,7 +168,7 @@ def eir_to_outcome(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR',
         f += 1
         sdf = df[(df.seasonality == season)]
         for i, (p, pdf) in enumerate(sdf.groupby([sweepvar])):
-            xmean, ymean = get_x_y(pdf, 'eir', eir_val, channel, use_std) #get values for x and y axes.
+            xmean, ymean = get_x_y(pdf, 'eir', eir_val, channel) #get values for x and y axes.
             merge_df = pd.merge(left = xmean, right = ymean, on = 'eir')
             merge_df.sort_values(by=eir_val, inplace=True)
             ax.plot(merge_df[eir_val], merge_df[channel], '-', linewidth=0.8, label=f"{p}", color=color_palette[i])
@@ -192,14 +189,13 @@ def eir_to_outcome(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR',
 
 
 # Plots input eir vs simulated eir, requires benchmark.csv
-def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical', use_std=False):
+def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical'):
     """
     Generates line plots input compared to simulated EIR.
     Parameters:
         wdir (str): Working directory where the plot will be saved.
         emodom (str or list of str): Name of models for which result dataframes should be loaded.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'cm_clinical'.
-        use_std (bool, optional): Do you use two standard deviations for the fill (True) or percentiles (False). Default False.
     Returns:
         None (plots are saved to disk).
     """
@@ -224,7 +220,7 @@ def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical', use_std=False):
         sdf = df[(df.seasonality == season)]
         for i, (p, pdf) in enumerate(sdf.groupby([sweepvar])):
             # plot mean, min and max of seeds and age groups
-            xmean, ymean = get_x_y(pdf, 'eir', 'inputEIR', 'simulatedEIR', use_std)
+            xmean, ymean = get_x_y(pdf, 'eir', 'inputEIR', 'simulatedEIR')
             merge_df = pd.merge(left = xmean, right = ymean, on = 'eir')
             merge_df.sort_values(by='inputEIR', inplace=True)
             ax.plot(merge_df['inputEIR'], merge_df['simulatedEIR'], '-', linewidth=0.8, label=f"{p}", color=color_palette[i])
@@ -381,7 +377,7 @@ if __name__ == "__main__":
     channel_list = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence']
     for channel in channel_list:
         print(f'#----- Plotting simulated EIR to {channel} -----#')
-        eir_to_outcome(out_dir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR', channel = channel, use_std=False, agegrp = '0-100') #Jaline prefers 0-100 visuals
+        eir_to_outcome(out_dir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR', channel = channel, agegrp = '0-100') #Jaline prefers 0-100 visuals
 
     channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
     for channel in channel_list:

@@ -17,7 +17,7 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plot_helper import *
 
 # Plots over age - requires PfPR_ClinicalIncidence_yr.csv
-def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality', use_std=False):
+def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -25,7 +25,6 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'emodom'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'seasonality'. 
-        use_std (bool, optional): Do you use two standard deviations for the fill (True) or percentiles (False). Default False.
     Returns:
         None (plots are saved to disk).
     """   
@@ -74,7 +73,7 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up,1) 
             max_ylim.append(ylim_up)
-            xmean, ymean = get_x_y(sdf, 'ageGroup', channel, channel, use_std)
+            xmean, ymean = get_x_y(sdf, 'ageGroup', channel, channel)
             xmean = xmean['ageGroup']
             merge_df = pd.merge(left = xmean, right = ymean, on = 'ageGroup')
             merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], ['0-0.5','0.5-1','1-2','2-5','5-10','10-15','15-20','20-100'])

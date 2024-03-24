@@ -18,7 +18,7 @@ from plot_helper import *
 
 
 # Plots trends over available months, requires Benchmark_mth.csv
-def monthly_trends(wdir, emodom, channel, sweepvar='eir', use_std=False, agegrp='0-5'):
+def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5'):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
     Note, assumed single occurence per month, i.e. aggregated across years (reads in benchmark_mth.csv)
@@ -27,7 +27,6 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', use_std=False, agegrp=
         emodom (str or list of str): Name of models for which result dataframes should be loaded.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
-        use_std (bool, optional): Do you use two standard deviations for the fill (True) or percentiles (False). Default False.
         agegrp (str, optional): Age group filter for the data. Default is '0-5'.
     Returns:
         None (plots are saved to disk).
@@ -65,7 +64,7 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', use_std=False, agegrp=
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
             max_ylim.append(ylim_up)
-            xmean, ymean = get_x_y(mdf, 'month', channel, channel, use_std)
+            xmean, ymean = get_x_y(mdf, 'month', channel, channel)
             for ii, ff in ymean.iterrows():
                 ymean.loc[ii, 'month'] = new_index[ii]
             xmean = xmean['month']
@@ -91,7 +90,7 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', use_std=False, agegrp=
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_mth.csv
-def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', use_std=False, agegrp='5-10'):
+def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp='5-10'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -99,7 +98,6 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
-        use_std (bool, optional): Do you use two standard deviations for the fill (True) or percentiles (False). Default False.
         agegrp (str, optional): Age group filter for the data. Default is '5-10'.
     Returns:
         None (plots are saved to disk).
@@ -155,7 +153,7 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
             max_ylim.append(ylim_up)
-            xmean, ymean = get_x_y(sdf, 'date', channel, channel, use_std)
+            xmean, ymean = get_x_y(sdf, 'date', channel, channel)
             xmean = xmean['date']
             merge_df = pd.merge(left=xmean, right=ymean, on='date')
             merge_df.sort_values(by='date', inplace=True)
@@ -177,7 +175,7 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_yr.csv
-def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', use_std=False, agegrp='5-10'):
+def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp='5-10'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -185,7 +183,6 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
-        use_std (bool, optional): Do you use two standard deviations for the fill (True) or percentiles (False). Default False.
         agegrp (str, optional): Age group filter for the data. Default is '5-10'.
     Returns:
         None (plots are saved to disk).
@@ -239,7 +236,7 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
             max_ylim.append(ylim_up)
-            xmean, ymean = get_x_y(sdf, 'year', channel, channel, use_std)
+            xmean, ymean = get_x_y(sdf, 'year', channel, channel)
             xmean = xmean['year']
             merge_df = pd.merge(left=xmean, right=ymean, on='year')
             merge_df.sort_values(by='year', inplace=True)
@@ -277,8 +274,7 @@ if __name__ == "__main__":
         for channel in channel_list:
             try:
                 print(f'#----- Plotting the monthly trends for {channel} -----#')
-                monthly_trends(out_dir, emodom, channel=channel, sweepvar=sweepvar, use_std=False,
-                               agegrp='0-100')  # 0-100
+                monthly_trends(out_dir, emodom, channel=channel, sweepvar=sweepvar, agegrp='0-100')  # 0-100
             except:
                 print(f'{channel} not found in dataframe')
 
