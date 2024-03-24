@@ -209,7 +209,8 @@ def initialize_exp(args, manifest):
     exp.emod_calib_params = False
 
     # Output flags for analyzer and plotting
-    exp.plots_to_run = ['sample_plots', 'benchmark', 'timeseries', 'agecurves']  # 'all'
+    # 'all', 'ccstep' , 'sampleplots', 'benchmark', 'timeseries', 'agecurves'
+    exp.plots_to_run = ['benchmark', 'timeseries',  'agecurves']
     return (exp)
 
 
@@ -739,15 +740,16 @@ def submit_run_plotters(exp):
         job_id_EMOD = None
         job_id_MalSim = None
 
-    plot_names_all = ['benchmark', 'timeseries', 'agecurves', 'ccstep']
+    plot_names_all = ['sampleplots', 'benchmark', 'timeseries', 'agecurves', 'ccstep']
 
-    ## Write all, even if not running
+    ## Write  shell submission script for all, even if not running
     for plot_name in plot_names_all:
         pyscript_name = f'plot_{plot_name}.py'
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                             job=f'{plot_name}_plots', write_only=True)
 
-    plots_to_run = [p for p in exp.plots_to_run if not p =='sample_plot']  # sample_plot are model specific and added to utils.py
+    ## Write and run plots specified in exp.plots_to_run
+    plots_to_run = exp.plots_to_run  # [p for p in exp.plots_to_run if not p =='sampleplots']
     if exp.plots_to_run[0] == 'all':
         plots_to_run = plot_names_all
 

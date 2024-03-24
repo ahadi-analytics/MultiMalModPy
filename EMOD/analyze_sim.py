@@ -9,9 +9,6 @@ from idmtools.entities.simulation import Simulation
 from sample_plots import *
 import sys
 
-sys.path.append('../')
-from plot_benchmark import *
-
 
 def parse_args():
     """
@@ -1107,38 +1104,3 @@ if __name__ == "__main__":
         manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
                                  partial_analyze_ok=True)
         manager.analyze()
-
-    # Create sample plots if specified
-    if create_sampleplots and 'cc_step' not in exp.intervention_list:  # For daily we shouldn't request anything beyond the daily_EIR and daily_analyzers
-        exp_tags = [tag for tag in exp_tags if tag != 'Run_Number'] + ['seed']
-        channels_inset_chart = ['Statistical Population', 'Births', 'New Infections', 'Newly Symptomatic',
-                                'New Clinical Cases', 'New Severe Cases',
-                                'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
-                                'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
-                                'Infectious Vectors', 'EIR']
-        all_age_sample_plot(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags,
-                            sample_channels=channels_inset_chart)
-        sample_plot_yr(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags)
-
-        if exp.emod_step != 'burnin':
-            sample_plot_mth(wdir=os.path.join(exp.sim_out_dir, 'em'), sweep_variables=exp_tags)
-
-            emodom = ['EMOD']
-            sweepvar = 'eir'
-            monthly_trends(wdir, emodom, channel='clinical_incidence', sweepvar=sweepvar)
-            monthly_trends(wdir, emodom, channel='severe_incidence', sweepvar=sweepvar)
-            monthly_trends(wdir, emodom, channel='prevalence', sweepvar=sweepvar)
-            monthly_trends(wdir, emodom, channel='prevalence_2to10', sweepvar=sweepvar)
-            monthly_trends(wdir, emodom=emodom, channel='simulatedEIR', sweepvar=sweepvar)
-
-            channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR',
-                            'x_Temporary_Larval_Habitat']
-            for channel in channel_list:
-                monthly_timeseries(wdir=exp.sim_out_dir, emodom=emodom, channel=channel, sweepvar='emodom',
-                                   facet_var='eir', agegrp='5-10')
-
-            sweepvar = 'cm_clinical'
-            prevalence2to10_to_incidence(wdir, emodom, channel='prevalence')
-            prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence')
-            prevalence2to10_to_incidence(wdir, emodom, channel='severe_incidence')
-            eir_to_outcome(wdir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR')
