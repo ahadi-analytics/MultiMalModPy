@@ -743,7 +743,7 @@ def submit_run_plotters(exp):
     if 'MalSim' in exp.models_to_run:
         job_id_MalSim = 'job_id_MalSim_analyze'
 
-    plot_names_all = ['sampleplots', 'benchmark', 'timeseries', 'agecurves', 'ccstep']
+    plot_names_all = [ 'benchmark', 'timeseries', 'agecurves', 'ccstep']  # FIXME 'sampleplots', requires enabled all age plots in analyzer
     # plot_memrequests_all = {'sampleplots' : 10,'benchmark' :10,'agecurves' :10 ,'ccstep' :20}
 
     ## Write  shell submission script for all, even if not running
@@ -759,7 +759,7 @@ def submit_run_plotters(exp):
                             job=f'{plot_name}_plots', memG=plot_memG, write_only=True)
 
     ## Write and run plots specified in exp.plots_to_run
-    plots_to_run = exp.plots_to_run  # [p for p in exp.plots_to_run if not p =='sampleplots']
+    plots_to_run =  [p for p in exp.plots_to_run if not p =='sampleplots'] # exp.plots_to_run
     if exp.plots_to_run[0] == 'all':
         plots_to_run = plot_names_all
 

@@ -1101,6 +1101,6 @@ if __name__ == "__main__":
 
                 analyzer = daily_analyzers
 
-        manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
-                                 partial_analyze_ok=True)
-        manager.analyze()
+            manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
+                                     partial_analyze_ok=True)
+            manager.analyze()

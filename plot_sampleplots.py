@@ -41,6 +41,7 @@ if __name__ == "__main__":
                            'Infectious Vectors', 'EIR']
 
         # Create sample plots
+        wdir = os.path.join(out_dir,'em')
         all_age_sample_plot(wdir, exp_tags, sample_channels)
         sample_plot_yr(wdir, exp_tags)
         sample_plot_mth(wdir, exp_tags)
@@ -56,6 +57,7 @@ if __name__ == "__main__":
                            'expectedSevere']  # 'expectedIndirectDeaths',
 
         # Create sample plots
+        wdir = os.path.join(out_dir,'om')
         all_age_sample_plot(wdir, exp_tags, sample_channels)
         sample_plot_yr(wdir, exp_tags)
         sample_plot_mth(wdir, exp_tags)
@@ -72,6 +74,7 @@ if __name__ == "__main__":
                            'severe_incidence', 'prevalence_2to10', 'EIR_gamb']
 
         # Create sample plots
+        wdir = os.path.join(out_dir,'MalSim')
         all_age_sample_plot(wdir, exp_tags, sample_channels)
         sample_plot_yr(wdir, exp_tags)
         sample_plot_mth(wdir, exp_tags)

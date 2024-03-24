@@ -369,20 +369,21 @@ if __name__ == "__main__":
         rmse(out_dir, emodom)
         anovas(out_dir, emodom)
 
+    if len(exp.eir) >= 3:
+        sweepvar = 'emodom'
+        print('#----- Plotting input to simulated EIR -----#')
+        input_to_simulated_eir(out_dir, emodom, sweepvar=sweepvar)
 
-    sweepvar = 'emodom'
-    print('#----- Plotting input to simulated EIR -----#')
-    input_to_simulated_eir(out_dir, emodom, sweepvar=sweepvar)
+        channel_list = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence']
+        for channel in channel_list:
+            print(f'#----- Plotting simulated EIR to {channel} -----#')
+            eir_to_outcome(out_dir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR', channel=channel,
+                           agegrp='0-100')  # Jaline prefers 0-100 visuals
 
-    channel_list = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence']
-    for channel in channel_list:
-        print(f'#----- Plotting simulated EIR to {channel} -----#')
-        eir_to_outcome(out_dir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR', channel = channel, agegrp = '0-100') #Jaline prefers 0-100 visuals
-
-    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
-    for channel in channel_list:
-        print(f'#----- Plotting prevalence_2_to_10 to {channel} -----#')
-        prevalence2to10_to_incidence(out_dir, emodom, channel=channel)
-        #prevalence2to10_to_incidence_by_age_and_model(out_dir,emodom,channel=channel) #This is new plotter, we don't have to make it everytime, but its available.
-
-
+        channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
+        for channel in channel_list:
+            print(f'#----- Plotting prevalence_2_to_10 to {channel} -----#')
+            prevalence2to10_to_incidence(out_dir, emodom, channel=channel)
+            # prevalence2to10_to_incidence_by_age_and_model(out_dir,emodom,channel=channel) #This is new plotter, we don't have to make it everytime, but its available.
+    else:
+        print(f'Too few EIR values to be able to run relationship plots')

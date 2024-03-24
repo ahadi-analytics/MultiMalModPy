@@ -75,6 +75,7 @@ else:
     exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
     #Set up intervention list (for launch_cc_step.py this will only include cc_step for now)
     exp.intervention_list = ['cc_step'] #As we add interventions we now need this list.
+    exp.plots_to_run = ['benchmark', 'ccstep']
 
     # Name of parameters to vary
     exp.sweep_list = ['eir','cm_clinical', 'seasonality']
@@ -125,7 +126,7 @@ else:
 exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
 
 # Simulation duration, start and end configuration
-exp = get_emod_time_param(exp)
+exp = get_simulation_time_params(exp)
 
 
 # Check whether defined input parameter are all valid
