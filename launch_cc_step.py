@@ -75,7 +75,8 @@ else:
     exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
     #Set up intervention list (for launch_cc_step.py this will only include cc_step for now)
     exp.intervention_list = ['cc_step'] #As we add interventions we now need this list.
-    
+    exp.plots_to_run = ['benchmark', 'ccstep']
+
     # Name of parameters to vary
     exp.sweep_list = ['eir','cm_clinical', 'seasonality']
     exp.emod_calib_params = False #A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
@@ -97,7 +98,7 @@ else:
     #exp.eir_scalar_om = [2.5,8,0.4,3.2,0.125,0.3125] om requires negative values to increase, and values (1-x) to decrease
     exp.eir_scalar_om = [-1.75,-7.75,0.636,-2.182,0.886,0.686]
     exp.eir_scalar_timestep_5day = int((73*(exp.burnin + 5))) # 5 Years in to the pickup time OpenMalaria
-    exp.eir_scalar_timestep_daily = int(1825) # 5 years in to the pickup time EMOD and Malsim 
+    exp.eir_scalar_timestep_daily = int(1825) # 5 years in to the pickup time EMOD and Malsim
     exp.carrying_capacity_step = [f'10%-25%',f'10%-50%',f'25%-10%',f'25%-50%',f'50%-10%',f'50%-25%']
     # Entomology mode: Dynamic EIR configuration if selected
     exp = get_seasonal_eir(exp)
@@ -125,7 +126,7 @@ else:
 exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
 
 # Simulation duration, start and end configuration
-exp = get_emod_time_param(exp)
+exp = get_simulation_time_params(exp)
 
 
 # Check whether defined input parameter are all valid
@@ -185,15 +186,12 @@ if __name__ == '__main__':
 
         submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files
 
-    # Optionally, create submission script for standardized plots and run after last simulations finished
-    if 'OpenMalaria' in exp.models_to_run and 'EMOD' in exp.models_to_run and 'MalSim' in exp.models_to_run:
-        submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                            job_id_EMOD='job_id_EMODanalyze', job_id_MalSim='job_id_MalSim_analyze',
-                            job='benchmark_plots', memG=20)
-    else:
-        if exp.emod_step != 'burnin':
-            submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                                custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
-                                job='benchmark_plots', memG=20)
-        else:
-            pass
+    ## Submit plotters to run using wrapper function in helper.py
+    submit_run_plotters(exp)  ## custom
+
+    if exp.emod_step != 'burnin':
+        submit_run_pyscript(exp, pyscript='plot_ccstep.py', shname='run_bccstep_plots.sh',
+                            custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
+                            job='ccstep_plots', memG=20)
+        #submit_run_plotters(exp)  ##  submits plot_ccstep.py, and incldues custom memory request for ccstep
+

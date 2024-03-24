@@ -169,7 +169,8 @@ def initialize_exp(args, manifest):
 
     # Define age groups to report/monitor in simulations and to aggregate in output
     exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
-    exp.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],[0, 100]]
+    exp.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
+                                 [0, 100]]
 
     # Define simulation population and seeds
     if not exp.testrun:
@@ -186,7 +187,7 @@ def initialize_exp(args, manifest):
         exp.start_year = 2000
         exp.end_year = 2005
         exp.burnin = 10
-        if  exp.hpc =='NUCLUSTER':
+        if exp.hpc == 'NUCLUSTER':
             exp.sh_hpc_config['p'] = 'b1139testnode'  # Use test allocation
 
     # Name of parameters to vary
@@ -203,11 +204,14 @@ def initialize_exp(args, manifest):
     exp.cm_clinical = [0.0]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
-    exp.eir = [32]
+    exp.eir = [4, 8,32]
 
     # Whether to pass along NU's within-host framework recalibrated parameters.
     exp.emod_calib_params = False
 
+    # Output flags for analyzer and plotting
+    # 'all', 'ccstep' , 'sampleplots', 'benchmark', 'timeseries', 'agecurves'
+    exp.plots_to_run = ['benchmark', 'timeseries', 'agecurves']
     return (exp)
 
 
@@ -301,7 +305,7 @@ def check_exp_inputs(exp):
         # Check if the attribute is a list
         if isinstance(value, list) and len(value) > 1:
             if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om',
-                           'eir_scalar_om', 'carrying_capacity_step','age_groups_aggregates',
+                           'eir_scalar_om', 'carrying_capacity_step', 'age_groups_aggregates', 'plots_to_run',
                            'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial']:
                 list_attributes_nGT1.append(key)
 
@@ -670,13 +674,13 @@ def write_txt(txtobj, path, fname):
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
                         custom_args='--emodom EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=None,
                         job_id_MalSim=None,
-                        job='pyjob'):
+                        job='pyjob', write_only=False):
     """
     Submits a job to run a Python script.
 
     Args:
         exp (Experiment): The experiment object containing job directory and other information.
-        pyscript (str, optional): The name of the Python script to run. Defaults to 'benchmark_plots.py'.
+        pyscript (str, optional): The name of the Python script to run. Defaults to 'plot_benchmark.py'.
         shname (str, optional): The name of the shell script to submit. Defaults to 'run_benchmark_plots.sh'.
         custom_args (str, optional): Custom arguments to pass to the Python script. Defaults to '--emodom EMOD OpenMalaria MalSim'.
         t (str, optional): Wall time for the job in the format 'HH:MM:SS'. Defaults to '01:00:00'.
@@ -705,27 +709,72 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     file.close()
 
     # Check if job_id is provided as a string to define dependendies
-    if isinstance(job_id_EMOD, str):
-        job_id_EMOD = open(os.path.join(exp.job_directory, f'{job_id_EMOD}.txt')).read().strip()
+    if not write_only:
+        if isinstance(job_id_EMOD, str):
+            job_id_EMOD = open(os.path.join(exp.job_directory, f'{job_id_EMOD}.txt')).read().strip()
 
-        # Check if job_id_MalSim is provided as a string
-        if isinstance(job_id_MalSim, str):
-            job_id_MalSim = open(os.path.join(exp.job_directory, f'{job_id_MalSim}.txt')).read().strip()
-            dependencies = f'--dependency=afterany:{job_id_EMOD},{job_id_MalSim}'
+            # Check if job_id_MalSim is provided as a string
+            if isinstance(job_id_MalSim, str):
+                job_id_MalSim = open(os.path.join(exp.job_directory, f'{job_id_MalSim}.txt')).read().strip()
+                dependencies = f'--dependency=afterany:{job_id_EMOD},{job_id_MalSim}'
+            else:
+                dependencies = f'--dependency=afterany:{job_id_EMOD}'
+            # Submit job with dependency
+            p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE,
+                               cwd=str(exp.job_directory))
         else:
-            dependencies = f'--dependency=afterany:{job_id_EMOD}'
-        # Submit job with dependency
-        p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE,
-                           cwd=str(exp.job_directory))
-    else:
-        # Submit job without dependency
-        p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE, cwd=str(exp.job_directory))
+            # Submit job without dependency
+            p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE,
+                               cwd=str(exp.job_directory))
 
-    # Extract the SLURM job ID from the output
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
+        # Extract the SLURM job ID from the output
+        slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
 
-    # Print the submitted job ID
-    print(f'Submitted {shname} to run {pyscript} - job id: {slurm_job_id}')
+        # Print the submitted job ID
+        print(f'Submitted {shname} to run {pyscript} - job id: {slurm_job_id}')
+
+
+def submit_run_plotters(exp):
+    # Optionally, create submission script for standardized plots and run after last simulations finished
+    job_id_EMOD = None
+    job_id_MalSim = None
+    if 'EMOD' in exp.models_to_run:
+        job_id_EMOD = 'job_id_EMODanalyze'
+    if 'MalSim' in exp.models_to_run:
+        job_id_MalSim = 'job_id_MalSim_analyze'
+
+    plot_names_all = [ 'benchmark', 'timeseries', 'agecurves', 'ccstep']  # FIXME 'sampleplots', requires enabled all age plots in analyzer
+    # plot_memrequests_all = {'sampleplots' : 10,'benchmark' :10,'agecurves' :10 ,'ccstep' :20}
+
+    ## Write  shell submission script for all, even if not running
+    for plot_name in plot_names_all:
+        pyscript_name = f'plot_{plot_name}.py'
+
+        plot_memG = 20  # current default in submit_run_pyscript
+        if plot_name == 'ccstep':
+            plot_memG = 20  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
+
+        submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
+                            custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
+                            job=f'{plot_name}_plots', memG=plot_memG, write_only=True)
+
+    ## Write and run plots specified in exp.plots_to_run
+    plots_to_run =  [p for p in exp.plots_to_run if not p =='sampleplots'] # exp.plots_to_run
+    if exp.plots_to_run[0] == 'all':
+        plots_to_run = plot_names_all
+
+    ## Overwriting and submitting those to run
+    for plot_name in plots_to_run:
+        pyscript_name = f'plot_{plot_name}.py'
+
+        plot_memG = 20  # current default in submit_run_pyscript
+        if plot_name == 'ccstep':
+            plot_memG = 20  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
+
+        submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
+                            custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
+                            job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim,
+                            job=f'{plot_name}_plots', memG=plot_memG)
 
 
 def emodpy_module(location='NUCLUSTER'):

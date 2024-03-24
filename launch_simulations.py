@@ -55,6 +55,13 @@ else:
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.sweep_list = ['eir', 'cm_clinical',  'seasonality']  # If running fewer sweeps in past than in pickup to be set up
 
+## Arguments to define analyzer and plotters to run
+if exp.emod_step != 'burnin':
+    exp.plots_to_run = []
+else:
+    if 'cc_step' in exp.intervention_list:
+        exp.plots_to_run = ['benchmark','ccstep']
+    #else, running ['benchmark','timeseries','agecurves']  per default
 
 ## Arguments that chage for pickup
 exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
@@ -118,15 +125,6 @@ if __name__ == '__main__':
 
         submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files
 
-    # Optionally, create submission script for standardized plots and run after last simulations finished
-    if 'OpenMalaria' in exp.models_to_run and 'EMOD' in exp.models_to_run and 'MalSim' in exp.models_to_run:
-        submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                            job_id_EMOD='job_id_EMODanalyze', job_id_MalSim='job_id_MalSim_analyze',
-                            job='benchmark_plots')
-    else:
-        if exp.emod_step != 'burnin':
-            submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                                custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
-                                job='benchmark_plots')
-        else:
-            pass
+    ## Submit plotters to run using wrapper function in helper.py
+    if exp.emod_step != 'burnin':
+        submit_run_plotters(exp)
