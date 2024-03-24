@@ -17,7 +17,7 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plot_helper import *
 
 # Plots over age - requires PfPR_ClinicalIncidence_yr.csv
-def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'):
+def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality', age_groups_aggregates=None):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -27,9 +27,12 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'seasonality'. 
     Returns:
         None (plots are saved to disk).
-    """   
+    """
+    if age_groups_aggregates is None:
+        age_groups_aggregates = ['0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100']
+
     df, wdir = get_emodom_df(wdir, emodom, mth=False, timeseries=True)
-    
+
     if channel == 'prevalence_2to10':
         ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
     else:
@@ -75,8 +78,8 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
             max_ylim.append(ylim_up)
             xmean, ymean = get_x_y(sdf, 'ageGroup', channel, channel)
             xmean = xmean['ageGroup']
-            merge_df = pd.merge(left = xmean, right = ymean, on = 'ageGroup')
-            merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], ['0-0.5','0.5-1','1-2','2-5','5-10','10-15','15-20','20-100'])
+            merge_df = pd.merge(left=xmean, right=ymean, on='ageGroup')
+            merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], age_groups_aggregates)
             merge_df.sort_values('ageGroup', inplace=True)
             ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=0.8, label=f"{s}", color=color_palette[i])
             ax.fill_between(merge_df['ageGroup'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[i])
@@ -103,9 +106,11 @@ if __name__ == "__main__":
         emodom = [emodom]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
+    age_groups_aggregates_sub = [x for x in exp.age_groups_aggregates if x not in ([[0, 5], [0, 100]])]
+    age_groups_aggregates_sub = ["{}-{}".format(sublist[0], sublist[1]) for sublist in age_groups_aggregates_sub]
 
 
-    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR', 'prevalence_2to10']
+    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']  # , 'prevalence_2to10'
     sweepvar = 'emodom'
     facet_var = 'ageGroup'
     if len(exp.eir) > 1 & len(exp.eir) <= 3:
@@ -116,6 +121,7 @@ if __name__ == "__main__":
         facet_var = 'seasonality'
 
     for channel in channel_list:
-        if not channel =='simulatedEIR':
+        if not channel == 'simulatedEIR':
             print(f'#----- Plotting Age Curves for {channel}-----#')
-            age_curves(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var)
+            age_curves(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
+                       age_groups_aggregates=age_groups_aggregates_sub)
