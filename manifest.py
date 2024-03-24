@@ -1,7 +1,7 @@
 import os
 
 # This is a user-modifiable Python file designed to be a set of simple input file and directory settings that you can choose and change.
-om_version = 43
+om_version = 46 # 43, 46
 emod_build = 220405
 
 # Select cluster name
@@ -41,10 +41,10 @@ if hpc == 'NUCLUSTER':
     SIF_PATH = "--bind /projects /projects/b1139/images/dtk_run_rocky_py39.sif"
     if om_version == 43:
         OM_PATH = "/projects/b1139/OpenMalaria/"
-    elif om_version == 45:
-        OM_PATH = "/projects/b1139/OpenMalaria/om_v45/"
+    elif om_version == 46:
+        OM_PATH = "/projects/b1139/OpenMalaria/om_v46/"
     else:
-        raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 45')
+        raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
     emod_input_path = '/projects/b1139/emod-om/model-characterization/EMOD/inputs/'
     om_input_path = '/projects/b1139/emod-om/model-characterization/OpenMalaria/'
     ms_input_path = '/projects/b1139/emod-om/model-characterization/MalSim/'

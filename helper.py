@@ -760,12 +760,18 @@ def OM_module(location='NUCLUSTER', om_version=45):
     if location == 'NUCLUSTER':
         if om_version == 43:
             ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/modules/ \nmodule load openmalaria\n'
-        elif om_version == 45:
-            ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/om_v45/modules/ \nmodule load openmalaria\n'
+        elif om_version == 46:
+            ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/om_v46/modules/ \nmodule load openmalaria\n'
         else:
-            raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 45')
+            raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
     if location == 'SCICORE':
-        ommodule = '\n\nmodule load OpenMalaria/43.1-iomkl-2019.01\n'
+       if om_version == 43:
+            ommodule = '\n\nmodule load OpenMalaria/43.1-iomkl-2019.01\n'
+       elif om_version == 46:
+            #ommodule = '\n\nmodule load OpenMalaria/43.1-iomkl-2019.01\n'
+            raise ValueError(f'SCICORE PATH for OpenMalaria {om_version} not yet updated, available versions: 43')
+       else:
+            raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
     return ommodule
 
 

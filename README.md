@@ -489,7 +489,74 @@ Weblinks:
 
 NU IT research (Scott Coughlin) built a container and sent instructions which have been edited for completeness and are
 shown below:
-One can build the container on Quest using the remote Sylabs build environment
+One can build the container on Quest using the remote Sylabs build environment.
+
+Updating to the latest OpenMalaria version:
+
+1) Create a new folder for the version to install
+```
+mkdir /projects/b1139/OpenMalaria/om_v46/
+```
+And copy into the new folder the latest schema files (not source code), available from https://github.com/SwissTPH/openmalaria/releases.
+
+Copy the OpenMalaria.def and modules from the prevvious release to the new one.
+Note these files were created by Scott Coughlin to facilitate installation on Quest, without having to use cmake.
+```
+cp /projects/b1139/OpenMalaria/om_v43/OpenMalaria.def  /projects/b1139/OpenMalaria/om_v46/OpenMalaria.def
+cp -r /projects/b1139/OpenMalaria/om_v43/modules  /projects/b1139/OpenMalaria/om_v46/
+```
+
+The def files includes the following lines and does not require change (for information shown below)
+
+
+```
+Bootstrap: docker
+From: ubuntu:20.04
+
+%post
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        git \
+        cmake \
+        libboost-dev \
+        libgsl-dev \
+        libxerces-c-dev \
+        xsdcxx \
+        zlib1g-dev \
+        python3 \
+        build-essential
+
+    git config --global http.sslverify false
+    git clone https://github.com/SwissTPH/openmalaria.git /openmalaria
+    cd openmalaria && ./build.sh -r
+```
+
+However, the `modules/openmalaria/43.0.lua` needs to be renamed to the new version, and its content also updated to the latest version.
+
+```
+help([[
+This git-repository contains source-code for Open Malaria, a simulator program for studying malaria epidemiology and the impacts of interventions against malaria.
+]])
+
+local pkgName = "openmalaria"
+local version = "46.0"
+
+whatis("Name: " .. pkgName)
+whatis("Version: " .. version)
+
+depends_on("singularity")
+
+local bashStr = 'singularity exec -B /projects:/projects /projects/b1139/OpenMalaria/om_v46/OpenMalaria.sif /openmalaria/openMalaria-46.0/openMalaria "$@"'
+
+set_shell_function("openMalaria",bashStr)
+```
+
+Then, actually install the latest OpenMalaria by generating a container following as follows:
+
+```
+module load singularity
+singularity remote login
+```
 
 ```
 module load singularity
@@ -506,12 +573,13 @@ singularity build --remote OpenMalaria.sif OpenMalaria.def
 ```
 
 Because calling containers is very annoying, Scott also added a module file in this folder which wraps the call to
-openMalaria to make it easier to use.
-Please see this example below which can be run in `/projects/b1139/OpenMalaria/`
+openMalaria to make it easier to use, which is located in the modules/openmalaria folder copied and modified in an earlier step (lua file)
 
+
+Test to run new version
 ```
-cd OpenMalaria
-module use /projects/b1139/OpenMalaria/modules/
+cd /projects/b1139/OpenMalaria/om_v46/
+module use /projects/b1139/OpenMalaria/om_v46/modules/
 module load openmalaria
 openMalaria -s example_scenario.xml
 ```
@@ -606,6 +674,7 @@ Table 1: Overview of model software and infrastructure
 
 ## Change log
 
+- March 2024 - Carrying capacity step change and additional vector outcomes, switch to OpenMalaria v46
 - Jan 2024: refinement in framework to support flexible simulations, further bugfixes in model specific scripts
 - Oct - Dec 2023: refinement in framework for dynamic EIR and seasonality across all three models
 - Sep - Oct 2023: refinement in framework and outcome alignment for `malariasimulation` outcomes
