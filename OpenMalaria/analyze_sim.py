@@ -117,13 +117,13 @@ def survey_to_date(df, survey_step_days=30, start_year=0):
         df['month'] = np.floor(df['days'] / (365 / 12)) + 1
         df['month'] = df['month'] % 12 # Ricky recently updated this line (df['survey'] % 12) to correctly reflect the months
         df.loc[df['month'] == 0, 'month'] = 12
-        df['year'] = (df['days'] / 365).apply(np.floor)
+        df['year'] = (df['days'] / 365.00000001).apply(np.floor)
     # Monthly timesteps
     elif survey_step_days == 30:
         df['days'] = df['survey'] * survey_step_days
         df['month'] = df['survey'] % 12
         df.loc[df['month'] == 0, 'month'] = 12
-        df['year'] = (df['days'] / 365).apply(np.floor)
+        df['year'] = (df['days'] / 360.00000001).apply(np.floor)
     # Annual timesteps
     elif survey_step_days == 365:
         df['year'] = df['survey']
