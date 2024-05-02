@@ -14,7 +14,7 @@ def exp_params_to_update(exp):
     return exp
 
 
-def cc_step_params(exp, overwrite_setup=False):
+def cc_step_params(exp, overwrite_setup=True):
     if 'cc_step' not in exp.intervention_list:
         exp.intervention_list = exp.intervention_list + ['cc_step']
 
@@ -53,7 +53,7 @@ def cc_step_params(exp, overwrite_setup=False):
         exp.num_seeds_burnin = 1
         exp.num_seeds = 20
         exp.start_year = 1995
-        exp.end_year = 2080
+        exp.end_year = 2040
         exp.burnin = 80
 
     return exp

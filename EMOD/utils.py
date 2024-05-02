@@ -486,6 +486,14 @@ def set_emod_exp_parameters(config, exp):
         malaria_config.add_species(config, manifest, ["gambiae"])  # , "arabiensis", "funestus"
 
         seasonality_type = exp.seasonality[0]  # 'perennial'  # 'seasonal', 'example'  #FIXME enable sweeping
+        if seasonality_type == 'perennial':
+            import emod_api.config.default_from_schema_no_validation as dfs
+            habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
+            habitat1.parameters.Habitat_Type = "CONSTANT"
+            habitat1.parameters.Max_Larval_Capacity = 80000000
+            habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
+            malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
+            
         config.parameters.Air_Temperature_Filename = os.path.join('climate',
                                                                   f'{seasonality_type}_air_temperature_daily.bin')
         config.parameters.Land_Temperature_Filename = os.path.join('climate',
