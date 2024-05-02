@@ -661,7 +661,7 @@ def submit_run_EMOD(exp, scen_df):
     experiment.hpc = exp.hpc
     experiment.sh_hpc_config = exp.sh_hpc_config
     experiment.mem_increase_factor = exp.mem_increase_factor
-    experiment.analyzer = exp.emod_analyzer
+    experiment.analyzer_script = exp.analyzer_script
     experiment.job_directory = exp.job_directory
     experiment.emod_step = exp.emod_step
     experiment.start_end = [sim_start_year_em, sim_start_year_em + sim_dur_years - 1]
@@ -694,7 +694,7 @@ def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=20):
     # Generate the Python commands to run additional scripts
     # If any, add  python or R scripts to directly run after analyzer can be added below
     pycommand = '\n'.join(
-        [f'\npython {scr} -d {experiment.job_directory} -i {experiment.id}' for scr in experiment.analyzer])
+        [f'\npython {scr} -d {experiment.job_directory} -i {experiment.id}' for scr in experiment.analyzer_script])
 
     # Write the shell script to a file
     script_path = os.path.join(experiment.job_directory, 'run_analyzer_EMOD.sh')

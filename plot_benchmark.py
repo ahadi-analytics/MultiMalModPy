@@ -253,7 +253,7 @@ def anovas(wdir, emodom):
         None (ANOVA values are saved to disk).
     """
     from scipy.stats import f_oneway
-    df, wdir = get_emodom_df(wdir, emodom, mth=False, timeseries=False)
+    df, wdir = get_emodom_df(wdir, emodom, mth=False)
     comparisons = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence', 'simulatedEIR']
     emod = df[df['emodom'] == 'EMOD']
     malsim = df[df['emodom'] == 'MalSim']
@@ -307,7 +307,7 @@ def rmse(wdir, emodom):
     """
     from sklearn.metrics import mean_squared_error
     from math import sqrt
-    df, wdir = get_emodom_df(wdir, emodom, mth=False, timeseries=False)
+    df, wdir = get_emodom_df(wdir, emodom, mth=False)
     rmse_vars = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence', 'simulatedEIR']
 
     rmse_df = pd.DataFrame(

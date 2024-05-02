@@ -30,7 +30,7 @@ def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='a
     Returns:
         None (plots are saved to disk).
     """
-    df_all, wdir = get_emodom_df(wdir, emodom, daily=True, timeseries=True)
+    df_all, wdir = get_emodom_df(wdir, emodom, custom_name='CCstep_daily')
     df_all = df_all[df_all['timestep'] >= 1460]  # remove the first 4 years of the 55 year monitoring period
     # df_all = df_all[df_all['timestep']<=14965] # remove the last 9 years of the 55 year monitoring period (don't really need to see these times, they don't show new info)
     df_all['day_date'] = df_all['timestep'].apply(convert_to_date)
@@ -122,7 +122,7 @@ def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', face
     Returns:
         None (plots are saved to disk).
     """
-    df_all, wdir = get_emodom_df(wdir, emodom, daily=True, timeseries=True)
+    df_all, wdir = get_emodom_df(wdir, emodom, custom_name='CCstep_daily')
     df_all = df_all[df_all['timestep'] >= 1460]  # remove the first 4 years of the 55 year monitoring period
     df_all['day_date'] = df_all['timestep'].apply(convert_to_date)
     reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
@@ -205,7 +205,7 @@ def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup'
     Returns:
         None (plots are saved to disk).
     """
-    df_all, wdir = get_emodom_df(wdir, emodom, daily=True, timeseries=True)
+    df_all, wdir = get_emodom_df(wdir, emodom, custom_name='CCstep_daily')
     df_all = df_all[df_all['timestep'] >= 1460]
     df_all['day_date'] = df_all['timestep'].apply(convert_to_date)
 
@@ -318,6 +318,6 @@ if __name__ == "__main__":
     facet_daily = 'carrying_capacity_step'
     #daily_eradicaiton(out_dir, emodom, 'prevalence2to10', sweepvar=sweepvar, facet_var=facet_daily)
     daily_timeseries(out_dir, emodom, channel_list=daily_channel_list, sweepvar=sweepvar, facet_var=facet_daily,
-                     agegrp=None)  # if you set agegrp to None, it will combine all ages
-    #daily_timeseries_by_seed(out_dir, emodom, channel_list = daily_channel_list, sweepvar = sweepvar, facet_var = facet_daily, agegrp = None)
-    #daily_vectors(out_dir, emodom, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_daily, agegrp=None)
+                     agegrp='0-100')   # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
+    # daily_timeseries_by_seed(out_dir, emodom, channel_list = daily_channel_list, sweepvar = sweepvar, facet_var = facet_daily, agegrp = '0-100')
+    daily_vectors(out_dir, emodom, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_daily, agegrp=None)

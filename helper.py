@@ -158,8 +158,8 @@ def initialize_exp(args, manifest):
     exp.om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
     exp.om_survey_step = '30d'
     exp.MalSim_script = 'malsim_benchmarking_exercise.R'
-    exp.emod_analyzer = ['analyze_sim.py']
-    exp.openmalaria_analyzer = ['analyze_sim.py']
+    exp.analyzer_script = ['analyze_sim.py']
+    exp.analyzer_list = ['all_age_analyzer',  'annual', 'monthly', 'benchmark']  # ['all_age_analyzer', 'daily','annual','monthly','benchmark'.'cc_step']
 
     # Flag to select whether to run with (dynamic) or without vector model (forced)
     exp.entomology_mode = 'dynamic'  # dynamic, forced
@@ -169,8 +169,7 @@ def initialize_exp(args, manifest):
 
     # Define age groups to report/monitor in simulations and to aggregate in output
     exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
-    exp.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
-                                 [0, 100]]
+    exp.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
 
     # Define simulation population and seeds
     if not exp.testrun:

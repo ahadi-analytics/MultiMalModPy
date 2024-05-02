@@ -4,7 +4,7 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
-
+import datetime
 import seaborn as sns
 
 import matplotlib.pyplot as plt
@@ -102,7 +102,7 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
     Returns:
         None (plots are saved to disk).
     """
-    df, wdir = get_emodom_df(wdir, emodom, mth=True, timeseries=True)
+    df, wdir = get_emodom_df(wdir, emodom, mth=True)
 
     if channel == 'prevalence_2to10':
         ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
@@ -187,7 +187,7 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
     Returns:
         None (plots are saved to disk).
     """
-    df, wdir = get_emodom_df(wdir, emodom, mth=False, timeseries=True)
+    df, wdir = get_emodom_df(wdir, emodom, yr=True)
 
     if channel == 'prevalence_2to10':
         ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
@@ -291,9 +291,8 @@ if __name__ == "__main__":
     for channel in channel_list:
         if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
             print(f'#----- Plotting monthly timeseries for {channel}-----#')
-            monthly_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
-                               agegrp=None)  # if you set agegrp to None, it will combine all ages
-
-        #print(f'#----- Plotting annual timeseries for {channel}-----#')
-        #annual_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
-        #                  agegrp=None)  # if you set agegrp to None, it will combine all ages
+            monthly_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var, 
+                               agegrp='0-100')  # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
+        print(f'#----- Plotting annual timeseries for {channel}-----#')
+        annual_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
+                          agegrp='0-100')  # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100

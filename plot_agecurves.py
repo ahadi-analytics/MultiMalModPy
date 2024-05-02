@@ -31,7 +31,7 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
     if age_groups_aggregates is None:
         age_groups_aggregates = ['0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100']
 
-    df, wdir = get_emodom_df(wdir, emodom, mth=False, timeseries=True)
+    df, wdir = get_emodom_df(wdir, emodom, mth=False)
 
     if channel == 'prevalence_2to10':
         ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
@@ -79,7 +79,8 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
             xmean, ymean = get_x_y(sdf, 'ageGroup', channel, channel)
             xmean = xmean['ageGroup']
             merge_df = pd.merge(left=xmean, right=ymean, on='ageGroup')
-            merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], age_groups_aggregates)
+            merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], age_groups_aggregates)  #FIXME returns NA for 0-5 and 0-100, perhaps wanted
+            merge_df = merge_df.dropna()
             merge_df.sort_values('ageGroup', inplace=True)
             ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=0.8, label=f"{s}", color=color_palette[i])
             ax.fill_between(merge_df['ageGroup'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[i])

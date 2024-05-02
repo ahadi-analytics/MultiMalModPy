@@ -44,9 +44,9 @@ def custom_sort_key(age_group):
 
 
 # Creates the combined dataframes for all models simulated.
-def get_emodom_df(wdir, emodom, mth=False, daily=False, timeseries=False, condensed=False):
+def get_emodom_df(wdir, emodom, yr = False, mth=False, daily=False,  custom_name=None,  condensed=False):
     """
-    Load and combine data from the specified EMOD and/or OpenMalaria benchmark output files.
+    Load and combine data from the model output files.
     Parameters:
         wdir (str): Working directory where the data files are located.
         emodom (str or list of str): Name of models for which result CSVs should be loaded, case sensitive.
@@ -62,14 +62,17 @@ def get_emodom_df(wdir, emodom, mth=False, daily=False, timeseries=False, conden
     """
     cols_to_keep = None # default read all
     fname = 'Benchmark.csv'
-    if mth:
-        fname = 'Benchmark_mth.csv'
-    if timeseries:
+    if yr:
         fname = 'PfPR_ClinicalIncidence_yr.csv'
-        if mth:
-            fname = 'PfPR_ClinicalIncidence_mth.csv'
-        if daily:
-            fname = 'PfPR_ClinicalIncidence_daily.csv'
+    if mth:
+        fname = 'PfPR_ClinicalIncidence_mth.csv'
+    #if daily: # Might change to fiveday or weekly analyzer
+    #    fname = 'PfPR_ClinicalIncidence_daily.csv'
+    #    cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
+    #                    'clinical_incidence', 'severe_incidence', 'seed']
+    if custom_name:
+        fname = f'{custom_name}.csv'
+        if custom_name =='CCstep_daily':
             cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
                             'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'seed', 'carrying_capacity_step']
 
@@ -135,7 +138,7 @@ def get_emodom_df(wdir, emodom, mth=False, daily=False, timeseries=False, conden
 # Calculates x-axis and y-axis values for each plot
 def get_x_y(df, grpvar, x_channel, y_channel):
     """
-    Load and combine data from the specified EMOD and/or OpenMalaria benchmark output files.
+    Load and combine data from the model output files.
     Parameters:
         df (DataFrame): The Dataframe we will use to group and calculate our x and y values.
         grpvar (str): The variable in the dataframe we will group the x and y values by.

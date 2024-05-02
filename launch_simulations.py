@@ -61,6 +61,7 @@ if exp.emod_step != 'burnin':
 else:
     if 'cc_step' in exp.intervention_list:
         exp.plots_to_run = ['benchmark','ccstep']
+        exp.analyzer_list = ['all_age_analyzer', 'cc_step', 'benchmark']
     #else, running ['benchmark','timeseries','agecurves']  per default
 
 ## Arguments that chage for pickup

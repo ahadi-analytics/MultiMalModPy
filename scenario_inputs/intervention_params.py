@@ -41,8 +41,6 @@ def cc_step_params(exp, overwrite_setup=True):
     exp.added_importation = [False, False, True, False, True, True]
     
     ## The function could also be used to attach additional analyzer to run or plotters, if we want to break them down
-    # exp.emod_analyzer = ['analyze_sim.py']
-    # exp.openmalaria_analyzer = ['analyze_sim.py']
     exp.intervention_plotter = [ 'custom_plotter/cc_step_plots.py']  # not yet setup, but could be in next PR to disentangle benchmark_plots as needed
 
     ## Can be useful to allow storing some defaults on how we want to run a specific simulation, without modiyfing in launch_test

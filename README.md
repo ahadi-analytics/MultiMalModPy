@@ -34,18 +34,20 @@ create an issue on GitHub that we can follow up on._
 
 ## Goal
 
-To characterize and compare the simulated transmission and disease dynamics of malaria in **EMOD**, **OpenMalaria** and *
-*malariasimulation** using a customized python framework that facilitates alignment and comparison of inputs and outputs.
+To characterize and compare the simulated transmission and disease dynamics of malaria in **EMOD**, **OpenMalaria**
+and *
+*malariasimulation** using a customized python framework that facilitates alignment and comparison of inputs and
+outputs.
 
 **Objectives:**
 
 1) To align models for comparability of model outcomes
     - Explore and describe basic transmission and disease dynamics
-2) To understand model behaviour at baseline 
+2) To understand model behaviour at baseline
 3) To understand model response to perturbation of the system:
     - Change in carrying capacity (`CC step`)
     - Infection clearance and short term prevention (`SMC`)
-    - Treatment of cases and contribution of cases to onward transmission 
+    - Treatment of cases and contribution of cases to onward transmission
     - Vector control effects on mosquito life and feeding cycle
 
 **Repositories of malaria models used and frameworks utilized:**
@@ -70,7 +72,8 @@ model specific structures and terminology where necessary.
 The main configuration `manifest.py` and simulation scripts `launch_test.py` or `launch_simulations.py` are located
 directly under the root directory.
 
-Additional custom scripts exist to facilitate testing new functionalities, such as `launch_ccstep.py`, whereas all custom simulations are aimed to be run via `launch_simulations.py` and defined scenario_inputs.
+Additional custom scripts exist to facilitate testing new functionalities, such as `launch_ccstep.py`, whereas all
+custom simulations are aimed to be run via `launch_simulations.py` and defined scenario_inputs.
 
     .  
     ├─ EMOD/                            # EMOD inputs and specific functions
@@ -127,7 +130,8 @@ Additional custom scripts exist to facilitate testing new functionalities, such 
 - The framework aims to be flexible enough to integrate model-specific R scripts for generating or
   postprocessing results, as long as integrated into the main python pipeline (i.e. via sourcing of R scripts), however
   full integration into python is preferred.
-- The sub-directory `custom_plotter` allows to store scripts (can be in R, or Python or other) that generate additional results and plots.
+- The sub-directory `custom_plotter` allows to store scripts (can be in R, or Python or other) that generate additional
+  results and plots.
 - Other software languages used for handling model inputs or HPC job submission are `XML`, `json`, and `shell` scripts,
   as well as `txt` and `log` text files.
 
@@ -146,7 +150,8 @@ Additional custom scripts exist to facilitate testing new functionalities, such 
 ### Simulation framework
 
 The repository and programming framework relies on IDM's programming framework (emodpy, idmtools) for running simulation
-in EMOD that facilitate generating, submitting and post-processing simulations, while custom wrapper functions handle model submission for all
+in EMOD that facilitate generating, submitting and post-processing simulations, while custom wrapper functions handle
+model submission for all
 three models.
 The name of some input and output names have been predominantly aligned to OpenMalaria conventions where possible,
 maintaining model-specific names where necessary.
@@ -158,7 +163,7 @@ imported into the launch python script.
 
 ![Simulation framework](https://github.com/numalariamodeling/model-characterization/blob/main/static/script_framework.png)
 
-An alternative structure for more flexible editing when using project specific parameter definitions and analyzer files 
+An alternative structure for more flexible editing when using project specific parameter definitions and analyzer files
 that are not integrated into the default framework could be to have specified `utils` and `analyzer` scripts
 within a project folder (i.e.  `utils_om.py, utils_em.py` and `analyzer_om.py, analyzer_em.py`.
 
@@ -190,20 +195,19 @@ _Table: Main scripts and functions (not exhaustive)_
 
 _Table: EMOD functions_
 
-| EMOD/utils.py                  | EMOD/scaffolds               | EMOD/analyze_sim.py                                                   |
-|--------------------------------|------------------------------|-----------------------------------------------------------------------|
-| set_param                      | forcedEIR                    | SurveyAllAgeAnalyzer (formerly InsetChartAnalyzer)                    |
-| build_demog                    | dynamicEIR                   | BenchmarkAnalyzer                                                     |
-| build_standard_campaign_object | interventions/treatment_camp | MonthlyBenchmarkAnalyzer                                              |
-| add_monthly_reports            |                              | AnnualBenchmarkAnalyzer                                               |
-| add_annual_reports             |                              | MonthlyAgebinAnalyzer                                                 |
-| _get_serialized_filenames      |                              | AnnualAgebinAnalyzer                                                  |
-| _get_core_counts               |                              | InputEIRAnalyzer (formerly TransmissionReport, dynamic EIR mode only) |
-| get_workdir_from_simulations   |                              |                                                                       |
-| create_sim_directory_map       |                              |                                                                       |
-| build_burnin_df                |                              |                                                                       |
-| ...                            |                              |                                                                       |
-
+| EMOD/utils.py                  | EMOD/scaffolds               | EMOD/analyze_sim.py                                |
+|--------------------------------|------------------------------|----------------------------------------------------|
+| set_param                      | forcedEIR                    | SurveyAllAgeAnalyzer (formerly InsetChartAnalyzer) |
+| build_demog                    | dynamicEIR                   | BenchmarkAnalyzer                                  |
+| build_standard_campaign_object | interventions/treatment_camp | MonthlyAgebinAnalyzer                              |
+| add_monthly_reports            |                              | AnnualAgebinAnalyzer                               |
+| add_annual_reports             |                              | InputEIRAnalyzer                                   |
+| _get_serialized_filenames      |                              | CCStepAnalyzer (custom analyzer)                   |
+| _get_core_counts               |                              |                                                    |
+| get_workdir_from_simulations   |                              |                                                    |
+| create_sim_directory_map       |                              |                                                    |
+| build_burnin_df                |                              |                                                    |
+| ...                            |                              |                                                    |
 
 _Table: OpenMalaria functions_
 
@@ -213,8 +217,6 @@ _Table: OpenMalaria functions_
 | submit_run_OpenMalaria | ...                   | SurveyAllAgeAnalyzer   (equivalent to InsetChartAnalyzer ) |
 |                        |                       | InputEIRAnalyzer                                           |
 |                        |                       | BenchmarkAnalyzer                                          |
-|                        |                       | MonthlyBenchmarkAnalyzer                                   |
-|                        |                       | AnnualBenchmarkAnalyzer                                    |
 |                        |                       | MonthlyAgebinAnalyzer                                      |
 |                        |                       | AnnualAgebinAnalyzer                                       |
 |                        |                       | several helper functions                                   |
@@ -227,18 +229,18 @@ _Table: malariasimulation functions_
 | create_malsim_scenarios | combine_malsim_outputs     | SurveyAllAgeAnalyzer   (equivalent to InsetChartAnalyzer ) |
 | submit_run_MalSim       | convert_malsim_to_long     | InputEIRAnalyzer                                           |
 |                         | get_seasonality_parameters | BenchmarkAnalyzer                                          |
-|                         | malsim_post_processing     | MonthlyBenchmarkAnalyzer                                   |
-|                         | malsim_post_processing     | AnnualBenchmarkAnalyzer                                    |
-|                         | run_simulations            | MonthlyAgebinAnalyzer                                      |
-|                         |                            | AnnualAgebinAnalyzer                                       |
-|                         |                            | several helper functions                                   |
+|                         | malsim_post_processing     | MonthlyAgebinAnalyzer                                      |
+|                         | malsim_post_processing     | AnnualAgebinAnalyzer                                       |
+|                         | run_simulations            | several helper functions                                   |
+|                         |                            |                                                            |
+|                         |                            |                                                            |
 
 </p>
 </details>
 
 ### Model inputs and scaffolds
 
-- EMOD: simulation setup is specified by various functions that are generating JSON files 
+- EMOD: simulation setup is specified by various functions that are generating JSON files
 - OpenMalaria: simulation setup is pre-specified in XML files
 - malariasimulation: simulation setup is specified directly in the R scripts
 
@@ -325,13 +327,15 @@ writing the csv and reading it in.
 
 The `launch_test.py` is the go-to script to get started and do test simulation runs, with the possibility to change and
 edit parameters directly in the python script.
-The `launch_simulations.py` is the script for more complex as well as multiple simulation experiments at once, as it reads in experiment defining
+The `launch_simulations.py` is the script for more complex as well as multiple simulation experiments at once, as it
+reads in experiment defining
 parameters from a csv file.
 
-
-The configuration had been moved to the helper.py script, allowing the launch python script to overwrite parameters as needed.
+The configuration had been moved to the helper.py script, allowing the launch python script to overwrite parameters as
+needed.
 
 Parameter specifications for framework and simulation setup:
+
 - [ ] **Simulation experiment name, infrastructure, directories and models to run**
     - `mem_increase_factor`: scaling factor on default memory requested, which usually can be left at 1 for test
       simulation, but may have to be
@@ -357,14 +361,14 @@ Parameter specifications for framework and simulation setup:
       separately
     - `num_seeds`: number of
       seeds to run for simulation (applies to all models)
-  
+
 - [ ] **Simulation time and reporting intervals**
     - `start_year`: Calendar year at which monitoring period should start (after burnin)
     - `end_year`: Calendar year at which monitoring period should end
     - `burnin`: Number of years to run prior to monitoring period (from these the simulation start year will be
       calculated) - 80 years is recommended for all models to establish immunity in the simulated population
     - `om_survey_step`: survey intervals for which outcomes are reported in OpenMalaria, default is `30d`. Note, in
-      EMOD, monthly reports are per  default included in monitored simulation period.
+      EMOD, monthly reports are per default included in monitored simulation period.
     - `emod_step`: EMOD allows to run burnin separate from the monitoring period (here equivalent to `pickup`),
       if `None` both similation times
       are run together, which can be computational and time-wise too extensive when running long burnin, large
@@ -384,27 +388,33 @@ Parameter specifications for framework and simulation setup:
       deployments to simulate coverage increase over time (not applicable here)
     - `cm_clinical`: clinical case management coverage
     - `cm_severe`: do not change, will be adapted depending on clinical case management, but to be at least 48%
-    - `detectionLimit`: detection limit for parasites per micoliter blood for detection of prevalent malaria infections 
+    - `detectionLimit`: detection limit for parasites per micoliter blood for detection of prevalent malaria infections
 
 - [ ] **CC step parameters**
-    - `carrying_capacity_step`: Defined the step change from to in a list, example `['10%-25%', '10%-50%', '25%-10%', '25%-50%', '50%-10%', '50%-25%']`
-    - `eir_scalar_emod`: defines the scalar for each carrying_capacity_step defined that will achieve the desired step change for EMOD
-    - `eir_scalar_malsim`: defines the scalar for each carrying_capacity_step defined that will achieve the desired step change for malariasimulation
-    - `eir_scalar_om`: defines the scalar for each carrying_capacity_step defined that will achieve the desired step change for OpenMalaria
+    - `carrying_capacity_step`: Defined the step change from to in a list,
+      example `['10%-25%', '10%-50%', '25%-10%', '25%-50%', '50%-10%', '50%-25%']`
+    - `eir_scalar_emod`: defines the scalar for each carrying_capacity_step defined that will achieve the desired step
+      change for EMOD
+    - `eir_scalar_malsim`: defines the scalar for each carrying_capacity_step defined that will achieve the desired step
+      change for malariasimulation
+    - `eir_scalar_om`: defines the scalar for each carrying_capacity_step defined that will achieve the desired step
+      change for OpenMalaria
 
 - [ ] **Simulation experiment setup of sweeps and postprocessing**
     - `sweep_list`: List of parameter names that together uniquely identify a simulation scenario (and will be written
       into `scenarios.csv`)
     - `plots_to_run`: List of types of plots to run automatically after the simulations finished
 
-
 ### Submit run and analyze simulations
 
 - In terminal navigate to repository  `cd ~/model-characterization`
-- Run python script that defines the simulation i.e. `python launch_test.py` for a test run using defaults specified in the script and `parse_launch_args` (see helper.py)
-  - Other options defined in the [run_launch_test.sh](https://github.com/numalariamodeling/model-characterization/blob/main/run_launch_test.sh) and [run_launch_simulations.sh](https://github.com/numalariamodeling/model-characterization/blob/main/run_launch_simulations.sh):
-  - `python launch_test.py --emodstep burnin --models EMOD MalSim OpenMalaria`
-  - `python launch_simulations.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM`
+- Run python script that defines the simulation i.e. `python launch_test.py` for a test run using defaults specified in
+  the script and `parse_launch_args` (see helper.py)
+    - Other options defined in
+      the [run_launch_test.sh](https://github.com/numalariamodeling/model-characterization/blob/main/run_launch_test.sh)
+      and [run_launch_simulations.sh](https://github.com/numalariamodeling/model-characterization/blob/main/run_launch_simulations.sh):
+    - `python launch_test.py --emodstep burnin --models EMOD MalSim OpenMalaria`
+    - `python launch_simulations.py --models EMOD MalSim OpenMalaria --rownum 0 --csv baseline_eirsweep_noCM`
 - Check simulations via `squeue -u <username>`
 - Wait for simulations to finish after which analyzer scripts and default plots will automatically start running
 - If you need to resubmit the `analyze_sim.py` script, it can be found in `experiments/<suite>/<exp_name>`
@@ -415,8 +425,7 @@ Parameter specifications for framework and simulation setup:
      ``` 
 - Perform additional analysis or plot custom results
 
-
-### Output files and metrics 
+### Output files and metrics
 
 Several custom output csv tables that can be used to generate figures and other results for model characterization.
 The file names have been mostly aligned to EMOD, whereas the name of outcome metrics have been mostly aligned to
@@ -433,11 +442,13 @@ OpenMalaria, as 'more fixed' as in EMOD.
 - `Benchmark.csv`: _Age-group_ specific key malaria outcomes* and transmission outcomes**, aggregated over whole
   monitoring period
 
- Will be deprecated in future PR:
+Will be deprecated in future PR:
+
 - `Benchmark_mth.csv` _Age-group_ specific key malaria outcomes* and transmission outcomes**, aggregated per month over
-  whole monitoring period  (CAUTION: this can have issues, when simulation changes over time and no true equilibrium was achieved) 
+  whole monitoring period  (CAUTION: this can have issues, when simulation changes over time and no true equilibrium was
+  achieved)
 - `Benchmark_yr.csv` _Age-group_ specific key malaria outcomes* and transmission outcomes**, aggregated per year over
-  whole monitoring period  
+  whole monitoring period
 
 **Additional output files:**
 
@@ -481,17 +492,22 @@ OpenMalaria, as 'more fixed' as in EMOD.
 
 ### Customizing simulation and outputs
 
-To customize a simulation, any of the defined parameters listed in [Simulation experiment configuration](https://github.com/numalariamodeling/model-characterization#simulation-experiment-configuration) can be changed.
-Commonly modified parameters are `eir`, `seasonality`, `burnin` period, and sometimes `cm_clinical`, for base-case scenario runs.
-Additional interventions are in progress and instructions for simulating other  interventions will come soon.
+To customize a simulation, any of the defined parameters listed
+in [Simulation experiment configuration](https://github.com/numalariamodeling/model-characterization#simulation-experiment-configuration)
+can be changed.
+Commonly modified parameters are `eir`, `seasonality`, `burnin` period, and sometimes `cm_clinical`, for base-case
+scenario runs.
+Additional interventions are in progress and instructions for simulating other interventions will come soon.
 
 
 -------------------------------------
 
 ## Installation
 
-On the NU cluster `Quest` **EMOD**, **OpenMalaria** and **malariasimulation** are already installed and accessible for all users in group.
-On the STPH cluster `SciCore` **EMOD**, **OpenMalaria** and **malariasimulation** are already installed and accessible for all users in group.
+On the NU cluster `Quest` **EMOD**, **OpenMalaria** and **malariasimulation** are already installed and accessible for
+all users in group.
+On the STPH cluster `SciCore` **EMOD**, **OpenMalaria** and **malariasimulation** are already installed and accessible
+for all users in group.
 _Note:  **malariasimulation** requires installing an R package to the user specific or group specific R library used._
 
 **If you need to install, below are the installation instructions:**
@@ -518,20 +534,23 @@ One can build the container on Quest using the remote Sylabs build environment.
 Updating to the latest OpenMalaria version:
 
 1) Create a new folder for the version to install
+
 ```
 mkdir /projects/b1139/OpenMalaria/om_v46/
 ```
-And copy into the new folder the latest schema files (not source code), available from https://github.com/SwissTPH/openmalaria/releases.
+
+And copy into the new folder the latest schema files (not source code), available
+from https://github.com/SwissTPH/openmalaria/releases.
 
 Copy the OpenMalaria.def and modules from the prevvious release to the new one.
 Note these files were created by Scott Coughlin to facilitate installation on Quest, without having to use cmake.
+
 ```
 cp /projects/b1139/OpenMalaria/om_v43/OpenMalaria.def  /projects/b1139/OpenMalaria/om_v46/OpenMalaria.def
 cp -r /projects/b1139/OpenMalaria/om_v43/modules  /projects/b1139/OpenMalaria/om_v46/
 ```
 
 The def files includes the following lines and does not require change (for information shown below)
-
 
 ```
 Bootstrap: docker
@@ -555,7 +574,8 @@ From: ubuntu:20.04
     cd openmalaria && ./build.sh -r
 ```
 
-However, the `modules/openmalaria/43.0.lua` needs to be renamed to the new version, and its content also updated to the latest version.
+However, the `modules/openmalaria/43.0.lua` needs to be renamed to the new version, and its content also updated to the
+latest version.
 
 ```
 help([[
@@ -597,10 +617,11 @@ singularity build --remote OpenMalaria.sif OpenMalaria.def
 ```
 
 Because calling containers is very annoying, Scott also added a module file in this folder which wraps the call to
-openMalaria to make it easier to use, which is located in the modules/openmalaria folder copied and modified in an earlier step (lua file)
-
+openMalaria to make it easier to use, which is located in the modules/openmalaria folder copied and modified in an
+earlier step (lua file)
 
 Test to run new version
+
 ```
 cd /projects/b1139/OpenMalaria/om_v46/
 module use /projects/b1139/OpenMalaria/om_v46/modules/
@@ -652,7 +673,6 @@ Table 1: Overview of model software and infrastructure
 | N output files    | custom                                                                                                 | 2                                                                                   | 1                                                                                          |   
 | Glossary          | https://docs.idmod.org/projects/emod-malaria/en/latest/glossary.html                                   | https://github.com/SwissTPH/openmalaria/wiki/Terminology                            | `help(malariasimulation)`, https://mrc-ide.github.io/malariasimulation/articles/Model.html |  
 
-
 ### Ensemble modeling and comparisons using both models
 
 - **Public health impact and cost-effectiveness of the RTS,S/AS01 malaria vaccine: a systematic comparison of
@@ -698,7 +718,8 @@ Table 1: Overview of model software and infrastructure
 
 ## Change log
 
-- March 2024 - Carrying capacity step change and additional vector outcomes, switch to OpenMalaria v46, separation of plotting scripts
+- March 2024 - Carrying capacity step change and additional vector outcomes, switch to OpenMalaria v46, separation of
+  plotting scripts
 - Jan 2024: refinement in framework to support flexible simulations, further bugfixes in model specific scripts
 - Oct - Dec 2023: refinement in framework for dynamic EIR and seasonality across all three models
 - Sep - Oct 2023: refinement in framework and outcome alignment for `malariasimulation` outcomes

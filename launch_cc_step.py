@@ -118,10 +118,9 @@ else:
     exp.exp_name = exp.exp_name.replace('entomologymode', exp.entomology_mode)
 
     # Directory setup and analyzer scripts
-    exp.emod_analyzer = ['analyze_sim.py']
-    exp.openmalaria_analyzer = ['analyze_sim.py']
-
-
+    exp.analyzer_script = ['analyze_sim.py']
+    exp.analyzer_list = ['all_age_analyzer', 'cc_step','benchmark']
+    
 ## Arguments that chage for pickup
 exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
 
