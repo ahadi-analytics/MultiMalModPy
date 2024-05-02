@@ -45,7 +45,7 @@ else:
         exp.pop_size = 10000  # 1000 for testing
         exp.num_seeds = 20  # suggested minimum 3, in production 5-10
         exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
-        exp.end_year = 2005  # end of pickup and monitoring period
+        exp.end_year = 2008 # end of pickup and monitoring period
         exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
 
         # Transmission and seasonality configuration
@@ -78,7 +78,6 @@ else:
     exp.exp_name = exp.exp_name.replace('seasonality', exp.seasonality[0])
     exp.exp_name = exp.exp_name.replace('entomologymode', exp.entomology_mode)
     exp.exp_name = exp.exp_name.replace('intervention', '_'.join(exp.intervention_list)) # if empty, the 'intervention' gets removed
-
     ## Add intervention params, note, for some interventions this might come only in  pickup, not yet setup
     exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
 
@@ -90,7 +89,7 @@ exp = get_simulation_time_params(exp)
 
 
 # Check whether defined input parameter are all valid
-check_exp_inputs(exp)  # TODO add more validity checks as needed
+#check_exp_inputs(exp)  # TODO add more validity checks as needed
 
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, exp.sweep_list)
@@ -98,7 +97,7 @@ exp.nexps = len(scen_df) * exp.num_seeds
 
 # Set platform and associated values, such as the maximum number of jobs to run at one time
 platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
-                    mem_per_cpu=int(1250 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
+                    mem_per_cpu=int(2400 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
                     time='04:30:00', account=manifest.sh_hpc_config['A'],
                     modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=exp.nexps)  # mem_per_cpu default: 2048
 

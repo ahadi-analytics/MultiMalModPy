@@ -53,7 +53,7 @@ def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='a
 
         unique_facets = df[facet_var].unique()
         unique_facets = np.sort(unique_facets)
-        color_palette = sns.color_palette('Paired', len(df[sweepvar].unique()))
+        color_palette = sns.color_palette('colorblind', len(df[sweepvar].unique()))
         firstPlot = True
         nx = 2
         ny = 3
@@ -125,7 +125,8 @@ def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', face
     df_all, wdir = get_emodom_df(wdir, emodom, daily=True, timeseries=True)
     df_all = df_all[df_all['timestep'] >= 1460]  # remove the first 4 years of the 55 year monitoring period
     df_all['day_date'] = df_all['timestep'].apply(convert_to_date)
-
+    reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
+    df_all = df_all[df_all['carrying_capacity_step'].isin(reductions)]
     for channel in channel_list:
         print(f'#----- Plotting daily timeseries for {channel}-----#')
         if channel == 'prevalence_2to10':
@@ -144,12 +145,12 @@ def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', face
 
         unique_facets = df[facet_var].unique()
         unique_facets = np.sort(unique_facets)
-        color_palette = sns.color_palette('Paired', len(df['seed'].unique()))
+        color_palette = sns.color_palette('Dark2', len(df['seed'].unique()))
         nx = 2
         ny = 3
         f = 1
-        lower_prevalence = [0.1, 0.1, 0.25, 0.25, 0.5, 0.5]
-        upper_prevalence = [0.25, 0.5, 0.1, 0.5, 0.1, 0.25]
+        lower_prevalence = [0.25, 0.5, 0.5]
+        upper_prevalence = [0.1, 0.1, 0.25]
         # Iterate through each facet and plot the lines for each group
         for m, model in enumerate(df[sweepvar].unique()):
             model_df = df[df[sweepvar] == model]
@@ -167,8 +168,8 @@ def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', face
                     xmean = xmean['day_date']
                     merge_df = pd.merge(left=xmean, right=ymean, on='day_date')
                     merge_df.sort_values(by='day_date', inplace=True)
-                    ax.plot(merge_df['day_date'], merge_df[channel], '-', linewidth=0.8, label=f"{si}",
-                            color=color_palette[si])
+                    ax.plot(merge_df['day_date'], merge_df[channel], '-', linewidth=0.5, label=f"{si}",
+                            color=color_palette[m])
                     x_min_note = merge_df.loc[merge_df['day_date'] == min(merge_df['day_date'])][channel].iloc[0]
                     x_max_note = merge_df.loc[merge_df['day_date'] == max(merge_df['day_date'])][channel].iloc[0]
                     year_factor = max(int((max(merge_df['day_date']).year - min(merge_df['day_date']).year) / 8), 1)
@@ -180,13 +181,13 @@ def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', face
                     ax.axhline(lower_prevalence[i], linestyle='--')
                     ax.axhline(upper_prevalence[i], linestyle='--')
                 ax.set_ylabel(ylab)
-                ax.set_ylim(0, 1)
+                ax.set_ylim(-0.1, upper_prevalence[i]+0.1)
                 ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=8))
                 ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
                 ax.set_xlabel('Year')
                 ax.set_title(f'{model}: {facet}')
             fname = f'timeseries_daily_{channel}_by_{model}_age{agegrp}_by_seed'
-            fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_inches='tight')
+            fig.savefig(os.path.join(wdir, f'{fname}_zoomedin.png'), bbox_inches='tight')
             # fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_inches='tight')
             plt.close()
 
@@ -220,7 +221,7 @@ def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup'
 
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
-    color_palette = sns.color_palette('Paired', len(df[sweepvar].unique()))
+    color_palette = sns.color_palette('colorblind', len(df[sweepvar].unique()))
     firstPlot = True
     nx = 2
     ny = 3
@@ -262,13 +263,40 @@ def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup'
         fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
         plt.close()
 
+def daily_eradicaiton(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp = '5-10'):
+    df_all, wdir = get_emodom_df(wdir, emodom, daily=True, timeseries = True)
+    reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
+    df_all = df_all[df_all['carrying_capacity_step'].isin(reductions)]
+    #df_all = df_all[df_all['timestep'] == df_all['timestep'].max()]
+    df_all['day_date'] = df_all['timestep'].apply(convert_to_date)
+
+    if facet_var != 'ageGroup' and agegrp is not None:
+        df = df_all[(df_all.ageGroup == agegrp)]
+    if agegrp is None:
+        df = df_all.groupby(['day_date', sweepvar, facet_var, 'seed'])[channel].agg(np.mean).reset_index()
+    
+    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
+            raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+
+    for m, model in enumerate(df[sweepvar].unique()):
+        print(model)
+        model_df = df[df[sweepvar] == model]
+        for i, (facet, facet_df) in enumerate(model_df.groupby([facet_var])):
+            counter = 0
+            for si, (seeds, sdf) in enumerate(facet_df.groupby(['seed'])):
+                if sdf.iloc[-1]['prevalence_2to10'] == 0:
+                    counter += 1
+            print(f'{model} at {facet}, had {counter} failed experiments')
+
+    
+
 
 if __name__ == "__main__":
     args = parse_args()
     out_dir = args.directory
     emodom = args.emodom
-    # out_dir =
-    # emodom = ['EMOD', 'OpenMalaria', 'MalSim']
+    #out_dir = '/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240319/sims_dynamic_perennial_cc_step_13_47_45/'
+    #emodom = ['EMOD', 'OpenMalaria', 'MalSim']
     if isinstance(emodom, str):
         emodom = [emodom]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
@@ -288,7 +316,8 @@ if __name__ == "__main__":
     daily_channel_list = ['prevalence_2to10', 'prevalence', 'simulatedEIR', 'clinical_incidence',
                           'severe_incidence']
     facet_daily = 'carrying_capacity_step'
+    #daily_eradicaiton(out_dir, emodom, 'prevalence2to10', sweepvar=sweepvar, facet_var=facet_daily)
     daily_timeseries(out_dir, emodom, channel_list=daily_channel_list, sweepvar=sweepvar, facet_var=facet_daily,
                      agegrp=None)  # if you set agegrp to None, it will combine all ages
-    # daily_timeseries_by_seed(out_dir, emodom, channel_list = daily_channel_list, sweepvar = sweepvar, facet_var = facet_daily, agegrp = None)
-    daily_vectors(out_dir, emodom, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_daily, agegrp=None)
+    #daily_timeseries_by_seed(out_dir, emodom, channel_list = daily_channel_list, sweepvar = sweepvar, facet_var = facet_daily, agegrp = None)
+    #daily_vectors(out_dir, emodom, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_daily, agegrp=None)

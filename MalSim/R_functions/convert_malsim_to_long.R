@@ -10,6 +10,7 @@ convert_malsim_to_long <- function(age_min, age_max, output) {
         # seasonality inputs/settings:
         index = output$index, # unique identifier across seeds & parameter sweep combinations
         seed = output$seed,
+        smc_coverage = output$smc_coverage,
 
         # Add columns for the timesteps (day, month, year)
         timestep = output$timestep,

@@ -45,7 +45,7 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5'):
         ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
     else:
         ylab = channel.replace('_', ' ')
-    color_palette = sns.color_palette('Paired', len(df['emodom'].unique()))
+    color_palette = sns.color_palette('Dark2', len(df['emodom'].unique()))
     nx = round(len(df[sweepvar].unique()) / 2)
     ny = 2
     f = 1
@@ -136,7 +136,7 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
 
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
-    color_palette = sns.color_palette('Paired', len(df[sweepvar].unique()))
+    color_palette = sns.color_palette('Dark2', len(df[sweepvar].unique()))
     firstPlot = True
     nx = round(len(df[facet_var].unique()) / 2)
     ny = 2
@@ -220,7 +220,7 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
 
-    color_palette = sns.color_palette('Paired', len(df[sweepvar].unique()))
+    color_palette = sns.color_palette('Dark2', len(df[sweepvar].unique()))
     firstPlot = True
     nx = round(len(unique_facets) / 2)
     ny = 2
@@ -267,8 +267,8 @@ if __name__ == "__main__":
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR', 'prevalence_2to10']
-
+    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR', 'prevalence_2to10','n_infectious_mos']
+    """
     if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
         sweepvar = 'eir'
         for channel in channel_list:
@@ -277,7 +277,7 @@ if __name__ == "__main__":
                 monthly_trends(out_dir, emodom, channel=channel, sweepvar=sweepvar, agegrp='0-100')  # 0-100
             except:
                 print(f'{channel} not found in dataframe')
-
+    """
     sweepvar = 'emodom'
     facet_var = 'ageGroup'
 
@@ -293,6 +293,7 @@ if __name__ == "__main__":
             print(f'#----- Plotting monthly timeseries for {channel}-----#')
             monthly_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
                                agegrp=None)  # if you set agegrp to None, it will combine all ages
-        print(f'#----- Plotting annual timeseries for {channel}-----#')
-        annual_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
-                          agegrp=None)  # if you set agegrp to None, it will combine all ages
+
+        #print(f'#----- Plotting annual timeseries for {channel}-----#')
+        #annual_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
+        #                  agegrp=None)  # if you set agegrp to None, it will combine all ages

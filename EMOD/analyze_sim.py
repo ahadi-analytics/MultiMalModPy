@@ -340,7 +340,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
             df = pd.merge(left=df, right=eirdf, on=self.sweep_variables + ['year'])
 
             eirdf_mth = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_mth.csv'))
-            eirdf_mth = eirdf_mth.groupby(self.sweep_variables + ['year', 'month'])[['Monthly EIR']].agg(
+            eirdf_mth = eirdf_mth.groupby(self.sweep_variables + ['year', 'month'])[['Monthly EIR','n_total_mos_pop','n_infectious_mos']].agg(
                 np.mean).reset_index()
             df = pd.merge(left=df, right=eirdf_mth, on=self.sweep_variables + ['year', 'month'])
 
@@ -995,7 +995,7 @@ if __name__ == "__main__":
     create_sampleplots = False
 
     exp_name = exp.exp_name
-    age_groups_aggregates = exp.age_groups_aggregates
+    age_groups_aggregates = exp.age_groups_aggregates  # Defined in helper.py
 
     # Define tags and simulation experiment configurations
     exp_tags = ['scen_id', 'Run_Number']

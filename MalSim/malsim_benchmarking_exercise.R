@@ -70,6 +70,16 @@ exp$g <- as.numeric(malsim_seasonal_coefficients$coefficients[2:4])
 exp$h <- as.numeric(malsim_seasonal_coefficients$coefficients[5:7])
 exp$floor <- as.numeric(malsim_seasonal_coefficients$floor)
 
+
+if( length(exp$intervention_list)>0){
+  print("Adding interventions to simulations...")
+  source(file.path('R_functions/define_interventions.R'))
+  if ('smc' %in% exp$intervention_list){
+    exp <- define_smc_param(exp, scenarios_to_run)
+  }
+  ## to be expanded with other interventions
+}
+
 # Run the simulations or load example:
 if ('run' %in% malsim_steps) {
   print("Running the simulations...")

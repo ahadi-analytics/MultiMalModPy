@@ -204,7 +204,7 @@ def initialize_exp(args, manifest):
     exp.cm_clinical = [0.0]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
-    exp.eir = [4, 8,32]
+    exp.eir = [1, 5, 10, 50, 200, 1000]
 
     # Whether to pass along NU's within-host framework recalibrated parameters.
     exp.emod_calib_params = False
@@ -743,7 +743,7 @@ def submit_run_plotters(exp):
     if 'MalSim' in exp.models_to_run:
         job_id_MalSim = 'job_id_MalSim_analyze'
 
-    plot_names_all = [ 'benchmark', 'timeseries', 'agecurves', 'ccstep']  # FIXME 'sampleplots', requires enabled all age plots in analyzer
+    plot_names_all = [ 'benchmark', 'timeseries', 'agecurves', 'ccstep', 'smc']  # FIXME 'sampleplots', requires enabled all age plots in analyzer
     # plot_memrequests_all = {'sampleplots' : 10,'benchmark' :10,'agecurves' :10 ,'ccstep' :20}
 
     ## Write  shell submission script for all, even if not running

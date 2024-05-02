@@ -437,7 +437,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables):
 
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
-    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
+    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev','n_infectious_mos','n_total_mos_pop']
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
     #df = load_combined_daily_output(jdir, channels_to_keep)
@@ -484,7 +484,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables):
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat','entomology_mode'], axis=1)  ## EMOD specific, entomology_mode  not applicable
     df_mth = df_mth.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
-    eir_df = eir_df[['index', 'month', 'year', 'simulatedEIR', 'inputEIR']]
+    eir_df = eir_df[['index', 'month', 'year', 'simulatedEIR', 'inputEIR', 'n_infectious_mos','n_total_mos_pop']]
     df_mth = df_mth.merge(eir_df, on=['index', 'month', 'year'], how='inner')
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_mth.csv to {wdir}')

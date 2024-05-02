@@ -1,5 +1,6 @@
 from helper import *
 import shutil
+from OpenMalaria.scaffolds.intervention_snippets import *
 import numpy as np
 
 def create_scenarios_OM(exp, scen_df):
@@ -41,6 +42,9 @@ def create_scenarios_OM(exp, scen_df):
                 scenario = scenario.replace('@importation_rate@', str(0))
         else:
             scenario = scenario.replace('@eir@', str(row['eir']))
+        if 'smc' in exp.intervention_list:
+            scenario = write_smc_deployment(scenario, row)
+
         seasonality = getattr(exp, row['seasonality'])
 
         # Replace seasonality placeholders with corresponding values from the experiment object
@@ -154,9 +158,9 @@ def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
     # Submit the job for analysis
     submit_analyze_OpenMalaria(exp)
 
-#if __name__ == "__main__":
-    #wdir = 
-    #file = open(os.path.join(wdir, "exp.obj"), "rb")
-    #exp = pickle.load(file)
-    #scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
-    #create_scenarios_OM(exp, scen_df)
+if __name__ == "__main__":
+    wdir = ''
+    file = open(os.path.join(wdir, "exp.obj"), "rb")
+    exp = pickle.load(file)
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
+    create_scenarios_OM(exp, scen_df)

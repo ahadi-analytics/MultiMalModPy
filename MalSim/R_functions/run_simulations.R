@@ -52,13 +52,26 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       ))
 
       # Append the parameters for artemether lumefantrine:
-      simparams[[i]] <- set_drugs(parameters = simparams[[i]], drugs = list(AL_params))
+      simparams[[i]] <- set_drugs(parameters = simparams[[i]], drugs = list(AL_params, SP_AQ_params, DHA_PQP_params))
 
-      # Parameterise the clinical treatment
-      simparams[[i]] <- set_clinical_treatment(parameters = simparams[[i]],
+      if ("smc" %in% intervention_list){
+        simparams[[i]] <- set_smc(parameters = simparams[[i]],
+                                  drug = 2,
+                                  timesteps = exp$smc_days[i,],
+                                  coverages = exp$smc_coverages[i,],
+                                  min_ages = exp$smc_min_ages[i,],
+                                  max_ages = exp$smc_max_ages[i,])
+      }
+
+
+      if ("cm" %in% intervention_list) {
+        # Parameterise the clinical treatment
+        simparams[[i]] <- set_clinical_treatment(parameters = simparams[[i]],
                                                drug = 1,
                                                timesteps = 1,
                                                coverages = parameter_table[i,]$cm_clinical)
+      }
+
       if ("cc_step" %in% intervention_list){ 
         # Calibrate to the initial EIR (eirs unique to each model, based on which eir creates the high,
         # medium and low prevalences required):
@@ -86,6 +99,12 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       simulation_outputs_list[[i]]$cm_clinical <- parameter_table[i,]$cm_clinical
       simulation_outputs_list[[i]]$seasonality  <- parameter_table[i,]$seasonality
       simulation_outputs_list[[i]]$seed <- parameter_table[i,]$seed
+
+      if ("smc" %in% intervention_list){
+        simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
+        simulation_outputs_list[[i]]$smc_coverage <- parameter_table[i,]$smc_coverage
+      }
+
       if ("cc_step" %in% intervention_list) {
         simulation_outputs_list[[i]]$eir_malsim <- parameter_table[i,]$eir_malsim
         simulation_outputs_list[[i]]$eir_scalar_malsim <- parameter_table[i,]$eir_scalar_malsim
@@ -132,13 +151,24 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       ))
 
       # Append the parameters for artemether lumefantrine:
-      simparams[[i]] <- set_drugs(parameters = simparams[[i]], drugs = list(AL_params))
+      simparams[[i]] <- set_drugs(parameters = simparams[[i]], drugs = list(AL_params, SP_AQ_params))
 
-      # Parameterise the clinical treatment
-      simparams[[i]] <- set_clinical_treatment(parameters = simparams[[i]],
+      if ("smc" %in% intervention_list){
+        simparams[[i]] <- set_smc(parameters = simparams[[i]],
+                                  drug = 2,
+                                  timesteps = exp$smc_days[i,],
+                                  coverages = exp$smc_coverages[i,],
+                                  min_ages = exp$smc_min_ages[i,],
+                                  max_ages = exp$smc_max_ages[i,])
+      }
+
+      if ("cm" %in% intervention_list){
+        # Parameterise the clinical treatment
+        simparams[[i]] <- set_clinical_treatment(parameters = simparams[[i]],
                                                drug = 1,
                                                timesteps = 1,
                                                coverages = parameter_table[i,]$cm_clinical)
+      }
 
       # Calibrate to the initial EIR:
       if ("cc_step" %in% intervention_list){ 
@@ -164,6 +194,12 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       simulation_outputs_list[[i]]$cm_clinical <- parameter_table[i,]$cm_clinical
       simulation_outputs_list[[i]]$seasonality  <- parameter_table[i,]$seasonality
       simulation_outputs_list[[i]]$seed <- parameter_table[i,]$seed
+      
+      if ("smc" %in% intervention_list){
+        simulation_outputs_list[[i]]$smc_coverage <- parameter_table[i,]$smc_coverage
+        simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
+      }
+      
       if ("cc_step" %in% intervention_list) {
         simulation_outputs_list[[i]]$eir_malsim <- parameter_table[i,]$eir_malsim
         simulation_outputs_list[[i]]$eir_scalar_malsim <- parameter_table[i,]$eir_scalar_malsim

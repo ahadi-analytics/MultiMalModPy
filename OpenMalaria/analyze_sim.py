@@ -267,7 +267,8 @@ def BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip'):
 
     # Format and filter the DataFrame
     df = format_df(df)
-    df.drop(df[df.ageGroup == 0].index, inplace=True)
+    df.drop(df[df.ageGroup == 0].index, inplace=True)  ## ageGroup 0 = vector related or all age related outcomes (i.e. EIR)
+    df.drop(df[df.ageGroup > 1000].index, inplace=True) ## In OpenMalaria 'third dimension' may indicate other dimensions than age group
 
     # Convert the measure map to a DataFrame
     mm_df = pd.DataFrame.from_dict(mm, orient='index')
@@ -317,6 +318,7 @@ def SurveyAllAgeAnalyzer(exp, mm, start_year=2020, survey_step_days=30, compr='i
 
     # Drop age group 0 from the main DataFrame
     df.drop(df[df.ageGroup == 0].index, inplace=True)
+    df.drop(df[df.ageGroup > 1000].index, inplace=True)  ## In OpenMalaria 'third dimension' may indicate other dimensions than age group
 
     # Sum the values of the age groups
     df = df.groupby(['index', 'survey', 'measure'], as_index=False).value.sum()
@@ -385,6 +387,8 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
     # Convert the experiment data to a DataFrame and format it
     df = to_df(exp)
     df = format_df(df)
+    df.drop(df[df.ageGroup == 0].index, inplace=True)
+    df.drop(df[df.ageGroup > 1000].index, inplace=True)  ## In OpenMalaria 'third dimension' may indicate other dimensions than age group
 
     # get number of years aggregated
     n_surveys_per_year = np.floor((365 / survey_step_days))
@@ -501,6 +505,8 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
     df = to_df(exp)
     df = format_df(df)
     df = survey_to_date(df, survey_step_days=30, start_year=start_year)
+    df.drop(df[df.ageGroup == 0].index, inplace=True)
+    df.drop(df[df.ageGroup > 1000].index, inplace=True)  ## In OpenMalaria 'third dimension' may indicate other dimensions than age group
 
     # get number of years aggregated
     n_surveys_per_year = np.floor((365 / 30))
@@ -520,12 +526,10 @@ def MonthlyBenchmarkAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'in
     sdf = df
 
 
-
     adf = pd.DataFrame()
     # Iterate over each month
     for mth in range(1, 13):
         g = sdf.loc[sdf['month'] == mth]
-
         # Filter and aggregate data for age groups 2 to 10
         age2to10 = g['ageGroup'].apply(lambda x: age_bins[x - 1] > 2 and age_bins[x - 1] <= 10)
         nHost2to10 = g[(g.measure == mmi['nHost']) & age2to10].groupby(['index']).value.sum()
@@ -600,7 +604,7 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
         None
     """
     print("Running MonthlyAgebinAnalyzer...", flush=True)
-    channels = ['index', 'survey', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp', 'nSevere']
+    channels = ['index', 'survey', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp', 'nSevere', 'Vector_Nv', 'Vector_Sv']
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
@@ -611,6 +615,7 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
 
     # Remove rows with ageGroup 0 ('all age')
     df.drop(df[df.ageGroup == 0].index, inplace=True)
+    df.drop(df[df.ageGroup > 1000].index, inplace=True)  ## In OpenMalaria 'third dimension' may indicate other dimensions than age group
 
     # Convert the measure map to a DataFrame
     mm_df = pd.DataFrame.from_dict(mm, orient='index')
@@ -646,10 +651,11 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     df3 = survey_to_date(df3, survey_step_days=30, start_year=start_year)
 
     n_surveys_per_year = np.floor((365 / 30))
-    df3['prevalence'] = df3['nPatent'] / df3['nHost']
-    df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
-    df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
     df3['nHost'] = (df3['nHost'] / n_surveys_per_year)
+    df3['nPatent'] = (df3['nPatent'] / n_surveys_per_year)
+    df3['prevalence'] = df3['nPatent'] / df3['nHost']
+    df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'])  # per person per annum
+    df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'])  # per person per annum
 
     first_columns = ['seed', 'date', 'year', 'month', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
                      'severe_incidence']
@@ -667,11 +673,17 @@ def MonthlyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
         nHost2to10 = tgs.groupby('index')['nHost'].agg(np.sum).reset_index()
         nPatent2to10 = tgs.groupby('index')['nPatent'].agg(np.sum).reset_index()
         pfpr2to10 = nPatent2to10.merge(nHost2to10, on='index', how = 'inner')
-        pfpr2to10['prevalence_2to10'] = pfpr2to10['nPatent'] / pfpr2to10['nHost']
+        pfpr2to10['prevalence_2to10'] = pfpr2to10['nPatent'] / pfpr2to10['nHost'] 
         pfpr2to10['date'] = dt
         pfpr2to10 = pfpr2to10[['prevalence_2to10','date','index']]
         rdf = pd.concat([rdf,pfpr2to10])
     df3 = df3.merge(rdf, on=['index','date'], how = 'inner')
+    df3 = df3.rename(columns={'Vector_Nv':'n_total_mos_pop','Vector_Sv':'n_infectious_mos' }) 
+    grp_channels = ['index', 'date']
+    vector_channels = ['n_total_mos_pop', 'n_infectious_mos']
+    v = df3.groupby(grp_channels)[vector_channels].agg(np.sum).reset_index()
+    df3 = df3.drop(columns = vector_channels)
+    df3 = df3.merge(v, on=grp_channels, how = 'inner')
     # Save the processed DataFrame to a CSV file
     print(f'Saving PfPR_ClinicalIncidence_mth.csv to {wdir}')
     df3.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv')), index=False, compression=compr)
@@ -700,6 +712,7 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
     df = to_df(exp)
     df = format_df(df)
     df.drop(df[df.ageGroup == 0].index, inplace=True)
+    df.drop(df[df.ageGroup > 1000].index, inplace=True)  ## In OpenMalaria 'third dimension' may indicate other dimensions than age group
 
     # Convert survey data to dates
     df = survey_to_date(df, survey_step_days=survey_step_days, start_year=start_year)
@@ -738,14 +751,15 @@ def AnnualAgebinAnalyzer(exp, mm, start_year, survey_step_days=365, compr='infer
     age_group_labels = get_age_group_labels(exp.agebins)
     age_df = pd.DataFrame({'agebin_nr': df2['agebin_nr'].unique(), 'agebin': exp.agebins, 'ageGroup': age_group_labels})
 
-    n_surveys_per_year = np.floor((365 / survey_step_days))
-
-    # Merge with age group data
+    # Merge the age group data with the previous DataFrame
     df3 = df2.merge(age_df, on='agebin_nr', how='inner')
-    df3['prevalence'] = df3['nPatent'] / df3['nHost']
-    df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
-    df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
+
+    n_surveys_per_year = np.floor((365 / survey_step_days))
     df3['nHost'] = (df3['nHost'] / n_surveys_per_year)
+    df3['nPatent'] = (df3['nPatent'] / n_surveys_per_year)
+    df3['prevalence'] = df3['nPatent'] / df3['nHost']
+    df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'])  # per person per annum
+    df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'])  # per person per annum
 
     first_columns = ['seed', 'year', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
                      'severe_incidence']
@@ -807,6 +821,8 @@ def AnnualBenchmarkAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_chann
     df = to_df(exp)
     df = format_df(df)
     df = survey_to_date(df, survey_step_days=survey_step_days, start_year=start_year)
+    df.drop(df[df.ageGroup == 0].index, inplace=True)
+    df.drop(df[df.ageGroup > 1000].index, inplace=True)  ## In OpenMalaria 'third dimension' may indicate other dimensions than age group
 
     # get number of years aggregated
     n_surveys_per_year = np.floor((365 / survey_step_days))
@@ -912,6 +928,7 @@ def DailyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
 
     # Remove rows with ageGroup 0 ('all age')
     df.drop(df[df.ageGroup == 0].index, inplace=True)
+    df.drop(df[df.ageGroup > 1000].index, inplace=True)  ## In OpenMalaria 'third dimension' may indicate other dimensions than age group
 
     # Convert the measure map to a DataFrame
     mm_df = pd.DataFrame.from_dict(mm, orient='index')
@@ -948,10 +965,12 @@ def DailyAgebinAnalyzer(exp, mm, start_year, compr='infer'):
     df3 = survey_to_date(df3, survey_step_days=5, start_year=start_year)
 
     n_surveys_per_year = np.floor((365 / 5))
-    df3['prevalence'] = df3['nPatent'] / df3['nHost']
-    df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
-    df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'] / n_surveys_per_year)  # per person per annum
     df3['nHost'] = (df3['nHost'] / n_surveys_per_year)
+    df3['nPatent'] = (df3['nPatent'] / n_surveys_per_year)
+    df3['prevalence'] = df3['nPatent'] / df3['nHost']
+    df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'])  # per person per annum
+    df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'])  # per person per annum
+
 
     first_columns = ['seed', 'year', 'month', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
                      'severe_incidence']
@@ -992,7 +1011,6 @@ if __name__ == "__main__":
     # Parse command line arguments
     args = parse_args()    
     jdir = args.directory
-    #jdir =
     # Load experiment object
     file = open(os.path.join(jdir, "exp.obj"), "rb")
     exp = pickle.load(file)

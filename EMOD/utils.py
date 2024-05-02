@@ -9,7 +9,7 @@ from COMPS import AuthManager
 from functools import partial
 from EMOD.scaffolds.forcedEIR import *
 from EMOD.scaffolds.dynamicEIR import *
-from EMOD.scaffolds.interventions import treatment_camp_simple
+from EMOD.scaffolds.interventions import *
 import emod_api.demographics.PreDefinedDistributions as Distributions
 from emodpy_malaria.reporters.builtin import *
 import emodpy_malaria.demographics.MalariaDemographics as Demographics
@@ -75,9 +75,14 @@ def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
     To be expanded with SMC and other interventions as needed, and use if's to define applicability
     """
 
+    ## If forced EIR, treated as campaign in EMOD
     if row.entomology_mode == 'forced':
         set_inputEIR_seasonality(camp, float(row.eir), row.seasonality)
+
+    # Case management
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
+
+    ## Carrying capacity step change
     if 'cc_step' in intervention_list and emod_step == 'pickup': #Make sure to include the cc_step change only at pickup simulations.
         eir_df = pd.DataFrame({'WATER_VEGETATION':[row.eir_scalar_emod]}) #TODO: Change our habitat type from water_veg to constant
         add_scale_larval_habitats(camp, df=eir_df,
@@ -86,7 +91,32 @@ def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
     if 'cc_step' in intervention_list and row.added_importation:
         add_outbreak_individual(camp, start_day = 1, demographic_coverage=0.005,
                                 repetitions=-1, timesteps_between_repetitions=365)
+
+    # SMC using PKPD model
+    if 'smc' in intervention_list and emod_step == 'pickup':
+        print(row.smc_coverage)
+        if row.eir == 4:
+            start_array = [366, 731, 1096, 1461, 1826]
+        elif row.eir == 8:
+            start_array = [366, 731, 1096, 1461, 1826]
+        else:
+            start_array = [335, 700, 1065, 1430,1795]
+            #add_drug_campaign(camp, campaign_type = "SMC", start_days = [396,761,1126,1491,1856],
+            smc_campaign(camp, row, start_array)
+
     return {'scen_id': int(row.scen_id)}
+
+
+
+
+#def add_vaccsmc(camp, coverage = 0.0, agemin = 0.3, agemax = 5, access = 1.0 ):
+#    start_days = [ 29, 59, 89, 119]
+#    add_vaccdrug_campaign(camp, campaign_type = "SMC", start_days = start_days, 
+#                          coverages = coverage, 
+#                          target_group = {'agemin': agemin,
+#                                          'agemax': agemax},
+#                          receiv)#
+#
 
 
 def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
@@ -472,7 +502,7 @@ def set_config_parameters(config):
     """
     config = malaria_config.set_team_defaults(config, manifest)
     return config
- 
+
 
 def set_emod_exp_parameters(config, exp):
     config.parameters.x_Base_Population = exp.pop_size / 1000
@@ -541,7 +571,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
                   for s in range(nseeds)]
     else:
         raise ValueError(f'{exp.entomology_mode} not valid')
-        
+
     if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.
         from EMOD.scaffolds.calib_params import get_emod_calib_params
         calib_params = get_emod_calib_params(exp,scen_df_pickup)
@@ -573,12 +603,12 @@ def config_sweep_builder(exp, scen_df):
                   for s in range(nseeds)]
     else:
         raise ValueError(f'{exp.entomology_mode} not valid')
-    
+
     if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
         from EMOD.scaffolds.calib_params import get_emod_calib_params
         calib_params = get_emod_calib_params(exp,scen_df)
         sweeps = sweeps + calib_params
-    
+
 
     builder.add_sweep_definition(sweep_functions, sweeps)
 
@@ -621,8 +651,8 @@ def submit_run_EMOD(exp, scen_df):
         if 'cc_step' in exp.intervention_list:
             add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years) #We shouldn't generate daily reports unless necessary (and right now its only necessary with cc_step perterbation)
         add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
-        
-   
+
+
     # Create experiment from builder and run
     experiment = Experiment.from_builder(builder, task, name=exp_name)
     experiment.run(wait_until_done=False, platform=platform)
