@@ -56,7 +56,7 @@ elif hpc == 'SCICORE':
     projdir = os.path.join('/scicore/home/scicore/cavelan/git/model-characterization')
     job_directory = os.path.join(projdir, 'experiments')
     SIF_PATH = "/scicore/home/scicore/cavelan/git/emodpy/dtk_run_rocky_py39.sif"
-    OM_PATH = "/scicore/home/penny/GROUP/OpenMalaria/OM_schema43/"
+    OM_PATH = "/scicore/home/penny/GROUP/OpenMalaria/OM_schema46/"
     emod_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/EMOD/inputs/'
     om_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria/'
     ms_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/MalSim/'
