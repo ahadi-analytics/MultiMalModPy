@@ -816,8 +816,7 @@ def OM_module(location='NUCLUSTER', om_version=45):
        if om_version == 43:
             ommodule = '\n\nmodule load OpenMalaria/43.1-iomkl-2019.01\n'
        elif om_version == 46:
-            #ommodule = '\n\nmodule load OpenMalaria/43.1-iomkl-2019.01\n'
-            raise ValueError(f'SCICORE PATH for OpenMalaria {om_version} not yet updated, available versions: 43')
+            ommodule = '\n\nmodule load OpenMalaria/46.0-iomkl-2019.01\n'
        else:
             raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
     return ommodule
