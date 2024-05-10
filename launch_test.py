@@ -28,7 +28,6 @@ if args.emodstep =='pickup':
 else:
     # Creating an Experiment object and setting its attributes, saved as exp.obj
     exp = initialize_exp(args, manifest)
-
     # Flag to select whether to run with (dynamic) or without vector model (forced)
     exp.entomology_mode = 'dynamic'  # dynamic, forced
     exp.seasonality = ['seasonal']  # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
@@ -53,8 +52,6 @@ else:
         # exp.eir = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40, 45, 50, 65, 70, 80, 90, 100, 120, 150, 200, 250, 500, 750, 1000] #Aurelien's suggested EIRS
         exp.eir = [1, 5, 10, 50, 200, 1000]
 
-    # Name of parameters to vary
-    exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']
 
     # Define case management start and coverage
     # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
@@ -72,7 +69,6 @@ else:
         exp.exp_name = f'{exp.exp_name}_burnin{exp.burnin}'
         exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
-        exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']  # If running fewer sweeps in past than in pickup to be set up
 
     # Update exp_name
     exp.exp_name = exp.exp_name.replace('seasonality', exp.seasonality[0])
@@ -121,7 +117,6 @@ if __name__ == '__main__':
 
         dtk.setup(pathlib.Path(manifest.eradication_path).parent)
         from EMOD.utils import submit_run_EMOD
-
         emod_exp = submit_run_EMOD(exp, scen_df)
         exp.emod_id = emod_exp.id
 

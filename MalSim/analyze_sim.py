@@ -24,21 +24,102 @@ def parse_args():
         help="Job Directory of exp.obj")
     return parser.parse_args()
 
+def convert_malsim_to_long(output, age_groups, agebins):
+    """
+    Convert the dataframe to long form for the desired columns.
+    
+    Args:
+        age_min (list): Minimum age values.
+        age_max (list): Maximum age values.
+        output (pandas.DataFrame): Input dataframe.
+    
+    Returns:
+        pandas.DataFrame: Long-form output.
+    """
+    result = []
+    ttt = pd.DataFrame(output['timestep'], columns = ['timestep'])
+    ttt['n_2to10'] = 0
+    ttt['n_detect_2to10'] = 0
+    for bins, pair in zip(agebins, age_groups):
+        if bins >=2 and bins < 10:
+            ttt['n_2to10'] = ttt['n_2to10'] +  output[f'n_{pair[0]}_{pair[1]}']
+            ttt['n_detect_2to10'] = ttt['n_detect_2to10'] +  output[f'n_detect_{pair[0]}_{pair[1]}']
+    ttt['prevalence_2to10'] = ttt['n_detect_2to10'] / ttt['n_2to10']
+    ttt = ttt[['timestep', 'prevalence_2to10']]
+    for pair in age_groups:
+        agemin = pair[0]
+        agemax = pair[1]
+        data = {
+            'index': output['index'],  # unique identifier across seeds & parameter sweep combinations
+            'seed': output['seed'],
+            'timestep': output['timestep'],
+            'month': output['month'],
+            'year': output['year'],
+            'ageGroup': f"{int(np.floor(agemin/365))}-{int(np.floor(agemax/365))}",
+            'age_lower': agemin,
+            'age_upper': agemax,
+            'nPopulation': output['S_count'] + output['A_count'] + output['U_count'] + output['Tr_count'] + output['D_count'],
+            'n': output[f"n_{agemin}_{agemax}"],
+            'prev': output[f"prev_{agemin}_{agemax}"],
+            'n_inc': output[f"n_inc_{agemin}_{agemax}"],
+            'n_inc_clinical': output[f"n_inc_clinical_{agemin}_{agemax}"],
+            'n_inc_severe': output[f"n_inc_severe_{agemin}_{agemax}"],
+            'prevalence_2to10': ttt['prevalence_2to10'],
+            'n_infectious_mos': output['Im_gamb_count'],
+            'n_total_mos_pop': output['Sm_gamb_count'] + output['Pm_gamb_count'] + output['Im_gamb_count'],
+            'EIR_gamb': output['EIR_gamb']
+        }
+        result.append(pd.DataFrame(data))
+    output = pd.concat(result, ignore_index=True)
+    return output
 
-def load_combined_daily_output(job_directory, num_seeds):
-    daily = pd.DataFrame()
-    temp_daily = pd.DataFrame()
+
+def post_processing(exp, job_directory):
+
+    agebins = exp.agebins
+    agebins_days = [a * 365 for a in exp.agebins]
+
+    columns_to_keep = ['timestep', 'Sm_gamb_count', 'Pm_gamb_count', 'Im_gamb_count', 'EIR_gamb', 'S_count',
+                       'A_count', 'U_count', 'Tr_count', 'D_count', 'index']
+
+    columns_with_ages = ['n', 'n_inc', 'p_inc', 'n_inc_clinical', 'p_inc_clinical', 'n_inc_severe', 'p_inc_severe',
+                         'p_detect', 'n_detect']
+
     needed_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev',
                        'index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup', 'age_upper', 'EIR_gamb',
                        'n_infectious_mos', 'n_total_mos_pop']
+
+
+    age_groups = [[0, int(agebins_days[0] // 1)]]  # Start with the first age group [0, 182]
+    age_groups.extend( [int(agebins_days[i] // 1) + 1, int(agebins_days[i + 1] // 1)] for i in range(len(agebins_days) - 1))
+
+    for z in columns_with_ages:
+        for i in age_groups:
+            columns_to_keep.append(f'{z}_{i[0]}_{i[1]}')
+
+    daily = pd.DataFrame()
     for i in range(1, exp.nexps + 1):
-        i_df = pd.read_csv(os.path.join(job_directory, f'malsim_jobs/daily_{i}.csv'))
-        i_df = i_df.filter(items=needed_channels)
-        temp_daily = pd.concat([temp_daily, i_df], axis=0)
-        if i % num_seeds == 0:
-            daily = pd.concat([daily, temp_daily], axis=0)
-            temp_daily = pd.DataFrame()
-    daily.to_csv((os.path.join(job_directory, 'malsim_jobs', 'daily.csv')), index=False)
+        df = pd.read_csv(os.path.join(job_directory, f'malsim_jobs/{i}_out.csv'))
+        df = df.loc[:, df.columns.isin(columns_to_keep)]
+
+        days = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+        days = np.repeat(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
+        days = np.tile(days, int(max(df['timestep']) / 365))
+
+        df['month'] = days
+        df['year'] = np.floor(df['timestep'] / 365).astype(int)
+        for pair in age_groups:
+            df[f'prev_{pair[0]}_{pair[1]}'] = df[f'n_detect_{pair[0]}_{pair[1]}'] / df[f'n_{pair[0]}_{pair[1]}']
+
+        output = convert_malsim_to_long(df, age_groups, agebins)
+        output['sim_year'] = output['year']
+        output['year'] = output['sim_year'] + exp.start_year
+        output = output[output['sim_year'] < exp.monitoring_years]
+        output = output[needed_channels]
+        daily = pd.concat([daily, output], axis=0)
+
+    daily.to_csv((os.path.join(wdir,  'daily.csv')), index=False)
+
 
 
 def InputEIRAnalyzer(jdir, wdir, daily=False):
@@ -53,8 +134,8 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
 
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'nPopulation', 'EIR_gamb', 'n_infectious_mos',
                         'n_total_mos_pop']
-    # df = load_combined_daily_output(jdir, channels_to_keep + ['ageGroup'])
-    df = pd.read_csv(os.path.join(jdir, 'malsim_jobs', 'daily.csv'))
+
+    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
     df = df[channels_to_keep + ['ageGroup']]
     df = df[df['ageGroup'] == '0-0']
 
@@ -131,8 +212,8 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
     mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
-    # df = load_combined_daily_output(jdir, channels_to_keep)
-    df = pd.read_csv(os.path.join(jdir, 'malsim_jobs', 'daily.csv'))
+
+    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
     df = df[channels_to_keep]
 
     df['agebin'] = round(df['age_upper'] / 365, 1)
@@ -186,8 +267,8 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
-    # df = load_combined_daily_output(jdir, channels_to_keep)
-    df = pd.read_csv(os.path.join(jdir, 'malsim_jobs', 'daily.csv'))
+
+    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
     df = df[channels_to_keep]
     df['agebin'] = round(df['age_upper'] / 365, 1)
     df['n_prev'] = df['prev'] * df['n']
@@ -273,8 +354,8 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup', 'age_upper',
                         'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev']
 
-    # df = load_combined_daily_output(jdir, channels_to_keep)
-    df = pd.read_csv(os.path.join(jdir, 'malsim_jobs', 'daily.csv'))
+
+    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
     df = df[channels_to_keep]
     df['agebin'] = round(df['age_upper'] / 365, 1)
     df['n_prev'] = df['prev'] * df['n']
@@ -483,7 +564,6 @@ def CCStepAnalyzer(jdir, wdir, sweep_variables):
 if __name__ == "__main__":
     args = parse_args()
     jdir = args.job_dir
-
     # Load experiment object 
     file = open(os.path.join(jdir, "exp.obj"), "rb")
     exp = pickle.load(file)
@@ -494,10 +574,9 @@ if __name__ == "__main__":
     seeds = exp.num_seeds
     age_groups_aggregates = exp.age_groups_aggregates
 
-    daily_path = os.path.join(jdir, 'malsim_jobs/daily.csv')
-
-    if not os.path.isfile(daily_path):
-        load_combined_daily_output(jdir, seeds)
+    # Python Post-Processing
+    post_processing(exp, jdir)
+    daily_path = os.path.join(wdir, 'daily.csv')
 
     # Run analyzers
     InputEIRAnalyzer(jdir, wdir)

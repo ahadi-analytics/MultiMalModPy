@@ -64,6 +64,10 @@ def parse_launch_args():
     parser.add_argument('--test',
                         action='store_true',
                         help='Specify whether to run a test, population and burnin and seeds will be only a few per default')
+    parser.add_argument('--calib',
+                        default=True,
+                        type=bool,
+                        help='Specify whether to run include calibration parameters as a sweep variable')
     return parser.parse_args()
 
 
@@ -137,6 +141,7 @@ def initialize_exp(args, manifest):
     exp.MalSim_run_burnin = args.no_malsim_burnin  ## bool on whether to run burnin or not, default if not specified is True
     exp.intervention_list = args.interventions
     exp.testrun = args.test
+    exp.emod_calib_params = args.calib # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
 
     # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
     exp.user = args.user
@@ -191,10 +196,10 @@ def initialize_exp(args, manifest):
 
     # Name of parameters to vary
     exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']
-    exp.emod_calib_params = False  # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
-
     if exp.emod_calib_params:
-        exp.calib_config_pointer = range(0, 3)  # define rows from calib_params df to run
+        calib_config_df = pd.read_csv(os.path.join(manifest.emod_input_path, 'emod_best.csv'))
+        exp.calib_config_pointer = range(0, len(calib_config_df))  # define rows from calib_params df to run
+        del calib_config_df
         exp.sweep_list = exp.sweep_list + ['calib_config_pointer']
 
     # Define case management start and coverage
@@ -204,9 +209,6 @@ def initialize_exp(args, manifest):
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
     exp.eir = [1, 5, 10, 50, 200, 1000]
-
-    # Whether to pass along NU's within-host framework recalibrated parameters.
-    exp.emod_calib_params = False
 
     # Output flags for analyzer and plotting
     # 'all', 'ccstep' , 'sampleplots', 'benchmark', 'timeseries', 'agecurves'

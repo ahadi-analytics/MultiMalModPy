@@ -1,11 +1,17 @@
 import os
 import pandas as pd
+from functools import partial
+from EMOD.utils import set_param
+import manifest
 # This is primarily seperate from EMO's general function. This will allow  to vary NU's EMOD parameters associated with our within-host calibration efforts.
 
 
 def get_emod_calib_params(exp, scen_df):
-    calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, 'emod_best.csv'))
-
+    calib_config_df = pd.read_csv(os.path.join(manifest.emod_input_path, 'emod_best.csv'))
+    if exp.emod_step == 'burnin':
+        seeds = exp.num_seeds_burnin - 1
+    else:
+        seeds = exp.num_seeds - 1
     calib_params = [[
         partial(set_param, param='Antigen_Switch_Rate', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Antigen_Switch_Rate'])),
         partial(set_param, param='Base_Gametocyte_Fraction_Male', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Base_Gametocyte_Fraction_Male'])),
@@ -23,5 +29,5 @@ def get_emod_calib_params(exp, scen_df):
         partial(set_param, param='Pyrogenic_Threshold', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Pyrogenic_Threshold'])),
         partial(set_param, param='Innate_Immune_Variation_Type', value = str(calib_config_df.loc[int(row.calib_config_pointer), 'Innate_Immune_Variation_Type']))]
         for i, row in scen_df.iterrows()
-        for s in range(exp.num_seeds)]
+        for s in range(0,seeds)]
     return calib_params
