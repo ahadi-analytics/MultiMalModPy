@@ -54,24 +54,19 @@ else:
         exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.sweep_list = ['eir', 'cm_clinical',  'seasonality']  # If running fewer sweeps in past than in pickup to be set up
+        exp.plots_to_run = []
 
-## Arguments to define analyzer and plotters to run
-if exp.emod_step != 'burnin':
-    exp.plots_to_run = []
-else:
-    if 'cc_step' in exp.intervention_list:
-        exp.plots_to_run = ['benchmark','ccstep']
-        exp.analyzer_list = ['all_age_analyzer', 'cc_step', 'benchmark']
-    #else, running ['benchmark','timeseries','agecurves']  per default
+## Add intervention params, note, for some interventions this might come only in  pickup, not yet setup
+exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
 
 ## Arguments that chage for pickup
-exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
+exp = make_dirs(exp, overwrite=exp.overwrite)
 
 # Simulation duration, start and end configuration
 exp = get_simulation_time_params(exp)
 
 # Check whether defined input parameter are all valid
-check_exp_inputs(exp)
+#check_exp_inputs(exp)
 
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, exp.sweep_list)

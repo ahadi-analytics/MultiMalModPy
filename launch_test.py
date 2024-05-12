@@ -69,6 +69,7 @@ else:
         exp.exp_name = f'{exp.exp_name}_burnin{exp.burnin}'
         exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
+        exp.plots_to_run = []
 
     # Update exp_name
     exp.exp_name = exp.exp_name.replace('seasonality', exp.seasonality[0])
@@ -78,7 +79,7 @@ else:
     exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
 
 ## Arguments that chage for pickup
-exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
+exp = make_dirs(exp, overwrite=exp.overwrite)
 
 # Simulation duration, start and end configuration
 exp = get_simulation_time_params(exp)
