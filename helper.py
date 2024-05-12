@@ -31,7 +31,7 @@ def parse_launch_args():
     parser.add_argument('--emodstep',
                         type=str,
                         default=None,
-                        choices=[None, 'burnin', 'pickup'],
+                        choices=[None, 'burnin', 'pickup', 'new_pickup'],
                         help='Description of emod_step')
     parser.add_argument('--serializedid',
                         type=str,
@@ -163,6 +163,7 @@ def initialize_exp(args, manifest):
     exp.om_input_path = manifest.om_input_path
     exp.job_directory_manifest = manifest.job_directory
     exp.output_directory_manifest = manifest.output_directory
+    exp.burnin_directory = None
 
     # Specify OpenMalaria XML and survey step, MalSim simulation setup
     # Note if, interventions are specified in intervention_list, these will get updated via get_intervention_params
@@ -310,7 +311,9 @@ def check_exp_inputs(exp):
             if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om',
                            'eir_scalar_om', 'carrying_capacity_step', 'age_groups_aggregates', 'plots_to_run',
                            'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial',
-                           'analyzer_list','analyzer_script','calib_config_pointer','added_importation']:
+                           'analyzer_list','analyzer_script','calib_config_pointer','added_importation',
+                           'models_to_run_pickup']:
+
                 list_attributes_nGT1.append(key)
 
     list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
@@ -512,6 +515,8 @@ def create_simsetup_csv(exp):
     # If other parameters should be savedm these need to be added to setup_dic
     setup_dic = {'job_directory': exp.job_directory,
                  'sim_out_dir': exp.sim_out_dir,
+                 'emod_serialized_id' : exp.emod_serialized_id,
+                 'burnin_directory' : exp.burnin_directory,
                  'nexps': exp.nexps,
                  'sweep_list': exp.sweep_list,
                  'monitoring_years': exp.monitoring_years,

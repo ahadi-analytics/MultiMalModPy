@@ -17,22 +17,32 @@ log = logging.getLogger(__name__)
 # Retrieve parsed arguments
 args = parse_launch_args()
 
-if args.emodstep == 'pickup':
+if args.emodstep in ['pickup', 'new_pickup']:
     file = open(os.path.join(args.directory, "exp.obj"), "rb")
     exp = pickle.load(file)
+    exp.emod_step = 'pickup'
+    exp.burnin_directory = args.directory
+    exp.SUITEname = args.suite
 
     ## Update arguments
     exp.exp_name = args.expname
-    exp.emod_step = args.emodstep
     exp.models_to_run = args.models
     exp.emod_serialized_id = args.serializedid
-else:
-    # Creating an Experiment object and setting its attributes, saved as exp.obj
-    exp = initialize_exp(args,manifest)
+    exp.burnin_directory = args.directory
+    
+    if args.emodstep == 'new_pickup':
+      exp_scen_df = pd.read_csv(os.path.join(f'scenario_inputs/{args.csv}.csv'))
+      exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == args.rownum]
+      exp.exp_name =  f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
 
+      
+else:
     ### Experiment scenario parameter definitions
     exp_scen_df = pd.read_csv(os.path.join(f'scenario_inputs/{args.csv}.csv'))
     exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == args.rownum]
+
+    # Creating an Experiment object and setting its attributes, saved as exp.obj
+    exp = initialize_exp(args, manifest)
 
     exp.SUITEname =  f'{args.csv}_{dt.now().strftime("%Y%m%d")}'
     exp.exp_name = f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
