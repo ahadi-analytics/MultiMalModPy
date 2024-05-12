@@ -72,8 +72,6 @@ model specific structures and terminology where necessary.
 The main configuration `manifest.py` and simulation scripts `launch_test.py` or `launch_simulations.py` are located
 directly under the root directory.
 
-Additional custom scripts exist to facilitate testing new functionalities, such as `launch_ccstep.py`, whereas all
-custom simulations are aimed to be run via `launch_simulations.py` and defined scenario_inputs.
 
     .  
     ├─ EMOD/                            # EMOD inputs and specific functions
@@ -294,14 +292,36 @@ in [scenario_inputs/README](https://github.com/numalariamodeling/model-character
 
 ## Running simulations
 
+### Quick launch
+- Options to launch as simulation experimenr
+  - via python script
+  - via shell script (check which submission lines are uncommented)
+    - `run_launch_simulations.sh`
+    - `run_launch_simulations.sh`
+  - via terminal 
+
+Testrun 
+  - `python launch_test.py  --models EMOD MalSim OpenMalaria --test`
+
+Baseline run (accepting defaults, or changed defaults in python file) 
+  - `python launch_test.py  --models EMOD MalSim OpenMalaria`
+  - `python launch_simulations.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM`  
+
+Custom simulation experiments (i.e. cc_step)
+  - `python launch_test.py  --models EMOD MalSim OpenMalaria` --intervention cc_step
+  - `python launch_simulations.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test`  
+
+
+### Pre-requisites
 - Simulations are assumed to run on a linux based high performance cluster (HPC), the framework is not designed for
   running simulations locally
 - When running for the first time, model specific software will need to be installed first (note on NUCLUSTER AND
   SciCore software has already been installed)
-- Installed and supported verions:
-    - OpenMalaria v43 or v46
-    - EMOD (emodpy)
-    - malariasimulation (R>= 4.0.0)
+  - Installed and supported verions:
+      - OpenMalaria v43 or v46
+      - EMOD (emodpy)
+      - malariasimulation (R>= 4.0.0)
+
 
 _[go to installations instructions](https://github.com/numalariamodeling/model-characterization#installation)_
 
