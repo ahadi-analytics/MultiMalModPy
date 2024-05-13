@@ -872,11 +872,15 @@ if __name__ == "__main__":
             manager.analyze()
 
         # Default
-        analyzer = annual_analyzers
+        analyzer = []
 
         ## all age by reporting steps
         if 'all_age_analyzer' in exp.analyzer_list:
             analyzer = analyzer + all_age_analyzer
+
+        ## Annual timeseries per age groups
+        if 'annual' in exp.analyzer_list:
+            analyzer = analyzer + annual_analyzers
 
         ## Monthly timeseries per age groups
         if 'monthly' in exp.analyzer_list:

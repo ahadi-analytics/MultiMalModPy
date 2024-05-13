@@ -51,7 +51,6 @@ def convert_malsim_to_long(output, age_groups, agebins):
         agemax = pair[1]
         data = {
             'index': output['index'],  # unique identifier across seeds & parameter sweep combinations
-            'seed': output['seed'],
             'timestep': output['timestep'],
             'month': output['month'],
             'year': output['year'],
@@ -130,7 +129,7 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
     print("Running InputEIRAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
-                           axis=1)  ## EMOD specific, entomology_mode  not applicable
+                           axis=1, errors='ignore')  ## remove EMOD specific columns
 
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'nPopulation', 'EIR_gamb', 'n_infectious_mos',
                         'n_total_mos_pop']
@@ -205,7 +204,7 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
-                           axis=1)  ## EMOD specific, entomology_mode  not applicable
+                           axis=1, errors='ignore')  ## remove EMOD specific columns
 
     # Read experiment data daily
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
@@ -307,7 +306,7 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables)
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
-                           axis=1)  ## EMOD specific, entomology_mode  not applicable
+                           axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on='index', how='inner')
 
@@ -396,7 +395,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + [ 'month', 'year'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
-                           axis=1)  ## EMOD specific, entomology_mode  not applicable
+                           axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index', 'month', 'year'], how='inner')
 
@@ -443,7 +442,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
                         'age_upper', 'prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation',
                         'prevalence_2to10']
     # df = load_combined_daily_output(jdir, channels_to_keep)
-    df = pd.read_csv(os.path.join(jdir, 'malsim_jobs', 'daily.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
     df = df[channels_to_keep]
     df['agebin'] = round(df['age_upper'] / 365, 1)
     df['n_prev'] = df['prev'] * df['n']
@@ -481,7 +480,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['year'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
-                           axis=1)  ## EMOD specific, entomology_mode  not applicable
+                           axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index', 'year'], how='inner')
 
@@ -516,7 +515,7 @@ def CCStepAnalyzer(jdir, wdir, sweep_variables):
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
     # df = load_combined_daily_output(jdir, channels_to_keep)
-    df = pd.read_csv(os.path.join(jdir, 'malsim_jobs', 'daily.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
     df = df[channels_to_keep]
     df['n_prev'] = df['prev'] * df['n']
     df['incidence'] = (df['n_inc'] / df['n'])
@@ -537,7 +536,7 @@ def CCStepAnalyzer(jdir, wdir, sweep_variables):
     ## Add scenarios variables
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
-                           axis=1)  ## EMOD specific, entomology_mode  not applicable
+                           axis=1, errors='ignore')  ## remove EMOD specific columns
     df = df.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
     eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'inputEIR']]

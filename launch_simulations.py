@@ -17,22 +17,32 @@ log = logging.getLogger(__name__)
 # Retrieve parsed arguments
 args = parse_launch_args()
 
-if args.emodstep == 'pickup':
+if args.emodstep in ['pickup', 'new_pickup']:
     file = open(os.path.join(args.directory, "exp.obj"), "rb")
     exp = pickle.load(file)
+    exp.emod_step = 'pickup'
+    exp.burnin_directory = args.directory
+    exp.SUITEname = args.suite
 
     ## Update arguments
     exp.exp_name = args.expname
-    exp.emod_step = args.emodstep
     exp.models_to_run = args.models
     exp.emod_serialized_id = args.serializedid
-else:
-    # Creating an Experiment object and setting its attributes, saved as exp.obj
-    exp = initialize_exp(args,manifest)
+    exp.burnin_directory = args.directory
+    
+    if args.emodstep == 'new_pickup':
+      exp_scen_df = pd.read_csv(os.path.join(f'scenario_inputs/{args.csv}.csv'))
+      exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == args.rownum]
+      exp.exp_name =  f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
 
+      
+else:
     ### Experiment scenario parameter definitions
     exp_scen_df = pd.read_csv(os.path.join(f'scenario_inputs/{args.csv}.csv'))
     exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == args.rownum]
+
+    # Creating an Experiment object and setting its attributes, saved as exp.obj
+    exp = initialize_exp(args, manifest)
 
     exp.SUITEname =  f'{args.csv}_{dt.now().strftime("%Y%m%d")}'
     exp.exp_name = f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
@@ -54,24 +64,19 @@ else:
         exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.sweep_list = ['eir', 'cm_clinical',  'seasonality']  # If running fewer sweeps in past than in pickup to be set up
+        exp.plots_to_run = []
 
-## Arguments to define analyzer and plotters to run
-if exp.emod_step != 'burnin':
-    exp.plots_to_run = []
-else:
-    if 'cc_step' in exp.intervention_list:
-        exp.plots_to_run = ['benchmark','ccstep']
-        exp.analyzer_list = ['all_age_analyzer', 'cc_step', 'benchmark']
-    #else, running ['benchmark','timeseries','agecurves']  per default
+## Add intervention params, note, for some interventions this might come only in  pickup, not yet setup
+exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
 
 ## Arguments that chage for pickup
-exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
+exp = make_dirs(exp, overwrite=exp.overwrite)
 
 # Simulation duration, start and end configuration
 exp = get_simulation_time_params(exp)
 
 # Check whether defined input parameter are all valid
-check_exp_inputs(exp)
+#check_exp_inputs(exp)
 
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, exp.sweep_list)

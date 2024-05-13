@@ -40,8 +40,9 @@ def cc_step_params(exp, overwrite_setup=True):
     exp.carrying_capacity_step = [f'10%-25%', f'10%-50%', f'25%-10%', f'25%-50%', f'50%-10%', f'50%-25%']
     exp.added_importation = [False, False, True, False, True, True]
     
-    ## The function could also be used to attach additional analyzer to run or plotters, if we want to break them down
-    exp.intervention_plotter = [ 'custom_plotter/cc_step_plots.py']  # not yet setup, but could be in next PR to disentangle benchmark_plots as needed
+    ## Analyzer and plotter  to run specific for CC step
+    exp.plots_to_run = ['ccstep']
+    exp.analyzer_list = ['all_age_analyzer', 'cc_step']
 
     ## Can be useful to allow storing some defaults on how we want to run a specific simulation, without modiyfing in launch_test
     ## Can also be errorprone between and pickup, default is False, tbd on how/when to use

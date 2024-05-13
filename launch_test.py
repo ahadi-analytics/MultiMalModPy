@@ -15,16 +15,31 @@ log = logging.getLogger(__name__)
 # Retrieve parsed arguments
 args = parse_launch_args()
 
-if args.emodstep =='pickup':
+
+if args.emodstep in ['pickup', 'new_pickup']:
     file = open(os.path.join(args.directory, "exp.obj"), "rb")
     exp = pickle.load(file)
+    exp.emod_step = 'pickup'
+    exp.burnin_directory = args.directory
+    
+    exp.emod_serialized_id = args.serializedid
 
-    ## Update arguments
+    if args.emodstep == 'new_pickup': ## Allows to run a independent pickup from burnin
+        ## Optional parameters to update in new run
+        exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']
+        # exp.eir = [8]  # note, needs to be one of the eir values included in the burnin
+        # exp.cm = [0.4]  # note, depends on user which parameters desired to change and how
+        # exp.num_seeds = ''
+        # ...
+        ## USER SPECIFIC PARAMETER EDITS
+        # ...
+        exp = get_intervention_params(exp)
+        
+
+    ##  Note: to simply run a new pickup in same folder and suite, simply change expname
     exp.SUITEname = args.suite
     exp.exp_name = args.expname
-    exp.emod_step = args.emodstep
-    exp.models_to_run = args.models
-    exp.emod_serialized_id = args.serializedid
+
 else:
     # Creating an Experiment object and setting its attributes, saved as exp.obj
     exp = initialize_exp(args, manifest)
@@ -69,6 +84,7 @@ else:
         exp.exp_name = f'{exp.exp_name}_burnin{exp.burnin}'
         exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
+        exp.plots_to_run = []
 
     # Update exp_name
     exp.exp_name = exp.exp_name.replace('seasonality', exp.seasonality[0])
@@ -78,7 +94,7 @@ else:
     exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
 
 ## Arguments that chage for pickup
-exp = make_dirs(exp)  # we are currenlty only going to run one seasonality at a time
+exp = make_dirs(exp, overwrite=exp.overwrite)
 
 # Simulation duration, start and end configuration
 exp = get_simulation_time_params(exp)

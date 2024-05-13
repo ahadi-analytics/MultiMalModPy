@@ -31,6 +31,7 @@ def parse_launch_args():
     parser.add_argument('--emodstep',
                         type=str,
                         default=None,
+                        choices=[None, 'burnin', 'pickup', 'new_pickup'],
                         help='Description of emod_step')
     parser.add_argument('--serializedid',
                         type=str,
@@ -53,7 +54,7 @@ def parse_launch_args():
                         required=False,
                         help='Name of scenario csv')
     parser.add_argument('-i', '--interventions',
-                        nargs='+',
+                        nargs='+',  #FIXME how to handle combinations if those should even be allowed
                         default=[],
                         choices=['cc_step', 'smc'],
                         help='Specify which interventions to run, if any')
@@ -65,9 +66,13 @@ def parse_launch_args():
                         action='store_true',
                         help='Specify whether to run a test, population and burnin and seeds will be only a few per default')
     parser.add_argument('--calib',
-                        default=True,
+                        default=False,
                         type=bool,
                         help='Specify whether to run include calibration parameters as a sweep variable')
+    parser.add_argument('--overwrite',
+                        default=False,
+                        type=bool,
+                        help='Whether to overwrite simulation experiment folders')
     return parser.parse_args()
 
 
@@ -141,6 +146,7 @@ def initialize_exp(args, manifest):
     exp.MalSim_run_burnin = args.no_malsim_burnin  ## bool on whether to run burnin or not, default if not specified is True
     exp.intervention_list = args.interventions
     exp.testrun = args.test
+    exp.overwrite = args.overwrite
     exp.emod_calib_params = args.calib # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
 
     # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
@@ -157,6 +163,7 @@ def initialize_exp(args, manifest):
     exp.om_input_path = manifest.om_input_path
     exp.job_directory_manifest = manifest.job_directory
     exp.output_directory_manifest = manifest.output_directory
+    exp.burnin_directory = None
 
     # Specify OpenMalaria XML and survey step, MalSim simulation setup
     # Note if, interventions are specified in intervention_list, these will get updated via get_intervention_params
@@ -211,7 +218,7 @@ def initialize_exp(args, manifest):
     exp.eir = [1, 5, 10, 50, 200, 1000]
 
     # Output flags for analyzer and plotting
-    # 'all', 'ccstep' , 'sampleplots', 'benchmark', 'timeseries', 'agecurves'
+    # 'all', 'ccstep' , 'sampleplots', 'benchmark', 'timeseries', 'agecurves', 'smc' ,
     exp.plots_to_run = ['benchmark', 'timeseries', 'agecurves']
     return (exp)
 
@@ -298,16 +305,15 @@ def check_exp_inputs(exp):
     attributes_dict = exp.__dict__
     list_attributes_nGT1 = list()
 
-    # Check if any attribute in list_attributes_nGT1 is not in sweep_list
-    attributes_dict = exp.__dict__
-    list_attributes_nGT1 = list()
-
     for key, value in attributes_dict.items():
         # Check if the attribute is a list
         if isinstance(value, list) and len(value) > 1:
             if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om',
                            'eir_scalar_om', 'carrying_capacity_step', 'age_groups_aggregates', 'plots_to_run',
-                           'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial']:
+                           'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial',
+                           'analyzer_list','analyzer_script','calib_config_pointer','added_importation',
+                           'models_to_run_pickup']:
+
                 list_attributes_nGT1.append(key)
 
     list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
@@ -509,6 +515,8 @@ def create_simsetup_csv(exp):
     # If other parameters should be savedm these need to be added to setup_dic
     setup_dic = {'job_directory': exp.job_directory,
                  'sim_out_dir': exp.sim_out_dir,
+                 'emod_serialized_id' : exp.emod_serialized_id,
+                 'burnin_directory' : exp.burnin_directory,
                  'nexps': exp.nexps,
                  'sweep_list': exp.sweep_list,
                  'monitoring_years': exp.monitoring_years,
@@ -744,7 +752,8 @@ def submit_run_plotters(exp):
     if 'MalSim' in exp.models_to_run:
         job_id_MalSim = 'job_id_MalSim_analyze'
 
-    plot_names_all = [ 'benchmark', 'timeseries', 'agecurves', 'ccstep', 'smc']  # FIXME 'sampleplots', requires enabled all age plots in analyzer
+    plot_names_all = [ 'benchmark', 'timeseries', 'agecurves']  # FIXME 'sampleplots', requires enabled all age plots in analyzer
+    ## ['ccstep', 'smc'] custom plotter excluded, as these only apply for specific simulation experiments
     # plot_memrequests_all = {'sampleplots' : 10,'benchmark' :10,'agecurves' :10 ,'ccstep' :20}
 
     ## Write  shell submission script for all, even if not running

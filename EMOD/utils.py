@@ -639,7 +639,7 @@ def submit_run_EMOD(exp, scen_df):
 
     if emod_step == 'pickup':
         serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
-        serialized_df = serialized_df.drop(columns=['x_Temporary_Larval_Habitat'])
+        serialized_df = serialized_df.drop(columns=['x_Temporary_Larval_Habitat'], errors='ignore')
         scen_df_pickup = scen_df.merge(serialized_df, on=['scen_id'],
                                        how='inner')  ## FIXME when running expanded pickup from burnin
         builder = config_sweep_builder_pickup(exp, scen_df_pickup)
