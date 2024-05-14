@@ -575,7 +575,8 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
     if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.
         from EMOD.scaffolds.calib_params import get_emod_calib_params
         calib_params = get_emod_calib_params(exp,scen_df_pickup)
-        sweeps = sweeps + calib_params
+        for i in range(0, len(calib_params)):
+            sweeps[i] = sweeps[i] + calib_params[i]
 
 
     builder.add_sweep_definition(sweep_functions, sweeps)
@@ -607,7 +608,8 @@ def config_sweep_builder(exp, scen_df):
     if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
         from EMOD.scaffolds.calib_params import get_emod_calib_params
         calib_params = get_emod_calib_params(exp,scen_df)
-        sweeps = sweeps + calib_params
+        for i in range(0, len(calib_params)):
+            sweeps[i] = sweeps[i] + calib_params[i]
 
 
     builder.add_sweep_definition(sweep_functions, sweeps)
