@@ -11,6 +11,9 @@ library(scales)
 library(ggplot2)
 library(cowplot)
 
+emodom_cols_list <-list('EMOD'='#1b9e77ff','OpenMalaria'='#7570b3ff','malariasimulation'='#d95f02ff')
+emodom_cols <- c('#1b9e77ff','#7570b3ff','#d95f02ff')
+
 #' Load and combine data from EMOD and/or OpenMalaria benchmark output files.
 #'
 #' This function loads and combines data from the specified EMOD and/or OpenMalaria

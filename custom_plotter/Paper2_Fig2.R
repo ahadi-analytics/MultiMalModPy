@@ -1,3 +1,6 @@
+### 'Baseline' figure
+
+
 library(ggplot2)
 library(dplyr)
 library(data.table)
@@ -12,19 +15,15 @@ theme_set(theme_bw())
 datetoday <- Sys.Date()
 
 if (Sys.getenv("OS") == "Windows_NT") {
-  box <- 'NU Malaria Modeling Dropbox'
+  box <- 'NU-malaria-team Dropbox'
   projdir <- file.path(Sys.getenv('USERPROFILE'), box, 'projects/EMOD_OM')
 }else {
   username <- Sys.getenv('USER') #Sys.getenv('USERNAME')
   projdir <- file.path('/projects/b1139/emod-om/simulation_outputs', username)
 }
 
-# /projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240113/sims_dynamic_perennial_21_13_13/
-# /projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240212/sims_dynamic_seasonal_13_53_14/
-
-projdir <- file.path('C:/Users/mrung/NU-malaria-team Dropbox/projects/EMOD_OM/simulation_outputs/test_sims_20240113')
-exp_name1 <- "sims_dynamic_perennial_21_13_13"
-exp_name2 <- "sims_dynamic_seasonal_13_53_14"
+projdir <- file.path(projdir, 'test_sims_20240113')
+exp_name <- "sims_dynamic_perennial_21_13_13"
 emodom <- c("EMOD", "OpenMalaria", "MalSim")
 agegrps <- c('0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100')
 
@@ -34,7 +33,7 @@ customTheme <- f_getCustomTheme() +
         panel.grid.minor = element_blank())
 
 # Load simulation outputs  BENCHMARK-------------------------------
-wdir <- file.path(projdir, exp_name1)
+wdir <- file.path(projdir, exp_name)
 dat_p <- get_emodom_df(wdir, emodom = emodom)
 
 table(dat_p$ageGroup, dat_p$emodom)
@@ -66,11 +65,9 @@ dat_p$ageGroup <- factor(dat_p$ageGroup,
 # ------------------------------ Figure 2A and B ------------------------------
 pA <- dat_p %>%
   filter(ageGroup %in% '0-100') %>%
-  filter(seasonality == "perennial") %>%
   ggplot() +
-  geom_ribbon(aes(x = simulatedEIR__mean, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up,
-                  fill = emodom, group = interaction(emodom, seasonality)), alpha = 0.3) +
-  geom_line(aes(x = simulatedEIR__mean, y = prevalence_2to10__mean, col = emodom, linetype = seasonality)) +
+  geom_ribbon(aes(x = simulatedEIR__mean, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = emodom), alpha = 0.3) +
+  geom_line(aes(x = simulatedEIR__mean, y = prevalence_2to10__mean, col = emodom)) +
   scale_x_log10(labels = comma) +
   labs(y = "PfPR 2 to 10",
        x = "Simulated EIR",
@@ -82,7 +79,6 @@ pA <- dat_p %>%
 pB <- dat_p %>%
   ungroup() %>%
   filter(ageGroup %in% '0-100') %>%
-  filter(seasonality == "perennial") %>%
   dplyr::select(eir, simulatedEIR__mean, emodom,
                 clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                 severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
@@ -104,7 +100,7 @@ pB <- dat_p %>%
         panel.spacing = unit(2, "lines"),
         strip.placement = "outside")
 
-pAB <- plot_grid(pA, pB, ncol = 1)
+pAB <- plot_grid(pA, pB, ncol = 1, labels = c('A','B'))
 
 
 # ------------------------------ Figure 2C ------------------------------
@@ -136,7 +132,6 @@ dat_p <- dat_p %>%
 pC <- dat_p %>%
   ungroup() %>%
   filter(ageGroup %in% agegrps) %>%
-  filter(seasonality == "perennial") %>%
   filter(!is.na(pfpr_grp)) %>%
   dplyr::select(eir, ageGroup, pfpr_grp, emodom,
                 prevalence__mean, prevalence__min, prevalence__up,
@@ -163,7 +158,6 @@ pC <- dat_p %>%
 pD <- dat_p %>%
   ungroup() %>%
   filter(ageGroup %in% agegrps) %>%
-  filter(seasonality == "perennial") %>%
   dplyr::select(eir, ageGroup, prevalence__mean, emodom,
                 clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                 severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
@@ -185,8 +179,8 @@ pD <- dat_p %>%
         strip.placement = "outside")
 
 
-pABC <- plot_grid(pAB, pC, ncol = 2, rel_heights = c(1, 1))
-pABCD <- plot_grid(pABC, pD, ncol = 1, rel_heights = c(1, 0.7), rel_widths = c(1, 1))
+pABC <- plot_grid(pAB, pC, ncol = 2, rel_heights = c(1, 1), labels = c(NA,'C'))
+pABCD <- plot_grid(pABC, pD, ncol = 1, rel_heights = c(1, 0.7), rel_widths = c(1, 1), labels = c(NA,'D'))
 
 print(pABCD)
 ggsave(plot = pABCD, filename = file.path(getwd(), 'Figure2_R.pdf'), height = 15.5, width = 18)
