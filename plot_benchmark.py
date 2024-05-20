@@ -17,12 +17,13 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plot_helper import *
 
 # Plots prevalence 2 to 10 by output variable, requires benchmark.csv
-def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence'):
+def prevalence2to10_to_incidence(wdir, emodom, sweepvar = 'emodom', channel='clinical_incidence'):
     """
     Generates line plots for PfPR2to10 and either clinical or severe incidence per sweepvar as colors and emodom as panels.
     Parameters:
         wdir (str): Working directory where the plot will be saved.
         emodom (str or list of str): Name of models for which result dataframes should be loaded.
+        sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'emodom'.
         channel (str): Variable representing the y-axis data to be plotted.
     Returns:
         None (plots are saved to disk).
@@ -36,10 +37,10 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence'):
     firstPlot = True
     fig = plt.figure(figsize=(10*nx, 10*ny))
 
-    unique_groups = df['emodom'].unique()
+    unique_groups = df[sweepvar].unique()
     unique_groups = np.sort(unique_groups)
     num_colors = len(unique_groups)
-    color_palette = sns.color_palette('Paired', num_colors)
+    color_palette = sns.color_palette('colorblind', num_colors)
 
     # for each age group, plot x = prevalence 2_to_10, y = incidences (or prevalence)
     for si, season in enumerate(seasonality):
@@ -49,7 +50,7 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence'):
             f += 1
             adf = sdf[sdf.ageGroup == agroup]
             for mi, model in enumerate(unique_groups):
-                pdf = adf[adf.emodom == model]
+                pdf = adf[adf[sweepvar] == model]
                 if not pd.isnull(pdf['prevalence_2to10']).all():
                 # plot mean, min and max of seeds
                     xmean, ymean = get_x_y(pdf, 'eir', 'prevalence_2to10', channel)
@@ -80,12 +81,13 @@ def prevalence2to10_to_incidence(wdir, emodom, channel='clinical_incidence'):
 
 # Plots prevalence 2 to 10 by incidence, with subplots seperated by 3 age groups. These graphs were requested by Narimane to reflect 
 # figure 1 in https://www.nature.com/articles/ncomms9170
-def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, channel='clinical_incidence'):
+def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, sweepvar = 'emodom', channel='clinical_incidence'):
     """
     Generates line plots for PfPR2to10 and either clinical or severe incidence as panels seperated by model (columns) and ages (rows).
     Parameters:
         wdir (str): Working directory where the plot will be saved.
         emodom (str or list of str): Name of models for which result dataframes should be loaded.
+        sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'emodom'.
         channel (str): Variable representing the y-axis data to be plotted.
     Returns:
         None (plots are saved to disk).
@@ -98,10 +100,10 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, channel='clinica
     f = 1
     fig = plt.figure(figsize=(10*nx, 10*ny))
 
-    unique_groups = df['emodom'].unique()
+    unique_groups = df[sweepvar].unique()
     unique_groups = np.sort(unique_groups)
     num_colors = len(unique_groups)
-    color_palette = sns.color_palette('Paired', num_colors)
+    color_palette = sns.color_palette('colorblind', num_colors)
     young_child = ['0-0.5','0.5-1','1-2','2-5']
     older_child = ['5-10','10-15']
     adult = ['15-20','20-100']
@@ -157,7 +159,7 @@ def eir_to_outcome(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR',
     seasonality = list(df['seasonality'].unique()) #Identify seasonality patterns to iterate over while graphing
     if sweepvar != 'cm_clinical': #if a case management level has not been assigned, we default to only present the smallest case manaagement value available in the data
         df = df[(df.cm_clinical == np.min(df.cm_clinical))]
-    color_palette = sns.color_palette('Paired', len(df['emodom'].unique())) 
+    color_palette = sns.color_palette('colorblind', len(df[sweepvar].unique())) 
     firstPlot = True
     nx = len(df[sweepvar].unique())
     ny = len(seasonality)
@@ -201,10 +203,10 @@ def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical'):
     """
     df, wdir = get_emodom_df(wdir, emodom)
     seasonality = list(df['seasonality'].unique())
-    unique_groups = df['emodom'].unique()
+    unique_groups = df[sweepvar].unique()
     unique_groups = np.sort(unique_groups)
     num_colors = len(unique_groups)
-    color_palette = sns.color_palette('Paired', num_colors)
+    color_palette = sns.color_palette('colorblind', num_colors)
     firstPlot = True
 
     if sweepvar != 'cm_clinical':

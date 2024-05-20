@@ -59,7 +59,7 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
     firstPlot = True
     unique_facets = df[facet_var].unique()
     unique_facets = sorted(unique_facets)
-    color_palette = sns.color_palette('Paired', len(df[sweepvar].unique()))
+    color_palette = sns.color_palette('colorblind', len(df[sweepvar].unique()))
 
     nx = round(len(unique_facets)/2)
     ny = 2

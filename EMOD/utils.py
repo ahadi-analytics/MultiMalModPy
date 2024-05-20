@@ -154,6 +154,42 @@ def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
         add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365 - 1, age_bins=age_bins,
                                    max_number_reports = 366, reporting_interval=1, filename_suffix=desc, pretty_format=False)
 
+def add_5daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
+                        yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15,20, 125],
+                        prefix='FiveDaily_'):
+    """
+    Adds 5 daily reports to the simulation task.
+    Args:
+        task: The simulation task object.
+        manifest: The manifest object containing the necessary information.
+        sim_start_year: The starting year of the simulation.
+        num_year: The number of years to add monthly reports for.
+        tot_year: The total number of years of the simulation.
+                  If None, it is set to num_year.
+        yr_plusone: Whether to add an extra year to the reporting.
+                    If True, reports will cover num_year + 1 years.
+                    If False, reports will cover num_year years.
+        age_bins: The age bins for reporting.
+        prefix: The prefix to be used for the report filenames.
+    Raises:
+        ValueError: If num_year is greater than tot_year.
+    Returns:
+        None
+    """
+    if tot_year is None:
+        tot_year = num_year
+    if (num_year > tot_year):
+        raise ValueError('num_year must be <= tot_year')
+
+    # Write separate monthly reports for each year
+    for year in range(num_year):
+        sim_year = tot_year - num_year + year
+        start = yr_plusone + 365 * sim_year
+        desc = prefix + '%d' % (sim_year + sim_start_year)
+        add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365 - 1, age_bins=age_bins,
+                                   max_number_reports = 366, reporting_interval=5, filename_suffix=desc, pretty_format=False)
+
+
 def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
                         yr_plusone=True, age_bins=[0.5,1, 2, 5, 10, 15,20,125],
                         prefix='Monthly_'):
@@ -649,11 +685,15 @@ def submit_run_EMOD(exp, scen_df):
         builder = config_sweep_builder(exp, scen_df)
 
     add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
+
+
+
     if emod_step != 'burnin':  # do not generate monthly reports for burnin
         if 'cc_step' in exp.intervention_list:
             add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years) #We shouldn't generate daily reports unless necessary (and right now its only necessary with cc_step perterbation)
         add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
-
+        if '5day' in exp.analyzer_list:  # Note, we will not want to always run 5 days using the analyzer_list as a flag to include this reporter  or not
+            add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
 
     # Create experiment from builder and run
     experiment = Experiment.from_builder(builder, task, name=exp_name)

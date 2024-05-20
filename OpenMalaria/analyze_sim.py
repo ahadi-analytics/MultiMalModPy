@@ -115,8 +115,7 @@ def survey_to_date(df, survey_step_days=30, start_year=0):
     if survey_step_days == 5:
         df['days'] = df['survey'] * survey_step_days
         df['month'] = np.floor(df['days'] / (365 / 12)) + 1
-        df['month'] = df[
-                          'month'] % 12  # Ricky recently updated this line (df['survey'] % 12) to correctly reflect the months
+        df['month'] = df['month'] % 12  # Ricky recently updated this line (df['survey'] % 12) to correctly reflect the months
         df.loc[df['month'] == 0, 'month'] = 12
         df['year'] = (df['days'] / 365.00000001).apply(np.floor)
     # Monthly timesteps
@@ -189,76 +188,105 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
     # Prepare and format the data
     df = to_df(exp)
     df = format_df(df)
-    df.drop(df[df.ageGroup > 0].index, inplace=True)
+
+    df_vector = df[df['measure'].isin([32, 34])]
+    df_all = df[df['measure'].isin([7, 35, 36])]
+    df_all.drop(columns='ageGroup', inplace=True)
+
+    df_vector = df_vector.groupby(['index', 'survey', 'measure'])[['value']].agg(np.sum).reset_index()
+    df = df_all.append(df_vector)
+
     df = survey_to_date(df, survey_step_days=survey_step_days, start_year=start_year)
 
     # Adjust the values based on the survey step interval
     df['value'] = df['value'] * (survey_step_days / 5)
 
+    scen_var = ['scen_id', 'num_seeds', 'seasonality', 'entomology_mode']
+    outcome_var = ['InputEIR', 'SimulatedEIR', 'nTransmit', 'Vector_Nv', 'Vector_Sv']
+    cc_step_var = ['eir_om', 'eir_scalar_timestep_5day', 'eir_scalar_om', 'carrying_capacity_step']
+    columns_to_keep = ['index', 'seed', 'survey', 'days', 'year'] + scen_var + outcome_var
+
     if survey_step_days == 5:
         df_day = add_measure_names(df, mm)
-        df_day = pivot_wider(df_day, index_cols=['index', 'survey', 'days', 'year', 'ageGroup'])
+        df_day = pivot_wider(df_day, index_cols=['index', 'survey', 'days', 'year'])
         df_day = df_day.merge(scen_df, on='index', how='inner')
         # If we created different eirs for each simulation, we need to parse it out here, so all the models can eventually be aligned
         # The only difference between these two dfs is if eir_om (om specific eir) or eir (general to all models) is used.
+        df_day.to_csv((os.path.join(wdir, 'df_day.csv')), index=False, compression=compr)
         if 'eir_om' in df_day:
-            df_day = df_day[
-                ['index', 'seed', 'survey', 'days', 'year', 'ageGroup', 'InputEIR', 'SimulatedEIR', 'nTransmit',
-                 'cm_clinical',
-                 'seasonality', 'scen_id', 'entomology_mode', 'num_seeds', 'cm_start', 'cm_severe',
-                 'eir_om', 'eir_scalar_timestep_5day', 'eir_scalar_om', 'carrying_capacity_step']]
-            df_day = df_day.rename(columns={'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR', 'days': 'timestep',
+            df_day = df_day[columns_to_keep + cc_step_var]
+            df_day = df_day.rename(columns={'SimulatedEIR': 'simulatedEIR',
+                                            'InputEIR': 'inputEIR',
+                                            'Vector_Nv': 'n_total_mos_pop',
+                                            'Vector_Sv': 'n_infectious_mos',
+                                            'days': 'timestep',
                                             'eir_scalar_timestep_5day': 'eir_scalar_timestep',
-                                            'eir_scalar_om': 'eir_scalar', 'eir_om': 'eir'})
+                                            'eir_scalar_om': 'eir_scalar',
+                                            'eir_om': 'eir'})
         else:
-            df_day = df_day[
-                ['index', 'seed', 'survey', 'days', 'year', 'ageGroup', 'InputEIR', 'SimulatedEIR', 'nTransmit',
-                 'cm_clinical',
-                 'seasonality', 'scen_id', 'entomology_mode', 'num_seeds', 'cm_start', 'cm_severe',
-                 'eir', 'eir_scalar_timestep_5day', 'eir_scalar_om', 'carrying_capacity_step']]
-            df_day = df_day.rename(columns={'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR', 'days': 'timestep',
-                                            'eir_scalar_timestep_5day': 'eir_scalar_timestep',
-                                            'eir_scalar_om': 'eir_scalar'})
+            df_day = df_day[columns_to_keep]
+            df_day = df_day.rename(columns={'SimulatedEIR': 'simulatedEIR',
+                                            'InputEIR': 'inputEIR',
+                                            'Vector_Nv': 'n_total_mos_pop',
+                                            'Vector_Sv': 'n_infectious_mos',
+                                            'days': 'timestep'})
         print(f'Saving EIR_daily.csv to {wdir}')
         df_day.to_csv((os.path.join(wdir, 'EIR_daily.csv')), index=False, compression=compr)
+
+        # Monthly aggregation for survey_step_days = 5
+        df_mth = df.groupby(['index', 'year', 'month', 'measure'], as_index=False).value.sum()
+        df_mth = add_measure_names(df_mth, mm)
+        df_mth = pivot_wider(df_mth, index_cols=['index', 'month', 'year'])
+        df_mth = df_mth.merge(scen_df, on=['index'],  how='inner')
+        df_mth = df_mth.rename(columns={'SimulatedEIR': 'simulatedEIR',
+                                        'InputEIR': 'inputEIR',
+                                        'Vector_Nv': 'n_total_mos_pop',
+                                        'Vector_Sv': 'n_infectious_mos'})
+
+        print(f'Saving EIR_mth.csv to {wdir}')
+        df_mth.to_csv((os.path.join(wdir, 'EIR_mth.csv')), index=False, compression=compr)
 
     if survey_step_days == 30:
         # Monthly aggregation
         df_mth = add_measure_names(df, mm)
-        df_mth = pivot_wider(df_mth, index_cols=['index', 'survey', 'year', 'month', 'ageGroup'])
+        df_mth = pivot_wider(df_mth, index_cols=['index', 'survey', 'year', 'month'])
         df_mth = df_mth.merge(scen_df, on='index', how='inner')
-        df_mth = df_mth.rename(
-            columns={'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR', 'Vector_Nv': 'n_total_mos_pop',
-                     'Vector_Sv': 'n_infectious_mos'})
+        df_mth = df_mth.rename(columns={'SimulatedEIR': 'simulatedEIR',
+                                        'InputEIR': 'inputEIR',
+                                        'Vector_Nv': 'n_total_mos_pop',
+                                        'Vector_Sv': 'n_infectious_mos'})
+
         print(f'Saving EIR_mth.csv to {wdir}')
         df_mth.to_csv((os.path.join(wdir, 'EIR_mth.csv')), index=False, compression=compr)
 
     # Yearly aggregation - keep years
-    nyears = len(df['year'].unique())
-    df_yr = df.groupby(['index', 'year', 'measure', 'ageGroup'], as_index=False).value.sum()
+    df_yr = df.groupby(['index', 'year', 'measure'], as_index=False).value.sum()
     df_yr = add_measure_names(df_yr, mm)
-    df_yr = pivot_wider(df_yr, index_cols=['index', 'year', 'ageGroup'])
+    df_yr = pivot_wider(df_yr, index_cols=['index', 'year'])
     df_yr = df_yr.merge(scen_df, on='index', how='inner')
-    df_yr = df_yr.rename(
-        columns={'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR', 'Vector_Nv': 'n_total_mos_pop',
-                 'Vector_Sv': 'n_infectious_mos'})
+    df_yr = df_yr.rename(columns={'SimulatedEIR': 'simulatedEIR',
+                                  'InputEIR': 'inputEIR',
+                                  'Vector_Nv': 'n_total_mos_pop',
+                                  'Vector_Sv': 'n_infectious_mos'})
 
     print(f'Saving EIR_yr.csv to {wdir}')
-    df_yr.to_csv((os.path.join(wdir, 'EIR_yr.csv')), index=False, compression=compr)  ## annual average
+    df_yr.to_csv((os.path.join(wdir, 'EIR_yr.csv')), index=False, compression=compr)
 
     # Yearly aggregation - mean
     nyears = len(df['year'].unique())
-    df_yr = df.groupby(['index', 'measure', 'ageGroup'], as_index=False).value.sum()
+    df_yr = df.groupby(['index', 'measure'], as_index=False).value.sum()
     df_yr['value'] = df_yr['value'] / nyears
     df_yr = add_measure_names(df_yr, mm)
-    df_yr = pivot_wider(df_yr, index_cols=['index', 'ageGroup'])
+    df_yr = pivot_wider(df_yr, index_cols=['index'])
     df_yr = df_yr.merge(scen_df, on='index', how='inner')
-    df_yr = df_yr.rename(
-        columns={'SimulatedEIR': 'simulatedEIR', 'InputEIR': 'inputEIR', 'Vector_Nv': 'n_total_mos_pop',
-                 'Vector_Sv': 'n_infectious_mos'})
+    df_yr = df_yr.rename(columns={'SimulatedEIR': 'simulatedEIR',
+                                  'InputEIR': 'inputEIR',
+                                  'Vector_Nv': 'n_total_mos_pop',
+                                  'Vector_Sv': 'n_infectious_mos'})
 
     print(f'Saving EIR.csv to {wdir}')
-    df_yr.to_csv((os.path.join(wdir, 'EIR.csv')), index=False, compression=compr)  ## annual average
+    df_yr.to_csv((os.path.join(wdir, 'EIR.csv')), index=False,
+                 compression=compr)  ## annual average - do we need to keep this?
 
 
 def BaseAnalyzer(exp, mm, saveExtract=False, compr='infer'):
@@ -743,6 +771,135 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     adf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv')), index=False)
 
 
+def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index'], age_groups_aggregates=None,
+                          survey_step_days=1):
+    """
+    Run the FiveDayAgebinAnalyzer for OpenMalaria experiments to generate
+    and save a results dataframe for defined age groups over time (5day and years).
+
+    Args:
+        exp (object): The experiment object.
+        mmi (object): The measure map object.
+        start_year (int):  The starting year for the surveys (i.e. start year of monitoring period).
+        grp_channels (list, optional): The group channels for grouping the data (default: ['ageGroup', 'index']).
+        age_groups_aggregates (list, optional): List of age group aggregates. Defaults to None.
+        survey_step_days (int, optional): Number of days between survey steps. Defaults to 30.
+
+    Saves:
+        PfPR_ClinicalIncidence_5day.csv
+
+    Returns:
+        None
+    """
+
+    print("Running FiveDayAgebinAnalyzer...", flush=True)
+
+    # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
+    if not age_groups_aggregates:
+        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
+                                 [0, 100]]
+
+    # Read the scenario data from the CSV file
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
+
+    # Read the monthly EIR data from the CSV file and compute the mean for each index and timestep
+    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
+    eir_df = eir_df.groupby(['index', 'survey'], as_index=False)[
+        ['inputEIR', 'simulatedEIR', 'n_total_mos_pop', 'n_infectious_mos']].mean()
+
+    # Define age groups and labels
+    age_bins = exp.agebins
+
+    # Convert the experiment data to a DataFrame and format it
+    df = to_df(exp)
+    df = format_df(df)
+    df.drop(df[df.ageGroup == 0].index, inplace=True)
+    df.drop(df[df.ageGroup > 1000].index, inplace=True)
+
+    # get number of years aggregated
+    n_surveys_per_year = np.floor((365 / 30))
+
+    # Sum the surveys for each measure, timestep,and age group
+    df = df.groupby(['index', 'survey', 'measure', 'ageGroup'], as_index=False).value.sum()
+
+    # for sum of annual pop not sum of years+months.
+    df.loc[(df.measure == mmi['nHost']), 'value'] = df[(df.measure == mmi['nHost'])].value / n_surveys_per_year
+    df.loc[(df.measure == mmi['nPatent']), 'value'] = df[(df.measure == mmi['nPatent'])].value / n_surveys_per_year
+
+    # Adjust nHost for age groups 0 to 1 based on yearsAtRisk
+    yearsAtRisk = np.array(age_bins)
+    yearsAtRisk[yearsAtRisk > 1] = 1
+    df.loc[(df.measure == mmi['nHost']), 'value'] *= yearsAtRisk[df[(df.measure == mmi['nHost'])].ageGroup - 1]
+    sdf = df
+
+    adf = pd.DataFrame()
+    # Iterate over day, month, and year
+    for (t), group in sdf.groupby(['survey']):
+        g = sdf.loc[(sdf['survey'] == t)]
+
+        # Filter and aggregate data for age groups 2 to 10
+        age2to10 = g['ageGroup'].apply(lambda x: age_bins[x - 1] > 2 and age_bins[x - 1] <= 10)
+        nHost2to10 = g[(g.measure == mmi['nHost']) & age2to10].groupby(['index']).value.sum()
+        nPatent2to10 = g[(g.measure == mmi['nPatent']) & age2to10].groupby(['index']).value.sum()
+
+        grp_channels = [ch for ch in grp_channels if ch != 'ageGroup']
+        pfpr2to10 = ((nPatent2to10 / nHost2to10).groupby(grp_channels).mean()).rename("prevalence_2to10")
+
+        # Analyze data for each age group on the plot
+        for i in range(0, len(age_groups_aggregates)):
+            ages = age_groups_aggregates[i]
+            ageCond = g['ageGroup'].apply(lambda x: age_bins[x - 1] > ages[0] and age_bins[x - 1] <= ages[1])
+
+            ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
+
+            # Compute various measures for the current age group
+            nPatentInfections = 0
+            for m in ['nPatent']:
+                nPatentInfections += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
+
+            nClinicalCases = 0
+            for m in ['nUncomp']:
+                nClinicalCases += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
+
+            nSevereCases = 0
+            for m in ['nSevere']:
+                nSevereCases += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
+
+            nDeaths = 0
+            for m in ['expectedDirectDeaths', 'expectedIndirectDeaths']:
+                nDeaths += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
+
+            nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
+
+            prevalence = nPatentInfections / nHost  # (prevalence)
+            clinical_incidence = nClinicalCases / nHost  # (events per person per year) - for each 5day
+            severe_incidence = nSevereCases / nHost  # (events per person per year) - for each 5day
+            mortality = nDeaths / nHost  # (events per person per year)- for each 5day
+
+            # Create a DataFrame with the analysis results for the current age group
+            simdata = pd.DataFrame({'nHost': nHost * n_surveys_per_year,
+                                    'prevalence_2to10': pfpr2to10,
+                                    'prevalence': prevalence,
+                                    'clinical_incidence': clinical_incidence,
+                                    'severe_incidence': severe_incidence,
+                                    'mortality': mortality})
+            simdata['ageGroup'] = ageCond_labels
+            simdata['survey'] = t
+            adf = pd.concat([adf, simdata])
+
+    # Merge the analysis results with the scenario and EIR data
+    adf.reset_index(inplace=True)
+    adf = adf.merge(scen_df, on='index', how='inner')
+
+    adf = adf.merge(eir_df, on=['index', 'survey'], how='inner')
+
+    # adf['date'] = adf.apply(lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(days=int(x['day']) - 1), axis=1)
+    adf = survey_to_date(adf, survey_step_days=survey_step_days, start_year=start_year)
+
+    # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_5day.csv'
+    print(f'Saving PfPR_ClinicalIncidence_5day.csv to {wdir}')
+    adf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_5day.csv')), index=False)
+
 
 def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     """
@@ -889,6 +1046,11 @@ if __name__ == "__main__":
     ## Aggregated timeseries per age groups
     if 'benchmark' in exp.analyzer_list:
         BenchmarkAnalyzer(exp, mmi, survey_step_days=survey_steps, age_groups_aggregates=age_groups_aggregates)
+
+    ## 5 day timeseries per age groups
+    if '5day' in exp.analyzer_list:
+        FiveDayAgebinAnalyzer(exp, mmi, start_year=start_year, survey_step_days=survey_steps,
+                              age_groups_aggregates=age_groups_aggregates)
 
     ## Monthly timeseries per age groups
     if 'monthly' in exp.analyzer_list:
