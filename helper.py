@@ -168,10 +168,10 @@ def initialize_exp(args, manifest):
     # Specify OpenMalaria XML and survey step, MalSim simulation setup
     # Note if, interventions are specified in intervention_list, these will get updated via get_intervention_params
     exp.om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
-    exp.om_survey_step = '30d'
+    exp.om_survey_step = '5d'  #'30d'
     exp.MalSim_script = 'malsim_benchmarking_exercise.R'
     exp.analyzer_script = ['analyze_sim.py']
-    exp.analyzer_list = ['all_age_analyzer',  'annual', 'monthly', 'benchmark']  # ['all_age_analyzer', 'daily','annual','monthly','benchmark'.'cc_step']
+    exp.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'benchmark']  # ['all_age_analyzer', '5day', 'annual','monthly','benchmark'.'cc_step']
 
     # Flag to select whether to run with (dynamic) or without vector model (forced)
     exp.entomology_mode = 'dynamic'  # dynamic, forced
@@ -281,6 +281,12 @@ def check_exp_inputs(exp):
     Raises:
         ValueError: If input parameters are invalid.
     """
+
+    if exp.om_survey_step =='30d' and "5day" in exp.analyzer_list :
+            raise Warning('OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
+
+    if exp.om_survey_step =='30d' and "cc_step" in exp.intervention_list :
+            raise ValueError('cc_step interventions requires 5d survey steps in OpenMalaria')
 
     if exp.emod_step:
         if exp.num_seeds_burnin != 1:

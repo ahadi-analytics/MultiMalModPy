@@ -43,6 +43,7 @@ if args.emodstep in ['pickup', 'new_pickup']:
 else:
     # Creating an Experiment object and setting its attributes, saved as exp.obj
     exp = initialize_exp(args, manifest)
+
     # Define simulation population and seeds
     if exp.overwrite:
         exp.pop_size = 10000  # 1000 for testing
