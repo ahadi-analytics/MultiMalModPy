@@ -79,41 +79,43 @@ def get_emodom_df(wdir, emodom, yr = False, mth=False, daily=False,  custom_name
     if os.path.isfile(os.path.join(wdir, fname)):
         df = pd.read_csv((os.path.join(wdir, fname)), low_memory=False)
     else:
-        if 'OpenMalaria' in emodom:
-            om_df = pd.read_csv((os.path.join(wdir, f'om/{fname}')), usecols=cols_to_keep)
-            om_df['emodom'] = 'OpenMalaria'
-
-        if 'EMOD' in emodom:
-            em_df = pd.read_csv((os.path.join(wdir, f'em/{fname}')), usecols=cols_to_keep)
-            em_df['emodom'] = 'EMOD'
-            em_df['seed'] = em_df['seed'] + 1  # increase the seed count by one to make sure seed number is consistent across models
-            #em_df = em_df[em_df['eir'] >= 1]  # get rid of eirs <1 as EMOD can't sustain malaria at an eir less than 1, for pop of 10,000.
-
-        if 'MalSim' in emodom:
-            ms_df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')), usecols=cols_to_keep)
-            ms_df['emodom'] = 'MalSim'
-
-        if 'EMOD' in emodom and 'OpenMalaria' in emodom and 'MalSim' in emodom:
-            df = pd.concat([em_df, om_df])
-            df = pd.concat([df, ms_df])
-        elif 'OpenMalaria' in emodom and 'EMOD' in emodom and 'MalSim' not in emodom:
-            df = pd.concat([em_df, om_df])
-        elif 'OpenMalaria' in emodom and 'MalSim' in emodom and 'EMOD' not in emodom:
-            df = pd.concat([ms_df, om_df])
-        elif 'EMOD' in emodom and 'MalSim' in emodom and 'OpenMalaria' not in emodom:
-            df = pd.concat([em_df, ms_df])
-        elif 'OpenMalaria' and 'EMOD' not in emodom and 'MalSim' not in emodom:
-            wdir = os.path.join(wdir, 'om')
-            df = om_df
-        elif 'EMOD' and 'OpenMalaria' not in emodom and 'MalSim' not in emodom:
-            wdir = os.path.join(wdir, 'em')
-            df = em_df
-        elif 'MalSim' and 'OpenMalaria' not in emodom and 'EMOD' not in emodom:
-            wdir = os.path.join(wdir, 'MalSim')
-            df = ms_df
+        if len(emodom)==1:
+            if 'OpenMalaria' in emodom:
+                df = pd.read_csv((os.path.join(wdir, f'om/{fname}')), usecols=cols_to_keep)
+            elif 'EMOD' in emodom:
+                df = pd.read_csv((os.path.join(wdir, f'em/{fname}')), usecols=cols_to_keep)
+            elif 'MalSim' in emodom:
+                df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')), usecols=cols_to_keep)
+            else:
+                raise ValueError(
+                    f"Please specify emodom as some combination of EMOD, OpenMalaria, and MalSim (list), {emodom} not valid")
         else:
-            raise ValueError(
-                f"Please specify emodom as some combination of EMOD, OpenMalaria, and MalSim (list), {emodom} not valid")
+            if 'OpenMalaria' in emodom:
+                om_df = pd.read_csv((os.path.join(wdir, f'om/{fname}')), usecols=cols_to_keep)
+                om_df['emodom'] = 'OpenMalaria'
+
+            if 'EMOD' in emodom:
+                em_df = pd.read_csv((os.path.join(wdir, f'em/{fname}')), usecols=cols_to_keep)
+                em_df['emodom'] = 'EMOD'
+                em_df['seed'] = em_df['seed'] + 1  # increase the seed count by one to make sure seed number is consistent across models
+                #em_df = em_df[em_df['eir'] >= 1]  # get rid of eirs <1 as EMOD can't sustain malaria at an eir less than 1, for pop of 10,000.
+
+            if 'MalSim' in emodom:
+                ms_df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')), usecols=cols_to_keep)
+                ms_df['emodom'] = 'MalSim'
+
+            if 'EMOD' in emodom and 'OpenMalaria' in emodom and 'MalSim' in emodom:
+                df = pd.concat([em_df, om_df])
+                df = pd.concat([df, ms_df])
+            elif 'OpenMalaria' in emodom and 'EMOD' in emodom and 'MalSim' not in emodom:
+                df = pd.concat([em_df, om_df])
+            elif 'OpenMalaria' in emodom and 'MalSim' in emodom and 'EMOD' not in emodom:
+                df = pd.concat([ms_df, om_df])
+            elif 'EMOD' in emodom and 'MalSim' in emodom and 'OpenMalaria' not in emodom:
+                df = pd.concat([em_df, ms_df])
+            else:
+                raise ValueError(
+                    f"Please specify emodom as some combination of EMOD, OpenMalaria, and MalSim (list), {emodom} not valid")
 
         if 'ageGroup' in df.columns:
             try:
@@ -131,7 +133,7 @@ def get_emodom_df(wdir, emodom, yr = False, mth=False, daily=False,  custom_name
             df = df[df['simulatedEIR'] > 0]
             df = df[df['simulatedEIR'].notnull()]
         if not daily:
-            df.to_csv(os.path.join(wdir, fname), index=False)
+            df.to_csv(os.path.join(wdir, f'{fname}'), index=False)
     return df, wdir
 
 

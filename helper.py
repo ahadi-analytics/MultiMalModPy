@@ -175,8 +175,7 @@ def initialize_exp(args, manifest):
 
     # Flag to select whether to run with (dynamic) or without vector model (forced)
     exp.entomology_mode = 'dynamic'  # dynamic, forced
-    exp.seasonality = [
-        'seasonal']  # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
+    exp.seasonality = ['perennial']  # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
     exp.mem_increase_factor = 5.0  # scaling factor on default memory requested
 
     # Define age groups to report/monitor in simulations and to aggregate in output
