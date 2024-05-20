@@ -11,6 +11,9 @@ library(scales)
 library(ggplot2)
 library(cowplot)
 
+emodom_cols_list <-list('EMOD'='#1b9e77ff','OpenMalaria'='#7570b3ff','malariasimulation'='#d95f02ff')
+emodom_cols <- c('#1b9e77ff','#7570b3ff','#d95f02ff')
+
 #' Load and combine data from EMOD and/or OpenMalaria benchmark output files.
 #'
 #' This function loads and combines data from the specified EMOD and/or OpenMalaria
@@ -32,47 +35,91 @@ library(cowplot)
 #' emodom <- c("OpenMalaria", "EMOD")
 #' result <- get_emodom_df(wdir, emodom, mth = TRUE)
 #'
-get_emodom_df <- function(wdir, emodom, mth = FALSE, timeseries = FALSE, fname = NULL) {
-
-  # Define filename based on options
-  if (is.null(fname)) {
-    fname <- 'Benchmark.csv'
-    if (mth & !timeseries) fname <- 'Benchmark_mth.csv'
-    if (!mth & timeseries) fname <- 'PfPR_ClinicalIncidence_yr.csv'
-    if (mth & timeseries) fname <- 'PfPR_ClinicalIncidence_mth.csv'
+get_emodom_df <- function(wdir, emodom, mth = FALSE, daily = FALSE, timeseries = FALSE, condensed = FALSE) {
+  cols_to_keep <- NULL
+  fname <- 'Benchmark.csv'
+  if (mth) {
+    fname <- 'Benchmark_mth.csv'
   }
-  # Load data for OpenMalaria if specified
-  if ('OpenMalaria' %in% emodom) {
-    om_df <- fread(file.path(wdir, 'om', fname))
-    om_df$emodom <- 'OpenMalaria'
-  }
-
-  # Load data for EMOD if specified
-  if ('EMOD' %in% emodom) {
-    em_df <- fread(file.path(wdir, 'em', fname))
-    em_df$emodom <- 'EMOD'
+  if (timeseries) {
+    fname <- 'PfPR_ClinicalIncidence_yr.csv'
+    if (mth) {
+      fname <- 'PfPR_ClinicalIncidence_mth.csv'
+    }
+    if (daily) {
+      fname <- 'PfPR_ClinicalIncidence_daily.csv'
+      cols_to_keep <- c('index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
+                        'clinical_incidence', 'severe_incidence', 'seed', 'carrying_capacity_step')
+    }
   }
 
-  # Combine data based on conditions
-  if ('OpenMalaria' %in% emodom && 'EMOD' %in% emodom) {
-    df <- rbindlist(list(em_df, om_df),fill=TRUE)
-  } else if ('OpenMalaria' %in% emodom && !('EMOD' %in% emodom)) {
-    wdir <- file.path(wdir, 'om')
-    df <- om_df
-  } else if ('EMOD' %in% emodom && !('OpenMalaria' %in% emodom)) {
-    wdir <- file.path(wdir, 'em')
-    df <- em_df
+  if (file.exists(file.path(wdir, fname))) {
+    df <- fread(file.path(wdir, fname), stringsAsFactors = FALSE)
   } else {
-    stop(paste("Please specify emodom as EMOD and/or OpenMalaria (list),", paste0(emodom, collapse=','), "not valid"))
-  }
+    if ('OpenMalaria' %in% emodom) {
+      om_df <- fread(file.path(wdir, paste('om', fname, sep = '/')), colClasses = cols_to_keep)
+      om_df$emodom <- 'OpenMalaria'
+    }
+    if ('EMOD' %in% emodom) {
+      em_df <- fread(file.path(wdir, paste('em', fname, sep = '/')), colClasses = cols_to_keep)
+      em_df$emodom <- 'EMOD'
+      em_df$seed <- em_df$seed + 1
+      em_df <- em_df[em_df$eir >= 1,]
+    }
+    if ('MalSim' %in% emodom) {
+      ms_df <- fread(file.path(wdir, paste('MalSim', fname, sep = '/')), colClasses = cols_to_keep)
+      ms_df$emodom <- 'MalSim'
+    }
 
-  # Convert ageGroup to factor with ordered levels if present
-  if ('ageGroup' %in% colnames(df)) {
-    age_grps <- unique(df$ageGroup)
-    df$ageGroup <- factor(df$ageGroup, levels = age_grps)
-  }
+    if ('EMOD' %in% emodom &
+      'OpenMalaria' %in% emodom &
+      'MalSim' %in% emodom) {
+      df <- em_df %>% bind_rows(om_df) %>% bind_rows(ms_df)
+    } else if ('OpenMalaria' %in% emodom &
+      'EMOD' %in% emodom &
+      !('MalSim' %in% emodom)) {
+      df <-  em_df %>% bind_rows(om_df)
+    } else if ('OpenMalaria' %in% emodom &
+      'MalSim' %in% emodom &
+      !('EMOD' %in% emodom)) {
+      df <- ms_df %>% bind_rows(om_df)
+    } else if ('EMOD' %in% emodom &
+      'MalSim' %in% emodom &
+      !('OpenMalaria' %in% emodom)) {
+      df <- ms_df %>% bind_rows(em_df)
+    } else if ('OpenMalaria' %in% emodom &
+      !('EMOD' %in% emodom) &
+      !('MalSim' %in% emodom)) {
+      wdir <- file.path(wdir, 'om')
+      df <- om_df
+    } else if ('EMOD' %in% emodom &
+      !('OpenMalaria' %in% emodom) &
+      !('MalSim' %in% emodom)) {
+      wdir <- file.path(wdir, 'em')
+      df <- em_df
+    } else if ('MalSim' %in% emodom &
+      !('OpenMalaria' %in% emodom) &
+      !('EMOD' %in% emodom)) {
+      wdir <- file.path(wdir, 'MalSim')
+      df <- ms_df
+    } else {
+      stop(paste("Please specify emodom as some combination of EMOD, OpenMalaria, and MalSim (list), ", emodom, " not valid"))
+    }
 
-  # Return results as a list
+    if ('ageGroup' %in% colnames(df)) {
+      df$ageGroup <- factor(df$ageGroup, levels = unique(df$ageGroup))
+    }
+    if (condensed) {
+      eir_list <- c(1, 5, 10, 50, 200, 1000)
+      df <- df[df$eir %in% eir_list,]
+    }
+    warning_df <- df[df$simulatedEIR == 0,]
+    if (nrow(warning_df) > 0 & !daily) {
+      print('Warning: some eirs had simulated EIRS of 0, and were removed')
+      df <- df[df$simulatedEIR > 0,]
+      df <- df[complete.cases(df$simulatedEIR),]
+    }
+  }
   return(df)
 }
 
@@ -161,12 +208,12 @@ plot_combine <- function(plist, ncol = 1, legend_position = 'right', rel_dims = 
 #' @importFrom base unique
 #'
 f_compareNames <- function(A, B, showNames = "both") {
-        #' Function to compare two list of strings
-        #' @param A list of strings
-        #' @param B list of strings to compare to
-        #' @param showNames which names to show options are both, AB, BA
-        #' @return nothing, names are printed in console
-        #'
+          #' Function to compare two list of strings
+          #' @param A list of strings
+          #' @param B list of strings to compare to
+          #' @param showNames which names to show options are both, AB, BA
+          #' @return nothing, names are printed in console
+          #'
   A = unique(as.character(A))
   B = unique(as.character(B))
 
