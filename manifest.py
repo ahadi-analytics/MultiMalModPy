@@ -45,9 +45,9 @@ if hpc == 'NUCLUSTER':
         OM_PATH = "/projects/b1139/OpenMalaria/om_v46/"
     else:
         raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
-    emod_input_path = '/projects/b1139/emod-om/model-characterization/EMOD/inputs/'
-    om_input_path = '/projects/b1139/emod-om/model-characterization/OpenMalaria/'
-    ms_input_path = '/projects/b1139/emod-om/model-characterization/MalSim/'
+    emod_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/EMOD/inputs')
+    om_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/OpenMalaria/')
+    ms_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/MalSim/')
     if os.name != 'posix':
         output_directory = os.path.join(os.environ['USERPROFILE'], 'NU Malaria Modeling Dropbox/projects/EMOD_OM/simulation_outputs')
         print(f"Setting output_directory for local use: {output_directory}")

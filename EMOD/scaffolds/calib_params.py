@@ -2,12 +2,11 @@ import os
 import pandas as pd
 from functools import partial
 from EMOD.utils import set_param
-import manifest
 # This is primarily seperate from EMO's general function. This will allow  to vary NU's EMOD parameters associated with our within-host calibration efforts.
 
 
 def get_emod_calib_params(exp, scen_df):
-    calib_config_df = pd.read_csv(os.path.join(manifest.emod_input_path, 'emod_best.csv'))
+    calib_config_df = pd.read_csv(exp.emod_input_path, 'emod_best.csv'))
     if exp.emod_step == 'burnin':
         seeds = exp.num_seeds_burnin
     else:

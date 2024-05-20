@@ -160,7 +160,9 @@ def initialize_exp(args, manifest):
     exp.om_version = manifest.om_version
     exp.emod_build = manifest.emod_build
     exp.om_path = manifest.OM_PATH
+    exp.emod_input_path = manifest.emod_input_path
     exp.om_input_path = manifest.om_input_path
+    exp.ms_input_path = manifest.ms_input_path
     exp.job_directory_manifest = manifest.job_directory
     exp.output_directory_manifest = manifest.output_directory
     exp.burnin_directory = None
@@ -203,7 +205,7 @@ def initialize_exp(args, manifest):
     # Name of parameters to vary
     exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']
     if exp.emod_calib_params:
-        calib_config_df = pd.read_csv(os.path.join(manifest.emod_input_path, 'emod_best.csv'))
+        calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, 'emod_best.csv'))
         exp.calib_config_pointer = range(0, len(calib_config_df))  # define rows from calib_params df to run
         del calib_config_df
         exp.sweep_list = exp.sweep_list + ['calib_config_pointer']

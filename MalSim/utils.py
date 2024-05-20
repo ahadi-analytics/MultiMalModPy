@@ -40,7 +40,7 @@ def submit_run_MalSim(exp, t='10:00:00', memG=3):
     r_file_path = os.path.join(ROOT_DIR, exp.MalSim_script)
     r_folder_path = os.path.join(ROOT_DIR, 'R_functions/')
     script_path = os.path.join(exp.job_directory, 'run_MalSim.sh')
-    ms_input_path = f'/home/{exp.user}/model-characterization/MalSim'  # might need to switch to manifest defined ms_input_path if running elsewhere? 
+    ms_input_path = exp.ms_input_path 
     slurmID = '${SLURM_ARRAY_TASK_ID}'
     create_malsim_scenarios(exp)
 
