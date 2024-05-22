@@ -82,10 +82,13 @@ def get_emodom_df(wdir, emodom, yr = False, mth=False, daily=False,  custom_name
         if len(emodom)==1:
             if 'OpenMalaria' in emodom:
                 df = pd.read_csv((os.path.join(wdir, f'om/{fname}')), usecols=cols_to_keep)
+                df['emodom'] = 'OpenMalaria'
             elif 'EMOD' in emodom:
                 df = pd.read_csv((os.path.join(wdir, f'em/{fname}')), usecols=cols_to_keep)
+                df['emodom'] = 'EMOD'
             elif 'MalSim' in emodom:
                 df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')), usecols=cols_to_keep)
+                df['emodom'] = 'MalSim'
             else:
                 raise ValueError(
                     f"Please specify emodom as some combination of EMOD, OpenMalaria, and MalSim (list), {emodom} not valid")
