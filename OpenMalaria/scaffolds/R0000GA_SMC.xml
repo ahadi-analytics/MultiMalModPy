@@ -83,7 +83,30 @@
             <deployment name="SMC"> <!-- Assumed different children recieved SMC at each cycle -->
                 <component id="SMC"/>
                 <timed>
-                @SMC_deployment@
+                <deploy coverage="@smc_coverage@" minAge="0.25" maxAge="5" time="@smc_1_1@"/> 
+                <deploy coverage="@smc_coverage@" minAge="0.25" maxAge="5" time="@smc_1_2@"/>  <!-- Deployment in 2001 -->
+                <deploy coverage="@smc_coverage@" minAge="0.25" maxAge="5" time="@smc_1_3@"/>
+                <deploy coverage="@smc_coverage@" minAge="0.25" maxAge="5" time="@smc_1_4@"/>
+            
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_2_1@"/> 
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_2_2@"/>  <!-- Deployment in 2002 -->
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_2_3@"/>
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_2_4@"/>
+            
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_3_1@"/> 
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_3_2@"/>  <!-- Deployment in 2003 -->
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_3_3@"/>
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_3_4@"/>
+                
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_4_1@"/> 
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_4_2@"/>  <!-- Deployment in 2004 -->
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_4_3@"/>
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_4_4@"/>
+        
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_5_1@"/> 
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_5_2@"/>  <!-- Deployment in 2005 -->
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_5_3@"/>
+                <deploy coverage="@smc_coverage@"  minAge="0.25" maxAge="5" time="@smc_5_4@"/>
                 </timed>
             </deployment>
         </human>
