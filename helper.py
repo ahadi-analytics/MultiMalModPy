@@ -73,6 +73,10 @@ def parse_launch_args():
                         default=False,
                         type=bool,
                         help='Whether to overwrite simulation experiment folders')
+    parser.add_argument('--mpv',
+                        default=1,
+                        type=int,
+                        help='Specify whether to run malariasimulation with parameter variation, needs to be 1 or 0')
     return parser.parse_args()
 
 
@@ -148,6 +152,7 @@ def initialize_exp(args, manifest):
     exp.testrun = args.test
     exp.overwrite = args.overwrite
     exp.emod_calib_params = args.calib # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
+    exp.malariasimulation_parameter_variation = args.mpv 
 
     # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
     exp.user = args.user

@@ -67,26 +67,26 @@ def convert_malsim_to_long(output, age_groups, agebins):
             'prevalence_2to10': ttt['prevalence_2to10'],
             'n_infectious_mos': output['Im_gamb_count'],
             'n_total_mos_pop': output['Sm_gamb_count'] + output['Pm_gamb_count'] + output['Im_gamb_count'],
-            'EIR_gamb': output['EIR_gamb']
+            'EIR_gamb': output['EIR_gamb'],
+            'parameter_variation_number': output['parameter_variation_number']
         }
         result.append(pd.DataFrame(data))
     output = pd.concat(result, ignore_index=True)
     return output
-
 
 def post_processing(exp, job_directory):
     agebins = exp.agebins
     agebins_days = [a * 365 for a in exp.agebins]
 
     columns_to_keep = ['timestep', 'Sm_gamb_count', 'Pm_gamb_count', 'Im_gamb_count', 'EIR_gamb', 'S_count',
-                       'A_count', 'U_count', 'Tr_count', 'D_count', 'index']
+                       'A_count', 'U_count', 'Tr_count', 'D_count', 'index','parameter_variation_number']
 
     columns_with_ages = ['n', 'n_inc', 'p_inc', 'n_inc_clinical', 'p_inc_clinical', 'n_inc_severe', 'p_inc_severe',
                          'p_detect', 'n_detect']
 
     needed_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev',
                        'index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup', 'age_upper', 'EIR_gamb',
-                       'n_infectious_mos', 'n_total_mos_pop']
+                       'n_infectious_mos', 'n_total_mos_pop','parameter_variation_number']
 
     age_groups = [[0, int(agebins_days[0] // 1)]]  # Start with the first age group [0, 182]
     age_groups.extend(
@@ -115,6 +115,7 @@ def post_processing(exp, job_directory):
         output['year'] = output['sim_year'] + exp.start_year
         output = output[output['sim_year'] < exp.monitoring_years]
         output = output[needed_channels]
+        output.to_csv(os.path.join(job_directory, f'malsim_jobs/{i}_daily.csv'), index=False)
         daily = pd.concat([daily, output], axis=0)
 
     daily.to_csv((os.path.join(wdir, 'daily.csv')), index=False)
@@ -446,7 +447,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     df['5day'] = df['day'].apply(map_to_5day_interval)
     df_sum = df.groupby(sweep_variables + ['agebin', '5day',  'year'])[['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
     df_mean = df.groupby(sweep_variables + ['agebin', '5day','year'])[['nPopulation','prevalence_2to10', 'prev']].agg(np.mean).reset_index()
-    df = pd.merge(df_sum, df_mean, on=sweep_variables + ['agebin', '5day','month',  'year'])
+    df = pd.merge(df_sum, df_mean, on=sweep_variables + ['agebin', '5day', 'year'])
     df = df.rename(columns={'5day': 'day'})
 
     ## EIR
