@@ -217,10 +217,10 @@ def initialize_exp(args, manifest):
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
     exp.eir = [1, 5, 10, 50, 200, 1000]
+    #exp.eir = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,52.36,92.85,164.09,290,512.52,905.79,1600.82,2829.15,5000] #for xtemp calculations ONLY
 
     # Output flags for analyzer and plotting
     # 'all', 'ccstep' , 'sampleplots', 'benchmark', 'timeseries', 'agecurves', 'smc' ,
-    exp.plots_to_run = ['benchmark', 'timeseries', 'agecurves']
     return (exp)
 
 
@@ -601,6 +601,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             df['added_importation'] = exp.added_importation
         if exp.entomology_mode == 'dynamic':
             df['x_Temporary_Larval_Habitat'] = eir_to_lhs_regr(df, population=exp.pop_size)
+            #df['x_Temporary_Larval_Habitat'] = df['eir'].astype(float) #for xtemp regression calculations
     return df
 
 
@@ -688,8 +689,8 @@ def write_txt(txtobj, path, fname):
 
 
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                        custom_args='--emodom EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=None,
-                        job_id_MalSim=None,
+                        custom_args='--emodom EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=False,
+                        job_id_MalSim=False, job_id_OpenMalaria = False,
                         job='pyjob', write_only=False):
     """
     Submits a job to run a Python script.
@@ -701,8 +702,9 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
         custom_args (str, optional): Custom arguments to pass to the Python script. Defaults to '--emodom EMOD OpenMalaria MalSim'.
         t (str, optional): Wall time for the job in the format 'HH:MM:SS'. Defaults to '01:00:00'.
         memG (int, optional): Memory required for the job in GB. Defaults to 1.
-        job_id_EMOD (str or None, optional): The job ID to set as dependency for EMOD. Defaults to None.
-        job_id_MalSim (str or None, optional): The job ID to set as dependency for MalSim. Defaults to None.
+        job_id_EMOD (bool, optional): The job ID will be set as a dependency for EMOD. Defaults to False.
+        job_id_MalSim (bool, optional): The job ID will be set as a dependency for malariasimulation. Defaults to False.
+        job_id_OpenMalaria (bool, optional): The job ID will be set as a dependency for OpenMalaria. Defaults to False.
         job (str, optional): Name of the job. Defaults to 'pyjob'.
     """
 
@@ -723,25 +725,36 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     file = open(script_path, 'w')
     file.write(header_post + emodpy_venv + f'\ncd {wdir}' + pycommand)
     file.close()
-
+    dependencies = '--dependency=afterany:'
+    prior_dependency = False
     # Check if job_id is provided as a string to define dependendies
     if not write_only:
-        if isinstance(job_id_EMOD, str):
-            job_id_EMOD = open(os.path.join(exp.job_directory, f'{job_id_EMOD}.txt')).read().strip()
-
-            # Check if job_id_MalSim is provided as a string
-            if isinstance(job_id_MalSim, str):
-                job_id_MalSim = open(os.path.join(exp.job_directory, f'{job_id_MalSim}.txt')).read().strip()
-                dependencies = f'--dependency=afterany:{job_id_EMOD},{job_id_MalSim}'
+        if job_id_EMOD:
+            id_EMOD = open(os.path.join(exp.job_directory, 'job_id_EMODanalyze.txt')).read().strip()
+            dependencies = dependencies + f'{id_EMOD}'
+            prior_dependency = True
+        # Check if job_id_MalSim is provided as a string
+        if job_id_MalSim:
+            id_MalSim = open(os.path.join(exp.job_directory, 'job_id_MalSim_analyze.txt')).read().strip()
+            if prior_dependency:
+                dependencies = dependencies + f',{id_MalSim}'
             else:
-                dependencies = f'--dependency=afterany:{job_id_EMOD}'
-            # Submit job with dependency
-            p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE,
-                               cwd=str(exp.job_directory))
-        else:
+                dependencies = dependencies + f'{id_MalSim}'
+                prior_dependency = True
+        if job_id_OpenMalaria:
+            id_OpenMalaria = open(os.path.join(exp.job_directory, 'job_id_OManalyze.txt')).read().strip()
+            if prior_dependency:
+                dependencies = dependencies + f',{id_OpenMalaria}'
+            else:
+                dependencies = dependencies + f'{id_OpenMalaria}'
+        # Submit job with dependency
+        if not job_id_EMOD and not job_id_MalSim and not job_id_OpenMalaria:
             # Submit job without dependency
             p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE,
                                cwd=str(exp.job_directory))
+        else:
+            p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE,
+                            cwd=str(exp.job_directory))
 
         # Extract the SLURM job ID from the output
         slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
@@ -752,14 +765,19 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
 
 def submit_run_plotters(exp):
     # Optionally, create submission script for standardized plots and run after last simulations finished
-    job_id_EMOD = None
-    job_id_MalSim = None
+    job_id_EMOD = False
+    job_id_MalSim = False
+    job_id_OpenMalaria = False
     if 'EMOD' in exp.models_to_run:
-        job_id_EMOD = 'job_id_EMODanalyze'
+        job_id_EMOD = True
     if 'MalSim' in exp.models_to_run:
-        job_id_MalSim = 'job_id_MalSim_analyze'
+        job_id_MalSim = True
+    if 'OpenMalaria' in exp.models_to_run:
+        job_id_OpenMalaria = True
 
-    plot_names_all = [ 'benchmark', 'timeseries', 'agecurves']  # FIXME 'sampleplots', requires enabled all age plots in analyzer
+    plot_names_all = [ 'benchmark', 'timeseries', 'agecurves']  
+    if 'cc_step' in exp.intervention_list:
+        plot_names_all = ['ccstep']# FIXME 'sampleplots', requires enabled all age plots in analyzer
     ## ['ccstep', 'smc'] custom plotter excluded, as these only apply for specific simulation experiments
     # plot_memrequests_all = {'sampleplots' : 10,'benchmark' :10,'agecurves' :10 ,'ccstep' :20}
 
@@ -769,13 +787,13 @@ def submit_run_plotters(exp):
 
         plot_memG = 20  # current default in submit_run_pyscript
         if plot_name == 'ccstep':
-            plot_memG = 20  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
+            plot_memG = 50  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
 
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                             custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
                             job=f'{plot_name}_plots', memG=plot_memG, write_only=True)
-
     ## Write and run plots specified in exp.plots_to_run
+    exp.plots_to_run = ['ccstep']
     plots_to_run =  [p for p in exp.plots_to_run if not p =='sampleplots'] # exp.plots_to_run
     if exp.plots_to_run[0] == 'all':
         plots_to_run = plot_names_all
@@ -790,7 +808,7 @@ def submit_run_plotters(exp):
 
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                             custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
-                            job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim,
+                            job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim, job_id_OpenMalaria = job_id_OpenMalaria,
                             job=f'{plot_name}_plots', memG=plot_memG)
 
 

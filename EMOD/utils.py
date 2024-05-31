@@ -84,7 +84,7 @@ def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
 
     ## Carrying capacity step change
     if 'cc_step' in intervention_list and emod_step == 'pickup': #Make sure to include the cc_step change only at pickup simulations.
-        eir_df = pd.DataFrame({'WATER_VEGETATION':[row.eir_scalar_emod]}) #TODO: Change our habitat type from water_veg to constant
+        eir_df = pd.DataFrame({'CONSTANT':[row.eir_scalar_emod]}) #TODO: Change our habitat type from water_veg to constant
         add_scale_larval_habitats(camp, df=eir_df,
                                   start_day=row.eir_scalar_timestep_daily,
                                   repetitions = 1)
@@ -120,7 +120,7 @@ def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
 
 
 def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
-                        yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15,20, 125],
+                      yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15,20, 125],
                         prefix='Daily_'):
     """
     Adds daily reports to the simulation task.
@@ -131,9 +131,6 @@ def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
         num_year: The number of years to add monthly reports for.
         tot_year: The total number of years of the simulation.
                   If None, it is set to num_year.
-        yr_plusone: Whether to add an extra year to the reporting.
-                    If True, reports will cover num_year + 1 years.
-                    If False, reports will cover num_year years.
         age_bins: The age bins for reporting.
         prefix: The prefix to be used for the report filenames.
     Raises:
@@ -151,7 +148,7 @@ def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
         sim_year = tot_year - num_year + year
         start = yr_plusone + 365 * sim_year
         desc = prefix + '%d' % (sim_year + sim_start_year)
-        add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365 - 1, age_bins=age_bins,
+        add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365, age_bins=age_bins,
                                    max_number_reports = 366, reporting_interval=1, filename_suffix=desc, pretty_format=False)
 
 def add_5daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
@@ -556,7 +553,7 @@ def set_emod_exp_parameters(config, exp):
             import emod_api.config.default_from_schema_no_validation as dfs
             habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
             habitat1.parameters.Habitat_Type = "CONSTANT"
-            habitat1.parameters.Max_Larval_Capacity = 80000000
+            habitat1.parameters.Max_Larval_Capacity = 20000000
             habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
             malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
             

@@ -295,26 +295,17 @@ if __name__ == "__main__":
     args = parse_args()
     out_dir = args.directory
     emodom = args.emodom
-    #out_dir = '/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240319/sims_dynamic_perennial_cc_step_13_47_45/'
+    #out_dir = '/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240521/sims_dynamic_perennial_cc_step_16_44_34/'
     #emodom = ['EMOD', 'OpenMalaria', 'MalSim']
     if isinstance(emodom, str):
         emodom = [emodom]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR', 'prevalence_2to10']
     sweepvar = 'emodom'
     facet_var = 'ageGroup'
-    if len(exp.eir) > 1 & len(exp.eir) <= 3:
-        facet_var = 'eir'
-    if facet_var == 'ageGroup' and len(exp.cm_clinical) > 1:
-        facet_var = 'cm_clinical'
-    if facet_var == 'ageGroup' and len(exp.seasonality) > 1:
-        facet_var = 'seasonality'
-
-
     daily_channel_list = ['prevalence_2to10', 'prevalence', 'simulatedEIR', 'clinical_incidence',
-                          'severe_incidence']
+                         'severe_incidence', 'n_total_mos_pop']
     facet_daily = 'carrying_capacity_step'
     #daily_eradicaiton(out_dir, emodom, 'prevalence2to10', sweepvar=sweepvar, facet_var=facet_daily)
     daily_timeseries(out_dir, emodom, channel_list=daily_channel_list, sweepvar=sweepvar, facet_var=facet_daily,

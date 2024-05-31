@@ -72,9 +72,6 @@ def get_emodom_df(wdir, emodom, yr = False, mth=False, daily=False,  custom_name
     #                    'clinical_incidence', 'severe_incidence', 'seed']
     if custom_name:
         fname = f'{custom_name}.csv'
-        if custom_name =='CCstep_daily':
-            cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
-                            'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'seed', 'carrying_capacity_step']
 
     if os.path.isfile(os.path.join(wdir, fname)):
         df = pd.read_csv((os.path.join(wdir, fname)), low_memory=False)

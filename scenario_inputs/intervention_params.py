@@ -18,6 +18,18 @@ def cc_step_params(exp, overwrite_setup=True):
     if 'cc_step' not in exp.intervention_list:
         exp.intervention_list = exp.intervention_list + ['cc_step']
 
+    ## Can be useful to allow storing some defaults on how we want to run a specific simulation, without modiyfing in launch_test
+    ## Can also be errorprone between and pickup, default is False, tbd on how/when to use
+    if overwrite_setup:
+        exp.mem_increase_factor = 5.0  # scaling factor on default memory requested
+        exp.pop_size = 10000
+        exp.num_seeds_burnin = 1
+        exp.num_seeds = 20
+        exp.start_year = 1995
+        exp.end_year = 2040
+        exp.emod_step = 'burnin'
+        exp.burnin = 80 # needs to be 80
+
     ## Specific model scaffolds to use
     exp.om_scaffold = "R0000GA_CC_STEP"  # defining which OpenMalaria XML scaffold to use
     exp.om_survey_step = '5d'
@@ -43,18 +55,6 @@ def cc_step_params(exp, overwrite_setup=True):
     ## Analyzer and plotter  to run specific for CC step
     exp.plots_to_run = ['ccstep']
     exp.analyzer_list = ['all_age_analyzer', 'cc_step']
-
-    ## Can be useful to allow storing some defaults on how we want to run a specific simulation, without modiyfing in launch_test
-    ## Can also be errorprone between and pickup, default is False, tbd on how/when to use
-    if overwrite_setup:
-        exp.mem_increase_factor = 5.0  # scaling factor on default memory requested
-        exp.pop_size = 10000
-        exp.num_seeds_burnin = 1
-        exp.num_seeds = 20
-        exp.start_year = 1995
-        exp.end_year = 2040
-        exp.burnin = 80
-
     return exp
 
 

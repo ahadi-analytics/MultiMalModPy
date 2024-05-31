@@ -29,18 +29,20 @@ def eir_to_lhs_regr(df=None, population=1000):
             eir_range = 0
         if seasonality == 'perennial':
             ## these were run for a population of 5000 people
-            glm_byeir = {0: [1.409,4.056], 5: [-1.310,4.494], 30: [-7.675,5.304], 100: [-26.841,5.261]}
+            glm_byeir = {0: [-5.08,7.30], 5: [-6.740,5.819], 30: [-10.306,6.376], 100: [-55.430,7.271]}
+            base_pop = 10000
 
         elif seasonality == 'seasonal':
             ## these were run for a population of 5000 people
             glm_byeir = {0: [3.456, 3.286], 5: [1.616,3.956], 30: [-10.247, 4.843], 100: [-11.277, 4.957]} 
+            base_pop = 5000
             
         else:
             raise ValueError(f'{seasonality} is not a valid seasonality')
             
         # Calculate LHS using regression model
         lhs = glm_byeir[eir_range][0] + float(eir) * glm_byeir[eir_range][1]
-        lhs = lhs / (5000 / population)
+        lhs = lhs / (base_pop / population)
         if lhs <= 0:
             lhs = 0.5 #this is a precaution, however we don't expect lhs values to be less than 0.5, we just don't want them to be 0.
         if lhs >= 10000:

@@ -114,24 +114,28 @@ def survey_to_date(df, survey_step_days=30, start_year=0):
     # 5day timesteps
     if survey_step_days == 5:
         df['days'] = df['survey'] * survey_step_days
-        df['month'] = np.floor(df['days'] / (365 / 12)) + 1
+        df['month'] = np.floor(df['days'] / (365.0001 / 12)) + 1
         df['month'] = df['month'] % 12  # Ricky recently updated this line (df['survey'] % 12) to correctly reflect the months
         df.loc[df['month'] == 0, 'month'] = 12
         df['year'] = (df['days'] / 365.00000001).apply(np.floor)
+        df['year'] = df['year'] + start_year
+        df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1) #TODO we will want to find a way to make the date more accurate for the 5day reporter.
     # Monthly timesteps
     elif survey_step_days == 30:
         df['days'] = df['survey'] * survey_step_days
         df['month'] = df['survey'] % 12
         df.loc[df['month'] == 0, 'month'] = 12
         df['year'] = (df['days'] / 360.00000001).apply(np.floor)
+        df['year'] = df['year'] + start_year
+        df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
     # Annual timesteps
     elif survey_step_days == 365:
         df['year'] = df['survey']
         df['month'] = 1
+        df['year'] = df['year'] + start_year
+        df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
     else:
         raise ValueError("survey_step_days must be 30 or 365")
-    df['year'] = df['year'] + start_year
-    df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
     return df
 
 
@@ -690,7 +694,7 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
 
     # get number of years aggregated
     n_surveys_per_year = np.floor((365 / 30))
-    num_years = np.floor(len(df['survey'].unique()) / n_surveys_per_year)
+    #num_years = np.floor(len(df['survey'].unique()) / n_surveys_per_year)
 
     # Sum the surveys for each measure, month, and age group - note the same if survey_step_days = 30, but should also run if survey_step_days = 5
     df = df.groupby(['index',  'year', 'month', 'measure', 'ageGroup'], as_index=False).value.sum()
@@ -1013,7 +1017,10 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     df3 = df3.drop(columns=vector_channels)
     df3 = df3.merge(v, on=grp_channels, how='inner')
     # Save the processed DataFrame to a CSV file
-    print(f'Saving CCstep_daily.csv to {wdir}')
+    print(f'\nSaving outputs to: {wdir}')
+    cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
+                    'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'seed', 'carrying_capacity_step']
+    df3 = df3[cols_to_keep]
     df3.to_csv((os.path.join(wdir, 'CCstep_daily.csv')), index=False, compression=compr)
 
 
@@ -1021,6 +1028,7 @@ if __name__ == "__main__":
     # Parse command line arguments
     args = parse_args()
     jdir = args.directory
+    #jdir = 
     # Load experiment object
     file = open(os.path.join(jdir, "exp.obj"), "rb")
     exp = pickle.load(file)

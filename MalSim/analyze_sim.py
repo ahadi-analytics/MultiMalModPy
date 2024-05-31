@@ -4,7 +4,6 @@ import pickle
 import datetime
 import pandas as pd
 import numpy as np
-import sys
 
 
 def parse_args():
@@ -327,6 +326,75 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     cdf.to_csv((os.path.join(wdir, 'Benchmark.csv')), index=False)
 
 
+def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, cc=False):
+    """
+    Run the CCStepAnalyzer equivalent for malariasimulation experiments.
+    Args:
+        exp: The experiment object.
+        mm: The measure map object.
+        start_year: The starting year for the analysis.
+        compr: The compression type for saving the output CSV file (default: 'infer').
+    Saves: CSV dataframe of simulation outcome metrics per agebin, month and grp_channels
+           surveys aggregated per surveytimestep (year and month)
+    Returns:
+        None
+    """
+    print("Running CCStepAnalyzer...", flush=True)
+
+    # Convert the experiment data to a DataFrame and format it
+    sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
+    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev', 'n_infectious_mos', 'n_total_mos_pop']
+    channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
+                        'age_upper'] + sum_channels + mean_channels
+    # df = load_combined_daily_output(jdir, channels_to_keep)
+    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
+    df = df[channels_to_keep]
+    df['n_prev'] = df['prev'] * df['n']
+    df['incidence'] = (df['n_inc'] / df['n'])
+    df['clinical_incidence'] = (df['n_inc_clinical'] / df['n'])
+    df['severe_incidence'] = (df['n_inc_severe'] / df['n'])
+    age_grps = list(df['ageGroup'].unique())
+    df['ageGroup'] = df['ageGroup'].astype('category')
+    df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
+    df['ageGroup'] = df['ageGroup'].replace('0-0', '0-0.5')
+    df['ageGroup'] = df['ageGroup'].replace('0-1', '0.5-1')
+
+    # Align to common output terminology used
+    df = df.rename({'n': 'nHost', 'n_inc': 'nInfect', 'n_inc_clinical': 'nUncomp', 'n_inc_severe': 'nSevere',
+                    'prev': 'prevalence'}, axis=1)
+
+    df[['agebin_low', 'agebin']] = df['ageGroup'].str.split('-', expand=True)
+
+    ## Add scenarios variables
+    scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
+                           axis=1, errors='ignore')  ## remove EMOD specific columns
+    df = df.merge(scen_df, on=sweep_variables, how='inner')
+    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
+    eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'inputEIR']]
+    df = df.merge(eir_df, on=['index', 'timestep', 'month', 'year'], how='inner')
+
+    # Let's limit the output of daily, so its a little more reasonable for us to process.
+    columns_to_keep = ['index', 'seed', 'ageGroup', 'timestep', 'simulatedEIR', 'n_infectious_mos',
+                       'n_total_mos_pop', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10',
+                       'carrying_capacity_step']
+
+    # Iterate over columns to drop and check if they exist
+    columns_to_keep = [col for col in columns_to_keep if col in df.columns]
+    df = df[columns_to_keep]
+
+    #if 'eir_malsim' in df:
+    #    df = df.rename({'eir_malsim': 'eir', 'eir_scalar_timestep_daily': 'eir_scalar_timestep',
+    #                    'eir_scalar_malsim': 'eir_scalar'})
+
+    # Save the processed DataFrame to a CSV file
+    print(f'\nSaving outputs to: {wdir}')
+    if cc:
+        df.to_csv((os.path.join(wdir, 'CCstep_daily.csv')), index=False)
+    else:
+        df.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_daily.csv')), index=False)
+
+
 def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     """
     Run the FiveDayAgebinAnalyzer for OpenMalaria experiments to generate
@@ -613,72 +681,6 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
     cdf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv')), index=False)
 
 
-def CCStepAnalyzer(jdir, wdir, sweep_variables):
-    """
-    Run the CCStepAnalyzer equivalent for malariasimulation experiments.
-    Args:
-        exp: The experiment object.
-        mm: The measure map object.
-        start_year: The starting year for the analysis.
-        compr: The compression type for saving the output CSV file (default: 'infer').
-    Saves: CSV dataframe of simulation outcome metrics per agebin, month and grp_channels
-           surveys aggregated per surveytimestep (year and month)
-    Returns:
-        None
-    """
-    print("Running CCStepAnalyzer...", flush=True)
-
-    # Convert the experiment data to a DataFrame and format it
-    sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
-    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev', 'n_infectious_mos', 'n_total_mos_pop']
-    channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
-                        'age_upper'] + sum_channels + mean_channels
-    # df = load_combined_daily_output(jdir, channels_to_keep)
-    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
-    df = df[channels_to_keep]
-    df['n_prev'] = df['prev'] * df['n']
-    df['incidence'] = (df['n_inc'] / df['n'])
-    df['clinical_incidence'] = (df['n_inc_clinical'] / df['n'])
-    df['severe_incidence'] = (df['n_inc_severe'] / df['n'])
-    age_grps = list(df['ageGroup'].unique())
-    df['ageGroup'] = df['ageGroup'].astype('category')
-    df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
-    df['ageGroup'] = df['ageGroup'].replace('0-0', '0-0.5')
-    df['ageGroup'] = df['ageGroup'].replace('0-1', '0.5-1')
-
-    # Align to common output terminology used
-    df = df.rename({'n': 'nHost', 'n_inc': 'nInfect', 'n_inc_clinical': 'nUncomp', 'n_inc_severe': 'nSevere',
-                    'prev': 'prevalence'}, axis=1)
-
-    df[['agebin_low', 'agebin']] = df['ageGroup'].str.split('-', expand=True)
-
-    ## Add scenarios variables
-    scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
-                           axis=1, errors='ignore')  ## remove EMOD specific columns
-    df = df.merge(scen_df, on=sweep_variables, how='inner')
-    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
-    eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'inputEIR']]
-    df = df.merge(eir_df, on=['index', 'timestep', 'month', 'year'], how='inner')
-
-    # Let's limit the output of daily, so its a little more reasonable for us to process.
-    columns_to_keep = ['index', 'seed', 'ageGroup', 'timestep', 'eir_malsim', 'simulatedEIR', 'n_infectious_mos',
-                       'n_total_mos_pop', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10',
-                       'carrying_capacity_step', 'eir_scalar_timestep_daily', 'eir_scalar_malsim']
-
-    # Iterate over columns to drop and check if they exist
-    columns_to_keep = [col for col in columns_to_keep if col in df.columns]
-    df = df[columns_to_keep]
-
-    if 'eir_malsim' in df:
-        df = df.rename({'eir_malsim': 'eir', 'eir_scalar_timestep_daily': 'eir_scalar_timestep',
-                        'eir_scalar_malsim': 'eir_scalar'})
-
-    # Save the processed DataFrame to a CSV file
-    print(f'Saving CCstep_daily.csv to {wdir}')
-    df.to_csv((os.path.join(wdir, 'CCstep_daily.csv')), index=False)
-
-
 if __name__ == "__main__":
     args = parse_args()
     jdir = args.job_dir
@@ -723,4 +725,4 @@ if __name__ == "__main__":
     ## Custom analyzers
     if 'cc_step' in exp.analyzer_list:
         InputEIRAnalyzer(jdir, wdir, daily=True)
-        CCStepAnalyzer(jdir, wdir, sweep_variables)
+        DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, cc=True)

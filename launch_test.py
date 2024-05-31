@@ -21,7 +21,7 @@ if args.emodstep in ['pickup', 'new_pickup']:
     exp = pickle.load(file)
     exp.emod_step = 'pickup'
     exp.burnin_directory = args.directory
-    
+    exp.models_to_run = args.models
     exp.emod_serialized_id = args.serializedid
 
     if args.emodstep == 'new_pickup': ## Allows to run a independent pickup from burnin
@@ -35,7 +35,9 @@ if args.emodstep in ['pickup', 'new_pickup']:
         # ...
         exp = get_intervention_params(exp)
         
-
+    exp.plots_to_run = ['benchmark', 'timeseries', 'agecurves']
+    if 'cc_step' in exp.intervention_list:
+        exp.plots_to_run = ['ccstep']
     ##  Note: to simply run a new pickup in same folder and suite, simply change expname
     exp.SUITEname = args.suite
     exp.exp_name = args.expname
@@ -61,6 +63,9 @@ else:
     # Entomology mode: Dynamic EIR configuration if selected
     exp = get_seasonal_eir(exp)
 
+    ## Add intervention params, note, for some interventions this might come only in  pickup, not yet setup
+    exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
+
     # EMOD burn-in and pickup configuration
     exp.emod_serialized_id = ''
     if exp.emod_step == 'burnin':
@@ -69,13 +74,16 @@ else:
         exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.plots_to_run = []
+    if exp.emod_step == None:
+        exp.plots_to_run = ['benchmark', 'timeseries', 'agecurves']
+        if 'cc_step' in exp.intervention_list:
+            exp.plots_to_run = ['ccstep']
 
     # Update exp_name
     exp.exp_name = exp.exp_name.replace('seasonality', exp.seasonality[0])
     exp.exp_name = exp.exp_name.replace('entomologymode', exp.entomology_mode)
     exp.exp_name = exp.exp_name.replace('intervention', '_'.join(exp.intervention_list)) # if empty, the 'intervention' gets removed
-    ## Add intervention params, note, for some interventions this might come only in  pickup, not yet setup
-    exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
+
 
 ## Arguments that chage for pickup
 exp = make_dirs(exp, overwrite=exp.overwrite)
@@ -106,7 +114,6 @@ exp.platform = platform
 
 
 if __name__ == '__main__':
-
     print(f' --------| Running {exp.exp_name} for {", ".join(exp.models_to_run)}: {len(exp.sweep_list)} '
           f'varying parameters: {", ".join(exp.sweep_list)} |--------')
 
@@ -138,9 +145,8 @@ if __name__ == '__main__':
     if 'OpenMalaria' in exp.models_to_run:
         from OpenMalaria.utils import submit_run_OpenMalaria
 
-        submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files
+        submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files  
 
     ## Submit plotters to run using wrapper function in helper.py
     if exp.emod_step != 'burnin':
         submit_run_plotters(exp)
-
