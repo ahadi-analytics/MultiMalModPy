@@ -53,7 +53,7 @@ def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='a
 
         unique_facets = df[facet_var].unique()
         unique_facets = np.sort(unique_facets)
-        color_palette = sns.color_palette('colorblind', len(df[sweepvar].unique()))
+        color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()),4))
         firstPlot = True
         nx = 2
         ny = 3
@@ -145,7 +145,7 @@ def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', face
 
         unique_facets = df[facet_var].unique()
         unique_facets = np.sort(unique_facets)
-        color_palette = sns.color_palette('Dark2', len(df['seed'].unique()))
+        color_palette = sns.color_palette('colorblind', max(len(df['seed'].unique())),4)
         nx = 2
         ny = 3
         f = 1
@@ -221,7 +221,7 @@ def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup'
 
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
-    color_palette = sns.color_palette('colorblind', len(df[sweepvar].unique()))
+    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique())),4)
     firstPlot = True
     nx = 2
     ny = 3

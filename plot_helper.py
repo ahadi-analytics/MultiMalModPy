@@ -166,3 +166,14 @@ def get_x_y(df, grpvar, x_channel, y_channel):
 def convert_to_date(x):
     import datetime
     return datetime.date(2005, 1, 1) + datetime.timedelta(days=x)
+
+
+def color_selector(i, s):
+    if s == 'EMOD':
+        return 0
+    elif s == 'MalSim':
+        return 1
+    elif s == 'OpenMalaria':
+        return 2
+    else:
+        return i

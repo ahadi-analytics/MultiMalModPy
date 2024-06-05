@@ -40,7 +40,7 @@ def prevalence2to10_to_incidence(wdir, emodom, sweepvar = 'emodom', channel='cli
     unique_groups = df[sweepvar].unique()
     unique_groups = np.sort(unique_groups)
     num_colors = len(unique_groups)
-    color_palette = sns.color_palette('colorblind', num_colors)
+    color_palette = sns.color_palette('colorblind', max(num_colors,4))
 
     # for each age group, plot x = prevalence 2_to_10, y = incidences (or prevalence)
     for si, season in enumerate(seasonality):
@@ -51,6 +51,7 @@ def prevalence2to10_to_incidence(wdir, emodom, sweepvar = 'emodom', channel='cli
             adf = sdf[sdf.ageGroup == agroup]
             for mi, model in enumerate(unique_groups):
                 pdf = adf[adf[sweepvar] == model]
+                color_key = color_selector(mi, model)
                 if not pd.isnull(pdf['prevalence_2to10']).all():
                 # plot mean, min and max of seeds
                     xmean, ymean = get_x_y(pdf, 'eir', 'prevalence_2to10', channel)
@@ -59,8 +60,8 @@ def prevalence2to10_to_incidence(wdir, emodom, sweepvar = 'emodom', channel='cli
                         merge_df.sort_values(by='eir', inplace=True)
                     else:
                         merge_df.sort_values(by='prevalence_2to10', inplace=True)
-                    ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=model, color=color_palette[mi])
-                    ax.fill_between(merge_df['prevalence_2to10'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[mi])
+                    ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=model, color=color_palette[color_key])
+                    ax.fill_between(merge_df['prevalence_2to10'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[color_key])
             if channel == "prevalence":
                 y_lim = 1
             else:
@@ -103,7 +104,7 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, sweepvar = 'emod
     unique_groups = df[sweepvar].unique()
     unique_groups = np.sort(unique_groups)
     num_colors = len(unique_groups)
-    color_palette = sns.color_palette('colorblind', num_colors)
+    color_palette = sns.color_palette('colorblind', max(num_colors,4))
     young_child = ['0-0.5','0.5-1','1-2','2-5']
     older_child = ['5-10','10-15']
     adult = ['15-20','20-100']
@@ -115,6 +116,7 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, sweepvar = 'emod
         for ages in ages_list:
             adf = sdf[sdf['ageGroup'].isin(ages)]
             for mi, model in enumerate(unique_groups):
+                color_key = color_selector(mi, model)
                 ax = fig.add_subplot(ny, nx, f)
                 f += 1
                 mdf = adf[adf.emodom == model]
@@ -124,8 +126,8 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, sweepvar = 'emod
                     xmean, ymean = get_x_y(mdf, 'eir', 'prevalence_2to10', channel)
                     merge_df = pd.merge(left = xmean, right = ymean, on = 'eir')
                     merge_df.sort_values(by='prevalence_2to10', inplace=True)
-                    ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=model, color=color_palette[mi])
-                    ax.fill_between(merge_df['prevalence_2to10'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[mi])
+                    ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=model, color=color_palette[color_key])
+                    ax.fill_between(merge_df['prevalence_2to10'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[color_key])
                 if channel == "prevalence":
                     y_lim = 1
                 else:
@@ -159,7 +161,7 @@ def eir_to_outcome(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR',
     seasonality = list(df['seasonality'].unique()) #Identify seasonality patterns to iterate over while graphing
     if sweepvar != 'cm_clinical': #if a case management level has not been assigned, we default to only present the smallest case manaagement value available in the data
         df = df[(df.cm_clinical == np.min(df.cm_clinical))]
-    color_palette = sns.color_palette('colorblind', len(df[sweepvar].unique())) 
+    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()),4)) 
     firstPlot = True
     nx = len(df[sweepvar].unique())
     ny = len(seasonality)
@@ -170,11 +172,12 @@ def eir_to_outcome(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR',
         f += 1
         sdf = df[(df.seasonality == season)]
         for i, (p, pdf) in enumerate(sdf.groupby([sweepvar])):
+            color_key = color_selector(i, p)
             xmean, ymean = get_x_y(pdf, 'eir', eir_val, channel) #get values for x and y axes.
             merge_df = pd.merge(left = xmean, right = ymean, on = 'eir')
             merge_df.sort_values(by=eir_val, inplace=True)
-            ax.plot(merge_df[eir_val], merge_df[channel], '-', linewidth=0.8, label=f"{p}", color=color_palette[i])
-            ax.fill_between(merge_df[eir_val], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[i])
+            ax.plot(merge_df[eir_val], merge_df[channel], '-', linewidth=0.8, label=f"{p}", color=color_palette[color_key])
+            ax.fill_between(merge_df[eir_val], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[color_key])
         if firstPlot:
             lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.2))
             firstPlot = False
@@ -206,7 +209,7 @@ def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical'):
     unique_groups = df[sweepvar].unique()
     unique_groups = np.sort(unique_groups)
     num_colors = len(unique_groups)
-    color_palette = sns.color_palette('colorblind', num_colors)
+    color_palette = sns.color_palette('colorblind', max(num_colors,4))
     firstPlot = True
 
     if sweepvar != 'cm_clinical':
@@ -222,11 +225,12 @@ def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical'):
         sdf = df[(df.seasonality == season)]
         for i, (p, pdf) in enumerate(sdf.groupby([sweepvar])):
             # plot mean, min and max of seeds and age groups
+            color_key = color_selector(i, p)
             xmean, ymean = get_x_y(pdf, 'eir', 'inputEIR', 'simulatedEIR')
             merge_df = pd.merge(left = xmean, right = ymean, on = 'eir')
             merge_df.sort_values(by='inputEIR', inplace=True)
-            ax.plot(merge_df['inputEIR'], merge_df['simulatedEIR'], '-', linewidth=0.8, label=f"{p}", color=color_palette[i])
-            ax.fill_between(merge_df['inputEIR'], merge_df['simulatedEIR_min'], merge_df['simulatedEIR_max'], alpha=0.1, color=color_palette[i])
+            ax.plot(merge_df['inputEIR'], merge_df['simulatedEIR'], '-', linewidth=0.8, label=f"{p}", color=color_palette[color_key])
+            ax.fill_between(merge_df['inputEIR'], merge_df['simulatedEIR_min'], merge_df['simulatedEIR_max'], alpha=0.1, color=color_palette[color_key])
         if firstPlot:
             lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.2))  # , title='Model'
             firstPlot = False

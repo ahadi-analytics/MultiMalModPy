@@ -46,7 +46,7 @@ def build_demog():
     Builds the demographic structure for the EMOD simulation.
     """
     # Create a Demographics object and set location and population size
-    demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
+    demog = Demographics.from_template_node(lat=12.0896, lon=-1.522257, pop=1000, name="Example_Site")
     demog.SetEquilibriumVitalDynamics()
 
     # Set the age distribution for the population
@@ -105,18 +105,6 @@ def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
             smc_campaign(camp, row, start_array)
 
     return {'scen_id': int(row.scen_id)}
-
-
-
-
-#def add_vaccsmc(camp, coverage = 0.0, agemin = 0.3, agemax = 5, access = 1.0 ):
-#    start_days = [ 29, 59, 89, 119]
-#    add_vaccdrug_campaign(camp, campaign_type = "SMC", start_days = start_days, 
-#                          coverages = coverage, 
-#                          target_group = {'agemin': agemin,
-#                                          'agemax': agemax},
-#                          receiv)#
-#
 
 
 def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,

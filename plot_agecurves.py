@@ -59,7 +59,7 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
     firstPlot = True
     unique_facets = df[facet_var].unique()
     unique_facets = sorted(unique_facets)
-    color_palette = sns.color_palette('colorblind', len(df[sweepvar].unique()))
+    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()),4))
 
     nx = round(len(unique_facets)/2)
     ny = 2
@@ -71,7 +71,8 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
         ax = fig.add_subplot(ny,nx,f)
         f += 1
         max_ylim = []
-        for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):  
+        for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
+            color_key = color_selector(i, s)  
             ylim_up = np.max(sdf[channel])*1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up,1) 
@@ -82,8 +83,8 @@ def age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonality'
             merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], age_groups_aggregates)  #FIXME returns NA for 0-5 and 0-100, perhaps wanted
             merge_df = merge_df.dropna()
             merge_df.sort_values('ageGroup', inplace=True)
-            ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=0.8, label=f"{s}", color=color_palette[i])
-            ax.fill_between(merge_df['ageGroup'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[i])
+            ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=0.8, label=f"{s}", color=color_palette[color_key])
+            ax.fill_between(merge_df['ageGroup'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[color_key])
         if firstPlot:
             lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.2))
             firstPlot = False
