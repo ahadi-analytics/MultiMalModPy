@@ -292,9 +292,9 @@ if __name__ == "__main__":
         facet_var = 'seasonality'
 
     for channel in channel_list:
-        #if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
-        #    print(f'#----- Plotting monthly timeseries for {channel}-----#')
-        monthly_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp='0-100')  # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
-        #print(f'#----- Plotting annual timeseries for {channel}-----#')
-        #annual_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
-                          #agegrp='0-100')  # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
+        if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
+            print(f'#----- Plotting monthly timeseries for {channel}-----#')
+            monthly_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp='0-100')  # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
+        print(f'#----- Plotting annual timeseries for {channel}-----#')
+        annual_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
+                          agegrp='0-100')  # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
