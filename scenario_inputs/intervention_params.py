@@ -54,7 +54,7 @@ def cc_step_params(exp, overwrite_setup=True):
     
     ## Analyzer and plotter  to run specific for CC step
     exp.plots_to_run = ['ccstep']
-    exp.analyzer_list = ['all_age_analyzer', 'cc_step']
+    exp.analyzer_list = ['all_age_analyzer', 'daily']
     return exp
 
 

@@ -46,9 +46,6 @@ def parse_launch_args():
                         type=str,
                         default=os.environ.get('USER'),
                         help='Subdirectory for simulations by user (or b1139 on NUCLUSTER)')
-    parser.add_argument('--no_malsim_burnin',
-                        action='store_false',
-                        help='MalSim_run_burnin, if no_malsim_burnin specified no burnin is run')
     parser.add_argument('--csv',
                         type=str,
                         required=False,
@@ -66,12 +63,10 @@ def parse_launch_args():
                         action='store_true',
                         help='Specify whether to run a test, population and burnin and seeds will be only a few per default')
     parser.add_argument('--calib',
-                        default=False,
-                        type=bool,
+                        action='store_true',
                         help='Specify whether to run include calibration parameters as a sweep variable')
     parser.add_argument('--overwrite',
-                        default=False,
-                        type=bool,
+                        action='store_true',
                         help='Whether to overwrite simulation experiment folders')
     parser.add_argument('--mpv',
                         default=1,
@@ -147,10 +142,10 @@ def initialize_exp(args, manifest):
     exp.exp_name = args.expname
     exp.emod_step = args.emodstep
     exp.models_to_run = args.models
-    exp.MalSim_run_burnin = args.no_malsim_burnin  ## bool on whether to run burnin or not, default if not specified is True
     exp.intervention_list = args.interventions
     exp.testrun = args.test
     exp.overwrite = args.overwrite
+    exp.overwrite_param = False # to discuss how we want to handle parameter changes and overwrites in helper vs launch_test.py, or have another flag to add for args
     exp.emod_calib_params = args.calib # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
     exp.malariasimulation_parameter_variation = args.mpv 
 
@@ -178,7 +173,8 @@ def initialize_exp(args, manifest):
     exp.om_survey_step = '5d'  #'30d'
     exp.MalSim_script = 'malsim_benchmarking_exercise.R'
     exp.analyzer_script = ['analyze_sim.py']
-    exp.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'benchmark']  # ['all_age_analyzer', '5day', 'annual','monthly','benchmark'.'cc_step']
+    exp.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'benchmark']  # ['all_age_analyzer', '5day', 'annual','monthly','benchmark'.'daily']
+    exp.plots_to_run = ['benchmark', 'timeseries',  'agecurves']  # gets overwritten by get_intervention_params(exp) depending on 'interventions' specified
 
     # Flag to select whether to run with (dynamic) or without vector model (forced)
     exp.entomology_mode = 'dynamic'  # dynamic, forced
@@ -386,8 +382,6 @@ def get_simulation_time_params(exp):
     exp.sim_start_year_em = sim_start_year
     exp.sim_start_year_om = start_year - burnin
     exp.sim_start_year_ms = exp.sim_start_year_om
-    if not exp.MalSim_run_burnin:
-        exp.sim_start_year_ms = exp.start_year
     exp.monitoring_years = monitoring_years
     exp.sim_dur_years = sim_dur_years
 
@@ -781,8 +775,6 @@ def submit_run_plotters(exp):
         job_id_OpenMalaria = True
 
     plot_names_all = [ 'benchmark', 'timeseries', 'agecurves']  
-    if 'cc_step' in exp.intervention_list:
-        plot_names_all = ['ccstep']# FIXME 'sampleplots', requires enabled all age plots in analyzer
     ## ['ccstep', 'smc'] custom plotter excluded, as these only apply for specific simulation experiments
     # plot_memrequests_all = {'sampleplots' : 10,'benchmark' :10,'agecurves' :10 ,'ccstep' :20}
 
@@ -797,8 +789,8 @@ def submit_run_plotters(exp):
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                             custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
                             job=f'{plot_name}_plots', memG=plot_memG, write_only=True)
+
     ## Write and run plots specified in exp.plots_to_run
-    exp.plots_to_run = ['ccstep']
     plots_to_run =  [p for p in exp.plots_to_run if not p =='sampleplots'] # exp.plots_to_run
     if exp.plots_to_run[0] == 'all':
         plots_to_run = plot_names_all

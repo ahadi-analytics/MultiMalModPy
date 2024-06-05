@@ -35,9 +35,15 @@ if args.emodstep in ['pickup', 'new_pickup']:
         # ...
         exp = get_intervention_params(exp)
         
-    exp.plots_to_run = ['benchmark', 'timeseries', 'agecurves']
+    exp.plots_to_run = ['benchmark', 'timeseries', 'agecurves'] # For pickup, this needs to be defined again, as for burnin set to empty
+
+    ## Add intervention params back - FIXME not all parameters should be overwritten per default?
+    # exp = get_intervention_params(exp)
+
     if 'cc_step' in exp.intervention_list:
         exp.plots_to_run = ['ccstep']
+        exp.analyzer_list = ['daily']
+
     ##  Note: to simply run a new pickup in same folder and suite, simply change expname
     exp.SUITEname = args.suite
     exp.exp_name = args.expname
@@ -47,7 +53,7 @@ else:
     exp = initialize_exp(args, manifest)
 
     # Define simulation population and seeds
-    if exp.overwrite:
+    if exp.overwrite_param:
         exp.pop_size = 10000  # 1000 for testing
         exp.num_seeds = 20  # suggested minimum 3, in production 5-10
         exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
@@ -74,10 +80,6 @@ else:
         exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.plots_to_run = []
-    if exp.emod_step == None:
-        exp.plots_to_run = ['benchmark', 'timeseries', 'agecurves']
-        if 'cc_step' in exp.intervention_list:
-            exp.plots_to_run = ['ccstep']
 
     # Update exp_name
     exp.exp_name = exp.exp_name.replace('seasonality', exp.seasonality[0])

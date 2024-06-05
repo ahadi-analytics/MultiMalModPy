@@ -327,9 +327,9 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     cdf.to_csv((os.path.join(wdir, 'Benchmark.csv')), index=False)
 
 
-def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, cc=False):
+def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables,age_groups_aggregates=None, cc=False):
     """
-    Run the CCStepAnalyzer equivalent for malariasimulation experiments.
+    Run the DailyAgeBinAnalyzer equivalent for malariasimulation experiments.
     Args:
         exp: The experiment object.
         mm: The measure map object.
@@ -340,7 +340,11 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, cc=False):
     Returns:
         None
     """
-    print("Running CCStepAnalyzer...", flush=True)
+    print("Running DailyAgeBinAnalyzer...", flush=True)
+
+    if not age_groups_aggregates:
+        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
+                                 [0, 100]]
 
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
@@ -352,32 +356,46 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, cc=False):
     df = df[channels_to_keep]
     df['n_prev'] = df['prev'] * df['n']
     df['incidence'] = (df['n_inc'] / df['n'])
-    df['clinical_incidence'] = (df['n_inc_clinical'] / df['n'])
-    df['severe_incidence'] = (df['n_inc_severe'] / df['n'])
-    age_grps = list(df['ageGroup'].unique())
-    df['ageGroup'] = df['ageGroup'].astype('category')
-    df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
-    df['ageGroup'] = df['ageGroup'].replace('0-0', '0-0.5')
-    df['ageGroup'] = df['ageGroup'].replace('0-1', '0.5-1')
+    df['clinical_incidence'] = (df['n_inc_clinical'] / (df['n'] / 365)) ## Daily to annualized incidence
+    df['severe_incidence'] = (df['n_inc_severe'] / (df['n'] / 365))
+    df['agebin'] = round(df['age_upper'] / 365, 1)
 
     # Align to common output terminology used
     df = df.rename({'n': 'nHost', 'n_inc': 'nInfect', 'n_inc_clinical': 'nUncomp', 'n_inc_severe': 'nSevere',
                     'prev': 'prevalence'}, axis=1)
 
-    df[['agebin_low', 'agebin']] = df['ageGroup'].str.split('-', expand=True)
+    ### Add age group aggregates
+    cdf = pd.DataFrame()
+    # Age group labels
+    for i in range(0, len(age_groups_aggregates)):
+        ages = age_groups_aggregates[i]
+        ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
+        adf = df[(df['agebin'] > ages[0]) & (df['agebin'] <= ages[1])]
+        if adf.empty:
+            pass
+        else:
+            adf = adf.groupby(sweep_variables + ['timestep','month', 'year']).agg(
+                nHost=('nHost', 'sum'),
+                prevalence=('prevalence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
+                clinical_incidence=('clinical_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
+                severe_incidence=('severe_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
+                prevalence_2to10=('prevalence_2to10', 'mean')
+            ).reset_index()
+            adf['ageGroup'] = ageCond_labels
+            cdf = pd.concat([cdf, adf])
 
     ## Add scenarios variables
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
-                           axis=1, errors='ignore')  ## remove EMOD specific columns
-    df = df.merge(scen_df, on=sweep_variables, how='inner')
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'], axis=1, errors='ignore')  ## remove EMOD specific columns
+
+    df = cdf.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
     eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'inputEIR']]
     df = df.merge(eir_df, on=['index', 'timestep', 'month', 'year'], how='inner')
 
     # Let's limit the output of daily, so its a little more reasonable for us to process.
     columns_to_keep = ['index', 'seed', 'ageGroup', 'timestep', 'simulatedEIR', 'n_infectious_mos',
-                       'n_total_mos_pop', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10',
+                       'n_total_mos_pop', 'nHost', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10',
                        'carrying_capacity_step']
 
     # Iterate over columns to drop and check if they exist
@@ -485,8 +503,8 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
             adf['prevalence'] = adf['n_prev'] / (adf['n'])
             # events per person per annum (annualized)
             # adf['incidence'] = (adf['n_inc'] / adf['n']/ 12)
-            adf['clinical_incidence'] = (adf['n_inc_clinical'] / (adf['n'] / 12))
-            adf['severe_incidence'] = (adf['n_inc_severe'] / (adf['n'] / 12))
+            adf['clinical_incidence'] = (adf['n_inc_clinical'] / (adf['n'] / 73))  ## 5-Daily to annualized incidence
+            adf['severe_incidence'] = (adf['n_inc_severe'] / (adf['n'] / 73))
             adf['ageGroup'] = ageCond_labels
             cdf = pd.concat([cdf, adf])
 
@@ -724,6 +742,7 @@ if __name__ == "__main__":
         BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
 
     ## Custom analyzers
-    if 'cc_step' in exp.analyzer_list:
+    if 'daily' in exp.analyzer_list:
+        ccstep = 'cc_step' in exp.intervention_list
         InputEIRAnalyzer(jdir, wdir, daily=True)
-        DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, cc=True)
+        DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, cc=ccstep)

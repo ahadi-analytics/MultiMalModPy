@@ -686,8 +686,8 @@ def submit_run_EMOD(exp, scen_df):
 
 
     if emod_step != 'burnin':  # do not generate monthly reports for burnin
-        if 'cc_step' in exp.intervention_list:
-            add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years) #We shouldn't generate daily reports unless necessary (and right now its only necessary with cc_step perterbation)
+        if 'daily' in exp.analyzer_list:
+            add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years) #We shouldn't generate daily reports unless specified
         add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
         if '5day' in exp.analyzer_list:  # Note, we will not want to always run 5 days using the analyzer_list as a flag to include this reporter  or not
             add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)

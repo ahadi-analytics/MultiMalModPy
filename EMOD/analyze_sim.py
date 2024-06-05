@@ -479,15 +479,18 @@ class DailyAgeBinAnalyzer(IAnalyzer):
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables + ['day', 'year'])[['prevalence','clinical_incidence','severe_incidence','prevalence_2to10']].agg(
-                    np.mean).reset_index()
+                adf = adf.groupby(self.sweep_variables + ['day', 'year']).agg(
+                    nHost=('nHost', 'sum'),
+                    prevalence=('prevalence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
+                    clinical_incidence=('clinical_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
+                    severe_incidence=('severe_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
+                    prevalence_2to10=('prevalence_2to10', 'mean')
+                ).reset_index()
                 adf['ageGroup'] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
-        scen_df = scen_df.drop(
-            ['eir_malsim', 'eir_om', 'eir_scalar_timestep_5day', 'eir_scalar_timestep_daily', 'eir_scalar_emod',
-             'eir_scalar_om', 'eir_scalar_malsim'], axis=1)  ## Other model specific, entomology_mode  not applicable
+
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'))
@@ -1079,14 +1082,15 @@ if __name__ == "__main__":
             analyzer = analyzer + daily_eir_analyzer + fiveday_analyzers
 
         ## Custom analyzers
-        if 'cc_step' in exp.analyzer_list:
+        if 'daily' in exp.analyzer_list:
+            ccstep = 'cc_step' in exp.intervention_list
             analyzer = analyzer + daily_eir_analyzer + [DailyAgeBinAnalyzer(expt_name=exp_name,
                                                                        start_year=start_year,
                                                                        end_year=end_year,
                                                                        sweep_variables=exp_tags,
                                                                        working_dir=wdir,
                                                                        burnin=burnin,
-                                                                       cc=True)]
+                                                                       cc=ccstep)]
 
         manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
                                  partial_analyze_ok=True)

@@ -776,7 +776,7 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
 
 
 def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index'], age_groups_aggregates=None,
-                          survey_step_days=1):
+                          survey_step_days=5):
     """
     Run the FiveDayAgebinAnalyzer for OpenMalaria experiments to generate
     and save a results dataframe for defined age groups over time (5day and years).
@@ -821,7 +821,7 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     df.drop(df[df.ageGroup > 1000].index, inplace=True)
 
     # get number of years aggregated
-    n_surveys_per_year = np.floor((365 / 30))
+    n_surveys_per_year = np.floor((365 / 5))
 
     # Sum the surveys for each measure, timestep,and age group
     df = df.groupby(['index', 'survey', 'measure', 'ageGroup'], as_index=False).value.sum()
