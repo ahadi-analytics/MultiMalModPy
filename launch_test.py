@@ -104,11 +104,11 @@ exp.nexps = len(scen_df) * exp.num_seeds
 # Set platform and associated values, such as the maximum number of jobs to run at one time
 platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
                     mem_per_cpu=int(2400 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
-                    time='04:30:00', account=manifest.sh_hpc_config['A'],
+                    time='06:30:00', account=manifest.sh_hpc_config['A'],
                     modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=exp.nexps)  # mem_per_cpu default: 2048
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
-save_scen(rep_scen_df(scen_df), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
+save_scen(param_variation(rep_scen_df(scen_df), exp), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
 
 # Write out simulation setup (required for MalSim)
 create_simsetup_csv(exp)

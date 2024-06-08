@@ -45,7 +45,7 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5'):
         ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
     else:
         ylab = channel.replace('_', ' ')
-    color_palette = sns.color_palette('colorblind', len(df['emodom'].unique()))
+    color_palette = sns.color_palette('colorblind', max(len(df['emodom'].unique()),4))
     nx = round(len(df[sweepvar].unique()) / 2)
     ny = 2
     f = 1
@@ -60,6 +60,7 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5'):
         max_ylim = []
         for i, (m, mdf) in enumerate(sdf.groupby('emodom')):
             # plot mean, min and max of seeds
+            color_key = color_selector(i, m)
             ylim_up = np.max(mdf[channel]) * 1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
@@ -69,9 +70,9 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5'):
                 ymean.loc[ii, 'month'] = new_index[ii]
             xmean = xmean['month']
             merge_df = pd.merge(left=xmean, right=ymean, on='month')
-            ax.plot(merge_df['month'], merge_df[channel], '-', linewidth=0.8, label=f"{m}", color=color_palette[i])
+            ax.plot(merge_df['month'], merge_df[channel], '-', linewidth=0.8, label=f"{m}", color=color_palette[color_key])
             ax.fill_between(merge_df['month'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
-                            color=color_palette[i])
+                            color=color_palette[color_key])
             ax.title.set_text(f'{sweepvar} = {s}')
         if firstPlot:
             lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.2))
@@ -136,7 +137,7 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
 
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
-    color_palette = sns.color_palette('colorblind', len(df[sweepvar].unique()))
+    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()),4))
     firstPlot = True
     nx = round(len(df[facet_var].unique()) / 2)
     ny = 2
@@ -149,6 +150,7 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
         f += 1
         max_ylim = []
         for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
+            color_key = color_selector(i, s)
             ylim_up = np.max(sdf[channel]) * 1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
@@ -157,9 +159,9 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
             xmean = xmean['date']
             merge_df = pd.merge(left=xmean, right=ymean, on='date')
             merge_df.sort_values(by='date', inplace=True)
-            ax.plot(merge_df['date'], merge_df[channel], '-', linewidth=0.8, label=f"{s}", color=color_palette[i])
+            ax.plot(merge_df['date'], merge_df[channel], '-', linewidth=0.8, label=f"{s}", color=color_palette[color_key])
             ax.fill_between(merge_df['date'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
-                            color=color_palette[i])
+                            color=color_palette[color_key])
         if firstPlot:
             lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.2))
             firstPlot = False
@@ -220,7 +222,7 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
 
-    color_palette = sns.color_palette('colorblind', len(df[sweepvar].unique()))
+    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()),4))
     firstPlot = True
     nx = round(len(unique_facets) / 2)
     ny = 2
@@ -232,6 +234,7 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
         f += 1
         max_ylim = []
         for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
+            color_key = color_selector(i,s)
             ylim_up = np.max(sdf[channel]) * 1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
@@ -240,9 +243,9 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
             xmean = xmean['year']
             merge_df = pd.merge(left=xmean, right=ymean, on='year')
             merge_df.sort_values(by='year', inplace=True)
-            ax.plot(merge_df['year'], merge_df[channel], '-', linewidth=0.8, label=f"{s}", color=color_palette[i])
+            ax.plot(merge_df['year'], merge_df[channel], '-', linewidth=0.8, label=f"{s}", color=color_palette[color_key])
             ax.fill_between(merge_df['year'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
-                            color=color_palette[i])
+                            color=color_palette[color_key])
         if firstPlot:
             lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.2))  # , title='Model'
             firstPlot = False
@@ -267,7 +270,8 @@ if __name__ == "__main__":
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR', 'prevalence_2to10', 'n_infectious_mos', 'n_total_mos_pop'] # can remove infectious and total mos if that is preferred.
+    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR', 'prevalence_2to10'] # can remove infectious and total mos if that is preferred.
+    """
     if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
         sweepvar = 'eir'
         for channel in channel_list:
@@ -276,6 +280,7 @@ if __name__ == "__main__":
                 monthly_trends(out_dir, emodom, channel=channel, sweepvar=sweepvar, agegrp='0-100')  # 0-100
             except:
                 print(f'{channel} not found in dataframe')
+    """
     sweepvar = 'emodom'
     facet_var = 'ageGroup'
 
@@ -289,8 +294,7 @@ if __name__ == "__main__":
     for channel in channel_list:
         if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
             print(f'#----- Plotting monthly timeseries for {channel}-----#')
-            monthly_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var, 
-                               agegrp='0-100')  # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
+            monthly_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp='0-100')  # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
         print(f'#----- Plotting annual timeseries for {channel}-----#')
         annual_timeseries(out_dir, emodom, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
                           agegrp='0-100')  # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100

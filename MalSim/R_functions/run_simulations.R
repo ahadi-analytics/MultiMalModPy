@@ -11,21 +11,6 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
   max_ages <- exp$max_ages
   timesteps <- exp$monitoring_years * 365
   intervention_list <- exp$intervention_list
-  malariasimulation_parameter_variation <- exp$malariasimulation_parameter_variation
-
-  if (malariasimulation_parameter_variation == 1){
-    if(exp$num_seeds > 1000){
-      print("Warning: num_seeds > 1000, therefore malsim parameter variation will have repeat values")
-      thousand_seeds = TRUE
-    }
-    else {
-      thousand_seeds = FALSE
-    }
-    par_var <- sample(1:1000, exp$num_seeds, replace=thousand_seeds)
-  }
-  else {
-    par_var <- 1
-  }
 
   # Run through each row of the input dataframe, parameterise the model, and run the simulation:
   for(i in 1:nrow(parameter_table)) {
@@ -67,14 +52,8 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       ))
 
       #Parameter Sweeping
-      if (malariasimulation_parameter_variation == 1){
-        simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
-                                          draw = par_var[parameter_table[i,]$seed])
-      }
-      else {
-        simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
-                                          draw = par_var)
-      }
+      simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
+                                          draw = parameter_table[i,]$ms_pv)
 
 
       # Append the parameters for artemether lumefantrine:
@@ -125,13 +104,6 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       simulation_outputs_list[[i]]$cm_clinical <- parameter_table[i,]$cm_clinical
       simulation_outputs_list[[i]]$seasonality  <- parameter_table[i,]$seasonality
       simulation_outputs_list[[i]]$seed <- parameter_table[i,]$seed
-
-      if (malariasimulation_parameter_variation == 1){
-        simulation_outputs_list[[i]]$parameter_variation_number <- par_var[parameter_table[i,]$seed]
-      }
-      else {
-        simulation_outputs_list[[i]]$parameter_variation_number <- par_var
-      }
 
       if ("smc" %in% intervention_list){
         simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
@@ -184,17 +156,11 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       ))
 
       #Parameter Sweeping
-      if (malariasimulation_parameter_variation == 1){
-        simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
-                                          draw = par_var[parameter_table[i,]$seed])
-      }
-      else {
-        simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
-                                          draw = par_var)
-      }
+      simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
+                                          draw = parameter_table[i,]$ms_pv)
 
       # Append the parameters for artemether lumefantrine:
-      simparams[[i]] <- set_drugs(parameters = simparams[[i]], drugs = list(AL_params, SP_AQ_params))
+      simparams[[i]] <- set_drugs(parameters = simparams[[i]], drugs = list(AL_params, SP_AQ_params, DHA_PQP_params))
 
       if ("smc" %in% intervention_list){
         simparams[[i]] <- set_smc(parameters = simparams[[i]],
@@ -237,13 +203,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       simulation_outputs_list[[i]]$cm_clinical <- parameter_table[i,]$cm_clinical
       simulation_outputs_list[[i]]$seasonality  <- parameter_table[i,]$seasonality
       simulation_outputs_list[[i]]$seed <- parameter_table[i,]$seed
-      if (malariasimulation_parameter_variation == 1){
-        simulation_outputs_list[[i]]$parameter_variation_number <- par_var[parameter_table[i,]$seed]
-      }
-      else {
-        simulation_outputs_list[[i]]$parameter_variation_number <- par_var
-      }
-      
+
       if ("smc" %in% intervention_list){
         simulation_outputs_list[[i]]$smc_coverage <- parameter_table[i,]$smc_coverage
         simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir

@@ -69,9 +69,9 @@ def parse_launch_args():
                         action='store_true',
                         help='Whether to overwrite simulation experiment folders')
     parser.add_argument('--mpv',
-                        default=1,
-                        type=int,
-                        help='Specify whether to run malariasimulation with parameter variation, needs to be 1 or 0')
+                        default=True,
+                        type= bool,
+                        help='Specify whether to run malariasimulation with parameter variation, default is to run parameter variation')
     return parser.parse_args()
 
 
@@ -218,6 +218,7 @@ def initialize_exp(args, manifest):
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
     exp.eir = [1, 5, 10, 50, 200, 1000]
+    #exp.eir = [0.25, 0.5, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40, 45, 50, 65, 70, 80, 90, 100, 120, 150, 200, 250, 500, 750, 1000]
     #exp.eir = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,52.36,92.85,164.09,290,512.52,905.79,1600.82,2829.15,5000] #for xtemp calculations ONLY
 
     # Output flags for analyzer and plotting
@@ -868,3 +869,19 @@ def str_to_digit(x):
     except:
         x = x
     return x
+
+def param_variation(df, exp):
+    if exp.malariasimulation_parameter_variation:
+        from random import sample
+        if exp.num_seeds > 1000:
+            print("Warning: num_seeds > 1000, therefore malsim parameter variation will have repeat values")
+            par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds+1),exp.num_seeds)]
+            for i, row in df.iterrows():
+                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed']-1])
+        else:
+            par_var = sample(range(1, 1001),exp.num_seeds)
+            for i, row in df.iterrows():
+                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed']-1])
+    else:
+        df['ms_pv'] = 1
+    return df
