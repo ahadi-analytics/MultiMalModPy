@@ -120,6 +120,7 @@ class InsetChartAnalyzer(IAnalyzer):
         adf = pd.merge(left=sdf, right=mdf, on=(self.sweep_variables + ['date']))
 
         adf = adf.rename(columns={'Run_Number': 'seed'})
+        adf['seed'] = adf['seed'] + 1
 
         # Save the processed DataFrame to a CSV file named 'All_Age_Outputs.csv'
         adf.to_csv(os.path.join(self.working_dir, 'em', 'All_Age_Outputs.csv'), index=False)
@@ -203,11 +204,12 @@ class InputEIRAnalyzer(IAnalyzer):
         adf = adf.merge(scen_df, on='scen_id', how='inner')
         grp_channels = list(set(grp_channels + list(scen_df.columns)))
 
-        adf = adf.rename(columns={'Adult Vectors': 'n_total_mos_pop', 'Infectious Vectors': 'n_infectious_mos'})
+        adf = adf.rename(columns={'Adult Vectors': 'n_total_mos_pop', 'Infectious Vectors': 'n_infectious_mos', 'Run_Number':'seed'})
+        adf['seed'] = adf['seed'] + 1
         if self.daily_report:
             cc_step_cols = ['eir_scalar_timestep_daily', 'eir_scalar_emod']
             outcome_cols = ['Daily EIR', 'n_total_mos_pop', 'n_infectious_mos']
-            columns_to_keep = ['scen_id', 'Run_Number', 'time', 'day', 'month', 'year', 'eir'] + outcome_cols + cc_step_cols
+            columns_to_keep = ['scen_id', 'seed', 'time', 'day', 'month', 'year', 'eir'] + outcome_cols + cc_step_cols
 
             columns_to_keep = [col for col in columns_to_keep if col in adf.columns]
             df = adf[columns_to_keep]
@@ -379,6 +381,7 @@ class BenchmarkAnalyzer(IAnalyzer):
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
+        cdf['seed'] = cdf['seed'] + 1
         cdf['mortality'] = ''
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
 
@@ -500,6 +503,7 @@ class DailyAgeBinAnalyzer(IAnalyzer):
 
         #  Reorder the DataFrame columns , by specified first columns to appear first
         cdf = cdf.rename(columns={'Run_Number': 'seed'})
+        cdf['seed'] = cdf['seed'] + 1
         print(f'\nSaving outputs to: {os.path.join(self.working_dir, "em")}')
         if self.cc:
             cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
@@ -514,6 +518,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
     """
     A class inherited from idmtools IAnalyzer and modified for analyzing EMOD summary reports to generate
     and save a results dataframe for defined age groups over time (5day and years).
+    We have a 5 Day AgeBin Analyzer to accommodate OpenMalaria, which has a minimum reporting period of 5 days. 
 
     Parameters:
         - expt_name (str): Name of the experiment.
@@ -665,10 +670,11 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
+        cdf['seed'] = cdf['seed'] + 1
         cdf['mortality'] = ''
         cdf['date'] = cdf.apply( lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(x['day'] - 1), axis=1)
 
-        # Save the processed DataFrame to a CSV file named 'Benchmark_yr.csv'
+        # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_5day.csv'
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
         cdf.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_5day.csv')), index=False)
 
@@ -813,10 +819,11 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
+        cdf['seed'] = cdf['seed'] + 1
         cdf['mortality'] = ''
         cdf['date'] = cdf.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
 
-        # Save the processed DataFrame to a CSV file named 'Benchmark_yr.csv'
+        # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_mth.csv'
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
         cdf.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_mth.csv')), index=False)
 
@@ -949,9 +956,10 @@ class AnnualAgebinAnalyzer(IAnalyzer):
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
+        cdf['seed'] = cdf['seed'] + 1
         cdf['mortality'] = ''
 
-        # Save the processed DataFrame to a CSV file named 'Benchmark_yr.csv'
+        # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_yr.csv'
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
         cdf.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_yr.csv')), index=False)
 

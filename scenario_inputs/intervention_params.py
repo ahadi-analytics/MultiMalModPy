@@ -2,6 +2,9 @@
 ## These functions are used in launch_test.py, for launch_simulations, a csv file is expected to read parameters from
 
 def exp_params_to_update(exp):
+    """
+    This function sets up the exp object to add all user inputted interventions currently implemented in the framework.
+    """
     if not exp.intervention_list:
         print('No interventions specified')
     if 'cc_step' in exp.intervention_list:
@@ -15,6 +18,17 @@ def exp_params_to_update(exp):
 
 
 def cc_step_params(exp, overwrite_setup=True):
+    """
+    This function sets up the exp object so that the carrying capacity perterbation can occur.
+
+    Parameters:
+        exp: Experiment object.
+        overwrite_setup: bool, optional
+            Flag to indicate whether to overwrite default setup parameters. Default is True.
+    Returns:
+        Experiment object
+            An object with updated experiment parameters.
+    """
     if 'cc_step' not in exp.intervention_list:
         exp.intervention_list = exp.intervention_list + ['cc_step']
 
@@ -59,7 +73,18 @@ def cc_step_params(exp, overwrite_setup=True):
 
 
 ## SMC setup
+
 def smc_params(exp):
+    """
+    For an SMC simulation, we currenlty require a hard set of a few specific variables in exp.
+    This function sets the exp variables to what they need to be in order for the simulations to run.
+    
+    Parameters:
+        exp: Experiment object.
+
+    Returns:
+        Experiment object.
+    """
     exp.start_year = 2000
     exp.end_year = 2008
     exp.num_seeds = 20

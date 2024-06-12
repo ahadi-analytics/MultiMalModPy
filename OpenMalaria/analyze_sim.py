@@ -642,7 +642,7 @@ def AnnualAgebinAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_channels
     adf = adf.merge(scen_df, on='index', how='inner')
     adf = adf.merge(eir_df, on=['index', 'year'], how='inner')
 
-    # Save the processed DataFrame to a CSV file named 'Benchmark_yr.csv'
+    # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_yr.csv'
     print(f'Saving PfPR_ClinicalIncidence_yr.csv to {wdir}')
     adf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv')), index=False)
 
@@ -770,7 +770,7 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     adf = adf.merge(scen_df, on='index', how='inner')
     adf = adf.merge(eir_df, on=['index', 'month'], how='inner')
     adf['date'] = adf.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
-    # Save the processed DataFrame to a CSV file named 'Benchmark_mth.csv'
+    # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_mth.csv'
     print(f'Saving PfPR_ClinicalIncidence_mth.csv to {wdir}')
     adf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv')), index=False)
 

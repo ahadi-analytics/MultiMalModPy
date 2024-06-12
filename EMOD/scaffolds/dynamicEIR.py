@@ -51,7 +51,9 @@ def eir_to_lhs_regr(df=None, population=1000):
         output.append(lhs)
     return output
 
-
+"""
+The following functions eir_to_lhs, calculate_from_eir_cm, calculate_from_df are currently not used, we may want to remove them.
+"""
 def eir_to_lhs(eir=None, cm_clinical=None, population=None, seasonality='perennial', df=None):
     """
     Converts EIR (Entomological Inoculation Rate) and clinical malaria prevalence (cm) values to a corresponding LHS (Liver Hepatic Stage) value.

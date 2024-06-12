@@ -29,9 +29,9 @@ def convert_malsim_to_long(output, age_groups, agebins):
     Convert the dataframe to long form for the desired columns.
 
     Args:
+        output (pandas.DataFrame): Input dataframe.
         age_min (list): Minimum age values.
         age_max (list): Maximum age values.
-        output (pandas.DataFrame): Input dataframe.
 
     Returns:
         pandas.DataFrame: Long-form output.
@@ -75,6 +75,21 @@ def convert_malsim_to_long(output, age_groups, agebins):
     return output
 
 def post_processing(exp, job_directory):
+    """
+    Perform post-processing of malariasimulation simulation output data.
+    This was previously done in R, but was brought to python to match the two other models.
+
+    Parameters:
+    - exp: Experiment object.
+    - job_directory: Directory containing raw simulation output files.
+
+    Saves:
+    - {i}_daily.csv: for each simulation {i} in an experiment, saves the processed daily output.
+    - daily.csv: combines all the processed daily outputs for each simulation in the experiment.
+    
+    Returns:
+    None
+    """
     agebins = exp.agebins
     agebins_days = [a * 365 for a in exp.agebins]
 
@@ -523,7 +538,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf['date'] = cdf.apply(lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(days=int(x['day']) - 1), axis=1)
 
     print(f'\nSaving outputs to: {wdir}')
-    # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
+    # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_5day.csv'
     cdf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_5day.csv')), index=False)
 
 
@@ -612,7 +627,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf['date'] = cdf.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
 
     print(f'\nSaving outputs to: {wdir}')
-    # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
+    # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_mth.csv'
     cdf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv')), index=False)
 
 
@@ -696,7 +711,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
     cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
 
     print(f'\nSaving outputs to: {wdir}')
-    # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
+    # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_yr.csv'
     cdf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv')), index=False)
 
 
