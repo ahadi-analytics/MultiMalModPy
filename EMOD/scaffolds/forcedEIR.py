@@ -10,12 +10,34 @@ def mAb_vs_EIR(EIR):
 
 
 def update_mab(simulation, value):
+    """
+    Update the Maternal Antibody Protection parameter within the simulation.
+
+    Parameters:
+        simulation (object): The simulation object from EMOD.
+        value (float): The value by which to multiply the Maternal Antibody Protection parameter.
+
+    Returns:
+        None. The function modifies the simulation object in place.
+    """
     simulation.task.config.parameters.Maternal_Antibody_Protection *= value
     return None
 
 
 
 def set_inputEIR_seasonality(camp, EIR_scale_factor=1, seasonality='perennial'):
+    """
+    Set input EIR (Entomological Inoculation Rate) based on seasonality.
+
+    Parameters:
+    - camp: Campaign object from EMOD.
+    - EIR_scale_factor: Scaling factor for EIR (default is 1).
+    - seasonality: Type of seasonality, either 'perennial' or 'seasonal' (default is 'perennial').
+
+    Returns:
+    A dictionary containing the EIR scale factor and the specified seasonality.
+    """
+    
     season_daily, season_month, seasonal, perennial = get_seasonal_eir() 
     if seasonality == 'perennial':
         daily_EIR = [x / 365 for x in [1] * 365]
@@ -25,7 +47,6 @@ def set_inputEIR_seasonality(camp, EIR_scale_factor=1, seasonality='perennial'):
         daily_EIR = [(x / eir_sum) for x in daily_EIR]  # rescale to sum = 1
     else:
         raise ValueError("Please specify valid seasonality")
-
 
     add_scheduled_input_eir(campaign=camp, start_day=1, daily_eir=daily_EIR, age_dependence="SURFACE_AREA_DEPENDENT",
                             node_ids=None, scaling_factor=EIR_scale_factor)

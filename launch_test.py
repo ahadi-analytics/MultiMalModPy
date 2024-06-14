@@ -52,19 +52,14 @@ else:
     # Creating an Experiment object and setting its attributes, saved as exp.obj
     exp = initialize_exp(args, manifest)
 
-    # Define simulation population and seeds
+    # You the user, can customize what variables in exp are overwriten when you choose to include overwrite_param.
     if exp.overwrite_param:
         exp.pop_size = 10000  # 1000 for testing
         exp.num_seeds = 20  # suggested minimum 3, in production 5-10
         exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
         exp.end_year = 2008 # end of pickup and monitoring period
         exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
-        
-    # Define case management start and coverage
-    # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
-    exp.cm_start = 1
-    exp.cm_clinical = [0.0]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
-    exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
+     
 
     # Entomology mode: Dynamic EIR configuration if selected
     exp = get_seasonal_eir(exp)

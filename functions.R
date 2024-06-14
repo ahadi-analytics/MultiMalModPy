@@ -35,12 +35,9 @@ emodom_cols <- c('#1b9e77ff','#7570b3ff','#d95f02ff')
 #' emodom <- c("OpenMalaria", "EMOD")
 #' result <- get_emodom_df(wdir, emodom, mth = TRUE)
 #'
-get_emodom_df <- function(wdir, emodom, mth = FALSE, daily = FALSE, timeseries = FALSE, condensed = FALSE) {
+get_emodom_df <- function(wdir, emodom, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE, condensed = FALSE) {
   cols_to_keep <- NULL
   fname <- 'Benchmark.csv'
-  if (mth) {
-    fname <- 'Benchmark_mth.csv'
-  }
   if (timeseries) {
     fname <- 'PfPR_ClinicalIncidence_yr.csv'
     if (mth) {
@@ -51,6 +48,11 @@ get_emodom_df <- function(wdir, emodom, mth = FALSE, daily = FALSE, timeseries =
       cols_to_keep <- c('index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
                         'clinical_incidence', 'severe_incidence', 'seed', 'carrying_capacity_step')
     }
+	if (fiveday){
+	    fname <- 'PfPR_ClinicalIncidence_5day.csv'
+		cols_to_keep <- c('index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
+                        'clinical_incidence', 'severe_incidence', 'seed', 'carrying_capacity_step')
+	}
   }
 
   if (file.exists(file.path(wdir, fname))) {
@@ -63,7 +65,6 @@ get_emodom_df <- function(wdir, emodom, mth = FALSE, daily = FALSE, timeseries =
     if ('EMOD' %in% emodom) {
       em_df <- fread(file.path(wdir, paste('em', fname, sep = '/')), colClasses = cols_to_keep)
       em_df$emodom <- 'EMOD'
-      em_df$seed <- em_df$seed + 1
       em_df <- em_df[em_df$eir >= 1,]
     }
     if ('MalSim' %in% emodom) {

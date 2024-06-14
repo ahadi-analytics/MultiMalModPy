@@ -137,6 +137,24 @@ def get_param_from_dataframe(df, name):
 
 
 def initialize_exp(args, manifest):
+    """
+    Generates the default simulation settings we are interested in using across all three models,
+    before any interventions or other functions overwrite the items in exp.
+    User, if you want to make adjustments to your simulation and you are not using the overwrite functions,
+    I would recommend you make those changes here.
+    
+    Example:
+        exp.seasonality = get_param(exp_scen_df, 'seasonality', listparam=True)
+
+    Args:
+        args (obj, lst): List of inputs grabbed from the parse_args function.
+        manifest (file, lst): List of inputs grabbed from the manifest.py file.
+            manifest's inputs are more relevant for directories and hpc settings, then simulation settings.
+    Returns:
+        exp (Experiment): Returns an Experiment Object with simulation and hpc settings that will get shared across 
+            the three models.
+
+    """
     exp = Experiment()
     exp.SUITEname = args.suite
     exp.exp_name = args.expname
@@ -227,6 +245,15 @@ def initialize_exp(args, manifest):
 
 
 def get_intervention_params(exp):
+    """
+    Retrieve intervention parameters for a specific experiment.
+
+    Parameters:
+    - exp: Experiment object.
+
+    Returns:
+    Intervention parameters based on the specified experiment.
+    """
     from scenario_inputs.intervention_params import exp_params_to_update
     return exp_params_to_update(exp)
 
@@ -417,6 +444,33 @@ def save_exp_scen(exp, scen_df, save_dirs):
         pickle.dump(exp, open(os.path.join(sdir, "exp.obj"), "wb"))
 
 
+def param_variation(df, exp):
+    """
+    Perform parameter variation for malariasimulation simulations.
+
+    Parameters:
+    - df: DataFrame containing data from scenarios.csv.
+    - exp: Experiment object.
+
+    Returns:
+    DataFrame with added column 'ms_pv' representing malsim parameter variation values.
+    """
+    if exp.malariasimulation_parameter_variation:
+        from random import sample
+        if exp.num_seeds > 1000:
+            print("Warning: num_seeds > 1000, therefore malsim parameter variation will have repeat values")
+            par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds+1),exp.num_seeds)]
+            for i, row in df.iterrows():
+                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed']-1])
+        else:
+            par_var = sample(range(1, 1001),exp.num_seeds)
+            for i, row in df.iterrows():
+                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed']-1])
+    else:
+        df['ms_pv'] = 1
+    return df
+    
+    
 def get_seasonal_eir(exp=None):
     """
     Generates seasonal EIR (Entomological Inoculation Rate) values.
@@ -870,18 +924,3 @@ def str_to_digit(x):
         x = x
     return x
 
-def param_variation(df, exp):
-    if exp.malariasimulation_parameter_variation:
-        from random import sample
-        if exp.num_seeds > 1000:
-            print("Warning: num_seeds > 1000, therefore malsim parameter variation will have repeat values")
-            par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds+1),exp.num_seeds)]
-            for i, row in df.iterrows():
-                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed']-1])
-        else:
-            par_var = sample(range(1, 1001),exp.num_seeds)
-            for i, row in df.iterrows():
-                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed']-1])
-    else:
-        df['ms_pv'] = 1
-    return df

@@ -91,7 +91,7 @@ def monthly_trends(wdir, emodom, channel, sweepvar='eir', agegrp='0-5'):
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_mth.csv
-def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp='5-10'):
+def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp='0-5'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -99,7 +99,7 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
-        agegrp (str, optional): Age group filter for the data. Default is '5-10'.
+        agegrp (str, optional): Age group filter for the data. Default is '0-5'.
     Returns:
         None (plots are saved to disk).
     """
@@ -177,7 +177,7 @@ def monthly_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageG
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_yr.csv
-def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp='5-10'):
+def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp='0-5'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -185,7 +185,7 @@ def annual_timeseries(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
-        agegrp (str, optional): Age group filter for the data. Default is '5-10'.
+        agegrp (str, optional): Age group filter for the data. Default is '0-5'.
     Returns:
         None (plots are saved to disk).
     """
@@ -271,7 +271,7 @@ if __name__ == "__main__":
     exp = pickle.load(file)
 
     channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR', 'prevalence_2to10'] # can remove infectious and total mos if that is preferred.
-    """
+    
     if exp.om_survey_step == '30d' and exp.emod_step != 'burnin':
         sweepvar = 'eir'
         for channel in channel_list:
@@ -280,7 +280,7 @@ if __name__ == "__main__":
                 monthly_trends(out_dir, emodom, channel=channel, sweepvar=sweepvar, agegrp='0-100')  # 0-100
             except:
                 print(f'{channel} not found in dataframe')
-    """
+
     sweepvar = 'emodom'
     facet_var = 'ageGroup'
 

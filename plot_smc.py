@@ -28,6 +28,7 @@ def monthly_smc(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup',a
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
         agegrp (str, optional): Age group filter for the data. Default is '5-10'.
+    Right now we are setting the default to only show coverages of 0 and 0.6 in the smc age curves.
     Returns:
         None (plots are saved to disk).
     """
@@ -137,6 +138,7 @@ def smc_age_curves(wdir, emodom, channel, sweepvar='emodom', facet_var='seasonal
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'emodom'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'seasonality'. 
+    Right now we are setting the default to only show a coverage of 0.6 in the smc age curves.
     Returns:
         None (plots are saved to disk).
     """

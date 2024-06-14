@@ -84,7 +84,7 @@ def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
 
     ## Carrying capacity step change
     if 'cc_step' in intervention_list and emod_step == 'pickup': #Make sure to include the cc_step change only at pickup simulations.
-        eir_df = pd.DataFrame({'CONSTANT':[row.eir_scalar_emod]}) #TODO: Change our habitat type from water_veg to constant
+        eir_df = pd.DataFrame({'CONSTANT':[row.eir_scalar_emod]})
         add_scale_larval_habitats(camp, df=eir_df,
                                   start_day=row.eir_scalar_timestep_daily,
                                   repetitions = 1)
@@ -102,7 +102,7 @@ def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
         else:
             start_array = [335, 700, 1065, 1430,1795]
             #add_drug_campaign(camp, campaign_type = "SMC", start_days = [396,761,1126,1491,1856],
-            smc_campaign(camp, row, start_array)
+        smc_campaign(camp, row, start_array)
 
     return {'scen_id': int(row.scen_id)}
 
