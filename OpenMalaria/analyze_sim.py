@@ -43,8 +43,7 @@ def to_df(exp):
         output['index'] = 1
         data.append(output)
     else:
-        for i in range(1,
-                       exp.nexps + 1):  # Ricky recently changed this to be exp.nexps+1 to include all scenarios, we will have to see if this has always been a problem.
+        for i in range(1, exp.nexps + 1):
             try:
                 # Read the experiment output from the TXT file
                 output = pd.read_csv(os.path.join(exp.job_directory, 'txt', f'{i}.txt'), sep="\t", header=None)
@@ -198,7 +197,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
     df_all.drop(columns='ageGroup', inplace=True)
 
     df_vector = df_vector.groupby(['index', 'survey', 'measure'])[['value']].agg(np.sum).reset_index()
-    df = df_all.append(df_vector)
+    df = pd.concat([df_vector, df_all], ignore_index=True)
 
     df = survey_to_date(df, survey_step_days=survey_step_days, start_year=start_year)
 

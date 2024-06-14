@@ -370,7 +370,7 @@ class BenchmarkAnalyzer(IAnalyzer):
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR']].agg(
+            eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR','n_total_mos_pop']].agg(
                 np.mean).reset_index()  # mean across monitoring years and runs
             eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
@@ -808,7 +808,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
 
             eirdf_mth = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_mth.csv'))
-            eirdf_mth = eirdf_mth.groupby(self.sweep_variables + ['year', 'month'])[['Monthly EIR']].agg(
+            eirdf_mth = eirdf_mth.groupby(self.sweep_variables + ['year', 'month'])[['Monthly EIR', 'n_total_mos_pop']].agg(
                 np.mean).reset_index()
             cdf = pd.merge(left=cdf, right=eirdf_mth, on=self.sweep_variables + ['year', 'month'])
 
@@ -946,7 +946,7 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
+            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR','n_total_mos_pop']].agg(np.mean).reset_index()
             eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
 

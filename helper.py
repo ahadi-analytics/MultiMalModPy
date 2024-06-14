@@ -142,7 +142,7 @@ def initialize_exp(args, manifest):
     before any interventions or other functions overwrite the items in exp.
     User, if you want to make adjustments to your simulation and you are not using the overwrite functions,
     I would recommend you make those changes here.
-    
+
     Example:
         exp.seasonality = get_param(exp_scen_df, 'seasonality', listparam=True)
 
@@ -153,7 +153,6 @@ def initialize_exp(args, manifest):
     Returns:
         exp (Experiment): Returns an Experiment Object with simulation and hpc settings that will get shared across 
             the three models.
-
     """
     exp = Experiment()
     exp.SUITEname = args.suite
@@ -469,7 +468,7 @@ def param_variation(df, exp):
     else:
         df['ms_pv'] = 1
     return df
-    
+  
     
 def get_seasonal_eir(exp=None):
     """
@@ -498,11 +497,13 @@ def get_seasonal_eir(exp=None):
 
     # Define the seasonal setting
     # season_daily =  1 + np.sin(2 * np.pi * (np.arange(0, 365) / 365))  ## functional form used in EMOD-OM benchmarking
-    season_month = [56.40649336, 37.27189056, 37.52493552, 36.99289173, 36.58402723, 33.48317104, 33.38009291,
-                    33.906819, 37.87905792, 43.51349906, 60.33004287, 62.49708256]
+    season_month = [53.74847097,36.06257978,29.48620113,20.91722713,16.63328113,15.60595803,
+                    18.3118464,31.23407541,48.8997053,70.88593783,74.16439496,69.26653447]
+
     season_daily = monthly_to_daily_EIR(season_month)
-    seasonal = [0.110650869, 0.073115112, 0.073611502, 0.072567808, 0.071765752, 0.065682898, 0.065480693, 0.066513955,
-                0.074306173, 0.085359082, 0.118347574, 0.122598589]
+    seasonal = [0.110772207,0.074322702,0.0607692,0.043109085,0.034280143,0.032162895,
+                0.03773956,0.064371459,0.100779207,0.146091445,0.152848139,0.142753957]
+
 
     # eir_sum = sum(season_month)
     # seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
@@ -923,4 +924,3 @@ def str_to_digit(x):
     except:
         x = x
     return x
-

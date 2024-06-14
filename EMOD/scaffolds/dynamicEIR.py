@@ -34,8 +34,8 @@ def eir_to_lhs_regr(df=None, population=1000):
 
         elif seasonality == 'seasonal':
             ## these were run for a population of 5000 people
-            glm_byeir = {0: [3.456, 3.286], 5: [1.616,3.956], 30: [-10.247, 4.843], 100: [-11.277, 4.957]} 
-            base_pop = 5000
+            glm_byeir = {0: [4.354, 6.338], 5: [-2.678,7.034], 30: [-66.216, 8.471], 100: [-86.078, 8.531]} 
+            base_pop = 10000
             
         else:
             raise ValueError(f'{seasonality} is not a valid seasonality')

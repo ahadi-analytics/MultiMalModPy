@@ -14,7 +14,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
 
   # Run through each row of the input dataframe, parameterise the model, and run the simulation:
   for(i in 1:nrow(parameter_table)) {
-
+    set.seed(seed = parameter_table[i,]$seed)
     # For rows with seasonal malaria:
     if(parameter_table[i,]$seasonality == "seasonal") {
 

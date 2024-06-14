@@ -67,8 +67,7 @@ def convert_malsim_to_long(output, age_groups, agebins):
             'prevalence_2to10': ttt['prevalence_2to10'],
             'n_infectious_mos': output['Im_gamb_count'],
             'n_total_mos_pop': output['Sm_gamb_count'] + output['Pm_gamb_count'] + output['Im_gamb_count'],
-            'EIR_gamb': output['EIR_gamb'],
-            'parameter_variation_number': output['parameter_variation_number']
+            'EIR_gamb': output['EIR_gamb']
         }
         result.append(pd.DataFrame(data))
     output = pd.concat(result, ignore_index=True)
@@ -94,14 +93,14 @@ def post_processing(exp, job_directory):
     agebins_days = [a * 365 for a in exp.agebins]
 
     columns_to_keep = ['timestep', 'Sm_gamb_count', 'Pm_gamb_count', 'Im_gamb_count', 'EIR_gamb', 'S_count',
-                       'A_count', 'U_count', 'Tr_count', 'D_count', 'index','parameter_variation_number']
+                       'A_count', 'U_count', 'Tr_count', 'D_count', 'index']
 
     columns_with_ages = ['n', 'n_inc', 'p_inc', 'n_inc_clinical', 'p_inc_clinical', 'n_inc_severe', 'p_inc_severe',
                          'p_detect', 'n_detect']
 
     needed_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev',
                        'index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup', 'age_upper', 'EIR_gamb',
-                       'n_infectious_mos', 'n_total_mos_pop','parameter_variation_number']
+                       'n_infectious_mos', 'n_total_mos_pop']
 
     age_groups = [[0, int(agebins_days[0] // 1)]]  # Start with the first age group [0, 182]
     age_groups.extend(
@@ -281,7 +280,7 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
-    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
+    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR','n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
@@ -567,9 +566,9 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
-    eir_df = eir_df.groupby(sweep_variables + ['month', 'year'])[['simulatedEIR', 'inputEIR']].agg(
+    eir_df = eir_df.groupby(sweep_variables + ['month', 'year'])[['simulatedEIR', 'inputEIR', 'n_total_mos_pop']].agg(
         np.mean).reset_index()  # mean across runs per month and year
-    eir_df = eir_df[['index', 'month', 'year', 'inputEIR', 'simulatedEIR']]
+    eir_df = eir_df[['index', 'month', 'year', 'inputEIR', 'simulatedEIR', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup', 'age_upper',
@@ -656,7 +655,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
-    eir_df = eir_df[['index', 'year', 'inputEIR', 'simulatedEIR']]
+    eir_df = eir_df[['index', 'year', 'inputEIR', 'simulatedEIR', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
