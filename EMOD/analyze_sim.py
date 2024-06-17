@@ -203,14 +203,11 @@ class InputEIRAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         adf = adf.merge(scen_df, on='scen_id', how='inner')
         grp_channels = list(set(grp_channels + list(scen_df.columns)))
-        grp_channels.remove("Run_Number")
-        grp_channels.append("seed")
-        adf = adf.rename(columns={'Adult Vectors': 'n_total_mos_pop', 'Infectious Vectors': 'n_infectious_mos', 'Run_Number':'seed'})
-        adf['seed'] = adf['seed'] + 1
+        adf = adf.rename(columns={'Adult Vectors': 'n_total_mos_pop', 'Infectious Vectors': 'n_infectious_mos'})
         if self.daily_report:
             cc_step_cols = ['eir_scalar_timestep_daily', 'eir_scalar_emod']
             outcome_cols = ['Daily EIR', 'n_total_mos_pop', 'n_infectious_mos']
-            columns_to_keep = ['scen_id', 'seed', 'time', 'day', 'month', 'year', 'eir'] + outcome_cols + cc_step_cols
+            columns_to_keep = ['scen_id', 'Run_Number', 'time', 'day', 'month', 'year', 'eir'] + outcome_cols + cc_step_cols
 
             columns_to_keep = [col for col in columns_to_keep if col in adf.columns]
             df = adf[columns_to_keep]
@@ -501,9 +498,10 @@ class DailyAgeBinAnalyzer(IAnalyzer):
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['day', 'year', 'eir'])
         else:
             cdf['simulatedEIR'] = ''
+        cdf = cdf.rename(columns={"Run_Number": "seed"})
+        cdf['seed'] = cdf['seed'] + 1
 
         #  Reorder the DataFrame columns , by specified first columns to appear first
-
         print(f'\nSaving outputs to: {os.path.join(self.working_dir, "em")}')
         if self.cc:
             cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
