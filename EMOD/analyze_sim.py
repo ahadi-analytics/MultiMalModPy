@@ -203,7 +203,8 @@ class InputEIRAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         adf = adf.merge(scen_df, on='scen_id', how='inner')
         grp_channels = list(set(grp_channels + list(scen_df.columns)))
-
+        grp_channels.remove("Run_Number")
+        grp_channels.append("seed")
         adf = adf.rename(columns={'Adult Vectors': 'n_total_mos_pop', 'Infectious Vectors': 'n_infectious_mos', 'Run_Number':'seed'})
         adf['seed'] = adf['seed'] + 1
         if self.daily_report:
@@ -502,8 +503,7 @@ class DailyAgeBinAnalyzer(IAnalyzer):
             cdf['simulatedEIR'] = ''
 
         #  Reorder the DataFrame columns , by specified first columns to appear first
-        cdf = cdf.rename(columns={'Run_Number': 'seed'})
-        cdf['seed'] = cdf['seed'] + 1
+
         print(f'\nSaving outputs to: {os.path.join(self.working_dir, "em")}')
         if self.cc:
             cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
@@ -1065,10 +1065,14 @@ if __name__ == "__main__":
             manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
                                      partial_analyze_ok=True)
             manager.analyze()
+            if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list:
+                manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=daily_eir_analyzer,
+                                     partial_analyze_ok=True)
+                manager.analyze()
 
         # Default
         analyzer = []
-
+        
         ## all age by reporting steps
         if 'all_age_analyzer' in exp.analyzer_list:
             analyzer = analyzer + all_age_analyzer
@@ -1087,12 +1091,12 @@ if __name__ == "__main__":
 
         ## 5 day timeseries per age groups
         if '5day' in exp.analyzer_list:
-            analyzer = analyzer + daily_eir_analyzer + fiveday_analyzers
+            analyzer = analyzer + fiveday_analyzers
 
         ## Custom analyzers
         if 'daily' in exp.analyzer_list:
             ccstep = 'cc_step' in exp.intervention_list
-            analyzer = analyzer + daily_eir_analyzer + [DailyAgeBinAnalyzer(expt_name=exp_name,
+            analyzer = analyzer + [DailyAgeBinAnalyzer(expt_name=exp_name,
                                                                        start_year=start_year,
                                                                        end_year=end_year,
                                                                        sweep_variables=exp_tags,
