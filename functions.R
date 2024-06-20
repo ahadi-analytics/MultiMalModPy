@@ -50,8 +50,10 @@ get_emodom_df <- function(wdir, emodom, mth = FALSE, fiveday = FALSE, daily = FA
     }
 	if (fiveday){
 	    fname <- 'PfPR_ClinicalIncidence_5day.csv'
-		cols_to_keep <- c('index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
-                        'clinical_incidence', 'severe_incidence', 'seed', 'carrying_capacity_step')
+	    cols_to_keep <- c('seed','year','day','prevalence','clinical_incidence',
+	                      'severe_incidence','ageGroup','prevalence_2to10','index',
+	                      'eir','cm_clinical','seasonality','simulatedEIR','n_total_mos_pop',
+	                      'days','month','date','emodom')
 	}
   }
 
@@ -59,16 +61,16 @@ get_emodom_df <- function(wdir, emodom, mth = FALSE, fiveday = FALSE, daily = FA
     df <- fread(file.path(wdir, fname), stringsAsFactors = FALSE)
   } else {
     if ('OpenMalaria' %in% emodom) {
-      om_df <- fread(file.path(wdir, paste('om', fname, sep = '/')), colClasses = cols_to_keep)
+      om_df <- fread(file.path(wdir, paste('om', fname, sep = '/')), select = cols_to_keep)
       om_df$emodom <- 'OpenMalaria'
     }
     if ('EMOD' %in% emodom) {
-      em_df <- fread(file.path(wdir, paste('em', fname, sep = '/')), colClasses = cols_to_keep)
+      em_df <- fread(file.path(wdir, paste('em', fname, sep = '/')), select = cols_to_keep)
       em_df$emodom <- 'EMOD'
       em_df <- em_df[em_df$eir >= 1,]
     }
     if ('MalSim' %in% emodom) {
-      ms_df <- fread(file.path(wdir, paste('MalSim', fname, sep = '/')), colClasses = cols_to_keep)
+      ms_df <- fread(file.path(wdir, paste('MalSim', fname, sep = '/')), select = cols_to_keep)
       ms_df$emodom <- 'MalSim'
     }
 
@@ -282,7 +284,7 @@ f_getCustomTheme <- function(fontscl = 1) {
     axis.text.y = element_text(size = 12 * fontscl),
     axis.ticks = element_line(),
     panel.grid.minor = element_blank(),
-    panel.border = element_rect(colour = "black", fill = NA, size = 0.5),
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.5),
     plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm")
   )
 
