@@ -114,11 +114,11 @@ def survey_to_date(df, survey_step_days=30, start_year=0):
     if survey_step_days == 5:
         df['days'] = df['survey'] * survey_step_days
         df['month'] = np.floor(df['days'] / (365.0001 / 12)) + 1
-        df['month'] = df['month'] % 12  # Ricky recently updated this line (df['survey'] % 12) to correctly reflect the months
+        df['month'] = df['month'] % 12 
         df.loc[df['month'] == 0, 'month'] = 12
         df['year'] = (df['days'] / 365.00000001).apply(np.floor)
         df['year'] = df['year'] + start_year
-        df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1) #TODO we will want to find a way to make the date more accurate for the 5day reporter.
+        #df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1) 
     # Monthly timesteps
     elif survey_step_days == 30:
         df['days'] = df['survey'] * survey_step_days
@@ -126,13 +126,13 @@ def survey_to_date(df, survey_step_days=30, start_year=0):
         df.loc[df['month'] == 0, 'month'] = 12
         df['year'] = (df['days'] / 360.00000001).apply(np.floor)
         df['year'] = df['year'] + start_year
-        df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
+        #df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
     # Annual timesteps
     elif survey_step_days == 365:
         df['year'] = df['survey']
         df['month'] = 1
         df['year'] = df['year'] + start_year
-        df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
+        #df['date'] = df.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
     else:
         raise ValueError("survey_step_days must be 30 or 365")
     return df
@@ -215,7 +215,6 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
         df_day = df_day.merge(scen_df, on='index', how='inner')
         # If we created different eirs for each simulation, we need to parse it out here, so all the models can eventually be aligned
         # The only difference between these two dfs is if eir_om (om specific eir) or eir (general to all models) is used.
-        df_day.to_csv((os.path.join(wdir, 'df_day.csv')), index=False, compression=compr)
         if 'eir_om' in df_day:
             df_day = df_day[columns_to_keep + cc_step_var]
             df_day = df_day.rename(columns={'SimulatedEIR': 'simulatedEIR',
@@ -234,6 +233,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
                                             'Vector_Sv': 'n_infectious_mos',
                                             'days': 'timestep'})
         print(f'Saving EIR_daily.csv to {wdir}')
+        df_day['day'] = (df_day['timestep']-1)%365 + 1
         df_day.to_csv((os.path.join(wdir, 'EIR_daily.csv')), index=False, compression=compr)
 
         # Monthly aggregation for survey_step_days = 5
@@ -837,7 +837,8 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
 
     adf = pd.DataFrame()
     # Iterate over day, month, and year
-    for (t), group in sdf.groupby(['survey']):
+    for ii, group in enumerate(sdf.groupby(['survey'])):
+        t, grouped = group
         g = sdf.loc[(sdf['survey'] == t)]
 
         # Filter and aggregate data for age groups 2 to 10
@@ -898,7 +899,9 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
 
     # adf['date'] = adf.apply(lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(days=int(x['day']) - 1), axis=1)
     adf = survey_to_date(adf, survey_step_days=survey_step_days, start_year=start_year)
-
+    adf['day'] = (adf['days']-1)%365 + 1
+    adf = adf.drop(columns = ['days','month']) #This can be removed once we have consistent months across all three models
+    #Months in five day periods is currently wrong.
     # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_5day.csv'
     print(f'Saving PfPR_ClinicalIncidence_5day.csv to {wdir}')
     adf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_5day.csv')), index=False)

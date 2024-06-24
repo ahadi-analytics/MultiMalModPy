@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 from idmtools.entities import IAnalyzer
 from idmtools.entities.simulation import Simulation
+import math
 
 
 def parse_args():
@@ -610,7 +611,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
         df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'day'])[['prevalence_2to10']].agg(
             np.mean).reset_index()
-
+                
         df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
         df['nUncomp'] = df['clinical_incidence'] * (df['nHost'] / (365 / 5))  ## total cases per annum
         df['nSevere'] = df['severe_incidence'] * (df['nHost'] / (365 / 5))  ## total cases per annum
@@ -646,14 +647,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
             eirdf_daily = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'))
             eirdf_daily = eirdf_daily.groupby(self.sweep_variables + ['year', 'day'])[['simulatedEIR', 'n_total_mos_pop', 'n_infectious_mos']].agg(np.mean).reset_index()
 
-            def map_to_interval(day, intervals):
-                for i in range(len(intervals)):
-                    if day < intervals[i]:
-                        return intervals[i]
-                return intervals[-1]
-
-            intervals = sorted(cdf['day'].unique())  # cdf is every 5 days
-            eirdf_daily['5day'] = eirdf_daily['day'].apply(lambda x: map_to_interval(x, intervals ))
+            eirdf_daily['5day'] = eirdf_daily['day'].apply(lambda x: 5 * math.ceil(x/5))
             eirdf_5day_sum = eirdf_daily.groupby(self.sweep_variables + ['year', '5day'])[['simulatedEIR']].agg(np.sum).reset_index()
             eirdf_5day_mean = eirdf_daily.groupby(self.sweep_variables + ['year', '5day'])[['n_total_mos_pop', 'n_infectious_mos']].agg(np.mean).reset_index()
 
@@ -670,7 +664,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         cdf = cdf.rename(columns={"Run_Number": "seed"})
         cdf['seed'] = cdf['seed'] + 1
         cdf['mortality'] = ''
-        cdf['date'] = cdf.apply( lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(x['day'] - 1), axis=1)
+        #cdf['date'] = cdf.apply( lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(x['day'] - 1), axis=1)
 
         # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_5day.csv'
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')

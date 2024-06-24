@@ -4,6 +4,7 @@ import pickle
 import datetime
 import pandas as pd
 import numpy as np
+import math
 
 
 def parse_args():
@@ -120,7 +121,7 @@ def post_processing(exp, job_directory):
         days = np.tile(days, int(max(df['timestep']) / 365))
 
         df['month'] = days
-        df['year'] = np.floor(df['timestep'] / 365).astype(int)
+        df['year'] = np.floor(df['timestep'] / 365.000001).astype(int)
         for pair in age_groups:
             df[f'prev_{pair[0]}_{pair[1]}'] = df[f'n_detect_{pair[0]}_{pair[1]}'] / df[f'n_{pair[0]}_{pair[1]}']
 
@@ -464,19 +465,8 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     df['agebin'] = round(df['age_upper'] / 365, 1)
     df['n_prev'] = df['prev'] * df['n']
 
-    def map_to_5day_interval(day):
-        intervals = [6, 11, 16, 21, 26, 31, 36, 41, 46, 51, 56, 61, 66, 71, 76, 81, 86, 91, 96, 101, 106, 111, 116, 121,
-                     126, 131, 136, 141, 146, 151, 156, 161, 166, 171, 176, 181, 186, 191, 196, 201, 206, 211, 216, 221,
-                     226, 231, 236, 241, 246, 251, 256, 261, 266, 271, 276, 281, 286, 291, 296, 301, 306, 311, 316, 321,
-                     326, 331, 336, 341, 346, 351, 356, 361, 365]
-
-        for interval in intervals:
-            if day <= interval:
-                return interval
-        return intervals[-1]
-
     df['day'] = (df['timestep'] - 1) % 365 + 1
-    df['5day'] = df['day'].apply(map_to_5day_interval)
+    df['5day'] = df['day'].apply(lambda x: 5 * math.ceil(x/5))
     df_sum = df.groupby(sweep_variables + ['agebin', '5day',  'year'])[['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
     df_mean = df.groupby(sweep_variables + ['agebin', '5day','year'])[['nPopulation','prevalence_2to10', 'prev']].agg(np.mean).reset_index()
     df = pd.merge(df_sum, df_mean, on=sweep_variables + ['agebin', '5day', 'year'])
@@ -484,7 +474,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     ## EIR
     eir_df['day'] = (eir_df['timestep'] - 1) % 365 + 1
-    eir_df['5day'] = eir_df['day'].apply(map_to_5day_interval)
+    eir_df['5day'] = eir_df['day'].apply(lambda x: 5 * math.ceil(x/5))
     eir_df_sum = eir_df.groupby( ['index','5day', 'year'])[['simulatedEIR']].agg(np.sum).reset_index()
     eir_df_mean = eir_df.groupby( ['index','5day', 'year'])[['n_infectious_mos', 'n_total_mos_pop']].agg(np.mean).reset_index()
     eir_df_5day = pd.merge(eir_df_sum, eir_df_mean, on= ['index','5day', 'year'])
@@ -534,7 +524,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf['mortality'] = ''
     cdf = cdf.rename({'n': 'nHost'}, axis=1)
     cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
-    cdf['date'] = cdf.apply(lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(days=int(x['day']) - 1), axis=1)
+    #cdf['date'] = cdf.apply(lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(days=int(x['day']) - 1), axis=1)
 
     print(f'\nSaving outputs to: {wdir}')
     # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_5day.csv'
@@ -717,6 +707,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
 if __name__ == "__main__":
     args = parse_args()
     jdir = args.job_dir
+    #jdir = 
     # Load experiment object 
     file = open(os.path.join(jdir, "exp.obj"), "rb")
     exp = pickle.load(file)
