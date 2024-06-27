@@ -100,7 +100,7 @@ def post_processing(exp, job_directory):
                          'p_detect', 'n_detect']
 
     needed_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev',
-                       'index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup', 'age_upper', 'EIR_gamb',
+                       'index', 'timestep', 'month', 'year', 'ageGroup', 'age_upper', 'EIR_gamb',
                        'n_infectious_mos', 'n_total_mos_pop']
 
     age_groups = [[0, int(agebins_days[0] // 1)]]  # Start with the first age group [0, 182]
@@ -115,24 +115,29 @@ def post_processing(exp, job_directory):
     for i in range(1, exp.nexps + 1):
         df = pd.read_csv(os.path.join(job_directory, f'malsim_jobs/{i}_out.csv'))
         df = df.loc[:, df.columns.isin(columns_to_keep)]
-
-        days = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
-        days = np.repeat(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
-        days = np.tile(days, int(max(df['timestep']) / 365))
-
-        df['month'] = days
+        days_in_months = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+        days_in_months = np.repeat(days_in_months, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
+        days_in_months = np.tile(days_in_months, int(max(df['timestep']) / 365))
+        df['month'] = days_in_months
         df['year'] = np.floor(df['timestep'] / 365.000001).astype(int)
+        df['year'] = df['year'] + exp.sim_start_year_ms
+        df = df[df['timestep'] > (exp.burnin * 365)]
         for pair in age_groups:
             df[f'prev_{pair[0]}_{pair[1]}'] = df[f'n_detect_{pair[0]}_{pair[1]}'] / df[f'n_{pair[0]}_{pair[1]}']
 
         output = convert_malsim_to_long(df, age_groups, agebins)
+        output = convert_malsim_to_long(df, age_groups, agebins)
+        output['sim_year'] = output['year']
+        output['year'] = output['sim_year'] + exp.start_year
+        output = output[output['sim_year'] < exp.monitoring_years]
+        output = convert_malsim_to_long(df, age_groups, agebins)        
         output['sim_year'] = output['year']
         output['year'] = output['sim_year'] + exp.start_year
         output = output[output['sim_year'] < exp.monitoring_years]
         output = output[needed_channels]
+        output['timestep'] = output['timestep'] - (exp.burnin * 365)
         output.to_csv(os.path.join(job_directory, f'malsim_jobs/{i}_daily.csv'), index=False)
         daily = pd.concat([daily, output], axis=0)
-
     daily.to_csv((os.path.join(wdir, 'daily.csv')), index=False)
 
 
@@ -146,7 +151,7 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
 
-    channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'nPopulation', 'EIR_gamb', 'n_infectious_mos',
+    channels_to_keep = ['index', 'timestep', 'month', 'year', 'nPopulation', 'EIR_gamb', 'n_infectious_mos',
                         'n_total_mos_pop']
 
     df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
@@ -231,7 +236,7 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
     # Read experiment data daily
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
     mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
-    channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
+    channels_to_keep = ['index', 'timestep', 'month', 'year','ageGroup',
                         'age_upper'] + sum_channels + mean_channels
 
     df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
@@ -286,7 +291,7 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
     mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
-    channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
+    channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
 
     df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
@@ -364,7 +369,7 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables,age_groups_aggregates=None, 
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
     mean_channels = ['nPopulation', 'prevalence_2to10', 'prev', 'n_infectious_mos', 'n_total_mos_pop']
-    channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
+    channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
     # df = load_combined_daily_output(jdir, channels_to_keep)
     df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
@@ -457,7 +462,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     eir_df = eir_df[['index', 'timestep', 'year', 'inputEIR', 'simulatedEIR' ,'n_infectious_mos', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
-    channels_to_keep = ['index', 'timestep',  'year', 'sim_year', 'ageGroup', 'age_upper',
+    channels_to_keep = ['index', 'timestep',  'year', 'ageGroup', 'age_upper',
                         'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev']
 
     df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
@@ -561,7 +566,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     eir_df = eir_df[['index', 'month', 'year', 'inputEIR', 'simulatedEIR', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
-    channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup', 'age_upper',
+    channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup', 'age_upper',
                         'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev']
 
     df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
@@ -648,7 +653,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
     eir_df = eir_df[['index', 'year', 'inputEIR', 'simulatedEIR', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
-    channels_to_keep = ['index', 'timestep', 'month', 'year', 'sim_year', 'ageGroup',
+    channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup',
                         'age_upper', 'prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation',
                         'prevalence_2to10']
     # df = load_combined_daily_output(jdir, channels_to_keep)

@@ -51,7 +51,7 @@ def submit_run_MalSim(exp, t='10:00:00', memG=3):
     #    3) the inputs we want in our Rscript
     file = open(script_path, 'w')
     file.write(header_post + f'\ncd {ms_input_path}')
-    file.write(f'\nRscript {r_file_path} {r_folder_path} {exp.job_directory} {slurmID} "run"')
+    file.write(f'\nRscript {r_file_path} {r_folder_path} {exp.job_directory} {slurmID}')
     file.close()
 
     # Now we can run the rscript as a subprocess via sbatch

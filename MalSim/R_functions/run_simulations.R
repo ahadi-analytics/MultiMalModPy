@@ -9,7 +9,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
   # Specify the min and max ages to render:
   min_ages <- exp$min_ages
   max_ages <- exp$max_ages
-  timesteps <- exp$monitoring_years * 365
+  timesteps <- (exp$burnin + exp$monitoring_years) * 365
   intervention_list <- exp$intervention_list
 
   # Run through each row of the input dataframe, parameterise the model, and run the simulation:
