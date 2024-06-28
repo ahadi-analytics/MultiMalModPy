@@ -68,14 +68,11 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
                                   max_ages = exp$smc_max_ages[i,])
       }
 
-
-      if ("cm" %in% intervention_list) {
-        # Parameterise the clinical treatment
-        simparams[[i]] <- set_clinical_treatment(parameters = simparams[[i]],
-                                               drug = 1,
-                                               timesteps = 1,
-                                               coverages = parameter_table[i,]$cm_clinical)
-      }
+      # Parameterise the clinical treatment
+      simparams[[i]] <- set_clinical_treatment(parameters = simparams[[i]],
+                                              drug = 1,
+                                              timesteps = 1,
+                                              coverages = parameter_table[i,]$cm_clinical)
 
       if ("cc_step" %in% intervention_list){ 
         # Calibrate to the initial EIR (eirs unique to each model, based on which eir creates the high,
@@ -171,13 +168,11 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
                                   max_ages = exp$smc_max_ages[i,])
       }
 
-      if ("cm" %in% intervention_list){
-        # Parameterise the clinical treatment
-        simparams[[i]] <- set_clinical_treatment(parameters = simparams[[i]],
-                                               drug = 1,
-                                               timesteps = 1,
-                                               coverages = parameter_table[i,]$cm_clinical)
-      }
+      # Parameterise the clinical treatment
+      simparams[[i]] <- set_clinical_treatment(parameters = simparams[[i]],
+                                              drug = 1,
+                                              timesteps = 1,
+                                              coverages = parameter_table[i,]$cm_clinical)
 
       # Calibrate to the initial EIR:
       if ("cc_step" %in% intervention_list){ 
