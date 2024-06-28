@@ -369,7 +369,7 @@ class BenchmarkAnalyzer(IAnalyzer):
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR','n_total_mos_pop']].agg(
+            eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR','n_total_mos_pop','n_infectious_mos']].agg(
                 np.mean).reset_index()  # mean across monitoring years and runs
             eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
@@ -506,7 +506,7 @@ class DailyAgeBinAnalyzer(IAnalyzer):
         print(f'\nSaving outputs to: {os.path.join(self.working_dir, "em")}')
         if self.cc:
             cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
-                            'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'seed', 'carrying_capacity_step']
+                            'clinical_incidence', 'severe_incidence', 'n_total_mos_pop','n_infectious_mos', 'seed', 'carrying_capacity_step']
             cdf = cdf[cols_to_keep]
             cdf.to_csv((os.path.join(self.working_dir, 'em', 'CCstep_daily.csv')), index=False)
         else:

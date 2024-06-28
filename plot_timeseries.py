@@ -270,7 +270,9 @@ if __name__ == "__main__":
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    channel_list = ['simulatedEIR', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10', 'n_total_mos_pop'] # can remove infectious and total mos if that is preferred.
+    ento_channel_list = ['n_infectious_mos', 'n_total_mos_pop' ]
+    epi_channel_list = ['simulatedEIR','clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10']
+    channel_list = epi_channel_list + ento_channel_list
     if (exp.om_survey_step == '30d' or exp.om_survey_step == '5d') and exp.emod_step != 'burnin':
         sweepvar = 'eir'
         for channel in channel_list:

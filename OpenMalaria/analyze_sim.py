@@ -430,7 +430,7 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
-    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR']]
+    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR', 'n_total_mos_pop', 'n_infectious_mos']]
 
     # Define age groups and labels
     age_bins = exp.agebins
@@ -553,7 +553,7 @@ def AnnualAgebinAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_channels
 
     # Read the monthly EIR data from the CSV file and compute the mean for each index and month
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
-    eir_df = eir_df[['index', 'year', 'inputEIR', 'simulatedEIR']]
+    eir_df = eir_df[['index', 'year', 'inputEIR', 'simulatedEIR', 'n_total_mos_pop', 'n_infectious_mos']]
 
     # Define age groups and labels
     age_bins = exp.agebins
@@ -679,7 +679,7 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
 
     # Read the monthly EIR data from the CSV file and compute the mean for each index and month
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
-    eir_df = eir_df.groupby(['index', 'month'], as_index=False)[['inputEIR', 'simulatedEIR']].mean()
+    eir_df = eir_df.groupby(['index', 'month'], as_index=False)[['inputEIR', 'simulatedEIR', 'n_total_mos_pop', 'n_infectious_mos']].mean()
 
     # Define age groups and labels
     age_bins = exp.agebins
