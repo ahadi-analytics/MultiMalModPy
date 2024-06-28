@@ -22,7 +22,6 @@ arguments <- commandArgs(trailingOnly = TRUE)
 setwd(arguments[1])
 job_directory = arguments[2]
 scen_id = arguments[3]
-malsim_steps = arguments[4]    #c('run','postprocess')
 
 # Load the functions required:
 for (i in 1:length(list.files(".", pattern = ".R"))) {
@@ -43,8 +42,6 @@ exp$sim_out_dir <- exp_setup_df[exp_setup_df$parameter == 'sim_out_dir', 'Value'
 exp$pop_size <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'pop_size', 'Value'])
 exp$burnin <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'burnin', 'Value'])
 exp$monitoring_years <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'monitoring_years', 'Value'])
-exp$start_year <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'start_year', 'Value'])
-exp$sim_start_year_ms <- exp$start_year # as.numeric(exp_setup_df[exp_setup_df$parameter == 'sim_start_year_ms', 'Value'])
 exp$agebins <- exp_setup_df[exp_setup_df$parameter == 'agebins', 'Value']
 exp$agebins <- as.numeric(unlist(strsplit(gsub("\\[|\\]", "", exp$agebins), ", ")))
 exp$min_ages <- (round(c(0, exp$agebins[1:length(exp$agebins) - 1]) * 365)) + 1
@@ -81,20 +78,6 @@ if( length(exp$intervention_list)>0){
 }
 
 # Run the simulations or load example:
-if ('run' %in% malsim_steps) {
-  print("Running the simulations...")
-  simulation_outputs_raw <- run_simulations(exp = exp, parameter_table = scenarios_to_run, write_raw_output = TRUE)
-  simulation_outputs_df <- simulation_outputs_raw[[2]][[1]]
-}else {
-  simulation_outputs_df <- read.csv(file.path(exp$job_directory, 'malsim_jobs', paste0(scen_id, '_out.csv')))
-}
-
-
-if ('postprocess' %in% malsim_steps) {
-
-  print('Running post-processing to create a list of monthly and annually aggregated outputs saved into daily{i}.csv...')
-  processed_malsim_outputs <- malsim_post_processing_single(simulation_outputs_df = simulation_outputs_df, days_per_month = days_per_month, exp = exp)
-
-  # Write the outputs to .csv's:
-  write_csv(x = processed_malsim_outputs, file = file.path(exp$job_directory, 'malsim_jobs', paste0("daily_", scen_id, ".csv")))
-}
+print("Running the simulations...")
+simulation_outputs_raw <- run_simulations(exp = exp, parameter_table = scenarios_to_run, write_raw_output = TRUE)
+simulation_outputs_df <- simulation_outputs_raw[[2]][[1]]
