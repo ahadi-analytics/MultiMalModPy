@@ -123,7 +123,7 @@ if __name__ == "__main__":
     if facet_var == 'ageGroup' and len(exp.seasonality) > 1:
         facet_var = 'seasonality'
 
-    df, wdir = get_emodom_df(out_dir, emodom)
+    df, wdir = get_output_df(out_dir, emodom)
 
     for channel in channel_list:
         print(f'#----- Plotting Age Curves for {channel}-----#')

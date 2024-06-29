@@ -32,7 +32,7 @@ customTheme <- f_getCustomTheme() +
 
 # Load simulation outputs  BENCHMARK-------------------------------
 wdir <- file.path(projdir, exp_name)
-dat_total <- get_emodom_df(wdir, emodom = emodom)
+dat_total <- get_output_df(wdir, emodom = emodom)
 
 table(dat_p$ageGroup, dat_p$emodom)
 

@@ -22,7 +22,7 @@ exp_fig_dir <- file.path(wdir, 'comb')
 emodom <- c('EMOD','OpenMalaria')
 
 # Load simulation outputs  -------------------------------
-dat <- get_emodom_df(wdir, emodom=emodom)
+dat <- get_output_df(wdir, emodom=emodom)
 
 # Table to check entries per model and EIR
 table(dat$eir, dat$emodom, exclude = NULL)
@@ -41,7 +41,7 @@ dateir_mth <- fread(file.path(wdir, 'om', 'OM_EIR_mth.csv')) %>%
   select(eir, month, emodom, mean_val)
 
 # OpenMalaria  EIR as in OM benchmarking (aggregated over years per month)
-dat_mth <- get_emodom_df(wdir, emodom=emodom, mth=TRUE) %>%
+dat_mth <- get_output_df(wdir, emodom=emodom, mth=TRUE) %>%
   filter(ageGroup == '0-5' &
            eir == max(eir) &
            seed == min(seed))

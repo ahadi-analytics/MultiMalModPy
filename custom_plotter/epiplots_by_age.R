@@ -21,7 +21,7 @@ proj_fig_dir <- file.path(projdir, 'figures')
 
 
 # Load simulation outputs  -------------------------------
-dat <- get_emodom_df(wdir, emodom=emodom)
+dat <- get_output_df(wdir, emodom=emodom)
 
 # Table to check entries per model and EIR
 table(dat$eir, dat$emodom, exclude = NULL)

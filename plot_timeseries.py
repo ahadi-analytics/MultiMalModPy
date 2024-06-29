@@ -284,8 +284,8 @@ if __name__ == "__main__":
     epi_channel_list = ['simulatedEIR', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10']
     channel_list = epi_channel_list + ento_channel_list
 
-    df_mth, wdir = get_emodom_df(out_dir, emodom, mth=True)
-    df_yr, _ = get_emodom_df(out_dir, emodom, yr=True)
+    df_mth, wdir = get_output_df(out_dir, emodom, mth=True)
+    df_yr, _ = get_output_df(out_dir, emodom, yr=True)
     agegrp = '0-100'  # 0-100  # if  agegrp is set to None, it will combine all ages, note, csv includes 0-5 and 0-100
 
     if not df_mth.empty:

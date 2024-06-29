@@ -365,7 +365,7 @@ if __name__ == "__main__":
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    df, wdir = get_emodom_df(out_dir, emodom)
+    df, wdir = get_output_df(out_dir, emodom)
 
     quantitative = False
     if quantitative and len(emodom) == 3:

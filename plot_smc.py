@@ -234,8 +234,8 @@ if __name__ == "__main__":
     if facet_var == 'ageGroup' and len(exp.seasonality) > 1:
         facet_var = 'seasonality'
 
-    df_mth, wdir = get_emodom_df(out_dir, emodom, mth=True)
-    df_yr, _ = get_emodom_df(out_dir, emodom, yr=True)
+    df_mth, wdir = get_output_df(out_dir, emodom, mth=True)
+    df_yr, _ = get_output_df(out_dir, emodom, yr=True)
 
     if not df_mth.empty:
         for channel in channel_list:

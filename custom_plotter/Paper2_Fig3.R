@@ -31,7 +31,7 @@ exp_name <- "sims_dynamic_seasonal__13_03_24"
 emodom <- c("EMOD", "OpenMalaria", "MalSim")
 
 # Load simulation outputs  BENCHMARK-------------------------------
-dat_s <- get_emodom_df(file.path(projdir,exp_name), emodom = emodom, timeseries = TRUE, fiveday=TRUE)
+dat_s <- get_output_df(file.path(projdir,exp_name), emodom = emodom, timeseries = TRUE, fiveday=TRUE)
 
 dat_s <- dat_s %>%
   group_by(day, year, eir, cm_clinical, ageGroup, seasonality, emodom) %>%

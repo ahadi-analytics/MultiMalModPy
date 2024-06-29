@@ -312,8 +312,8 @@ if __name__ == "__main__":
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    df_cc, wdir = get_emodom_df(out_dir, emodom, custom_name='CCstep_daily')
-    df_daily, wdir = get_emodom_df(out_dir, emodom, daily=True)
+    df_cc, wdir = get_output_df(out_dir, emodom, custom_name='CCstep_daily')
+    df_daily, wdir = get_output_df(out_dir, emodom, daily=True)
 
     sweepvar = 'emodom'
     facet_var = 'ageGroup'

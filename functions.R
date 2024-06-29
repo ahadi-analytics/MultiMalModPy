@@ -33,9 +33,9 @@ emodom_cols <- c('#1b9e77ff','#7570b3ff','#d95f02ff')
 #' @examples
 #' wdir <- "path/to/data"
 #' emodom <- c("OpenMalaria", "EMOD")
-#' result <- get_emodom_df(wdir, emodom, mth = TRUE)
+#' result <- get_output_df(wdir, emodom, mth = TRUE)
 #'
-get_emodom_df <- function(wdir, emodom, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE, condensed = FALSE) {
+get_output_df <- function(wdir, emodom, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE, condensed = FALSE) {
   cols_to_keep <- NULL
   fname <- 'Benchmark.csv'
   if (timeseries) {

@@ -45,7 +45,7 @@ def custom_sort_key(age_group):
 
 
 # Creates the combined dataframes for all models simulated.
-def get_emodom_df(wdir, emodom, yr=False, mth=False, daily=False, custom_name=None, condensed=False,
+def get_output_df(wdir, emodom, yr=False, mth=False, daily=False, custom_name=None, condensed=False,
                   save_combined=False):
     """
     Load and combine data from the model output files.
