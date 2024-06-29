@@ -17,7 +17,7 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plot_helper import *
 
 # Plots prevalence 2 to 10 by output variable, requires benchmark.csv
-def prevalence2to10_to_incidence(wdir, emodom, sweepvar = 'emodom', channel='clinical_incidence'):
+def prevalence2to10_to_incidence(wdir, df, sweepvar = 'emodom', channel='clinical_incidence'):
     """
     Generates line plots for PfPR2to10 and either clinical or severe incidence per sweepvar as colors and emodom as panels.
     Parameters:
@@ -28,7 +28,7 @@ def prevalence2to10_to_incidence(wdir, emodom, sweepvar = 'emodom', channel='cli
     Returns:
         None (plots are saved to disk).
     """
-    df, wdir = get_emodom_df(wdir, emodom)
+
     ylab = channel.replace('_', ' ')
     seasonality = list(df['seasonality'].unique())
     nx = len(df['ageGroup'].unique())
@@ -49,6 +49,7 @@ def prevalence2to10_to_incidence(wdir, emodom, sweepvar = 'emodom', channel='cli
             ax = fig.add_subplot(ny, nx, f)
             f += 1
             adf = sdf[sdf.ageGroup == agroup]
+
             for mi, model in enumerate(unique_groups):
                 pdf = adf[adf[sweepvar] == model]
                 color_key = color_selector(mi, model)
@@ -82,7 +83,7 @@ def prevalence2to10_to_incidence(wdir, emodom, sweepvar = 'emodom', channel='cli
 
 # Plots prevalence 2 to 10 by incidence, with subplots seperated by 3 age groups. These graphs were requested by Narimane to reflect 
 # figure 1 in https://www.nature.com/articles/ncomms9170
-def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, sweepvar = 'emodom', channel='clinical_incidence'):
+def prevalence2to10_to_incidence_by_age_and_model(wdir, df, sweepvar = 'emodom', channel='clinical_incidence'):
     """
     Generates line plots for PfPR2to10 and either clinical or severe incidence as panels seperated by model (columns) and ages (rows).
     Parameters:
@@ -93,7 +94,7 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, sweepvar = 'emod
     Returns:
         None (plots are saved to disk).
     """
-    df, wdir = get_emodom_df(wdir, emodom)
+
     ylab = channel.replace('_', ' ')
     seasonality = list(df['seasonality'].unique())
     nx = 3
@@ -110,6 +111,7 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, sweepvar = 'emod
     adult = ['15-20','20-100']
     ages_list = [young_child, older_child, adult]
     mean_vars = [channel, 'prevalence_2to10']
+
     # for each age group, plot x = prevalence 2_to_10, y = incidences (or prevalence)
     for si, season in enumerate(seasonality):
         sdf = df[df.seasonality == season]
@@ -143,12 +145,12 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, emodom, sweepvar = 'emod
     plt.close()
 
 # Plots simulated eir vs output variable, requires benchmark.csv
-def eir_to_outcome(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR', channel = 'prevalence_2to10', agegrp = '0-5'):
+def eir_to_outcome(wdir, df, sweepvar='cm_clinical', eir_val='simulatedEIR', channel = 'prevalence_2to10', agegrp = '0-5'):
     """
     Generates line plots for EIR (input or simulated) and a requested outcome variable per emodom as colors and sweepvar as panels.
     Parameters:
         wdir (str): Working directory where the plot will be saved.
-        emodom (str or list of str): Name of models for which result dataframes should be loaded.
+        df (pandas dataframe): Dataframe that includes combined model results.
         sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'cm_clinical'.
         eir_val (str, optional): The EIR (entomological inoculation rate) value to be used for plotting. Default is 'simulatedEIR'.
         channel (str, optional): the outcome variable to compare to eir
@@ -156,7 +158,7 @@ def eir_to_outcome(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR',
     Returns:
         None (plots are saved to disk).
     """
-    df, wdir = get_emodom_df(wdir, emodom) # Grab the dataframe
+
     df = df[df['ageGroup'] == agegrp] # Limit the dataframe to desired age group
     seasonality = list(df['seasonality'].unique()) #Identify seasonality patterns to iterate over while graphing
     if sweepvar != 'cm_clinical': #if a case management level has not been assigned, we default to only present the smallest case manaagement value available in the data
@@ -194,17 +196,17 @@ def eir_to_outcome(wdir, emodom, sweepvar='cm_clinical', eir_val='simulatedEIR',
 
 
 # Plots input eir vs simulated eir, requires benchmark.csv
-def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical'):
+def input_to_simulated_eir(wdir, df, sweepvar='cm_clinical'):
     """
     Generates line plots input compared to simulated EIR.
     Parameters:
         wdir (str): Working directory where the plot will be saved.
-        emodom (str or list of str): Name of models for which result dataframes should be loaded.
+        df (pandas dataframe): Dataframe that includes combined model results.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'cm_clinical'.
     Returns:
         None (plots are saved to disk).
     """
-    df, wdir = get_emodom_df(wdir, emodom)
+
     seasonality = list(df['seasonality'].unique())
     unique_groups = df[sweepvar].unique()
     unique_groups = np.sort(unique_groups)
@@ -249,17 +251,16 @@ def input_to_simulated_eir(wdir, emodom, sweepvar='cm_clinical'):
 
 
 # Calculates ANOVA scores for each output variable, requires Benchmark.csv
-def anovas(wdir, emodom):
+def anovas(wdir, df):
     """
     Calculates ANOVA scores for each output variable, seperated by age group and all ages.
     Parameters:
         wdir (str): Working directory where the plot will be saved.
-        emodom (str or list of str): Name of models for which result dataframes should be loaded.
+        df (pandas dataframe): Dataframe that includes combined model results.
     Returns:
         None (ANOVA values are saved to disk).
     """
     from scipy.stats import f_oneway
-    df, wdir = get_emodom_df(wdir, emodom, mth=False)
     comparisons = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence', 'simulatedEIR']
     emod = df[df['emodom'] == 'EMOD']
     malsim = df[df['emodom'] == 'MalSim']
@@ -302,18 +303,18 @@ def anovas(wdir, emodom):
 
 
 # Calculates RMSE values for each output variable
-def rmse(wdir, emodom):
+def rmse(wdir, df):
     """
     Calculates RMSE scores for each output variable (comparing against each model individually), seperated by age group and all ages.
     Parameters:
         wdir (str): Working directory where the plot will be saved.
-        emodom (str or list of str): Name of models for which result dataframes should be loaded.
+        df (pandas dataframe): Dataframe that includes combined model results.
     Returns:
         None (RMSE scores are saved to disk).
     """
     from sklearn.metrics import mean_squared_error
     from math import sqrt
-    df, wdir = get_emodom_df(wdir, emodom, mth=False)
+
     rmse_vars = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence', 'simulatedEIR']
 
     rmse_df = pd.DataFrame(
@@ -359,18 +360,15 @@ if __name__ == "__main__":
     args = parse_args()
     out_dir = args.directory
     emodom = args.emodom
-    #out_dir = 
-    #emodom = ['EMOD', 'OpenMalaria', 'MalSim']
     if isinstance(emodom, str):
         emodom = [emodom]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    eir_relationship_plots = True # uses 'Benchmark.csv' output files
-    quantitative = False
+    df, wdir = get_emodom_df(out_dir, emodom)
 
-    if quantitative:
-       # Currently RMSE and ANOVAS are hard coded to require all three models
+    quantitative = False
+    if quantitative and len(emodom) == 3:
         print('#----- Calculating RMSE Values and ANOVAs -----#')
         rmse(out_dir, emodom)
         anovas(out_dir, emodom)
@@ -378,18 +376,17 @@ if __name__ == "__main__":
     if len(exp.eir) >= 3:
         sweepvar = 'emodom'
         print('#----- Plotting input to simulated EIR -----#')
-        input_to_simulated_eir(out_dir, emodom, sweepvar=sweepvar)
+        input_to_simulated_eir(wdir, df, sweepvar=sweepvar)
 
         channel_list = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence']
         for channel in channel_list:
             print(f'#----- Plotting simulated EIR to {channel} -----#')
-            eir_to_outcome(out_dir, emodom, sweepvar=sweepvar, eir_val='simulatedEIR', channel=channel,
-                           agegrp='0-100')  # Jaline prefers 0-100 visuals
+            eir_to_outcome(wdir, df, sweepvar=sweepvar, eir_val='simulatedEIR', channel=channel, agegrp='0-100')
 
         channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
         for channel in channel_list:
             print(f'#----- Plotting prevalence_2_to_10 to {channel} -----#')
-            prevalence2to10_to_incidence(out_dir, emodom, channel=channel)
+            prevalence2to10_to_incidence(wdir, df, channel=channel)
             # prevalence2to10_to_incidence_by_age_and_model(out_dir,emodom,channel=channel) #This is new plotter, we don't have to make it everytime, but its available.
     else:
         print(f'Too few EIR values to be able to run relationship plots')

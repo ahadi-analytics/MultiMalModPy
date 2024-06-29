@@ -14,6 +14,7 @@ mpl.rcParams['pdf.fonttype'] = 3
 plt.rcParams.update({'font.size': 16})
 plt.rcParams.update({'font.sans-serif': "Arial"})
 
+
 # Helps process script inputs
 def parse_args():
     description = "Simulation specifications"
@@ -44,7 +45,8 @@ def custom_sort_key(age_group):
 
 
 # Creates the combined dataframes for all models simulated.
-def get_emodom_df(wdir, emodom, yr = False, mth=False, daily=False,  custom_name=None,  condensed=False):
+def get_emodom_df(wdir, emodom, yr=False, mth=False, daily=False, custom_name=None, condensed=False,
+                  save_combined=False):
     """
     Load and combine data from the model output files.
     Parameters:
@@ -60,23 +62,23 @@ def get_emodom_df(wdir, emodom, yr = False, mth=False, daily=False,  custom_name
     Raises:
         ValueError: If invalid emodom value is specified.
     """
-    cols_to_keep = None # default read all
+    cols_to_keep = None  # default read all
     fname = 'Benchmark.csv'
     if yr:
         fname = 'PfPR_ClinicalIncidence_yr.csv'
     if mth:
         fname = 'PfPR_ClinicalIncidence_mth.csv'
-    #if daily: # Might change to fiveday or weekly analyzer
-    #    fname = 'PfPR_ClinicalIncidence_daily.csv'
-    #    cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
-    #                    'clinical_incidence', 'severe_incidence', 'seed']
+    if daily:
+        fname = 'PfPR_ClinicalIncidence_daily.csv'
+        # cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
+        #                'clinical_incidence', 'severe_incidence', 'seed']
     if custom_name:
         fname = f'{custom_name}.csv'
 
     if os.path.isfile(os.path.join(wdir, fname)):
         df = pd.read_csv((os.path.join(wdir, fname)), low_memory=False)
     else:
-        if len(emodom)==1:
+        if len(emodom) == 1:
             if 'OpenMalaria' in emodom:
                 df = pd.read_csv((os.path.join(wdir, f'om/{fname}')), usecols=cols_to_keep)
                 df['emodom'] = 'OpenMalaria'
@@ -97,8 +99,9 @@ def get_emodom_df(wdir, emodom, yr = False, mth=False, daily=False,  custom_name
             if 'EMOD' in emodom:
                 em_df = pd.read_csv((os.path.join(wdir, f'em/{fname}')), usecols=cols_to_keep)
                 em_df['emodom'] = 'EMOD'
-                em_df['seed'] = em_df['seed'] + 1  # increase the seed count by one to make sure seed number is consistent across models
-                #em_df = em_df[em_df['eir'] >= 1]  # get rid of eirs <1 as EMOD can't sustain malaria at an eir less than 1, for pop of 10,000.
+                em_df['seed'] = em_df[
+                                    'seed'] + 1  # increase the seed count by one to make sure seed number is consistent across models
+                # em_df = em_df[em_df['eir'] >= 1]  # get rid of eirs <1 as EMOD can't sustain malaria at an eir less than 1, for pop of 10,000.
 
             if 'MalSim' in emodom:
                 ms_df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')), usecols=cols_to_keep)
@@ -124,15 +127,18 @@ def get_emodom_df(wdir, emodom, yr = False, mth=False, daily=False,  custom_name
                 age_grps = list(df['ageGroup'].unique())
             df['ageGroup'] = df['ageGroup'].astype('category')
             df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
-        if condensed: #For our testing purposes, we can reduce the eir's in our simulations to the 6 we think are most useful to compare/graph together.
-            eir_list = [1,5,10,50,200,1000]
+
+        if condensed:  # For our testing purposes, we can reduce the eir's in our simulations to the 6 we think are most useful to compare/graph together.
+            eir_list = [1, 5, 10, 50, 200, 1000]
             df = df[df['eir'].isin(eir_list)]
         warning_df = df[df['simulatedEIR'] == 0]
-        if len(warning_df) > 0 and daily is False: #we don't want to include simulations were eir was 0 or less, because we won't get any outcome measures and that crashes the system
+
+        if len(warning_df) > 0 and daily is False:  # we don't want to include simulations were eir was 0 or less, because we won't get any outcome measures and that crashes the system
             print('Warning: some eirs had simulated EIRS of 0, and were removed')
             df = df[df['simulatedEIR'] > 0]
             df = df[df['simulatedEIR'].notnull()]
-        if not daily:
+
+        if not daily and save_combined:
             df.to_csv(os.path.join(wdir, f'{fname}'), index=False)
     return df, wdir
 
