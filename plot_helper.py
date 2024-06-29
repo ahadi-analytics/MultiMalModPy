@@ -29,7 +29,7 @@ def parse_args():
     )
     parser.add_argument(
         "-m",
-        "--emodom",
+        "--modelname",
         nargs='+',
         type=str,
         required=False,
@@ -45,22 +45,22 @@ def custom_sort_key(age_group):
 
 
 # Creates the combined dataframes for all models simulated.
-def get_output_df(wdir, emodom, yr=False, mth=False, daily=False, custom_name=None, condensed=False,
+def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name=None, condensed=False,
                   save_combined=False):
     """
     Load and combine data from the model output files.
     Parameters:
         wdir (str): Working directory where the data files are located.
-        emodom (str or list of str): Name of models for which result CSVs should be loaded, case sensitive.
+        modelname (str or list of str): Name of models for which result CSVs should be loaded, case sensitive.
         mth (bool, optional): Set to True if the data files have monthly data. Default is False.
         daily (bool, optional): Set to True if the data files have daily timestep data. Default is False. If both mth and daily are true, only daily will be processed.
         timeseries (bool, optional): Set to True if the unaggregated timeseries data should be read in. Default is False
         condensed (bool, optional): Set to True, only a set list of eirs will be present in the final csv.
     Returns:
-        df (DataFrame): Combined DataFrame containing the combined data for the models listed in emodom.
+        df (DataFrame): Combined DataFrame containing the combined data for the models listed in modelname.
         wdir (str): Updated working directory (if applicable).
     Raises:
-        ValueError: If invalid emodom value is specified.
+        ValueError: If invalid modelname value is specified.
     """
     cols_to_keep = None  # default read all
     fname = 'Benchmark.csv'
@@ -78,47 +78,47 @@ def get_output_df(wdir, emodom, yr=False, mth=False, daily=False, custom_name=No
     if os.path.isfile(os.path.join(wdir, fname)):
         df = pd.read_csv((os.path.join(wdir, fname)), low_memory=False)
     else:
-        if len(emodom) == 1:
-            if 'OpenMalaria' in emodom:
+        if len(modelname) == 1:
+            if 'OpenMalaria' in modelname:
                 df = pd.read_csv((os.path.join(wdir, f'om/{fname}')), usecols=cols_to_keep)
-                df['emodom'] = 'OpenMalaria'
-            elif 'EMOD' in emodom:
+                df['modelname'] = 'OpenMalaria'
+            elif 'EMOD' in modelname:
                 df = pd.read_csv((os.path.join(wdir, f'em/{fname}')), usecols=cols_to_keep)
-                df['emodom'] = 'EMOD'
-            elif 'MalSim' in emodom:
+                df['modelname'] = 'EMOD'
+            elif 'MalSim' in modelname:
                 df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')), usecols=cols_to_keep)
-                df['emodom'] = 'MalSim'
+                df['modelname'] = 'MalSim'
             else:
                 raise ValueError(
-                    f"Please specify emodom as some combination of EMOD, OpenMalaria, and MalSim (list), {emodom} not valid")
+                    f"Please specify modelname as some combination of EMOD, OpenMalaria, and MalSim (list), {modelname} not valid")
         else:
-            if 'OpenMalaria' in emodom:
+            if 'OpenMalaria' in modelname:
                 om_df = pd.read_csv((os.path.join(wdir, f'om/{fname}')), usecols=cols_to_keep)
-                om_df['emodom'] = 'OpenMalaria'
+                om_df['modelname'] = 'OpenMalaria'
 
-            if 'EMOD' in emodom:
+            if 'EMOD' in modelname:
                 em_df = pd.read_csv((os.path.join(wdir, f'em/{fname}')), usecols=cols_to_keep)
-                em_df['emodom'] = 'EMOD'
+                em_df['modelname'] = 'EMOD'
                 em_df['seed'] = em_df[
                                     'seed'] + 1  # increase the seed count by one to make sure seed number is consistent across models
                 # em_df = em_df[em_df['eir'] >= 1]  # get rid of eirs <1 as EMOD can't sustain malaria at an eir less than 1, for pop of 10,000.
 
-            if 'MalSim' in emodom:
+            if 'MalSim' in modelname:
                 ms_df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')), usecols=cols_to_keep)
-                ms_df['emodom'] = 'MalSim'
+                ms_df['modelname'] = 'MalSim'
 
-            if 'EMOD' in emodom and 'OpenMalaria' in emodom and 'MalSim' in emodom:
+            if 'EMOD' in modelname and 'OpenMalaria' in modelname and 'MalSim' in modelname:
                 df = pd.concat([em_df, om_df])
                 df = pd.concat([df, ms_df])
-            elif 'OpenMalaria' in emodom and 'EMOD' in emodom and 'MalSim' not in emodom:
+            elif 'OpenMalaria' in modelname and 'EMOD' in modelname and 'MalSim' not in modelname:
                 df = pd.concat([em_df, om_df])
-            elif 'OpenMalaria' in emodom and 'MalSim' in emodom and 'EMOD' not in emodom:
+            elif 'OpenMalaria' in modelname and 'MalSim' in modelname and 'EMOD' not in modelname:
                 df = pd.concat([ms_df, om_df])
-            elif 'EMOD' in emodom and 'MalSim' in emodom and 'OpenMalaria' not in emodom:
+            elif 'EMOD' in modelname and 'MalSim' in modelname and 'OpenMalaria' not in modelname:
                 df = pd.concat([em_df, ms_df])
             else:
                 raise ValueError(
-                    f"Please specify emodom as some combination of EMOD, OpenMalaria, and MalSim (list), {emodom} not valid")
+                    f"Please specify modelname as some combination of EMOD, OpenMalaria, and MalSim (list), {modelname} not valid")
 
         if 'ageGroup' in df.columns:
             try:

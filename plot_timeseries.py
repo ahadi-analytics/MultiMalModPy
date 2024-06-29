@@ -45,7 +45,7 @@ def monthly_trends(wdir, df, channel, sweepvar='eir', agegrp='0-100'):
         ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
     else:
         ylab = channel.replace('_', ' ')
-    color_palette = sns.color_palette('colorblind', max(len(df['emodom'].unique()), 4))
+    color_palette = sns.color_palette('colorblind', max(len(df['modelname'].unique()), 4))
     nx = round(len(df[sweepvar].unique()) / 2)
     ny = 2
     f = 1
@@ -60,7 +60,7 @@ def monthly_trends(wdir, df, channel, sweepvar='eir', agegrp='0-100'):
         ax = fig.add_subplot(ny, nx, f)
         f += 1
         max_ylim = []
-        for i, (m, mdf) in enumerate(sdf.groupby('emodom')):
+        for i, (m, mdf) in enumerate(sdf.groupby('modelname')):
             # plot mean, min and max of seeds
             color_key = color_selector(i, m)
             ylim_up = np.max(mdf[channel]) * 1.1
@@ -100,7 +100,7 @@ def monthly_trends(wdir, df, channel, sweepvar='eir', agegrp='0-100'):
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_mth.csv
-def monthly_timeseries(wdir, df, channel, sweepvar='emodom', facet_var='ageGroup', agegrp='0-100'):
+def monthly_timeseries(wdir, df, channel, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -141,8 +141,8 @@ def monthly_timeseries(wdir, df, channel, sweepvar='emodom', facet_var='ageGroup
         selected_eir = np.max(df.eir)
         df = df[(df.eir == selected_eir)]
 
-    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-        raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+        raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
 
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
@@ -187,7 +187,7 @@ def monthly_timeseries(wdir, df, channel, sweepvar='emodom', facet_var='ageGroup
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_yr.csv
-def annual_timeseries(wdir, df, channel, sweepvar='emodom', facet_var='ageGroup', agegrp='0-100'):
+def annual_timeseries(wdir, df, channel, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -227,8 +227,8 @@ def annual_timeseries(wdir, df, channel, sweepvar='emodom', facet_var='ageGroup'
         selected_eir = np.max(df.eir)
         df = df[(df.eir == selected_eir)]
 
-    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-        raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+        raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
 
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
@@ -274,9 +274,9 @@ def annual_timeseries(wdir, df, channel, sweepvar='emodom', facet_var='ageGroup'
 if __name__ == "__main__":
     args = parse_args()
     out_dir = args.directory
-    emodom = args.emodom  # ['EMOD', 'OpenMalaria', 'MalSim']
-    if isinstance(emodom, str):
-        emodom = [emodom]
+    modelname = args.modelname  # ['EMOD', 'OpenMalaria', 'MalSim']
+    if isinstance(modelname, str):
+        modelname = [modelname]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
@@ -284,8 +284,8 @@ if __name__ == "__main__":
     epi_channel_list = ['simulatedEIR', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10']
     channel_list = epi_channel_list + ento_channel_list
 
-    df_mth, wdir = get_output_df(out_dir, emodom, mth=True)
-    df_yr, _ = get_output_df(out_dir, emodom, yr=True)
+    df_mth, wdir = get_output_df(out_dir, modelname, mth=True)
+    df_yr, _ = get_output_df(out_dir, modelname, yr=True)
     agegrp = '0-100'  # 0-100  # if  agegrp is set to None, it will combine all ages, note, csv includes 0-5 and 0-100
 
     if not df_mth.empty:
@@ -297,7 +297,7 @@ if __name__ == "__main__":
             except:
                 print(f'{channel} not found in dataframe')
 
-    sweepvar = 'emodom'
+    sweepvar = 'modelname'
     facet_var = 'ageGroup'
 
     if len(exp.eir) > 1 & len(exp.eir) <= 3:

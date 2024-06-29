@@ -29,7 +29,7 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels, seasonality):
     df_em = pd.read_csv(os.path.join(wdir, 'em', 'All_Age_InsetChart.csv'))
     df_em['date'] = pd.to_datetime(df_em['date'])
     df_em = df_em.groupby(['date'] + sweep_variables['EMOD'])[inset_channels['EMOD']].agg(np.mean).reset_index()
-    df_em['emodom'] = 'EMOD'
+    df_em['modelname'] = 'EMOD'
     df_em = df_em.rename(columns={'Run_Number': 'seed', 'EIR_scale_factor': 'eir'})
 
     df_om = pd.read_csv(os.path.join(wdir, 'om', 'All_Age_InsetChart.csv'))
@@ -43,7 +43,7 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels, seasonality):
     inset_channels['OpenMalaria'] = ['nHost', 'nInfect','totalPatentInf / nHost',  'nPatent / nHost', 'nUncomp', 'nSevere']
 
 
-    df_om['emodom'] = 'OpenMalaria'
+    df_om['modelname'] = 'OpenMalaria'
     df_om = df_om[list(df_em.columns)]
     df = pd.concat([df_om, df_em])
     df = df[df['seasonality'] == seasonality]
@@ -68,17 +68,17 @@ def all_age_sample_plot(wdir, sweep_variables, inset_channels, seasonality):
         fig.subplots_adjust(hspace=0.5, left=0.08, right=0.97)
 
 
-        for i, emodom in enumerate(df['emodom'].unique()):
-            sub_df = df[df['emodom'] == emodom]
+        for i, modelname in enumerate(df['modelname'].unique()):
+            sub_df = df[df['modelname'] == modelname]
             channel_lbl = ch_em
-            if emodom == 'OpenMalaria':
+            if modelname == 'OpenMalaria':
                 channel_lbl = ch_om
 
             ax = axes[i]
             for p, pdf in sub_df.groupby('eir'):
                 ax.plot(pdf['days'], pdf[ch_em], '-', linewidth=0.8, label=p)
                 
-            ax.set_title(emodom, fontsize=14)
+            ax.set_title(modelname, fontsize=14)
             ax.set_ylabel(channel_lbl, fontsize=14)
             
             #ax.set_ylim(0, df[ch_em].max() + (df[ch_em].max() * 0.2))

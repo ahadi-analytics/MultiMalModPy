@@ -19,7 +19,7 @@ from plot_helper import *
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_mth.csv
-def monthly_smc(wdir, df, channel, sweepvar='emodom', facet_var='ageGroup',age_groups_aggregates=None, one_year=False):
+def monthly_smc(wdir, df, channel, sweepvar='modelname', facet_var='ageGroup',age_groups_aggregates=None, one_year=False):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -67,8 +67,8 @@ def monthly_smc(wdir, df, channel, sweepvar='emodom', facet_var='ageGroup',age_g
         df = df[(df.eir == selected_eir)]
     print(facet_var)
     print(df[facet_var].unique())
-    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-        raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+        raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
 
     df = df.groupby(['seed', sweepvar, facet_var, 'smc_coverage','date'])[channel].agg(np.mean).reset_index()
     unique_facets = df[facet_var].unique()
@@ -130,13 +130,13 @@ def monthly_smc(wdir, df, channel, sweepvar='emodom', facet_var='ageGroup',age_g
         fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
         plt.close()
 
-def smc_age_curves(wdir, df, channel, sweepvar='emodom', facet_var='seasonality', age_groups_aggregates=None):
+def smc_age_curves(wdir, df, channel, sweepvar='modelname', facet_var='seasonality', age_groups_aggregates=None):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'emodom'.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'seasonality'. 
     Right now we are setting the default to only show a coverage of 0.6 in the smc age curves.
     Returns:
@@ -166,8 +166,8 @@ def smc_age_curves(wdir, df, channel, sweepvar='emodom', facet_var='seasonality'
         selected_eir = np.max(df.eir)
         df = df[(df.eir == selected_eir)]
 
-    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-        raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+        raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
     df = df.groupby(['ageGroup', 'seed', 'year', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
 
     firstPlot = True
@@ -217,14 +217,14 @@ def smc_age_curves(wdir, df, channel, sweepvar='emodom', facet_var='seasonality'
 if __name__ == "__main__":
     args = parse_args()
     out_dir = args.directory
-    emodom = args.emodom # ['EMOD', 'OpenMalaria', 'MalSim']
-    if isinstance(emodom, str):
-        emodom = [emodom]
+    modelname = args.modelname # ['EMOD', 'OpenMalaria', 'MalSim']
+    if isinstance(modelname, str):
+        modelname = [modelname]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
     channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR', 'prevalence_2to10','n_total_mos_pop']
-    sweepvar = 'emodom'
+    sweepvar = 'modelname'
     facet_var = 'ageGroup'
 
     if len(exp.eir) > 1 & len(exp.eir) <= 3:
@@ -234,24 +234,24 @@ if __name__ == "__main__":
     if facet_var == 'ageGroup' and len(exp.seasonality) > 1:
         facet_var = 'seasonality'
 
-    df_mth, wdir = get_output_df(out_dir, emodom, mth=True)
-    df_yr, _ = get_output_df(out_dir, emodom, yr=True)
+    df_mth, wdir = get_output_df(out_dir, modelname, mth=True)
+    df_yr, _ = get_output_df(out_dir, modelname, yr=True)
 
     if not df_mth.empty:
         for channel in channel_list:
             print(f'#----- Plotting monthly timeseries for {channel}-----#')
             monthly_smc(wdir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var)
 
-        #monthly_smc(out_dir, emodom, channel='simulatedEIR', sweepvar=sweepvar, facet_var=facet_var, one_year=True)
-        #monthly_smc(out_dir, emodom, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_var, one_year=True)
-        #monthly_smc(out_dir, emodom, channel='clinical_incidence', sweepvar=sweepvar, facet_var=facet_var, one_year=True)
+        #monthly_smc(out_dir, modelname, channel='simulatedEIR', sweepvar=sweepvar, facet_var=facet_var, one_year=True)
+        #monthly_smc(out_dir, modelname, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_var, one_year=True)
+        #monthly_smc(out_dir, modelname, channel='clinical_incidence', sweepvar=sweepvar, facet_var=facet_var, one_year=True)
 
     if not df_yr.empty:
         age_groups_aggregates_sub = [x for x in exp.age_groups_aggregates if x not in ([[0, 5], [0, 100]])]
         age_groups_aggregates_sub = ["{}-{}".format(sublist[0], sublist[1]) for sublist in age_groups_aggregates_sub]
 
         channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence']
-        sweepvar = 'emodom'
+        sweepvar = 'modelname'
         facet_var = 'ageGroup'
 
         if len(exp.eir) > 1 & len(exp.eir) <= 3:

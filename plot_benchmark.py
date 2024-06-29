@@ -17,13 +17,13 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plot_helper import *
 
 # Plots prevalence 2 to 10 by output variable, requires benchmark.csv
-def prevalence2to10_to_incidence(wdir, df, sweepvar = 'emodom', channel='clinical_incidence'):
+def prevalence2to10_to_incidence(wdir, df, sweepvar = 'modelname', channel='clinical_incidence'):
     """
-    Generates line plots for PfPR2to10 and either clinical or severe incidence per sweepvar as colors and emodom as panels.
+    Generates line plots for PfPR2to10 and either clinical or severe incidence per sweepvar as colors and modelname as panels.
     Parameters:
         wdir (str): Working directory where the plot will be saved.
-        emodom (str or list of str): Name of models for which result dataframes should be loaded.
-        sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'emodom'.
+        modelname (str or list of str): Name of models for which result dataframes should be loaded.
+        sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'modelname'.
         channel (str): Variable representing the y-axis data to be plotted.
     Returns:
         None (plots are saved to disk).
@@ -83,13 +83,13 @@ def prevalence2to10_to_incidence(wdir, df, sweepvar = 'emodom', channel='clinica
 
 # Plots prevalence 2 to 10 by incidence, with subplots seperated by 3 age groups. These graphs were requested by Narimane to reflect 
 # figure 1 in https://www.nature.com/articles/ncomms9170
-def prevalence2to10_to_incidence_by_age_and_model(wdir, df, sweepvar = 'emodom', channel='clinical_incidence'):
+def prevalence2to10_to_incidence_by_age_and_model(wdir, df, sweepvar = 'modelname', channel='clinical_incidence'):
     """
     Generates line plots for PfPR2to10 and either clinical or severe incidence as panels seperated by model (columns) and ages (rows).
     Parameters:
         wdir (str): Working directory where the plot will be saved.
-        emodom (str or list of str): Name of models for which result dataframes should be loaded.
-        sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'emodom'.
+        modelname (str or list of str): Name of models for which result dataframes should be loaded.
+        sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'modelname'.
         channel (str): Variable representing the y-axis data to be plotted.
     Returns:
         None (plots are saved to disk).
@@ -121,7 +121,7 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, df, sweepvar = 'emodom',
                 color_key = color_selector(mi, model)
                 ax = fig.add_subplot(ny, nx, f)
                 f += 1
-                mdf = adf[adf.emodom == model]
+                mdf = adf[adf.modelname == model]
                 mdf = mdf.groupby(['seed','eir'])[mean_vars].agg(np.mean).reset_index()
                 if not pd.isnull(mdf['prevalence_2to10']).all():
                 # plot mean, min and max of seeds
@@ -147,7 +147,7 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, df, sweepvar = 'emodom',
 # Plots simulated eir vs output variable, requires benchmark.csv
 def eir_to_outcome(wdir, df, sweepvar='cm_clinical', eir_val='simulatedEIR', channel = 'prevalence_2to10', agegrp = '0-5'):
     """
-    Generates line plots for EIR (input or simulated) and a requested outcome variable per emodom as colors and sweepvar as panels.
+    Generates line plots for EIR (input or simulated) and a requested outcome variable per modelname as colors and sweepvar as panels.
     Parameters:
         wdir (str): Working directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
@@ -262,9 +262,9 @@ def anovas(wdir, df):
     """
     from scipy.stats import f_oneway
     comparisons = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence', 'simulatedEIR']
-    emod = df[df['emodom'] == 'EMOD']
-    malsim = df[df['emodom'] == 'MalSim']
-    openmalaria = df[df['emodom'] == 'OpenMalaria']
+    emod = df[df['modelname'] == 'EMOD']
+    malsim = df[df['modelname'] == 'MalSim']
+    openmalaria = df[df['modelname'] == 'OpenMalaria']
 
     anova_df = pd.DataFrame(columns=['Age Group', 'Objective', 'F_value', 'p_value', 'null_hyp'])
 
@@ -321,10 +321,10 @@ def rmse(wdir, df):
         columns=['Age Group', 'Variable', 'EMOD_TO_OPENMALARIA', 'OPENMALARIA_TO_MALSIM', 'EMOD_TO_MALSIM'])
 
     for rmse_var in rmse_vars:
-        group_data = df.groupby(['emodom'])[rmse_var].agg(['mean']).reset_index()
-        emod_data = group_data[group_data['emodom'] == 'EMOD']
-        malsim_data = group_data[group_data['emodom'] == 'MalSim']
-        om_data = group_data[group_data['emodom'] == 'OpenMalaria']
+        group_data = df.groupby(['modelname'])[rmse_var].agg(['mean']).reset_index()
+        emod_data = group_data[group_data['modelname'] == 'EMOD']
+        malsim_data = group_data[group_data['modelname'] == 'MalSim']
+        om_data = group_data[group_data['modelname'] == 'OpenMalaria']
         # RMSE Between EMOD and OM
         rmse_eo = sqrt(mean_squared_error(emod_data['mean'], om_data['mean']))
         # RMSE Between OM AND MALSIM
@@ -339,10 +339,10 @@ def rmse(wdir, df):
     for age in df['ageGroup'].unique():
         adf = df[df['ageGroup'] == age]
         for rmse_var in rmse_vars:
-            group_data = adf.groupby(['emodom'])[rmse_var].agg(['mean']).reset_index()
-            emod_data = group_data[group_data['emodom'] == 'EMOD']
-            malsim_data = group_data[group_data['emodom'] == 'MalSim']
-            om_data = group_data[group_data['emodom'] == 'OpenMalaria']
+            group_data = adf.groupby(['modelname'])[rmse_var].agg(['mean']).reset_index()
+            emod_data = group_data[group_data['modelname'] == 'EMOD']
+            malsim_data = group_data[group_data['modelname'] == 'MalSim']
+            om_data = group_data[group_data['modelname'] == 'OpenMalaria']
             # RMSE Between EMOD and OM
             rmse_eo = sqrt(mean_squared_error(emod_data['mean'], om_data['mean']))
             # RMSE Between OM AND MALSIM
@@ -359,22 +359,22 @@ def rmse(wdir, df):
 if __name__ == "__main__":
     args = parse_args()
     out_dir = args.directory
-    emodom = args.emodom
-    if isinstance(emodom, str):
-        emodom = [emodom]
+    modelname = args.modelname
+    if isinstance(modelname, str):
+        modelname = [modelname]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    df, wdir = get_output_df(out_dir, emodom)
+    df, wdir = get_output_df(out_dir, modelname)
 
     quantitative = False
-    if quantitative and len(emodom) == 3:
+    if quantitative and len(modelname) == 3:
         print('#----- Calculating RMSE Values and ANOVAs -----#')
-        rmse(out_dir, emodom)
-        anovas(out_dir, emodom)
+        rmse(out_dir, modelname)
+        anovas(out_dir, modelname)
 
     if len(exp.eir) >= 3:
-        sweepvar = 'emodom'
+        sweepvar = 'modelname'
         print('#----- Plotting input to simulated EIR -----#')
         input_to_simulated_eir(wdir, df, sweepvar=sweepvar)
 
@@ -387,6 +387,6 @@ if __name__ == "__main__":
         for channel in channel_list:
             print(f'#----- Plotting prevalence_2_to_10 to {channel} -----#')
             prevalence2to10_to_incidence(wdir, df, channel=channel)
-            # prevalence2to10_to_incidence_by_age_and_model(out_dir,emodom,channel=channel) #This is new plotter, we don't have to make it everytime, but its available.
+            # prevalence2to10_to_incidence_by_age_and_model(out_dir,modelname,channel=channel) #This is new plotter, we don't have to make it everytime, but its available.
     else:
         print(f'Too few EIR values to be able to run relationship plots')

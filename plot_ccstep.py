@@ -18,7 +18,7 @@ from plot_helper import *
 
 
 # Plots daily_timeseries - requires PfPR_ClinicalIncidence_daily.csv
-def daily_timeseries(wdir, df_all, channel_list, sweepvar='emodom', facet_var='ageGroup', agegrp='0-100'):
+def daily_timeseries(wdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -50,8 +50,8 @@ def daily_timeseries(wdir, df_all, channel_list, sweepvar='emodom', facet_var='a
             # df = df_all.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
             df = df_all.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
 
-        if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-            raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+        if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+            raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
 
         unique_facets = df[facet_var].unique()
         unique_facets = np.sort(unique_facets)
@@ -115,7 +115,7 @@ def daily_timeseries(wdir, df_all, channel_list, sweepvar='emodom', facet_var='a
 
 
 # Plots daily_timeseries_by_seed - requires PfPR_ClinicalIncidence_daily.csv
-def daily_timeseries_by_seed(wdir, df_all, channel_list, sweepvar='emodom', facet_var='ageGroup', agegrp='0-100'):
+def daily_timeseries_by_seed(wdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -147,8 +147,8 @@ def daily_timeseries_by_seed(wdir, df_all, channel_list, sweepvar='emodom', face
             # df = df_all.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
             df = df_all.groupby(['day_date', sweepvar, facet_var, 'seed'])[channel].agg(np.mean).reset_index()
 
-        if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-            raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+        if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+            raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
 
         unique_facets = df[facet_var].unique()
         unique_facets = np.sort(unique_facets)
@@ -200,7 +200,7 @@ def daily_timeseries_by_seed(wdir, df_all, channel_list, sweepvar='emodom', face
 
 
 # Plots daily_vectors - requires PfPR_ClinicalIncidence_daily.csv
-def daily_vectors(wdir, df_all, channel, sweepvar='emodom', facet_var='ageGroup', agegrp='0-100'):
+def daily_vectors(wdir, df_all, channel, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -225,8 +225,8 @@ def daily_vectors(wdir, df_all, channel, sweepvar='emodom', facet_var='ageGroup'
         print('Warning: agegrp is set to None, it will combine all ages, please check your age aggregation')
         df = df_all.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
 
-    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-        raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+        raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
 
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
@@ -275,7 +275,7 @@ def daily_vectors(wdir, df_all, channel, sweepvar='emodom', facet_var='ageGroup'
         fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
         plt.close()
 
-def daily_eradicaiton(wdir, df_all, channel, sweepvar='emodom', facet_var='ageGroup', agegrp = '0-100'):
+def daily_eradicaiton(wdir, df_all, channel, sweepvar='modelname', facet_var='ageGroup', agegrp = '0-100'):
 
     reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
     df_all = df_all[df_all['carrying_capacity_step'].isin(reductions)]
@@ -287,8 +287,8 @@ def daily_eradicaiton(wdir, df_all, channel, sweepvar='emodom', facet_var='ageGr
     if agegrp is None:
         df = df_all.groupby(['day_date', sweepvar, facet_var, 'seed'])[channel].agg(np.mean).reset_index()
     
-    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-            raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+            raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
 
     for m, model in enumerate(df[sweepvar].unique()):
         print(model)
@@ -306,16 +306,16 @@ def daily_eradicaiton(wdir, df_all, channel, sweepvar='emodom', facet_var='ageGr
 if __name__ == "__main__":
     args = parse_args()
     out_dir = args.directory
-    emodom = args.emodom   #  ['EMOD', 'OpenMalaria', 'MalSim']
-    if isinstance(emodom, str):
-        emodom = [emodom]
+    modelname = args.modelname   #  ['EMOD', 'OpenMalaria', 'MalSim']
+    if isinstance(modelname, str):
+        modelname = [modelname]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    df_cc, wdir = get_output_df(out_dir, emodom, custom_name='CCstep_daily')
-    df_daily, wdir = get_output_df(out_dir, emodom, daily=True)
+    df_cc, wdir = get_output_df(out_dir, modelname, custom_name='CCstep_daily')
+    df_daily, wdir = get_output_df(out_dir, modelname, daily=True)
 
-    sweepvar = 'emodom'
+    sweepvar = 'modelname'
     facet_var = 'ageGroup'
     daily_channel_list = ['prevalence_2to10', 'prevalence', 'simulatedEIR', 'clinical_incidence', 'severe_incidence', 'n_total_mos_pop']
     facet_daily = 'carrying_capacity_step'

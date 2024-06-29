@@ -18,13 +18,13 @@ from plot_helper import *
 
 
 # Plots over age - requires PfPR_ClinicalIncidence_yr.csv
-def age_curves(wdir, df, channel, sweepvar='emodom', facet_var='seasonality', age_groups_aggregates=None):
+def age_curves(wdir, df, channel, sweepvar='modelname', facet_var='seasonality', age_groups_aggregates=None):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'emodom'.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'seasonality'. 
     Returns:
         None (plots are saved to disk).
@@ -51,8 +51,8 @@ def age_curves(wdir, df, channel, sweepvar='emodom', facet_var='seasonality', ag
         selected_eir = np.max(df.eir)
         df = df[(df.eir == selected_eir)]
 
-    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-        raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+        raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
     df = df.groupby(['ageGroup', 'seed', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
 
     firstPlot = True
@@ -103,9 +103,9 @@ def age_curves(wdir, df, channel, sweepvar='emodom', facet_var='seasonality', ag
 if __name__ == "__main__":
     args = parse_args()
     out_dir = args.directory
-    emodom = args.emodom #  ['EMOD', 'OpenMalaria', 'MalSim']
-    if isinstance(emodom, str):
-        emodom = [emodom]
+    modelname = args.modelname #  ['EMOD', 'OpenMalaria', 'MalSim']
+    if isinstance(modelname, str):
+        modelname = [modelname]
 
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     age_groups_aggregates_sub = ["{}-{}".format(sublist[0], sublist[1]) for sublist in age_groups_aggregates_sub]
 
     channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence']
-    sweepvar = 'emodom'
+    sweepvar = 'modelname'
     facet_var = 'ageGroup'
 
     if len(exp.eir) > 1 & len(exp.eir) <= 3:
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     if facet_var == 'ageGroup' and len(exp.seasonality) > 1:
         facet_var = 'seasonality'
 
-    df, wdir = get_output_df(out_dir, emodom)
+    df, wdir = get_output_df(out_dir, modelname)
 
     for channel in channel_list:
         print(f'#----- Plotting Age Curves for {channel}-----#')

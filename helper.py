@@ -51,7 +51,7 @@ def parse_launch_args():
                         required=False,
                         help='Name of scenario csv')
     parser.add_argument('-i', '--interventions',
-                        nargs='+',  #FIXME how to handle combinations if those should even be allowed
+                        nargs='+',  # FIXME how to handle combinations if those should even be allowed
                         default=[],
                         choices=['cc_step', 'smc'],
                         help='Specify which interventions to run, if any')
@@ -70,7 +70,7 @@ def parse_launch_args():
                         help='Whether to overwrite simulation experiment folders')
     parser.add_argument('--mpv',
                         default=True,
-                        type= bool,
+                        type=bool,
                         help='Specify whether to run malariasimulation with parameter variation, default is to run parameter variation')
     return parser.parse_args()
 
@@ -162,9 +162,9 @@ def initialize_exp(args, manifest):
     exp.intervention_list = args.interventions
     exp.testrun = args.test
     exp.overwrite = args.overwrite
-    exp.overwrite_param = False # to discuss how we want to handle parameter changes and overwrites in helper vs launch_test.py, or have another flag to add for args
-    exp.emod_calib_params = args.calib # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
-    exp.malariasimulation_parameter_variation = args.mpv 
+    exp.overwrite_param = False  # to discuss how we want to handle parameter changes and overwrites in helper vs launch_test.py, or have another flag to add for args
+    exp.emod_calib_params = args.calib  # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
+    exp.malariasimulation_parameter_variation = args.mpv
 
     # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
     exp.user = args.user
@@ -187,20 +187,24 @@ def initialize_exp(args, manifest):
     # Specify OpenMalaria XML and survey step, MalSim simulation setup
     # Note if, interventions are specified in intervention_list, these will get updated via get_intervention_params
     exp.om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
-    exp.om_survey_step = '5d'  #'30d'
+    exp.om_survey_step = '5d'  # '30d'
     exp.MalSim_script = 'malsim_benchmarking_exercise.R'
     exp.analyzer_script = ['analyze_sim.py']
-    exp.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'benchmark']  # ['all_age_analyzer', '5day', 'annual','monthly','benchmark'.'daily']
-    exp.plots_to_run = ['benchmark', 'timeseries',  'agecurves']  # gets overwritten by get_intervention_params(exp) depending on 'interventions' specified
+    exp.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly',
+                         'benchmark']  # ['all_age_analyzer', '5day', 'annual','monthly','benchmark'.'daily']
+    exp.plots_to_run = ['benchmark', 'timeseries',
+                        'agecurves']  # gets overwritten by get_intervention_params(exp) depending on 'interventions' specified
 
     # Flag to select whether to run with (dynamic) or without vector model (forced)
     exp.entomology_mode = 'dynamic'  # dynamic, forced
-    exp.seasonality = ['perennial']  # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
+    exp.seasonality = [
+        'perennial']  # ["perennial", "seasonal"]  #"Current framework support only 1 seasonality patten per experiment"
     exp.mem_increase_factor = 5.0  # scaling factor on default memory requested
 
     # Define age groups to report/monitor in simulations and to aggregate in output
     exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
-    exp.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
+    exp.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
+                                 [0, 100]]
 
     # Define case management start and coverage
     # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
@@ -209,8 +213,8 @@ def initialize_exp(args, manifest):
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
     exp.eir = [1, 5, 10, 50, 200, 1000]
-    #exp.eir = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 100, 200, 500, 1000]
-    #exp.eir = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,52.36,92.85,164.09,290,512.52,905.79,1600.82,2829.15,5000] #for xtemp calculations ONLY
+    # exp.eir = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 100, 200, 500, 1000]
+    # exp.eir = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,52.36,92.85,164.09,290,512.52,905.79,1600.82,2829.15,5000] #for xtemp calculations ONLY
 
     # Define simulation population and seeds
     if not exp.testrun:
@@ -300,6 +304,28 @@ def make_dirs(exp, overwrite=False):
     return exp
 
 
+def exp_obj_to_csv(file_path):
+    # Load the pickle object
+    with open(os.path.join(file_path, 'exp.obj'), 'rb') as pickle_file:
+        data = pickle.load(pickle_file)
+
+    with open(os.path.join(file_path, 'exp_obj.csv'), 'w') as csv_file:
+        if isinstance(data, dict):
+            # Write the header
+            csv_file.write('Key,Value\n')
+            # Write the data
+            for key, value in data.items():
+                csv_file.write(f'{key},{value}\n')
+        elif isinstance(data, list):
+            # Write the data (assuming it's a list of lists or list of tuples)
+            for item in data:
+                row = ','.join(map(str, item))
+                csv_file.write(f'{row}\n')
+        else:
+            raise ValueError(
+                "The pickle file contains unsupported data type. Only dictionaries and lists are supported.")
+
+
 def check_exp_inputs(exp):
     """
     Helper function to validate experiment inputs.
@@ -311,11 +337,11 @@ def check_exp_inputs(exp):
         ValueError: If input parameters are invalid.
     """
 
-    if exp.om_survey_step =='30d' and "5day" in exp.analyzer_list :
-            raise Warning('OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
+    if exp.om_survey_step == '30d' and "5day" in exp.analyzer_list:
+        raise Warning('OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
 
-    if exp.om_survey_step =='30d' and "cc_step" in exp.intervention_list :
-            raise ValueError('cc_step interventions requires 5d survey steps in OpenMalaria')
+    if exp.om_survey_step == '30d' and "cc_step" in exp.intervention_list:
+        raise ValueError('cc_step interventions requires 5d survey steps in OpenMalaria')
 
     if exp.emod_step:
         if exp.num_seeds_burnin != 1:
@@ -345,9 +371,8 @@ def check_exp_inputs(exp):
             if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om',
                            'eir_scalar_om', 'carrying_capacity_step', 'age_groups_aggregates', 'plots_to_run',
                            'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial',
-                           'analyzer_list','analyzer_script','calib_config_pointer','added_importation',
+                           'analyzer_list', 'analyzer_script', 'calib_config_pointer', 'added_importation',
                            'models_to_run_pickup']:
-
                 list_attributes_nGT1.append(key)
 
     list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
@@ -457,18 +482,18 @@ def param_variation(df, exp):
         from random import sample
         if exp.num_seeds > 1000:
             print("Warning: num_seeds > 1000, therefore malsim parameter variation will have repeat values")
-            par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds+1),exp.num_seeds)]
+            par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds + 1), exp.num_seeds)]
             for i, row in df.iterrows():
-                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed']-1])
+                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
         else:
-            par_var = sample(range(1, 1001),exp.num_seeds)
+            par_var = sample(range(1, 1001), exp.num_seeds)
             for i, row in df.iterrows():
-                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed']-1])
+                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
     else:
         df['ms_pv'] = 1
     return df
-  
-    
+
+
 def get_seasonal_eir(exp=None):
     """
     Generates seasonal EIR (Entomological Inoculation Rate) values.
@@ -496,13 +521,12 @@ def get_seasonal_eir(exp=None):
 
     # Define the seasonal setting
     # Seasonal Profile is based off of EMOD CM = 0, seasonal setting, EIR = 20
-    season_month = [2.969670822,1.841811729,1.327101791,0.857686237,0.611351676,0.48901135,
-                    0.480399615,0.725799099,1.140032967,2.215493305,3.229497298,3.844139468]
+    season_month = [2.969670822, 1.841811729, 1.327101791, 0.857686237, 0.611351676, 0.48901135,
+                    0.480399615, 0.725799099, 1.140032967, 2.215493305, 3.229497298, 3.844139468]
 
     season_daily = monthly_to_daily_EIR(season_month)
-    seasonal = [0.15050028,0.093341383,0.06725634,0.043466777,0.03098276,0.024782661,
-                0.024346226,0.036782854,0.057775858,0.112279233,0.163668055,0.194817574]
-
+    seasonal = [0.15050028, 0.093341383, 0.06725634, 0.043466777, 0.03098276, 0.024782661,
+                0.024346226, 0.036782854, 0.057775858, 0.112279233, 0.163668055, 0.194817574]
 
     # eir_sum = sum(season_month)
     # seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
@@ -576,8 +600,8 @@ def create_simsetup_csv(exp):
     # If other parameters should be savedm these need to be added to setup_dic
     setup_dic = {'job_directory': exp.job_directory,
                  'sim_out_dir': exp.sim_out_dir,
-                 'emod_serialized_id' : exp.emod_serialized_id,
-                 'burnin_directory' : exp.burnin_directory,
+                 'emod_serialized_id': exp.emod_serialized_id,
+                 'burnin_directory': exp.burnin_directory,
                  'nexps': exp.nexps,
                  'sweep_list': exp.sweep_list,
                  'monitoring_years': exp.monitoring_years,
@@ -655,7 +679,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             df['added_importation'] = exp.added_importation
         if exp.entomology_mode == 'dynamic':
             df['x_Temporary_Larval_Habitat'] = eir_to_lhs_regr(df, population=exp.pop_size)
-            #df['x_Temporary_Larval_Habitat'] = df['eir'].astype(float) #for xtemp regression calculations
+            # df['x_Temporary_Larval_Habitat'] = df['eir'].astype(float) #for xtemp regression calculations
     return df
 
 
@@ -743,8 +767,8 @@ def write_txt(txtobj, path, fname):
 
 
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                        custom_args='--emodom EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=False,
-                        job_id_MalSim=False, job_id_OpenMalaria = False,
+                        custom_args='--modelname EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=False,
+                        job_id_MalSim=False, job_id_OpenMalaria=False,
                         job='pyjob', write_only=False):
     """
     Submits a job to run a Python script.
@@ -753,7 +777,7 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
         exp (Experiment): The experiment object containing job directory and other information.
         pyscript (str, optional): The name of the Python script to run. Defaults to 'plot_benchmark.py'.
         shname (str, optional): The name of the shell script to submit. Defaults to 'run_benchmark_plots.sh'.
-        custom_args (str, optional): Custom arguments to pass to the Python script. Defaults to '--emodom EMOD OpenMalaria MalSim'.
+        custom_args (str, optional): Custom arguments to pass to the Python script. Defaults to '--modelname EMOD OpenMalaria MalSim'.
         t (str, optional): Wall time for the job in the format 'HH:MM:SS'. Defaults to '01:00:00'.
         memG (int, optional): Memory required for the job in GB. Defaults to 1.
         job_id_EMOD (bool, optional): The job ID will be set as a dependency for EMOD. Defaults to False.
@@ -808,7 +832,7 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
                                cwd=str(exp.job_directory))
         else:
             p = subprocess.run(['sbatch', '--parsable', dependencies, script_path], stdout=subprocess.PIPE,
-                            cwd=str(exp.job_directory))
+                               cwd=str(exp.job_directory))
 
         # Extract the SLURM job ID from the output
         slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
@@ -829,7 +853,7 @@ def submit_run_plotters(exp):
     if 'OpenMalaria' in exp.models_to_run:
         job_id_OpenMalaria = True
 
-    plot_names_all = [ 'benchmark', 'timeseries', 'agecurves']  
+    plot_names_all = ['benchmark', 'timeseries', 'agecurves']
     ## ['ccstep', 'smc'] custom plotter excluded, as these only apply for specific simulation experiments
     # plot_memrequests_all = {'sampleplots' : 10,'benchmark' :10,'agecurves' :10 ,'ccstep' :20}
 
@@ -842,11 +866,11 @@ def submit_run_plotters(exp):
             plot_memG = 50  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
 
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
-                            custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
+                            custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
                             job=f'{plot_name}_plots', memG=plot_memG, write_only=True)
 
     ## Write and run plots specified in exp.plots_to_run
-    plots_to_run =  [p for p in exp.plots_to_run if not p =='sampleplots'] # exp.plots_to_run
+    plots_to_run = [p for p in exp.plots_to_run if not p == 'sampleplots']  # exp.plots_to_run
     if exp.plots_to_run[0] == 'all':
         plots_to_run = plot_names_all
 
@@ -859,8 +883,8 @@ def submit_run_plotters(exp):
             plot_memG = 20  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
 
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
-                            custom_args=f"--emodom {' '.join([x for x in exp.models_to_run])}",
-                            job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim, job_id_OpenMalaria = job_id_OpenMalaria,
+                            custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
+                            job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim, job_id_OpenMalaria=job_id_OpenMalaria,
                             job=f'{plot_name}_plots', memG=plot_memG)
 
 
@@ -901,11 +925,11 @@ def OM_module(location='NUCLUSTER', om_version=45):
         else:
             raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
     if location == 'SCICORE':
-       if om_version == 43:
+        if om_version == 43:
             ommodule = '\n\nmodule load OpenMalaria/43.1-iomkl-2019.01\n'
-       elif om_version == 46:
+        elif om_version == 46:
             ommodule = '\n\nmodule load OpenMalaria/46.0-iomkl-2019.01\n'
-       else:
+        else:
             raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
     return ommodule
 
