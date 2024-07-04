@@ -17,12 +17,12 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plot_helper import *
 
 
-# Plots over time - requires PfPR_ClinicalIncidence_daily.csv
-def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='ageGroup', agegrp='5-10'):
+# Plots daily_timeseries - requires PfPR_ClinicalIncidence_daily.csv
+def daily_timeseries(wdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
-        emodom (str or list of str): Name of models for which result dataframes should be loaded.
+        df_all (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
@@ -30,7 +30,7 @@ def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='a
     Returns:
         None (plots are saved to disk).
     """
-    df_all, wdir = get_emodom_df(wdir, emodom, custom_name='CCstep_daily')
+
     df_all = df_all[df_all['timestep'] >= 1460]  # remove the first 4 years of the 55 year monitoring period
     # df_all = df_all[df_all['timestep']<=14965] # remove the last 9 years of the 55 year monitoring period (don't really need to see these times, they don't show new info)
     df_all['day_date'] = df_all['timestep'].apply(convert_to_date)
@@ -44,12 +44,14 @@ def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='a
 
         if facet_var != 'ageGroup' and agegrp is not None:
             df = df_all[(df_all.ageGroup == agegrp)]
+
         if agegrp is None:
+            print('Warning: agegrp is set to None, it will combine all ages, please check your age aggregation')
             # df = df_all.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
             df = df_all.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
 
-        if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-            raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+        if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+            raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
 
         unique_facets = df[facet_var].unique()
         unique_facets = np.sort(unique_facets)
@@ -61,6 +63,7 @@ def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='a
         fig = plt.figure(figsize=(10 * nx, 10 * ny))
         lower_prevalence = [0.1, 0.1, 0.25, 0.25, 0.5, 0.5]
         upper_prevalence = [0.25, 0.5, 0.1, 0.5, 0.1, 0.25]
+
         # Iterate through each facet and plot the lines for each group
         for ii, (facet, facet_df) in enumerate(df.groupby([facet_var])):
             ax = fig.add_subplot(ny, nx, f)
@@ -78,6 +81,7 @@ def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='a
                 xmean = xmean['day_date']
                 merge_df = pd.merge(left=xmean, right=ymean, on='day_date')
                 merge_df.sort_values(by='day_date', inplace=True)
+
                 ax.plot(merge_df['day_date'], merge_df[channel], '-', linewidth=0.8, label=f"{model}",
                         color=color_palette[color])
                 x_min_note = merge_df.loc[merge_df['day_date'] == min(merge_df['day_date'])][channel].iloc[0]
@@ -98,6 +102,7 @@ def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='a
                 lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.4))
                 # lg = ax.legend(loc='upper left', bbox_to_anchor=(1,0.7))
                 firstPlot = False
+
             ax.set_ylabel(ylab)
             ax.set_ylim(0, max(max_ylim))
             ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=8))
@@ -109,12 +114,12 @@ def daily_timeseries(wdir, emodom, channel_list, sweepvar='emodom', facet_var='a
         plt.close()
 
 
-# Plots over time - requires PfPR_ClinicalIncidence_daily.csv
-def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', facet_var='ageGroup', agegrp='5-10'):
+# Plots daily_timeseries_by_seed - requires PfPR_ClinicalIncidence_daily.csv
+def daily_timeseries_by_seed(wdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
-        emodom (str or list of str): Name of models for which result dataframes should be loaded.
+        df_all (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
@@ -122,7 +127,7 @@ def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', face
     Returns:
         None (plots are saved to disk).
     """
-    df_all, wdir = get_emodom_df(wdir, emodom, custom_name='CCstep_daily')
+
     df_all = df_all[df_all['timestep'] >= 1460]  # remove the first 4 years of the 55 year monitoring period
     df_all['day_date'] = df_all['timestep'].apply(convert_to_date)
     reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
@@ -136,12 +141,14 @@ def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', face
 
         if facet_var != 'ageGroup' and agegrp is not None:
             df = df_all[(df_all.ageGroup == agegrp)]
+
         if agegrp is None:
+            print('Warning: agegrp is set to None, it will combine all ages, please check your age aggregation')
             # df = df_all.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
             df = df_all.groupby(['day_date', sweepvar, facet_var, 'seed'])[channel].agg(np.mean).reset_index()
 
-        if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-            raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+        if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+            raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
 
         unique_facets = df[facet_var].unique()
         unique_facets = np.sort(unique_facets)
@@ -192,12 +199,12 @@ def daily_timeseries_by_seed(wdir, emodom, channel_list, sweepvar='emodom', face
             plt.close()
 
 
-# Plots over time - requires PfPR_ClinicalIncidence_daily.csv
-def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp='5-10'):
+# Plots daily_vectors - requires PfPR_ClinicalIncidence_daily.csv
+def daily_vectors(wdir, df_all, channel, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
-        emodom (str or list of str): Name of models for which result dataframes should be loaded.
+        df_all (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
@@ -205,7 +212,7 @@ def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup'
     Returns:
         None (plots are saved to disk).
     """
-    df_all, wdir = get_emodom_df(wdir, emodom, custom_name='CCstep_daily')
+
     df_all = df_all[df_all['timestep'] >= 1460]
     df_all['day_date'] = df_all['timestep'].apply(convert_to_date)
 
@@ -213,11 +220,13 @@ def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup'
 
     if facet_var != 'ageGroup' and agegrp is not None:
         df = df_all[(df_all.ageGroup == agegrp)]
+
     if agegrp is None:
+        print('Warning: agegrp is set to None, it will combine all ages, please check your age aggregation')
         df = df_all.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
 
-    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-        raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+        raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
 
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
@@ -239,6 +248,7 @@ def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup'
             xmean = xmean['day_date']
             merge_df = pd.merge(left=xmean, right=ymean, on='day_date')
             merge_df.sort_values(by='day_date', inplace=True)
+
             ax.plot(merge_df['day_date'], merge_df[channel], '-', linewidth=0.8, label=f"{fi}", color=color_palette[zz])
             ax.fill_between(merge_df['day_date'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.2,
                             color=color_palette[zz])
@@ -250,6 +260,7 @@ def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup'
                         xytext=(min(merge_df['day_date']), x_min_note - int(x_min_note / 10)))
             ax.annotate(f"{round(x_max_note, 2)}", xy=(max(merge_df['day_date']), x_max_note), xytext=(
             max(merge_df['day_date']) - pd.DateOffset(years=year_factor), x_max_note - int(x_min_note / 15)))
+
             if firstPlot:
                 lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.4))
                 firstPlot = False
@@ -259,12 +270,13 @@ def daily_vectors(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup'
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
             ax.set_xlabel('Year')
             ax.set_title('$\it{Pf}$PR$_{2-10}$' + f': {fi}')
+
         fname = f'timeseries_daily_{channel}_by_{ii}_age{agegrp}'
         fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
         plt.close()
 
-def daily_eradicaiton(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGroup', agegrp = '5-10'):
-    df_all, wdir = get_emodom_df(wdir, emodom, daily=True, timeseries = True)
+def daily_eradicaiton(wdir, df_all, channel, sweepvar='modelname', facet_var='ageGroup', agegrp = '0-100'):
+
     reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
     df_all = df_all[df_all['carrying_capacity_step'].isin(reductions)]
     #df_all = df_all[df_all['timestep'] == df_all['timestep'].max()]
@@ -275,8 +287,8 @@ def daily_eradicaiton(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
     if agegrp is None:
         df = df_all.groupby(['day_date', sweepvar, facet_var, 'seed'])[channel].agg(np.mean).reset_index()
     
-    if 'emodom' not in [sweepvar, facet_var] and len(df['emodom'].unique()) > 1:
-            raise ValueError('emodom needs to be specified in plot if results were combined for more than 1 model')
+    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
+            raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
 
     for m, model in enumerate(df[sweepvar].unique()):
         print(model)
@@ -294,21 +306,22 @@ def daily_eradicaiton(wdir, emodom, channel, sweepvar='emodom', facet_var='ageGr
 if __name__ == "__main__":
     args = parse_args()
     out_dir = args.directory
-    emodom = args.emodom
-    #out_dir = '/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240521/sims_dynamic_perennial_cc_step_16_44_34/'
-    #emodom = ['EMOD', 'OpenMalaria', 'MalSim']
-    if isinstance(emodom, str):
-        emodom = [emodom]
+    modelname = args.modelname   #  ['EMOD', 'OpenMalaria', 'MalSim']
+    if isinstance(modelname, str):
+        modelname = [modelname]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    sweepvar = 'emodom'
+    df_cc, wdir = get_output_df(out_dir, modelname, custom_name='CCstep_daily')
+    df_daily, wdir = get_output_df(out_dir, modelname, daily=True)
+
+    sweepvar = 'modelname'
     facet_var = 'ageGroup'
-    daily_channel_list = ['prevalence_2to10', 'prevalence', 'simulatedEIR', 'clinical_incidence',
-                         'severe_incidence', 'n_total_mos_pop']
+    daily_channel_list = ['prevalence_2to10', 'prevalence', 'simulatedEIR', 'clinical_incidence', 'severe_incidence', 'n_total_mos_pop']
     facet_daily = 'carrying_capacity_step'
-    #daily_eradicaiton(out_dir, emodom, 'prevalence2to10', sweepvar=sweepvar, facet_var=facet_daily)
-    daily_timeseries(out_dir, emodom, channel_list=daily_channel_list, sweepvar=sweepvar, facet_var=facet_daily,
-                     agegrp='0-100')   # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
-    # daily_timeseries_by_seed(out_dir, emodom, channel_list = daily_channel_list, sweepvar = sweepvar, facet_var = facet_daily, agegrp = '0-100')
-    daily_vectors(out_dir, emodom, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_daily, agegrp=None)
+
+    #daily_eradicaiton(wdir, df_cc, 'prevalence2to10', sweepvar=sweepvar, facet_var=facet_daily)
+    #  # if you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
+    daily_timeseries(wdir, df_daily, channel_list=daily_channel_list, sweepvar=sweepvar, facet_var=facet_daily, agegrp='0-100')
+    # daily_timeseries_by_seed(wdir, df_cc, channel_list = daily_channel_list, sweepvar = sweepvar, facet_var = facet_daily, agegrp='0-100')
+    daily_vectors(wdir, df_cc, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_daily, agegrp='0-100')

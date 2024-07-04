@@ -20,22 +20,22 @@ emodom_cols <- c('#1b9e77ff','#7570b3ff','#d95f02ff')
 #' benchmark output files.
 #'
 #' @param wdir Working directory where the data files are located.
-#' @param emodom Name of models for which result CSVs should be loaded, case sensitive.
+#' @param modelname Name of models for which result CSVs should be loaded, case sensitive.
 #' @param mth Set to TRUE if the data files have monthly data. Default is FALSE.
 #' @param timeseries Set to TRUE if the unaggregated timeseries data should be read in. Default is FALSE.
 #'
 #' @return df
 #'
-#' @raises An error if invalid emodom value is specified.
+#' @raises An error if invalid modelname value is specified.
 #'
 #' @import data.table
 #'
 #' @examples
 #' wdir <- "path/to/data"
-#' emodom <- c("OpenMalaria", "EMOD")
-#' result <- get_emodom_df(wdir, emodom, mth = TRUE)
+#' modelname <- c("OpenMalaria", "EMOD")
+#' result <- get_output_df(wdir, modelname, mth = TRUE)
 #'
-get_emodom_df <- function(wdir, emodom, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE, condensed = FALSE) {
+get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE, condensed = FALSE) {
   cols_to_keep <- NULL
   fname <- 'Benchmark.csv'
   if (timeseries) {
@@ -53,60 +53,60 @@ get_emodom_df <- function(wdir, emodom, mth = FALSE, fiveday = FALSE, daily = FA
 	    cols_to_keep <- c('seed','year','day','prevalence','clinical_incidence',
 	                      'severe_incidence','ageGroup','prevalence_2to10','index',
 	                      'eir','cm_clinical','seasonality','simulatedEIR','n_total_mos_pop',
-	                      'days','month','date','emodom')
+	                      'days','month','date','modelname')
 	}
   }
 
   if (file.exists(file.path(wdir, fname))) {
     df <- fread(file.path(wdir, fname), stringsAsFactors = FALSE)
   } else {
-    if ('OpenMalaria' %in% emodom) {
+    if ('OpenMalaria' %in% modelname) {
       om_df <- fread(file.path(wdir, paste('om', fname, sep = '/')), select = cols_to_keep)
-      om_df$emodom <- 'OpenMalaria'
+      om_df$modelname <- 'OpenMalaria'
     }
-    if ('EMOD' %in% emodom) {
+    if ('EMOD' %in% modelname) {
       em_df <- fread(file.path(wdir, paste('em', fname, sep = '/')), select = cols_to_keep)
-      em_df$emodom <- 'EMOD'
+      em_df$modelname <- 'EMOD'
       em_df <- em_df[em_df$eir >= 1,]
     }
-    if ('MalSim' %in% emodom) {
+    if ('MalSim' %in% modelname) {
       ms_df <- fread(file.path(wdir, paste('MalSim', fname, sep = '/')), select = cols_to_keep)
-      ms_df$emodom <- 'MalSim'
+      ms_df$modelname <- 'MalSim'
     }
 
-    if ('EMOD' %in% emodom &
-      'OpenMalaria' %in% emodom &
-      'MalSim' %in% emodom) {
+    if ('EMOD' %in% modelname &
+      'OpenMalaria' %in% modelname &
+      'MalSim' %in% modelname) {
       df <- em_df %>% bind_rows(om_df) %>% bind_rows(ms_df)
-    } else if ('OpenMalaria' %in% emodom &
-      'EMOD' %in% emodom &
-      !('MalSim' %in% emodom)) {
+    } else if ('OpenMalaria' %in% modelname &
+      'EMOD' %in% modelname &
+      !('MalSim' %in% modelname)) {
       df <-  em_df %>% bind_rows(om_df)
-    } else if ('OpenMalaria' %in% emodom &
-      'MalSim' %in% emodom &
-      !('EMOD' %in% emodom)) {
+    } else if ('OpenMalaria' %in% modelname &
+      'MalSim' %in% modelname &
+      !('EMOD' %in% modelname)) {
       df <- ms_df %>% bind_rows(om_df)
-    } else if ('EMOD' %in% emodom &
-      'MalSim' %in% emodom &
-      !('OpenMalaria' %in% emodom)) {
+    } else if ('EMOD' %in% modelname &
+      'MalSim' %in% modelname &
+      !('OpenMalaria' %in% modelname)) {
       df <- ms_df %>% bind_rows(em_df)
-    } else if ('OpenMalaria' %in% emodom &
-      !('EMOD' %in% emodom) &
-      !('MalSim' %in% emodom)) {
+    } else if ('OpenMalaria' %in% modelname &
+      !('EMOD' %in% modelname) &
+      !('MalSim' %in% modelname)) {
       wdir <- file.path(wdir, 'om')
       df <- om_df
-    } else if ('EMOD' %in% emodom &
-      !('OpenMalaria' %in% emodom) &
-      !('MalSim' %in% emodom)) {
+    } else if ('EMOD' %in% modelname &
+      !('OpenMalaria' %in% modelname) &
+      !('MalSim' %in% modelname)) {
       wdir <- file.path(wdir, 'em')
       df <- em_df
-    } else if ('MalSim' %in% emodom &
-      !('OpenMalaria' %in% emodom) &
-      !('EMOD' %in% emodom)) {
+    } else if ('MalSim' %in% modelname &
+      !('OpenMalaria' %in% modelname) &
+      !('EMOD' %in% modelname)) {
       wdir <- file.path(wdir, 'MalSim')
       df <- ms_df
     } else {
-      stop(paste("Please specify emodom as some combination of EMOD, OpenMalaria, and MalSim (list), ", emodom, " not valid"))
+      stop(paste("Please specify modelname as some combination of EMOD, OpenMalaria, and MalSim (list), ", modelname, " not valid"))
     }
 
     if ('ageGroup' %in% colnames(df)) {

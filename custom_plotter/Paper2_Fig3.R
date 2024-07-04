@@ -28,13 +28,13 @@ if (Sys.getenv("OS") == "Windows_NT") {
 
 projdir <- file.path(projdir, 'test_sims_20240626')
 exp_name <- "sims_dynamic_seasonal__13_03_24"
-emodom <- c("EMOD", "OpenMalaria", "MalSim")
+modelname <- c("EMOD", "OpenMalaria", "MalSim")
 
 # Load simulation outputs  BENCHMARK-------------------------------
-dat_s <- get_emodom_df(file.path(projdir,exp_name), emodom = emodom, timeseries = TRUE, fiveday=TRUE)
+dat_s <- get_output_df(file.path(projdir,exp_name), modelname = modelname, timeseries = TRUE, fiveday=TRUE)
 
 dat_s <- dat_s %>%
-  group_by(day, year, eir, cm_clinical, ageGroup, seasonality, emodom) %>%
+  group_by(day, year, eir, cm_clinical, ageGroup, seasonality, modelname) %>%
   summarise(simulatedEIR__mean = mean(simulatedEIR),
             simulatedEIR__min = quantile(simulatedEIR, 0.05),
             simulatedEIR__up = quantile(simulatedEIR, 0.95),
@@ -60,7 +60,7 @@ dat_s$ageGroup <- factor(dat_s$ageGroup,
                          levels = c('0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100', '0-5', '0-100'),
                          labels = c('0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100', '0-5', '0-100'))
 
-dat_s$emodom <- factor(dat_s$emodom, levels = emodom, labels = c("EMOD", "OpenMalaria", "MalSim"))
+dat_s$modelname <- factor(dat_s$modelname, levels = modelname, labels = c("EMOD", "OpenMalaria", "MalSim"))
 
 dat_s <- dat_s %>%
   mutate(day = ((day+180) %% 365)) %>%
@@ -75,35 +75,35 @@ sel_eirs <- c(1,5,10,100)
 
 dat_s <- dat_s %>%
   mutate(pfpr_grp = case_when(
-    emodom == 'EMOD' & eir %in% emod_eirs[1] ~ pfpr_labels[1],
-    emodom == 'EMOD' & eir %in% emod_eirs[2] ~ pfpr_labels[2],
-    emodom == 'EMOD' & eir %in% emod_eirs[3] ~ pfpr_labels[3],
-    emodom == 'EMOD' & eir %in% emod_eirs[4] ~ pfpr_labels[4],
+    modelname == 'EMOD' & eir %in% emod_eirs[1] ~ pfpr_labels[1],
+    modelname == 'EMOD' & eir %in% emod_eirs[2] ~ pfpr_labels[2],
+    modelname == 'EMOD' & eir %in% emod_eirs[3] ~ pfpr_labels[3],
+    modelname == 'EMOD' & eir %in% emod_eirs[4] ~ pfpr_labels[4],
     ## OM
-    emodom == 'OpenMalaria' & eir %in% om_eirs[1] ~ pfpr_labels[1],
-    emodom == 'OpenMalaria' & eir %in% om_eirs[2] ~ pfpr_labels[2],
-    emodom == 'OpenMalaria' & eir %in% om_eirs[3] ~ pfpr_labels[3],
-    emodom == 'OpenMalaria' & eir %in% om_eirs[4] ~ pfpr_labels[4],
+    modelname == 'OpenMalaria' & eir %in% om_eirs[1] ~ pfpr_labels[1],
+    modelname == 'OpenMalaria' & eir %in% om_eirs[2] ~ pfpr_labels[2],
+    modelname == 'OpenMalaria' & eir %in% om_eirs[3] ~ pfpr_labels[3],
+    modelname == 'OpenMalaria' & eir %in% om_eirs[4] ~ pfpr_labels[4],
     ## MalSim
-    emodom == 'MalSim' & eir %in% malsim_eirs[1] ~ pfpr_labels[1],
-    emodom == 'MalSim' & eir %in% malsim_eirs[2] ~ pfpr_labels[2],
-    emodom == 'MalSim' & eir %in% malsim_eirs[3] ~ pfpr_labels[3],
-    emodom == 'MalSim' & eir %in% malsim_eirs[4] ~ pfpr_labels[4]),
+    modelname == 'MalSim' & eir %in% malsim_eirs[1] ~ pfpr_labels[1],
+    modelname == 'MalSim' & eir %in% malsim_eirs[2] ~ pfpr_labels[2],
+    modelname == 'MalSim' & eir %in% malsim_eirs[3] ~ pfpr_labels[3],
+    modelname == 'MalSim' & eir %in% malsim_eirs[4] ~ pfpr_labels[4]),
     pfpr_grp = factor(pfpr_grp, levels = pfpr_labels, labels = pfpr_labels))
 
 #Generate Tables if you would like a quick sanity check
 #table(dat_s$ageGroup)
-#table(dat_s$eir, dat_s$emodom)
-#table(dat_s$eir, dat_ss$emodom)
-#table(dat_s$day, dat_ss$emodom)
+#table(dat_s$eir, dat_s$modelname)
+#table(dat_s$eir, dat_ss$modelname)
+#table(dat_s$day, dat_ss$modelname)
 
 pA <- dat_s %>%
   filter(year == max(year)) %>%
   filter(ageGroup %in% '0-100') %>%
   filter(eir %in% c(20)) %>%
   ggplot() +
-  geom_ribbon(aes(x = day, ymin = simulatedEIR__min, ymax = simulatedEIR__up, fill = emodom), alpha = 0.1) +
-  geom_line(aes(x = day, y = simulatedEIR__mean, col = emodom), linewidth = 1) +
+  geom_ribbon(aes(x = day, ymin = simulatedEIR__min, ymax = simulatedEIR__up, fill = modelname), alpha = 0.1) +
+  geom_line(aes(x = day, y = simulatedEIR__mean, col = modelname), linewidth = 1) +
   scale_color_manual(values = emodom_cols) +
   scale_fill_manual(values = emodom_cols) +
   scale_y_continuous(expand = expansion(mult = c(0, 0))) +
@@ -121,20 +121,20 @@ pB <- dat_s %>%
   filter(year == max(year)) %>% ## FIXME
   filter(ageGroup %in% '0-100') %>%
   filter(eir %in% c(20)) %>%
-  dplyr::select(year, day, eir, ageGroup, emodom,
+  dplyr::select(year, day, eir, ageGroup, modelname,
                 simulatedEIR__mean, simulatedEIR__min, simulatedEIR__up,
                 prevalence__mean, prevalence__min, prevalence__up,
                 clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                 n_total_mos_pop__mean, n_total_mos_pop__min, n_total_mos_pop__up) %>%
-  pivot_longer(cols = -c(day, year, eir, ageGroup, emodom)) %>%
+  pivot_longer(cols = -c(day, year, eir, ageGroup, modelname)) %>%
   separate(name, into = c('name', 'stat'), sep = '__') %>%
   mutate(name = factor(name,
                        levels = c('n_total_mos_pop','simulatedEIR', 'prevalence', 'clinical_incidence'),
                        labels = c('Total Mosquito\nPopulation','Simulated EIR', 'Prevalence', 'Clinical incidence (ppa)'))) %>%
-  group_by(emodom, name) %>%
+  group_by(modelname, name) %>%
   mutate(value = rescale(value, to = c(0, 1))) %>%
   pivot_wider(names_from = stat, values_from = value) %>%
-  group_by(eir, ageGroup, emodom, name) %>%
+  group_by(eir, ageGroup, modelname, name) %>%
   mutate(max_y = max(mean),
          ismax = mean==max_y) %>%
   ggplot() +
@@ -152,7 +152,7 @@ pB <- dat_s %>%
             label = 'v', size = 6, 
             hjust = 0.5, vjust = 0, 
             position=position_nudge(y=0.05)) +
-  facet_wrap(~emodom, ncol = 1, strip.position = "right") +
+  facet_wrap(~modelname, ncol = 1, strip.position = "right") +
   labs(y = "Simulated value (re-scaled)",
        x = "Days",
        col = 'Simulation Output',
@@ -172,12 +172,12 @@ pC_pfpr <- dat_s %>%
   ungroup() %>%
   filter(ageGroup %in% '0-100') %>%
   filter(pfpr_grp %in% pfpr_labels) %>%
-  select(times, pfpr_grp, ageGroup, emodom,
+  select(times, pfpr_grp, ageGroup, modelname,
          simulatedEIR__mean, simulatedEIR__min, simulatedEIR__up,
          prevalence__mean, prevalence__min, prevalence__up,
          clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
          n_total_mos_pop__mean, n_total_mos_pop__min, n_total_mos_pop__up) %>%
-  pivot_longer(cols = -c(times, pfpr_grp, ageGroup, emodom)) %>%
+  pivot_longer(cols = -c(times, pfpr_grp, ageGroup, modelname)) %>%
   separate(name, into = c('name', 'stat'), sep = '__') %>%
   mutate(custom_col = case_when(
     name == 'simulatedEIR' & pfpr_grp == pfpr_labels[1] ~ line_cols[1],
@@ -202,7 +202,7 @@ pC_pfpr <- dat_s %>%
   mutate(name = factor(name,
                        levels = c('n_total_mos_pop','simulatedEIR', 'prevalence', 'clinical_incidence'),
                        labels = c('Total Mosquito\nPopulation','Simulated EIR', 'Prevalence', 'Clinical incidence\n(ppa)'))) %>%
-  group_by(emodom, name, pfpr_grp) %>%
+  group_by(modelname, name, pfpr_grp) %>%
   mutate(value = rescale(value, to = c(0, 1))) %>%
   pivot_wider(names_from = stat, values_from = value) %>%
   ggplot() +
@@ -211,7 +211,7 @@ pC_pfpr <- dat_s %>%
   geom_line(aes(x = times, y = mean,color=custom_col), linewidth = 1) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
   scale_x_continuous(expand = expansion(mult = c(0, 0))) +
-  facet_grid(name ~ emodom, scales = "free", switch = 'y') +
+  facet_grid(name ~ modelname, scales = "free", switch = 'y') +
   labs(y = "",
        x = "Days",
        color = 'Pfpr 2-10',
@@ -232,12 +232,12 @@ pC_eir <- dat_s %>%
   ungroup() %>%
   filter(ageGroup %in% '0-100') %>%
   filter(eir %in% sel_eirs) %>%
-  select(times, eir, ageGroup, emodom,
+  select(times, eir, ageGroup, modelname,
                 simulatedEIR__mean, simulatedEIR__min, simulatedEIR__up,
                 prevalence__mean, prevalence__min, prevalence__up,
                 clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
          n_total_mos_pop__mean, n_total_mos_pop__min, n_total_mos_pop__up) %>%
-  pivot_longer(cols = -c(times, eir, ageGroup, emodom)) %>%
+  pivot_longer(cols = -c(times, eir, ageGroup, modelname)) %>%
   separate(name, into = c('name', 'stat'), sep = '__') %>%
   mutate(custom_col = case_when(
                       name == 'simulatedEIR' & eir == sel_eirs[1] ~ line_cols[1],
@@ -262,7 +262,7 @@ pC_eir <- dat_s %>%
   mutate(name = factor(name,
                        levels = c('n_total_mos_pop','simulatedEIR', 'prevalence', 'clinical_incidence'),
                        labels = c('Total Mosquito\nPopulation','Simulated EIR', 'Prevalence', 'Clinical incidence\n(ppa)'))) %>%
-  group_by(emodom, name, eir) %>%
+  group_by(modelname, name, eir) %>%
   mutate(value = rescale(value, to = c(0, 1))) %>%
   pivot_wider(names_from = stat, values_from = value) %>%
   ggplot() +
@@ -271,7 +271,7 @@ pC_eir <- dat_s %>%
   geom_line(aes(x = times, y = mean,color=custom_col), linewidth = 1) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
   scale_x_continuous(expand = expansion(mult = c(0, 0))) +
-  facet_grid(name ~ emodom, scales = "free", switch = 'y') +
+  facet_grid(name ~ modelname, scales = "free", switch = 'y') +
   labs(y = "",
        x = "Days",
        color = 'Annual EIR\n(input)',
@@ -317,17 +317,17 @@ ggsave(plot = pABC_eir, filename = file.path(getwd(), 'Figure3_eir_ratio.png'), 
 #   filter(year == 2001) %>% ## FIXME
 #   filter(ageGroup %in% '0-5') %>%
 #   filter(eir %in% c(5)) %>%
-#   dplyr::select(year, day, eir, ageGroup, emodom,
+#   dplyr::select(year, day, eir, ageGroup, modelname,
 #                 simulatedEIR__mean, simulatedEIR__min, simulatedEIR__up,
 #                 prevalence__mean, prevalence__min, prevalence__up,
 #                 clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
 #                 n_total_mos_pop__mean, n_total_mos_pop__min, n_total_mos_pop__up) %>%
-#   pivot_longer(cols = -c(year, day, eir, ageGroup, emodom)) %>%
+#   pivot_longer(cols = -c(year, day, eir, ageGroup, modelname)) %>%
 #   separate(name, into = c('name', 'stat'), sep = '__') %>%
 #   mutate(name = factor(name,
 #                        levels = c('simulatedEIR', 'prevalence', 'clinical_incidence', 'n_total_mos_pop'),
 #                        labels = c('simulated EIR', 'Prevalence', 'Clinical incidence (ppa)', 'Total Mosquito\nPopulation'))) %>%
-#   group_by(emodom, name) %>%
+#   group_by(modelname, name) %>%
 #   mutate(value = rescale(value, to = c(0, 1))) %>%
 #   pivot_wider(names_from = stat, values_from = value) %>%
 #   ggplot() +
@@ -339,7 +339,7 @@ ggsave(plot = pABC_eir, filename = file.path(getwd(), 'Figure3_eir_ratio.png'), 
 #   scale_fill_manual(values = c('#408941', '#009acd', '#fdbf11','#003d52')) +
 #   scale_y_continuous(expand = expansion(mult = c(0, .1))) +
 #   #scale_x_date(date_breaks = '1 months', date_labels = '%b', expand = c(0, 0),guide = guide_axis(angle = 90)) +
-#   facet_wrap(~emodom, nrow = 1, strip.position = "top") +
+#   facet_wrap(~modelname, nrow = 1, strip.position = "top") +
 #   labs(y = "Simulated value (re-scaled)",
 #        x = "",
 #        col = '',
@@ -365,12 +365,12 @@ ggsave(plot = pABC_eir, filename = file.path(getwd(), 'Figure3_eir_ratio.png'), 
 #   ungroup() %>%
 #   filter(ageGroup %in% c('1-2','5-10','15-20','20-100')) %>%
 #   filter(eir == 5) %>%
-#   dplyr::select(times, eir, ageGroup, emodom,
+#   dplyr::select(times, eir, ageGroup, modelname,
 #                 simulatedEIR__mean, simulatedEIR__min, simulatedEIR__up,
 #                 prevalence__mean, prevalence__min, prevalence__up,
 #                 clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up, 
 #                 n_total_mos_pop__mean, n_total_mos_pop__min, n_total_mos_pop__up) %>%
-#   pivot_longer(cols = -c(times, eir, ageGroup, emodom)) %>%
+#   pivot_longer(cols = -c(times, eir, ageGroup, modelname)) %>%
 #   separate(name, into = c('name', 'stat'), sep = '__') %>%
 #   mutate(custom_col =
 #            case_when(name == 'simulatedEIR' & ageGroup == sel_agegrps[1] ~ simEIR_cols[1],
@@ -395,7 +395,7 @@ ggsave(plot = pABC_eir, filename = file.path(getwd(), 'Figure3_eir_ratio.png'), 
 #   mutate(name = factor(name,
 #                        levels = c('simulatedEIR', 'prevalence', 'clinical_incidence', 'n_total_mos_pop'),
 #                        labels = c('simulated EIR', 'Prevalence', 'Clinical incidence (ppa)', 'Total Mosquito\nPopulation'))) %>%
-#   group_by(emodom, name, eir) %>%
+#   group_by(modelname, name, eir) %>%
 #   mutate(value = rescale(value, to = c(0, 1))) %>%
 #   pivot_wider(names_from = stat, values_from = value) %>%
 #   ggplot() +
@@ -408,7 +408,7 @@ ggsave(plot = pABC_eir, filename = file.path(getwd(), 'Figure3_eir_ratio.png'), 
 #   scale_alpha_manual(values = c(0.5, 0.6, 0.8, 1)) +
 #   scale_color_identity() +
 #   scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-#   facet_grid(name ~ emodom, scales = "free", switch = 'y') +
+#   facet_grid(name ~ modelname, scales = "free", switch = 'y') +
 #   labs(y = "",
 #        x = "",
 #        alpha = 'Age group (years)',

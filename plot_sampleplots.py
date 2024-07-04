@@ -20,15 +20,13 @@ from plot_helper import *
 if __name__ == "__main__":
     args = parse_args()
     out_dir = args.directory
-    emodom = args.emodom
-    # out_dir =
-    # emodom = ['EMOD', 'OpenMalaria', 'MalSim']
-    if isinstance(emodom, str):
-        emodom = [emodom]
+    modelname = args.modelname # ['EMOD', 'OpenMalaria', 'MalSim']
+    if isinstance(modelname, str):
+        modelname = [modelname]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    if 'EMOD' in emodom:
+    if 'EMOD' in modelname:
         from EMOD.sample_plots import *
 
         # Determine whether simulation ran with forced or dynamic EIR and set eirchannel
@@ -46,15 +44,14 @@ if __name__ == "__main__":
         sample_plot_yr(wdir, exp_tags)
         sample_plot_mth(wdir, exp_tags)
 
-    if 'OpenMalaria' in emodom:
+    if 'OpenMalaria' in modelname:
         from OpenMalaria.sample_plots import *
 
         # Define tags and channels for sample plots
         exp_tags = exp.sweep_list  # [x for x in exp.sweep_list if x != 'seed']
         sample_channels = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
-                           'nSevere', 'nSeq', 'nIndDeaths',
-                           'nDirDeaths', 'inputEIR', 'simulatedEIR', 'expectedDirectDeaths',
-                           'expectedSevere']  # 'expectedIndirectDeaths',
+                           'nSevere', 'nSeq', 'nIndDeaths',  'expectedSevere'
+                           'nDirDeaths', 'inputEIR', 'simulatedEIR', 'expectedDirectDeaths']  #'expectedIndirectDeaths'
 
         # Create sample plots
         wdir = os.path.join(out_dir,'om')
@@ -62,7 +59,7 @@ if __name__ == "__main__":
         sample_plot_yr(wdir, exp_tags)
         sample_plot_mth(wdir, exp_tags)
 
-    if 'MalSim' in emodom:
+    if 'MalSim' in modelname:
         from MalSim.sample_plots import *
 
         # Determine whether simulation ran with forced or dynamic EIR and set eirchannel
