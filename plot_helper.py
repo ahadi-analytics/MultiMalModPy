@@ -75,50 +75,44 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
     if custom_name:
         fname = f'{custom_name}.csv'
 
+    file_paths = [os.path.join(wdir, fname)]
+    model_paths = {'OpenMalaria': 'om', 'EMOD': 'em', 'MalSim': 'MalSim'}
+
+    for model in model_paths:
+        if model in modelname:
+            file_paths.append(os.path.join(wdir, model_paths[model], fname))
+
+    existing_files = [path for path in file_paths if os.path.isfile(path)]
+
+    if not existing_files:
+        return pd.DataFrame(), wdir
+
     if os.path.isfile(os.path.join(wdir, fname)):
         df = pd.read_csv((os.path.join(wdir, fname)), low_memory=False)
     else:
-        if len(modelname) == 1:
-            if 'OpenMalaria' in modelname:
-                df = pd.read_csv((os.path.join(wdir, f'om/{fname}')), usecols=cols_to_keep)
-                df['modelname'] = 'OpenMalaria'
-            elif 'EMOD' in modelname:
-                df = pd.read_csv((os.path.join(wdir, f'em/{fname}')), usecols=cols_to_keep)
-                df['modelname'] = 'EMOD'
-            elif 'MalSim' in modelname:
-                df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')), usecols=cols_to_keep)
-                df['modelname'] = 'MalSim'
-            else:
-                raise ValueError(
-                    f"Please specify modelname as some combination of EMOD, OpenMalaria, and MalSim (list), {modelname} not valid")
-        else:
-            if 'OpenMalaria' in modelname:
-                om_df = pd.read_csv((os.path.join(wdir, f'om/{fname}')), usecols=cols_to_keep)
-                om_df['modelname'] = 'OpenMalaria'
+        # Model-specific file paths
+        model_paths = {'OpenMalaria': 'om', 'EMOD': 'em', 'MalSim': 'MalSim'}
 
-            if 'EMOD' in modelname:
-                em_df = pd.read_csv((os.path.join(wdir, f'em/{fname}')), usecols=cols_to_keep)
-                em_df['modelname'] = 'EMOD'
-                em_df['seed'] = em_df[
-                                    'seed'] + 1  # increase the seed count by one to make sure seed number is consistent across models
-                # em_df = em_df[em_df['eir'] >= 1]  # get rid of eirs <1 as EMOD can't sustain malaria at an eir less than 1, for pop of 10,000.
+        dfs = []
+        for model in model_paths:
+            if model in modelname:
+                model_path = os.path.join(wdir, model_paths[model], fname)
+                try:
+                    if os.path.isfile(model_path):
+                        df = pd.read_csv(model_path, usecols=cols_to_keep)
+                        df['modelname'] = model
+                        if model == 'EMOD':
+                            df['seed'] = df['seed'] + 1 
+                        dfs.append(df)
+                    else:
+                        print(f"File not found for {model}: {model_path}")
+                except Exception as e:
+                    print(f"Error reading {model_path}: {e}")
 
-            if 'MalSim' in modelname:
-                ms_df = pd.read_csv((os.path.join(wdir, f'MalSim/{fname}')), usecols=cols_to_keep)
-                ms_df['modelname'] = 'MalSim'
+        if not dfs:
+            return pd.DataFrame(), wdir
 
-            if 'EMOD' in modelname and 'OpenMalaria' in modelname and 'MalSim' in modelname:
-                df = pd.concat([em_df, om_df])
-                df = pd.concat([df, ms_df])
-            elif 'OpenMalaria' in modelname and 'EMOD' in modelname and 'MalSim' not in modelname:
-                df = pd.concat([em_df, om_df])
-            elif 'OpenMalaria' in modelname and 'MalSim' in modelname and 'EMOD' not in modelname:
-                df = pd.concat([ms_df, om_df])
-            elif 'EMOD' in modelname and 'MalSim' in modelname and 'OpenMalaria' not in modelname:
-                df = pd.concat([em_df, ms_df])
-            else:
-                raise ValueError(
-                    f"Please specify modelname as some combination of EMOD, OpenMalaria, and MalSim (list), {modelname} not valid")
+        df = pd.concat(dfs, ignore_index=True)
 
         if 'ageGroup' in df.columns:
             try:
