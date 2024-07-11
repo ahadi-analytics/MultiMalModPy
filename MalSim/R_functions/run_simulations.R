@@ -90,7 +90,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       else{
         # Calibrate to the initial EIR (same across models):
         simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                        init_EIR = parameter_table[i,]$eir)
+                                        init_EIR = parameter_table[i,]$ms_input_target)
       }
       
       # Run the simulations:
@@ -103,7 +103,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       simulation_outputs_list[[i]]$seed <- parameter_table[i,]$seed
 
       if ("smc" %in% intervention_list){
-        simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
+        simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
         simulation_outputs_list[[i]]$smc_coverage <- parameter_table[i,]$smc_coverage
       }
 
@@ -113,7 +113,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
         simulation_outputs_list[[i]]$eir_scalar_timestep_daily <- parameter_table[i,]$eir_scalar_timestep_daily
         simulation_outputs_list[[i]]$carrying_capacity_step <- parameter_table[i,]$carrying_capacity_step}
       else{
-        simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
+        simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
       }
 
       if (write_raw_output) {
@@ -189,7 +189,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       else{
         # Calibrate to the initial EIR (same across models):
         simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                        init_EIR = parameter_table[i,]$eir)}
+                                        init_EIR = parameter_table[i,]$ms_input_target)}
       # Run the simulations:
       simulation_outputs_list[[i]] <- run_simulation(timesteps = timesteps, parameters = simparams[[i]])
 
@@ -201,7 +201,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
 
       if ("smc" %in% intervention_list){
         simulation_outputs_list[[i]]$smc_coverage <- parameter_table[i,]$smc_coverage
-        simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
+        simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
       }
       
       if ("cc_step" %in% intervention_list) {
@@ -210,7 +210,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
         simulation_outputs_list[[i]]$eir_scalar_timestep_daily <- parameter_table[i,]$eir_scalar_timestep_daily
         simulation_outputs_list[[i]]$carrying_capacity_step <- parameter_table[i,]$carrying_capacity_step}
       else{
-        simulation_outputs_list[[i]]$eir <- parameter_table[i,]$eir
+        simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
       }
       
       if (write_raw_output) {

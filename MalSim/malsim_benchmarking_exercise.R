@@ -50,6 +50,9 @@ exp$max_ages <- (round(exp$agebins * 365))
 exp$seasonality <- exp_setup_df[exp_setup_df$parameter == 'seasonality', 'Value'][1]
 exp$monthly_eirs <- exp_setup_df[exp_setup_df$parameter == exp$seasonality, 'Value']
 exp$monthly_eirs <- as.numeric(strsplit(exp$monthly_eirs, ';')[[1]])
+#monthly <- exp$monthly_eirs[2:12] # we would want to do this if we want to match peak simulated EIR via inputs, not post processing
+#monthly[[length(monthly)+1]] = exp$monthly_eirs[1]
+#exp$monthly_eirs <- monthly
 exp$intervention_list <- exp_setup_df[exp_setup_df$parameter =='intervention_list','Value']
 exp$intervention_list <- data.frame(interventions = unlist(strsplit(gsub("\\[|\\]|\\'",'',exp$intervention_list),','))) #This helps make the python list readable in R
 exp$intervention_list <- exp$intervention_list$interventions

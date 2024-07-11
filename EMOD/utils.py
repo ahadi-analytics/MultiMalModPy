@@ -8,7 +8,7 @@ import numpy as np
 from COMPS import AuthManager
 from functools import partial
 from EMOD.scaffolds.forcedEIR import *
-from EMOD.scaffolds.dynamicEIR import *
+from EMOD.scaffolds.interpolate import *
 from EMOD.scaffolds.interventions import *
 import emod_api.demographics.PreDefinedDistributions as Distributions
 from emodpy_malaria.reporters.builtin import *
@@ -565,6 +565,37 @@ def set_emod_exp_parameters(config, exp):
         config.parameters.Serialization_Time_Steps = [exp.burnin * 365]
 
 
+def config_sweep_builder(exp, scen_df):
+    builder = SimulationBuilder()
+    nseeds = exp.num_seeds
+    if exp.emod_step == 'burnin':
+        nseeds = exp.num_seeds_burnin
+    if exp.entomology_mode == 'forced':
+        matAP = 0.1327
+        sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
+                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.eir)),
+                   partial(set_param, param='Run_Number', value=s)]
+                  for i, row in scen_df.iterrows()
+                  for s in range(nseeds)]
+    elif exp.entomology_mode == 'dynamic':
+        interpolate_data = gather_interpolate_data(exp.input_type, exp.seasonality)
+        sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', 
+                   value=input_target_to_lhs(idata = interpolate_data, row = row, population = exp.pop_size)),
+                   partial(set_param, param='Run_Number', value=s)]
+                  for i, row in scen_df.iterrows()
+                  for s in range(nseeds)]
+    else:
+        raise ValueError(f'{exp.entomology_mode} not valid')
+
+    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
+        from EMOD.scaffolds.calib_params import get_emod_calib_params
+        calib_params = get_emod_calib_params(exp,scen_df)
+        for i in range(0, len(calib_params)):
+            sweeps[i] = sweeps[i] + calib_params[i]
+    builder.add_sweep_definition(sweep_functions, sweeps)
+    return [builder]
+    
 def config_sweep_builder_pickup(exp, scen_df_pickup):
     builder = SimulationBuilder()
     nseeds = exp.num_seeds
@@ -579,14 +610,15 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             partial(set_param, param='Run_Number', value=s)]
             for i, row in scen_df_pickup.iterrows()
             for s in range(nseeds)]
-
     elif exp.entomology_mode == 'dynamic':
+        interpolate_data = gather_interpolate_data(exp.input_type, exp.seasonality)
         sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
                    partial(set_param, param='Serialized_Population_Path',
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',
                            value=row["Serialized_Population_Filenames"]),
-                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.x_Temporary_Larval_Habitat),
+                   partial(set_param, param='x_Temporary_Larval_Habitat',
+                   value=input_target_to_lhs(idata = interpolate_data, row = row, population = exp.pop_size)),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df_pickup.iterrows()
                   for s in range(nseeds)]
@@ -598,43 +630,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
         calib_params = get_emod_calib_params(exp,scen_df_pickup)
         for i in range(0, len(calib_params)):
             sweeps[i] = sweeps[i] + calib_params[i]
-
-
     builder.add_sweep_definition(sweep_functions, sweeps)
-
-    return [builder]
-
-
-def config_sweep_builder(exp, scen_df):
-    builder = SimulationBuilder()
-    nseeds = exp.num_seeds
-    if exp.emod_step == 'burnin':
-        nseeds = exp.num_seeds_burnin
-    if exp.entomology_mode == 'forced':
-        matAP = 0.1327
-        sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
-                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.eir)),
-                   partial(set_param, param='Run_Number', value=s)]
-                  for i, row in scen_df.iterrows()
-                  for s in range(nseeds)]
-    elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
-                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.x_Temporary_Larval_Habitat),
-                   partial(set_param, param='Run_Number', value=s)]
-                  for i, row in scen_df.iterrows()
-                  for s in range(nseeds)]
-    else:
-        raise ValueError(f'{exp.entomology_mode} not valid')
-
-    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
-        from EMOD.scaffolds.calib_params import get_emod_calib_params
-        calib_params = get_emod_calib_params(exp,scen_df)
-        for i in range(0, len(calib_params)):
-            sweeps[i] = sweeps[i] + calib_params[i]
-
-
-    builder.add_sweep_definition(sweep_functions, sweeps)
-
     return [builder]
 
 

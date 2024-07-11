@@ -165,15 +165,13 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
             columns_to_keep = [col for col in columns_to_keep if col in df_daily.columns]
             df_daily = df_daily[columns_to_keep]
             df_daily = df_daily.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
-
-            df_daily['inputEIR'] = df_daily['eir_malsim']
             df_daily = df_daily.rename(
                 {'eir_scalar_timestep_daily': 'eir_scalar_timestep', 'eir_scalar_malsim': 'eir_scalar'}, axis=1)
         else:
-            columns_to_keep = columns_to_keep + ['eir']
+            columns_to_keep = columns_to_keep + ['input_target']
             columns_to_keep = [col for col in columns_to_keep if col in df_daily.columns]
             df_daily = df_daily[columns_to_keep]
-            df_daily = df_daily.rename({'EIR_gamb': 'simulatedEIR', 'eir': 'inputEIR'}, axis=1)
+            df_daily = df_daily.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
 
         print(f'Saving EIR_daily.csv to {wdir}')
         df_daily.to_csv((os.path.join(wdir, 'EIR_daily.csv')), index=False)
@@ -185,7 +183,6 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
         df_mth = df_mth.merge(vdf_mth, on=['index', 'month', 'year'], how='inner')
         df_mth = df_mth.merge(scen_df, on='index', how='inner')
         df_mth = df_mth.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
-        df_mth['inputEIR'] = df_mth['eir']  # if inputEIR not available from simulations, use 'eir'
         print(f'Saving EIR_mth.csv to {wdir}')
         df_mth.to_csv((os.path.join(wdir, 'EIR_mth.csv')), index=False)
 
@@ -195,7 +192,6 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
         df_yr = df_yr.merge(vdf_yr, on=['index', 'year'], how='inner')
         df_yr = df_yr.merge(scen_df, on='index', how='inner')
         df_yr = df_yr.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
-        df_yr['inputEIR'] = df_yr['eir']  # if inputEIR not available from simulations, use 'eir'
         print(f'Saving EIR_yr.csv to {wdir}')
         df_yr.to_csv((os.path.join(wdir, 'EIR_yr.csv')), index=False)
 
@@ -209,7 +205,6 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
         df_yr['n_total_mos_pop'] = df_yr['n_total_mos_pop'] / nyears
         df_yr = df_yr.merge(scen_df, on='index', how='inner')
         df_yr = df_yr.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
-        df_yr['inputEIR'] = df_yr['eir']  # if inputEIR not available from simulations, use 'eir'
         print(f'Saving EIR.csv to {wdir}')
         df_yr.to_csv((os.path.join(wdir, 'EIR.csv')), index=False)
 
@@ -278,7 +273,7 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
-    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR','n_total_mos_pop']]
+    eir_df = eir_df[['index', 'input_target', 'simulatedEIR','n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
@@ -402,7 +397,7 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables,age_groups_aggregates=None, 
 
     df = cdf.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
-    eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'inputEIR']]
+    eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'input_target']]
     df = df.merge(eir_df, on=['index', 'timestep', 'month', 'year'], how='inner')
 
     # Let's limit the output of daily, so its a little more reasonable for us to process.
@@ -450,8 +445,8 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
-    eir_df = eir_df.groupby(sweep_variables + ['year', 'timestep'])[['simulatedEIR', 'inputEIR','n_infectious_mos', 'n_total_mos_pop']].agg( np.mean).reset_index()  # mean across runs per  timestep , month and year
-    eir_df = eir_df[['index', 'timestep', 'year', 'inputEIR', 'simulatedEIR' ,'n_infectious_mos', 'n_total_mos_pop']]
+    eir_df = eir_df.groupby(sweep_variables + ['year', 'timestep'])[['simulatedEIR', 'input_target','n_infectious_mos', 'n_total_mos_pop']].agg( np.mean).reset_index()  # mean across runs per  timestep , month and year
+    eir_df = eir_df[['index', 'timestep', 'year', 'input_target', 'simulatedEIR' ,'n_infectious_mos', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep',  'year', 'ageGroup', 'age_upper',
@@ -553,9 +548,9 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
-    eir_df = eir_df.groupby(sweep_variables + ['month', 'year'])[['simulatedEIR', 'inputEIR', 'n_total_mos_pop']].agg(
+    eir_df = eir_df.groupby(sweep_variables + ['month', 'year'])[['simulatedEIR', 'input_target', 'n_total_mos_pop']].agg(
         np.mean).reset_index()  # mean across runs per month and year
-    eir_df = eir_df[['index', 'month', 'year', 'inputEIR', 'simulatedEIR', 'n_total_mos_pop']]
+    eir_df = eir_df[['index', 'month', 'year', 'input_target', 'simulatedEIR', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup', 'age_upper',
@@ -642,7 +637,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
-    eir_df = eir_df[['index', 'year', 'inputEIR', 'simulatedEIR', 'n_total_mos_pop']]
+    eir_df = eir_df[['index', 'year', 'input_target', 'simulatedEIR', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup',

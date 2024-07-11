@@ -1,3 +1,35 @@
+import numpy as np
+import pandas as pd
+
+def gather_interpolate_data(input_type = None, seasonality = None):
+    if input_type == 'pfpr':
+        if 'seasonal' in seasonality:
+            data = pd.read_csv('/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240709/sims_dynamic_seasonal__14_45_50/em/PfPR_ClinicalIncidence_5day.csv')
+        if 'perennial' in seasonality:
+            print("need to input pfpr perennial data")
+    elif input_type == 'eir':
+        if 'seasonal' in seasonality:
+            print("need to input eir seasonal data")
+        if 'perennial' in seasonality:
+            print("need to input eir perennial data")
+    return data
+
+def input_target_to_lhs(idata = None, row=None, population=10000):       
+    idata = idata[((idata['cm_clinical'] == row['cm_clinical']) & (idata['seasonality'] == row['seasonality']))]
+    idata = idata.groupby(['x_Temporary_Larval_Habitat'])['prevalence_2to10'].agg(np.mean).reset_index()
+    xt = idata['prevalence_2to10']
+    yp = idata['x_Temporary_Larval_Habitat']
+    xnew = row['input_target']
+    lhs = np.interp(xnew, xt, yp)               
+    lhs = lhs / (10000 / population) #TODO WE MAY JUST REMOVE THIS LINE< IT MIGHT BE UNNECESSESSARY
+    if lhs <= 0:
+        lhs = 0.01 #this is a precaution, however we don't expect lhs values to be less than 0.5, we just don't want them to be 0.
+        print("Warning, you requested a pfpr that would result in a lhs < 0 in EMOD, this will likely cause elimination in your simulations")
+    if lhs >= 10000:
+        lhs = 9999
+        print("Warning, the xtemp is over 10000 and that most likely is a problem, most likely you requested a pfpr not possible in emod")
+    return lhs
+
 def eir_to_lhs_regr(df=None, population=1000):
     """
     Estimates Larval habitat scalar (LHS) value using a regression model based on
