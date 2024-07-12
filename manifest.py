@@ -48,6 +48,7 @@ if hpc == 'NUCLUSTER':
     emod_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/EMOD/inputs')
     om_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/OpenMalaria/')
     ms_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/MalSim/')
+    interp_path = os.path.join(os.path.expanduser('~'), 'model-characterization/interpolation_data/interpolation_data.csv')
     if os.name != 'posix':
         output_directory = os.path.join(os.environ['USERPROFILE'], 'NU Malaria Modeling Dropbox/projects/EMOD_OM/simulation_outputs')
         print(f"Setting output_directory for local use: {output_directory}")

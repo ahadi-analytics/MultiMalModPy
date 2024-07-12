@@ -8,7 +8,6 @@ import numpy as np
 from COMPS import AuthManager
 from functools import partial
 from EMOD.scaffolds.forcedEIR import *
-from EMOD.scaffolds.interpolate import *
 from EMOD.scaffolds.interventions import *
 import emod_api.demographics.PreDefinedDistributions as Distributions
 from emodpy_malaria.reporters.builtin import *
@@ -578,10 +577,8 @@ def config_sweep_builder(exp, scen_df):
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
-        interpolate_data = gather_interpolate_data(exp.input_type, exp.seasonality)
         sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
-                   partial(set_param, param='x_Temporary_Larval_Habitat', 
-                   value=input_target_to_lhs(idata = interpolate_data, row = row, population = exp.pop_size)),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_em),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
@@ -611,14 +608,12 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             for i, row in scen_df_pickup.iterrows()
             for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
-        interpolate_data = gather_interpolate_data(exp.input_type, exp.seasonality)
         sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
                    partial(set_param, param='Serialized_Population_Path',
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',
                            value=row["Serialized_Population_Filenames"]),
-                   partial(set_param, param='x_Temporary_Larval_Habitat',
-                   value=input_target_to_lhs(idata = interpolate_data, row = row, population = exp.pop_size)),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_em),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df_pickup.iterrows()
                   for s in range(nseeds)]

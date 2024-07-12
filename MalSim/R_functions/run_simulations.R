@@ -90,7 +90,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       else{
         # Calibrate to the initial EIR (same across models):
         simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                        init_EIR = parameter_table[i,]$ms_input_target)
+                                        init_EIR = parameter_table[i,]$model_input_ms)
       }
       
       # Run the simulations:
@@ -189,7 +189,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       else{
         # Calibrate to the initial EIR (same across models):
         simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                        init_EIR = parameter_table[i,]$ms_input_target)}
+                                        init_EIR = parameter_table[i,]$model_input_ms)}
       # Run the simulations:
       simulation_outputs_list[[i]] <- run_simulation(timesteps = timesteps, parameters = simparams[[i]])
 
