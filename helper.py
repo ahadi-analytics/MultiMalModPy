@@ -75,11 +75,7 @@ def parse_launch_args():
                         type=str,
                         default='prevalence_2to10',
                         choices=['prevalence_2to10','eir'], # clinical_incidenceU5 #
-                        help='Specify whether to align transmission in each model by EIR or by prevalence_2to10') # , or by clinical incidence 
-    parser.add_argument('--interp_path',
-                        type=str,
-                        default=None,
-                        help='Select a interpolation dataset path that is not the default')
+                        help='Specify whether to align transmission in each model by EIR or by prevalence_2to10') # , or by clinical incidence
     return parser.parse_args()
 
 
@@ -191,10 +187,8 @@ def initialize_exp(args, manifest):
     exp.ms_input_path = manifest.ms_input_path
     exp.job_directory_manifest = manifest.job_directory
     exp.output_directory_manifest = manifest.output_directory
-    if args.interp_path is None:
-        exp.interp_path = manifest.interp_path
-    else:
-        exp.interp_path = args.interp_path
+    exp.interp_path = manifest.interp_path
+    exp.interp_csv = manifest.interp_csv
     exp.burnin_directory = None
 
     # Specify OpenMalaria XML and survey step, MalSim simulation setup
@@ -274,68 +268,87 @@ def initialize_exp(args, manifest):
     return (exp)
 
 
-def output_target_to_xTemp_eir(df, output_type,model, population, entomology_mode = 'dynamic', input_path = None):
-    if input_path is None:
-        raise ValueError('Please Provide the path for your interpolation data.')
-    data = pd.read_csv(input_path)
-    output=[]
+def output_target_to_xTemp(df, exp,  model):
+    interp_path = os.path.join(exp.interp_path, exp.interp_csv)
+    if not os.path.exists(interp_path):
+        raise ValueError(f'interp_file not found: {interp_path}')
+
+    data = pd.read_csv(interp_path)
+    output = []
+
+    if exp.output_type == 'eir':
+        output_type_col = 'simulatedEIR'
+    elif exp.output_type == 'pfpr2to10':
+        output_type_col = 'prevalence_2to10'
+    elif exp.output_type == 'clinical_incidenceU5':  ## FIXME tbd later on how to add
+        output_type_col = 'clinical_cases'  # name including age group?
+    else:
+        raise ValueError(f'Specified input_type is not valid {exp.output_type}')
+
     for i, row in df.iterrows():
-        if output_type =='eir':
-            if model != 'EMOD' or (model == 'EMOD' and row['entomology_mode'] == 'forced'):
-                output.append(row['output_target'])
-                #print("Interpolate not needed for output_type eir (MalSim, OpenMalaria-forced and EMOD-forced)")
-            else:
-                idata = data[((data['cm_clinical'] == row['cm_clinical']) 
-                        & (data['seasonality'] == row['seasonality']) 
-                        & (data['modelname']==model)
-                        & (data['entomology_mode'] == row['entomology_mode']))]
-                xt = idata['simulatedEIR']
-                yp = idata['input_target']
-                xnew = row['output_target']
-                interpolated_value = np.interp(xnew, xt, yp)
-                pop_fitting_was_run = 10000
-                interpolated_value = interpolated_value / (pop_fitting_was_run / population)
-                if interpolated_value <= 0:
-                    interpolated_value = 0.01  # this is a precaution, however we don't expect xTemp values to be less than 0.5, we just don't want them to be 0.
-                    print("Warning: EMOD's x_Temporary_Larval_Habitat < 0, value set to 0.01 (this will likely cause elimination in the simulations)")
-                if interpolated_value >= 10000:
-                    interpolated_value = 9999
-                    print("Warning: EMOD's x_Temporary_Larval_Habitat > 10000, value set to 9999 (higher values cannot be reasonably simulated)")
-                output.append(interpolated_value)
-        elif output_type in data.columns: 
-            idata = data[((data['cm_clinical'] == row['cm_clinical']) 
-                & (data['seasonality'] == row['seasonality']) 
-                & (data['modelname']==model)
-                & (data['entomology_mode'] == row['entomology_mode']))]
-            xt = idata[output_type]
-            yp = idata['input_target']
-            xnew = row['output_target']
-            interpolated_value = np.interp(xnew, xt, yp)
-            if model != 'EMOD':
-                output.append(interpolated_value)
-            else:
-                if row['entomology_mode'] == 'dynamic':
-                    pop_fitting_was_run = 10000
-                    interpolated_value = interpolated_value / (pop_fitting_was_run / population)
-                    if interpolated_value <= 0:
-                        interpolated_value = 0.01  # this is a precaution, however we don't expect xTemp values to be less than 0.5, we just don't want them to be 0.
-                        print("Warning: EMOD's x_Temporary_Larval_Habitat < 0, value set to 0.01 (this will likely cause elimination in the simulations)")
-                    if interpolated_value >= 10000:
-                        interpolated_value = 9999
-                        print("Warning: EMOD's x_Temporary_Larval_Habitat > 10000, value set to 9999 (higher values cannot be reasonably simulated)")
-                    output.append(interpolated_value)
-                elif row['entomology_mode'] == 'forced':
-                    if interpolated_value <= 0:
-                        interpolated_value = 0.01
-                        print("Warning: eir < 0, value set to 0.01 (this will likely cause elimination in the simulations)")
-                    if interpolated_value >= 1000:
-                        interpolated_value = 999
-                        print("Warning:  eir > 1000, value set to 999 (higher values cannot be reasonably simulated)")
-                    output.append(interpolated_value)
-                else:
-                    print(f"Warning {row['entomology_mode']} is not a valid entomology mode")   
-        else:
-            raise ValueError(f'Specified output_type is not valid {output_type}')
+
+        idata = data[((data['cm_clinical'] == row['cm_clinical'])
+                      & (data['seasonality'] == row['seasonality'])
+                      & (data['modelname'] == model))]
+        xt = idata[output_type_col]
+        yp = idata['input_target']
+        xnew = row['output_target']
+        interpolated_value = np.interp(xnew, xt, yp)
+        pop_fitting_was_run = 10000
+        interpolated_value = interpolated_value / (pop_fitting_was_run / exp.population)
+
+        if interpolated_value <= 0:
+            interpolated_value = 0.01
+            print(
+                "Warning: EMOD's x_Temporary_Larval_Habitat < 0, value set to 0.01 (this will likely cause elimination in the simulations)")
+        if interpolated_value >= 10000:
+            interpolated_value = 9999
+            print(
+                "Warning: EMOD's x_Temporary_Larval_Habitat > 10000, value set to 9999 (higher values cannot be reasonably simulated)")
+        output.append(interpolated_value)
+
+    else:
+        raise ValueError(f'Specified output_type is not valid {exp.output_type}')
+    return output
+
+
+def output_target_to_eir(df, exp, model):
+    interp_path = os.path.join(exp.interp_path, exp.interp_csv)
+    if not os.path.exists(interp_path):
+        raise ValueError(f'interp_file not found: {interp_path}')
+
+    data = pd.read_csv(interp_path)
+    output = []
+
+    if exp.output_type == 'eir':
+        output_type_col = 'simulatedEIR'
+    elif exp.output_type == 'pfpr2to10':
+        output_type_col = 'prevalence_2to10'
+    elif exp.output_type == 'clinical_incidenceU5':  ## FIXME tbd later on how to add
+        output_type_col = 'clinical_cases'  # name including age group?
+    else:
+        raise ValueError(f'Specified input_type is not valid {exp.output_type}')
+
+    for i, row in df.iterrows():
+
+        idata = data[((data['cm_clinical'] == row['cm_clinical'])
+                      & (data['seasonality'] == row['seasonality'])
+                      & (data['modelname'] == model))]
+        xt = idata[output_type_col]
+        yp = idata['input_target']
+        xnew = row['output_target']
+        interpolated_value = np.interp(xnew, xt, yp)
+
+        if interpolated_value <= 0:
+            interpolated_value = 0.01
+            print("Warning: eir < 0, value set to 0.01 (this will likely cause elimination in the simulations)")
+        if interpolated_value >= 1000:
+            interpolated_value = 999
+            print("Warning:  eir > 1000, value set to 999 (higher values cannot be reasonably simulated)")
+        output.append(interpolated_value)
+
+    else:
+        raise ValueError(f'Specified output_type is not valid {exp.output_type}')
     return output
 
 
@@ -761,18 +774,20 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                                    np.minimum(df['cm_clinical'] * 1.15, 1), exp.cm_severe)
         df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
 
+        # Alignment of model transmission input to target outcome
         if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
-            df['model_input_ms'] = output_target_to_xTemp_eir(df, output_type = exp.output_type,
-            model = 'MalSim', population = exp.pop_size, input_path = exp.interp_path)
+            df['model_input_ms'] = output_target_to_eir(df, exp, model = 'MalSim')
             print(df['model_input_ms'])
         if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
-            df['model_input_om'] = output_target_to_xTemp_eir(df, output_type = exp.output_type,
-            model = 'OpenMalaria', population = exp.pop_size, input_path = exp.interp_path)
+            df['model_input_om'] = output_target_to_eir(df, exp, model = 'OpenMalaria')
             print(df['model_input_om'])
         if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
-            df['model_input_em'] = output_target_to_xTemp_eir(df, output_type = exp.output_type,
-            model = 'EMOD', population = exp.pop_size, input_path = exp.interp_path)
+            if exp.entomology_mode =='dynamic':
+                df['model_input_em'] = output_target_to_xTemp(df, exp, model = 'EMOD')
+            if exp.entomology_mode =='forced':
+                df['model_input_em'] = output_target_to_eir(df, exp, model = 'EMOD')
             print(df['model_input_em'])
+
         if 'cc_step' in exp.intervention_list:
             df['eir_malsim'] = exp.eir_malsim
             df['eir_om'] = exp.eir_om
@@ -782,7 +797,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             df['eir_scalar_om'] = exp.eir_scalar_om
             df['eir_scalar_malsim'] = exp.eir_scalar_malsim
             df['carrying_capacity_step'] = exp.carrying_capacity_step
-            df['added_importation'] = exp.added_importation       
+            df['added_importation'] = exp.added_importation
     return df
 
 
