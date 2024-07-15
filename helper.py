@@ -269,7 +269,7 @@ def initialize_exp(args, manifest):
 
 
 def output_target_to_xTemp(df, exp,  model):
-    interp_path = os.path.join(exp.interp_path, exp.interp_csv)
+    interp_path = os.path.join(exp.interp_path, model, exp.interp_csv)
     if not os.path.exists(interp_path):
         raise ValueError(f'interp_file not found: {interp_path}')
 
@@ -313,7 +313,7 @@ def output_target_to_xTemp(df, exp,  model):
 
 
 def output_target_to_eir(df, exp, model):
-    interp_path = os.path.join(exp.interp_path, exp.interp_csv)
+    interp_path = os.path.join(exp.interp_path, model, exp.interp_csv)
     if not os.path.exists(interp_path):
         raise ValueError(f'interp_file not found: {interp_path}')
 
@@ -779,13 +779,13 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             df['model_input_ms'] = output_target_to_eir(df, exp, model = 'MalSim')
             print(df['model_input_ms'])
         if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
-            df['model_input_om'] = output_target_to_eir(df, exp, model = 'OpenMalaria')
+            df['model_input_om'] = output_target_to_eir(df, exp, model = 'om')
             print(df['model_input_om'])
         if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
             if exp.entomology_mode =='dynamic':
-                df['model_input_em'] = output_target_to_xTemp(df, exp, model = 'EMOD')
+                df['model_input_em'] = output_target_to_xTemp(df, exp, model = 'em')
             if exp.entomology_mode =='forced':
-                df['model_input_em'] = output_target_to_eir(df, exp, model = 'EMOD')
+                df['model_input_em'] = output_target_to_eir(df, exp, model = 'em')
             print(df['model_input_em'])
 
         if 'cc_step' in exp.intervention_list:
