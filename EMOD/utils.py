@@ -76,7 +76,7 @@ def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
 
     ## If forced EIR, treated as campaign in EMOD
     if row.entomology_mode == 'forced':
-        set_inputEIR_seasonality(camp, float(row.eir), row.seasonality)
+        set_inputEIR_seasonality(camp, float(row.model_input_em), row.seasonality)
 
     # Case management
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
@@ -94,9 +94,9 @@ def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
     # SMC using PKPD model
     if 'smc' in intervention_list and emod_step == 'pickup':
         print(row.smc_coverage)
-        if row.eir == 4:
+        if row.model_input_em == 4:
             start_array = [366, 731, 1096, 1461, 1826]
-        elif row.eir == 8:
+        elif row.model_input_em == 8:
             start_array = [366, 731, 1096, 1461, 1826]
         else:
             start_array = [335, 700, 1065, 1430,1795]
@@ -572,7 +572,7 @@ def config_sweep_builder(exp, scen_df):
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
         sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
-                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.eir)),
+                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_em)),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
@@ -603,7 +603,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             partial(set_param, param='Serialized_Population_Path',
                     value=os.path.join(row["serialized_file_path"], "output")),
             partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
-            partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.eir)),
+            partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_em)),
             partial(set_param, param='Run_Number', value=s)]
             for i, row in scen_df_pickup.iterrows()
             for s in range(nseeds)]

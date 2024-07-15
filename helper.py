@@ -76,6 +76,9 @@ def parse_launch_args():
                         default='prevalence_2to10',
                         choices=['prevalence_2to10','eir'], # clinical_incidenceU5 #
                         help='Specify whether to align transmission in each model by EIR or by prevalence_2to10') # , or by clinical incidence
+    parser.add_argument('--calib_sims',
+                        action='store_true',
+                        help = "This will run sims to generate interpolaiton data, under given simulation settings.")
     return parser.parse_args()
 
 
@@ -165,11 +168,15 @@ def initialize_exp(args, manifest):
     exp.models_to_run = args.models
     exp.intervention_list = args.interventions
     exp.testrun = args.test
+    exp.calibrun = args.calib_sims
     exp.overwrite = args.overwrite
     exp.overwrite_param = False  # to discuss how we want to handle parameter changes and overwrites in helper vs launch_test.py, or have another flag to add for args
     exp.emod_calib_params = args.calib  # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
     exp.malariasimulation_parameter_variation = args.mpv
-    exp.output_type = args.output_type
+    if exp.calibrun:
+        exp.output_type = 'eir'
+    else:
+        exp.output_type = args.output_type
 
     # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
     exp.user = args.user
@@ -204,7 +211,7 @@ def initialize_exp(args, manifest):
 
     # Flag to select whether to run with (dynamic) or without vector model (forced)
     exp.entomology_mode = 'dynamic'  # dynamic, forced
-    exp.seasonality = ['seasonal']  # ["perennial", "seasonal"]  
+    exp.seasonality = ['perennial']  # ["perennial", "seasonal"]  
     #"Current framework support only 1 seasonality patten per experiment"
     exp.mem_increase_factor = 5.0  # scaling factor on default memory requested
 
@@ -216,19 +223,21 @@ def initialize_exp(args, manifest):
     # Define case management start and coverage
     # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
     exp.cm_start = 1
-    exp.cm_clinical = [0.45]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
+    exp.cm_clinical = [0,0.45]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
     if exp.output_type == 'eir':
         exp.output_target = [1, 5, 10, 20, 50, 100, 500, 1000]
-        # exp.eir = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 100, 200, 500, 1000]
-        # exp.eir = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,52.36,92.85,164.09,290,512.52,905.79,1600.82,2829.15,5000] #for xtemp calculations ONLY
-        #exp.eir = [0.1,0.16681005,0.27825594,0.46415888,0.77426368,1.29154967,2.15443469,
-        #           3.59381366,5.9948425,10,11.28837892,12.74274986,14.38449888,16.23776739,
-        #           18.32980711,20.69138081,23.35721469,26.36650899,29.76351442,33.59818286,
-        #           37.92690191,42.81332399,48.32930239,54.55594781,61.58482111,69.51927962,78.47599704,88.58667904,
-        #           100,119.5813175,142.9969148,170.9975947,204.4811765,244.5212848,292.4017738,349.6578934,418.1255155,500,
-        #           697.475397,972.9438588,1357.208808,1893.239505,2640.97595,3684.031499,5139.042664,7168.711644,9999]
+        # exp.output_target = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 100, 200, 500, 1000]
+        # exp.output_target = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,52.36,92.85,164.09,290,512.52,905.79,1600.82,2829.15,5000] #for xtemp calculations ONLY
+        if exp.calibrun:
+            exp.output_target = [0.1,0.16681005,0.27825594,0.46415888,0.77426368,1.29154967,2.15443469,
+                    3.59381366,5.9948425,10,11.28837892,12.74274986,14.38449888,16.23776739,
+                    18.32980711,20.69138081,23.35721469,26.36650899,29.76351442,33.59818286,
+                    37.92690191,42.81332399,48.32930239,54.55594781,61.58482111,69.51927962,78.47599704,88.58667904,
+                    100,119.5813175,142.9969148,170.9975947,204.4811765,244.5212848,292.4017738,349.6578934,418.1255155,500,
+                    697.475397,972.9438588,1357.208808,1893.239505,2640.97595,3684.031499,5139.042664,7168.711644,9999]
+        
     elif exp.output_type == 'prevalence_2to10':
         exp.output_target = [0.05,0.1,0.25,0.4, 0.5,0.6, 0.7, 0.8]
     else:
@@ -278,7 +287,7 @@ def output_target_to_xTemp(df, exp,  model):
 
     if exp.output_type == 'eir':
         output_type_col = 'simulatedEIR'
-    elif exp.output_type == 'pfpr2to10':
+    elif exp.output_type == 'prevalence_2to10':
         output_type_col = 'prevalence_2to10'
     elif exp.output_type == 'clinical_incidenceU5':  ## FIXME tbd later on how to add
         output_type_col = 'clinical_cases'  # name including age group?
@@ -295,7 +304,7 @@ def output_target_to_xTemp(df, exp,  model):
         xnew = row['output_target']
         interpolated_value = np.interp(xnew, xt, yp)
         pop_fitting_was_run = 10000
-        interpolated_value = interpolated_value / (pop_fitting_was_run / exp.population)
+        interpolated_value = interpolated_value / (pop_fitting_was_run / exp.pop_size)
 
         if interpolated_value <= 0:
             interpolated_value = 0.01
@@ -306,9 +315,6 @@ def output_target_to_xTemp(df, exp,  model):
             print(
                 "Warning: EMOD's x_Temporary_Larval_Habitat > 10000, value set to 9999 (higher values cannot be reasonably simulated)")
         output.append(interpolated_value)
-
-    else:
-        raise ValueError(f'Specified output_type is not valid {exp.output_type}')
     return output
 
 
@@ -319,10 +325,10 @@ def output_target_to_eir(df, exp, model):
 
     data = pd.read_csv(interp_path)
     output = []
-
     if exp.output_type == 'eir':
         output_type_col = 'simulatedEIR'
-    elif exp.output_type == 'pfpr2to10':
+        return df['output_target']
+    elif exp.output_type == 'prevalence_2to10':
         output_type_col = 'prevalence_2to10'
     elif exp.output_type == 'clinical_incidenceU5':  ## FIXME tbd later on how to add
         output_type_col = 'clinical_cases'  # name including age group?
@@ -346,9 +352,6 @@ def output_target_to_eir(df, exp, model):
             interpolated_value = 999
             print("Warning:  eir > 1000, value set to 999 (higher values cannot be reasonably simulated)")
         output.append(interpolated_value)
-
-    else:
-        raise ValueError(f'Specified output_type is not valid {exp.output_type}')
     return output
 
 
@@ -774,16 +777,24 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                                    np.minimum(df['cm_clinical'] * 1.15, 1), exp.cm_severe)
         df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
 
-        # Alignment of model transmission input to target outcome
-        if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
-            df['model_input_ms'] = output_target_to_eir(df, exp, model = 'MalSim')
-        if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
-            df['model_input_om'] = output_target_to_eir(df, exp, model = 'om')
-        if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
-            if exp.entomology_mode =='dynamic':
-                df['model_input_em'] = output_target_to_xTemp(df, exp, model = 'em')
-            if exp.entomology_mode =='forced':
-                df['model_input_em'] = output_target_to_eir(df, exp, model = 'em')
+        if not exp.calibrun:
+            # Alignment of model transmission input to target outcome
+            if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
+                df['model_input_ms'] = output_target_to_eir(df, exp, model = 'MalSim')
+            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
+                df['model_input_om'] = output_target_to_eir(df, exp, model = 'OpenMalaria')
+            if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
+                if exp.entomology_mode =='dynamic':
+                    df['model_input_em'] = output_target_to_xTemp(df, exp, model = 'EMOD')
+                if exp.entomology_mode =='forced':
+                    df['model_input_em'] = output_target_to_eir(df, exp, model = 'EMOD')
+        else:
+            if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
+                df['model_input_ms'] = df['output_target'].astype('float')
+            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
+                df['model_input_om'] = df['output_target'].astype('float')
+            if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
+                df['model_input_em'] = df['output_target'].astype('float')
 
         if 'cc_step' in exp.intervention_list:
             df['eir_malsim'] = exp.eir_malsim
