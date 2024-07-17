@@ -17,8 +17,8 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plot_helper import *
 
 
-# Plots trends over available months, requires Benchmark_mth.csv
-def monthly_trends(wdir, df, channel, sweepvar='eir', agegrp='0-100'):
+# Plots trends over available months, requires PfPR_ClinicalIncidence_mth.csv
+def monthly_trends(wdir, df, channel, sweepvar='output_target', agegrp='0-100'):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
     Note, assumed single occurence per month, i.e. aggregated across years (reads in benchmark_mth.csv)
@@ -26,7 +26,7 @@ def monthly_trends(wdir, df, channel, sweepvar='eir', agegrp='0-100'):
         wdir (str): Working directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'output_target'.
         agegrp (str, optional): Age group filter for the data. Default is '0-5'.
     Returns:
         None (plots are saved to disk).
@@ -106,7 +106,7 @@ def monthly_timeseries(wdir, df, channel, sweepvar='modelname', facet_var='ageGr
         wdir (str): Working directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
         agegrp (str, optional): Age group filter for the data. Default is '0-5'.
     Returns:
@@ -137,9 +137,9 @@ def monthly_timeseries(wdir, df, channel, sweepvar='modelname', facet_var='ageGr
             selected_season = df['seasonality'].unique()[0]
         df = df[(df.seasonality == selected_season)]
 
-    if 'eir' not in [sweepvar, facet_var]:
-        selected_eir = np.max(df.eir)
-        df = df[(df.eir == selected_eir)]
+    if 'output_target' not in [sweepvar, facet_var]:
+        selected_output = np.max(df.output_target)
+        df = df[(df.output_target == selected_output)]
 
     if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
         raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
@@ -193,7 +193,7 @@ def annual_timeseries(wdir, df, channel, sweepvar='modelname', facet_var='ageGro
         wdir (str): Working directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'eir'.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
         agegrp (str, optional): Age group filter for the data. Default is '0-5'.
     Returns:
@@ -223,9 +223,9 @@ def annual_timeseries(wdir, df, channel, sweepvar='modelname', facet_var='ageGro
             selected_season = df['seasonality'].unique()[0]
         df = df[(df.seasonality == selected_season)]
 
-    if 'eir' not in [sweepvar, facet_var]:
-        selected_eir = np.max(df.eir)
-        df = df[(df.eir == selected_eir)]
+    if 'output_target' not in [sweepvar, facet_var]:
+        selected_output = np.max(df.output_target)
+        df = df[(df.output_target == selected_output)]
 
     if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
         raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
@@ -272,36 +272,36 @@ def annual_timeseries(wdir, df, channel, sweepvar='modelname', facet_var='ageGro
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    out_dir = args.directory
-    modelname = args.modelname  # ['EMOD', 'OpenMalaria', 'MalSim']
+    #args = parse_args()
+    out_dir = '/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240715/sims_dynamic_perennial__14_37_19'#args.directory
+    modelname = ['EMOD', 'OpenMalaria', 'MalSim']#args.modelname 
     if isinstance(modelname, str):
         modelname = [modelname]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    ento_channel_list = ['n_infectious_mos', 'n_total_mos_pop']
+    ento_channel_list = ['n_total_mos_pop']
     epi_channel_list = ['simulatedEIR', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10']
     channel_list = epi_channel_list + ento_channel_list
-
+    
     df_mth, wdir = get_output_df(out_dir, modelname, mth=True)
     df_yr, _ = get_output_df(out_dir, modelname, yr=True)
     agegrp = '0-100'  # 0-100  # if  agegrp is set to None, it will combine all ages, note, csv includes 0-5 and 0-100
-
+    """
     if not df_mth.empty:
-        sweepvar = 'eir'
+        sweepvar = 'output_target'
         for channel in channel_list:
             try:
                 print(f'#----- Plotting the monthly trends for {channel} -----#')
                 monthly_trends(wdir, df_mth, channel=channel, sweepvar=sweepvar, agegrp=agegrp)
             except:
                 print(f'{channel} not found in dataframe')
-
+    """
     sweepvar = 'modelname'
     facet_var = 'ageGroup'
 
-    if len(exp.eir) > 1 & len(exp.eir) <= 3:
-        facet_var = 'eir'
+    if len(exp.output_target) > 1 & len(exp.output_target) <= 3:
+        facet_var = 'output_target'
     if facet_var == 'ageGroup' and len(exp.cm_clinical) > 1:
         facet_var = 'cm_clinical'
     if facet_var == 'ageGroup' and len(exp.seasonality) > 1:

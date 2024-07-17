@@ -66,13 +66,13 @@ else:
 
     ## Add intervention params, note, for some interventions this might come only in  pickup, not yet setup
     exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
-
+    
+    exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
     # EMOD burn-in and pickup configuration
     exp.emod_serialized_id = ''
     if exp.emod_step == 'burnin':
         print('Message: Running burnin for EMOD')
         exp.exp_name = f'{exp.exp_name}_burnin{exp.burnin}'
-        exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.plots_to_run = []
 

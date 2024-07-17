@@ -26,15 +26,15 @@ if (Sys.getenv("OS") == "Windows_NT") {
   projdir <- file.path('/projects/b1139/emod-om/simulation_outputs', username)
 }
 
-projdir <- file.path(projdir, 'test_sims_20240626')
-exp_name <- "sims_dynamic_seasonal__13_03_24"
-modelname <- c("EMOD", "OpenMalaria", "MalSim")
-
+projdir <- file.path(projdir, 'test_sims_20240715') #CM 45 'test_sims_20240628' CM 0 'test_sims_20240626'
+exp_name <- "sims_dynamic_seasonal__16_21_39" #CM 45 "sims_dynamic_seasonal__14_52_12" CM 0 "sims_dynamic_seasonal__13_03_24"
+#modelname <- c("EMOD", "OpenMalaria", "MalSim")
+modelname <- c("OpenMalaria")
 # Load simulation outputs  BENCHMARK-------------------------------
 dat_s <- get_output_df(file.path(projdir,exp_name), modelname = modelname, timeseries = TRUE, fiveday=TRUE)
 
 dat_s <- dat_s %>%
-  group_by(day, year, eir, cm_clinical, ageGroup, seasonality, modelname) %>%
+  group_by(day, year, output_target, cm_clinical, ageGroup, seasonality, modelname) %>%
   summarise(simulatedEIR__mean = mean(simulatedEIR),
             simulatedEIR__min = quantile(simulatedEIR, 0.05),
             simulatedEIR__up = quantile(simulatedEIR, 0.95),
@@ -61,35 +61,14 @@ dat_s$ageGroup <- factor(dat_s$ageGroup,
                          labels = c('0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100', '0-5', '0-100'))
 
 dat_s$modelname <- factor(dat_s$modelname, levels = modelname, labels = c("EMOD", "OpenMalaria", "MalSim"))
-
+dat_s$modelname <- factor(dat_s$modelname, levels = modelname, labels = c("OpenMalaria"))
 dat_s <- dat_s %>%
   mutate(day = ((day+180) %% 365)) %>%
   mutate(times = (day+365*(year-2000)))
 
 #Setting up which EIRS have pfpr2to10 values closest to our targets
 pfpr_labels <- c(0.05,0.1,0.25,0.5)
-emod_eirs <- c(1,1.25,3,10)
-om_eirs <- c(0.25,1,2.5,8)
-malsim_eirs <- c(0.5,1.25,5,22)
 sel_eirs <- c(1,5,10,100)
-
-dat_s <- dat_s %>%
-  mutate(pfpr_grp = case_when(
-    modelname == 'EMOD' & eir %in% emod_eirs[1] ~ pfpr_labels[1],
-    modelname == 'EMOD' & eir %in% emod_eirs[2] ~ pfpr_labels[2],
-    modelname == 'EMOD' & eir %in% emod_eirs[3] ~ pfpr_labels[3],
-    modelname == 'EMOD' & eir %in% emod_eirs[4] ~ pfpr_labels[4],
-    ## OM
-    modelname == 'OpenMalaria' & eir %in% om_eirs[1] ~ pfpr_labels[1],
-    modelname == 'OpenMalaria' & eir %in% om_eirs[2] ~ pfpr_labels[2],
-    modelname == 'OpenMalaria' & eir %in% om_eirs[3] ~ pfpr_labels[3],
-    modelname == 'OpenMalaria' & eir %in% om_eirs[4] ~ pfpr_labels[4],
-    ## MalSim
-    modelname == 'MalSim' & eir %in% malsim_eirs[1] ~ pfpr_labels[1],
-    modelname == 'MalSim' & eir %in% malsim_eirs[2] ~ pfpr_labels[2],
-    modelname == 'MalSim' & eir %in% malsim_eirs[3] ~ pfpr_labels[3],
-    modelname == 'MalSim' & eir %in% malsim_eirs[4] ~ pfpr_labels[4]),
-    pfpr_grp = factor(pfpr_grp, levels = pfpr_labels, labels = pfpr_labels))
 
 #Generate Tables if you would like a quick sanity check
 #table(dat_s$ageGroup)
@@ -100,10 +79,14 @@ dat_s <- dat_s %>%
 pA <- dat_s %>%
   filter(year == max(year)) %>%
   filter(ageGroup %in% '0-100') %>%
-  filter(eir %in% c(20)) %>%
+  filter(output_target %in% c(0.25)) %>%
+  filter(cm_clinical == 0.45) %>%
+  mutate(max_y = max(simulatedEIR__mean),
+         ismax = simulatedEIR__mean==max_y) %>%
   ggplot() +
   geom_ribbon(aes(x = day, ymin = simulatedEIR__min, ymax = simulatedEIR__up, fill = modelname), alpha = 0.1) +
   geom_line(aes(x = day, y = simulatedEIR__mean, col = modelname), linewidth = 1) +
+  expand_limits(y=0) +
   scale_color_manual(values = emodom_cols) +
   scale_fill_manual(values = emodom_cols) +
   scale_y_continuous(expand = expansion(mult = c(0, 0))) +
@@ -112,21 +95,21 @@ pA <- dat_s %>%
        x = "Days",
        color = 'Model',
        fill = 'Model',
-       title = 'EIR = 20',
+       title = 'A) EIR = 20, CM = 45%',
        caption = 'All Ages') +
   customTheme +
   theme(legend.position = c(.1, .8))
-
+pA
 pB <- dat_s %>%
   filter(year == max(year)) %>% ## FIXME
   filter(ageGroup %in% '0-100') %>%
-  filter(eir %in% c(20)) %>%
-  dplyr::select(year, day, eir, ageGroup, modelname,
+  filter(output_target %in% c(0.25)) %>%
+  dplyr::select(year, day, output_target, ageGroup, modelname,
                 simulatedEIR__mean, simulatedEIR__min, simulatedEIR__up,
                 prevalence__mean, prevalence__min, prevalence__up,
                 clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                 n_total_mos_pop__mean, n_total_mos_pop__min, n_total_mos_pop__up) %>%
-  pivot_longer(cols = -c(day, year, eir, ageGroup, modelname)) %>%
+  pivot_longer(cols = -c(day, year, output_target, ageGroup, modelname)) %>%
   separate(name, into = c('name', 'stat'), sep = '__') %>%
   mutate(name = factor(name,
                        levels = c('n_total_mos_pop','simulatedEIR', 'prevalence', 'clinical_incidence'),
@@ -134,7 +117,7 @@ pB <- dat_s %>%
   group_by(modelname, name) %>%
   mutate(value = rescale(value, to = c(0, 1))) %>%
   pivot_wider(names_from = stat, values_from = value) %>%
-  group_by(eir, ageGroup, modelname, name) %>%
+  group_by(output_target, ageGroup, modelname, name) %>%
   mutate(max_y = max(mean),
          ismax = mean==max_y) %>%
   ggplot() +
@@ -157,11 +140,11 @@ pB <- dat_s %>%
        x = "Days",
        col = 'Simulation Output',
        fill = 'Simulation Output',
-       title = 'EIR = 20',
+       title = 'B) EIR = 20',
        caption = 'All Ages') +
   customTheme +
   theme(legend.position = 'right')
-
+pB
 
 ## Varying EIRs
 line_cols <- c('#1bd9e9', '#2c7bb6','#cfae61','#d7191c')
@@ -171,38 +154,38 @@ line_cols <- c('#1bd9e9', '#2c7bb6','#cfae61','#d7191c')
 pC_pfpr <- dat_s %>%
   ungroup() %>%
   filter(ageGroup %in% '0-100') %>%
-  filter(pfpr_grp %in% pfpr_labels) %>%
-  select(times, pfpr_grp, ageGroup, modelname,
+  filter(output_target %in% pfpr_labels) %>%
+  select(times, output_target, ageGroup, modelname,
          simulatedEIR__mean, simulatedEIR__min, simulatedEIR__up,
          prevalence__mean, prevalence__min, prevalence__up,
          clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
          n_total_mos_pop__mean, n_total_mos_pop__min, n_total_mos_pop__up) %>%
-  pivot_longer(cols = -c(times, pfpr_grp, ageGroup, modelname)) %>%
+  pivot_longer(cols = -c(times, output_target, ageGroup, modelname)) %>%
   separate(name, into = c('name', 'stat'), sep = '__') %>%
   mutate(custom_col = case_when(
-    name == 'simulatedEIR' & pfpr_grp == pfpr_labels[1] ~ line_cols[1],
-    name == 'simulatedEIR' & pfpr_grp == pfpr_labels[2] ~ line_cols[2],
-    name == 'simulatedEIR' & pfpr_grp == pfpr_labels[3] ~ line_cols[3],
-    name == 'simulatedEIR' & pfpr_grp == pfpr_labels[4] ~ line_cols[4],
+    name == 'simulatedEIR' & output_target == pfpr_labels[1] ~ line_cols[1],
+    name == 'simulatedEIR' & output_target == pfpr_labels[2] ~ line_cols[2],
+    name == 'simulatedEIR' & output_target == pfpr_labels[3] ~ line_cols[3],
+    name == 'simulatedEIR' & output_target == pfpr_labels[4] ~ line_cols[4],
     # prev
-    name == 'prevalence' & pfpr_grp == pfpr_labels[1] ~ line_cols[1],
-    name == 'prevalence' & pfpr_grp == pfpr_labels[2] ~ line_cols[2],
-    name == 'prevalence' & pfpr_grp == pfpr_labels[3] ~ line_cols[3],
-    name == 'prevalence' & pfpr_grp == pfpr_labels[4] ~ line_cols[4],
+    name == 'prevalence' & output_target == pfpr_labels[1] ~ line_cols[1],
+    name == 'prevalence' & output_target == pfpr_labels[2] ~ line_cols[2],
+    name == 'prevalence' & output_target == pfpr_labels[3] ~ line_cols[3],
+    name == 'prevalence' & output_target == pfpr_labels[4] ~ line_cols[4],
     # inc
-    name == 'clinical_incidence' & pfpr_grp == pfpr_labels[1] ~ line_cols[1],
-    name == 'clinical_incidence' & pfpr_grp == pfpr_labels[2] ~ line_cols[2],
-    name == 'clinical_incidence' & pfpr_grp == pfpr_labels[3] ~ line_cols[3],
-    name == 'clinical_incidence' & pfpr_grp == pfpr_labels[4] ~ line_cols[4],
+    name == 'clinical_incidence' & output_target == pfpr_labels[1] ~ line_cols[1],
+    name == 'clinical_incidence' & output_target == pfpr_labels[2] ~ line_cols[2],
+    name == 'clinical_incidence' & output_target == pfpr_labels[3] ~ line_cols[3],
+    name == 'clinical_incidence' & output_target == pfpr_labels[4] ~ line_cols[4],
     # Mos Pop
-    name == 'n_total_mos_pop' & pfpr_grp == pfpr_labels[1] ~ line_cols[1],
-    name == 'n_total_mos_pop' & pfpr_grp == pfpr_labels[2] ~ line_cols[2],
-    name == 'n_total_mos_pop' & pfpr_grp == pfpr_labels[3] ~ line_cols[3],
-    name == 'n_total_mos_pop' & pfpr_grp == pfpr_labels[4] ~ line_cols[4])) %>%
+    name == 'n_total_mos_pop' & output_target == pfpr_labels[1] ~ line_cols[1],
+    name == 'n_total_mos_pop' & output_target == pfpr_labels[2] ~ line_cols[2],
+    name == 'n_total_mos_pop' & output_target == pfpr_labels[3] ~ line_cols[3],
+    name == 'n_total_mos_pop' & output_target == pfpr_labels[4] ~ line_cols[4])) %>%
   mutate(name = factor(name,
                        levels = c('n_total_mos_pop','simulatedEIR', 'prevalence', 'clinical_incidence'),
-                       labels = c('Total Mosquito\nPopulation','Simulated EIR', 'Prevalence', 'Clinical incidence\n(ppa)'))) %>%
-  group_by(modelname, name, pfpr_grp) %>%
+                       labels = c('Total Mosquito\nPopulation','Simulated EIR', 'Prevalence', 'Clinical\nIncidence (ppa)'))) %>%
+  group_by(modelname, name, output_target) %>%
   mutate(value = rescale(value, to = c(0, 1))) %>%
   pivot_wider(names_from = stat, values_from = value) %>%
   ggplot() +
@@ -240,28 +223,28 @@ pC_eir <- dat_s %>%
   pivot_longer(cols = -c(times, eir, ageGroup, modelname)) %>%
   separate(name, into = c('name', 'stat'), sep = '__') %>%
   mutate(custom_col = case_when(
-                      name == 'simulatedEIR' & eir == sel_eirs[1] ~ line_cols[1],
-                      name == 'simulatedEIR' & eir == sel_eirs[2] ~ line_cols[2],
-                      name == 'simulatedEIR' & eir == sel_eirs[3] ~ line_cols[3],
-                      name == 'simulatedEIR' & eir == sel_eirs[4] ~ line_cols[4],
+                      name == 'simulatedEIR' & output_target == sel_eirs[1] ~ line_cols[1],
+                      name == 'simulatedEIR' & output_target == sel_eirs[2] ~ line_cols[2],
+                      name == 'simulatedEIR' & output_target == sel_eirs[3] ~ line_cols[3],
+                      name == 'simulatedEIR' & output_target == sel_eirs[4] ~ line_cols[4],
                       # prev
-                      name == 'prevalence' & eir == sel_eirs[1] ~ line_cols[1],
-                      name == 'prevalence' & eir == sel_eirs[2] ~ line_cols[2],
-                      name == 'prevalence' & eir == sel_eirs[3] ~ line_cols[3],
-                      name == 'prevalence' & eir == sel_eirs[4] ~ line_cols[4],
+                      name == 'prevalence' & output_target == sel_eirs[1] ~ line_cols[1],
+                      name == 'prevalence' & output_target == sel_eirs[2] ~ line_cols[2],
+                      name == 'prevalence' & output_target == sel_eirs[3] ~ line_cols[3],
+                      name == 'prevalence' & output_target == sel_eirs[4] ~ line_cols[4],
                       # inc
-                      name == 'clinical_incidence' & eir == sel_eirs[1] ~ line_cols[1],
-                      name == 'clinical_incidence' & eir == sel_eirs[2] ~ line_cols[2],
-                      name == 'clinical_incidence' & eir == sel_eirs[3] ~ line_cols[3],
-                      name == 'clinical_incidence' & eir == sel_eirs[4] ~ line_cols[4],
+                      name == 'clinical_incidence' & output_target == sel_eirs[1] ~ line_cols[1],
+                      name == 'clinical_incidence' & output_target == sel_eirs[2] ~ line_cols[2],
+                      name == 'clinical_incidence' & output_target == sel_eirs[3] ~ line_cols[3],
+                      name == 'clinical_incidence' & output_target == sel_eirs[4] ~ line_cols[4],
                       # Mos Pop
-                      name == 'n_total_mos_pop' & eir == sel_eirs[1] ~ line_cols[1],
-                      name == 'n_total_mos_pop' & eir == sel_eirs[2] ~ line_cols[2],
-                      name == 'n_total_mos_pop' & eir == sel_eirs[3] ~ line_cols[3],
-                      name == 'n_total_mos_pop' & eir == sel_eirs[4] ~ line_cols[4])) %>%
+                      name == 'n_total_mos_pop' & output_target == sel_eirs[1] ~ line_cols[1],
+                      name == 'n_total_mos_pop' & output_target == sel_eirs[2] ~ line_cols[2],
+                      name == 'n_total_mos_pop' & output_target == sel_eirs[3] ~ line_cols[3],
+                      name == 'n_total_mos_pop' & output_target == sel_eirs[4] ~ line_cols[4])) %>%
   mutate(name = factor(name,
                        levels = c('n_total_mos_pop','simulatedEIR', 'prevalence', 'clinical_incidence'),
-                       labels = c('Total Mosquito\nPopulation','Simulated EIR', 'Prevalence', 'Clinical incidence\n(ppa)'))) %>%
+                       labels = c('Total Mosquito\nPopulation','Simulated EIR', 'Prevalence', 'Clinical\nIncidence (ppa)'))) %>%
   group_by(modelname, name, eir) %>%
   mutate(value = rescale(value, to = c(0, 1))) %>%
   pivot_wider(names_from = stat, values_from = value) %>%
@@ -298,13 +281,13 @@ mylayout <- "AAAABBBB
 
 pABC_pfpr <- (pA+pB+pC_pfpr)+plot_layout(design=mylayout)
 pABC_pfpr
-ggsave(plot = pABC_pfpr,filename = file.path(getwd(), 'Figure3_pfpr_ratio.pdf'), height = 14, width = 22)
-ggsave(plot = pABC_pfpr, filename = file.path(getwd(), 'Figure3_pfpr_ratio.png'), height = 14, width = 22)
+ggsave(plot = pABC_pfpr,filename = file.path(getwd(), 'Figure3_pfpr_ratio.pdf'), height = 15, width = 22)
+ggsave(plot = pABC_pfpr, filename = file.path(getwd(), 'Figure3_pfpr_ratio.png'), height = 15, width = 22)
 
 pABC_eir <- (pA+pB+pC_eir)+plot_layout(design=mylayout)
 pABC_eir
-ggsave(plot = pABC_eir,filename = file.path(getwd(), 'Figure3_eir_ratio.pdf'), height = 14, width = 22)
-ggsave(plot = pABC_eir, filename = file.path(getwd(), 'Figure3_eir_ratio.png'), height = 14, width = 22)
+ggsave(plot = pABC_eir,filename = file.path(getwd(), 'Figure3_eir_ratio.pdf'), height = 15, width = 22)
+ggsave(plot = pABC_eir, filename = file.path(getwd(), 'Figure3_eir_ratio.png'), height = 15, width = 22)
 
 
 

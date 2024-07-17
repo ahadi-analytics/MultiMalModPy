@@ -55,10 +55,10 @@ def prevalence2to10_to_incidence(wdir, df, sweepvar = 'modelname', channel='clin
                 color_key = color_selector(mi, model)
                 if not pd.isnull(pdf['prevalence_2to10']).all():
                 # plot mean, min and max of seeds
-                    xmean, ymean = get_x_y(pdf, 'eir', 'prevalence_2to10', channel)
-                    merge_df = pd.merge(left = xmean, right = ymean, on = 'eir')
+                    xmean, ymean = get_x_y(pdf, 'output_target', 'prevalence_2to10', channel)
+                    merge_df = pd.merge(left = xmean, right = ymean, on = 'output_target')
                     if channel == 'simulatedEIR':
-                        merge_df.sort_values(by='eir', inplace=True)
+                        merge_df.sort_values(by='output_target', inplace=True)
                     else:
                         merge_df.sort_values(by='prevalence_2to10', inplace=True)
                     ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=model, color=color_palette[color_key])
@@ -122,11 +122,11 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, df, sweepvar = 'modelnam
                 ax = fig.add_subplot(ny, nx, f)
                 f += 1
                 mdf = adf[adf.modelname == model]
-                mdf = mdf.groupby(['seed','eir'])[mean_vars].agg(np.mean).reset_index()
+                mdf = mdf.groupby(['seed','output_target'])[mean_vars].agg(np.mean).reset_index()
                 if not pd.isnull(mdf['prevalence_2to10']).all():
                 # plot mean, min and max of seeds
-                    xmean, ymean = get_x_y(mdf, 'eir', 'prevalence_2to10', channel)
-                    merge_df = pd.merge(left = xmean, right = ymean, on = 'eir')
+                    xmean, ymean = get_x_y(mdf, 'output_target', 'prevalence_2to10', channel)
+                    merge_df = pd.merge(left = xmean, right = ymean, on = 'output_target')
                     merge_df.sort_values(by='prevalence_2to10', inplace=True)
                     ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=model, color=color_palette[color_key])
                     ax.fill_between(merge_df['prevalence_2to10'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[color_key])
@@ -175,8 +175,8 @@ def eir_to_outcome(wdir, df, sweepvar='cm_clinical', eir_val='simulatedEIR', cha
         sdf = df[(df.seasonality == season)]
         for i, (p, pdf) in enumerate(sdf.groupby([sweepvar])):
             color_key = color_selector(i, p)
-            xmean, ymean = get_x_y(pdf, 'eir', eir_val, channel) #get values for x and y axes.
-            merge_df = pd.merge(left = xmean, right = ymean, on = 'eir')
+            xmean, ymean = get_x_y(pdf, 'output_target', eir_val, channel) #get values for x and y axes.
+            merge_df = pd.merge(left = xmean, right = ymean, on = 'output_target')
             merge_df.sort_values(by=eir_val, inplace=True)
             ax.plot(merge_df[eir_val], merge_df[channel], '-', linewidth=0.8, label=f"{p}", color=color_palette[color_key])
             ax.fill_between(merge_df[eir_val], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[color_key])
@@ -228,11 +228,19 @@ def input_to_simulated_eir(wdir, df, sweepvar='cm_clinical'):
         for i, (p, pdf) in enumerate(sdf.groupby([sweepvar])):
             # plot mean, min and max of seeds and age groups
             color_key = color_selector(i, p)
-            xmean, ymean = get_x_y(pdf, 'eir', 'inputEIR', 'simulatedEIR')
-            merge_df = pd.merge(left = xmean, right = ymean, on = 'eir')
-            merge_df.sort_values(by='inputEIR', inplace=True)
-            ax.plot(merge_df['inputEIR'], merge_df['simulatedEIR'], '-', linewidth=0.8, label=f"{p}", color=color_palette[color_key])
-            ax.fill_between(merge_df['inputEIR'], merge_df['simulatedEIR_min'], merge_df['simulatedEIR_max'], alpha=0.1, color=color_palette[color_key])
+            if p == 'EMOD':
+                model = 'em'
+            elif p == 'OpenMalaria':
+                model = 'om'
+            elif p == 'MalSim':
+                model = 'ms'
+            else:
+                print(f'Warning: Model not recognized: {p}')
+            xmean, ymean = get_x_y(pdf, 'output_target', f'model_input_{model}', 'simulatedEIR')
+            merge_df = pd.merge(left = xmean, right = ymean, on = 'output_target')
+            merge_df.sort_values(by=f'model_input_{model}', inplace=True)
+            ax.plot(merge_df[f'model_input_{model}'], merge_df['simulatedEIR'], '-', linewidth=0.8, label=f"{p}", color=color_palette[color_key])
+            ax.fill_between(merge_df[f'model_input_{model}'], merge_df['simulatedEIR_min'], merge_df['simulatedEIR_max'], alpha=0.1, color=color_palette[color_key])
         if firstPlot:
             lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.2))  # , title='Model'
             firstPlot = False
@@ -373,7 +381,7 @@ if __name__ == "__main__":
         rmse(out_dir, modelname)
         anovas(out_dir, modelname)
 
-    if len(exp.eir) >= 3:
+    if len(exp.output_target) >= 3:
         sweepvar = 'modelname'
         print('#----- Plotting input to simulated EIR -----#')
         input_to_simulated_eir(wdir, df, sweepvar=sweepvar)

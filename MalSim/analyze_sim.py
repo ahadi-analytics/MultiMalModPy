@@ -217,7 +217,7 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
 
     # Read experiment data daily
@@ -319,7 +319,7 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables)
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on='index', how='inner')
@@ -393,7 +393,7 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables,age_groups_aggregates=None, 
 
     ## Add scenarios variables
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'], axis=1, errors='ignore')  ## remove EMOD specific columns
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'], axis=1, errors='ignore')  ## remove EMOD specific columns
 
     df = cdf.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
@@ -506,7 +506,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['day', 'year'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
 
@@ -596,7 +596,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['month', 'year'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index', 'month', 'year'], how='inner')
@@ -681,7 +681,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['year'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index', 'year'], how='inner')

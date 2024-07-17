@@ -35,7 +35,7 @@ emodom_cols <- c('#1b9e77ff','#7570b3ff','#d95f02ff')
 #' modelname <- c("OpenMalaria", "EMOD")
 #' result <- get_output_df(wdir, modelname, mth = TRUE)
 #'
-get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE, condensed = FALSE) {
+get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE) {
   cols_to_keep <- NULL
   fname <- 'Benchmark.csv'
   if (timeseries) {
@@ -52,7 +52,8 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
 	    fname <- 'PfPR_ClinicalIncidence_5day.csv'
 	    cols_to_keep <- c('seed','year','day','prevalence','clinical_incidence',
 	                      'severe_incidence','ageGroup','prevalence_2to10','index',
-	                      'eir','cm_clinical','seasonality','simulatedEIR','n_total_mos_pop',
+	                      'output_target', 'model_input_om', 'model_input_ms', 'model_input_em',
+	                      'cm_clinical','seasonality','simulatedEIR','n_total_mos_pop',
 	                      'days','month','date','modelname')
 	}
   }
@@ -67,7 +68,7 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
     if ('EMOD' %in% modelname) {
       em_df <- fread(file.path(wdir, paste('em', fname, sep = '/')), select = cols_to_keep)
       em_df$modelname <- 'EMOD'
-      em_df <- em_df[em_df$eir >= 1,]
+      em_df <- em_df[em_df$simulatedEIR >0,]
     }
     if ('MalSim' %in% modelname) {
       ms_df <- fread(file.path(wdir, paste('MalSim', fname, sep = '/')), select = cols_to_keep)
@@ -111,10 +112,6 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
 
     if ('ageGroup' %in% colnames(df)) {
       df$ageGroup <- factor(df$ageGroup, levels = unique(df$ageGroup))
-    }
-    if (condensed) {
-      eir_list <- c(1, 5, 10, 50, 200, 1000)
-      df <- df[df$eir %in% eir_list,]
     }
     warning_df <- df[df$simulatedEIR == 0,]
     if (nrow(warning_df) > 0 & !daily) {
