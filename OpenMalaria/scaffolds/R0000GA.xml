@@ -75,7 +75,12 @@
         <group upperbound="100"/>
         </ageGroup>
     </monitoring>
-    <interventions name="No interventions">
+    <interventions name="No interventions (except potential Importation)">
+    <importedInfections>
+            <timed>
+                <rate time="0" value="@importation_rate@"/>
+            </timed>
+        </importedInfections>
     </interventions>
     <healthSystem>
         <ImmediateOutcomes name="Tanzania ACT">

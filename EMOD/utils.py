@@ -68,7 +68,7 @@ def build_standard_campaign_object():
     return camp
 
 
-def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
+def all_campaigns(camp, exp = None, row = None, intervention_list = []):
     """
     Wrapper functions to define all campaigns to go into the campaigns.json
     To be expanded with SMC and other interventions as needed, and use if's to define applicability
@@ -82,17 +82,18 @@ def all_campaigns(camp, emod_step = None, row = None, intervention_list = []):
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
 
     ## Carrying capacity step change
-    if 'cc_step' in intervention_list and emod_step == 'pickup': #Make sure to include the cc_step change only at pickup simulations.
+    if 'cc_step' in intervention_list and exp.emod_step == 'pickup': #Make sure to include the cc_step change only at pickup simulations.
         eir_df = pd.DataFrame({'CONSTANT':[row.eir_scalar_emod]})
         add_scale_larval_habitats(camp, df=eir_df,
                                   start_day=row.eir_scalar_timestep_daily,
                                   repetitions = 1)
-    if 'cc_step' in intervention_list and row.added_importation:
-        add_outbreak_individual(camp, start_day = 1, demographic_coverage=0.005,
+    if exp.importation:
+        five_per_year = (0.05*1000) / exp.pop_size 
+        add_outbreak_individual(camp, start_day = 1, demographic_coverage=five_per_year,
                                 repetitions=-1, timesteps_between_repetitions=365)
 
     # SMC using PKPD model
-    if 'smc' in intervention_list and emod_step == 'pickup':
+    if 'smc' in intervention_list and exp.emod_step == 'pickup':
         print(row.smc_coverage)
         if row.model_input_em == 4:
             start_array = [366, 731, 1096, 1461, 1826]
@@ -571,13 +572,13 @@ def config_sweep_builder(exp, scen_df):
         nseeds = exp.num_seeds_burnin
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
-        sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
                    partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_em)),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
                    partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_em),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
@@ -599,7 +600,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
         sweeps = [[
-            ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
+            ItvFn(all_campaigns, row=row, intervention_list = exp.intervention_list),
             partial(set_param, param='Serialized_Population_Path',
                     value=os.path.join(row["serialized_file_path"], "output")),
             partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
@@ -608,7 +609,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             for i, row in scen_df_pickup.iterrows()
             for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, emod_step = exp.emod_step, row=row, intervention_list = exp.intervention_list),
+        sweeps = [[ItvFn(all_campaigns, row=row, intervention_list = exp.intervention_list),
                    partial(set_param, param='Serialized_Population_Path',
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',

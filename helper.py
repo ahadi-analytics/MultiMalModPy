@@ -76,9 +76,12 @@ def parse_launch_args():
                         default='prevalence_2to10',
                         choices=['prevalence_2to10','eir'], # clinical_incidenceU5 #
                         help='Specify whether to align transmission in each model by EIR or by prevalence_2to10') # , or by clinical incidence
-    parser.add_argument('--calib_sims',
+    parser.add_argument('--calibrun',
                         action='store_true',
                         help = "This will run sims to generate interpolaiton data, under given simulation settings.")
+    parser.add_argument('--importation',
+                        action='store_true',
+                        help = "Include Importation in OpenMalaria/EMOD")
     return parser.parse_args()
 
 
@@ -168,15 +171,12 @@ def initialize_exp(args, manifest):
     exp.models_to_run = args.models
     exp.intervention_list = args.interventions
     exp.testrun = args.test
-    exp.calibrun = args.calib_sims
+    exp.calibrun = args.calibrun
+    exp.importation = args.importation
     exp.overwrite = args.overwrite
     exp.overwrite_param = False  # to discuss how we want to handle parameter changes and overwrites in helper vs launch_test.py, or have another flag to add for args
     exp.emod_calib_params = args.calib  # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
     exp.malariasimulation_parameter_variation = args.mpv
-    if exp.calibrun:
-        exp.output_type = 'eir'
-    else:
-        exp.output_type = args.output_type
 
     # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
     exp.user = args.user
@@ -211,7 +211,7 @@ def initialize_exp(args, manifest):
 
     # Flag to select whether to run with (dynamic) or without vector model (forced)
     exp.entomology_mode = 'dynamic'  # dynamic, forced
-    exp.seasonality = ['perennial']  # ["perennial", "seasonal"]  
+    exp.seasonality = ['perennial', 'seasonal']  # ["perennial", "seasonal"]  
     #"Current framework support only 1 seasonality patten per experiment"
     exp.mem_increase_factor = 5.0  # scaling factor on default memory requested
 
@@ -226,51 +226,46 @@ def initialize_exp(args, manifest):
     exp.cm_clinical = [0,0.45]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
+
+    if exp.calibrun:
+        if args.output_type != 'eir':
+            print("Warning: For Calibrun Simulations, output_type will equal eir")
+        exp.output_type = 'eir'
+    else:
+        exp.output_type = args.output_type
     if exp.output_type == 'eir':
         exp.output_target = [1, 5, 10, 20, 50, 100, 500, 1000]
-        # exp.output_target = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 100, 200, 500, 1000]
-        # exp.output_target = [0.1,0.18,0.31,0.55,0.98,1.72,3.05,5.39,9.52,16.82,29.73,52.36,92.85,164.09,290,512.52,905.79,1600.82,2829.15,5000] #for xtemp calculations ONLY
-        if exp.calibrun:
-            #exp.output_target = [16.23, 16.37928571, 16.52857143, 16.67785714, 16.82714286,
-            #16.97642857, 17.12571429, 17.275, 17.42428571, 17.57357143,
-            #17.72285714, 17.87214286, 18.02142857, 18.17071429, 18.32]
-            #[3.593814  , 3.76531607, 3.93681814, 4.10832021, 4.27982229,
-            #4.45132436, 4.62282643, 4.7943285 , 4.96583057, 5.13733264,
-            #5.30883471, 5.48033679, 5.65183886, 5.82334093, 5.994843]
-            exp.output_target = [0.1,0.16681005,0.27825594,0.46415888,0.77426368,1.29154967,2.15443469,
-                    3.59381366,5.9948425,10,11.28837892,12.74274986,14.38449888,16.23776739,
-                    18.32980711,20.69138081,23.35721469,26.36650899,29.76351442,33.59818286,
-                    37.92690191,42.81332399,48.32930239,54.55594781,61.58482111,69.51927962,78.47599704,88.58667904,
-                    100,119.5813175,142.9969148,170.9975947,204.4811765,244.5212848,292.4017738,349.6578934,418.1255155,500,
-                    697.475397,972.9438588,1357.208808,1893.239505,2640.97595,3684.031499,5139.042664,7168.711644,9999]
-        
+        # exp.output_target = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75,2, 
+        #                      2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9,
+        #                      10, 12, 14, 16, 18, 20, 25, 30, 35, 40,
+        #                      45, 50, 100, 200, 500, 1000]           
     elif exp.output_type == 'prevalence_2to10':
-        exp.output_target = [0.05,0.1,0.2,0.25,0.4,0.5,0.6, 0.7, 0.8]
+        exp.output_target = [0.05,0.1,0.2,0.25,0.4,0.5,0.6,0.7,0.8,0.9]
     else:
         print("Warning: we do not offer input types that aren't pfpr or eir")
     # Define simulation population and seeds
-    if not exp.testrun:
-        exp.pop_size = 10000
-        exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
-        exp.num_seeds = 10  # suggested minimum 3, in production 5-10
-        exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
-        exp.end_year = 2005  # end of pickup and monitoring period
-        exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
-    else:
+    if exp.testrun:
         exp.pop_size = 1000
         exp.num_seeds_burnin = 1
-        exp.num_seeds = 3
+        exp.num_seeds = 1
         exp.start_year = 2000
         exp.end_year = 2005
         exp.burnin = 10
         if exp.output_type == 'eir':
-            exp.output_target = [1, 5, 10,50]
+            exp.output_target = [1,5,10,20,35,50]
         elif exp.output_type == 'prevalence_2to10':
-            exp.output_target = [0.05,0.1,0.25,0.4, 0.5,0.6, 0.7, 0.8]
+            exp.output_target = [0.05,0.1,0.25,0.4,0.5,0.6]
         else:
             print("Warning: we do not offer input types that aren't pfpr or eir")
-        if exp.hpc == 'NUCLUSTER':
-            exp.sh_hpc_config['p'] = 'b1139testnode'  # Use test allocation
+        #if exp.hpc == 'NUCLUSTER':
+        #    exp.sh_hpc_config['p'] = 'b1139testnode'  # Use test allocation
+    else:
+        exp.pop_size = 10000
+        exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
+        exp.num_seeds = 20  # suggested minimum 3, in production 5-10
+        exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
+        exp.end_year = 2005  # end of pickup and monitoring period
+        exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
 
     # Name of parameters to vary
     exp.sweep_list = ['output_target', 'cm_clinical', 'seasonality']
@@ -486,7 +481,7 @@ def check_exp_inputs(exp):
             if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om',
                            'eir_scalar_om', 'carrying_capacity_step', 'age_groups_aggregates', 'plots_to_run',
                            'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial',
-                           'analyzer_list', 'analyzer_script', 'calib_config_pointer', 'added_importation',
+                           'analyzer_list', 'analyzer_script', 'calib_config_pointer', 'importation',
                            'models_to_run_pickup']:
                 list_attributes_nGT1.append(key)
 
@@ -759,6 +754,21 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
     if col_list is None:
         col_list = ['output_target', 'cm_clinical', 'seasonality']
 
+    if exp.calibrun:
+        if not exp.importation:
+            print("Warning, for calibrun simulations, importation will be set to True")
+            exp.importation = True
+        exp.output_target = np.arange(1,31)
+        eir_range = [1.00000000e-01, 1.37382380e-01, 1.88739182e-01, 2.59294380e-01, 3.56224789e-01, 4.89390092e-01,
+                    6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
+                    4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
+                    3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
+                    2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
+        x_temp_range = [1.00000000e-01, 1.48735211e-01, 2.21221629e-01, 3.29034456e-01, 4.89390092e-01, 7.27895384e-01,
+                        1.08263673e+00, 1.61026203e+00, 2.39502662e+00, 3.56224789e+00, 5.29831691e+00, 7.88046282e+00,
+                        1.17210230e+01, 1.74332882e+01, 2.59294380e+01, 3.85662042e+01, 5.73615251e+01, 8.53167852e+01,
+                        1.26896100e+02, 1.88739182e+02, 2.80721620e+02, 4.17531894e+02, 6.21016942e+02, 9.23670857e+02,
+                        1.37382380e+03, 2.04335972e+03, 3.03919538e+03, 4.52035366e+03, 6.72335754e+03, 1.00000000e+04]
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
 
@@ -783,7 +793,17 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                                    np.minimum(df['cm_clinical'] * 1.15, 1), exp.cm_severe)
         df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
 
-        if not exp.calibrun:
+        if exp.calibrun:
+            if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
+                for i, row in df.iterrows():
+                    df.loc[i, 'model_input_ms'] = eir_range[int(df.loc[i, 'output_target'])-1]
+            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
+                for i, row in df.iterrows():
+                    df.loc[i, 'model_input_om'] = eir_range[int(df.loc[i, 'output_target'])-1]
+            if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
+                for i, row in df.iterrows():
+                    df.loc[i, 'model_input_em'] = x_temp_range[int(df.loc[i, 'output_target'])-1]
+        else:
             # Alignment of model transmission input to target outcome
             if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
                 df['model_input_ms'] = output_target_to_eir(df, exp, model = 'MalSim')
@@ -794,13 +814,6 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                     df['model_input_em'] = output_target_to_xTemp(df, exp, model = 'EMOD')
                 if exp.entomology_mode =='forced':
                     df['model_input_em'] = output_target_to_eir(df, exp, model = 'EMOD')
-        else:
-            if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
-                df['model_input_ms'] = df['output_target'].astype('float')
-            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
-                df['model_input_om'] = df['output_target'].astype('float')
-            if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
-                df['model_input_em'] = df['output_target'].astype('float')
 
         if 'cc_step' in exp.intervention_list:
             df['eir_malsim'] = exp.eir_malsim
@@ -811,7 +824,6 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             df['eir_scalar_om'] = exp.eir_scalar_om
             df['eir_scalar_malsim'] = exp.eir_scalar_malsim
             df['carrying_capacity_step'] = exp.carrying_capacity_step
-            df['added_importation'] = exp.added_importation
     return df
 
 

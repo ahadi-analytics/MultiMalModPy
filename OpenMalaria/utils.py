@@ -35,12 +35,12 @@ def create_scenarios_OM(exp, scen_df):
             scenario = scenario.replace('@eir@', str(row['model_input_om']))
             scenario = scenario.replace('@EIR_reduction@', str(row['eir_scalar_om']))
             scenario = scenario.replace('@step_change_time@', str(row['eir_scalar_timestep_5day']))
-            if row['added_importation']:
-                scenario = scenario.replace('@importation_rate@', str(5))
-            else:
-                scenario = scenario.replace('@importation_rate@', str(0))
         else:
             scenario = scenario.replace('@eir@', str(row['model_input_om']))
+        if exp.importation:
+                scenario = scenario.replace('@importation_rate@', str(5))
+        else:
+            scenario = scenario.replace('@importation_rate@', str(0))
         if 'smc' in exp.intervention_list:
             scenario = write_smc_deployment(scenario, row)
 

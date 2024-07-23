@@ -121,7 +121,8 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
                 age_grps = list(df['ageGroup'].unique())
             df['ageGroup'] = df['ageGroup'].astype('category')
             df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
-
+            
+        warning_df = df[df['simulatedEIR'] == 0]    
         if len(warning_df) > 0 and daily is False:  # we don't want to include simulations were eir was 0 or less, because we won't get any outcome measures and that crashes the system
             print('Warning: some eirs had simulated EIRS of 0, and were removed')
             df = df[df['simulatedEIR'] > 0]
