@@ -220,36 +220,35 @@ class InputEIRAnalyzer(IAnalyzer):
             df['day'] = df['day'] + 1
             df['timestep'] = df['timestep'] + 1
             df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'), index=False)
-        else:
-            sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
-            mean_channels = ['n_total_mos_pop', 'n_infectious_mos']
+        sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
+        mean_channels = ['n_total_mos_pop', 'n_infectious_mos']
 
-            # Monthly aggregation - keep months and years
-            if self.monthly_report:
-                df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
-                df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
-                vdf = adf.groupby(['year', 'month'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
-                df = df.merge(vdf, on=(['year', 'month'] + grp_channels), how='inner')
-                df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_mth.csv'), index=False)
+        # Monthly aggregation - keep months and years
+        if self.monthly_report:
+            df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
+            df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
+            vdf = adf.groupby(['year', 'month'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
+            df = df.merge(vdf, on=(['year', 'month'] + grp_channels), how='inner')
+            df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_mth.csv'), index=False)
 
-            # Yearly aggregation - keep years
-            df = adf.groupby(['year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
-            vdf = adf.groupby(['year'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
-            df = df.merge(vdf, on=(['year'] + grp_channels), how='inner')
-            df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
-            df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'), index=False)
+        # Yearly aggregation - keep years
+        df = adf.groupby(['year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
+        vdf = adf.groupby(['year'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
+        df = df.merge(vdf, on=(['year'] + grp_channels), how='inner')
+        df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
+        df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'), index=False)
 
-            # Mean over monitoring period
-            nyears = len(adf['year'].unique())
-            df = adf.groupby(grp_channels)[sum_channels].agg(np.sum).reset_index()
-            vdf = adf.groupby(grp_channels)[mean_channels].agg(np.mean).reset_index()
-            df = df.merge(vdf, on=grp_channels, how='inner')
-            df['Daily EIR'] = df['Daily EIR'] / nyears
-            df['Daily Bites per Human'] = df['Daily Bites per Human'] / nyears
-            df['n_total_mos_pop'] = df['n_total_mos_pop'] / nyears
-            df['n_infectious_mos'] = df['n_infectious_mos'] / nyears
-            df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
-            df.to_csv(os.path.join(self.working_dir, 'em', 'EIR.csv'), index=False)
+        # Mean over monitoring period
+        nyears = len(adf['year'].unique())
+        df = adf.groupby(grp_channels)[sum_channels].agg(np.sum).reset_index()
+        vdf = adf.groupby(grp_channels)[mean_channels].agg(np.mean).reset_index()
+        df = df.merge(vdf, on=grp_channels, how='inner')
+        df['Daily EIR'] = df['Daily EIR'] / nyears
+        df['Daily Bites per Human'] = df['Daily Bites per Human'] / nyears
+        df['n_total_mos_pop'] = df['n_total_mos_pop'] / nyears
+        df['n_infectious_mos'] = df['n_infectious_mos'] / nyears
+        df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
+        df.to_csv(os.path.join(self.working_dir, 'em', 'EIR.csv'), index=False)
 
 
 class BenchmarkAnalyzer(IAnalyzer):
@@ -398,7 +397,7 @@ class BenchmarkAnalyzer(IAnalyzer):
             cdf = cdf.drop(['scen_id'],axis=1)
             cdf['modelname'] = 'EMOD'
             cdf = cdf.rename(columns={'model_input_em':'input_target'})
-            cdf.to_csv((os.path.join(wdir, 'interpolation_data.csv')), index=False)
+            cdf.to_csv((os.path.join(wdir, 'em', 'interpolation_data.csv')), index=False)
             cdf.to_csv((os.path.join(exp.interp_path, 'EMOD', f'{exp.exp_name}_interpolation_data.csv')))
 
 
@@ -1068,13 +1067,15 @@ if __name__ == "__main__":
         ## EIR analyzer
         # we run eir_analyzers first to avoid any of the other analyzers running without this dependency completed.
         if exp.entomology_mode == 'dynamic':
-            manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
-                                     partial_analyze_ok=True)
-            manager.analyze()
             if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list:
                 manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=daily_eir_analyzer,
                                      partial_analyze_ok=True)
                 manager.analyze()
+            else:
+                manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
+                                     partial_analyze_ok=True)
+                manager.analyze()
+            
 
         # Default
         analyzer = []
