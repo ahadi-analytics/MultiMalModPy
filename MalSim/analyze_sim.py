@@ -38,15 +38,6 @@ def convert_malsim_to_long(output, age_groups, agebins):
         pandas.DataFrame: Long-form output.
     """
     result = []
-    ttt = pd.DataFrame(output['timestep'], columns=['timestep'])
-    ttt['n_2to10'] = 0
-    ttt['n_detect_2to10'] = 0
-    for bins, pair in zip(agebins, age_groups):
-        if bins >= 2 and bins < 10:
-            ttt['n_2to10'] = ttt['n_2to10'] + output[f'n_{pair[0]}_{pair[1]}']
-            ttt['n_detect_2to10'] = ttt['n_detect_2to10'] + output[f'n_detect_{pair[0]}_{pair[1]}']
-    ttt['prevalence_2to10'] = ttt['n_detect_2to10'] / ttt['n_2to10']
-    ttt = ttt[['timestep', 'prevalence_2to10']]
     for pair in age_groups:
         agemin = pair[0]
         agemax = pair[1]
@@ -65,7 +56,7 @@ def convert_malsim_to_long(output, age_groups, agebins):
             'n_inc': output[f"n_inc_{agemin}_{agemax}"],
             'n_inc_clinical': output[f"n_inc_clinical_{agemin}_{agemax}"],
             'n_inc_severe': output[f"n_inc_severe_{agemin}_{agemax}"],
-            'prevalence_2to10': ttt['prevalence_2to10'],
+            'prevalence_2to10': output['prevalence_2to10'],
             'n_infectious_mos': output['Im_gamb_count'],
             'n_total_mos_pop': output['Sm_gamb_count'] + output['Pm_gamb_count'] + output['Im_gamb_count'],
             'EIR_gamb': output['EIR_gamb']
@@ -96,8 +87,7 @@ def post_processing(exp, job_directory):
     columns_to_keep = ['timestep', 'Sm_gamb_count', 'Pm_gamb_count', 'Im_gamb_count', 'EIR_gamb', 'S_count',
                        'A_count', 'U_count', 'Tr_count', 'D_count', 'index']
 
-    columns_with_ages = ['n', 'n_inc', 'p_inc', 'n_inc_clinical', 'p_inc_clinical', 'n_inc_severe', 'p_inc_severe',
-                         'p_detect', 'n_detect']
+    columns_with_ages = ['n', 'n_inc',  'n_inc_clinical', 'n_inc_severe', 'n_detect']
 
     needed_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev',
                        'index', 'timestep', 'month', 'year', 'ageGroup', 'age_upper', 'EIR_gamb',
@@ -115,6 +105,7 @@ def post_processing(exp, job_directory):
     for i in range(1, exp.nexps + 1):
         df = pd.read_csv(os.path.join(job_directory, f'malsim_jobs/{i}_out.csv'))
         df = df.loc[:, df.columns.isin(columns_to_keep)]
+        df = df.loc[:, df.columns.isin(columns_to_keep + ['n_detect_730_3650','n_730_3650'])]
         days_in_months = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
         days_in_months = np.repeat(days_in_months, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
         days_in_months = np.tile(days_in_months, int(max(df['timestep']) / 365))
@@ -122,6 +113,8 @@ def post_processing(exp, job_directory):
         df['year'] = np.floor(df['timestep'] / 365.000001).astype(int)
         for pair in age_groups:
             df[f'prev_{pair[0]}_{pair[1]}'] = df[f'n_detect_{pair[0]}_{pair[1]}'] / df[f'n_{pair[0]}_{pair[1]}']
+
+        df['prevalence_2to10'] = df['n_detect_730_3650'] / df['n_730_3650']
 
         output = convert_malsim_to_long(df, age_groups, agebins)
         output['year'] = output['year'] + exp.sim_start_year_ms
