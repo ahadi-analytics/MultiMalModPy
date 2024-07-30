@@ -231,6 +231,8 @@ def initialize_exp(args, manifest):
         if args.output_type != 'eir':
             print("Warning: For Calibrun Simulations, output_type will equal eir")
         exp.output_type = 'eir'
+        exp.analyzer_list = ['benchmark']
+        exp.plots_to_run = ['benchmark']
     else:
         exp.output_type = args.output_type
     if exp.output_type == 'eir':
@@ -240,7 +242,7 @@ def initialize_exp(args, manifest):
         #                      10, 12, 14, 16, 18, 20, 25, 30, 35, 40,
         #                      45, 50, 100, 200, 500, 1000]           
     elif exp.output_type == 'prevalence_2to10':
-        exp.output_target = [0.05,0.1,0.2,0.25,0.4,0.5,0.6,0.7,0.8,0.9]
+        exp.output_target = [0.05,0.1,0.2,0.25,0.4,0.45,0.5,0.6,0.7,0.8]
     else:
         print("Warning: we do not offer input types that aren't pfpr or eir")
     # Define simulation population and seeds
