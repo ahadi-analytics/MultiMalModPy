@@ -158,15 +158,13 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
             columns_to_keep = [col for col in columns_to_keep if col in df_daily.columns]
             df_daily = df_daily[columns_to_keep]
             df_daily = df_daily.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
-
-            df_daily['inputEIR'] = df_daily['eir_malsim']
             df_daily = df_daily.rename(
                 {'eir_scalar_timestep_daily': 'eir_scalar_timestep', 'eir_scalar_malsim': 'eir_scalar'}, axis=1)
         else:
-            columns_to_keep = columns_to_keep + ['eir']
+            columns_to_keep = columns_to_keep + ['output_target']
             columns_to_keep = [col for col in columns_to_keep if col in df_daily.columns]
             df_daily = df_daily[columns_to_keep]
-            df_daily = df_daily.rename({'EIR_gamb': 'simulatedEIR', 'eir': 'inputEIR'}, axis=1)
+            df_daily = df_daily.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
 
         print(f'Saving EIR_daily.csv to {wdir}')
         df_daily.to_csv((os.path.join(wdir, 'EIR_daily.csv')), index=False)
@@ -178,7 +176,6 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
         df_mth = df_mth.merge(vdf_mth, on=['index', 'month', 'year'], how='inner')
         df_mth = df_mth.merge(scen_df, on='index', how='inner')
         df_mth = df_mth.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
-        df_mth['inputEIR'] = df_mth['eir']  # if inputEIR not available from simulations, use 'eir'
         print(f'Saving EIR_mth.csv to {wdir}')
         df_mth.to_csv((os.path.join(wdir, 'EIR_mth.csv')), index=False)
 
@@ -188,7 +185,6 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
         df_yr = df_yr.merge(vdf_yr, on=['index', 'year'], how='inner')
         df_yr = df_yr.merge(scen_df, on='index', how='inner')
         df_yr = df_yr.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
-        df_yr['inputEIR'] = df_yr['eir']  # if inputEIR not available from simulations, use 'eir'
         print(f'Saving EIR_yr.csv to {wdir}')
         df_yr.to_csv((os.path.join(wdir, 'EIR_yr.csv')), index=False)
 
@@ -202,7 +198,6 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
         df_yr['n_total_mos_pop'] = df_yr['n_total_mos_pop'] / nyears
         df_yr = df_yr.merge(scen_df, on='index', how='inner')
         df_yr = df_yr.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
-        df_yr['inputEIR'] = df_yr['eir']  # if inputEIR not available from simulations, use 'eir'
         print(f'Saving EIR.csv to {wdir}')
         df_yr.to_csv((os.path.join(wdir, 'EIR.csv')), index=False)
 
@@ -215,7 +210,7 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
 
     # Read experiment data daily
@@ -271,7 +266,7 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
-    eir_df = eir_df[['index', 'inputEIR', 'simulatedEIR','n_total_mos_pop']]
+    eir_df = eir_df[['index', 'output_target', 'simulatedEIR','n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
@@ -317,7 +312,7 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables)
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on='index', how='inner')
@@ -330,7 +325,20 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     print(f'\nSaving outputs to: {wdir}')
     # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
     cdf.to_csv((os.path.join(wdir, 'Benchmark.csv')), index=False)
-
+    
+    if exp.calibrun:
+            u5 = cdf[cdf['ageGroup']=='0-5'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
+            u5 = u5.rename(columns={'clinical_incidence':'clinical_incidence_U5'})
+            all_ages = cdf[cdf['ageGroup']=='0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
+            cdf = cdf[cdf['ageGroup']=='0-100']
+            cdf = cdf.groupby(['scen_id','model_input_ms','seasonality','cm_clinical'])[['simulatedEIR','prevalence_2to10','prevalence','severe_incidence','n_total_mos_pop']].agg('mean').reset_index()
+            cdf = cdf.merge(all_ages, on = 'scen_id')
+            cdf = cdf.merge(u5, on = 'scen_id')
+            cdf = cdf.drop(['scen_id'],axis=1)
+            cdf['modelname'] = 'MalSim'
+            cdf = cdf.rename(columns={'model_input_ms':'input_target'})
+            cdf.to_csv((os.path.join(wdir, 'interpolation_data.csv')), index=False)
+            cdf.to_csv((os.path.join(exp.interp_path, 'MalSim', f'{exp.exp_name}_interpolation_data.csv')))
 
 def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables,age_groups_aggregates=None, cc=False):
     """
@@ -391,11 +399,11 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables,age_groups_aggregates=None, 
 
     ## Add scenarios variables
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'], axis=1, errors='ignore')  ## remove EMOD specific columns
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'], axis=1, errors='ignore')  ## remove EMOD specific columns
 
     df = cdf.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
-    eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'inputEIR']]
+    eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'output_target']]
     df = df.merge(eir_df, on=['index', 'timestep', 'month', 'year'], how='inner')
 
     # Let's limit the output of daily, so its a little more reasonable for us to process.
@@ -443,8 +451,8 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
-    eir_df = eir_df.groupby(sweep_variables + ['year', 'timestep'])[['simulatedEIR', 'inputEIR','n_infectious_mos', 'n_total_mos_pop']].agg( np.mean).reset_index()  # mean across runs per  timestep , month and year
-    eir_df = eir_df[['index', 'timestep', 'year', 'inputEIR', 'simulatedEIR' ,'n_infectious_mos', 'n_total_mos_pop']]
+    eir_df = eir_df.groupby(sweep_variables + ['year', 'timestep'])[['simulatedEIR', 'output_target','n_infectious_mos', 'n_total_mos_pop']].agg( np.mean).reset_index()  # mean across runs per  timestep , month and year
+    eir_df = eir_df[['index', 'timestep', 'year', 'output_target', 'simulatedEIR' ,'n_infectious_mos', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep',  'year', 'ageGroup', 'age_upper',
@@ -504,7 +512,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['day', 'year'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
 
@@ -546,9 +554,9 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
-    eir_df = eir_df.groupby(sweep_variables + ['month', 'year'])[['simulatedEIR', 'inputEIR', 'n_total_mos_pop']].agg(
+    eir_df = eir_df.groupby(sweep_variables + ['month', 'year'])[['simulatedEIR', 'output_target', 'n_total_mos_pop']].agg(
         np.mean).reset_index()  # mean across runs per month and year
-    eir_df = eir_df[['index', 'month', 'year', 'inputEIR', 'simulatedEIR', 'n_total_mos_pop']]
+    eir_df = eir_df[['index', 'month', 'year', 'output_target', 'simulatedEIR', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup', 'age_upper',
@@ -594,7 +602,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['month', 'year'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index', 'month', 'year'], how='inner')
@@ -635,7 +643,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
-    eir_df = eir_df[['index', 'year', 'inputEIR', 'simulatedEIR', 'n_total_mos_pop']]
+    eir_df = eir_df[['index', 'year', 'output_target', 'simulatedEIR', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup',
@@ -679,7 +687,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['year'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index', 'year'], how='inner')

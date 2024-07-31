@@ -220,7 +220,6 @@ class InputEIRAnalyzer(IAnalyzer):
             df['day'] = df['day'] + 1
             df['timestep'] = df['timestep'] + 1
             df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'), index=False)
-
         sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
         mean_channels = ['n_total_mos_pop', 'n_infectious_mos']
 
@@ -386,6 +385,20 @@ class BenchmarkAnalyzer(IAnalyzer):
 
         # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
         cdf.to_csv((os.path.join(self.working_dir, 'em', 'Benchmark.csv')), index=False)
+        
+        if exp.calibrun:
+            u5 = cdf[cdf['ageGroup']=='0-5'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
+            u5 = u5.rename(columns={'clinical_incidence':'clinical_incidence_U5'})
+            all_ages = cdf[cdf['ageGroup']=='0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
+            cdf = cdf[cdf['ageGroup']=='0-100']
+            cdf = cdf.groupby(['scen_id','model_input_em','seasonality','cm_clinical'])[['simulatedEIR','prevalence_2to10','prevalence','severe_incidence','n_total_mos_pop']].agg('mean').reset_index()
+            cdf = cdf.merge(all_ages, on = 'scen_id')
+            cdf = cdf.merge(u5, on = 'scen_id')
+            cdf = cdf.drop(['scen_id'],axis=1)
+            cdf['modelname'] = 'EMOD'
+            cdf = cdf.rename(columns={'model_input_em':'input_target'})
+            cdf.to_csv((os.path.join(wdir, 'em', 'interpolation_data.csv')), index=False)
+            cdf.to_csv((os.path.join(exp.interp_path, 'EMOD', f'{exp.exp_name}_interpolation_data.csv')))
 
 
 class DailyAgeBinAnalyzer(IAnalyzer):
@@ -1054,13 +1067,15 @@ if __name__ == "__main__":
         ## EIR analyzer
         # we run eir_analyzers first to avoid any of the other analyzers running without this dependency completed.
         if exp.entomology_mode == 'dynamic':
-            manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
-                                     partial_analyze_ok=True)
-            manager.analyze()
             if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list:
                 manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=daily_eir_analyzer,
                                      partial_analyze_ok=True)
                 manager.analyze()
+            else:
+                manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
+                                     partial_analyze_ok=True)
+                manager.analyze()
+            
 
         # Default
         analyzer = []

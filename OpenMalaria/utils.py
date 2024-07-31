@@ -1,7 +1,6 @@
 from helper import *
 import shutil
 from OpenMalaria.scaffolds.intervention_snippets import *
-import numpy as np
 
 def create_scenarios_OM(exp, scen_df):
     """
@@ -32,16 +31,16 @@ def create_scenarios_OM(exp, scen_df):
         scenario = xml.replace('@seed@', str(row['seed']))
         scenario = scenario.replace('@cm_clinical@', str(row['cm_clinical']))
         scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
-        if 'cc_step' in exp.intervention_list:
-            scenario = scenario.replace('@eir@', str(row['eir_om']))
+        if 'cc_step' in exp.intervention_list: # GOING TO HAVE TO CHANGE SIGNIFICANTLY DUE TO INTERPOLATION
+            scenario = scenario.replace('@eir@', str(row['model_input_om']))
             scenario = scenario.replace('@EIR_reduction@', str(row['eir_scalar_om']))
             scenario = scenario.replace('@step_change_time@', str(row['eir_scalar_timestep_5day']))
-            if row['added_importation']:
-                scenario = scenario.replace('@importation_rate@', str(5))
-            else:
-                scenario = scenario.replace('@importation_rate@', str(0))
         else:
-            scenario = scenario.replace('@eir@', str(row['eir']))
+            scenario = scenario.replace('@eir@', str(row['model_input_om']))
+        if exp.importation:
+                scenario = scenario.replace('@importation_rate@', str(5))
+        else:
+            scenario = scenario.replace('@importation_rate@', str(0))
         if 'smc' in exp.intervention_list:
             scenario = write_smc_deployment(scenario, row)
 

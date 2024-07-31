@@ -38,7 +38,7 @@ def age_curves(wdir, df, channel, sweepvar='modelname', facet_var='seasonality',
         ylab = channel.replace('_', ' ')
 
     if facet_var == 'ageGroup':
-        facet_var = 'eir'
+        facet_var = 'output_target'
     if 'cm_clinical' not in [sweepvar, facet_var]:
         selected_cm = np.min(df.cm_clinical)
         df = df[(df.cm_clinical == selected_cm)]
@@ -47,9 +47,9 @@ def age_curves(wdir, df, channel, sweepvar='modelname', facet_var='seasonality',
         selected_season = df['seasonality'].unique()[0]
         df = df[(df.seasonality == selected_season)]
 
-    if 'eir' not in [sweepvar, facet_var]:
-        selected_eir = np.max(df.eir)
-        df = df[(df.eir == selected_eir)]
+    if 'output_target' not in [sweepvar, facet_var]:
+        selected_output = np.max(df.output_target)
+        df = df[(df.output_target == selected_output)]
 
     if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
         raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
@@ -112,12 +112,12 @@ if __name__ == "__main__":
     age_groups_aggregates_sub = [x for x in exp.age_groups_aggregates if x not in ([[0, 5], [0, 100]])]
     age_groups_aggregates_sub = ["{}-{}".format(sublist[0], sublist[1]) for sublist in age_groups_aggregates_sub]
 
-    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence']
+    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
     sweepvar = 'modelname'
     facet_var = 'ageGroup'
 
-    if len(exp.eir) > 1 & len(exp.eir) <= 3:
-        facet_var = 'eir'
+    if len(exp.output_target) > 1 & len(exp.output_target) <= 3:
+        facet_var = 'output_target'
     if facet_var == 'ageGroup' and len(exp.cm_clinical) > 1:
         facet_var = 'cm_clinical'
     if facet_var == 'ageGroup' and len(exp.seasonality) > 1:

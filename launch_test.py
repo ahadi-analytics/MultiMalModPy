@@ -66,13 +66,13 @@ else:
 
     ## Add intervention params, note, for some interventions this might come only in  pickup, not yet setup
     exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
-
+    
+    exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
     # EMOD burn-in and pickup configuration
     exp.emod_serialized_id = ''
     if exp.emod_step == 'burnin':
         print('Message: Running burnin for EMOD')
         exp.exp_name = f'{exp.exp_name}_burnin{exp.burnin}'
-        exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.plots_to_run = []
 
@@ -98,9 +98,9 @@ exp.nexps = len(scen_df) * exp.num_seeds
 
 # Set platform and associated values, such as the maximum number of jobs to run at one time
 platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
-                    mem_per_cpu=int(2400 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
+                    mem_per_cpu=int(1800 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
                     time='06:30:00', account=manifest.sh_hpc_config['A'],
-                    modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=min(exp.nexps,200))  # mem_per_cpu default: 2048
+                    modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=min(exp.nexps,180))  # mem_per_cpu default: 2048
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 save_scen(param_variation(rep_scen_df(scen_df), exp), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
@@ -130,7 +130,7 @@ if __name__ == '__main__':
                                 custom_args=f"--suite {exp.SUITEname} --expname {exp.exp_name_pickup} "
                                             f"--emodstep pickup --serializedid {emod_exp.id} "
                                             f"--models {' '.join([m for m in exp.models_to_run_pickup])} ",
-                                job_id_EMOD='job_id_EMODanalyze',memG=1, job='pickup_launch')
+                                job_id_EMOD='job_id_EMODanalyze',memG=5, job='pickup_launch')
 
     # Submit malariasimulation as SLURM job, including scheduled analyzer
     if 'MalSim' in exp.models_to_run:

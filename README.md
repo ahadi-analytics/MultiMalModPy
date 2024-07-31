@@ -79,7 +79,7 @@ directly under the root directory.
     │   │   └─ ... 
     │   ├─ scaffolds/
     │   │   ├─ forcedEIR.py             
-    │   │   ├─ dynamicEIR.py             
+    │   │   ├─ interpolate.py             
     │   │   └─ interventions.py 
     │   ├─ analyze_sim.py
     │   ├─ sample_plots.py

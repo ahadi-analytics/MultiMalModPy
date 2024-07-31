@@ -45,7 +45,7 @@ def custom_sort_key(age_group):
 
 
 # Creates the combined dataframes for all models simulated.
-def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name=None, condensed=False,
+def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name=None,
                   save_combined=False):
     """
     Load and combine data from the model output files.
@@ -121,12 +121,8 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
                 age_grps = list(df['ageGroup'].unique())
             df['ageGroup'] = df['ageGroup'].astype('category')
             df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
-
-        if condensed:  # For our testing purposes, we can reduce the eir's in our simulations to the 6 we think are most useful to compare/graph together.
-            eir_list = [1, 5, 10, 50, 200, 1000]
-            df = df[df['eir'].isin(eir_list)]
-        warning_df = df[df['simulatedEIR'] == 0]
-
+            
+        warning_df = df[df['simulatedEIR'] == 0]    
         if len(warning_df) > 0 and daily is False:  # we don't want to include simulations were eir was 0 or less, because we won't get any outcome measures and that crashes the system
             print('Warning: some eirs had simulated EIRS of 0, and were removed')
             df = df[df['simulatedEIR'] > 0]
