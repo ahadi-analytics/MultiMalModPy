@@ -104,8 +104,7 @@ def post_processing(exp, job_directory):
     daily = pd.DataFrame()
     for i in range(1, exp.nexps + 1):
         df = pd.read_csv(os.path.join(job_directory, f'malsim_jobs/{i}_out.csv'))
-        df = df.loc[:, df.columns.isin(columns_to_keep)]
-        df = df.loc[:, df.columns.isin(columns_to_keep + ['n_detect_730_3650','n_730_3650'])]
+        df = df.loc[:, df.columns.isin(columns_to_keep + ['n_detect_730_3650', 'n_730_3650'])]
         days_in_months = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
         days_in_months = np.repeat(days_in_months, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
         days_in_months = np.tile(days_in_months, int(max(df['timestep']) / 365))
@@ -121,7 +120,7 @@ def post_processing(exp, job_directory):
         output = output[needed_channels]
         output = output[output['timestep'] > (exp.burnin * 365)]
         output['timestep'] = output['timestep'] - (exp.burnin * 365)
-        output.to_csv(os.path.join(job_directory, f'malsim_jobs/{i}_daily.csv'), index=False)
+        #output.to_csv(os.path.join(job_directory, f'malsim_jobs/{i}_daily.csv'), index=False) # not need to be written out per default, since daily.csv is used
         daily = pd.concat([daily, output], axis=0)
     daily.to_csv((os.path.join(wdir, 'daily.csv')), index=False)
 
@@ -282,12 +281,13 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     df_pfpr2to10 = df.groupby(sweep_variables)[['prevalence_2to10']].agg(np.mean).reset_index()
 
     ## Aggregate years
+    n_surveys_per_year = 365
     n_surveys = round(len(df['timestep'].unique()), 0)
     n_years = round(n_surveys / 365, 0)
-    df = df.groupby(sweep_variables + ['agebin', 'year'])[
+    df = df.groupby(sweep_variables + ['agebin'])[
         ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
-    df['n'] = df['n'] / n_surveys
-    df['n_prev'] = df['n_prev'] / n_surveys
+    df['n'] = df['n'] / n_surveys_per_year
+    df['n_prev'] = df['n_prev'] / n_surveys_per_year
 
     cdf = pd.DataFrame()
 
@@ -295,7 +295,7 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     for i in range(0, len(age_groups_aggregates)):
         ages = age_groups_aggregates[i]
         ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
-        adf = df[(df.agebin >= ages[0]) & (df.agebin <= ages[1])]
+        adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
         if adf.empty:
             pass
         else:
@@ -304,10 +304,10 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
             adf['prevalence'] = adf['n_prev'] / (adf['n'])
 
             # (events per person per annum)
-            # adf['incidence'] = adf['n_inc'] / ( (adf['n'] * n_years))
-            adf['clinical_incidence'] = adf['n_inc_clinical'] / ((adf['n'] * n_years))
-            adf['severe_incidence'] = adf['n_inc_severe'] / ((adf['n'] * n_years))
+            adf['clinical_incidence'] = adf['n_inc_clinical'] / adf['n']
+            adf['severe_incidence'] = adf['n_inc_severe'] / adf['n']
             adf['ageGroup'] = ageCond_labels
+            adf['n'] = adf['n'] / n_years
             cdf = pd.concat([cdf, adf])
 
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables)
