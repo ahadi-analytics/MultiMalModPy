@@ -413,7 +413,6 @@ if __name__ == "__main__":
         for channel in channel_list:
             print(f'#----- Plotting simulated EIR to {channel} -----#')
             eir_to_outcome(wdir, df, sweepvar=sweepvar, facet_var='seasonality', eir_val='simulatedEIR', channel=channel, agegrp='0-100')
-            eir_to_outcome(wdir, df, sweepvar=sweepvar, facet_var='cm_clinical', eir_val='simulatedEIR', channel=channel, agegrp='0-100')
 
         channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
         for channel in channel_list:
