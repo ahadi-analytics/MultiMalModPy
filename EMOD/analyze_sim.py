@@ -206,49 +206,46 @@ class InputEIRAnalyzer(IAnalyzer):
         grp_channels = list(set(grp_channels + list(scen_df.columns)))
         adf = adf.rename(columns={'Adult Vectors': 'n_total_mos_pop', 'Infectious Vectors': 'n_infectious_mos'})
         if self.daily_report:
-            cc_step_cols = ['eir_scalar_timestep_daily', 'eir_scalar_emod']
             outcome_cols = ['Daily EIR', 'n_total_mos_pop', 'n_infectious_mos']
-            columns_to_keep = ['scen_id', 'Run_Number', 'time', 'day', 'month', 'year', 'eir'] + outcome_cols + cc_step_cols
+            columns_to_keep = ['scen_id', 'Run_Number', 'time', 'day', 'month', 'year', 'eir'] + outcome_cols
 
             columns_to_keep = [col for col in columns_to_keep if col in adf.columns]
             df = adf[columns_to_keep]
             df = df.rename(columns={'Daily EIR': 'simulatedEIR', 'time': 'timestep'})
 
-            if 'eir_scalar_timestep_daily' in df:
-                df = df.rename(columns={'eir_scalar_timestep_daily': 'eir_scalar_timestep', 'eir_scalar_emod': 'eir_scalar'})
-
             df['day'] = df['day'] + 1
-            df['timestep'] = df['timestep'] + 1
+            df['timestep'] = (df['timestep'] + 1) - (self.burnin * 365)
             df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'), index=False)
-        sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
-        mean_channels = ['n_total_mos_pop', 'n_infectious_mos']
+        else:
+            sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
+            mean_channels = ['n_total_mos_pop', 'n_infectious_mos']
 
-        # Monthly aggregation - keep months and years
-        if self.monthly_report:
-            df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
-            df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
-            vdf = adf.groupby(['year', 'month'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
-            df = df.merge(vdf, on=(['year', 'month'] + grp_channels), how='inner')
-            df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_mth.csv'), index=False)
+            # Monthly aggregation - keep months and years
+            if self.monthly_report:
+                df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
+                df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
+                vdf = adf.groupby(['year', 'month'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
+                df = df.merge(vdf, on=(['year', 'month'] + grp_channels), how='inner')
+                df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_mth.csv'), index=False)
 
-        # Yearly aggregation - keep years
-        df = adf.groupby(['year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
-        vdf = adf.groupby(['year'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
-        df = df.merge(vdf, on=(['year'] + grp_channels), how='inner')
-        df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
-        df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'), index=False)
+            # Yearly aggregation - keep years
+            df = adf.groupby(['year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
+            vdf = adf.groupby(['year'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
+            df = df.merge(vdf, on=(['year'] + grp_channels), how='inner')
+            df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
+            df.to_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'), index=False)
 
-        # Mean over monitoring period
-        nyears = len(adf['year'].unique())
-        df = adf.groupby(grp_channels)[sum_channels].agg(np.sum).reset_index()
-        vdf = adf.groupby(grp_channels)[mean_channels].agg(np.mean).reset_index()
-        df = df.merge(vdf, on=grp_channels, how='inner')
-        df['Daily EIR'] = df['Daily EIR'] / nyears
-        df['Daily Bites per Human'] = df['Daily Bites per Human'] / nyears
-        df['n_total_mos_pop'] = df['n_total_mos_pop'] / nyears
-        df['n_infectious_mos'] = df['n_infectious_mos'] / nyears
-        df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
-        df.to_csv(os.path.join(self.working_dir, 'em', 'EIR.csv'), index=False)
+            # Mean over monitoring period
+            nyears = len(adf['year'].unique())
+            df = adf.groupby(grp_channels)[sum_channels].agg(np.sum).reset_index()
+            vdf = adf.groupby(grp_channels)[mean_channels].agg(np.mean).reset_index()
+            df = df.merge(vdf, on=grp_channels, how='inner')
+            df['Daily EIR'] = df['Daily EIR'] / nyears
+            df['Daily Bites per Human'] = df['Daily Bites per Human'] / nyears
+            df['n_total_mos_pop'] = df['n_total_mos_pop'] / nyears
+            df['n_infectious_mos'] = df['n_infectious_mos'] / nyears
+            df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
+            df.to_csv(os.path.join(self.working_dir, 'em', 'EIR.csv'), index=False)
 
 
 class BenchmarkAnalyzer(IAnalyzer):
@@ -398,7 +395,7 @@ class BenchmarkAnalyzer(IAnalyzer):
             cdf['modelname'] = 'EMOD'
             cdf = cdf.rename(columns={'model_input_em':'input_target'})
             cdf.to_csv((os.path.join(wdir, 'em', 'interpolation_data.csv')), index=False)
-            cdf.to_csv((os.path.join(exp.interp_path, 'EMOD', f'{exp.exp_name}_interpolation_data.csv')))
+            cdf.to_csv((os.path.join(exp.interp_path, 'EMOD', f'{exp.exp_name}_interpolation_data.csv')), index=False)
 
 
 class DailyAgeBinAnalyzer(IAnalyzer):
@@ -416,7 +413,7 @@ class DailyAgeBinAnalyzer(IAnalyzer):
     """
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=2000,
-                 end_year=2020, age_groups_aggregates=None, burnin=None, cc=False):
+                 end_year=2020, age_groups_aggregates=None, burnin=None):
 
         super(DailyAgeBinAnalyzer, self).__init__(working_dir=working_dir,
                                              filenames=[f"output/MalariaSummaryReport_Daily_{x}.json"
@@ -428,7 +425,6 @@ class DailyAgeBinAnalyzer(IAnalyzer):
         self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
                                                                [15, 20], [20, 100], [0, 5], [0, 100]]
         self.burnin = burnin
-        self.cc = cc
 
     def map(self, data, simulation: Simulation):
 
@@ -517,16 +513,10 @@ class DailyAgeBinAnalyzer(IAnalyzer):
 
         #  Reorder the DataFrame columns , by specified first columns to appear first
         print(f'\nSaving outputs to: {os.path.join(self.working_dir, "em")}')
-        if self.cc:
-            cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
-                            'clinical_incidence', 'severe_incidence', 'n_total_mos_pop','n_infectious_mos', 'seed', 'carrying_capacity_step']
-            cdf = cdf[cols_to_keep]
-            cdf.to_csv((os.path.join(self.working_dir, 'em', 'CCstep_daily.csv')), index=False)
-        else:
-            cdf.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_daily.csv')), index=False)
+        cdf.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_daily.csv')), index=False)
 
         
-class FiveDayAgebinAnalyzer(IAnalyzer):
+class FiveDayAgeBinAnalyzer(IAnalyzer):
     """
     A class inherited from idmtools IAnalyzer and modified for analyzing EMOD summary reports to generate
     and save a results dataframe for defined age groups over time (5day and years).
@@ -549,9 +539,9 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
     """
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
-                 end_year=2020, age_groups_aggregates=None, burnin=None):
+                 end_year=2020, age_groups_aggregates=None, burnin=None, cc=False):
 
-        super(FiveDayAgebinAnalyzer, self).__init__(working_dir=working_dir,
+        super(FiveDayAgeBinAnalyzer, self).__init__(working_dir=working_dir,
                                                     filenames=[f"output/MalariaSummaryReport_FiveDaily_{x}.json"
                                                                for x in range(start_year, end_year)]
                                                     )
@@ -562,6 +552,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
                                                                [15, 20], [20, 100], [0, 5], [0, 100]]
         self.burnin = burnin
+        self.cc = cc
 
     def map(self, data, simulation: Simulation):
 
@@ -649,30 +640,28 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
                 cdf = pd.concat([cdf, adf])
 
         cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['year', 'day'])
+        
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
-        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
-
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_yr.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
 
             eirdf_daily = pd.read_csv(os.path.join(self.working_dir, 'em', 'EIR_daily.csv'))
-            eirdf_daily = eirdf_daily.groupby(self.sweep_variables + ['year', 'day'])[['simulatedEIR', 'n_total_mos_pop', 'n_infectious_mos']].agg(np.mean).reset_index()
+            eirdf_daily = eirdf_daily.groupby(self.sweep_variables + ['year', 'day', 'timestep'])[['simulatedEIR', 'n_total_mos_pop', 'n_infectious_mos']].agg('mean').reset_index()
 
             eirdf_daily['5day'] = eirdf_daily['day'].apply(lambda x: 5 * math.ceil(x/5))
-            eirdf_5day_sum = eirdf_daily.groupby(self.sweep_variables + ['year', '5day'])[['simulatedEIR']].agg(np.sum).reset_index()
-            eirdf_5day_mean = eirdf_daily.groupby(self.sweep_variables + ['year', '5day'])[['n_total_mos_pop', 'n_infectious_mos']].agg(np.mean).reset_index()
-
-            eirdf_5day = pd.merge(eirdf_5day_sum, eirdf_5day_mean, on=self.sweep_variables + ['year', '5day'])
+            eirdf_5day = eirdf_daily.groupby(self.sweep_variables + ['5day',  'year']).agg({'simulatedEIR':['sum'],
+                                                                                            'n_total_mos_pop':['mean'],
+                                                                                            'n_infectious_mos':['mean'],
+                                                                                            'timestep':['max']}).reset_index()
+            eirdf_5day.columns = eirdf_5day.columns.get_level_values(0)
             eirdf_5day = eirdf_5day.rename(columns={'5day': 'day'})
-
-
             cdf = pd.merge(left=cdf, right=eirdf_5day, on=self.sweep_variables + ['year', 'day'])
         else:
             cdf['simulatedEIR'] = ''
             cdf['inputEIR'] = ''
-
+        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
         cdf['seed'] = cdf['seed'] + 1
@@ -681,10 +670,17 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
         # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_5day.csv'
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/em')
-        cdf.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_5day.csv')), index=False)
+        cols_to_keep = ['scen_id', 'index', 'seed','output_target','model_input_em','timestep',
+                        'day', 'year', 'ageGroup', 'seasonality','cm_clinical', 'entomology_mode',
+                        'simulatedEIR', 'prevalence_2to10', 'prevalence','clinical_incidence', 'severe_incidence','n_total_mos_pop','n_infectious_mos']
+        if self.cc:
+            cols_to_keep = cols_to_keep + ['cc_change','cc_factor','cc_timestep','cc_title']
+            cdf.to_csv((os.path.join(self.working_dir, 'em', 'CCstep_daily.csv')), index=False)
+        else:
+            cdf.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_5day.csv')), index=False)
 
 
-class MonthlyAgebinAnalyzer(IAnalyzer):
+class MonthlyAgeBinAnalyzer(IAnalyzer):
     """
     A class inherited from idmtools IAnalyzer and modified for analyzing EMOD summary reports to generate
     and save a results dataframe for defined age groups over time (month and years).
@@ -708,7 +704,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
                  end_year=2020, age_groups_aggregates=None, burnin=None):
 
-        super(MonthlyAgebinAnalyzer, self).__init__(working_dir=working_dir,
+        super(MonthlyAgeBinAnalyzer, self).__init__(working_dir=working_dir,
                                                     filenames=[f"output/MalariaSummaryReport_Monthly_{x}.json"
                                                                for x in range(start_year, end_year)]
                                                     )
@@ -833,7 +829,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         cdf.to_csv((os.path.join(self.working_dir, 'em', 'PfPR_ClinicalIncidence_mth.csv')), index=False)
 
 
-class AnnualAgebinAnalyzer(IAnalyzer):
+class AnnualAgeBinAnalyzer(IAnalyzer):
     """
     A class inherited from idmtools IAnalyzer and modified for analyzing EMOD summary reports to generate
     and save a results dataframe for defined age groups over time (years).
@@ -857,7 +853,7 @@ class AnnualAgebinAnalyzer(IAnalyzer):
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
                  end_year=2020, age_groups_aggregates=None, burnin=None):
 
-        super(AnnualAgebinAnalyzer, self).__init__(working_dir=working_dir,
+        super(AnnualAgeBinAnalyzer, self).__init__(working_dir=working_dir,
                                                    filenames=[
                                                        f"output/MalariaSummaryReport_Annual_{start_year}to{end_year}.json"])
         self.sweep_variables = sweep_variables or ["Run_Number"]
@@ -1012,7 +1008,7 @@ if __name__ == "__main__":
                             'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
                             'Infectious Vectors', 'Daily EIR']
     # Run analyzers
-    with Platform('SLURM_LOCAL', job_directory=exp.suite_directory, mem_per_cpu=int(5000)) as platform:
+    with Platform('SLURM_LOCAL', job_directory=exp.suite_directory) as platform:
         all_age_analyzer = [InsetChartAnalyzer(expt_name=exp_name,
                                                channels=channels_inset_chart,
                                                sweep_variables=exp_tags,
@@ -1028,34 +1024,33 @@ if __name__ == "__main__":
                                          burnin=burnin,
                                          working_dir=wdir)]
 
-        daily_eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
-                                               sweep_variables=exp_tags,
-                                               start_year=start_year,
-                                               daily_report=True,
-                                               monthly_report=False,
-                                               burnin=burnin,
-                                               working_dir=wdir)]
+        daily_analyzers = [DailyAgeBinAnalyzer(expt_name=exp_name,
+                                                start_year=start_year,
+                                                end_year=end_year,
+                                                sweep_variables=exp_tags,
+                                                working_dir=wdir,
+                                                burnin=burnin)]
 
-        annual_analyzers = [AnnualAgebinAnalyzer(expt_name=exp_name,
+        fiveday_analyzers = [FiveDayAgeBinAnalyzer(expt_name=exp_name,
+                                                   start_year=start_year,
+                                                   end_year=end_year,
+                                                   sweep_variables=exp_tags,
+                                                   working_dir=wdir,
+                                                   burnin=burnin)]
+
+        monthly_analyzers = [MonthlyAgeBinAnalyzer(expt_name=exp_name,
+                                                   start_year=start_year,
+                                                   end_year=end_year,
+                                                   sweep_variables=exp_tags,
+                                                   working_dir=wdir,
+                                                   burnin=burnin)]
+
+        annual_analyzers = [AnnualAgeBinAnalyzer(expt_name=exp_name,
                                                  sweep_variables=exp_tags,
                                                  working_dir=wdir,
                                                  start_year=start_year,
                                                  end_year=end_year - 1,
                                                  burnin=burnin)]
-
-        fiveday_analyzers = [FiveDayAgebinAnalyzer(expt_name=exp_name,
-                                                   start_year=start_year,
-                                                   end_year=end_year,
-                                                   sweep_variables=exp_tags,
-                                                   working_dir=wdir,
-                                                   burnin=burnin)]
-
-        monthly_analyzers = [MonthlyAgebinAnalyzer(expt_name=exp_name,
-                                                   start_year=start_year,
-                                                   end_year=end_year,
-                                                   sweep_variables=exp_tags,
-                                                   working_dir=wdir,
-                                                   burnin=burnin)]
 
         analyzers_benchmark = [BenchmarkAnalyzer(expt_name=exp_name,
                                                  sweep_variables=exp_tags,
@@ -1067,22 +1062,29 @@ if __name__ == "__main__":
         ## EIR analyzer
         # we run eir_analyzers first to avoid any of the other analyzers running without this dependency completed.
         if exp.entomology_mode == 'dynamic':
-            if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list:
+            manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
+                                     partial_analyze_ok=True)
+            manager.analyze()
+            if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:
+                daily_eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
+                                         sweep_variables=exp_tags,
+                                         start_year=start_year,
+                                         daily_report=True,
+                                         monthly_report=True,
+                                         burnin=burnin,
+                                         working_dir=wdir)]
                 manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=daily_eir_analyzer,
                                      partial_analyze_ok=True)
                 manager.analyze()
-            else:
-                manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
-                                     partial_analyze_ok=True)
-                manager.analyze()
-            
-
         # Default
         analyzer = []
-        
         ## all age by reporting steps
         if 'all_age_analyzer' in exp.analyzer_list:
             analyzer = analyzer + all_age_analyzer
+
+        ## Aggregated timeseries per age groups
+        if 'benchmark' in exp.analyzer_list:
+            analyzer = analyzer + analyzers_benchmark
 
         ## Annual timeseries per age groups
         if 'annual' in exp.analyzer_list:
@@ -1091,25 +1093,20 @@ if __name__ == "__main__":
         ## Monthly timeseries per age groups
         if 'monthly' in exp.analyzer_list:
             analyzer = analyzer + monthly_analyzers
-
-        ## Aggregated timeseries per age groups
-        if 'benchmark' in exp.analyzer_list:
-            analyzer = analyzer + analyzers_benchmark
-
         ## 5 day timeseries per age groups
-        if '5day' in exp.analyzer_list:
-            analyzer = analyzer + fiveday_analyzers
-
-        ## Custom analyzers
-        if 'daily' in exp.analyzer_list:
+        if '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:
             ccstep = 'cc_step' in exp.intervention_list
-            analyzer = analyzer + [DailyAgeBinAnalyzer(expt_name=exp_name,
-                                                                       start_year=start_year,
-                                                                       end_year=end_year,
-                                                                       sweep_variables=exp_tags,
-                                                                       working_dir=wdir,
-                                                                       burnin=burnin,
-                                                                       cc=ccstep)]
+            analyzer = analyzer + [FiveDayAgeBinAnalyzer(expt_name=exp_name,
+                                                start_year=start_year,
+                                                end_year=end_year,
+                                                sweep_variables=exp_tags,
+                                                working_dir=wdir,
+                                                burnin=burnin,
+                                                cc = ccstep)]
+
+        ## Daily timeseries per age groups
+        if 'daily' in exp.analyzer_list:
+            analyzer = analyzer + daily_analyzers
 
         manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
                                  partial_analyze_ok=True)

@@ -48,11 +48,19 @@ exp$min_ages <- (round(c(0, exp$agebins[1:length(exp$agebins) - 1]) * 365)) + 1
 exp$min_ages[1] <- 0
 exp$max_ages <- (round(exp$agebins * 365))
 exp$seasonality <- exp_setup_df[exp_setup_df$parameter == 'seasonality', 'Value'][1]
-exp$monthly_eirs <- exp_setup_df[exp_setup_df$parameter == exp$seasonality, 'Value']
-exp$monthly_eirs <- as.numeric(strsplit(exp$monthly_eirs, ';')[[1]])
-#monthly <- exp$monthly_eirs[2:12] # we would want to do this if we want to match peak simulated EIR via inputs, not post processing
-#monthly[[length(monthly)+1]] = exp$monthly_eirs[1]
-#exp$monthly_eirs <- monthly
+exp$monthly_or_daily_eirs <- 'daily' # This will change so we can toggle between daily and monthly later
+if (exp$monthly_or_daily_eirs == "monthly"){
+  exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality,'_monthly',sep=""), 'Value']
+  exp$eirs <- as.numeric(strsplit(exp$eirs, ';')[[1]])
+  exp$eirs <- c(exp$eirs[2:12], exp$eirs[1])
+}
+if (exp$monthly_or_daily_eirs == "daily"){
+  exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality,'_','daily',sep=""), 'Value']
+  exp$eirs <- as.numeric(strsplit(exp$eirs, ';')[[1]])
+  print(exp$eirs)
+  exp$eirs <- c(exp$eirs[-(1:45)], exp$eirs[1:45])
+  print(exp$eirs)
+}
 exp$intervention_list <- exp_setup_df[exp_setup_df$parameter =='intervention_list','Value']
 exp$intervention_list <- data.frame(interventions = unlist(strsplit(gsub("\\[|\\]|\\'",'',exp$intervention_list),','))) #This helps make the python list readable in R
 exp$intervention_list <- exp$intervention_list$interventions
@@ -63,7 +71,7 @@ min_ages <- exp$min_ages
 max_ages <- exp$max_ages
 
 # Generate the approximate seasonal parameters required to generate similar seasonal rainfall profile
-malsim_seasonal_coefficients <- get_seasonality_parameters(monthly_eirs = exp$monthly_eirs, midpoint_setting = "calendar")
+malsim_seasonal_coefficients <- get_seasonality_parameters(eirs = exp$eirs, timeframe = 'daily')
 # Store the seasonality coefficients in the malariasimulation experimental setup parameters list:
 exp$g0 <- as.numeric(malsim_seasonal_coefficients$coefficients[1])
 exp$g <- as.numeric(malsim_seasonal_coefficients$coefficients[2:4])

@@ -35,9 +35,10 @@ emodom_cols <- c('#1b9e77ff','#7570b3ff','#d95f02ff')
 #' modelname <- c("OpenMalaria", "EMOD")
 #' result <- get_output_df(wdir, modelname, mth = TRUE)
 #'
-get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE) {
+get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE, cc=FALSE) {
   cols_to_keep <- NULL
   fname <- 'Benchmark.csv'
+  
   if (timeseries) {
     fname <- 'PfPR_ClinicalIncidence_yr.csv'
     if (mth) {
@@ -48,14 +49,20 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
       cols_to_keep <- c('index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
                         'clinical_incidence', 'severe_incidence', 'seed', 'carrying_capacity_step')
     }
-	if (fiveday){
+	  if (fiveday){
 	    fname <- 'PfPR_ClinicalIncidence_5day.csv'
 	    cols_to_keep <- c('seed','year','day','prevalence','clinical_incidence',
 	                      'severe_incidence','ageGroup','prevalence_2to10','index',
 	                      'output_target', 'model_input_om', 'model_input_ms', 'model_input_em',
 	                      'cm_clinical','seasonality','simulatedEIR','n_total_mos_pop',
 	                      'days','month','date','modelname')
-	}
+	  }
+  }
+  if (cc){
+    fname <- 'CCstep_daily.csv'
+    cols_to_keep <- c('scen_id', 'output_target', 'cc_change', 'seed','timestep', 
+                      'cm_clinical','seasonality','ageGroup','prevalence','prevalence_2to10','clinical_incidence',
+                      'severe_incidence','simulatedEIR','n_total_mos_pop','n_infectious_mos','cc_title')
   }
 
   if (file.exists(file.path(wdir, fname))) {
@@ -68,7 +75,7 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
     if ('EMOD' %in% modelname) {
       em_df <- fread(file.path(wdir, paste('em', fname, sep = '/')), select = cols_to_keep)
       em_df$modelname <- 'EMOD'
-      em_df <- em_df[em_df$simulatedEIR >0,]
+      #em_df <- em_df[em_df$simulatedEIR >0,]
     }
     if ('MalSim' %in% modelname) {
       ms_df <- fread(file.path(wdir, paste('MalSim', fname, sep = '/')), select = cols_to_keep)
@@ -113,12 +120,12 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
     if ('ageGroup' %in% colnames(df)) {
       df$ageGroup <- factor(df$ageGroup, levels = unique(df$ageGroup))
     }
-    warning_df <- df[df$simulatedEIR == 0,]
-    if (nrow(warning_df) > 0 & !daily) {
-      print('Warning: some eirs had simulated EIRS of 0, and were removed')
-      df <- df[df$simulatedEIR > 0,]
-      df <- df[complete.cases(df$simulatedEIR),]
-    }
+    #warning_df <- df[df$simulatedEIR == 0,]
+    #if (nrow(warning_df) > 0 & !daily) {
+    #  print('Warning: some eirs had simulated EIRS of 0, and were removed')
+    #  df <- df[df$simulatedEIR > 0,]
+    #  df <- df[complete.cases(df$simulatedEIR),]
+    #}
   }
   return(df)
 }
@@ -307,5 +314,23 @@ remove_legends <- function(gglist) {
     gglist[[i]] <- gglist[[i]] + theme(legend.position = 'None')
   }
   return(gglist)
+}
+
+scale_twentyfour_palette <- function(){
+  scale_color_manual(values  = c(
+    "dodgerblue2", "#E31A1C",
+    "green4",
+    "#6A3D9A", 
+    "#FF7F00", 
+    "gold1",
+    "skyblue2", "#FB9A99",
+    "palegreen2",
+    "#CAB2D6", 
+    "#FDBF6F", 
+    "gray70", "khaki2",
+    "maroon", "orchid1", "deeppink1", "blue1", "steelblue4",
+    "darkturquoise", "green1", "yellow4", "yellow3",
+    "darkorange4", "brown")
+  )
 }
 
