@@ -54,8 +54,7 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
 	    cols_to_keep <- c('seed','year','day','prevalence','clinical_incidence',
 	                      'severe_incidence','ageGroup','prevalence_2to10','index',
 	                      'output_target', 'model_input_om', 'model_input_ms', 'model_input_em',
-	                      'cm_clinical','seasonality','simulatedEIR','n_total_mos_pop',
-	                      'days','month','date','modelname')
+	                      'cm_clinical','seasonality','simulatedEIR','n_total_mos_pop')
 	  }
   }
   if (cc){
