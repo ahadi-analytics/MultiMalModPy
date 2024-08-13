@@ -262,9 +262,9 @@ def initialize_exp(args, manifest):
         #if exp.hpc == 'NUCLUSTER':
         #    exp.sh_hpc_config['p'] = 'b1139testnode'  # Use test allocation
     else:
-        exp.pop_size = 10000
+        exp.pop_size = 50000 #Production Run uses 50000
         exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
-        exp.num_seeds = 20  # suggested minimum 3, in production 5-10
+        exp.num_seeds = 20  # suggested minimum 3, in production 20
         exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
         exp.end_year = 2005  # end of pickup and monitoring period
         exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
@@ -757,9 +757,9 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         col_list = ['output_target', 'cm_clinical', 'seasonality']
 
     if exp.calibrun:
-        if not exp.importation:
-            print("Notice: for calibrun simulations, importation will be set to True")
-            exp.importation = True
+        print("Notice: for calibrun simulations, importation will be set to False")
+        print("Depending on EM/OM Performance at lower EIRS at 50k pop, this may change")
+        exp.importation = False
         exp.output_target = np.arange(1,31)
         eir_range = [1.00000000e-01, 1.37382380e-01, 1.88739182e-01, 2.59294380e-01, 3.56224789e-01, 4.89390092e-01,
                     6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
