@@ -128,7 +128,7 @@ def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
     create_scenarios_OM(exp, scen_df)
 
     # Set up script for submitting OpenMalaria simulations as a SLURM array job
-    array = f'#SBATCH --array=1-{str(exp.nexps)}\n'
+    array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='run_openmalaria', arrayJob=array)
     openmalaria = OM_module(exp.hpc, exp.om_version)
     path = f'export PATH=$PATH:{exp.job_directory}'
