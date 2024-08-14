@@ -32,8 +32,8 @@ for (i in 1:length(list.files(".", pattern = ".R"))) {
 days_per_month <- days_in_month(seq(from = dmy("01-01-2023"), length.out = 12, by = "months"))
 
 # Load in the .csv of parameters as a data frame:
-scenarios_to_run <- read.csv(file.path(job_directory, 'scenarios_wseeds.csv'))
-scenarios_to_run <- scenarios_to_run[scen_id,]
+scenario_to_run <- read.csv(file.path(job_directory, 'scenarios_wseeds.csv'))
+scenario_to_run <- scenario_to_run[scen_id,]
 exp_setup_df <- read.csv(file.path(job_directory, 'exp_setup_df.csv'))
 
 exp <- list()
@@ -57,9 +57,7 @@ if (exp$monthly_or_daily_eirs == "monthly"){
 if (exp$monthly_or_daily_eirs == "daily"){
   exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality,'_','daily',sep=""), 'Value']
   exp$eirs <- as.numeric(strsplit(exp$eirs, ';')[[1]])
-  print(exp$eirs)
   exp$eirs <- c(exp$eirs[-(1:45)], exp$eirs[1:45])
-  print(exp$eirs)
 }
 exp$intervention_list <- exp_setup_df[exp_setup_df$parameter =='intervention_list','Value']
 exp$intervention_list <- data.frame(interventions = unlist(strsplit(gsub("\\[|\\]|\\'",'',exp$intervention_list),','))) #This helps make the python list readable in R
@@ -83,12 +81,12 @@ if( length(exp$intervention_list)>0){
   print("Adding interventions to simulations...")
   source(file.path('define_interventions.R'))
   if ('smc' %in% exp$intervention_list){
-    exp <- define_smc_param(exp, scenarios_to_run)
+    exp <- define_smc_param(exp, scenario_to_run)
   }
   ## to be expanded with other interventions
 }
 
 # Run the simulations or load example:
 print("Running the simulations...")
-simulation_outputs_raw <- run_simulations(exp = exp, parameter_table = scenarios_to_run, write_raw_output = TRUE)
+simulation_outputs_raw <- run_simulations(exp = exp, parameter_table = scenario_to_run, write_raw_output = TRUE)
 simulation_outputs_df <- simulation_outputs_raw[[2]][[1]]
