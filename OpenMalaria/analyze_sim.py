@@ -206,7 +206,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
 
     scen_var = ['scen_id', 'num_seeds', 'seasonality', 'entomology_mode']
     outcome_var = ['InputEIR', 'SimulatedEIR', 'nTransmit', 'Vector_Nv', 'Vector_Sv']
-    cc_step_var = ['eir_om', 'eir_scalar_timestep_5day', 'eir_scalar_om', 'carrying_capacity_step']
+    cc_step_var = ['cc_factor_om', 'cc_timestep_om','cc_title']
     columns_to_keep = ['index', 'seed', 'survey', 'days', 'year'] + scen_var + outcome_var
 
     if survey_step_days == 5:
@@ -215,16 +215,13 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
         df_day = df_day.merge(scen_df, on='index', how='inner')
         # If we created different eirs for each simulation, we need to parse it out here, so all the models can eventually be aligned
         # The only difference between these two dfs is if eir_om (om specific eir) or eir (general to all models) is used.
-        if 'eir_om' in df_day:
+        if 'cc_change' in df_day:
             df_day = df_day[columns_to_keep + cc_step_var]
             df_day = df_day.rename(columns={'SimulatedEIR': 'simulatedEIR',
                                             'InputEIR': 'inputEIR',
                                             'Vector_Nv': 'n_total_mos_pop',
                                             'Vector_Sv': 'n_infectious_mos',
-                                            'days': 'timestep',
-                                            'eir_scalar_timestep_5day': 'eir_scalar_timestep',
-                                            'eir_scalar_om': 'eir_scalar',
-                                            'eir_om': 'eir'})
+                                            'days': 'timestep'})
         else:
             df_day = df_day[columns_to_keep]
             df_day = df_day.rename(columns={'SimulatedEIR': 'simulatedEIR',
@@ -997,29 +994,18 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     df3 = df3[first_columns + df3.drop(columns=first_columns).columns.tolist()]
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
     eir_df = eir_df[['index', 'survey', 'year', 'simulatedEIR', 'inputEIR']]
+    eir_df['simulatedEIR'] = eir_df['simulatedEIR'] / 5 # we divide by 5 for cc plotting, so it more closely reflects daily output
     df3 = df3.merge(eir_df, on=['index', 'survey', 'year'], how='inner')
-    if 'eir_om' in df3:
-        df3 = df3[['scen_id', 'index', 'seed', 'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey', 'days',
+    df3 = df3[['scen_id', 'index', 'seed', 'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey', 'days',
                    'month', 'year', 'agebin', 'ageGroup', 'Vector_Nv', 'Vector_Sv',
-                   'nHost', 'eir', 'inputEIR', 'simulatedEIR', 'prevalence', 'clinical_incidence', 'severe_incidence',
-                   'nPatent', 'nInfect', 'nUncomp',
-                   'nSevere', 'eir_scalar_timestep_5day', 'eir_scalar_om', 'carrying_capacity_step']]
-        df3 = df3.rename(
-            columns={'days': 'timestep', 'eir_om': 'eir', 'eir_scalar_timestep_5day': 'eir_scalar_timestep',
-                     'eir_scalar_om': 'eir_scalar', 'Vector_Nv': 'n_total_mos_pop', 'Vector_Sv': 'n_infectious_mos'})
-    else:
-        df3 = df3[['scen_id', 'index', 'seed', 'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey', 'days',
-                   'month', 'year', 'agebin', 'ageGroup', 'Vector_Nv', 'Vector_Sv',
-                   'nHost', 'eir', 'inputEIR', 'simulatedEIR', 'prevalence', 'clinical_incidence', 'severe_incidence',
-                   'nPatent', 'nInfect', 'nUncomp',
-                   'nSevere', 'eir_scalar_timestep_5day', 'eir_scalar_om', 'carrying_capacity_step']]
-        df3 = df3.rename(columns={'days': 'timestep', 'eir_scalar_timestep_5day': 'eir_scalar_timestep',
-                                  'eir_scalar_om': 'eir_scalar', 'Vector_Nv': 'n_total_mos_pop',
-                                  'Vector_Sv': 'n_infectious_mos'})
+                   'nHost', 'output_target', 'inputEIR', 'simulatedEIR', 'prevalence', 'clinical_incidence', 'severe_incidence',
+                   'nPatent', 'nInfect', 'nUncomp','nSevere', 'cc_factor_om', 'cc_change','cc_title']]
+    df3 = df3.rename(
+            columns={'days': 'timestep','Vector_Nv': 'n_total_mos_pop', 
+                     'Vector_Sv': 'n_infectious_mos'})
 
     grp_channels = ['index', 'timestep']
-    age_groups_2to10 = [5,
-                        10]  # I added in pfpr2to10 because EMOD and Malsim have pfpr2to10 in their Dailyagebinanalyzers and I want that to be consistent.
+    age_groups_2to10 = [5,10]
     g = df3[df3['agebin'].isin(age_groups_2to10)]
     nHost2to10 = g.groupby(grp_channels)['nHost'].agg(np.sum).reset_index()
     nPatent2to10 = g.groupby(grp_channels)['nPatent'].agg(np.sum).reset_index()
@@ -1033,8 +1019,8 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     df3 = df3.merge(v, on=grp_channels, how='inner')
     # Save the processed DataFrame to a CSV file
     print(f'\nSaving outputs to: {wdir}')
-    cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
-                    'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'seed', 'carrying_capacity_step']
+    cols_to_keep = ['scen_id', 'seed', 'cm_clinical','seasonality', 'output_target', 'cc_change', 'cc_title', 'ageGroup', 'timestep', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
+                    'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']
     df3 = df3[cols_to_keep]
     df3.to_csv((os.path.join(wdir, 'CCstep_daily.csv')), index=False, compression=compr)
 
@@ -1043,7 +1029,6 @@ if __name__ == "__main__":
     # Parse command line arguments
     args = parse_args()
     jdir = args.directory
-    #jdir = 
     # Load experiment object
     file = open(os.path.join(jdir, "exp.obj"), "rb")
     exp = pickle.load(file)

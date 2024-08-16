@@ -52,9 +52,10 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       ))
 
       #Parameter Sweeping
+      if ("ms_pv" %in% colnames(parameter_table)){
       simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
                                           draw = parameter_table[i,]$ms_pv)
-
+      }
 
       # Append the parameters for artemether lumefantrine:
       simparams[[i]] <- set_drugs(parameters = simparams[[i]], drugs = list(AL_params, SP_AQ_params, DHA_PQP_params))
@@ -78,15 +79,15 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
         # Calibrate to the initial EIR (eirs unique to each model, based on which eir creates the high,
         # medium and low prevalences required):
         simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                        init_EIR = parameter_table[i,]$eir_malsim)
+                                        init_EIR = parameter_table[i,]$model_input_ms)
         # Get the mosquito carrying capacity:
         mosquito_carrying_capacity <- get_init_carrying_capacity(parameters = simparams[[i]])
         
         # Parameterise the changes in mosquito population carrying capacity (for EIR step change):
         simparams[[i]] <- set_carrying_capacity(parameters = simparams[[i]], 
-                                                timesteps = parameter_table[i,]$eir_scalar_timestep_daily, 
+                                                timesteps = parameter_table[i,]$cc_timestep_ms, 
                                                 carrying_capacity = matrix(mosquito_carrying_capacity * 
-                                                parameter_table[i,]$eir_scalar_malsim, ncol = 1))}
+                                                parameter_table[i,]$cc_factor_ms, ncol = 1))}
       else{
         # Calibrate to the initial EIR (same across models):
         simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
@@ -108,10 +109,10 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       }
 
       if ("cc_step" %in% intervention_list) {
-        simulation_outputs_list[[i]]$eir_malsim <- parameter_table[i,]$eir_malsim
-        simulation_outputs_list[[i]]$eir_scalar_malsim <- parameter_table[i,]$eir_scalar_malsim
-        simulation_outputs_list[[i]]$eir_scalar_timestep_daily <- parameter_table[i,]$eir_scalar_timestep_daily
-        simulation_outputs_list[[i]]$carrying_capacity_step <- parameter_table[i,]$carrying_capacity_step}
+        simulation_outputs_list[[i]]$model_input_ms <- parameter_table[i,]$model_input_ms
+        simulation_outputs_list[[i]]$cc_factor_ms <- parameter_table[i,]$cc_factor_ms
+        simulation_outputs_list[[i]]$cc_timestep_ms <- parameter_table[i,]$cc_timestep_ms
+        simulation_outputs_list[[i]]$cc_title <- parameter_table[i,]$cc_title}
       else{
         simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
       }
@@ -153,8 +154,10 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       ))
 
       #Parameter Sweeping
+      if ("ms_pv" %in% colnames(parameter_table)){
       simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
                                           draw = parameter_table[i,]$ms_pv)
+      }
 
       # Append the parameters for artemether lumefantrine:
       simparams[[i]] <- set_drugs(parameters = simparams[[i]], drugs = list(AL_params, SP_AQ_params, DHA_PQP_params))
@@ -178,14 +181,14 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       if ("cc_step" %in% intervention_list){ 
         # Calibrate to the initial EIR (eirs unique to each model, based on which eir creates the high, medium and low prevalences required):
         simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                        init_EIR = parameter_table[i,]$eir_malsim)
+                                        init_EIR = parameter_table[i,]$model_input_ms)
         # Get the mosquito carrying capacity:
         mosquito_carrying_capacity <- get_init_carrying_capacity(parameters = simparams[[i]])
         
         # Parameterise the changes in mosquito population carrying capacity (for EIR step change):
         simparams[[i]] <- set_carrying_capacity(parameters = simparams[[i]], 
-                                                timesteps = parameter_table[i,]$eir_scalar_timestep_daily, 
-                                                carrying_capacity = matrix(mosquito_carrying_capacity * parameter_table[i,]$eir_scalar_malsim, ncol = 1))}
+                                                timesteps = parameter_table[i,]$cc_timestep_ms, 
+                                                carrying_capacity = matrix(mosquito_carrying_capacity * parameter_table[i,]$cc_factor_ms, ncol = 1))}
       else{
         # Calibrate to the initial EIR (same across models):
         simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
@@ -205,10 +208,10 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       }
       
       if ("cc_step" %in% intervention_list) {
-        simulation_outputs_list[[i]]$eir_malsim <- parameter_table[i,]$eir_malsim
-        simulation_outputs_list[[i]]$eir_scalar_malsim <- parameter_table[i,]$eir_scalar_malsim
-        simulation_outputs_list[[i]]$eir_scalar_timestep_daily <- parameter_table[i,]$eir_scalar_timestep_daily
-        simulation_outputs_list[[i]]$carrying_capacity_step <- parameter_table[i,]$carrying_capacity_step}
+        simulation_outputs_list[[i]]$model_input_ms <- parameter_table[i,]$model_input_ms
+        simulation_outputs_list[[i]]$cc_factor_ms <- parameter_table[i,]$cc_factor_ms
+        simulation_outputs_list[[i]]$cc_timestep_ms <- parameter_table[i,]$cc_timestep_ms
+        simulation_outputs_list[[i]]$cc_title <- parameter_table[i,]$cc_title}
       else{
         simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
       }

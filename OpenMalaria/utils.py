@@ -31,12 +31,10 @@ def create_scenarios_OM(exp, scen_df):
         scenario = xml.replace('@seed@', str(row['seed']))
         scenario = scenario.replace('@cm_clinical@', str(row['cm_clinical']))
         scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
+        scenario = scenario.replace('@eir@', str(row['model_input_om']))
         if 'cc_step' in exp.intervention_list: # GOING TO HAVE TO CHANGE SIGNIFICANTLY DUE TO INTERPOLATION
-            scenario = scenario.replace('@eir@', str(row['model_input_om']))
-            scenario = scenario.replace('@EIR_reduction@', str(row['eir_scalar_om']))
-            scenario = scenario.replace('@step_change_time@', str(row['eir_scalar_timestep_5day']))
-        else:
-            scenario = scenario.replace('@eir@', str(row['model_input_om']))
+            scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_om']))
+            scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_om']))
         if exp.importation:
                 scenario = scenario.replace('@importation_rate@', str(5))
         else:
@@ -130,7 +128,7 @@ def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
     create_scenarios_OM(exp, scen_df)
 
     # Set up script for submitting OpenMalaria simulations as a SLURM array job
-    array = f'#SBATCH --array=1-{str(exp.nexps)}\n'
+    array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='run_openmalaria', arrayJob=array)
     openmalaria = OM_module(exp.hpc, exp.om_version)
     path = f'export PATH=$PATH:{exp.job_directory}'

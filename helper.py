@@ -211,7 +211,7 @@ def initialize_exp(args, manifest):
 
     # Flag to select whether to run with (dynamic) or without vector model (forced)
     exp.entomology_mode = 'dynamic'  # dynamic, forced
-    exp.seasonality = ['perennial', 'seasonal']  # ["perennial", "seasonal"]  
+    exp.seasonality = ['perennial']  # ["perennial", "seasonal"]  
     #"Current framework support only 1 seasonality patten per experiment"
     exp.mem_increase_factor = 5.0  # scaling factor on default memory requested
 
@@ -223,7 +223,7 @@ def initialize_exp(args, manifest):
     # Define case management start and coverage
     # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
     exp.cm_start = 1
-    exp.cm_clinical = [0,0.45]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
+    exp.cm_clinical = [0, 0.45]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
 
@@ -262,9 +262,9 @@ def initialize_exp(args, manifest):
         #if exp.hpc == 'NUCLUSTER':
         #    exp.sh_hpc_config['p'] = 'b1139testnode'  # Use test allocation
     else:
-        exp.pop_size = 10000
+        exp.pop_size = 50000 #Production Run uses 50000
         exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
-        exp.num_seeds = 20  # suggested minimum 3, in production 5-10
+        exp.num_seeds = 20  # suggested minimum 3, in production 20
         exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
         exp.end_year = 2005  # end of pickup and monitoring period
         exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
@@ -601,8 +601,6 @@ def param_variation(df, exp):
             par_var = sample(range(1, 1001), exp.num_seeds)
             for i, row in df.iterrows():
                 df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
-    else:
-        df['ms_pv'] = 1
     return df
 
 
@@ -637,18 +635,18 @@ def get_seasonal_eir(exp=None):
                     0.480399615, 0.725799099, 1.140032967, 2.215493305, 3.229497298, 3.844139468]
 
     season_daily = monthly_to_daily_EIR(season_month)
-    seasonal = [0.15050028, 0.093341383, 0.06725634, 0.043466777, 0.03098276, 0.024782661,
-                0.024346226, 0.036782854, 0.057775858, 0.112279233, 0.163668055, 0.194817574]
 
-    # eir_sum = sum(season_month)
-    # seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
+    eir_sum = sum(season_month)
+    seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
     perennial = [x / 12 for x in [1] * 12]
+    perennial_daily = [x/365 for x in [1]*365]
 
     if exp is not None:
         exp.season_daily = season_daily
         exp.season_month = season_month
         exp.seasonal = seasonal
         exp.perennial = perennial
+        exp.perennial_daily = perennial_daily
         return exp
     else:
         return season_daily, season_month, seasonal, perennial
@@ -720,8 +718,10 @@ def create_simsetup_csv(exp):
                  'pop_size': exp.pop_size,
                  'agebins': exp.agebins,
                  'seasonality': exp.seasonality[0],
-                 'seasonal': ';'.join(map(str, exp.seasonal)),
-                 'perennial': ';'.join(map(str, exp.perennial)),
+                 'seasonal_monthly': ';'.join(map(str, exp.seasonal)),
+                 'perennial_monthly': ';'.join(map(str, exp.perennial)),
+                 'seasonal_daily': ';'.join(map(str, exp.season_daily)),
+                 'perennial_daily': ';'.join(map(str, exp.perennial_daily)),
                  'start_year': exp.start_year,
                  'end_year': exp.end_year,
                  'burnin': exp.burnin,
@@ -757,20 +757,20 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         col_list = ['output_target', 'cm_clinical', 'seasonality']
 
     if exp.calibrun:
-        if not exp.importation:
-            print("Warning, for calibrun simulations, importation will be set to True")
-            exp.importation = True
+        print("Notice: for calibrun simulations, importation will be set to False")
+        print("Depending on EM/OM Performance at lower EIRS at 50k pop, this may change")
+        exp.importation = False
         exp.output_target = np.arange(1,31)
         eir_range = [1.00000000e-01, 1.37382380e-01, 1.88739182e-01, 2.59294380e-01, 3.56224789e-01, 4.89390092e-01,
                     6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
                     4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
                     3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
                     2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
-        x_temp_range = [1.00000000e-01, 1.48735211e-01, 2.21221629e-01, 3.29034456e-01, 4.89390092e-01, 7.27895384e-01,
-                        1.08263673e+00, 1.61026203e+00, 2.39502662e+00, 3.56224789e+00, 5.29831691e+00, 7.88046282e+00,
-                        1.17210230e+01, 1.74332882e+01, 2.59294380e+01, 3.85662042e+01, 5.73615251e+01, 8.53167852e+01,
-                        1.26896100e+02, 1.88739182e+02, 2.80721620e+02, 4.17531894e+02, 6.21016942e+02, 9.23670857e+02,
-                        1.37382380e+03, 2.04335972e+03, 3.03919538e+03, 4.52035366e+03, 6.72335754e+03, 1.00000000e+04]
+        x_temp_range = [5.00000000e+00, 6.49828306e+00, 8.44553654e+00, 1.09762974e+01, 1.42654175e+01, 1.85401442e+01,
+                        2.40958210e+01, 3.13162930e+01, 4.07004273e+01, 5.28965794e+01, 6.87473892e+01, 8.93479989e+01,
+                        1.16121718e+02, 1.50918358e+02, 1.96142042e+02, 2.54917301e+02, 3.31304956e+02, 4.30582677e+02,
+                        5.59609623e+02, 7.27300347e+02, 9.45240704e+02, 1.22848833e+03, 1.59661298e+03, 2.07504862e+03,
+                        2.69685066e+03, 3.50497979e+03, 4.55527016e+03, 5.92028698e+03, 7.69434011e+03, 1.00000000e+04]
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
 
@@ -778,8 +778,10 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
     df_array = np.array(list(itertools.product(*my_attrs)))
 
     # Create a DataFrame with the combinations
-    df = pd.DataFrame(df_array)
-    df.columns = col_list
+    df = pd.DataFrame(df_array, columns = col_list)
+    if 'cc_step' in exp.intervention_list: #im only including this because itertools.product includes repeats were output_target equal cc_change, if this could be avoided it should be
+        df = df[df['output_target'] != df['cc_change']]
+        df = df.reset_index(drop=True)
     df.reset_index(inplace=True)
     df['index'] = df['index'] + 1
     df['scen_id'] = df['index']
@@ -818,14 +820,17 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                     df['model_input_em'] = output_target_to_eir(df, exp, model = 'EMOD')
 
         if 'cc_step' in exp.intervention_list:
-            df['eir_malsim'] = exp.eir_malsim
-            df['eir_om'] = exp.eir_om
-            df['eir_scalar_timestep_5day'] = exp.eir_scalar_timestep_5day
-            df['eir_scalar_timestep_daily'] = exp.eir_scalar_timestep_daily
-            df['eir_scalar_emod'] = exp.eir_scalar_emod
-            df['eir_scalar_om'] = exp.eir_scalar_om
-            df['eir_scalar_malsim'] = exp.eir_scalar_malsim
-            df['carrying_capacity_step'] = exp.carrying_capacity_step
+            from scenario_inputs.intervention_params import cc_step_factor_calculator, cc_title_function
+            if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
+                df['cc_factor_ms'] = cc_step_factor_calculator(df, exp, model = 'MalSim')
+                df['cc_timestep_ms'] = exp.cc_timestep_ms
+            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
+                df['cc_factor_om'] = cc_step_factor_calculator(df, exp, model = 'OpenMalaria')
+                df['cc_timestep_om'] = exp.cc_timestep_om
+            if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
+                df['cc_factor_em'] = cc_step_factor_calculator(df, exp, model = 'EMOD')
+                df['cc_timestep_em'] = exp.cc_timestep_em
+            df['cc_title'] = cc_title_function(df)
     return df
 
 
@@ -1008,9 +1013,6 @@ def submit_run_plotters(exp):
         pyscript_name = f'plot_{plot_name}.py'
 
         plot_memG = 20  # current default in submit_run_pyscript
-        if plot_name == 'ccstep':
-            plot_memG = 50  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
-
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                             custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
                             job=f'{plot_name}_plots', memG=plot_memG, write_only=True)
@@ -1026,7 +1028,7 @@ def submit_run_plotters(exp):
 
         plot_memG = 20  # current default in submit_run_pyscript
         if plot_name == 'ccstep':
-            plot_memG = 20  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
+            plot_memG = 80  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
 
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                             custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
