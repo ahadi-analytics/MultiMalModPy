@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-## These functions are used in launch_test.py, for launch_simulations, a csv file is expected to read parameters from
+## These functions are used in launch_sim.py, for launch_simulations, a csv file is expected to read parameters from
 
 def exp_params_to_update(exp):
     """
@@ -107,7 +107,7 @@ def cc_title_function(df):
 
 def smc_params(exp):
     """
-    For an SMC simulation, we currenlty require a hard set of a few specific variables in exp.
+    SMC currenyly requires a hard set of a few specific variables in exp.
     This function sets the exp variables to what they need to be in order for the simulations to run.
     
     Parameters:

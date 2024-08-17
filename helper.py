@@ -168,7 +168,7 @@ def initialize_exp(args, manifest):
     exp.intervention_list = args.interventions
     exp.run_mode = args.run_mode
     exp.overwrite = args.overwrite # FIXME
-    exp.overwrite_param = False  # FIXME to discuss how we want to handle parameter changes and overwrites in helper vs launch_test.py, or have another flag to add for args
+    exp.overwrite_param = False  # FIXME to discuss how we want to handle parameter changes and overwrites in helper vs launch_sim.py, or have another flag to add for args
     exp.emod_calib_params = args.emod_calib_params  # Whether to pass along NU's Within-Host framework recalibrated parameters, default will be false.
     exp.malariasimulation_parameter_variation = args.mpv
     exp.output_type = args.output_type
