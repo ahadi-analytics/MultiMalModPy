@@ -82,10 +82,10 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
 
     ## Carrying capacity step change
-    if 'cc_step' in intervention_list and exp.emod_step == 'pickup': #Make sure to include the cc_step change only at pickup simulations.
-        eir_df = pd.DataFrame({'CONSTANT':[row.eir_scalar_emod]})
+    if 'cc_step' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None): #Make sure to include the cc_step change only at pickup simulations.
+        eir_df = pd.DataFrame({'CONSTANT':[row.cc_factor_em]})
         add_scale_larval_habitats(camp, df=eir_df,
-                                  start_day=row.eir_scalar_timestep_daily,
+                                  start_day=row.cc_timestep_em,
                                   repetitions = 1)
     if exp.importation:
         five_per_year = (0.05*1000) / exp.pop_size 
@@ -600,7 +600,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
         sweeps = [[
-            ItvFn(all_campaigns, row=row, intervention_list = exp.intervention_list),
+            ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
             partial(set_param, param='Serialized_Population_Path',
                     value=os.path.join(row["serialized_file_path"], "output")),
             partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
@@ -609,7 +609,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             for i, row in scen_df_pickup.iterrows()
             for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, row=row, intervention_list = exp.intervention_list),
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
                    partial(set_param, param='Serialized_Population_Path',
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',
@@ -669,7 +669,7 @@ def submit_run_EMOD(exp, scen_df):
         if 'daily' in exp.analyzer_list:
             add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years) #We shouldn't generate daily reports unless specified
         add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
-        if '5day' in exp.analyzer_list:  # Note, we will not want to always run 5 days using the analyzer_list as a flag to include this reporter  or not
+        if '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:  # Note, we will not want to always run 5 days using the analyzer_list as a flag to include this reporter  or not
             add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
 
     # Create experiment from builder and run

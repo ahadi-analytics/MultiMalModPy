@@ -25,16 +25,8 @@ def submit_analyze_MalSim(exp, t='01:00:00', memG=4):
     write_txt(slurm_job_id, exp.job_directory, 'job_id_MalSim_analyze.txt')
 
 
-def create_malsim_scenarios(exp):
-    os.makedirs(os.path.join(exp.job_directory, 'malsim_jobs'), exist_ok=True)
-    scenarios = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
-    for i in range(0, len(scenarios)):
-        scenarios.iloc[[i]].to_csv(os.path.join(exp.job_directory, 'malsim_jobs', f'{i + 1}.csv'))
-    return
-
-
 def submit_run_MalSim(exp, t='10:00:00', memG=3):
-    array = f'#SBATCH --array=1-{str(exp.nexps)}\n'
+    array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='run_malsim', arrayJob=array)
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
     r_file_path = os.path.join(ROOT_DIR, exp.MalSim_script)
@@ -42,7 +34,7 @@ def submit_run_MalSim(exp, t='10:00:00', memG=3):
     script_path = os.path.join(exp.job_directory, 'run_MalSim.sh')
     ms_input_path = exp.ms_input_path 
     slurmID = '${SLURM_ARRAY_TASK_ID}'
-    create_malsim_scenarios(exp)
+    os.makedirs(os.path.join(exp.job_directory, 'malsim_jobs'), exist_ok=True)
 
     # Set up script for submitting MalSim simulations as a SLURM array job
     # The command structure for running an R Script as a subprocess is:

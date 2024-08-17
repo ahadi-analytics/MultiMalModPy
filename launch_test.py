@@ -15,7 +15,6 @@ log = logging.getLogger(__name__)
 # Retrieve parsed arguments
 args = parse_launch_args()
 
-
 if args.emodstep in ['pickup', 'new_pickup']:
     file = open(os.path.join(args.directory, "exp.obj"), "rb")
     exp = pickle.load(file)
@@ -23,7 +22,6 @@ if args.emodstep in ['pickup', 'new_pickup']:
     exp.burnin_directory = args.directory
     exp.models_to_run = args.models
     exp.emod_serialized_id = args.serializedid
-
     if args.emodstep == 'new_pickup': ## Allows to run a independent pickup from burnin
         ## Optional parameters to update in new run
         exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']
@@ -57,7 +55,7 @@ else:
         exp.pop_size = 10000  # 1000 for testing
         exp.num_seeds = 20  # suggested minimum 3, in production 5-10
         exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
-        exp.end_year = 2008 # end of pickup and monitoring period
+        exp.end_year = 2005 # end of pickup and monitoring period
         exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
      
 
@@ -95,12 +93,12 @@ exp = get_simulation_time_params(exp)
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, exp.sweep_list)
 exp.nexps = len(scen_df) * exp.num_seeds
-
+exp.max_running_jobs = min(exp.nexps,150)
 # Set platform and associated values, such as the maximum number of jobs to run at one time
 platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
                     mem_per_cpu=int(1800 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
                     time='06:30:00', account=manifest.sh_hpc_config['A'],
-                    modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=min(exp.nexps,180))  # mem_per_cpu default: 2048
+                    modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=exp.max_running_jobs)  # mem_per_cpu default: 2048
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 save_scen(param_variation(rep_scen_df(scen_df), exp), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])

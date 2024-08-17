@@ -32,8 +32,8 @@ for (i in 1:length(list.files(".", pattern = ".R"))) {
 days_per_month <- days_in_month(seq(from = dmy("01-01-2023"), length.out = 12, by = "months"))
 
 # Load in the .csv of parameters as a data frame:
-scenarios_to_run <- read.csv(file.path(job_directory, 'scenarios_wseeds.csv'))
-scenarios_to_run <- scenarios_to_run[scen_id,]
+scenario_to_run <- read.csv(file.path(job_directory, 'scenarios_wseeds.csv'))
+scenario_to_run <- scenario_to_run[scen_id,]
 exp_setup_df <- read.csv(file.path(job_directory, 'exp_setup_df.csv'))
 
 exp <- list()
@@ -48,11 +48,17 @@ exp$min_ages <- (round(c(0, exp$agebins[1:length(exp$agebins) - 1]) * 365)) + 1
 exp$min_ages[1] <- 0
 exp$max_ages <- (round(exp$agebins * 365))
 exp$seasonality <- exp_setup_df[exp_setup_df$parameter == 'seasonality', 'Value'][1]
-exp$monthly_eirs <- exp_setup_df[exp_setup_df$parameter == exp$seasonality, 'Value']
-exp$monthly_eirs <- as.numeric(strsplit(exp$monthly_eirs, ';')[[1]])
-#monthly <- exp$monthly_eirs[2:12] # we would want to do this if we want to match peak simulated EIR via inputs, not post processing
-#monthly[[length(monthly)+1]] = exp$monthly_eirs[1]
-#exp$monthly_eirs <- monthly
+exp$monthly_or_daily_eirs <- 'daily' # This will change so we can toggle between daily and monthly later
+if (exp$monthly_or_daily_eirs == "monthly"){
+  exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality,'_monthly',sep=""), 'Value']
+  exp$eirs <- as.numeric(strsplit(exp$eirs, ';')[[1]])
+  exp$eirs <- c(exp$eirs[2:12], exp$eirs[1])
+}
+if (exp$monthly_or_daily_eirs == "daily"){
+  exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality,'_','daily',sep=""), 'Value']
+  exp$eirs <- as.numeric(strsplit(exp$eirs, ';')[[1]])
+  exp$eirs <- c(exp$eirs[-(1:45)], exp$eirs[1:45])
+}
 exp$intervention_list <- exp_setup_df[exp_setup_df$parameter =='intervention_list','Value']
 exp$intervention_list <- data.frame(interventions = unlist(strsplit(gsub("\\[|\\]|\\'",'',exp$intervention_list),','))) #This helps make the python list readable in R
 exp$intervention_list <- exp$intervention_list$interventions
@@ -63,7 +69,7 @@ min_ages <- exp$min_ages
 max_ages <- exp$max_ages
 
 # Generate the approximate seasonal parameters required to generate similar seasonal rainfall profile
-malsim_seasonal_coefficients <- get_seasonality_parameters(monthly_eirs = exp$monthly_eirs, midpoint_setting = "calendar")
+malsim_seasonal_coefficients <- get_seasonality_parameters(eirs = exp$eirs, timeframe = 'daily')
 # Store the seasonality coefficients in the malariasimulation experimental setup parameters list:
 exp$g0 <- as.numeric(malsim_seasonal_coefficients$coefficients[1])
 exp$g <- as.numeric(malsim_seasonal_coefficients$coefficients[2:4])
@@ -75,12 +81,12 @@ if( length(exp$intervention_list)>0){
   print("Adding interventions to simulations...")
   source(file.path('define_interventions.R'))
   if ('smc' %in% exp$intervention_list){
-    exp <- define_smc_param(exp, scenarios_to_run)
+    exp <- define_smc_param(exp, scenario_to_run)
   }
   ## to be expanded with other interventions
 }
 
 # Run the simulations or load example:
 print("Running the simulations...")
-simulation_outputs_raw <- run_simulations(exp = exp, parameter_table = scenarios_to_run, write_raw_output = TRUE)
+simulation_outputs_raw <- run_simulations(exp = exp, parameter_table = scenario_to_run, write_raw_output = TRUE)
 simulation_outputs_df <- simulation_outputs_raw[[2]][[1]]

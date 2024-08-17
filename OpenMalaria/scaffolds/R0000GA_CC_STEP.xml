@@ -60,8 +60,8 @@
             <option name="expectedSevere"/>   <!-- id 77 -->
         </SurveyOptions>
     		<surveys detectionLimit="@detectionLimit@">
-    			<surveyTime repeatStep="@survey_step@" repeatEnd="@end_year@-01-01">
-            @start_year@-01-01
+    			<surveyTime repeatStep="@survey_step@" repeatEnd="@end_year@-12-31">
+                    @start_year@-12-27
     			</surveyTime>
     		</surveys>
         <ageGroup lowerbound="0">
