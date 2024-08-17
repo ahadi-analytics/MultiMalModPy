@@ -473,8 +473,11 @@ def check_exp_inputs(exp, attribute_check= False):
                             'EMOD' not in exp.models_to_run):
         print(f'WARNING: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
 
-    if np.max(exp.cm_clinical) > 0 and exp.entomology_mode == 'dynamic' and 'EMOD' in exp.models_to_run:
-        raise ValueError('EMOD is not set up to run dynamic EIR for non-zero CM-levels currently.')
+    if any(value not in [0, 0.45] for value in exp.cm_clinical) and (exp.entomology_mode == 'dynamic') and ('EMOD' in exp.models_to_run):
+        raise ValueError('EMOD is not set up to run dynamic EIR is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
+
+    if any(value not in [0, 0.45] for value in exp.cm_clinical) and exp.output_type == 'prevalence_2to10':
+        raise ValueError('output_type prevalence_2to10 is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
     if exp.output_type not in ['eir', 'prevalence_2to10']:
         raise ValueError(f"Warning: invalid output type: {exp.output_type}")
