@@ -21,3 +21,7 @@ python launch_test.py  --models EMOD MalSim OpenMalaria --test
 #python launch_test.py --emodstep burnin --models EMOD MalSim OpenMalaria
 
 #python launch_test.py --emodstep burnin --models EMOD MalSim OpenMalaria  --interventions cc_step
+
+
+### from csv
+python launch_test.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM

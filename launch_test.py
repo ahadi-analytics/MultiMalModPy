@@ -50,14 +50,18 @@ else:
     # Creating an Experiment object and setting its attributes, saved as exp.obj
     exp = initialize_exp(args, manifest)
 
-    # You the user, can customize what variables in exp are overwriten when you choose to include overwrite_param.
-    if exp.overwrite_param:
-        exp.pop_size = 10000  # 1000 for testing
-        exp.num_seeds = 20  # suggested minimum 3, in production 5-10
-        exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
-        exp.end_year = 2005 # end of pickup and monitoring period
-        exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
-     
+    if args.csv:
+        ### Experiment scenario parameter definitions
+        exp_scen_df = pd.read_csv(os.path.join(f'scenario_inputs/{args.csv}.csv'))
+        exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == args.rownum]
+        exp.SUITEname = f'{args.csv}_{dt.now().strftime("%Y%m%d")}'
+        exp.exp_name = f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
+
+        ## Overwriting default parameters with parameters specific in scenario csv file
+        not_param_columns = ['rownum', 'exp_short', 'exp_name', 'py_script']
+        for col in exp_scen_df.columns:
+            if col not in not_param_columns:
+                setattr(exp, col, get_param_from_dataframe(exp_scen_df, col))
 
     # Entomology mode: Dynamic EIR configuration if selected
     exp = get_seasonal_eir(exp)
@@ -74,11 +78,11 @@ else:
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.plots_to_run = []
 
-    # Update exp_name
+    # Update exp_name - FIXME
     exp.exp_name = exp.exp_name.replace('seasonality', exp.seasonality[0])
     exp.exp_name = exp.exp_name.replace('entomologymode', exp.entomology_mode)
-    exp.exp_name = exp.exp_name.replace('intervention', '_'.join(exp.intervention_list)) # if empty, the 'intervention' gets removed
-
+    exp.exp_name = exp.exp_name.replace('intervention',
+                                        '_'.join(exp.intervention_list))  # if empty, the 'intervention' gets removed
 
 ## Arguments that chage for pickup
 exp = make_dirs(exp, overwrite=exp.overwrite)

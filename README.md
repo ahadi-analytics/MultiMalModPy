@@ -154,8 +154,7 @@ three models.
 The name of some input and output names have been predominantly aligned to OpenMalaria conventions where possible,
 maintaining model-specific names where necessary.
 
-A single python script launches the simulation experiment with parameters either defined directly in the
-script (`launch_test.py` ), or read in from a csv file (`launch_simulations.py` )
+A single python script launches the simulation experiment (`launch_test.py`) with parameters either defined in helper.py or read in from a csv file.
 Helper functions for EMOD, OpenMalaria and malariasimulation, stored in 'utils.py' in model specific subfolders, are
 imported into the launch python script.
 
@@ -332,11 +331,11 @@ Testrun
 
 Baseline run (accepting defaults, or changed defaults in python file) 
   - `python launch_test.py  --models EMOD MalSim OpenMalaria`
-  - `python launch_simulations.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM`  
+  - `python launch_test.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM`  
 
 Custom simulation experiments (i.e. cc_step)
   - `python launch_test.py  --models EMOD MalSim OpenMalaria --intervention cc_step --test --emodstep burnin`
-  - `python launch_simulations.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test`  
+  - `python launch_test.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test`  
 
 
 ### Pre-requisites
@@ -369,14 +368,8 @@ _[go to installations instructions](https://github.com/numalariamodeling/model-c
 
 ### Simulation experiment configuration
 
-The simulation inputs are directly defined in the python scripts, which will generate a scenario csv, rather than
-writing the csv and reading it in.
-
-The `launch_test.py` is the go-to script to get started and do test simulation runs, with the possibility to change and
-edit parameters directly in the python script.
-The `launch_simulations.py` is the script for more complex as well as multiple simulation experiments at once, as it
-reads in experiment defining
-parameters from a csv file.
+The `launch_test.py` script launches simulation runs, with the possibility to change and
+edit parameters directly in the python script or to read in parameter values from a csv file.
 
 The configuration had been moved to the helper.py script, allowing the launch python script to overwrite parameters as
 needed.
@@ -457,11 +450,9 @@ Parameter specifications for framework and simulation setup:
 - In terminal navigate to repository  `cd ~/model-characterization`
 - Run python script that defines the simulation i.e. `python launch_test.py` for a test run using defaults specified in
   the script and `parse_launch_args` (see helper.py)
-    - Other options defined in
-      the [run_launch_test.sh](https://github.com/numalariamodeling/model-characterization/blob/main/run_launch_test.sh)
-      and [run_launch_simulations.sh](https://github.com/numalariamodeling/model-characterization/blob/main/run_launch_simulations.sh):
+    - Other options defined in the [run_launch_test.sh](https://github.com/numalariamodeling/model-characterization/blob/main/run_launch_test.sh)
     - `python launch_test.py --emodstep burnin --models EMOD MalSim OpenMalaria`
-    - `python launch_simulations.py --models EMOD MalSim OpenMalaria --rownum 0 --csv baseline_eirsweep_noCM`
+    - `python launch_test.py --models EMOD MalSim OpenMalaria --rownum 0 --csv baseline_eirsweep_noCM`
 - Check simulations via `squeue -u <username>`
 - Wait for simulations to finish after which analyzer scripts and default plots will automatically start running
 - If you need to resubmit the `analyze_sim.py` script, it can be found in `experiments/<suite>/<exp_name>`
@@ -767,6 +758,8 @@ Table 1: Overview of model software and infrastructure
 
 ## Change log
 
+- August 2024 - Carrying capacity step with automatically defined scaling factors leveraging calibrun
+- July 2024 - Input transmission paramter calibration to a defined output target for either EIR of PfPR2to10  - introduced calibrun
 - March 2024 - Carrying capacity step change and additional vector outcomes, switch to OpenMalaria v46, separation of
   plotting scripts
 - Jan 2024: refinement in framework to support flexible simulations, further bugfixes in model specific scripts
