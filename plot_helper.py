@@ -185,7 +185,7 @@ def get_ylab(channel):
     return channel_labels.get(channel)
 
 
-def subset_dataframe_for_plot(df, figure_vars, agegrp=None):
+def subset_dataframe_for_plot(df, figure_vars, agegrp=None, filter_target=True):
     txt = 'Filtered dataset by: '
 
     if agegrp is not None:
@@ -207,10 +207,11 @@ def subset_dataframe_for_plot(df, figure_vars, agegrp=None):
         df = df[df['seasonality'] == selected_season]
         txt += f'seasonality {selected_season}, '
 
-    if 'output_target' not in figure_vars:
-        selected_output = df['output_target'].max()
-        df = df[df['output_target'] == selected_output]
-        txt += f'output_target {selected_output}, '
+    if filter_target:
+      if not any(var in figure_vars for var in ['simulatedEIR', 'prevalence_2to10', 'output_target']) :
+          selected_output = df['output_target'].max()
+          df = df[df['output_target'] == selected_output]
+          txt += f'output_target {selected_output}, '
 
     if 'modelname' not in figure_vars and df['modelname'].nunique() > 1:
         raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
