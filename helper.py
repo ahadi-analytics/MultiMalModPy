@@ -186,12 +186,16 @@ def initialize_exp(args, manifest):
     exp.hpc = manifest.hpc
     exp.sh_hpc_config = manifest.sh_hpc_config
     exp.selected_platform = manifest.selected_platform
-    exp.om_version = manifest.om_version
+
     exp.emod_build = manifest.emod_build
-    exp.om_path = manifest.OM_PATH
     exp.emod_input_path = manifest.emod_input_path
+    exp.EMOD_venv = manifest.EMOD_venv
+    exp.OM_venv = manifest.OM_venv
+    exp.om_path = manifest.OM_PATH
+    exp.om_version = manifest.om_version
     exp.om_input_path = manifest.om_input_path
     exp.ms_input_path = manifest.ms_input_path
+
     exp.job_directory_manifest = manifest.job_directory
     exp.output_directory_manifest = manifest.output_directory
     exp.interp_path = manifest.interp_path
@@ -943,16 +947,13 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     # Generate the SLURM shell script header for the job
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=job, mem_scl=1)
 
-    # Get the EMODpy virtual environment path
-    emodpy_venv = emodpy_module(exp.hpc)
-
     # Generate the Python command to run the script
     pycommand = f'\npython {pyscript} -d {exp.sim_out_dir} {custom_args}'
 
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, shname)
     file = open(script_path, 'w')
-    file.write(header_post + emodpy_venv + f'\ncd {wdir}' + pycommand)
+    file.write(header_post + exp.EMOD_venv + f'\ncd {wdir}' + pycommand) # Also load EMOD's Python virtual environment - needed for handling exp object from idmtools
     file.close()
     dependencies = '--dependency=afterany:'
     prior_dependency = False
@@ -1034,52 +1035,6 @@ def submit_run_plotters(exp):
                             custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
                             job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim, job_id_OpenMalaria=job_id_OpenMalaria,
                             job=f'{plot_name}_plots', memG=plot_memG)
-
-
-def emodpy_module(location='NUCLUSTER'):
-    """
-    Returns the EMODpy virtual environment activation command based on the specified location.
-    Args:
-        location (str, optional): The location identifier. Defaults to 'NUCLUSTER'.
-    Returns:
-        str: The EMODpy virtual environment activation command.
-    """
-    if location == 'NUCLUSTER':
-        emod_venv = '\n\nml singularity/3.8.1 \nml python/3.8.4' \
-                    '\nsource /projects/b1139/environments/emodpy_om/bin/activate\n'
-    if location == 'SCICORE':
-        emod_venv = '\n\nml Python/3.9.6-GCCcore-11.2.0-bare' \
-                    '\nsource /scicore/home/scicore/cavelan/git/model-characterization/emodenv/bin/activate\n'
-    return emod_venv
-
-
-def OM_module(location='NUCLUSTER', om_version=45):
-    """
-    Returns the OpenMalaria module load command based on the specified location and version.
-    Args:
-        location (str, optional): The location identifier. Defaults to 'NUCLUSTER'.
-        om_version (int, optional): The OpenMalaria version. Defaults to 45.
-    Returns:
-        str: The OpenMalaria module load command.
-    Raises:
-        ValueError: If the specified OpenMalaria version is not valid.
-    """
-
-    if location == 'NUCLUSTER':
-        if om_version == 43:
-            ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/modules/ \nmodule load openmalaria\n'
-        elif om_version == 46:
-            ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/om_v46/modules/ \nmodule load openmalaria\n'
-        else:
-            raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
-    if location == 'SCICORE':
-        if om_version == 43:
-            ommodule = '\n\nmodule load OpenMalaria/43.1-iomkl-2019.01\n'
-        elif om_version == 46:
-            ommodule = '\n\nmodule load OpenMalaria/46.0-iomkl-2019.01\n'
-        else:
-            raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
-    return ommodule
 
 
 def str_to_digit(x):

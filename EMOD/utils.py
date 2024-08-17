@@ -24,7 +24,7 @@ from idmtools.entities.experiment import Experiment
 
 sys.path.append('../')
 import manifest
-from helper import shell_header_quest, emodpy_module, write_txt
+from helper import shell_header_quest, write_txt
 
 
 def set_param(simulation, param, value):
@@ -680,6 +680,7 @@ def submit_run_EMOD(exp, scen_df):
     experiment.hpc = exp.hpc
     experiment.sh_hpc_config = exp.sh_hpc_config
     experiment.mem_increase_factor = exp.mem_increase_factor
+    experiment.EMOD_venv = exp.EMOD_venv
     experiment.analyzer_script = exp.analyzer_script
     experiment.job_directory = exp.job_directory
     experiment.emod_step = exp.emod_step
@@ -708,7 +709,7 @@ def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=20):
                                      mem_scl=experiment.mem_increase_factor)
 
     # Get the EMODpy virtual environment path
-    emodpy_venv = emodpy_module(experiment.hpc)
+    emodpy_venv = experiment.EMOD_venv
 
     # Generate the Python commands to run additional scripts
     # If any, add  python or R scripts to directly run after analyzer can be added below
