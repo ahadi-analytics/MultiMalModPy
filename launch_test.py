@@ -88,7 +88,7 @@ exp = get_simulation_time_params(exp)
 
 
 # Check whether defined input parameter are all valid
-#check_exp_inputs(exp)  # TODO add more validity checks as needed
+check_exp_inputs(exp)
 
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, exp.sweep_list)

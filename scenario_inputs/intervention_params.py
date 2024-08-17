@@ -43,7 +43,7 @@ def cc_step_params(exp, overwrite_setup=True):
         exp.start_year = 1995
         exp.end_year = 2040
         exp.burnin = 80
-        exp.calibrun = False
+
         if exp.output_type != 'prevalence_2to10':
             print("Notice: for cc_step, the output_type must be prevalence_2to10")
             exp.output_type = 'prevalence_2to10'
