@@ -23,9 +23,9 @@ def create_scenarios_OM(exp, scen_df):
     xml = xml.replace("@survey_step@", f"{exp.om_survey_step}")
     xml = xml.replace("@entomology_mode@", f"{exp.entomology_mode}")
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
-    
+    xml = xml.replace('@importation_rate@', f"{exp.importation_rate}")
+
     # Scenario sweeps and runs
-    # TODO helper function to replace all, except seed and seasonality
     df = rep_scen_df(scen_df)
     for r, row in df.iterrows():
         scenario = xml.replace('@seed@', str(row['seed']))
@@ -35,10 +35,7 @@ def create_scenarios_OM(exp, scen_df):
         if 'cc_step' in exp.intervention_list: # GOING TO HAVE TO CHANGE SIGNIFICANTLY DUE TO INTERPOLATION
             scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_om']))
             scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_om']))
-        if exp.importation:
-                scenario = scenario.replace('@importation_rate@', str(5))
-        else:
-            scenario = scenario.replace('@importation_rate@', str(0))
+
         if 'smc' in exp.intervention_list:
             scenario = write_smc_deployment(scenario, row)
 

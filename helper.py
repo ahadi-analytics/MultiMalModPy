@@ -78,10 +78,7 @@ def parse_launch_args():
                         help='Specify whether to align transmission in each model by EIR or by prevalence_2to10') # , or by clinical incidence
     parser.add_argument('--calibrun',
                         action='store_true',
-                        help = "This will run sims to generate interpolaiton data, under given simulation settings.")
-    parser.add_argument('--importation',
-                        action='store_true',
-                        help = "Include Importation in OpenMalaria/EMOD")
+                        help = "This will run sims to generate interpolation data, under given simulation settings.")
     return parser.parse_args()
 
 
@@ -172,7 +169,6 @@ def initialize_exp(args, manifest):
     exp.intervention_list = args.interventions
     exp.testrun = args.test
     exp.calibrun = args.calibrun
-    exp.importation = args.importation
     exp.overwrite = args.overwrite
     exp.overwrite_param = False  # to discuss how we want to handle parameter changes and overwrites in helper vs launch_test.py, or have another flag to add for args
     exp.emod_calib_params = args.calib  # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
@@ -230,6 +226,7 @@ def initialize_exp(args, manifest):
     exp.cm_clinical = [0, 0.45]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
+    exp.importation_rate = 0  # number of infections imported per 1000 population per year, i.e. suggested 0 or 5
 
     if exp.calibrun:
         if args.output_type != 'eir':
@@ -761,9 +758,9 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         col_list = ['output_target', 'cm_clinical', 'seasonality']
 
     if exp.calibrun:
-        print("Notice: for calibrun simulations, importation will be set to False")
+        print("Notice: for calibrun simulations, importation will be set to 0")
         print("Depending on EM/OM Performance at lower EIRS at 50k pop, this may change")
-        exp.importation = False
+        exp.importation_rate = 0
         exp.output_target = np.arange(1,31)
         eir_range = [1.00000000e-01, 1.37382380e-01, 1.88739182e-01, 2.59294380e-01, 3.56224789e-01, 4.89390092e-01,
                     6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,

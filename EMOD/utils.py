@@ -87,9 +87,9 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
         add_scale_larval_habitats(camp, df=eir_df,
                                   start_day=row.cc_timestep_em,
                                   repetitions = 1)
-    if exp.importation:
-        five_per_year = (0.05*1000) / exp.pop_size 
-        add_outbreak_individual(camp, start_day = 1, demographic_coverage=five_per_year,
+    if exp.importation_rate != 0:
+        ncases_per_year_per1000pop = ((exp.importation_rate/100)*1000) / exp.pop_size
+        add_outbreak_individual(camp, start_day = 1, demographic_coverage=ncases_per_year_per1000pop,
                                 repetitions=-1, timesteps_between_repetitions=365)
 
     # SMC using PKPD model

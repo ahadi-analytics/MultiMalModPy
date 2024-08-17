@@ -47,7 +47,7 @@ def cc_step_params(exp, overwrite_setup=True):
         if exp.output_type != 'prevalence_2to10':
             print("Notice: for cc_step, the output_type must be prevalence_2to10")
             exp.output_type = 'prevalence_2to10'
-        print(f'Reminder: Importation is currently set to {exp.importation}')
+        print(f'Reminder: Importation is currently set to {exp.importation_rate}')
         exp.output_target = [0.1,0.25,0.5]
         exp.cc_change  = exp.output_target
         exp.step_in_years = 5
