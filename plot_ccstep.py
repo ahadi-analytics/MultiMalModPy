@@ -18,10 +18,10 @@ from plot_helper import *
 
 
 # Plots daily_timeseries - requires PfPR_ClinicalIncidence_daily.csv
-def daily_timeseries(wdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='5-10'):
+def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='5-10'):
     """
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         df_all (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
@@ -103,16 +103,16 @@ def daily_timeseries(wdir, df_all, channel_list, sweepvar='modelname', facet_var
                     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
                     ax.set_xlabel('Year')
                     ax.set_title('$\it{Pf}$PR$_{2-10}$' + f': {facet}')
-                fname = f'timeseries_daily_{seasonality}_cm{cm}_{channel}_by_{sweepvar}_age{agegrp}'
-                fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
+                fname = f'timeseries_daily_{seasonality}_cm{cm}_{channel}_{agegrp}_by_{sweepvar}'
+                fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
                 plt.close()
 
 
 # Plots daily_timeseries_by_seed - requires PfPR_ClinicalIncidence_daily.csv
-def daily_timeseries_by_seed(wdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
+def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         df_all (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
@@ -187,17 +187,17 @@ def daily_timeseries_by_seed(wdir, df_all, channel_list, sweepvar='modelname', f
                 ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
                 ax.set_xlabel('Year')
                 ax.set_title(f'{model}: {facet}')
-            fname = f'timeseries_daily_{channel}_by_{model}_age{agegrp}_by_seed'
-            fig.savefig(os.path.join(wdir, f'{fname}_zoomedin.png'), bbox_inches='tight')
-            # fig.savefig(os.path.join(wdir, f'{fname}.pdf'), bbox_inches='tight')
+            fname = f'timeseries_daily_{channel}_{agegrp}_by_{model}_by_seed'
+            fig.savefig(os.path.join(fdir, f'{fname}_zoomedin.png'), bbox_inches='tight')
+            # fig.savefig(os.path.join(fdir, f'{fname}.pdf'), bbox_inches='tight')
             plt.close()
 
 
 # Plots daily_vectors - requires PfPR_ClinicalIncidence_daily.csv
-def daily_vectors(wdir, df_all, channel, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
+def daily_vectors(fdir, df_all, channel, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         df_all (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
@@ -265,11 +265,11 @@ def daily_vectors(wdir, df_all, channel, sweepvar='modelname', facet_var='ageGro
             ax.set_xlabel('Year')
             ax.set_title('$\it{Pf}$PR$_{2-10}$' + f': {fi}')
 
-        fname = f'timeseries_daily_{channel}_by_{ii}_age{agegrp}'
-        fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
+        fname = f'timeseries_daily_{channel}_{agegrp}_by_{ii}'
+        fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
         plt.close()
 
-def daily_eradication(wdir, df_all, channel, sweepvar='modelname', facet_var='ageGroup', agegrp = '0-100', pop_size = None):
+def daily_eradication(fdir, df_all, channel, sweepvar='modelname', facet_var='ageGroup', agegrp = '0-100', pop_size = None):
 
     #reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
     #df_all = df_all[df_all['cc_title'].isin(reductions)]
@@ -307,23 +307,25 @@ def daily_eradication(wdir, df_all, channel, sweepvar='modelname', facet_var='ag
             edf.loc[len(edf)] = {'modelname': model, 'cc_title': facet, 'num_sims': total_sims,
                                 'sims_failed': failed_sims, 'elimination_ratio': elimination_ratio} 
     edf['pop_size'] = pop_size
-    edf.to_csv((os.path.join(wdir, 'elimination.csv')), index=False)
+    edf.to_csv((os.path.join(fdir, 'elimination.csv')), index=False)
 
     
 
 
 if __name__ == "__main__":
     args = parse_args()
-    out_dir = args.directory
+    wdir = args.directory
     modelname = args.modelname   #  ['EMOD', 'OpenMalaria', 'MalSim']
     #out_dir = '/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240730/sims_dynamic_perennial_cc_step_15_11_55'
     #modelname = ['OpenMalaria']
     if isinstance(modelname, str):
         modelname = [modelname]
-    file = open(os.path.join(out_dir, "exp.obj"), "rb")
+    file = open(os.path.join(wdir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    df_cc, wdir = get_output_df(out_dir, modelname, custom_name='CCstep_daily')
+    df_cc, out_dir = get_output_df(wdir, modelname, custom_name='CCstep_daily')
+    out_dir = os.path.join(out_dir, 'plots')
+    os.makedirs(out_dir, exist_ok=True)
 
     sweepvar = 'modelname'
     facet_var = 'ageGroup'
@@ -332,7 +334,7 @@ if __name__ == "__main__":
 
     #daily_eradicaiton(wdir, df_cc, 'prevalence2to10', sweepvar=sweepvar, facet_var=facet_daily)
     #If you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
-    daily_timeseries(wdir, df_cc, channel_list=daily_channel_list, sweepvar=sweepvar, facet_var=facet_daily, agegrp=None)
-    daily_eradication(wdir, df_cc, channel = 'simulatedEIR', sweepvar = sweepvar, facet_var=facet_daily, agegrp = None, pop=exp.pop_size)
-    # daily_timeseries_by_seed(wdir, df_cc, channel_list = daily_channel_list, sweepvar = sweepvar, facet_var = facet_daily, agegrp='0-100')
-    # daily_vectors(wdir, df_cc, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_daily, agegrp=None)
+    daily_timeseries(out_dir, df_cc, channel_list=daily_channel_list, sweepvar=sweepvar, facet_var=facet_daily, agegrp=None)
+    daily_eradication(out_dir, df_cc, channel = 'simulatedEIR', sweepvar = sweepvar, facet_var=facet_daily, agegrp = None, pop_size=exp.pop_size)
+    # daily_timeseries_by_seed(out_dir, df_cc, channel_list = daily_channel_list, sweepvar = sweepvar, facet_var = facet_daily, agegrp='0-100')
+    # daily_vectors(out_dir, df_cc, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_daily)

@@ -39,7 +39,6 @@ def parse_args():
 
     return parser.parse_args()
 
-
 def custom_sort_key(age_group):
     return int(age_group.split('-')[0])
 
@@ -219,5 +218,5 @@ def subset_dataframe_for_plot(df, figure_vars, agegrp=None):
     # Remove trailing comma and space if any filtering has been done
     if txt.endswith(', '):
         txt = txt[:-2]
-        
+
     return df, txt

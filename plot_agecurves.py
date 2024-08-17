@@ -18,10 +18,10 @@ from plot_helper import *
 
 
 # Plots over age - requires PfPR_ClinicalIncidence_yr.csv
-def age_curves(wdir, df, channel, sweepvar='modelname', facet_var='output_target', age_groups_aggregates=None):
+def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target', age_groups_aggregates=None):
     """
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
@@ -81,19 +81,21 @@ def age_curves(wdir, df, channel, sweepvar='modelname', facet_var='output_target
 
     fname = f'agecurves_{channel}_by_{sweepvar}'
     fname = fname.replace('modelname', 'model')
-    fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
 
 
 if __name__ == "__main__":
     args = parse_args()
-    out_dir = args.directory
+    wdir = args.directory
     modelname = args.modelname #  ['EMOD', 'OpenMalaria', 'MalSim']
     if isinstance(modelname, str):
         modelname = [modelname]
 
-    file = open(os.path.join(out_dir, "exp.obj"), "rb")
+    file = open(os.path.join(wdir, "exp.obj"), "rb")
     exp = pickle.load(file)
+
+
     age_groups_aggregates_sub = [x for x in exp.age_groups_aggregates if x not in ([[0, 5], [0, 100]])]
     age_groups_aggregates_sub = ["{}-{}".format(sublist[0], sublist[1]) for sublist in age_groups_aggregates_sub]
 
@@ -108,9 +110,11 @@ if __name__ == "__main__":
     if facet_var == 'ageGroup' and len(exp.seasonality) > 1:
         facet_var = 'seasonality'
 
-    df, wdir = get_output_df(out_dir, modelname)
+    df, out_dir = get_output_df(wdir, modelname)
+    out_dir = os.path.join(out_dir, 'plots')
+    os.makedirs(out_dir, exist_ok=True)
 
     for channel in channel_list:
         print(f'#----- Plotting Age Curves for {channel}-----#')
-        age_curves(wdir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
+        age_curves(out_dir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
                    age_groups_aggregates=age_groups_aggregates_sub)

@@ -18,12 +18,12 @@ from plot_helper import *
 
 
 # Plots prevalence 2 to 10 by output variable, requires benchmark.csv
-def prevalence2to10_to_incidence(wdir, df, sweepvar='modelname', facet_var='seasonality', channel='clinical_incidence',
+def prevalence2to10_to_incidence(fdir, df, sweepvar='modelname', facet_var='seasonality', channel='clinical_incidence',
                                  agegrps=None):
     """
     Generates line plots for PfPR2to10 and either clinical or severe incidence per sweepvar as colors and modelname as panels.
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         modelname (str or list of str): Name of models for which result dataframes should be loaded.
         sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'modelname'.
         channel (str): Variable representing the y-axis data to be plotted.
@@ -86,17 +86,17 @@ def prevalence2to10_to_incidence(wdir, df, sweepvar='modelname', facet_var='seas
                 firstPlot = False
 
     fname = f'pfpr2to10_to_{channel}'
-    fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
 
 
 # Plots prevalence 2 to 10 by incidence, with subplots seperated by 3 age groups. These graphs were requested by Narimane to reflect 
 # figure 1 in https://www.nature.com/articles/ncomms9170
-def prevalence2to10_to_incidence_by_age_and_model(wdir, df, sweepvar='modelname', channel='clinical_incidence'):
+def prevalence2to10_to_incidence_by_age_and_model(fdir, df, sweepvar='modelname', channel='clinical_incidence'):
     """
     Generates line plots for PfPR2to10 and either clinical or severe incidence as panels seperated by model (columns) and ages (rows).
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         modelname (str or list of str): Name of models for which result dataframes should be loaded.
         sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'modelname'.
         channel (str): Variable representing the y-axis data to be plotted.
@@ -152,17 +152,17 @@ def prevalence2to10_to_incidence_by_age_and_model(wdir, df, sweepvar='modelname'
                 ax.set_ylabel(get_ylab(channel))
                 ax.set_xlabel('$\it{Pf}$PR$_{2-10}$ (%)')
     fname = f'pfpr2to10_to_{channel}_by_age_by_model'
-    fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_inches='tight')
+    fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_inches='tight')
     plt.close()
 
 
 # Plots simulated eir vs output variable, requires benchmark.csv
-def eir_to_outcome(wdir, df, sweepvar='cm_clinical', facet_var='seasonality', eir_val='simulatedEIR',
+def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', eir_val='simulatedEIR',
                    channel='prevalence_2to10', agegrp='0-5'):
     """
     Generates line plots for EIR (input or simulated) and a requested outcome variable per modelname as colors and sweepvar as panels.
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'cm_clinical'.
         eir_val (str, optional): The EIR (entomological inoculation rate) value to be used for plotting. Default is 'simulatedEIR'.
@@ -211,15 +211,15 @@ def eir_to_outcome(wdir, df, sweepvar='cm_clinical', facet_var='seasonality', ei
         fname = f'{eir_val}_{channel}_by_{sweepvar}_{facet_var}'
     fname = fname.replace('modelname', 'model')
 
-    fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
 
 
-def input_to_simulated_eir(wdir, df, sweepvar='cm_clinical', facet_var='seasonality'):
+def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonality'):
     """
     Generates line plots input compared to simulated EIR.
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'cm_clinical'.
     Returns:
@@ -277,16 +277,16 @@ def input_to_simulated_eir(wdir, df, sweepvar='cm_clinical', facet_var='seasonal
     #    fig.text(0.95, 0.25, seasonality[1], ha='center', va='center', rotation=-90, fontsize=14)
     fname = f'input_to_simulated_eir_by_{sweepvar}_{facet_var}'
     fname = fname.replace('modelname', 'model')
-    fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
 
 
 # Calculates ANOVA scores for each output variable, requires Benchmark.csv
-def anovas(wdir, df):
+def anovas(fdir, df):
     """
     Calculates ANOVA scores for each output variable, seperated by age group and all ages.
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
     Returns:
         None (ANOVA values are saved to disk).
@@ -330,15 +330,15 @@ def anovas(wdir, df):
             new_row = {'Age Group': age, 'Objective': com, 'F_value': f_value, 'p_value': p_value, 'null_hyp': null_hyp}
             anova_df = pd.concat([anova_df, pd.DataFrame([new_row])], ignore_index=True)
 
-    anova_df.to_csv(os.path.join(wdir, 'anovas.csv'), index=False)
+    anova_df.to_csv(os.path.join(fdir, 'anovas.csv'), index=False)
 
 
 # Calculates RMSE values for each output variable
-def rmse(wdir, df):
+def rmse(fdir, df):
     """
     Calculates RMSE scores for each output variable (comparing against each model individually), seperated by age group and all ages.
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
     Returns:
         None (RMSE scores are saved to disk).
@@ -384,19 +384,21 @@ def rmse(wdir, df):
             new_row = {'Age Group': age, 'Variable': rmse_var, 'EMOD_TO_OPENMALARIA': rmse_eo,
                        'OPENMALARIA_TO_MALSIM': rmse_om, 'EMOD_TO_MALSIM': rmse_em}
             rmse_df = pd.concat([rmse_df, pd.DataFrame([new_row])], ignore_index=True)
-    rmse_df.to_csv(os.path.join(wdir, 'rmse.csv'), index=False)
+    rmse_df.to_csv(os.path.join(fdir, 'rmse.csv'), index=False)
 
 
 if __name__ == "__main__":
     args = parse_args()
-    out_dir = args.directory
+    wdir = args.directory
     modelname = args.modelname
     if isinstance(modelname, str):
         modelname = [modelname]
-    file = open(os.path.join(out_dir, "exp.obj"), "rb")
+    file = open(os.path.join(wdir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    df, wdir = get_output_df(out_dir, modelname)
+    df, out_dir = get_output_df(wdir, modelname)
+    out_dir = os.path.join(out_dir, 'plots')
+    os.makedirs(out_dir, exist_ok=True)
 
     quantitative = False
     if quantitative and len(modelname) == 3:
@@ -407,17 +409,17 @@ if __name__ == "__main__":
     if len(exp.output_target) >= 3:
         sweepvar = 'modelname'
         print('#----- Plotting input to simulated EIR -----#')
-        input_to_simulated_eir(wdir, df, sweepvar=sweepvar)
+        input_to_simulated_eir(out_dir, df, sweepvar=sweepvar)
 
         channel_list = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence']
         for channel in channel_list:
             print(f'#----- Plotting simulated EIR to {channel} -----#')
-            eir_to_outcome(wdir, df, sweepvar=sweepvar, facet_var='seasonality', eir_val='simulatedEIR', channel=channel, agegrp='0-100')
+            eir_to_outcome(out_dir, df, sweepvar=sweepvar, facet_var='seasonality', eir_val='simulatedEIR', channel=channel, agegrp='0-100')
 
         channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
         for channel in channel_list:
             print(f'#----- Plotting prevalence_2_to_10 to {channel} -----#')
-            prevalence2to10_to_incidence(wdir, df, channel=channel)
+            prevalence2to10_to_incidence(out_dir, df, channel=channel)
             # prevalence2to10_to_incidence_by_age_and_model(out_dir,modelname,channel=channel) #This is new plotter, we don't have to make it everytime, but its available.
     else:
         print(f'Too few EIR values to be able to run relationship plots')

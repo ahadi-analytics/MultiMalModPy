@@ -43,7 +43,7 @@ def all_age_sample_plot( wdir, sweep_variables, sample_channels):
     - sample_channels (list): List of channels for the All Age sample plot.
     """
     # Read the data from a CSV file
-    df = pd.read_csv(os.path.join(wdir, 'All_Age_Outputs.csv'))
+    df = pd.read_csv(os.path.join(wdir,'plots', 'All_Age_Outputs.csv'))
 
     # Group the data by date and sweep variables, and calculate the mean of the outcome channels
     sample_channels = [ch for ch in sample_channels if ch in df.columns]
@@ -79,7 +79,7 @@ def all_age_sample_plot( wdir, sweep_variables, sample_channels):
     fig.tight_layout(rect=[0.023, 0.025, 0.955, 0.955])
 
     # Save the figure as 'AllAge_sample_plot.pdf' in the working directory
-    fig.savefig(os.path.join(wdir, f'AllAge_sample_plot.pdf'))
+    fig.savefig(os.path.join(wdir,'plots', f'AllAge_sample_plot.pdf'))
 
 
 def sample_plot_yr(wdir, sweep_variables, agebin=5):
@@ -142,7 +142,7 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5):
     fig.tight_layout()
 
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
-    fig.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_yr_agebin{agebin}.pdf'))
+    fig.savefig(os.path.join(wdir,'plots', f'PfPR_ClinicalIncidence_yr_agebin{agebin}.pdf'))
 
 
 def sample_plot_mth(wdir, sweep_variables, agebin=5):
@@ -213,7 +213,7 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
     fig1.tight_layout()
 
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
-    fig1.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_mth_agebin{agebin}.pdf'))
+    fig1.savefig(os.path.join(wdir,'plots', f'PfPR_ClinicalIncidence_mth_agebin{agebin}.pdf'))
 
 
 if __name__ == "__main__":
@@ -226,6 +226,7 @@ if __name__ == "__main__":
     sim_start = exp.sim_start_year_om + exp.sim_dur_years - exp.monitoring_years
     # Set wdir directory for loading and saving simulation results (for EMOD)
     wdir = os.path.join(job_directory, 'MalSim')
+    os.makedir(os.path.join(wdir, 'plots'), exist_ok=True)
 
     # Determine whether simulation ran with forced or dynamic EIR and set eirchannel
     # Define tags and channels for sample plots

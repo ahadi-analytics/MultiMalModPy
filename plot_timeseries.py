@@ -18,12 +18,12 @@ from plot_helper import *
 
 
 # Plots trends over available months, requires PfPR_ClinicalIncidence_mth.csv
-def monthly_trends(wdir, df, channel, sweepvar='modelname',facet_var='output_target', agegrp='0-100'):
+def monthly_trends(fdir, df, channel, sweepvar='modelname',facet_var='output_target', agegrp='0-100'):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
     Note, assumed single occurence per month, i.e. aggregated across years (reads in benchmark_mth.csv)
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'output_target'.
@@ -80,15 +80,15 @@ def monthly_trends(wdir, df, channel, sweepvar='modelname',facet_var='output_tar
         ax.set_ylabel(get_ylab(channel))
     fname = f'monthly_{channel}_{agegrp}_by_{sweepvar}_{facet_var}'
     fname = fname.replace('modelname','model')
-    fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_mth.csv
-def monthly_timeseries(wdir, df, channel, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
+def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
@@ -143,15 +143,15 @@ def monthly_timeseries(wdir, df, channel, sweepvar='modelname', facet_var='ageGr
         ax.set_title(f"{facet_var} = {fi}")
     fname = f'timeseries_monthly_{channel}_{agegrp}_by_{sweepvar}'
     fname = fname.replace('modelname', 'model')
-    fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_yr.csv
-def annual_timeseries(wdir, df, channel, sweepvar='modelname', facet_var='seasonality', agegrp='0-100'):
+def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='seasonality', agegrp='0-100'):
     """
     Parameters:
-        wdir (str): Working directory where the plot will be saved.
+        fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
@@ -207,26 +207,29 @@ def annual_timeseries(wdir, df, channel, sweepvar='modelname', facet_var='season
 
     fname = f'timeseries_annual_{channel}_{agegrp}_by_{sweepvar}'
     fname = fname.replace('modelname', 'model')
-    fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
 
 
 if __name__ == "__main__":
     args = parse_args()
-    out_dir = args.directory
+    wdir = args.directory
     modelname = args.modelname
     if isinstance(modelname, str):
         modelname = [modelname]
-    file = open(os.path.join(out_dir, "exp.obj"), "rb")
+    file = open(os.path.join(wdir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
     ento_channel_list = ['n_total_mos_pop']
     epi_channel_list = ['simulatedEIR', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10']
     channel_list = epi_channel_list + ento_channel_list
 
-    df_mth, wdir = get_output_df(out_dir, modelname, mth=True)
-    df_yr, _ = get_output_df(out_dir, modelname, yr=True)
+    df_mth, out_dir = get_output_df(wdir, modelname, mth=True)
+    df_yr, _ = get_output_df(wdir, modelname, yr=True)
     agegrp = '0-100'
+
+    out_dir = os.path.join(out_dir, 'plots')
+    os.makedirs(out_dir, exist_ok=True)
 
     if not df_mth.empty:
         facet_var = 'modelname'
@@ -234,7 +237,7 @@ if __name__ == "__main__":
         for channel in channel_list:
             try:
                 print(f'#----- Plotting the monthly trends for {channel} -----#')
-                monthly_trends(wdir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp=agegrp)
+                monthly_trends(out_dir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp=agegrp)
             except:
                 print(f'{channel} not found in dataframe')
 
@@ -251,9 +254,9 @@ if __name__ == "__main__":
     if not df_mth.empty:
         for channel in channel_list:
             print(f'#----- Plotting monthly timeseries for {channel}-----#')
-            monthly_timeseries(wdir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp=agegrp)
+            monthly_timeseries(out_dir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp=agegrp)
 
     if not df_yr.empty:
         for channel in channel_list:
             print(f'#----- Plotting annual timeseries for {channel}-----#')
-            annual_timeseries(wdir, df_yr, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp=agegrp)
+            annual_timeseries(out_dir, df_yr, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrp=agegrp)

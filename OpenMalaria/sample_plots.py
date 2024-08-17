@@ -75,7 +75,7 @@ def all_age_sample_plot(wdir, sweep_variables, sample_channels):
     fig.tight_layout(rect=[0.023, 0.025, 0.955, 0.955])
 
     # Save the figure as 'AllAge_sample_plot.pdf in the working directory
-    fig.savefig(os.path.join(wdir, 'AllAge_sample_plot.pdf'))
+    fig.savefig(os.path.join(wdir,'plots', 'AllAge_sample_plot.pdf'))
 
 
 def sample_plot_yr(wdir, sweep_variables, agebin=5):
@@ -131,7 +131,7 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5):
     fig.text(0.5, 0.02, 'Simulation time (years)', ha='center', va='center', fontsize=14)
 
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
-    fig.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_yr_agebin{agebin}.pdf'))
+    fig.savefig(os.path.join(wdir,'plots', f'PfPR_ClinicalIncidence_yr_agebin{agebin}.pdf'))
 
 
 def sample_plot_mth(wdir, sweep_variables, agebin=5):
@@ -195,7 +195,7 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5):
     fig1.text(0.5, 0.02, f'Months (single year {yr})', ha='center', va='center', fontsize=14)
 
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
-    fig1.savefig(os.path.join(wdir, f'PfPR_ClinicalIncidence_mth_agebin{agebin}.pdf'))
+    fig1.savefig(os.path.join(wdir,'plots', f'PfPR_ClinicalIncidence_mth_agebin{agebin}.pdf'))
 
 
 if __name__ == "__main__":
@@ -208,6 +208,7 @@ if __name__ == "__main__":
 
     # Set wdir directory for loading and saving simulation results (for OpenMalaria)
     wdir = os.path.join(job_directory, 'om')
+    os.makedir(os.path.join(wdir, 'plots'), exist_ok=True)
 
     # Define tags and channels for sample plots
     exp_tags = exp.sweep_list  # [x for x in exp.sweep_list if x != 'seed']
