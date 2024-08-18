@@ -469,6 +469,14 @@ def check_exp_inputs(exp, intervention_checks = True, attribute_check= False):
                             'EMOD' not in exp.models_to_run):
         print(f'WARNING: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
 
+    # Check agebins
+    a = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
+    if len(a) > 0:
+        raise ValueError(f'agebins are not granular enough to allow aggregation by age_groups_aggregates, missing {a}')
+
+    if 2 not in exp.agebins or 10 not in exp.agebins:
+        raise ValueError(f'agebins 2 and 10 are required in the framework, current agebins {exp.agebins}')
+
     # Check unique limitations of framework that are in process/not yet working
     if len(exp.seasonality) > 1:
         raise ValueError(f'Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.')
