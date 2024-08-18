@@ -58,7 +58,7 @@ else:
         exp.exp_name = f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
 
         ## Overwriting default parameters with parameters specific in scenario csv file
-        not_param_columns = ['rownum', 'exp_short', 'exp_name', 'py_script']
+        not_param_columns = ['rownum', 'exp_short', 'exp_name']
         for col in exp_scen_df.columns:
             if col not in not_param_columns:
                 setattr(exp, col, get_param_from_dataframe(exp_scen_df, col))

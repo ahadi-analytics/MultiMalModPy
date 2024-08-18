@@ -24,4 +24,4 @@ python launch_sim.py  --models EMOD MalSim OpenMalaria -r test
 
 
 ### from csv
-python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM
+python launch_sim.py  --models OpenMalaria  --rownum 0 --csv baseline_eir_pfpr_target

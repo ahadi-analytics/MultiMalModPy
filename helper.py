@@ -123,17 +123,15 @@ def get_param_from_dataframe(df, name):
 
     """
 
-    # list of parameters expecting list format  # FIXME, better way to do?
-    listparams = ['seasonality', 'sweep_list', 'cm_clinical', 'eir', 'intervention_list', 'agebins',
-                  'eir_scalar_malsim', 'eir_malsim', 'eir_scalar_om', 'eir_scalar_emod', 'eir_om', 'eir_scalar_om',
-                  'carrying_capacity_step']
+    # list of parameters expecting list format
+    listparams = ['seasonality', 'sweep_list', 'cm_clinical', 'output_target', 'intervention_list', 'agebins' ]
 
     value = df[name].iat[0]
 
     if name in listparams:
         try:
             out = value.replace(' ', '').split(',')
-            out = [float(i) if i.isdigit() else i for i in out]  # some might require int?
+            out = [float(i) if i.replace('.', '', 1).isdigit() else i for i in out]
         except:
             out = [value]
     else:
