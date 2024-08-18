@@ -443,7 +443,7 @@ def exp_obj_to_csv(file_path):
                 "The pickle file contains unsupported data type. Only dictionaries and lists are supported.")
 
 
-def check_exp_inputs(exp, attribute_check= False):
+def check_exp_inputs(exp, intervention_checks = True, attribute_check= False):
     """
     Helper function to validate experiment inputs.
 
@@ -454,6 +454,7 @@ def check_exp_inputs(exp, attribute_check= False):
         ValueError: If input parameters are invalid.
     """
 
+    # Check timesteps, survey intervals and analyer alignment
     if exp.om_survey_step == '30d' and "5day" in exp.analyzer_list:
         raise Warning('OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
 
@@ -464,13 +465,15 @@ def check_exp_inputs(exp, attribute_check= False):
         if exp.num_seeds_burnin != 1:
             raise ValueError('Current framework only allows 1 seed for EMOD burnin')
 
-    if len(exp.seasonality) > 1:
-        raise ValueError(f'Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.')
-
     if exp.burnin < 80 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
                             'EMOD' not in exp.models_to_run):
         print(f'WARNING: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
 
+    # Check unique limitations of framework that are in process/not yet working
+    if len(exp.seasonality) > 1:
+        raise ValueError(f'Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.')
+
+    # Check whether parameters align with current setup in calibruns - "interpolation data"
     if any(value not in [0, 0.45] for value in exp.cm_clinical) and (exp.entomology_mode == 'dynamic') and ('EMOD' in exp.models_to_run):
         raise ValueError('EMOD is not set up to run dynamic EIR is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
@@ -479,6 +482,15 @@ def check_exp_inputs(exp, attribute_check= False):
 
     if exp.output_type not in ['eir', 'prevalence_2to10']:
         raise ValueError(f"Warning: invalid output type: {exp.output_type}")
+
+
+    # Check for interventions added to the framework
+    if intervention_checks:
+        if "cc_step" in exp.intervention_list:
+            if exp.emod_step is None :
+                raise Warning( 'CC step requires separate burnin and pickup for EMOD, overwritting burnin and emod_step parameters')
+            if exp.entomology_mode != "dynamic":
+                raise Warning( f'Invalid entomology_mode for cc_step {exp.entomology_mode} specified, but "dynamic" required')
 
     # Check if any attribute in list_attributes_nGT1 is not in sweep_list
     if attribute_check:
