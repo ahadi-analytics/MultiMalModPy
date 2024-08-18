@@ -35,7 +35,7 @@ def cc_step_params(exp, overwrite_setup=True):
         exp.intervention_list = exp.intervention_list + ['cc_step']
     ## Can be useful to allow storing some defaults on how we want to run a specific simulation, without modiyfing in launch_test
     ## Can also be errorprone between and pickup, default is False, tbd on how/when to use
-    if overwrite_setup:
+    if overwrite_setup: # FIXME - remove ?, i.e. when running a test for cc step..
         exp.mem_increase_factor = 12.0  # scaling factor on default memory requested
         exp.pop_size = 10000
         exp.num_seeds_burnin = 1
@@ -44,13 +44,13 @@ def cc_step_params(exp, overwrite_setup=True):
         exp.end_year = 2040
         exp.burnin = 80
 
-        if exp.output_type != 'prevalence_2to10':
-            print("Notice: for cc_step, the output_type must be prevalence_2to10")
-            exp.output_type = 'prevalence_2to10'
-        print(f'Reminder: Importation is currently set to {exp.importation_rate}')
-        exp.output_target = [0.1,0.25,0.5]
-        exp.cc_change  = exp.output_target
-        exp.step_in_years = 5
+    if exp.output_type != 'prevalence_2to10':
+        print("Notice: for cc_step, the output_type must be prevalence_2to10")
+        exp.output_type = 'prevalence_2to10'
+    print(f'Reminder: Importation is currently set to {exp.importation_rate}')
+    exp.output_target = [0.1,0.25,0.5]
+    exp.cc_change  = exp.output_target
+    exp.step_in_years = 5
         
     ## Specific model scaffolds to use
     exp.om_scaffold = "R0000GA_CC_STEP"  # defining which OpenMalaria XML scaffold to use
