@@ -702,8 +702,8 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     df.drop(df[df.ageGroup > 1000].index, inplace=True)  ## In OpenMalaria 'third dimension' may indicate other dimensions than age group
 
     # get number of years aggregated
-    n_surveys_per_year = np.floor((365 / 30))
-    #num_years = np.floor(len(df['survey'].unique()) / n_surveys_per_year)
+    n_surveys_per_year = np.floor((365 / survey_step_days))
+    n_surveys_per_month = np.floor((30 / survey_step_days))
 
     # Sum the surveys for each measure, month, and age group - note the same if survey_step_days = 30, but should also run if survey_step_days = 5
     df = df.groupby(['index',  'year', 'month', 'measure', 'ageGroup'], as_index=False).value.sum()
@@ -763,7 +763,7 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
             mortality = nDeaths / nHost  # (events per person per year)- for each month
 
             # Create a DataFrame with the analysis results for the current age group
-            simdata = pd.DataFrame({'nHost': nHost * n_surveys_per_year,
+            simdata = pd.DataFrame({'nHost': (nHost * n_surveys_per_year) / n_surveys_per_month,
                                     'prevalence_2to10': pfpr2to10,
                                     'prevalence': prevalence,
                                     'clinical_incidence': clinical_incidence,
