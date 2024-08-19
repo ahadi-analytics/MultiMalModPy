@@ -39,7 +39,6 @@ def parse_args():
 
     return parser.parse_args()
 
-
 def custom_sort_key(age_group):
     return int(age_group.split('-')[0])
 
@@ -102,7 +101,7 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
                         df = pd.read_csv(model_path, usecols=cols_to_keep)
                         df['modelname'] = model
                         if model == 'EMOD':
-                            df['seed'] = df['seed'] + 1 
+                            df['seed'] = df['seed'] + 1
                         dfs.append(df)
                     else:
                         print(f"File not found for {model}: {model_path}")
@@ -121,8 +120,8 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
                 age_grps = list(df['ageGroup'].unique())
             df['ageGroup'] = df['ageGroup'].astype('category')
             df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
-            
-        warning_df = df[df['simulatedEIR'] == 0]    
+
+        warning_df = df[df['simulatedEIR'] == 0]
         if len(warning_df) > 0 and daily is False:  # we don't want to include simulations were eir was 0 or less, because we won't get any outcome measures and that crashes the system
             print('Warning: some eirs had simulated EIRS of 0, and were removed')
             df = df[df['simulatedEIR'] > 0]
@@ -173,3 +172,52 @@ def color_selector(i, s):
         return 2
     else:
         return i
+
+
+def get_ylab(channel):
+    channel_labels = {'prevalence_2to10': '$\it{Pf}$PR$_{2-10}$ (%)',
+                      'prevalence': '$\it{Pf}$PR (%)',
+                      'clinical_incidence': 'Clinical incidence (pppy)',
+                      'severe_incidence': 'Severe incidence (pppy)',
+                      'simulatedEIR': 'simulated EIR'
+                      }
+
+    return channel_labels.get(channel)
+
+
+def subset_dataframe_for_plot(df, figure_vars, agegrp=None, filter_target=True):
+    txt = 'Filtered dataset by: '
+
+    if agegrp is not None:
+        if 'ageGroup' not in figure_vars:
+            if isinstance(agegrp, list):
+                df = df[df['ageGroup'].isin(agegrp)]
+                txt += f'ageGroup in {agegrp}, '
+            else:
+                df = df[df['ageGroup'] == agegrp]
+                txt += f'ageGroup {agegrp}, '
+
+    if 'cm_clinical' not in figure_vars:
+        selected_cm = df['cm_clinical'].min()
+        df = df[df['cm_clinical'] == selected_cm]
+        txt += f'cm_clinical {selected_cm}, '
+
+    if 'seasonality' not in figure_vars:
+        selected_season = 'seasonal' if 'seasonal' in df['seasonality'].unique() else df['seasonality'].unique()[0]
+        df = df[df['seasonality'] == selected_season]
+        txt += f'seasonality {selected_season}, '
+
+    if filter_target:
+      if not any(var in figure_vars for var in ['simulatedEIR', 'prevalence_2to10', 'output_target']) :
+          selected_output = df['output_target'].max()
+          df = df[df['output_target'] == selected_output]
+          txt += f'output_target {selected_output}, '
+
+    if 'modelname' not in figure_vars and df['modelname'].nunique() > 1:
+        raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
+
+    # Remove trailing comma and space if any filtering has been done
+    if txt.endswith(', '):
+        txt = txt[:-2]
+
+    return df, txt
