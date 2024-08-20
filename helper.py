@@ -451,12 +451,12 @@ def check_exp_inputs(exp, print_reminder = True, intervention_checks = True, att
     """
 
     if print_reminder:
-        print(f'Reminder: Importation is currently set to {exp.importation}')
+        print(f'Reminder: Importation is currently set to {exp.importation_rate}')
 
 
     # Check timesteps, survey intervals and analyer alignment
     if exp.om_survey_step == '30d' and "5day" in exp.analyzer_list:
-        raise Warning('OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
+        print('Warning: OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
 
     if exp.om_survey_step == '30d' and "cc_step" in exp.intervention_list:
         raise ValueError('cc_step interventions requires 5d survey steps in OpenMalaria')
@@ -467,7 +467,7 @@ def check_exp_inputs(exp, print_reminder = True, intervention_checks = True, att
 
     if exp.burnin < 80 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
                             'EMOD' not in exp.models_to_run):
-        raise Warning(f'Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
+        print('Warning: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
 
     # Check agebins
     a = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
@@ -489,15 +489,13 @@ def check_exp_inputs(exp, print_reminder = True, intervention_checks = True, att
         raise ValueError('output_type prevalence_2to10 is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
     if exp.output_type not in ['eir', 'prevalence_2to10']:
-        raise ValueError(f"Warning: invalid output type: {exp.output_type}")
+        raise ValueError(f"Invalid output type: {exp.output_type}")
 
     # Check for interventions added to the framework
     if intervention_checks:
         if "cc_step" in exp.intervention_list :
-            if exp.emod_step is None :
-                raise Warning( 'CC step requires separate burnin and pickup for EMOD, overwritting burnin and emod_step parameters')
             if exp.entomology_mode != "dynamic":
-                raise Warning( f'Invalid entomology_mode for cc_step {exp.entomology_mode} specified, but "dynamic" required')
+                raise ValueError( f'Invalid entomology_mode for cc_step {exp.entomology_mode} specified, but "dynamic" required')
             if exp.output_type != 'prevalence_2to10' :
                 raise ValueError("cc_step requires the output_type to be prevalence_2to10")
             if exp.end_year - exp.start_year < exp.step_in_years:  # check inputs to be run after all exp parameters were updated

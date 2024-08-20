@@ -31,8 +31,9 @@ if args.emodstep in ['pickup', 'new_pickup']:
         # ...
         ## USER SPECIFIC PARAMETER EDITS
         # ...
-        exp = get_intervention_params(exp)
-        
+
+    # ensure intervention parameters are correctly setup (some may get updated between burnin and pickup run)
+    exp = get_intervention_params(exp)
     exp.plots_to_run = ['benchmark', 'timeseries', 'agecurves'] # For pickup, this needs to be defined again, as for burnin set to empty
 
     ## Add intervention params back - FIXME not all parameters should be overwritten per default?
