@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-## These functions are used in launch_test.py, for launch_simulations, a csv file is expected to read parameters from
+## These functions are used in launch_sim.py, for launch_simulations, a csv file is expected to read parameters from
 
 def exp_params_to_update(exp):
     """
@@ -19,52 +19,53 @@ def exp_params_to_update(exp):
     return exp
 
 
-def cc_step_params(exp, overwrite_setup=True):
+def cc_step_params(exp):
     """
     This function sets up the exp object so that the carrying capacity perterbation can occur.
 
     Parameters:
         exp: Experiment object.
-        overwrite_setup: bool, optional
-            Flag to indicate whether to overwrite default setup parameters. Default is True.
+
     Returns:
         Experiment object
             An object with updated experiment parameters.
     """
-    if 'cc_step' not in exp.intervention_list:
-        exp.intervention_list = exp.intervention_list + ['cc_step']
-    ## Can be useful to allow storing some defaults on how we want to run a specific simulation, without modiyfing in launch_test
-    ## Can also be errorprone between and pickup, default is False, tbd on how/when to use
-    if overwrite_setup:
-        exp.mem_increase_factor = 12.0  # scaling factor on default memory requested
+
+    ## Required fixed parameters for cc_step
+    exp.step_in_years = 5
+    exp.om_scaffold = "R0000GA_CC_STEP"
+    exp.om_survey_step = '5d'
+
+    # Flexible parameters depending on type of run and user-specifications
+    if exp.run_mode == 'productionrun':
+        print('Warning: Running cc_step in production mode with predefined parameters that may differ from those in helper.py')
+        exp.mem_increase_factor = 12.0  # FIXME scaling factor on default memory requested, define in check_inputs depending on the population and burnin specified
         exp.pop_size = 10000
         exp.num_seeds_burnin = 1
         exp.num_seeds = 20
         exp.start_year = 1995
         exp.end_year = 2040
         exp.burnin = 80
-        exp.calibrun = False
-        if exp.output_type != 'prevalence_2to10':
-            print("Notice: for cc_step, the output_type must be prevalence_2to10")
-            exp.output_type = 'prevalence_2to10'
-        print(f'Reminder: Importation is currently set to {exp.importation}')
-        exp.output_target = [0.1,0.25,0.5]
-        exp.cc_change  = exp.output_target
-        exp.step_in_years = 5
-        
-    ## Specific model scaffolds to use
-    exp.om_scaffold = "R0000GA_CC_STEP"  # defining which OpenMalaria XML scaffold to use
-    exp.om_survey_step = '5d'
-    exp.MalSim_script = 'malsim_benchmarking_exercise.R'  ## same file
-    ## Parameters
-    exp.cc_timestep_om = int((73 * (exp.burnin + exp.step_in_years)))  # 5 Years in to the pickup time OpenMalaria
-    if exp.emod_step == 'pickup':
-        exp.cc_timestep_em = int(exp.step_in_years * 365)  # 5 years in to the pickup time EMOD and Malsim
-    if exp.emod_step is None:
-        exp.cc_timestep_em = int((exp.burnin + exp.step_in_years)*365)
-    exp.cc_timestep_ms = int((exp.burnin + exp.step_in_years)*365)
-    ## Analyzer and plotter  to run specific for CC step
+        exp.output_type = 'prevalence_2to10'
+        exp.output_target = [0.1, 0.25, 0.5]
+        exp.cc_change = exp.output_target
+    else:
+        ## Keep parameters as defined by user in helper.py
+        exp.cc_change = exp.output_target
+
     exp.sweep_list = exp.sweep_list + ['cc_change']
+
+    ## Automatically derived and updated parameters
+    exp.cc_timestep_om = int((73 * (exp.burnin + exp.step_in_years)))  # 5 Years in to the pickup time OpenMalaria
+    if exp.emod_step is None:  ## if None, no serialization done, hence burnin period is added to the step_in_years
+        exp.cc_timestep_em = int((exp.burnin + exp.step_in_years)*365)
+    else:
+        exp.cc_timestep_em = int(exp.step_in_years * 365)  # 5 years in to the pickup time EMOD and Malsim, this parameter can already be defined in burnin for the respective pickup run
+    exp.cc_timestep_ms = int((exp.burnin + exp.step_in_years)*365)
+
+
+    ## Fixed parameters for cc_step
+    exp.om_scaffold = "R0000GA_CC_STEP"  # defining which OpenMalaria XML scaffold to use
     exp.plots_to_run = ['ccstep']
     exp.analyzer_list = ['all_age_analyzer', 'cc_step']
     return exp
@@ -107,7 +108,7 @@ def cc_title_function(df):
 
 def smc_params(exp):
     """
-    For an SMC simulation, we currenlty require a hard set of a few specific variables in exp.
+    SMC currenyly requires a hard set of a few specific variables in exp.
     This function sets the exp variables to what they need to be in order for the simulations to run.
     
     Parameters:

@@ -383,7 +383,7 @@ class BenchmarkAnalyzer(IAnalyzer):
         # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
         cdf.to_csv((os.path.join(self.working_dir, 'em', 'Benchmark.csv')), index=False)
         
-        if exp.calibrun:
+        if exp.run_mode == 'calibrun':
             u5 = cdf[cdf['ageGroup']=='0-5'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
             u5 = u5.rename(columns={'clinical_incidence':'clinical_incidence_U5'})
             all_ages = cdf[cdf['ageGroup']=='0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()

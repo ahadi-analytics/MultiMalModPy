@@ -21,7 +21,7 @@ def parse_launch_args():
                         help="Jobdirectory of burnin, if no EMOD burnin, is ignored")
     parser.add_argument('--suite',
                         type=str,
-                        default=f'test_sims_{dt.now().strftime("%Y%m%d")}',
+                        default=f'test_{dt.now().strftime("%Y%m%d")}',
                         help='Description of SUITEname')
     parser.add_argument('--expname',
                         type=str,
@@ -58,15 +58,14 @@ def parse_launch_args():
                         type=int,
                         required=False,
                         help='Row number of specified scenario csv')
-    parser.add_argument('--test',
+    parser.add_argument('-r', '--run_mode',
+                        type=str,
+                        default=None,
+                        choices=[None, 'test', 'calibrun', 'productionrun'],
+                        help='Specify whether to run a normal run, a test run, calibration run or production run, population and burnin and seeds will be adjusted automatically')
+    parser.add_argument('--emod_calib_params',
                         action='store_true',
-                        help='Specify whether to run a test, population and burnin and seeds will be only a few per default')
-    parser.add_argument('--calib',
-                        action='store_true',
-                        help='Specify whether to run include calibration parameters as a sweep variable')
-    parser.add_argument('--overwrite',
-                        action='store_true',
-                        help='Whether to overwrite simulation experiment folders')
+                        help='Specify whether to run including calibration parameters as a sweep variable (EMOD only)')
     parser.add_argument('--mpv',
                         default=True,
                         type=bool,
@@ -76,12 +75,6 @@ def parse_launch_args():
                         default='prevalence_2to10',
                         choices=['prevalence_2to10','eir'], # clinical_incidenceU5 #
                         help='Specify whether to align transmission in each model by EIR or by prevalence_2to10') # , or by clinical incidence
-    parser.add_argument('--calibrun',
-                        action='store_true',
-                        help = "This will run sims to generate interpolaiton data, under given simulation settings.")
-    parser.add_argument('--importation',
-                        action='store_true',
-                        help = "Include Importation in OpenMalaria/EMOD")
     return parser.parse_args()
 
 
@@ -127,17 +120,15 @@ def get_param_from_dataframe(df, name):
 
     """
 
-    # list of parameters expecting list format  # FIXME, better way to do?
-    listparams = ['seasonality', 'sweep_list', 'cm_clinical', 'eir', 'intervention_list', 'agebins',
-                  'eir_scalar_malsim', 'eir_malsim', 'eir_scalar_om', 'eir_scalar_emod', 'eir_om', 'eir_scalar_om',
-                  'carrying_capacity_step']
+    # list of parameters expecting list format
+    listparams = ['seasonality', 'sweep_list', 'cm_clinical', 'output_target', 'intervention_list', 'agebins' ]
 
     value = df[name].iat[0]
 
     if name in listparams:
         try:
             out = value.replace(' ', '').split(',')
-            out = [float(i) if i.isdigit() else i for i in out]  # some might require int?
+            out = [float(i) if i.replace('.', '', 1).isdigit() else i for i in out]
         except:
             out = [value]
     else:
@@ -170,13 +161,10 @@ def initialize_exp(args, manifest):
     exp.emod_step = args.emodstep
     exp.models_to_run = args.models
     exp.intervention_list = args.interventions
-    exp.testrun = args.test
-    exp.calibrun = args.calibrun
-    exp.importation = args.importation
-    exp.overwrite = args.overwrite
-    exp.overwrite_param = False  # to discuss how we want to handle parameter changes and overwrites in helper vs launch_test.py, or have another flag to add for args
-    exp.emod_calib_params = args.calib  # A new function in the framework, are we passing along our within host framework recalibrated parameters, default will be false.
+    exp.run_mode = args.run_mode
+    exp.emod_calib_params = args.emod_calib_params  # Whether to pass along NU's Within-Host framework recalibrated parameters, default will be false.
     exp.malariasimulation_parameter_variation = args.mpv
+    exp.output_type = args.output_type
 
     # Name and location of simulation, a SUITE may contain multiple experiments that belong to a shared objective
     exp.user = args.user
@@ -186,12 +174,16 @@ def initialize_exp(args, manifest):
     exp.hpc = manifest.hpc
     exp.sh_hpc_config = manifest.sh_hpc_config
     exp.selected_platform = manifest.selected_platform
-    exp.om_version = manifest.om_version
+
     exp.emod_build = manifest.emod_build
-    exp.om_path = manifest.OM_PATH
     exp.emod_input_path = manifest.emod_input_path
+    exp.EMOD_venv = manifest.EMOD_venv
+    exp.OM_venv = manifest.OM_venv
+    exp.om_path = manifest.OM_PATH
+    exp.om_version = manifest.om_version
     exp.om_input_path = manifest.om_input_path
     exp.ms_input_path = manifest.ms_input_path
+
     exp.job_directory_manifest = manifest.job_directory
     exp.output_directory_manifest = manifest.output_directory
     exp.interp_path = manifest.interp_path
@@ -211,63 +203,71 @@ def initialize_exp(args, manifest):
 
     # Flag to select whether to run with (dynamic) or without vector model (forced)
     exp.entomology_mode = 'dynamic'  # dynamic, forced
-    exp.seasonality = ['perennial']  # ["perennial", "seasonal"]  
+    exp.seasonality = ['perennial']  # ["perennial", "seasonal"]  #FIXME currently allowing only single seasonal pattern
     #"Current framework support only 1 seasonality patten per experiment"
     exp.mem_increase_factor = 5.0  # scaling factor on default memory requested
 
     # Define age groups to report/monitor in simulations and to aggregate in output
-    exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # Note, keep these to ensure smooth postprocessing
+    exp.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]  # FIXME Note, keep these to ensure smooth postprocessing
     exp.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
                                  [0, 100]]
 
     # Define case management start and coverage
-    # 0.2029544 in OpenMalaria corresponds to 5-day probability already converted from 2 weeks coverage, use same for EMOD?
     exp.cm_start = 1
     exp.cm_clinical = [0, 0.45]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
     exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
     exp.detectionLimit = 40
+    exp.importation_rate = 0  # number of infections imported per 1000 population per year, i.e. suggested 0 or 5
+    exp.num_seeds_burnin = 1  # used only if emod_step=='burnin' (EMOD specific)
 
-    if exp.calibrun:
-        if args.output_type != 'eir':
-            print("Warning: For Calibrun Simulations, output_type will equal eir")
+    exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
+    exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
+    exp.end_year = 2005  # end of pickup and monitoring period
+
+
+    # FIXME - where is the best place for those custom parameter specifications? -  Specify parameters for test vs normal or production run
+    if exp.run_mode =='calibrun':
+        if exp.output_type != 'eir':
+            raise Warning(f"output_type changed to 'eir' as required for calibrun (not {exp.output_type})")
         exp.output_type = 'eir'
         exp.analyzer_list = ['benchmark']
         exp.plots_to_run = ['benchmark']
-    else:
-        exp.output_type = args.output_type
-    if exp.output_type == 'eir':
-        exp.output_target = [1, 5, 10, 20, 50, 100, 500, 1000]
-        # exp.output_target = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75,2, 
-        #                      2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9,
-        #                      10, 12, 14, 16, 18, 20, 25, 30, 35, 40,
-        #                      45, 50, 100, 200, 500, 1000]           
-    elif exp.output_type == 'prevalence_2to10':
-        exp.output_target = [0.05,0.1,0.2,0.25,0.4,0.45,0.5,0.6,0.7,0.8]
-    else:
-        print("Warning: we do not offer input types that aren't pfpr or eir")
-    # Define simulation population and seeds
-    if exp.testrun:
+
+        exp.output_target = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75,2,
+                             2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9,
+                             10, 12, 14, 16, 18, 20, 25, 30, 35, 40,
+                             45, 50, 100, 200, 500, 1000]
+
+    elif exp.run_mode == 'test':
         exp.pop_size = 1000
-        exp.num_seeds_burnin = 1
         exp.num_seeds = 1
         exp.start_year = 2000
         exp.end_year = 2005
         exp.burnin = 10
+
         if exp.output_type == 'eir':
             exp.output_target = [1,5,10,20,35,50]
-        elif exp.output_type == 'prevalence_2to10':
+        if exp.output_type == 'prevalence_2to10':
             exp.output_target = [0.05,0.1,0.25,0.4,0.5,0.6]
-        else:
-            print("Warning: we do not offer input types that aren't pfpr or eir")
+
         #if exp.hpc == 'NUCLUSTER':
         #    exp.sh_hpc_config['p'] = 'b1139testnode'  # Use test allocation
+    elif exp.run_mode == 'productionrun':
+        exp.SUITEname = exp.SUITEname.replace('test','production')
+        exp.pop_size = 50000
+        exp.num_seeds = 20
+        if exp.output_type == 'eir':
+            exp.output_target = [1, 5, 10, 20, 50, 100, 500, 1000]
+        if exp.output_type == 'prevalence_2to10':
+            exp.output_target = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
     else:
-        exp.pop_size = 50000 #Production Run uses 50000
-        exp.num_seeds_burnin = 1  # used only if emod_step=='burnin', for EMOD
-        exp.num_seeds = 20  # suggested minimum 3, in production 20
-        exp.start_year = 2000  # start of pickup and monitoring period (for EMOD set given burnin and serialization flags)
-        exp.end_year = 2005  # end of pickup and monitoring period
-        exp.burnin = 80  # Duration of burnin (pre-monitoring) period, should be 80 years to establish immunity in the population
+        exp.SUITEname = exp.SUITEname.replace('test', 'sim')
+        exp.pop_size = 10000
+        exp.num_seeds = 3  # suggested minimum 3
+        if exp.output_type == 'eir':
+            exp.output_target = [1, 5, 10, 20, 50, 100, 500, 1000]
+        if exp.output_type == 'prevalence_2to10':
+            exp.output_target = [0.05,0.1,0.2,0.25,0.4,0.45,0.5,0.6,0.7,0.8]
 
     # Name of parameters to vary
     exp.sweep_list = ['output_target', 'cm_clinical', 'seasonality']
@@ -438,7 +438,8 @@ def exp_obj_to_csv(file_path):
                 "The pickle file contains unsupported data type. Only dictionaries and lists are supported.")
 
 
-def check_exp_inputs(exp):
+# check inputs to be run after all exp parameters were updated, i.e. after exp_params_to_update
+def check_exp_inputs(exp, print_reminder = True, intervention_checks = True, attribute_check= False):
     """
     Helper function to validate experiment inputs.
 
@@ -449,8 +450,13 @@ def check_exp_inputs(exp):
         ValueError: If input parameters are invalid.
     """
 
+    if print_reminder:
+        print(f'Reminder: Importation is currently set to {exp.importation_rate}')
+
+
+    # Check timesteps, survey intervals and analyer alignment
     if exp.om_survey_step == '30d' and "5day" in exp.analyzer_list:
-        raise Warning('OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
+        print('Warning: OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
 
     if exp.om_survey_step == '30d' and "cc_step" in exp.intervention_list:
         raise ValueError('cc_step interventions requires 5d survey steps in OpenMalaria')
@@ -459,38 +465,59 @@ def check_exp_inputs(exp):
         if exp.num_seeds_burnin != 1:
             raise ValueError('Current framework only allows 1 seed for EMOD burnin')
 
-        # Obsolete if num_seeds_burnin requires to be 1, as if 1, multiple num_seeds are allowed
-        # if exp.num_seeds_burnin != 1 and exp.num_seeds_burnin != exp.num_seeds:
-        #    raise ValueError('num_seeds_burnin must be 1 or equal to num_seeds')
+    if exp.burnin < 80 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
+                            'EMOD' not in exp.models_to_run):
+        print('Warning: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
 
+    # Check agebins
+    a = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
+    if len(a) > 0:
+        raise ValueError(f'agebins are not granular enough to allow aggregation by age_groups_aggregates, missing {a}')
+
+    if 2 not in exp.agebins or 10 not in exp.agebins:
+        raise ValueError(f'agebins 2 and 10 are required in the framework, current agebins {exp.agebins}')
+
+    # Check unique limitations of framework that are in process/not yet working
     if len(exp.seasonality) > 1:
         raise ValueError(f'Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.')
 
-    if exp.burnin < 80 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
-                            'EMOD' not in exp.models_to_run):
-        print(f'WARNING: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
+    # Check whether parameters align with current setup in calibruns - "interpolation data"
+    if any(value not in [0, 0.45] for value in exp.cm_clinical) and (exp.entomology_mode == 'dynamic') and ('EMOD' in exp.models_to_run):
+        raise ValueError('EMOD is not set up to run dynamic EIR is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
-    if np.max(exp.cm_clinical) > 0 and exp.entomology_mode == 'dynamic' and 'EMOD' in exp.models_to_run:
-        raise ValueError('EMOD is not set up to run dynamic EIR for non-zero CM-levels currently.')
+    if any(value not in [0, 0.45] for value in exp.cm_clinical) and exp.output_type == 'prevalence_2to10':
+        raise ValueError('output_type prevalence_2to10 is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
+
+    if exp.output_type not in ['eir', 'prevalence_2to10']:
+        raise ValueError(f"Invalid output type: {exp.output_type}")
+
+    # Check for interventions added to the framework
+    if intervention_checks:
+        if "cc_step" in exp.intervention_list :
+            if exp.entomology_mode != "dynamic":
+                raise ValueError( f'Invalid entomology_mode for cc_step {exp.entomology_mode} specified, but "dynamic" required')
+            if exp.output_type != 'prevalence_2to10' :
+                raise ValueError("cc_step requires the output_type to be prevalence_2to10")
+            if exp.end_year - exp.start_year < exp.step_in_years:  # check inputs to be run after all exp parameters were updated
+                raise ValueError(f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and { exp.end_year}")
 
     # Check if any attribute in list_attributes_nGT1 is not in sweep_list
-    attributes_dict = exp.__dict__
-    list_attributes_nGT1 = list()
+    if attribute_check:
+        attributes_dict = exp.__dict__
+        list_attributes_nGT1 = list()
 
-    for key, value in attributes_dict.items():
-        # Check if the attribute is a list
-        if isinstance(value, list) and len(value) > 1:
-            if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om',
-                           'eir_scalar_om', 'carrying_capacity_step', 'age_groups_aggregates', 'plots_to_run',
-                           'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial',
-                           'analyzer_list', 'analyzer_script', 'calib_config_pointer', 'importation',
-                           'models_to_run_pickup']:
-                list_attributes_nGT1.append(key)
+        for key, value in attributes_dict.items():
+            # Check if the attribute is a list
+            if isinstance(value, list) and len(value) > 1:
+                if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om',
+                               'eir_scalar_om', 'carrying_capacity_step', 'age_groups_aggregates', 'plots_to_run',
+                               'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial',
+                               'analyzer_list', 'analyzer_script', 'calib_config_pointer', 'models_to_run_pickup']:
+                    list_attributes_nGT1.append(key)
 
-    list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
-    if list_attr_notsweep:
-        raise ValueError(
-            f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
+        list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
+        if list_attr_notsweep:
+            raise ValueError(f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
 
 
 def get_simulation_time_params(exp):
@@ -708,7 +735,8 @@ def create_simsetup_csv(exp):
     """
 
     # If other parameters should be savedm these need to be added to setup_dic
-    setup_dic = {'job_directory': exp.job_directory,
+    setup_dic = {'run_mode': exp.run_mode,
+                 'job_directory': exp.job_directory,
                  'sim_out_dir': exp.sim_out_dir,
                  'emod_serialized_id': exp.emod_serialized_id,
                  'burnin_directory': exp.burnin_directory,
@@ -756,10 +784,10 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
     if col_list is None:
         col_list = ['output_target', 'cm_clinical', 'seasonality']
 
-    if exp.calibrun:
-        print("Notice: for calibrun simulations, importation will be set to False")
+    if exp.run_mode == 'calibrun':
+        print("Notice: for calibrun simulations, importation will be set to 0")
         print("Depending on EM/OM Performance at lower EIRS at 50k pop, this may change")
-        exp.importation = False
+        exp.importation_rate = 0
         exp.output_target = np.arange(1,31)
         eir_range = [1.00000000e-01, 1.37382380e-01, 1.88739182e-01, 2.59294380e-01, 3.56224789e-01, 4.89390092e-01,
                     6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
@@ -797,7 +825,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                                    np.minimum(df['cm_clinical'] * 1.15, 1), exp.cm_severe)
         df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
 
-        if exp.calibrun:
+        if exp.run_mode == 'calibrun':
             if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
                 for i, row in df.iterrows():
                     df.loc[i, 'model_input_ms'] = eir_range[int(df.loc[i, 'output_target'])-1]
@@ -943,16 +971,13 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
     # Generate the SLURM shell script header for the job
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=job, mem_scl=1)
 
-    # Get the EMODpy virtual environment path
-    emodpy_venv = emodpy_module(exp.hpc)
-
     # Generate the Python command to run the script
     pycommand = f'\npython {pyscript} -d {exp.sim_out_dir} {custom_args}'
 
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, shname)
     file = open(script_path, 'w')
-    file.write(header_post + emodpy_venv + f'\ncd {wdir}' + pycommand)
+    file.write(header_post + exp.EMOD_venv + f'\ncd {wdir}' + pycommand) # Also load EMOD's Python virtual environment - needed for handling exp object from idmtools
     file.close()
     dependencies = '--dependency=afterany:'
     prior_dependency = False
@@ -1034,52 +1059,6 @@ def submit_run_plotters(exp):
                             custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
                             job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim, job_id_OpenMalaria=job_id_OpenMalaria,
                             job=f'{plot_name}_plots', memG=plot_memG)
-
-
-def emodpy_module(location='NUCLUSTER'):
-    """
-    Returns the EMODpy virtual environment activation command based on the specified location.
-    Args:
-        location (str, optional): The location identifier. Defaults to 'NUCLUSTER'.
-    Returns:
-        str: The EMODpy virtual environment activation command.
-    """
-    if location == 'NUCLUSTER':
-        emod_venv = '\n\nml singularity/3.8.1 \nml python/3.8.4' \
-                    '\nsource /projects/b1139/environments/emodpy_om/bin/activate\n'
-    if location == 'SCICORE':
-        emod_venv = '\n\nml Python/3.9.6-GCCcore-11.2.0-bare' \
-                    '\nsource /scicore/home/scicore/cavelan/git/model-characterization/emodenv/bin/activate\n'
-    return emod_venv
-
-
-def OM_module(location='NUCLUSTER', om_version=45):
-    """
-    Returns the OpenMalaria module load command based on the specified location and version.
-    Args:
-        location (str, optional): The location identifier. Defaults to 'NUCLUSTER'.
-        om_version (int, optional): The OpenMalaria version. Defaults to 45.
-    Returns:
-        str: The OpenMalaria module load command.
-    Raises:
-        ValueError: If the specified OpenMalaria version is not valid.
-    """
-
-    if location == 'NUCLUSTER':
-        if om_version == 43:
-            ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/modules/ \nmodule load openmalaria\n'
-        elif om_version == 46:
-            ommodule = '\n\nmodule use /projects/b1139/OpenMalaria/om_v46/modules/ \nmodule load openmalaria\n'
-        else:
-            raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
-    if location == 'SCICORE':
-        if om_version == 43:
-            ommodule = '\n\nmodule load OpenMalaria/43.1-iomkl-2019.01\n'
-        elif om_version == 46:
-            ommodule = '\n\nmodule load OpenMalaria/46.0-iomkl-2019.01\n'
-        else:
-            raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
-    return ommodule
 
 
 def str_to_digit(x):

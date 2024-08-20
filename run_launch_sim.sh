@@ -15,9 +15,13 @@ ml python/3.8.4
 source /projects/b1139/environments/emodpy_om/bin/activate
 
 # EMOD burnin and pickup in one
-python launch_test.py  --models EMOD MalSim OpenMalaria --test
+python launch_sim.py  --models EMOD MalSim OpenMalaria -r test
 
 ### EMOD burnin separate from pickup
-#python launch_test.py --emodstep burnin --models EMOD MalSim OpenMalaria
+#python launch_sim.py --emodstep burnin --models EMOD MalSim OpenMalaria
 
-#python launch_test.py --emodstep burnin --models EMOD MalSim OpenMalaria  --interventions cc_step
+#python launch_sim.py --emodstep burnin --models EMOD MalSim OpenMalaria  --interventions cc_step
+
+
+### from csv
+python launch_sim.py  --models OpenMalaria  --rownum 0 --csv baseline_eir_pfpr_target

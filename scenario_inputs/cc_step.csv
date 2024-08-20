@@ -1,0 +1,4 @@
+﻿rownum,exp_short,exp_name,pop_size,burnin,start_year,end_year,num_seeds,entomology_mode,seasonality,output_type,output_target,cm_clinical,om_survey_step,om_scaffold,intervention_list
+0,ccstep_test,ccstep_test_dynamic_seasonal,1000,5,1995,2010,3,dynamic,seasonal,prevalence_2to10,"0.1, 025, 0.5","0, 0.45",5d,R0000GA_CC_STEP,cc_step
+1,ccstep_1,ccstep_dynamic_seasonal,10000,80,1995,2040,20,dynamic,seasonal,prevalence_2to10,"0.1, 025, 0.5","0, 0.45",5d,R0000GA_CC_STEP,cc_step
+2,ccstep_2,ccstep_dynamic_perennial,10000,80,1995,2040,20,dynamic,perennial,prevalence_2to10,"0.1, 025, 0.5","0, 0.45",5d,R0000GA_CC_STEP,cc_step

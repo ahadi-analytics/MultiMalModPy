@@ -23,9 +23,9 @@ def create_scenarios_OM(exp, scen_df):
     xml = xml.replace("@survey_step@", f"{exp.om_survey_step}")
     xml = xml.replace("@entomology_mode@", f"{exp.entomology_mode}")
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
-    
+    xml = xml.replace('@importation_rate@', f"{exp.importation_rate}")
+
     # Scenario sweeps and runs
-    # TODO helper function to replace all, except seed and seasonality
     df = rep_scen_df(scen_df)
     for r, row in df.iterrows():
         scenario = xml.replace('@seed@', str(row['seed']))
@@ -35,10 +35,7 @@ def create_scenarios_OM(exp, scen_df):
         if 'cc_step' in exp.intervention_list: # GOING TO HAVE TO CHANGE SIGNIFICANTLY DUE TO INTERPOLATION
             scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_om']))
             scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_om']))
-        if exp.importation:
-                scenario = scenario.replace('@importation_rate@', str(5))
-        else:
-            scenario = scenario.replace('@importation_rate@', str(0))
+
         if 'smc' in exp.intervention_list:
             scenario = write_smc_deployment(scenario, row)
 
@@ -79,13 +76,11 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
     else:
         raise ValueError('HPC specification not available, must be NUCLUSTER or SCICORE')
 
-    # Get the EMODpy virtual environment path
-    emodpy_venv = emodpy_module(exp.hpc)
 
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, 'run_analyzer_OpenMalaria.sh')
     file = open(script_path, 'w')
-    file.write(header_post + emodpy_venv + pycommand)
+    file.write(header_post + exp.EMOD_venv + pycommand) # Also load EMOD's Python virtual environment - needed for handling exp object from idmtools
     file.close()
 
     # Read the job ID from the 'job_id.txt' file
@@ -130,7 +125,7 @@ def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
     # Set up script for submitting OpenMalaria simulations as a SLURM array job
     array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='run_openmalaria', arrayJob=array)
-    openmalaria = OM_module(exp.hpc, exp.om_version)
+    openmalaria = exp.OM_venv
     path = f'export PATH=$PATH:{exp.job_directory}'
     slurmID = '${SLURM_ARRAY_TASK_ID}'
     command = f'\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'

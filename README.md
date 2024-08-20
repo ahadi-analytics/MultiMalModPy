@@ -69,7 +69,7 @@ outputs.
 The repository has a nested structure with model specific input and helper functions within the sub-directories.  
 The model-specific scripts mimic the same file names and content as much as possible for consistency while maintaining
 model specific structures and terminology where necessary.  
-The main configuration `manifest.py` and simulation scripts `launch_test.py` or `launch_simulations.py` are located
+The main configuration `manifest.py` and simulation script `launch_sim.py`   located
 directly under the root directory.
 
 
@@ -102,7 +102,7 @@ directly under the root directory.
     │   └─ utils.py 
     ├─ custom_plotter/                  # Unstructured collection of custom figures scripts (optional)
     │   └─ ...
-    ├─ scenario_inputs/                   # Collection of csv files that specify simulation scenarios to run per objective 
+    ├─ scenario_inputs/                 # Collection of csv files that specify simulation scenarios to run per objective 
     │   └─ ...  
     ├─ static/                          # Readme images 
     │   └─ ...  
@@ -116,10 +116,8 @@ directly under the root directory.
     ├─ functions.R                      # Helper functions for custom R plots (optional)   
     ├─ helper.py                        # Mostly model-agnostic helper functions required for overall framework
     ├─ manifest.py                      # Configuration of system defaults, HPC account, directories   
-    ├─ run_launch_test.py               # Shell script or use as lookup script for terminal commands to run launch_test.py with arguments (SBATCH configured fo NUCLUSTER)
-    ├─ run_launch_simulations.sh        # Shell script or use as lookup script for terminal commands  to run launch_simulations.py with arguments (SBATCH configured fo NUCLUSTER)
-    ├─ launch_test.sh                  # Simulation script used for testing, parameters are defined directly in script
-    └─ launch_simulations.sh            # Simulation script, reading in parameters as defined in csv files stored in /scenario_inputs
+    ├─ run_launch_sim.py                # Shell script or use as lookup script for terminal commands to run launch_sim.py with arguments (SBATCH configured fo NUCLUSTER)
+    └─ launch_sim.sh                    # Simulation script used for testing, parameters are defined directly in script
 
 ### Programming language
 
@@ -154,8 +152,7 @@ three models.
 The name of some input and output names have been predominantly aligned to OpenMalaria conventions where possible,
 maintaining model-specific names where necessary.
 
-A single python script launches the simulation experiment with parameters either defined directly in the
-script (`launch_test.py` ), or read in from a csv file (`launch_simulations.py` )
+A single python script launches the simulation experiment (`launch_sim.py`) with parameters either defined in helper.py or read in from a csv file.
 Helper functions for EMOD, OpenMalaria and malariasimulation, stored in 'utils.py' in model specific subfolders, are
 imported into the launch python script.
 
@@ -171,7 +168,7 @@ within a project folder (i.e.  `utils_om.py, utils_em.py` and `analyzer_om.py, a
 
 _Table: Main scripts and functions (not exhaustive)_
 
-| launch_test.py*                                 | helper.py                  |
+| launch_sim.py*                                  | helper.py                  |
 |-------------------------------------------------|----------------------------|
 | [ parameter definitions ]                       | parse_args                 |
 | update_param_default  (emod)                    | make_dirs                  |
@@ -255,7 +252,7 @@ simulations on the same population in series).
   burnin and then run shorter simulations on that population with varying campaign parameters (that do not affect
   population characteristics).
 
-The following parameters need editing in the `launch_test.py` or in the arguments passed on as defined
+The following parameters need editing in the `launch_sim.py` or in the arguments passed on as defined
 in `helper.py/launch_parse_args`:
 
 - To run a burnin simulation :
@@ -277,7 +274,7 @@ in `helper.py/launch_parse_args`:
          source /projects/b1139/environments/emodpy_om/bin/activate
     
          cd /projects/b1139/emod-om/model-characterization
-         python launch_test.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name> --emodstep pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria
+         python launch_sim.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name> --emodstep pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria
          
          #or
          python launch_simulations.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name> --emodstep pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria
@@ -286,14 +283,14 @@ in `helper.py/launch_parse_args`:
 - To run a customized (new) pickup simulation(s):
     - Use the generated `launch_pickup.sh` as a template:
     - Modify the `expname` to specify a new folder to store the simulation files and change `emodstep` to `new_pickup`
-    - Edit the `launch_test.py` as required, or alternatively use `launch_simulations.py` with the corresponding csv
-      -  Use launch_test.py 
+    - Edit the `launch_sim.py` as required, or alternatively use `launch_simulations.py` with the corresponding csv
+      -  Use launch_sim.py 
          ```
-         python launch_test.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name_new> --emodstep new_pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria
+         python launch_sim.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name_new> --emodstep new_pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria
          ```
-      - or launch_simulations.py  with specified csv
+      - or launch_sim.py  with specified csv
          ```
-         python launch_simulations.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name_new> --emodstep new_pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria --csv baseline_eirsweep_noCM --rownum 0 
+         python launch_sim.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name_new> --emodstep new_pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria --csv baseline_eirsweep_noCM --rownum 0 
          ```
     - In the current version of the framework the new simulation experiments has to remain within the same directory (Suite) as the simulation experiment 'picked up from'.
 
@@ -328,15 +325,15 @@ in [scenario_inputs/README](https://github.com/numalariamodeling/model-character
   - via terminal 
 
 Testrun 
-  - `python launch_test.py  --models EMOD MalSim OpenMalaria --test`
+  - `python launch_sim.py  --models EMOD MalSim OpenMalaria --test`
 
 Baseline run (accepting defaults, or changed defaults in python file) 
-  - `python launch_test.py  --models EMOD MalSim OpenMalaria`
-  - `python launch_simulations.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM`  
+  - `python launch_sim.py  --models EMOD MalSim OpenMalaria`
+  - `python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM`  
 
 Custom simulation experiments (i.e. cc_step)
-  - `python launch_test.py  --models EMOD MalSim OpenMalaria --intervention cc_step --test --emodstep burnin`
-  - `python launch_simulations.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test`  
+  - `python launch_sim.py  --models EMOD MalSim OpenMalaria --intervention cc_step --test --emodstep burnin`
+  - `python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test`  
 
 
 ### Pre-requisites
@@ -369,14 +366,8 @@ _[go to installations instructions](https://github.com/numalariamodeling/model-c
 
 ### Simulation experiment configuration
 
-The simulation inputs are directly defined in the python scripts, which will generate a scenario csv, rather than
-writing the csv and reading it in.
-
-The `launch_test.py` is the go-to script to get started and do test simulation runs, with the possibility to change and
-edit parameters directly in the python script.
-The `launch_simulations.py` is the script for more complex as well as multiple simulation experiments at once, as it
-reads in experiment defining
-parameters from a csv file.
+The `launch_sim.py` script launches simulation runs, with the possibility to change and
+edit parameters directly in the python script or to read in parameter values from a csv file.
 
 The configuration had been moved to the helper.py script, allowing the launch python script to overwrite parameters as
 needed.
@@ -455,13 +446,11 @@ Parameter specifications for framework and simulation setup:
 ### Submit run and analyze simulations
 
 - In terminal navigate to repository  `cd ~/model-characterization`
-- Run python script that defines the simulation i.e. `python launch_test.py` for a test run using defaults specified in
+- Run python script that defines the simulation i.e. `python launch_sim.py` for a test run using defaults specified in
   the script and `parse_launch_args` (see helper.py)
-    - Other options defined in
-      the [run_launch_test.sh](https://github.com/numalariamodeling/model-characterization/blob/main/run_launch_test.sh)
-      and [run_launch_simulations.sh](https://github.com/numalariamodeling/model-characterization/blob/main/run_launch_simulations.sh):
-    - `python launch_test.py --emodstep burnin --models EMOD MalSim OpenMalaria`
-    - `python launch_simulations.py --models EMOD MalSim OpenMalaria --rownum 0 --csv baseline_eirsweep_noCM`
+    - Other options defined in the [run_launch_sim.sh](https://github.com/numalariamodeling/model-characterization/blob/main/run_launch_sim.sh)
+    - `python launch_sim.py --emodstep burnin --models EMOD MalSim OpenMalaria`
+    - `python launch_sim.py --models EMOD MalSim OpenMalaria --rownum 0 --csv baseline_eirsweep_noCM`
 - Check simulations via `squeue -u <username>`
 - Wait for simulations to finish after which analyzer scripts and default plots will automatically start running
 - If you need to resubmit the `analyze_sim.py` script, it can be found in `experiments/<suite>/<exp_name>`
@@ -767,6 +756,8 @@ Table 1: Overview of model software and infrastructure
 
 ## Change log
 
+- August 2024 - Carrying capacity step with automatically defined scaling factors leveraging calibrun
+- July 2024 - Input transmission paramter calibration to a defined output target for either EIR of PfPR2to10  - introduced calibrun
 - March 2024 - Carrying capacity step change and additional vector outcomes, switch to OpenMalaria v46, separation of
   plotting scripts
 - Jan 2024: refinement in framework to support flexible simulations, further bugfixes in model specific scripts

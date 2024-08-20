@@ -517,7 +517,7 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
     print(f'Saving Benchmark.csv to {wdir}')
     adf.to_csv((os.path.join(wdir, 'Benchmark.csv')), index=False)
 
-    if exp.calibrun:
+    if exp.run_mode == 'calibrun':
         u5 = adf[adf['ageGroup']=='0-5'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         u5 = u5.rename(columns={'clinical_incidence':'clinical_incidence_U5'})
         all_ages = adf[adf['ageGroup']=='0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()

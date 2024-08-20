@@ -1,0 +1,4 @@
+﻿rownum,exp_short,exp_name,pop_size,burnin,num_seeds,entomology_mode,seasonality,output_type,output_target
+0,p1_sim1,p1_main_eir_dynamic_perennial,10000,80,20,dynamic,perennial,eir,"0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25,  30, 35, 40, 45, 50, 65, 70, 80, 90, 100, 120, 150, 200, 250, 500, 750, 1000"
+1,p1_sim2,p1_main_pfpr_dynamic_seasonal,10000,80,20,dynamic,seasonal,prevalence_2to10,"0.25, 0.5, 0.75"
+2,p1_sim3,p1_main_pfpr_dynamic_perennial,10000,80,20,dynamic,perennial,prevalence_2to10,"0.25, 0.5, 0.75"
