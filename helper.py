@@ -66,9 +66,6 @@ def parse_launch_args():
     parser.add_argument('--emod_calib_params',
                         action='store_true',
                         help='Specify whether to run including calibration parameters as a sweep variable (EMOD only)')
-    parser.add_argument('--overwrite',
-                        action='store_true',
-                        help='Whether to overwrite simulation experiment folders')
     parser.add_argument('--mpv',
                         default=True,
                         type=bool,
@@ -165,8 +162,6 @@ def initialize_exp(args, manifest):
     exp.models_to_run = args.models
     exp.intervention_list = args.interventions
     exp.run_mode = args.run_mode
-    exp.overwrite = args.overwrite # FIXME
-    exp.overwrite_param = False  # FIXME to discuss how we want to handle parameter changes and overwrites in helper vs launch_sim.py, or have another flag to add for args
     exp.emod_calib_params = args.emod_calib_params  # Whether to pass along NU's Within-Host framework recalibrated parameters, default will be false.
     exp.malariasimulation_parameter_variation = args.mpv
     exp.output_type = args.output_type
@@ -443,7 +438,8 @@ def exp_obj_to_csv(file_path):
                 "The pickle file contains unsupported data type. Only dictionaries and lists are supported.")
 
 
-def check_exp_inputs(exp, intervention_checks = True, attribute_check= False):
+# check inputs to be run after all exp parameters were updated, i.e. after exp_params_to_update
+def check_exp_inputs(exp, print_reminder = True, intervention_checks = True, attribute_check= False):
     """
     Helper function to validate experiment inputs.
 
@@ -453,6 +449,10 @@ def check_exp_inputs(exp, intervention_checks = True, attribute_check= False):
     Raises:
         ValueError: If input parameters are invalid.
     """
+
+    if print_reminder:
+        print(f'Reminder: Importation is currently set to {exp.importation}')
+
 
     # Check timesteps, survey intervals and analyer alignment
     if exp.om_survey_step == '30d' and "5day" in exp.analyzer_list:
@@ -467,7 +467,7 @@ def check_exp_inputs(exp, intervention_checks = True, attribute_check= False):
 
     if exp.burnin < 80 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
                             'EMOD' not in exp.models_to_run):
-        print(f'WARNING: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
+        raise Warning(f'Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
 
     # Check agebins
     a = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
@@ -491,14 +491,17 @@ def check_exp_inputs(exp, intervention_checks = True, attribute_check= False):
     if exp.output_type not in ['eir', 'prevalence_2to10']:
         raise ValueError(f"Warning: invalid output type: {exp.output_type}")
 
-
     # Check for interventions added to the framework
     if intervention_checks:
-        if "cc_step" in exp.intervention_list:
+        if "cc_step" in exp.intervention_list :
             if exp.emod_step is None :
                 raise Warning( 'CC step requires separate burnin and pickup for EMOD, overwritting burnin and emod_step parameters')
             if exp.entomology_mode != "dynamic":
                 raise Warning( f'Invalid entomology_mode for cc_step {exp.entomology_mode} specified, but "dynamic" required')
+            if exp.output_type != 'prevalence_2to10' :
+                raise ValueError("cc_step requires the output_type to be prevalence_2to10")
+            if exp.end_year - exp.start_year < exp.step_in_years:  # check inputs to be run after all exp parameters were updated
+                raise ValueError(f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and { exp.end_year}")
 
     # Check if any attribute in list_attributes_nGT1 is not in sweep_list
     if attribute_check:

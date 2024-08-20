@@ -85,7 +85,7 @@ else:
                                         '_'.join(exp.intervention_list))  # if empty, the 'intervention' gets removed
 
 ## Arguments that chage for pickup
-exp = make_dirs(exp, overwrite=exp.overwrite)
+exp = make_dirs(exp)
 
 # Simulation duration, start and end configuration
 exp = get_simulation_time_params(exp)
