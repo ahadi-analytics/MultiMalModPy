@@ -1,0 +1,50 @@
+site_name: MultiMalModPy
+nav:
+  - Home: index.md
+  - Getting started:
+    - Overview: getting_started/index.md
+    - Requirements: getting_started/requirements.md
+    - Installation: getting_started/installation.md
+    - Configuration: getting_started/configuration.md
+  - User Guide:
+    - General use: guide/index.md
+    - Transmission calibration: guide/calibration.md
+    - Input parameters: guide/parameters.md
+    - Create simulations: guide/create_sim.md
+    - Run simulations: guide/run_sim.md
+    - Postprocess outputs: guide/postprocess.md
+    - Output files: guide/outputs.md
+    - Result figures: guide/plots.md
+  - API:
+    - launch_sim.py: api/launch_sim.md
+    - helper.py: api/launch_sim.md
+    - EMOD:
+      - api_EMOD/scaffolds.md
+      - api_EMOD/utils.md
+      - api_EMOD/analyzer.md
+    - OpenMalaria:
+      - api_OpenMalaria/scaffolds.md
+      - api_OpenMalaria/utils.md
+      - api_OpenMalaria/analyzer.md
+    - MalSim:
+      - api_MalSim/scaffolds.md
+      - api_MalSim/utils.md
+      - api_MalSim/analyzer.md
+  - About:
+    - Malaria models: about/models.md
+    - License: about/license.md
+    - Changelog: about/changelog.md
+    - Getting help: about/getting_help.md
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - rust
+    - python
+    - r
+    - shell
+    - xml
+  locale: en
+  favicon: favicon.ico
+  logo: assets/images/logo.png
