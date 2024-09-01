@@ -1,4 +1,4 @@
-#Generic helper functions
+#Generic utility functions
 # Also as gists on: https://gist.github.com/ManuelaRunge/9d50c86e21161188a6c17c7c9650ad5d
 
 

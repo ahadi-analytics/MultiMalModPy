@@ -1,5 +1,5 @@
 import manifest
-from helper.helper import *
+from utility.helper import *
 
 class LoadExperiment:
     def __init__(self, args, manifest):
@@ -18,8 +18,6 @@ class LoadExperiment:
         self.models_to_run = args.models
         self.intervention_list = args.interventions
         self.run_mode = args.run_mode
-        self.overwrite = args.overwrite
-        self.overwrite_param = False  # FIXME: discuss handling parameter changes and overwrites
         self.emod_calib_params = args.emod_calib_params
         self.malariasimulation_parameter_variation = args.mpv
         self.output_type = args.output_type
@@ -30,7 +28,6 @@ class LoadExperiment:
 
         # Manifest-related settings
         self.hpc = manifest.hpc
-        self.R_PATH = manifest.R_PATH
         self.sh_hpc_config = manifest.sh_hpc_config
         self.selected_platform = manifest.selected_platform
         self.emod_build = manifest.emod_build

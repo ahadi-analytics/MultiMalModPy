@@ -1,3 +1,14 @@
+import argparse
+import os
+import subprocess
+import itertools
+import pickle
+from datetime import datetime
+from datetime import datetime as dt
+import pandas as pd
+import numpy as np
+from scipy.interpolate import interp1d
+#from idmtools.entities.experiment import Experiment
 
 
 def exec(command):
@@ -178,3 +189,15 @@ def submit_run_plotters(exp):
                             job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim, job_id_OpenMalaria=job_id_OpenMalaria,
                             job=f'{plot_name}_plots', memG=plot_memG)
 
+def write_txt(txtobj, path, fname):
+    """
+    Writes a text object to a file.
+    Args:
+        txtobj (str): The text object to write.
+        path (str): The path to the directory where the file will be saved.
+        fname (str): The filename to use for the file.
+
+    """
+    file = open(os.path.join(path, fname), 'w')
+    file.write(txtobj)
+    file.close()

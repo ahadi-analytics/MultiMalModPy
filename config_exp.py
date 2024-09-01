@@ -2,9 +2,9 @@ import os
 import pandas as pd
 import numpy as np
 import manifest
-from helper.experiment import LoadExperiment
+from utility.experiment import LoadExperiment
 
-def update_exp(args, manifest):
+def update_exp(exp):
     """
     Generates the default simulation settings we are interested in using across all three models,
     before any interventions or other functions overwrite the items in exp.
@@ -22,7 +22,7 @@ def update_exp(args, manifest):
         exp (Experiment): Returns an Experiment Object with simulation and hpc settings that will get shared across
             the three models.
     """
-    exp = LoadExperiment(args, manifest)
+    #exp = LoadExperiment(args, manifest)
 
     if exp.run_mode == None or exp.run_mode == 'test' :
         # Specify OpenMalaria XML and survey step, MalSim simulation setup
