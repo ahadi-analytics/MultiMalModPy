@@ -150,15 +150,15 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
 #' @importFrom ggsave ggsave
 #' @importFrom dir.create dir.create
 #'
-f_save_plot <- function(pplot, plot_name, plot_dir, width = 14, height = 8, units = 'in', device_format = c('../pdf', 'png')) {
+f_save_plot <- function(pplot, plot_name, plot_dir, width = 14, height = 8, units = 'in', device_format = c('../_scratch/pdf', 'png')) {
   if ('png' %in% device_format) {
     ggsave(paste0(plot_name, ".png"), plot = pplot, path = plot_dir,
            width = width, height = height, units = units, device = "png")
   }
-  if ('../pdf' %in% device_format) {
-    if (!dir.exists(file.path(plot_dir, "../pdf"))) { dir.create(file.path(plot_dir, "../pdf")) }
-    ggsave(paste0(plot_name, ".pdf"), plot = pplot, path = file.path(plot_dir, "../pdf"),
-           width = width, height = height, units = units, device = "../pdf", useDingbats = FALSE)
+  if ('../_scratch/pdf' %in% device_format) {
+    if (!dir.exists(file.path(plot_dir, "../_scratch/pdf"))) { dir.create(file.path(plot_dir, "../_scratch/pdf")) }
+    ggsave(paste0(plot_name, ".pdf"), plot = pplot, path = file.path(plot_dir, "../_scratch/pdf"),
+           width = width, height = height, units = units, device = "../_scratch/pdf", useDingbats = FALSE)
   }
 }
 
