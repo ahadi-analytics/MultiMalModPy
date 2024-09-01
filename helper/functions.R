@@ -11,7 +11,7 @@ library(scales)
 library(ggplot2)
 library(cowplot)
 
-emodom_cols_list <-list('EMOD'='#1b9e77ff','OpenMalaria'='#7570b3ff','malariasimulation'='#d95f02ff')
+emodom_cols_list <-list('../EMOD' ='#1b9e77ff', '../OpenMalaria' ='#7570b3ff', 'malariasimulation'='#d95f02ff')
 emodom_cols <- c('#1b9e77ff','#7570b3ff','#d95f02ff')
 
 #' Load and combine data from EMOD and/or OpenMalaria benchmark output files.
@@ -67,50 +67,50 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
   if (file.exists(file.path(wdir, fname))) {
     df <- fread(file.path(wdir, fname), stringsAsFactors = FALSE)
   } else {
-    if ('OpenMalaria' %in% modelname) {
+    if ('../OpenMalaria' %in% modelname) {
       om_df <- fread(file.path(wdir, paste('om', fname, sep = '/')), select = cols_to_keep)
-      om_df$modelname <- 'OpenMalaria'
+      om_df$modelname <- '../OpenMalaria'
     }
-    if ('EMOD' %in% modelname) {
+    if ('../EMOD' %in% modelname) {
       em_df <- fread(file.path(wdir, paste('em', fname, sep = '/')), select = cols_to_keep)
-      em_df$modelname <- 'EMOD'
+      em_df$modelname <- '../EMOD'
       #em_df <- em_df[em_df$simulatedEIR >0,]
     }
-    if ('MalSim' %in% modelname) {
-      ms_df <- fread(file.path(wdir, paste('MalSim', fname, sep = '/')), select = cols_to_keep)
-      ms_df$modelname <- 'MalSim'
+    if ('../MalSim' %in% modelname) {
+      ms_df <- fread(file.path(wdir, paste('../MalSim', fname, sep = '/')), select = cols_to_keep)
+      ms_df$modelname <- '../MalSim'
     }
 
-    if ('EMOD' %in% modelname &
-      'OpenMalaria' %in% modelname &
-      'MalSim' %in% modelname) {
+    if ('../EMOD' %in% modelname &
+      '../OpenMalaria' %in% modelname &
+      '../MalSim' %in% modelname) {
       df <- em_df %>% bind_rows(om_df) %>% bind_rows(ms_df)
-    } else if ('OpenMalaria' %in% modelname &
-      'EMOD' %in% modelname &
-      !('MalSim' %in% modelname)) {
+    } else if ('../OpenMalaria' %in% modelname &
+      '../EMOD' %in% modelname &
+      !('../MalSim' %in% modelname)) {
       df <-  em_df %>% bind_rows(om_df)
-    } else if ('OpenMalaria' %in% modelname &
-      'MalSim' %in% modelname &
-      !('EMOD' %in% modelname)) {
+    } else if ('../OpenMalaria' %in% modelname &
+      '../MalSim' %in% modelname &
+      !('../EMOD' %in% modelname)) {
       df <- ms_df %>% bind_rows(om_df)
-    } else if ('EMOD' %in% modelname &
-      'MalSim' %in% modelname &
-      !('OpenMalaria' %in% modelname)) {
+    } else if ('../EMOD' %in% modelname &
+      '../MalSim' %in% modelname &
+      !('../OpenMalaria' %in% modelname)) {
       df <- ms_df %>% bind_rows(em_df)
-    } else if ('OpenMalaria' %in% modelname &
-      !('EMOD' %in% modelname) &
-      !('MalSim' %in% modelname)) {
+    } else if ('../OpenMalaria' %in% modelname &
+      !('../EMOD' %in% modelname) &
+      !('../MalSim' %in% modelname)) {
       wdir <- file.path(wdir, 'om')
       df <- om_df
-    } else if ('EMOD' %in% modelname &
-      !('OpenMalaria' %in% modelname) &
-      !('MalSim' %in% modelname)) {
+    } else if ('../EMOD' %in% modelname &
+      !('../OpenMalaria' %in% modelname) &
+      !('../MalSim' %in% modelname)) {
       wdir <- file.path(wdir, 'em')
       df <- em_df
-    } else if ('MalSim' %in% modelname &
-      !('OpenMalaria' %in% modelname) &
-      !('EMOD' %in% modelname)) {
-      wdir <- file.path(wdir, 'MalSim')
+    } else if ('../MalSim' %in% modelname &
+      !('../OpenMalaria' %in% modelname) &
+      !('../EMOD' %in% modelname)) {
+      wdir <- file.path(wdir, '../MalSim')
       df <- ms_df
     } else {
       stop(paste("Please specify modelname as some combination of EMOD, OpenMalaria, and MalSim (list), ", modelname, " not valid"))
@@ -150,15 +150,15 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
 #' @importFrom ggsave ggsave
 #' @importFrom dir.create dir.create
 #'
-f_save_plot <- function(pplot, plot_name, plot_dir, width = 14, height = 8, units = 'in', device_format = c('pdf', 'png')) {
+f_save_plot <- function(pplot, plot_name, plot_dir, width = 14, height = 8, units = 'in', device_format = c('../pdf', 'png')) {
   if ('png' %in% device_format) {
     ggsave(paste0(plot_name, ".png"), plot = pplot, path = plot_dir,
            width = width, height = height, units = units, device = "png")
   }
-  if ('pdf' %in% device_format) {
-    if (!dir.exists(file.path(plot_dir, "pdf"))) { dir.create(file.path(plot_dir, "pdf")) }
-    ggsave(paste0(plot_name, ".pdf"), plot = pplot, path = file.path(plot_dir, "pdf"),
-           width = width, height = height, units = units, device = "pdf", useDingbats = FALSE)
+  if ('../pdf' %in% device_format) {
+    if (!dir.exists(file.path(plot_dir, "../pdf"))) { dir.create(file.path(plot_dir, "../pdf")) }
+    ggsave(paste0(plot_name, ".pdf"), plot = pplot, path = file.path(plot_dir, "../pdf"),
+           width = width, height = height, units = units, device = "../pdf", useDingbats = FALSE)
   }
 }
 

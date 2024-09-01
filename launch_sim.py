@@ -1,7 +1,7 @@
 import logging
 import manifest
 from idmtools.core.platform_factory import Platform
-from helper import *
+from helper.helper import *
 import os
 
 # Setting up variables and flags for the simulation

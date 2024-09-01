@@ -24,7 +24,7 @@ from idmtools.entities.experiment import Experiment
 
 sys.path.append('../')
 import manifest
-from helper import shell_header_quest, write_txt
+from helper.helper import shell_header_quest, write_txt
 
 
 def set_param(simulation, param, value):

@@ -71,7 +71,7 @@ if __name__ == "__main__":
                            'severe_incidence', 'prevalence_2to10', 'EIR_gamb']
 
         # Create sample plots
-        wdir = os.path.join(wdir,'MalSim')
+        wdir = os.path.join(wdir, '../MalSim')
         all_age_sample_plot(wdir, exp_tags, sample_channels)
         sample_plot_yr(wdir, exp_tags)
         sample_plot_mth(wdir, exp_tags)
