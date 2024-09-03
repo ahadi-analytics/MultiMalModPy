@@ -207,7 +207,7 @@ def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', ei
         ax.set_ylabel(get_ylab(channel))
 
     fname = f'{eir_val}_{channel}_{agegrp}_by_{sweepvar}_{facet_var}'
-    if channel == 'prevalene_2to10':
+    if channel == 'prevalence_2to10':
         fname = f'{eir_val}_{channel}_by_{sweepvar}_{facet_var}'
     fname = fname.replace('modelname', 'model')
 
