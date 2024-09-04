@@ -45,9 +45,9 @@ def output_target_to_xTemp(df, exp,  model):
             print(
                 "Warning: EMOD's x_Temporary_Larval_Habitat < 0, value set to 0.01 (this will likely cause elimination in the simulations)")
         if interpolated_value >= 10000:
-            interpolated_value = 9999
+            interpolated_value = 10000
             print(
-                "Warning: EMOD's x_Temporary_Larval_Habitat > 10000, value set to 9999 (higher values cannot be reasonably simulated)")
+                "Warning: EMOD's x_Temporary_Larval_Habitat > 10000, value set to 10000 (higher values cannot be reasonably simulated)")
         output.append(interpolated_value)
     return output
 
@@ -83,8 +83,8 @@ def output_target_to_eir(df, exp, model):
             interpolated_value = 0.01
             print("Warning: eir < 0, value set to 0.01 (this will likely cause elimination in the simulations)")
         if interpolated_value >= 1000:
-            interpolated_value = 999
-            print("Warning:  eir > 1000, value set to 999 (higher values cannot be reasonably simulated)")
+            interpolated_value = 1000
+            print("Warning:  eir > 1000, value set to 1000 (higher values cannot be reasonably simulated)")
         output.append(interpolated_value)
     return output
 
