@@ -306,7 +306,7 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
 
             # (events per person per annum)
             adf['clinical_incidence'] = adf['n_inc_clinical'] / adf['n']
-            adf['severe_incidence'] = adf['n_inc_severe'] / adf['n']
+            adf['severe_incidence'] = adf['n_inc_severe'] / adf['n'] 
             adf['ageGroup'] = ageCond_labels
             adf['n'] = adf['n'] / n_years
             cdf = pd.concat([cdf, adf])
@@ -318,8 +318,12 @@ def BenchmarkAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on='index', how='inner')
 
+    #Severe Incidence Recalculation
+    cdf['severe_incidence'] = cdf['severe_incidence']  * ( 0.5 * cdf['cm_severe'] + ( 1 - cdf['cm_severe']) )
+    
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
+    
     cdf = cdf.rename({'n': 'nHost'}, axis=1)
     cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
 
@@ -408,6 +412,9 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables,age_groups_aggregates=None):
     eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'output_target']]
     df = df.merge(eir_df, on=['index', 'timestep', 'month', 'year'], how='inner')
 
+    #Severe Incidence Recalculation
+    df['severe_incidence'] = df['severe_incidence']  * ( 0.5 * df['cm_severe'] + ( 1 - df['cm_severe']) )
+
     # Let's limit the output of daily, so its a little more reasonable for us to process.
     columns_to_keep = ['index', 'scen_id', 'seed', 'ageGroup', 'timestep', 'simulatedEIR', 'n_infectious_mos',
                        'n_total_mos_pop', 'nHost', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10']
@@ -415,10 +422,6 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables,age_groups_aggregates=None):
     # Iterate over columns to drop and check if they exist
     columns_to_keep = [col for col in columns_to_keep if col in df.columns]
     df = df[columns_to_keep]
-
-    #if 'eir_malsim' in df:
-    #    df = df.rename({'eir_malsim': 'eir', 'eir_scalar_timestep_daily': 'eir_scalar_timestep',
-    #                    'eir_scalar_malsim': 'eir_scalar'})
 
     # Save the processed DataFrame to a CSV file
     print(f'\nSaving outputs to: {wdir}')
@@ -518,6 +521,9 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     cdf = cdf.merge(eir_df, on=['index', 'day',  'year'], how='inner')
 
+    #Severe Incidence Recalculation
+    cdf['severe_incidence'] = cdf['severe_incidence']  * ( 0.5 * cdf['cm_severe'] + ( 1 - cdf['cm_severe']) )
+
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
     cdf = cdf.rename({'n': 'nHost'}, axis=1)
@@ -612,6 +618,9 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index', 'month', 'year'], how='inner')
 
+    #Severe Incidence Recalculation
+    cdf['severe_incidence'] = cdf['severe_incidence']  * ( 0.5 * cdf['cm_severe'] + ( 1 - cdf['cm_severe']) )
+
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
     cdf = cdf.rename({'n': 'nHost'}, axis=1)
@@ -696,6 +705,9 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
                            axis=1, errors='ignore')  ## remove EMOD specific columns
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index', 'year'], how='inner')
+
+    #Severe Incidence Recalculation
+    cdf['severe_incidence'] = cdf['severe_incidence']  * ( 0.5 * cdf['cm_severe'] + ( 1 - cdf['cm_severe']) )
 
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''

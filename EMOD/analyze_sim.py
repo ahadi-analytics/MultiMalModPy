@@ -371,8 +371,8 @@ class BenchmarkAnalyzer(IAnalyzer):
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
             # cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
         else:
-            cdf['simulatedEIR'] = cdf['eir']
-            cdf['inputEIR'] = cdf['eir']
+            cdf['simulatedEIR'] = cdf['model_input_em']
+            cdf['inputEIR'] = cdf['model_input_em']
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
@@ -659,8 +659,9 @@ class FiveDayAgeBinAnalyzer(IAnalyzer):
             eirdf_5day = eirdf_5day.rename(columns={'5day': 'day'})
             cdf = pd.merge(left=cdf, right=eirdf_5day, on=self.sweep_variables + ['year', 'day'])
         else:
-            cdf['simulatedEIR'] = ''
-            cdf['inputEIR'] = ''
+            cdf['simulatedEIR'] = cdf['model_input_em']
+            cdf['inputEIR'] = cdf['model_input_em']
+
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
@@ -815,8 +816,8 @@ class MonthlyAgeBinAnalyzer(IAnalyzer):
 
             cdf = cdf.rename(columns={"Monthly EIR": "simulatedEIR"})
         else:
-            cdf['simulatedEIR'] = ''
-            cdf['inputEIR'] = ''
+            cdf['simulatedEIR'] = cdf['model_input_em']
+            cdf['inputEIR'] = cdf['model_input_em']
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
@@ -952,8 +953,8 @@ class AnnualAgeBinAnalyzer(IAnalyzer):
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
 
         else:
-            cdf['simulatedEIR'] = cdf['eir']
-            cdf['inputEIR'] = cdf['eir']
+            cdf['simulatedEIR'] = cdf['model_input_em']
+            cdf['inputEIR'] = cdf['model_input_em']
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
