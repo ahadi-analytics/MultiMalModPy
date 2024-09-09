@@ -14,7 +14,7 @@ mpl.rcParams['pdf.fonttype'] = 3
 plt.rcParams.update({'font.size': 16})
 plt.rcParams.update({'font.sans-serif': "Arial"})
 
-from plot_helper import *
+from plotter.plot_helper import *
 
 
 # Plots daily_timeseries - requires PfPR_ClinicalIncidence_daily.csv

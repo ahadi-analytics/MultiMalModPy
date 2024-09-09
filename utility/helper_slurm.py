@@ -77,7 +77,7 @@ def shell_header_quest(sh_account, time_str='6:00:00', memG=3, job_name='myjob',
 def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
                         custom_args='--modelname EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=False,
                         job_id_MalSim=False, job_id_OpenMalaria=False,
-                        job='pyjob', write_only=False):
+                        job='pyjob',  wdir=None, write_only=False):
     """
     Submits a job to run a Python script.
 
@@ -92,10 +92,12 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
         job_id_MalSim (bool, optional): The job ID will be set as a dependency for malariasimulation. Defaults to False.
         job_id_OpenMalaria (bool, optional): The job ID will be set as a dependency for OpenMalaria. Defaults to False.
         job (str, optional): Name of the job. Defaults to 'pyjob'.
+        wdir (str, optional): Location of working directory
     """
 
     # Get the current working directory
-    wdir = os.path.abspath(os.path.dirname(__file__))
+    if wdir is None:
+        wdir = os.path.abspath(os.path.dirname(__file__))
 
     # Generate the SLURM shell script header for the job
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=job, mem_scl=1)
@@ -163,13 +165,16 @@ def submit_run_plotters(exp):
     # plot_memrequests_all = {'sampleplots' : 10,'benchmark' :10,'agecurves' :10 ,'ccstep' :20}
 
     ## Write  shell submission script for all, even if not running
+    fdir = os.path.abspath(os.path.dirname(__file__))
+    parent_dir = os.path.abspath(os.path.join(fdir, os.pardir))
     for plot_name in plot_names_all:
-        pyscript_name = f'plot_{plot_name}.py'
+        pyscript_name = f'-m plotter.plot_{plot_name}'
 
         plot_memG = 20  # current default in submit_run_pyscript
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                             custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
-                            job=f'{plot_name}_plots', memG=plot_memG, write_only=True)
+                            job=f'{plot_name}_plots', memG=plot_memG,
+                            wdir = parent_dir , write_only=True)
 
     ## Write and run plots specified in exp.plots_to_run
     plots_to_run = [p for p in exp.plots_to_run if not p == 'sampleplots']  # exp.plots_to_run
@@ -178,7 +183,7 @@ def submit_run_plotters(exp):
 
     ## Overwriting and submitting those to run
     for plot_name in plots_to_run:
-        pyscript_name = f'plot_{plot_name}.py'
+        pyscript_name = f'-m plotter.plot_{plot_name}'
 
         plot_memG = 20  # current default in submit_run_pyscript
         if plot_name == 'ccstep':
@@ -187,7 +192,7 @@ def submit_run_plotters(exp):
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                             custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
                             job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim, job_id_OpenMalaria=job_id_OpenMalaria,
-                            job=f'{plot_name}_plots', memG=plot_memG)
+                            job=f'{plot_name}_plots', memG=plot_memG,   wdir = parent_dir)
 
 def write_txt(txtobj, path, fname):
     """
