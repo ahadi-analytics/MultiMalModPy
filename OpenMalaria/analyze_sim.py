@@ -1,12 +1,15 @@
 import os
+import sys
 import argparse
 import pickle
 import datetime
 import pandas as pd
 import numpy as np
 from measures import mm, mmi
-import sys
 
+parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+sys.path.append(parent_dir)
+from utility.experiment import LoadExperiment
 
 def parse_args():
     """

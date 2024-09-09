@@ -178,7 +178,7 @@ def make_dirs(exp, overwrite=False):
         if 'OpenMalaria' in exp.models_to_run:
             os.makedirs(os.path.join(exp.sim_out_dir, 'om'), exist_ok=overwrite)
         if 'MalSim' in exp.models_to_run:
-            os.makedirs(os.path.join(exp.sim_out_dir, '../MalSim'), exist_ok=overwrite)
+            os.makedirs(os.path.join(exp.sim_out_dir, 'MalSim'), exist_ok=overwrite)
     return exp
 
 
