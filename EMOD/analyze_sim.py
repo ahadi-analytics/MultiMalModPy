@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 import pickle
 import datetime
@@ -8,6 +9,9 @@ from idmtools.entities import IAnalyzer
 from idmtools.entities.simulation import Simulation
 import math
 
+parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+sys.path.append(parent_dir)
+from utility.experiment import LoadExperiment
 
 def parse_args():
     """
@@ -985,7 +989,7 @@ if __name__ == "__main__":
     wdir = exp.sim_out_dir
 
     exp_name = exp.exp_name
-    age_groups_aggregates = exp.age_groups_aggregates  # Defined in helper.py
+    age_groups_aggregates = exp.age_groups_aggregates  # Defined in utility.helper.py
 
     # Define tags and simulation experiment configurations
     exp_tags = ['scen_id', 'Run_Number']

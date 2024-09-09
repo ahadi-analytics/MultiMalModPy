@@ -1,7 +1,4 @@
-import os
-import subprocess
-from helper import *
-import pandas as pd
+from utility.helper import *
 
 
 def submit_analyze_MalSim(exp, t='01:00:00', memG=4):

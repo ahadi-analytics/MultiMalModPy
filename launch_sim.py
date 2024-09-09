@@ -1,7 +1,9 @@
 import logging
 import manifest
-from idmtools.core.platform_factory import Platform
-from helper import *
+from utility.helper import *
+from utility.helper_slurm import *
+from utility.helper_simulation import *
+from config_exp import *
 import os
 
 # Setting up variables and flags for the simulation
@@ -49,7 +51,24 @@ if args.emodstep in ['pickup', 'new_pickup']:
 
 else:
     # Creating an Experiment object and setting its attributes, saved as exp.obj
-    exp = initialize_exp(args, manifest)
+    #exp = initialize_exp(args, manifest)
+    exp = LoadExperiment(args, manifest)
+
+    if exp.run_mode == None or exp.run_mode == 'test':
+        exp = update_exp(exp)
+
+    if exp.run_mode == 'test':
+        exp.pop_size = 1000
+        exp.num_seeds = 1
+        exp.start_year = 2000
+        exp.end_year = 2005
+        exp.burnin = 10
+
+    if exp.emod_calib_params:
+        calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, 'emod_best.csv'))
+        exp.calib_config_pointer = range(0, len(calib_config_df))  # define rows from calib_params df to run
+        del calib_config_df
+        exp.sweep_list = exp.sweep_list + ['calib_config_pointer']
 
     if args.csv:
         ### Experiment scenario parameter definitions
@@ -99,18 +118,12 @@ check_exp_inputs(exp)
 scen_df = create_scenarios_csv(exp, exp.sweep_list)
 exp.nexps = len(scen_df) * exp.num_seeds
 exp.max_running_jobs = min(exp.nexps,150)
-# Set platform and associated values, such as the maximum number of jobs to run at one time
-platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
-                    mem_per_cpu=int(1800 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
-                    time='06:30:00', account=manifest.sh_hpc_config['A'],
-                    modules=[manifest.sh_hpc_config['em_modules']], max_running_jobs=exp.max_running_jobs)  # mem_per_cpu default: 2048
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 save_scen(param_variation(rep_scen_df(scen_df), exp), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
 
 # Write out simulation setup (required for MalSim)
 create_simsetup_csv(exp)
-exp.platform = platform
 
 
 if __name__ == '__main__':
@@ -119,8 +132,18 @@ if __name__ == '__main__':
 
     # Submit EMOD simulation as SLURM job, including scheduled analyzer
     if 'EMOD' in exp.models_to_run:
+        from idmtools.core.platform_factory import Platform
+        from idmtools.entities.experiment import Experiment
         import emod_malaria.bootstrap as dtk
         import pathlib
+
+        # Set platform and associated values, such as the maximum number of jobs to run at one time
+        platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
+                            mem_per_cpu=int(1800 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
+                            time='06:30:00', account=manifest.sh_hpc_config['A'],
+                            modules=[manifest.sh_hpc_config['em_modules']],
+                            max_running_jobs=exp.max_running_jobs)  # mem_per_cpu default: 2048
+        exp.platform = platform
 
         dtk.setup(pathlib.Path(manifest.eradication_path).parent)
         from EMOD.utils import submit_run_EMOD
@@ -147,6 +170,6 @@ if __name__ == '__main__':
 
         submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files  
 
-    ## Submit plotters to run using wrapper function in helper.py
+    ## Submit plotters to run using wrapper function in utility.helper.py
     if exp.emod_step != 'burnin':
         submit_run_plotters(exp)

@@ -1,4 +1,4 @@
-from helper import *
+from utility.helper import *
 import shutil
 from OpenMalaria.scaffolds.intervention_snippets import *
 
