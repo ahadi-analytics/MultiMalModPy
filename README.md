@@ -220,7 +220,7 @@ openMalaria -s example_scenario.xml
 ------------------------------------    
 
 ## Change log
-
+- September 2024 - Framework restructuring and preparation/cleanup for public version
 - August 2024 - Production runs, carrying capacity step with automatically defined scaling factors leveraging calibrun
 - July 2024 - Input transmission paramter calibration to a defined output target for either EIR of PfPR2to10  - introduced calibrun
 - March 2024 - Carrying capacity step change and additional vector outcomes, switch to OpenMalaria v46, separation of
