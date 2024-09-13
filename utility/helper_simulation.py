@@ -105,7 +105,7 @@ def get_intervention_params(exp):
 
 def get_simulation_time_params(exp):
     """
-    Calculates simulation time parameters for EMOD, OpenMalaria and malariasimulation based on the provided arguments.
+    Calculates simulation time parameters for EMOD, malariasimulation and OpenMalaria based on the provided arguments.
 
     Args:
         exp (Experiment): Experiment object containing experiment specifications.
@@ -152,9 +152,9 @@ def get_simulation_time_params(exp):
         raise ValueError(f'Please specify valid emod_step, {emod_step} is not valid')
 
     # Update experiment object with simulation start year and duration
-    exp.sim_start_year_em = sim_start_year
-    exp.sim_start_year_om = start_year - burnin
-    exp.sim_start_year_ms = exp.sim_start_year_om
+    exp.sim_start_year_emod = sim_start_year
+    exp.sim_start_year_openmalaria = start_year - burnin
+    exp.sim_start_year_malariasimulation = exp.sim_start_year_openmalaria
     exp.monitoring_years = monitoring_years
     exp.sim_dur_years = sim_dur_years
 
@@ -170,19 +170,19 @@ def param_variation(df, exp):
     - exp: Experiment object.
 
     Returns:
-    DataFrame with added column 'ms_pv' representing malsim parameter variation values.
+    DataFrame with added column 'malariasimulation_pv' representing malariasimulation parameter variation values.
     """
     if exp.malariasimulation_parameter_variation:
         from random import sample
         if exp.num_seeds > 1000:
-            print("Warning: num_seeds > 1000, therefore malsim parameter variation will have repeat values")
+            print("Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values")
             par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds + 1), exp.num_seeds)]
             for i, row in df.iterrows():
-                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
+                df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
         else:
             par_var = sample(range(1, 1001), exp.num_seeds)
             for i, row in df.iterrows():
-                df.loc[i, 'ms_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
+                df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
     return df
 
 

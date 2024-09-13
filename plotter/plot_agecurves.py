@@ -88,7 +88,7 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    modelname = args.modelname #  ['EMOD', 'OpenMalaria', 'MalSim']
+    modelname = args.modelname #  ['EMOD', 'OpenMalaria', 'malariasimulation']
     if isinstance(modelname, str):
         modelname = [modelname]
 

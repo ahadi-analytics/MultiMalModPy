@@ -2,7 +2,7 @@ from utility.helper import *
 import shutil
 from OpenMalaria.scaffolds.intervention_snippets import *
 
-def create_scenarios_OM(exp, scen_df):
+def create_scenarios(exp, scen_df):
     """
     Creates OpenMalaria scenarios based on a dataframe containing scenario parameters.
     Args:
@@ -11,13 +11,13 @@ def create_scenarios_OM(exp, scen_df):
     Returns:
         None
     """
-    with open(os.path.join(exp.om_input_path, 'scaffolds', f"{exp.om_scaffold}.xml"), "r") as fp:
+    with open(os.path.join(exp.openmalaria_input_path, 'scaffolds', f"{exp.om_scaffold}.xml"), "r") as fp:
         xml = fp.read()
 
     # Replace placeholders in the XML template with fixed parameters
-    xml = xml.replace("@version@", f"{exp.om_version}")
+    xml = xml.replace("@version@", f"{exp.openmalaria_version}")
     xml = xml.replace("@pop_size@", f"{exp.pop_size}")
-    xml = xml.replace("@burnin_start_year@", f"{exp.sim_start_year_om}")
+    xml = xml.replace("@burnin_start_year@", f"{exp.sim_start_year_openmalaria}")
     xml = xml.replace("@start_year@", f"{exp.start_year-1}")
     xml = xml.replace("@end_year@", f"{exp.end_year-1}")
     xml = xml.replace("@survey_step@", f"{exp.om_survey_step}")
@@ -31,10 +31,10 @@ def create_scenarios_OM(exp, scen_df):
         scenario = xml.replace('@seed@', str(row['seed']))
         scenario = scenario.replace('@cm_clinical@', str(row['cm_clinical']))
         scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
-        scenario = scenario.replace('@eir@', str(row['model_input_om']))
+        scenario = scenario.replace('@eir@', str(row['model_input_openmalaria']))
         if 'cc_step' in exp.intervention_list: # GOING TO HAVE TO CHANGE SIGNIFICANTLY DUE TO INTERPOLATION
-            scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_om']))
-            scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_om']))
+            scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_openmalaria']))
+            scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_openmalaria']))
 
         if 'smc' in exp.intervention_list:
             scenario = write_smc_deployment(scenario, row)
@@ -50,9 +50,9 @@ def create_scenarios_OM(exp, scen_df):
             fo.write(f"{scenario}")
 
     # Copy additional files required by OpenMalaria
-    shutil.copy(exp.om_path + "/densities.csv", f"{exp.job_directory}/")
-    schema = f"scenario_{exp.om_version}.xsd"
-    shutil.copy(os.path.join(exp.om_path, schema), exp.job_directory)
+    shutil.copy(exp.openmalaria_path + "/densities.csv", f"{exp.job_directory}/")
+    schema = f"scenario_{exp.openmalaria_version}.xsd"
+    shutil.copy(os.path.join(exp.openmalaria_path, schema), exp.job_directory)
 
 def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
     """
@@ -117,15 +117,15 @@ def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
     os.makedirs(os.path.relpath(f"{exp.job_directory}/log"), exist_ok=True)
     os.makedirs(os.path.relpath(f"{exp.job_directory}/xml"), exist_ok=True)
     os.makedirs(os.path.relpath(f"{exp.job_directory}/txt"), exist_ok=True)
-    os.makedirs(os.path.relpath(f"{exp.job_directory}/ctsout"), exist_ok=True)
+    #os.makedirs(os.path.relpath(f"{exp.job_directory}/ctsout"), exist_ok=True) # only required when running continuous output
 
     # Generate OpenMalaria scenario XML files
-    create_scenarios_OM(exp, scen_df)
+    create_scenarios(exp, scen_df)
 
     # Set up script for submitting OpenMalaria simulations as a SLURM array job
     array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='run_openmalaria', arrayJob=array)
-    openmalaria = exp.OM_venv
+    openmalaria = exp.OPENMALARIA_venv
     path = f'export PATH=$PATH:{exp.job_directory}'
     slurmID = '${SLURM_ARRAY_TASK_ID}'
     command = f'\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
@@ -155,4 +155,4 @@ if __name__ == "__main__":
     file = open(os.path.join(wdir, "exp.obj"), "rb")
     exp = pickle.load(file)
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
-    create_scenarios_OM(exp, scen_df)
+    create_scenarios(exp, scen_df)

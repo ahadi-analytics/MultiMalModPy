@@ -58,10 +58,10 @@ def cc_step_params(exp):
     ## Automatically derived and updated parameters
     exp.cc_timestep_om = int((73 * (exp.burnin + exp.step_in_years)))  # 5 Years in to the pickup time OpenMalaria
     if exp.emod_step is None:  ## if None, no serialization done, hence burnin period is added to the step_in_years
-        exp.cc_timestep_em = int((exp.burnin + exp.step_in_years)*365)
+        exp.cc_timestep_emod = int((exp.burnin + exp.step_in_years)*365)
     else:
-        exp.cc_timestep_em = int(exp.step_in_years * 365)  # 5 years in to the pickup time EMOD and Malsim, this parameter can already be defined in burnin for the respective pickup run
-    exp.cc_timestep_ms = int((exp.burnin + exp.step_in_years)*365)
+        exp.cc_timestep_emod = int(exp.step_in_years * 365)  # 5 years in to the pickup time EMOD and malariasimulation, this parameter can already be defined in burnin for the respective pickup run
+    exp.cc_timestep_malariasimulation = int((exp.burnin + exp.step_in_years)*365)
 
 
     ## Fixed parameters for cc_step

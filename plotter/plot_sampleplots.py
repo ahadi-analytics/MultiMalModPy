@@ -20,7 +20,7 @@ from plotter.plot_helper import *
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    modelname = args.modelname # ['EMOD', 'OpenMalaria', 'MalSim']
+    modelname = args.modelname # ['EMOD', 'OpenMalaria', 'malariasimulation']
     if isinstance(modelname, str):
         modelname = [modelname]
     file = open(os.path.join(wdir, "exp.obj"), "rb")
@@ -59,8 +59,8 @@ if __name__ == "__main__":
         sample_plot_yr(out_dir, exp_tags)
         sample_plot_mth(out_dir, exp_tags)
 
-    if 'MalSim' in modelname:
-        from MalSim.sample_plots import *
+    if 'malariasimulation' in modelname:
+        from malariasimulation.sample_plots import *
 
         # Determine whether simulation ran with forced or dynamic EIR and set eirchannel
         # Define tags and channels for sample plots
@@ -71,7 +71,7 @@ if __name__ == "__main__":
                            'severe_incidence', 'prevalence_2to10', 'EIR_gamb']
 
         # Create sample plots
-        wdir = os.path.join(wdir, '../MalSim')
+        wdir = os.path.join(wdir, 'malariasimulation')
         all_age_sample_plot(wdir, exp_tags, sample_channels)
         sample_plot_yr(wdir, exp_tags)
         sample_plot_mth(wdir, exp_tags)

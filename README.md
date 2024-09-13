@@ -85,7 +85,7 @@ Weblinks:
 
 - [EMODpy installation](https://docs.idmod.org/projects/emodpy/en/v1.19.0/installation.html).
 - [OpenMalaria installation](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria)
-- [malariasimulation installation](https://github.com/numalariamodeling/model-characterization/tree/main/MalSim#requirements-for-running-malsim-r-scripts)
+- [malariasimulation installation](https://github.com/numalariamodeling/model-characterization/tree/main/malariasimulation#requirements-for-running-malsim-r-scripts)
 
 <details><summary><span>Installation on Northwestwerns University HPC cluster</span></summary>
 <p>

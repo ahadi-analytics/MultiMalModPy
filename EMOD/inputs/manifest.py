@@ -1,7 +1,7 @@
 import os
 
 # This is a user-modifiable Python file designed to be a set of simple input file and directory settings that you can choose and change.
-om_version = 46 # 43, 46
+openmalaria_version = 46 # 43, 46
 emod_build = 220405
 
 # Select cluster name
@@ -31,23 +31,23 @@ input_dir = os.path.join(ROOT_DIR, "EMOD/inputs")
 
 # job_directory is where your simulations and outputs will be stored
 # SIF_PATH is the path to the sif image used to run EMOD
-# OM_PATH is the location of the OpenMalaria dependencies (xsd schema, densities.csv, ...)
-# om_input_path is location of OpenMalaria input files, scaffolds specific to project
+# OpenMalaria_PATH is the location of the OpenMalaria dependencies (xsd schema, densities.csv, ...)
+# openmalaria_input_path is location of OpenMalaria input files, scaffolds specific to project
 if hpc == 'NUCLUSTER':
     sh_hpc_config = {'A': 'b1139', 'p': 'b1139', 'em_modules': 'singularity', 'buyin': True}
     projdir = os.path.join('/projects/b1139/emod-om/')
     job_directory = os.path.join(projdir, 'experiments')
     output_directory = os.path.join(projdir, 'simulation_outputs')
     SIF_PATH = "--bind /projects /projects/b1139/images/dtk_run_rocky_py39.sif"
-    if om_version == 43:
-        OM_PATH = "/projects/b1139/OpenMalaria/"
-    elif om_version == 46:
-        OM_PATH = "/projects/b1139/OpenMalaria/om_v46/"
+    if openmalaria_version == 43:
+        OpenMalaria_PATH = "/projects/b1139/OpenMalaria/"
+    elif openmalaria_version == 46:
+        OpenMalaria_PATH = "/projects/b1139/OpenMalaria/om_v46/"
     else:
-        raise ValueError(f'{om_version} not a valid OpenMalaria version, available versions: 43, 46')
+        raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
     emod_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/EMOD/inputs')
-    om_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/OpenMalaria/')
-    ms_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/MalSim/')
+    openmalaria_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/OpenMalaria/')
+    malariasimulation_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/malariasimulation/')
     if os.name != 'posix':
         output_directory = os.path.join(os.environ['USERPROFILE'], 'NU Malaria Modeling Dropbox/projects/EMOD_OM/simulation_outputs')
         print(f"Setting output_directory for local use: {output_directory}")
@@ -56,10 +56,10 @@ elif hpc == 'SCICORE':
     projdir = os.path.join('/scicore/home/scicore/cavelan/git/model-characterization')
     job_directory = os.path.join(projdir, 'experiments')
     SIF_PATH = "/scicore/home/scicore/cavelan/git/emodpy/dtk_run_rocky_py39.sif"
-    OM_PATH = "/scicore/home/penny/GROUP/OpenMalaria/OM_schema46/"
+    OpenMalaria_PATH = "/scicore/home/penny/GROUP/OpenMalaria/OM_schema46/"
     emod_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/EMOD/inputs/'
-    om_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria/'
-    ms_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/MalSim/'
+    openmalaria_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria/'
+    malariasimulation_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/malariasimulation/'
     output_directory = os.path.join(projdir, 'simulation_outputs')
 else:
     job_directory = os.path.join(os.path.expanduser('~'), 'experiments/')

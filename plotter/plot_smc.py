@@ -217,7 +217,7 @@ def smc_age_curves(wdir, df, channel, sweepvar='modelname', facet_var='seasonali
 if __name__ == "__main__":
     args = parse_args()
     out_dir = args.directory
-    modelname = args.modelname # ['EMOD', 'OpenMalaria', 'MalSim']
+    modelname = args.modelname # ['EMOD', 'OpenMalaria', 'malariasimulation']
     if isinstance(modelname, str):
         modelname = [modelname]
     file = open(os.path.join(out_dir, "exp.obj"), "rb")

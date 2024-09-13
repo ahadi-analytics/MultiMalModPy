@@ -209,7 +209,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
 
     scen_var = ['scen_id', 'num_seeds', 'seasonality', 'entomology_mode']
     outcome_var = ['InputEIR', 'SimulatedEIR', 'nTransmit', 'Vector_Nv', 'Vector_Sv']
-    cc_step_var = ['cc_factor_om', 'cc_timestep_om','cc_title']
+    cc_step_var = ['cc_factor_openmalaria', 'cc_timestep_openmalaria','cc_title']
     columns_to_keep = ['index', 'seed', 'survey', 'days', 'year'] + scen_var + outcome_var
 
     if survey_step_days == 5:
@@ -217,7 +217,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
         df_day = pivot_wider(df_day, index_cols=['index', 'survey', 'days', 'year'])
         df_day = df_day.merge(scen_df, on='index', how='inner')
         # If we created different eirs for each simulation, we need to parse it out here, so all the models can eventually be aligned
-        # The only difference between these two dfs is if eir_om (om specific eir) or eir (general to all models) is used.
+        # The only difference between these two dfs is if eir_openmalaria (om specific eir) or eir (general to all models) is used.
         if 'cc_change' in df_day:
             df_day = df_day[columns_to_keep + cc_step_var]
             df_day = df_day.rename(columns={'SimulatedEIR': 'simulatedEIR',
@@ -399,9 +399,9 @@ def SurveyAllAgeAnalyzer(exp, mm, start_year=2020, survey_step_days=30, compr='i
     adf.to_csv((os.path.join(wdir, 'All_Age_Outputs.csv')), index=False, compression=compr)
 
 
-def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', 'index'], age_groups_aggregates=None):
+def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', 'index'], age_groups_aggregates=None):
     """
-    Run the BenchmarkAnalyzer for OpenMalaria experiments to generate
+    Run the TimeavrgAgebinAnalyzer for OpenMalaria experiments to generate
     and save a results dataframe for defined age groups aggregated over the monitoring period.
 
     Args:
@@ -413,12 +413,12 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
         survey_step_days (int, optional): Number of days between survey steps. Defaults to 30.
 
     Saves:
-        Benchmark.csv
+        mmmpy_timeavrg.csv
 
     Returns:
         None
     """
-    print("Running BenchmarkAnalyzer...", flush=True)
+    print("Running TimeavrgAgebinAnalyzer...", flush=True)
 
     # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
     if not age_groups_aggregates:
@@ -516,21 +516,21 @@ def BenchmarkAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGroup', '
     adf = adf.merge(scen_df, on='index', how='inner')
     adf = adf.merge(eir_df, on='index', how='inner')
 
-    # Save the processed DataFrame to a CSV file named 'Benchmark.csv'
-    print(f'Saving Benchmark.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir, 'Benchmark.csv')), index=False)
+    # Save the processed DataFrame to a CSV file 
+    print(f'Saving mmmpy_timeavrg.csv to {wdir}')
+    adf.to_csv((os.path.join(wdir, 'mmmpy_timeavrg.csv')), index=False)
 
     if exp.run_mode == 'calibrun':
         u5 = adf[adf['ageGroup']=='0-5'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         u5 = u5.rename(columns={'clinical_incidence':'clinical_incidence_U5'})
         all_ages = adf[adf['ageGroup']=='0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         adf = adf[adf['ageGroup']=='0-100']
-        adf = adf.groupby(['scen_id','model_input_om','seasonality','cm_clinical'])[['simulatedEIR','prevalence_2to10','prevalence','severe_incidence','n_total_mos_pop']].agg('mean').reset_index()
+        adf = adf.groupby(['scen_id','model_input_openmalaria','seasonality','cm_clinical'])[['simulatedEIR','prevalence_2to10','prevalence','severe_incidence','n_total_mos_pop']].agg('mean').reset_index()
         adf = adf.merge(all_ages, on = 'scen_id')
         adf = adf.merge(u5, on = 'scen_id')
         adf = adf.drop(['scen_id'],axis=1)
         adf['modelname'] = 'OpenMalaria'
-        adf = adf.rename(columns={'model_input_om':'input_target'})
+        adf = adf.rename(columns={'model_input_openmalaria':'input_target'})
         adf.to_csv((os.path.join(wdir, 'interpolation_data.csv')), index=False)
         adf.to_csv((os.path.join(exp.interp_path, 'OpenMalaria', f'{exp.exp_name}_interpolation_data.csv')))
 
@@ -549,12 +549,12 @@ def AnnualAgebinAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_channels
         survey_step_days (int, optional): Number of days between survey steps. Defaults to 30.
 
     Saves:
-        PfPR_ClinicalIncidence_yr.csv
+        mmmpy_yr.csv
 
     Returns:
         None
     """
-    print("Running AnnualBenchmarkAnalyzer...", flush=True)
+    print("Running AnnualAgebinAnalyzer...", flush=True)
 
     # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
     if not age_groups_aggregates:
@@ -654,9 +654,9 @@ def AnnualAgebinAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_channels
     adf = adf.merge(scen_df, on='index', how='inner')
     adf = adf.merge(eir_df, on=['index', 'year'], how='inner')
 
-    # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_yr.csv'
-    print(f'Saving PfPR_ClinicalIncidence_yr.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv')), index=False)
+    # Save the processed DataFrame to a CSV file 
+    print(f'Saving mmmpy_yr.csv to {wdir}')
+    adf.to_csv((os.path.join(wdir, 'mmmpy_yr.csv')), index=False)
 
 
 def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index'], age_groups_aggregates=None,
@@ -674,13 +674,13 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
         survey_step_days (int, optional): Number of days between survey steps. Defaults to 30.
 
     Saves:
-        PfPR_ClinicalIncidence_mth.csv
+        mmmpy_mth.csv
 
     Returns:
         None
     """
 
-    print("Running MonthlyBenchmarkAnalyzer...", flush=True)
+    print("Running MonthlyAgebinAnalyzer...", flush=True)
 
     # Define age groups to aggregate, have U5 aggregated and disaggregated in dataframeto write out
     if not age_groups_aggregates:
@@ -782,9 +782,9 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     adf = adf.merge(scen_df, on='index', how='inner')
     adf = adf.merge(eir_df, on=['index', 'month'], how='inner')
     adf['date'] = adf.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
-    # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_mth.csv'
-    print(f'Saving PfPR_ClinicalIncidence_mth.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv')), index=False)
+    # Save the processed DataFrame to a CSV file 
+    print(f'Saving mmmpy_mth.csv to {wdir}')
+    adf.to_csv((os.path.join(wdir, 'mmmpy_mth.csv')), index=False)
 
 
 def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index'], age_groups_aggregates=None,
@@ -802,7 +802,7 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
         survey_step_days (int, optional): Number of days between survey steps. Defaults to 30.
 
     Saves:
-        PfPR_ClinicalIncidence_5day.csv
+        mmmpy_5day.csv
 
     Returns:
         None
@@ -915,9 +915,9 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     adf['day'] = (adf['days']-1)%365 + 1
     adf = adf.drop(columns = ['days','month']) #This can be removed once we have consistent months across all three models
     #Months in five day periods is currently wrong.
-    # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_5day.csv'
-    print(f'Saving PfPR_ClinicalIncidence_5day.csv to {wdir}')
-    adf.to_csv((os.path.join(wdir, 'PfPR_ClinicalIncidence_5day.csv')), index=False)
+    # Save the processed DataFrame to a CSV file 
+    print(f'Saving mmmpy_5day.csv to {wdir}')
+    adf.to_csv((os.path.join(wdir, 'mmmpy_5day.csv')), index=False)
 
 
 def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
@@ -1002,7 +1002,7 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     df3 = df3[['scen_id', 'index', 'seed', 'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey', 'days',
                    'month', 'year', 'agebin', 'ageGroup', 'Vector_Nv', 'Vector_Sv',
                    'nHost', 'output_target', 'inputEIR', 'simulatedEIR', 'prevalence', 'clinical_incidence', 'severe_incidence',
-                   'nPatent', 'nInfect', 'nUncomp','nSevere', 'cc_factor_om', 'cc_change','cc_title']]
+                   'nPatent', 'nInfect', 'nUncomp','nSevere', 'cc_factor_openmalaria', 'cc_change','cc_title']]
     df3 = df3.rename(
             columns={'days': 'timestep','Vector_Nv': 'n_total_mos_pop', 
                      'Vector_Sv': 'n_infectious_mos'})
@@ -1025,7 +1025,7 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     cols_to_keep = ['scen_id', 'seed', 'cm_clinical','seasonality', 'output_target', 'cc_change', 'cc_title', 'ageGroup', 'timestep', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
                     'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']
     df3 = df3[cols_to_keep]
-    df3.to_csv((os.path.join(wdir, 'CCstep_daily.csv')), index=False, compression=compr)
+    df3.to_csv((os.path.join(wdir, 'mmmpy_ccstep_daily.csv')), index=False, compression=compr)
 
 
 if __name__ == "__main__":
@@ -1036,7 +1036,7 @@ if __name__ == "__main__":
     file = open(os.path.join(jdir, "exp.obj"), "rb")
     exp = pickle.load(file)
     start_year = exp.start_year
-    wdir = os.path.join(exp.sim_out_dir, 'om')
+    wdir = os.path.join(exp.sim_out_dir, 'OpenMalaria')
     age_groups_aggregates = exp.age_groups_aggregates
 
     # Determine survey step size
@@ -1055,8 +1055,8 @@ if __name__ == "__main__":
         SurveyAllAgeAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
 
     ## Aggregated timeseries per age groups
-    if 'benchmark' in exp.analyzer_list:
-        BenchmarkAnalyzer(exp, mmi, survey_step_days=survey_steps, age_groups_aggregates=age_groups_aggregates)
+    if 'timeavrg' in exp.analyzer_list:
+        TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days=survey_steps, age_groups_aggregates=age_groups_aggregates)
 
     ## 5 day timeseries per age groups
     if '5day' in exp.analyzer_list:

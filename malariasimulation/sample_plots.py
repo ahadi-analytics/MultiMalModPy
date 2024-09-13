@@ -223,9 +223,9 @@ if __name__ == "__main__":
 
     file = open(os.path.join(job_directory, "exp.obj"), "rb")
     exp = pickle.load(file)
-    sim_start = exp.sim_start_year_om + exp.sim_dur_years - exp.monitoring_years
+    sim_start = exp.sim_start_year_openmalaria + exp.sim_dur_years - exp.monitoring_years
     # Set wdir directory for loading and saving simulation results (for EMOD)
-    wdir = os.path.join(job_directory, 'MalSim')
+    wdir = os.path.join(job_directory, 'malariasimulation')
     os.makedir(os.path.join(wdir, 'plots'), exist_ok=True)
 
     # Determine whether simulation ran with forced or dynamic EIR and set eirchannel

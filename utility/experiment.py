@@ -33,24 +33,24 @@ class LoadExperiment:
         self.emod_build = manifest.emod_build
         self.emod_input_path = manifest.emod_input_path
         self.EMOD_venv = manifest.EMOD_venv
-        self.OM_venv = manifest.OM_venv
-        self.om_path = manifest.OM_PATH
-        self.om_version = manifest.om_version
-        self.om_input_path = manifest.om_input_path
-        self.ms_input_path = manifest.ms_input_path
+        self.OPENMALARIA_venv = manifest.OPENMALARIA_venv
+        self.openmalaria_path = manifest.OPENMALARIA_PATH
+        self.openmalaria_version = manifest.openmalaria_version
+        self.openmalaria_input_path = manifest.openmalaria_input_path
+        self.malariasimulation_input_path = manifest.malariasimulation_input_path
         self.job_directory_manifest = manifest.job_directory
         self.output_directory_manifest = manifest.output_directory
         self.interp_path = manifest.interp_path
         self.interp_csv = manifest.interp_csv
         self.burnin_directory = None
 
-        # OpenMalaria and MalSim settings
+        # OpenMalaria and malariasimulation settings
         self.om_scaffold = "R0000GA"
         self.om_survey_step = '5d'
-        self.MalSim_script = 'malsim_benchmarking_exercise.R'
+        self.malariasimulation_script = 'malariasimulation_base.R'
         self.analyzer_script = ['analyze_sim.py']
-        self.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'benchmark']
-        self.plots_to_run = ['benchmark', 'timeseries', 'agecurves']
+        self.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'timeavrg']
+        self.plots_to_run = ['relationship', 'timeseries', 'agecurves'] # 'anova_rmse', 'ccstep', 'smc'  ## plot for internal version, cleanup in mmmpy public
 
         # Entomology settings
         self.entomology_mode = 'dynamic'
@@ -86,8 +86,8 @@ class LoadExperiment:
             if self.output_type != 'eir':
                 raise Warning(f"output_type changed to 'eir' as required for calibrun (not {self.output_type})")
             self.output_type = 'eir'
-            self.analyzer_list = ['benchmark']
-            self.plots_to_run = ['benchmark']
+            self.analyzer_list = ['timeavrg']
+            self.plots_to_run = ['relationship']
             self.output_target = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2,
                                  2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9,
                                  10, 12, 14, 16, 18, 20, 25, 30, 35, 40,
@@ -182,11 +182,11 @@ def initialize_exp_old(args, manifest):
     exp.emod_build = manifest.emod_build
     exp.emod_input_path = manifest.emod_input_path
     exp.EMOD_venv = manifest.EMOD_venv
-    exp.OM_venv = manifest.OM_venv
-    exp.om_path = manifest.OM_PATH
-    exp.om_version = manifest.om_version
-    exp.om_input_path = manifest.om_input_path
-    exp.ms_input_path = manifest.ms_input_path
+    exp.OPENMALARIA_venv = manifest.OPENMALARIA_venv
+    exp.openmalaria_path = manifest.OPENMALARIA_PATH
+    exp.openmalaria_version = manifest.openmalaria_version
+    exp.openmalaria_input_path = manifest.openmalaria_input_path
+    exp.malariasimulation_input_path = manifest.malariasimulation_input_path
 
     exp.job_directory_manifest = manifest.job_directory
     exp.output_directory_manifest = manifest.output_directory
@@ -194,16 +194,14 @@ def initialize_exp_old(args, manifest):
     exp.interp_csv = manifest.interp_csv
     exp.burnin_directory = None
 
-    # Specify OpenMalaria XML and survey step, MalSim simulation setup
+    # Specify OpenMalaria XML and survey step, malariasimulation simulation setup
     # Note if, interventions are specified in intervention_list, these will get updated via get_intervention_params
     exp.om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
     exp.om_survey_step = '5d'  # '30d'
-    exp.MalSim_script = 'malsim_benchmarking_exercise.R'
+    exp.malariasimulation_script = 'malariasimulation_base.R'
     exp.analyzer_script = ['analyze_sim.py']
-    exp.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly',
-                         'benchmark']  # ['all_age_analyzer', '5day', 'annual','monthly','benchmark'.'daily']
-    exp.plots_to_run = ['benchmark', 'timeseries',
-                        'agecurves']  # gets overwritten by get_intervention_params(exp) depending on 'interventions' specified
+    exp.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'timeavrg']  # ['all_age_analyzer', '5day', 'annual','monthly','timeavrg'.'daily']
+    exp.plots_to_run = ['relationship', 'timeseries',  'agecurves']  # gets overwritten by get_intervention_params(exp) depending on 'interventions' specified
 
     # Flag to select whether to run with (dynamic) or without vector model (forced)
     exp.entomology_mode = 'dynamic'  # dynamic, forced
@@ -234,8 +232,8 @@ def initialize_exp_old(args, manifest):
         if exp.output_type != 'eir':
             raise Warning(f"output_type changed to 'eir' as required for calibrun (not {exp.output_type})")
         exp.output_type = 'eir'
-        exp.analyzer_list = ['benchmark']
-        exp.plots_to_run = ['benchmark']
+        exp.analyzer_list = ['timeavrg']
+        exp.plots_to_run = ['relationship']
 
         exp.output_target = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75,2,
                              2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9,

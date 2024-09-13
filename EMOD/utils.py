@@ -83,9 +83,9 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
 
     ## Carrying capacity step change
     if 'cc_step' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None): #Make sure to include the cc_step change only at pickup simulations.
-        eir_df = pd.DataFrame({'CONSTANT':[row.cc_factor_em]})
+        eir_df = pd.DataFrame({'CONSTANT':[row.cc_factor_emod]})
         add_scale_larval_habitats(camp, df=eir_df,
-                                  start_day=row.cc_timestep_em,
+                                  start_day=row.cc_timestep_emod,
                                   repetitions = 1)
     if exp.importation_rate != 0:
         ncases_per_year_per1000pop = ((exp.importation_rate/100)*1000) / exp.pop_size
@@ -95,9 +95,9 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
     # SMC using PKPD model
     if 'smc' in intervention_list and exp.emod_step == 'pickup':
         print(row.smc_coverage)
-        if row.model_input_em == 4:
+        if row.model_input_emod == 4:
             start_array = [366, 731, 1096, 1461, 1826]
-        elif row.model_input_em == 8:
+        elif row.model_input_emod == 8:
             start_array = [366, 731, 1096, 1461, 1826]
         else:
             start_array = [335, 700, 1065, 1430,1795]
@@ -573,13 +573,13 @@ def config_sweep_builder(exp, scen_df):
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_em)),
+                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_emod)),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_em),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
@@ -604,7 +604,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             partial(set_param, param='Serialized_Population_Path',
                     value=os.path.join(row["serialized_file_path"], "output")),
             partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
-            partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_em)),
+            partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_emod)),
             partial(set_param, param='Run_Number', value=s)]
             for i, row in scen_df_pickup.iterrows()
             for s in range(nseeds)]
@@ -614,7 +614,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',
                            value=row["Serialized_Population_Filenames"]),
-                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_em),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df_pickup.iterrows()
                   for s in range(nseeds)]
@@ -643,7 +643,7 @@ def submit_run_EMOD(exp, scen_df):
     burnin = exp.burnin
     platform = exp.platform
     agebins = exp.agebins
-    sim_start_year_em = exp.sim_start_year_em
+    sim_start_year_emod = exp.sim_start_year_emod
 
     # create EMODTask
     print("Creating EMODTask (from files)...")
@@ -661,16 +661,16 @@ def submit_run_EMOD(exp, scen_df):
     else:
         builder = config_sweep_builder(exp, scen_df)
 
-    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
+    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years)
 
 
 
     if emod_step != 'burnin':  # do not generate monthly reports for burnin
         if 'daily' in exp.analyzer_list:
-            add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years) #We shouldn't generate daily reports unless specified
-        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
+            add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years) #We shouldn't generate daily reports unless specified
+        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years)
         if '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:  # Note, we will not want to always run 5 days using the analyzer_list as a flag to include this reporter  or not
-            add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_em, num_year=sim_dur_years)
+            add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years)
 
     # Create experiment from builder and run
     experiment = Experiment.from_builder(builder, task, name=exp_name)
@@ -684,7 +684,7 @@ def submit_run_EMOD(exp, scen_df):
     experiment.analyzer_script = exp.analyzer_script
     experiment.job_directory = exp.job_directory
     experiment.emod_step = exp.emod_step
-    experiment.start_end = [sim_start_year_em, sim_start_year_em + sim_dur_years - 1]
+    experiment.start_end = [sim_start_year_emod, sim_start_year_emod + sim_dur_years - 1]
 
     submit_analyze_EMOD(experiment, platform)
     print(f"Experiment submission {experiment.uid} succeeded.")

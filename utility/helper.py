@@ -8,9 +8,10 @@ from datetime import datetime as dt
 import pandas as pd
 import numpy as np
 from scipy.interpolate import interp1d
-#from idmtools.entities.experiment import Experiment
+# from idmtools.entities.experiment import Experiment
 from utility.helper_slurm import *
 from utility.helper_simulation import *
+
 
 def parse_launch_args():
     parser = argparse.ArgumentParser(description="Description of your script.")
@@ -39,8 +40,8 @@ def parse_launch_args():
                         help='Description of emod_serialized_id')
     parser.add_argument('--models',
                         nargs='+',
-                        default=['EMOD', 'OpenMalaria', 'MalSim'],
-                        choices=['EMOD', 'OpenMalaria', 'MalSim'],
+                        default=['EMOD', 'malariasimulation', 'OpenMalaria'],
+                        choices=['EMOD', 'malariasimulation', 'OpenMalaria'],
                         help='Description of models_to_run')
     parser.add_argument('--user',
                         type=str,
@@ -74,8 +75,8 @@ def parse_launch_args():
     parser.add_argument('--output_type',
                         type=str,
                         default='prevalence_2to10',
-                        choices=['prevalence_2to10','eir'], # clinical_incidenceU5 #
-                        help='Specify whether to align transmission in each model by EIR or by prevalence_2to10') # , or by clinical incidence
+                        choices=['prevalence_2to10', 'eir'],  # clinical_incidenceU5 #
+                        help='Specify whether to align transmission in each model by EIR or by prevalence_2to10')  # , or by clinical incidence
     return parser.parse_args()
 
 
@@ -122,7 +123,7 @@ def get_param_from_dataframe(df, name):
     """
 
     # list of parameters expecting list format
-    listparams = ['seasonality', 'sweep_list', 'cm_clinical', 'output_target', 'intervention_list', 'agebins' ]
+    listparams = ['seasonality', 'sweep_list', 'cm_clinical', 'output_target', 'intervention_list', 'agebins']
 
     value = df[name].iat[0]
 
@@ -172,13 +173,13 @@ def make_dirs(exp, overwrite=False):
 
     # Create subdirectories for specific simulation models included in exp.models_to_run
     if 'EMOD' in exp.models_to_run:
-        os.makedirs(os.path.join(exp.sim_out_dir, 'em'), exist_ok=overwrite)
+        os.makedirs(os.path.join(exp.sim_out_dir, 'EMOD'), exist_ok=overwrite)
 
     if exp.emod_step != 'burnin':
         if 'OpenMalaria' in exp.models_to_run:
-            os.makedirs(os.path.join(exp.sim_out_dir, 'om'), exist_ok=overwrite)
-        if 'MalSim' in exp.models_to_run:
-            os.makedirs(os.path.join(exp.sim_out_dir, 'MalSim'), exist_ok=overwrite)
+            os.makedirs(os.path.join(exp.sim_out_dir, 'OpenMalaria'), exist_ok=overwrite)
+        if 'malariasimulation' in exp.models_to_run:
+            os.makedirs(os.path.join(exp.sim_out_dir, 'malariasimulation'), exist_ok=overwrite)
     return exp
 
 
@@ -205,7 +206,7 @@ def exp_obj_to_csv(file_path):
 
 
 # check inputs to be run after all exp parameters were updated, i.e. after exp_params_to_update
-def check_exp_inputs(exp, print_reminder = True, intervention_checks = True, attribute_check= False):
+def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribute_check=False):
     """
     Helper function to validate experiment inputs.
 
@@ -218,7 +219,6 @@ def check_exp_inputs(exp, print_reminder = True, intervention_checks = True, att
 
     if print_reminder:
         print(f'Reminder: Importation is currently set to {exp.importation_rate}')
-
 
     # Check timesteps, survey intervals and analyer alignment
     if exp.om_survey_step == '30d' and "5day" in exp.analyzer_list:
@@ -248,24 +248,29 @@ def check_exp_inputs(exp, print_reminder = True, intervention_checks = True, att
         raise ValueError(f'Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.')
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
-    if any(value not in [0, 0.45] for value in exp.cm_clinical) and (exp.entomology_mode == 'dynamic') and ('EMOD' in exp.models_to_run):
-        raise ValueError('EMOD is not set up to run dynamic EIR is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
+    if any(value not in [0, 0.45] for value in exp.cm_clinical) and (exp.entomology_mode == 'dynamic') and (
+            'EMOD' in exp.models_to_run):
+        raise ValueError(
+            'EMOD is not set up to run dynamic EIR is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
     if any(value not in [0, 0.45] for value in exp.cm_clinical) and exp.output_type == 'prevalence_2to10':
-        raise ValueError('output_type prevalence_2to10 is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
+        raise ValueError(
+            'output_type prevalence_2to10 is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
     if exp.output_type not in ['eir', 'prevalence_2to10']:
         raise ValueError(f"Invalid output type: {exp.output_type}")
 
     # Check for interventions added to the framework
     if intervention_checks:
-        if "cc_step" in exp.intervention_list :
+        if "cc_step" in exp.intervention_list:
             if exp.entomology_mode != "dynamic":
-                raise ValueError( f'Invalid entomology_mode for cc_step {exp.entomology_mode} specified, but "dynamic" required')
-            if exp.output_type != 'prevalence_2to10' :
+                raise ValueError(
+                    f'Invalid entomology_mode for cc_step {exp.entomology_mode} specified, but "dynamic" required')
+            if exp.output_type != 'prevalence_2to10':
                 raise ValueError("cc_step requires the output_type to be prevalence_2to10")
             if exp.end_year - exp.start_year < exp.step_in_years:  # check inputs to be run after all exp parameters were updated
-                raise ValueError(f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and { exp.end_year}")
+                raise ValueError(
+                    f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and {exp.end_year}")
 
     # Check if any attribute in list_attributes_nGT1 is not in sweep_list
     if attribute_check:
@@ -275,15 +280,18 @@ def check_exp_inputs(exp, print_reminder = True, intervention_checks = True, att
         for key, value in attributes_dict.items():
             # Check if the attribute is a list
             if isinstance(value, list) and len(value) > 1:
-                if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malsim', 'eir_scalar_malsim', 'eir_om',
-                               'eir_scalar_om', 'carrying_capacity_step', 'age_groups_aggregates', 'plots_to_run',
+                if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malariasimulation',
+                               'eir_scalar_malariasimulation', 'eir_openmalaria',
+                               'eir_scalar_openmalaria', 'carrying_capacity_step', 'age_groups_aggregates',
+                               'plots_to_run',
                                'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial',
                                'analyzer_list', 'analyzer_script', 'calib_config_pointer', 'models_to_run_pickup']:
                     list_attributes_nGT1.append(key)
 
         list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
         if list_attr_notsweep:
-            raise ValueError(f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
+            raise ValueError(
+                f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
 
 
 def save_scen(scen_df, fname, save_dirs=None):
@@ -362,9 +370,9 @@ def create_simsetup_csv(exp):
                  'start_year': exp.start_year,
                  'end_year': exp.end_year,
                  'burnin': exp.burnin,
-                 'sim_start_year_om': exp.sim_start_year_om,
-                 'sim_start_year_em': exp.sim_start_year_em,
-                 'sim_start_year_ms': exp.sim_start_year_ms,
+                 'sim_start_year_openmalaria': exp.sim_start_year_openmalaria,
+                 'sim_start_year_emod': exp.sim_start_year_emod,
+                 'sim_start_year_malariasimulation': exp.sim_start_year_malariasimulation,
                  'intervention_list': exp.intervention_list
                  }
 
@@ -397,12 +405,12 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         print("Notice: for calibrun simulations, importation will be set to 0")
         print("Depending on EM/OM Performance at lower EIRS at 50k pop, this may change")
         exp.importation_rate = 0
-        exp.output_target = np.arange(1,31)
+        exp.output_target = np.arange(1, 31)
         eir_range = [1.00000000e-01, 1.37382380e-01, 1.88739182e-01, 2.59294380e-01, 3.56224789e-01, 4.89390092e-01,
-                    6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
-                    4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
-                    3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
-                    2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
+                     6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
+                     4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
+                     3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
+                     2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
         x_temp_range = [5.00000000e+00, 6.49828306e+00, 8.44553654e+00, 1.09762974e+01, 1.42654175e+01, 1.85401442e+01,
                         2.40958210e+01, 3.13162930e+01, 4.07004273e+01, 5.28965794e+01, 6.87473892e+01, 8.93479989e+01,
                         1.16121718e+02, 1.50918358e+02, 1.96142042e+02, 2.54917301e+02, 3.31304956e+02, 4.30582677e+02,
@@ -415,8 +423,8 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
     df_array = np.array(list(itertools.product(*my_attrs)))
 
     # Create a DataFrame with the combinations
-    df = pd.DataFrame(df_array, columns = col_list)
-    if 'cc_step' in exp.intervention_list: #im only including this because itertools.product includes repeats were output_target equal cc_change, if this could be avoided it should be
+    df = pd.DataFrame(df_array, columns=col_list)
+    if 'cc_step' in exp.intervention_list:  # im only including this because itertools.product includes repeats were output_target equal cc_change, if this could be avoided it should be
         df = df[df['output_target'] != df['cc_change']]
         df = df.reset_index(drop=True)
     df.reset_index(inplace=True)
@@ -435,38 +443,39 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
 
         if exp.run_mode == 'calibrun':
-            if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
-                for i, row in df.iterrows():
-                    df.loc[i, 'model_input_ms'] = eir_range[int(df.loc[i, 'output_target'])-1]
-            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
-                for i, row in df.iterrows():
-                    df.loc[i, 'model_input_om'] = eir_range[int(df.loc[i, 'output_target'])-1]
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
                 for i, row in df.iterrows():
-                    df.loc[i, 'model_input_em'] = x_temp_range[int(df.loc[i, 'output_target'])-1]
+                    df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]
+            if 'malariasimulation' in exp.models_to_run or 'malariasimulation' in exp.models_to_run_pickup:
+                for i, row in df.iterrows():
+                    df.loc[i, 'model_input_malariasimulation'] = eir_range[int(df.loc[i, 'output_target']) - 1]
+            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
+                for i, row in df.iterrows():
+                    df.loc[i, 'model_input_openmalaria'] = eir_range[int(df.loc[i, 'output_target']) - 1]
         else:
             # Alignment of model transmission input to target outcome
-            if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
-                df['model_input_ms'] = output_target_to_eir(df, exp, model = 'MalSim')
-            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
-                df['model_input_om'] = output_target_to_eir(df, exp, model = 'OpenMalaria')
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
-                if exp.entomology_mode =='dynamic':
-                    df['model_input_em'] = output_target_to_xTemp(df, exp, model = 'EMOD')
-                if exp.entomology_mode =='forced':
-                    df['model_input_em'] = output_target_to_eir(df, exp, model = 'EMOD')
+                if exp.entomology_mode == 'dynamic':
+                    df['model_input_emod'] = output_target_to_xTemp(df, exp, model='EMOD')
+                if exp.entomology_mode == 'forced':
+                    df['model_input_emod'] = output_target_to_eir(df, exp, model='EMOD')
+            if 'malariasimulation' in exp.models_to_run or 'malariasimulation' in exp.models_to_run_pickup:
+                df['model_input_malariasimulation'] = output_target_to_eir(df, exp, model='malariasimulation')
+            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
+                df['model_input_openmalaria'] = output_target_to_eir(df, exp, model='OpenMalaria')
+
 
         if 'cc_step' in exp.intervention_list:
             from scenario_inputs.intervention_params import cc_step_factor_calculator, cc_title_function
-            if 'MalSim' in exp.models_to_run or 'MalSim' in exp.models_to_run_pickup:
-                df['cc_factor_ms'] = cc_step_factor_calculator(df, exp, model = 'MalSim')
-                df['cc_timestep_ms'] = exp.cc_timestep_ms
-            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
-                df['cc_factor_om'] = cc_step_factor_calculator(df, exp, model = 'OpenMalaria')
-                df['cc_timestep_om'] = exp.cc_timestep_om
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
-                df['cc_factor_em'] = cc_step_factor_calculator(df, exp, model = 'EMOD')
-                df['cc_timestep_em'] = exp.cc_timestep_em
+                df['cc_factor_emod'] = cc_step_factor_calculator(df, exp, model='EMOD')
+                df['cc_timestep_emod'] = exp.cc_timestep_emod
+            if 'malariasimulation' in exp.models_to_run or 'malariasimulation' in exp.models_to_run_pickup:
+                df['cc_factor_malariasimulation'] = cc_step_factor_calculator(df, exp, model='malariasimulation')
+                df['cc_timestep_malariasimulation'] = exp.cc_timestep_malariasimulation
+            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
+                df['cc_factor_openmalaria'] = cc_step_factor_calculator(df, exp, model='OpenMalaria')
+                df['cc_timestep_openmalaria'] = exp.cc_timestep_openmalaria
             df['cc_title'] = cc_title_function(df)
     return df
 

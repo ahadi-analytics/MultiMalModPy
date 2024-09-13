@@ -74,22 +74,22 @@ def shell_header_quest(sh_account, time_str='6:00:00', memG=3, job_name='myjob',
 
 
 
-def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmark_plots.sh',
-                        custom_args='--modelname EMOD OpenMalaria MalSim', t='05:00:00', memG=20, job_id_EMOD=False,
-                        job_id_MalSim=False, job_id_OpenMalaria=False,
+def submit_run_pyscript(exp, pyscript='plotter/plot_relationship.py', shname='run_relationship_plots.sh',
+                        custom_args='--modelname EMOD malariasimulation OpenMalaria', t='05:00:00', memG=20, job_id_EMOD=False,
+                        job_id_malariasimulation=False, job_id_OpenMalaria=False,
                         job='pyjob',  wdir=None, write_only=False):
     """
     Submits a job to run a Python script.
 
     Args:
         exp (Experiment): The experiment object containing job directory and other information.
-        pyscript (str, optional): The name of the Python script to run. Defaults to 'plot_benchmark.py'.
-        shname (str, optional): The name of the shell script to submit. Defaults to 'run_benchmark_plots.sh'.
-        custom_args (str, optional): Custom arguments to pass to the Python script. Defaults to '--modelname EMOD OpenMalaria MalSim'.
+        pyscript (str, optional): The name of the Python script to run. Defaults to 'plot_relationship.py'.
+        shname (str, optional): The name of the shell script to submit. Defaults to 'run_relationship_plots.sh'.
+        custom_args (str, optional): Custom arguments to pass to the Python script. Defaults to '--modelname EMOD malariasimulation OpenMalaria'.
         t (str, optional): Wall time for the job in the format 'HH:MM:SS'. Defaults to '01:00:00'.
         memG (int, optional): Memory required for the job in GB. Defaults to 1.
         job_id_EMOD (bool, optional): The job ID will be set as a dependency for EMOD. Defaults to False.
-        job_id_MalSim (bool, optional): The job ID will be set as a dependency for malariasimulation. Defaults to False.
+        job_id_malariasimulation (bool, optional): The job ID will be set as a dependency for malariasimulation. Defaults to False.
         job_id_OpenMalaria (bool, optional): The job ID will be set as a dependency for OpenMalaria. Defaults to False.
         job (str, optional): Name of the job. Defaults to 'pyjob'.
         wdir (str, optional): Location of working directory
@@ -118,13 +118,13 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
             id_EMOD = open(os.path.join(exp.job_directory, 'job_id_EMODanalyze.txt')).read().strip()
             dependencies = dependencies + f'{id_EMOD}'
             prior_dependency = True
-        # Check if job_id_MalSim is provided as a string
-        if job_id_MalSim:
-            id_MalSim = open(os.path.join(exp.job_directory, 'job_id_MalSim_analyze.txt')).read().strip()
+        # Check if job_id_malariasimulation is provided as a string
+        if job_id_malariasimulation:
+            id_malariasimulation = open(os.path.join(exp.job_directory, 'job_id_malariasimulation_analyze.txt')).read().strip()
             if prior_dependency:
-                dependencies = dependencies + f',{id_MalSim}'
+                dependencies = dependencies + f',{id_malariasimulation}'
             else:
-                dependencies = dependencies + f'{id_MalSim}'
+                dependencies = dependencies + f'{id_malariasimulation}'
                 prior_dependency = True
         if job_id_OpenMalaria:
             id_OpenMalaria = open(os.path.join(exp.job_directory, 'job_id_OManalyze.txt')).read().strip()
@@ -133,7 +133,7 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
             else:
                 dependencies = dependencies + f'{id_OpenMalaria}'
         # Submit job with dependency
-        if not job_id_EMOD and not job_id_MalSim and not job_id_OpenMalaria:
+        if not job_id_EMOD and not job_id_malariasimulation and not job_id_OpenMalaria:
             # Submit job without dependency
             p = subprocess.run(['sbatch', '--parsable', script_path], stdout=subprocess.PIPE,
                                cwd=str(exp.job_directory))
@@ -151,18 +151,18 @@ def submit_run_pyscript(exp, pyscript='benchmark_plots.py', shname='run_benchmar
 def submit_run_plotters(exp):
     # Optionally, create submission script for standardized plots and run after last simulations finished
     job_id_EMOD = False
-    job_id_MalSim = False
+    job_id_malariasimulation = False
     job_id_OpenMalaria = False
     if 'EMOD' in exp.models_to_run:
         job_id_EMOD = True
-    if 'MalSim' in exp.models_to_run:
-        job_id_MalSim = True
+    if 'malariasimulation' in exp.models_to_run:
+        job_id_malariasimulation = True
     if 'OpenMalaria' in exp.models_to_run:
         job_id_OpenMalaria = True
 
-    plot_names_all = ['benchmark', 'timeseries', 'agecurves']
+    plot_names_all = ['relationship', 'timeseries', 'agecurves']
     ## ['ccstep', 'smc'] custom plotter excluded, as these only apply for specific simulation experiments
-    # plot_memrequests_all = {'sampleplots' : 10,'benchmark' :10,'agecurves' :10 ,'ccstep' :20}
+    # plot_memrequests_all = {'sampleplots' : 10,'relationship' :10,'agecurves' :10 ,'ccstep' :20}
 
     ## Write  shell submission script for all, even if not running
     fdir = os.path.abspath(os.path.dirname(__file__))
@@ -191,7 +191,7 @@ def submit_run_plotters(exp):
 
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                             custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
-                            job_id_EMOD=job_id_EMOD, job_id_MalSim=job_id_MalSim, job_id_OpenMalaria=job_id_OpenMalaria,
+                            job_id_EMOD=job_id_EMOD, job_id_malariasimulation=job_id_malariasimulation, job_id_OpenMalaria=job_id_OpenMalaria,
                             job=f'{plot_name}_plots', memG=plot_memG,   wdir = parent_dir)
 
 def write_txt(txtobj, path, fname):
