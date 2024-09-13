@@ -1,14 +1,14 @@
-#--------------------------------------------------------------------------------------------------#
-#----- malsimulation benchmarking workflow  -----#
-#------------------------------------------------#
+#----------------------------------------------------------------------------------------------------#
+#----- malariasimulation MMMPy base simulation      -----#
+#----------------------------------------------------------------------------------------------------#
 
 #--- README ---#
 #--------------#
 
 ##' 
 ##' This script combines the input processing, simulation running and output processing steps
-##' required to integrate malariasimulation into the ensemble modelling project benchmarking
-##' exercise. The current iteration of the work flow allows us to run simulations from a .csv
+##' required to integrate malariasimulation into the MultiMalModPy framework. 
+##' The current iteration of the work flow allows us to run simulations from a .csv
 ##' input and convert the outputs into 2 data frames, stored in a single list, that contain 
 ##' summary metrics of interest in monthly and annual aggregations.
 ##' 
@@ -69,12 +69,12 @@ min_ages <- exp$min_ages
 max_ages <- exp$max_ages
 
 # Generate the approximate seasonal parameters required to generate similar seasonal rainfall profile
-malsim_seasonal_coefficients <- get_seasonality_parameters(eirs = exp$eirs, timeframe = 'daily')
+seasonal_coefficients <- get_seasonality_parameters(eirs = exp$eirs, timeframe = 'daily')
 # Store the seasonality coefficients in the malariasimulation experimental setup parameters list:
-exp$g0 <- as.numeric(malsim_seasonal_coefficients$coefficients[1])
-exp$g <- as.numeric(malsim_seasonal_coefficients$coefficients[2:4])
-exp$h <- as.numeric(malsim_seasonal_coefficients$coefficients[5:7])
-exp$floor <- as.numeric(malsim_seasonal_coefficients$floor)
+exp$g0 <- as.numeric(seasonal_coefficients$coefficients[1])
+exp$g <- as.numeric(seasonal_coefficients$coefficients[2:4])
+exp$h <- as.numeric(seasonal_coefficients$coefficients[5:7])
+exp$floor <- as.numeric(seasonal_coefficients$floor)
 
 
 if( length(exp$intervention_list)>0){

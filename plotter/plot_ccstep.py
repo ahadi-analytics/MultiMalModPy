@@ -315,7 +315,7 @@ def daily_eradication(fdir, df_all, channel, sweepvar='modelname', facet_var='ag
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    modelname = args.modelname   #  ['EMOD', 'OpenMalaria', 'MalSim']
+    modelname = args.modelname   #  ['EMOD', 'malariasimulation', 'OpenMalaria']
     #out_dir = '/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240730/sims_dynamic_perennial_cc_step_15_11_55'
     #modelname = ['OpenMalaria']
     if isinstance(modelname, str):
@@ -323,7 +323,7 @@ if __name__ == "__main__":
     file = open(os.path.join(wdir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    df_cc, out_dir = get_output_df(wdir, modelname, custom_name='CCstep_daily')
+    df_cc, out_dir = get_output_df(wdir, modelname, custom_name='mmmpy_ccstep_daily')
     out_dir = os.path.join(out_dir, 'plots')
     os.makedirs(out_dir, exist_ok=True)
 

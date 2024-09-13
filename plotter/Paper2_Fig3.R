@@ -21,7 +21,7 @@ if (Sys.getenv("OS") == "Windows_NT") {
   username <- Sys.getenv('USER') #Sys.getenv('USERNAME')
   projdir <- file.path('/projects/b1139/emod-om/simulation_outputs', username)
 }
-modelname <- c("EMOD", "OpenMalaria", "MalSim")
+modelname <- c("EMOD", "malariasimulation", "OpenMalaria")
 wdir_eir <- file.path(projdir, 'test_sims_20240803/sims_dynamic_seasonal__14_19_28/')
 dat_s_eir <- get_output_df(wdir_eir, modelname = modelname, timeseries = TRUE, fiveday=TRUE)
 
@@ -64,7 +64,7 @@ dat_s$ageGroup <- factor(dat_s$ageGroup,
                          levels = c('0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100', '0-5', '0-100'),
                          labels = c('0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100', '0-5', '0-100'))
 
-dat_s$modelname <- factor(dat_s$modelname, levels = modelname, labels = c("EMOD", "OpenMalaria", "MalSim"))
+dat_s$modelname <- factor(dat_s$modelname, levels = modelname, labels = c("EMOD", "malariasimulation", "OpenMalaria"))
 
 dat_s <- dat_s %>%
   mutate(day = ((day+180) %% 365)) %>%
@@ -88,8 +88,8 @@ pA <- dat_s %>%
   geom_ribbon(aes(x = day, ymin = simulatedEIR__min, ymax = simulatedEIR__up, fill = modelname), alpha = 0.1) +
   geom_line(aes(x = day, y = simulatedEIR__mean, col = modelname), linewidth = 1) +
   expand_limits(y=0) +
-  scale_color_manual(values = emodom_cols) +
-  scale_fill_manual(values = emodom_cols) +
+  scale_color_manual(values = mmmpy_cols) +
+  scale_fill_manual(values = mmmpy_cols) +
   scale_y_continuous(expand = expansion(mult = c(0, 0))) +
   scale_x_continuous(expand = expansion(mult = c(0, 0))) +
   labs(y = "Simulated EIR",

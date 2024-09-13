@@ -52,9 +52,9 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       ))
 
       #Parameter Sweeping
-      if ("ms_pv" %in% colnames(parameter_table)){
+      if ("malariasimulation_pv" %in% colnames(parameter_table)){
       simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
-                                          draw = parameter_table[i,]$ms_pv)
+                                          draw = parameter_table[i,]$malariasimulation_pv)
       }
 
       # Append the parameters for artemether lumefantrine:
@@ -109,16 +109,16 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       }
 
       if ("cc_step" %in% intervention_list) {
-        simulation_outputs_list[[i]]$model_input_ms <- parameter_table[i,]$model_input_ms
-        simulation_outputs_list[[i]]$cc_factor_ms <- parameter_table[i,]$cc_factor_ms
-        simulation_outputs_list[[i]]$cc_timestep_ms <- parameter_table[i,]$cc_timestep_ms
+        simulation_outputs_list[[i]]$model_input_malariasimulation <- parameter_table[i,]$model_input_malariasimulation
+        simulation_outputs_list[[i]]$cc_factor_malariasimulation <- parameter_table[i,]$cc_factor_malariasimulation
+        simulation_outputs_list[[i]]$cc_timestep_malariasimulation <- parameter_table[i,]$cc_timestep_malariasimulation
         simulation_outputs_list[[i]]$cc_title <- parameter_table[i,]$cc_title}
       else{
         simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
       }
 
       if (write_raw_output) {
-        write_csv(simulation_outputs_list[[i]], file.path(exp$job_directory, 'malsim_jobs', paste0(parameter_table[i,]$index, '_out.csv')))
+        write_csv(simulation_outputs_list[[i]], file.path(exp$job_directory, 'malariasimulation_jobs', paste0(parameter_table[i,]$index, '_out.csv')))
       }
 
       # Print the function progress:
@@ -156,7 +156,7 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       #Parameter Sweeping
       if ("ms_pv" %in% colnames(parameter_table)){
       simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
-                                          draw = parameter_table[i,]$ms_pv)
+                                          draw = parameter_table[i,]$malariasimulation_pv)
       }
 
       # Append the parameters for artemether lumefantrine:
@@ -181,18 +181,18 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       if ("cc_step" %in% intervention_list){ 
         # Calibrate to the initial EIR (eirs unique to each model, based on which eir creates the high, medium and low prevalences required):
         simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                        init_EIR = parameter_table[i,]$model_input_ms)
+                                        init_EIR = parameter_table[i,]$model_input_malariasimulation)
         # Get the mosquito carrying capacity:
         mosquito_carrying_capacity <- get_init_carrying_capacity(parameters = simparams[[i]])
         
         # Parameterise the changes in mosquito population carrying capacity (for EIR step change):
         simparams[[i]] <- set_carrying_capacity(parameters = simparams[[i]], 
                                                 timesteps = parameter_table[i,]$cc_timestep_ms, 
-                                                carrying_capacity = matrix(mosquito_carrying_capacity * parameter_table[i,]$cc_factor_ms, ncol = 1))}
+                                                carrying_capacity = matrix(mosquito_carrying_capacity * parameter_table[i,]$cc_factor_malariasimulation, ncol = 1))}
       else{
         # Calibrate to the initial EIR (same across models):
         simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                        init_EIR = parameter_table[i,]$model_input_ms)}
+                                        init_EIR = parameter_table[i,]$model_input_malariasimulation)}
       # Run the simulations:
       simulation_outputs_list[[i]] <- run_simulation(timesteps = timesteps, parameters = simparams[[i]])
 
@@ -208,16 +208,16 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
       }
       
       if ("cc_step" %in% intervention_list) {
-        simulation_outputs_list[[i]]$model_input_ms <- parameter_table[i,]$model_input_ms
-        simulation_outputs_list[[i]]$cc_factor_ms <- parameter_table[i,]$cc_factor_ms
-        simulation_outputs_list[[i]]$cc_timestep_ms <- parameter_table[i,]$cc_timestep_ms
+        simulation_outputs_list[[i]]$model_input_malariasimulation <- parameter_table[i,]$model_input_malariasimulation
+        simulation_outputs_list[[i]]$cc_factor_malariasimulation <- parameter_table[i,]$cc_factor_malariasimulation
+        simulation_outputs_list[[i]]$cc_timestep_malariasimulation <- parameter_table[i,]$cc_timestep_malariasimulation
         simulation_outputs_list[[i]]$cc_title <- parameter_table[i,]$cc_title}
       else{
         simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
       }
       
       if (write_raw_output) {
-        write_csv(simulation_outputs_list[[i]], file.path(exp$job_directory, 'malsim_jobs', paste0(parameter_table[i,]$index, '_out.csv')))
+        write_csv(simulation_outputs_list[[i]], file.path(exp$job_directory, 'malariasimulation_jobs', paste0(parameter_table[i,]$index, '_out.csv')))
       }
 
       # Print the function progress:

@@ -25,15 +25,15 @@ def update_exp(exp):
     #exp = LoadExperiment(args, manifest)
 
     if exp.run_mode == None or exp.run_mode == 'test' :
-        # Specify OpenMalaria XML and survey step, MalSim simulation setup
+        # Specify OpenMalaria XML and survey step, malariasimulation simulation setup
         # Note if, interventions are specified in intervention_list, these will get updated via get_intervention_params
-        exp.om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
-        exp.om_survey_step = '5d'  # '30d'
-        exp.MalSim_script = 'malsim_benchmarking_exercise.R'
+        exp.openmalaria_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
+        exp.openmalaria_survey_step = '5d'  # '30d'
+        exp.malariasimulation_script = 'malariasimulation_base.R'
         exp.analyzer_script = ['analyze_sim.py']
         exp.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly',
-                             'benchmark']  # ['all_age_analyzer', '5day', 'annual','monthly','benchmark'.'daily']
-        exp.plots_to_run = ['benchmark', 'timeseries',
+                             'timeavrg']  # ['all_age_analyzer', '5day', 'annual','monthly','timeavrg'.'daily']
+        exp.plots_to_run = ['relationship', 'timeseries',
                             'agecurves']  # gets overwritten by get_intervention_params(exp) depending on 'interventions' specified
 
         # Flag to select whether to run with (dynamic) or without vector model (forced)

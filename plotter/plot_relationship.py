@@ -17,7 +17,7 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plotter.plot_helper import *
 
 
-# Plots prevalence 2 to 10 by output variable, requires benchmark.csv
+# Plots prevalence 2 to 10 by output variable, requires mmmpy_timeavrg.csv
 def prevalence2to10_to_incidence(fdir, df, sweepvar='modelname', facet_var='seasonality', channel='clinical_incidence',
                                  agegrps=None):
     """
@@ -156,7 +156,7 @@ def prevalence2to10_to_incidence_by_age_and_model(fdir, df, sweepvar='modelname'
     plt.close()
 
 
-# Plots simulated eir vs output variable, requires benchmark.csv
+# Plots simulated eir vs output variable, requires mmmpy_timeavrg.csv
 def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', eir_val='simulatedEIR',
                    channel='prevalence_2to10', agegrp='0-5'):
     """
@@ -251,7 +251,7 @@ def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonal
                 model = 'em'
             elif p == 'OpenMalaria':
                 model = 'om'
-            elif p == 'MalSim':
+            elif p == 'malariasimulation':
                 model = 'ms'
             else:
                 print(f'Warning: Model not recognized: {p}')
@@ -294,7 +294,7 @@ def anovas(fdir, df):
     from scipy.stats import f_oneway
     comparisons = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence', 'simulatedEIR']
     emod = df[df['modelname'] == 'EMOD']
-    malsim = df[df['modelname'] == 'MalSim']
+    malsim = df[df['modelname'] == 'malariasimulation']
     openmalaria = df[df['modelname'] == 'OpenMalaria']
 
     anova_df = pd.DataFrame(columns=['Age Group', 'Objective', 'F_value', 'p_value', 'null_hyp'])
@@ -302,9 +302,9 @@ def anovas(fdir, df):
     # As a whole
     for com in comparisons:
         performance_emod = emod[com]
-        performance_malsim = malsim[com]
+        performance_malariasimulation = malsim[com]
         performance_openmalaria = openmalaria[com]
-        f_value, p_value = f_oneway(performance_emod, performance_malsim, performance_openmalaria)
+        f_value, p_value = f_oneway(performance_emod, performance_malariasimulation, performance_openmalaria)
         if p_value <= 0.05:
             null_hyp = True
         else:
@@ -320,9 +320,9 @@ def anovas(fdir, df):
         om = openmalaria[openmalaria['ageGroup'] == age]
         for com in comparisons:
             performance_emod = em[com]
-            performance_malsim = ms[com]
+            performance_malariasimulation = ms[com]
             performance_openmalaria = om[com]
-            f_value, p_value = f_oneway(performance_emod, performance_malsim, performance_openmalaria)
+            f_value, p_value = f_oneway(performance_emod, performance_malariasimulation, performance_openmalaria)
             if p_value <= 0.05:
                 null_hyp = True
             else:
@@ -349,22 +349,22 @@ def rmse(fdir, df):
     rmse_vars = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence', 'simulatedEIR']
 
     rmse_df = pd.DataFrame(
-        columns=['Age Group', 'Variable', 'EMOD_TO_OPENMALARIA', 'OPENMALARIA_TO_MALSIM', 'EMOD_TO_MALSIM'])
+        columns=['Age Group', 'Variable', 'EMOD_TO_OPENMALARIA', 'OPENMALARIA_TO_MALARIASIMULATION', 'EMOD_TO_MALARIASIMULATION'])
 
     for rmse_var in rmse_vars:
         group_data = df.groupby(['modelname'])[rmse_var].agg(['mean']).reset_index()
         emod_data = group_data[group_data['modelname'] == 'EMOD']
-        malsim_data = group_data[group_data['modelname'] == 'MalSim']
+        malsim_data = group_data[group_data['modelname'] == 'malariasimulation']
         om_data = group_data[group_data['modelname'] == 'OpenMalaria']
         # RMSE Between EMOD and OM
         rmse_eo = sqrt(mean_squared_error(emod_data['mean'], om_data['mean']))
-        # RMSE Between OM AND MALSIM
+        # RMSE Between OM AND malariasimulation
         rmse_om = sqrt(mean_squared_error(malsim_data['mean'], om_data['mean']))
-        # RMSE Between EMOD and Malsim
+        # RMSE Between EMOD and malariasimulation
         rmse_em = sqrt(mean_squared_error(emod_data['mean'], malsim_data['mean']))
         # RMSE Concat
         new_row = {'Age Group': 'Across All Ages', 'Variable': rmse_var, 'EMOD_TO_OPENMALARIA': rmse_eo,
-                   'OPENMALARIA_TO_MALSIM': rmse_om, 'EMOD_TO_MALSIM': rmse_em}
+                   'OPENMALARIA_TO_MALARIASIMULATION': rmse_om, 'EMOD_TO_MALARIASIMULATION': rmse_emod}
         rmse_df = pd.concat([rmse_df, pd.DataFrame([new_row])], ignore_index=True)
 
     for age in df['ageGroup'].unique():
@@ -372,17 +372,17 @@ def rmse(fdir, df):
         for rmse_var in rmse_vars:
             group_data = adf.groupby(['modelname'])[rmse_var].agg(['mean']).reset_index()
             emod_data = group_data[group_data['modelname'] == 'EMOD']
-            malsim_data = group_data[group_data['modelname'] == 'MalSim']
+            malsim_data = group_data[group_data['modelname'] == 'malariasimulation']
             om_data = group_data[group_data['modelname'] == 'OpenMalaria']
             # RMSE Between EMOD and OM
             rmse_eo = sqrt(mean_squared_error(emod_data['mean'], om_data['mean']))
-            # RMSE Between OM AND MALSIM
+            # RMSE Between OM AND malariasimulation
             rmse_om = sqrt(mean_squared_error(malsim_data['mean'], om_data['mean']))
-            # RMSE Between EMOD and Malsim
+            # RMSE Between EMOD and malariasimulation
             rmse_em = sqrt(mean_squared_error(emod_data['mean'], malsim_data['mean']))
             # RMSE DF
             new_row = {'Age Group': age, 'Variable': rmse_var, 'EMOD_TO_OPENMALARIA': rmse_eo,
-                       'OPENMALARIA_TO_MALSIM': rmse_om, 'EMOD_TO_MALSIM': rmse_em}
+                       'OPENMALARIA_TO_MALARIASIMULATION': rmse_om, 'EMOD_TO_MALARIASIMULATION': rmse_em}
             rmse_df = pd.concat([rmse_df, pd.DataFrame([new_row])], ignore_index=True)
     rmse_df.to_csv(os.path.join(fdir, 'rmse.csv'), index=False)
 

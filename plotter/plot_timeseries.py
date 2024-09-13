@@ -21,7 +21,7 @@ from plotter.plot_helper import *
 def monthly_trends(fdir, df, channel, sweepvar='modelname',facet_var='output_target', agegrp='0-100'):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
-    Note, assumed single occurence per month, i.e. aggregated across years (reads in benchmark_mth.csv)
+    Note, assumed single occurence per month, i.e. aggregated across years (reads in mmmpy_mth.csv)
     Parameters:
         fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.

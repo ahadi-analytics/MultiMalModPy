@@ -36,7 +36,7 @@ if args.emodstep in ['pickup', 'new_pickup']:
 
     # ensure intervention parameters are correctly setup (some may get updated between burnin and pickup run)
     exp = get_intervention_params(exp)
-    exp.plots_to_run = ['benchmark', 'timeseries', 'agecurves'] # For pickup, this needs to be defined again, as for burnin set to empty
+    exp.plots_to_run = ['relationship', 'timeseries', 'agecurves'] # For pickup, this needs to be defined again, as for burnin set to empty
 
     ## Add intervention params back - FIXME not all parameters should be overwritten per default?
     # exp = get_intervention_params(exp)
@@ -122,7 +122,7 @@ exp.max_running_jobs = min(exp.nexps,150)
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 save_scen(param_variation(rep_scen_df(scen_df), exp), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
 
-# Write out simulation setup (required for MalSim)
+# Write out simulation setup (required for malariasimulation)
 create_simsetup_csv(exp)
 
 
@@ -159,10 +159,10 @@ if __name__ == '__main__':
                                 job_id_EMOD='job_id_EMODanalyze',memG=5, job='pickup_launch')
 
     # Submit malariasimulation as SLURM job, including scheduled analyzer
-    if 'MalSim' in exp.models_to_run:
-        from MalSim.utils import submit_run_MalSim
+    if 'malariasimulation' in exp.models_to_run:
+        from malariasimulation.utils import submit_run_malariasimulation
 
-        submit_run_MalSim(exp)
+        submit_run_malariasimulation(exp)
 
     # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
     if 'OpenMalaria' in exp.models_to_run:

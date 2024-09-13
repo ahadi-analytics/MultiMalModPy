@@ -34,7 +34,7 @@ def parse_args():
         type=str,
         required=False,
         help="Name of models to compare",
-        default=['EMOD', 'OpenMalaria', 'MalSim']
+        default=['EMOD', 'OpenMalaria', 'malariasimulation']
     )
 
     return parser.parse_args()
@@ -62,24 +62,22 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
         ValueError: If invalid modelname value is specified.
     """
     cols_to_keep = None  # default read all
-    fname = 'Benchmark.csv'
+    fname = 'mmmpy_timeavrg.csv'
     if yr:
-        fname = 'PfPR_ClinicalIncidence_yr.csv'
+        fname = 'mmmpy_yr.csv'
     if mth:
-        fname = 'PfPR_ClinicalIncidence_mth.csv'
+        fname = 'mmmpy_mth.csv'
     if daily:
-        fname = 'PfPR_ClinicalIncidence_daily.csv'
+        fname = 'mmmpy_daily.csv'
         # cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
         #                'clinical_incidence', 'severe_incidence', 'seed']
     if custom_name:
         fname = f'{custom_name}.csv'
 
     file_paths = [os.path.join(wdir, fname)]
-    model_paths = {'OpenMalaria': 'om', 'EMOD': 'em', 'MalSim': 'MalSim'}
 
-    for model in model_paths:
-        if model in modelname:
-            file_paths.append(os.path.join(wdir, model_paths[model], fname))
+    for model in modelname:
+        file_paths.append(os.path.join(wdir, model, fname))
 
     existing_files = [path for path in file_paths if os.path.isfile(path)]
 
@@ -89,24 +87,21 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
     if os.path.isfile(os.path.join(wdir, fname)):
         df = pd.read_csv((os.path.join(wdir, fname)), low_memory=False)
     else:
-        # Model-specific file paths
-        model_paths = {'OpenMalaria': 'om', 'EMOD': 'em', 'MalSim': 'MalSim'}
 
         dfs = []
-        for model in model_paths:
-            if model in modelname:
-                model_path = os.path.join(wdir, model_paths[model], fname)
-                try:
-                    if os.path.isfile(model_path):
-                        df = pd.read_csv(model_path, usecols=cols_to_keep)
-                        df['modelname'] = model
-                        if model == 'EMOD':
-                            df['seed'] = df['seed'] + 1
-                        dfs.append(df)
-                    else:
-                        print(f"File not found for {model}: {model_path}")
-                except Exception as e:
-                    print(f"Error reading {model_path}: {e}")
+        for model in modelname:
+            model_path = os.path.join(wdir, model, fname)
+            try:
+                if os.path.isfile(model_path):
+                    df = pd.read_csv(model_path, usecols=cols_to_keep)
+                    df['modelname'] = model
+                    if model == 'EMOD':
+                        df['seed'] = df['seed'] + 1
+                    dfs.append(df)
+                else:
+                    print(f"File not found for {model}: {model_path}")
+            except Exception as e:
+                print(f"Error reading {model_path}: {e}")
 
         if not dfs:
             return pd.DataFrame(), wdir
@@ -166,7 +161,7 @@ def convert_to_date(x):
 def color_selector(i, s):
     if s == 'EMOD':
         return 0
-    elif s == 'MalSim':
+    elif s == 'malariasimulation':
         return 1
     elif s == 'OpenMalaria':
         return 2

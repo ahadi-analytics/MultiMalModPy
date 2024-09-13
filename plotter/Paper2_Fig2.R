@@ -21,7 +21,7 @@ projdir <- file.path(projdir, 'test_sims_20240725')
 exp_name <- "sims_dynamic_perennial__11_40_01"
 
 
-modelname <- c("EMOD", "OpenMalaria", "MalSim")
+modelname <- c("EMOD", "malariasimulation", "OpenMalaria")
 agegrps <- c('0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100')
 
 customTheme <- f_getCustomTheme() +
@@ -29,7 +29,7 @@ customTheme <- f_getCustomTheme() +
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())
 
-# Load simulation outputs  BENCHMARK-------------------------------
+# Load simulation outputs  -------------------------------
 
 wdir <- file.path(projdir, exp_name)
 dat_total <- get_output_df(wdir, modelname = modelname)
@@ -56,7 +56,7 @@ dat_total$ageGroup <- factor(dat_total$ageGroup,
                              labels = c('0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100', '0-5', '0-100'))
 
 
-# Load Interpolation (Benchmark) Data
+# Load Interpolation (time avrg) Data
 i_ms <- fread(file.path('/home/rer4177/model-characterization/target_calibration/MalSim/interpolation_data.csv'))
 i_em <- fread(file.path('/home/rer4177/model-characterization/target_calibration/EMOD/interpolation_data.csv'))
 i_om <- fread(file.path('/home/rer4177/model-characterization/target_calibration/OpenMalaria/interpolation_data.csv'))
@@ -158,11 +158,11 @@ for (ii in unique(dat_total$cm_clinical)){
       modelname == 'OpenMalaria' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
       modelname == 'OpenMalaria' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
       modelname == 'OpenMalaria' & output_target %in% pfpr_values[4] ~ pfpr_labels[4],
-      ## MalSim
-      modelname == 'MalSim' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
-      modelname == 'MalSim' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
-      modelname == 'MalSim' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
-      modelname == 'MalSim' & output_target %in% pfpr_values[4] ~ pfpr_labels[4]),
+      ## malariasimulation
+      modelname == 'malariasimulation' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
+      modelname == 'malariasimulation' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
+      modelname == 'malariasimulation' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
+      modelname == 'malariasimulation' & output_target %in% pfpr_values[4] ~ pfpr_labels[4]),
            pfpr_grp = factor(pfpr_grp, levels = pfpr_labels, labels = pfpr_labels))
   
   
