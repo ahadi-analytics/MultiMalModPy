@@ -1,4 +1,4 @@
-﻿rownum,exp_short,exp_name,pop_size,burnin,num_seeds,entomology_mode,seasonality,output_type,output_target,cm_clinical,om_survey_step,om_scaffold,intervention_list
+﻿rownum,exp_short,exp_name,pop_size,burnin,num_seeds,entomology_mode,seasonality,output_type,output_target,cm_clinical,openmalaria_survey_step,openmalaria_scaffold,intervention_list
 0,p2_sim1,p2_main_dynamic_seasonal,50000,80,20,dynamic,seasonal,eir,"0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25,  30, 35, 40, 45, 50, 65, 70, 80, 90, 100, 120, 150, 200, 250, 500, 750, 1000","0, 0.45",5d,R0000GA,
 1,p2_sim2,p2_main_dynamic_perennial,50000,80,20,dynamic,perennial,eir,"0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 25,  30, 35, 40, 45, 50, 65, 70, 80, 90, 100, 120, 150, 200, 250, 500, 750, 1000","0, 0.45",5d,R0000GA,
 2,p2_sim3,p2_main_dynamic_seasonal,50000,80,20,dynamic,seasonal,prevalence_2to10,"0.1, 025, 0.5","0, 0.45",5d,R0000GA,

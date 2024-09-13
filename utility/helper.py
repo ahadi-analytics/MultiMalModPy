@@ -221,10 +221,10 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
         print(f'Reminder: Importation is currently set to {exp.importation_rate}')
 
     # Check timesteps, survey intervals and analyer alignment
-    if exp.om_survey_step == '30d' and "5day" in exp.analyzer_list:
+    if exp.openmalaria_survey_step == '30d' and "5day" in exp.analyzer_list:
         print('Warning: OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
 
-    if exp.om_survey_step == '30d' and "cc_step" in exp.intervention_list:
+    if exp.openmalaria_survey_step == '30d' and "cc_step" in exp.intervention_list:
         raise ValueError('cc_step interventions requires 5d survey steps in OpenMalaria')
 
     if exp.emod_step:

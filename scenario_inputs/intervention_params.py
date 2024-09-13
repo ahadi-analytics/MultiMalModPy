@@ -33,8 +33,8 @@ def cc_step_params(exp):
 
     ## Required fixed parameters for cc_step
     exp.step_in_years = 5
-    exp.om_scaffold = "R0000GA_CC_STEP"
-    exp.om_survey_step = '5d'
+    exp.openmalaria_scaffold = "R0000GA_CC_STEP"
+    exp.openmalaria_survey_step = '5d'
 
     # Flexible parameters depending on type of run and user-specifications
     if exp.run_mode == 'productionrun':
@@ -65,7 +65,7 @@ def cc_step_params(exp):
 
 
     ## Fixed parameters for cc_step
-    exp.om_scaffold = "R0000GA_CC_STEP"  # defining which OpenMalaria XML scaffold to use
+    exp.openmalaria_scaffold = "R0000GA_CC_STEP"  # defining which OpenMalaria XML scaffold to use
     exp.plots_to_run = ['ccstep']
     exp.analyzer_list = ['all_age_analyzer', 'cc_step']
     return exp
@@ -121,7 +121,7 @@ def smc_params(exp):
     exp.end_year = 2008
     exp.num_seeds = 20
     exp.population = 10000
-    exp.om_scaffold = "R0000GA_SMC"
+    exp.openmalaria_scaffold = "R0000GA_SMC"
     exp.smc_coverage = [0,0.6,0.8,1]
     exp.eir = [4, 8, 32]
     exp.agebins = [0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,20,100]
