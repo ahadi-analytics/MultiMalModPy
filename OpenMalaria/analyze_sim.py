@@ -1040,11 +1040,11 @@ if __name__ == "__main__":
     age_groups_aggregates = exp.age_groups_aggregates
 
     # Determine survey step size
-    if exp.om_survey_step == '5d':
+    if exp.openmalaria_survey_step == '5d':
         survey_steps = 5
-    if exp.om_survey_step == '30d':
+    if exp.openmalaria_survey_step == '30d':
         survey_steps = 30
-    if exp.om_survey_step == '1y':
+    if exp.openmalaria_survey_step == '1y':
         survey_steps = 365
 
     # Run analyzers

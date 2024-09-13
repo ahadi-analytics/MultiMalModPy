@@ -11,7 +11,7 @@ def create_scenarios(exp, scen_df):
     Returns:
         None
     """
-    with open(os.path.join(exp.openmalaria_input_path, 'scaffolds', f"{exp.om_scaffold}.xml"), "r") as fp:
+    with open(os.path.join(exp.openmalaria_input_path, 'scaffolds', f"{exp.openmalaria_scaffold}.xml"), "r") as fp:
         xml = fp.read()
 
     # Replace placeholders in the XML template with fixed parameters

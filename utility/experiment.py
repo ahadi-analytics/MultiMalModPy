@@ -45,8 +45,8 @@ class LoadExperiment:
         self.burnin_directory = None
 
         # OpenMalaria and malariasimulation settings
-        self.om_scaffold = "R0000GA"
-        self.om_survey_step = '5d'
+        self.openmalaria_scaffold = "R0000GA"
+        self.openmalaria_survey_step = '5d'
         self.malariasimulation_script = 'malariasimulation_base.R'
         self.analyzer_script = ['analyze_sim.py']
         self.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'timeavrg']
@@ -196,8 +196,8 @@ def initialize_exp_old(args, manifest):
 
     # Specify OpenMalaria XML and survey step, malariasimulation simulation setup
     # Note if, interventions are specified in intervention_list, these will get updated via get_intervention_params
-    exp.om_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
-    exp.om_survey_step = '5d'  # '30d'
+    exp.openmalaria_scaffold = "R0000GA"  # defining which OpenMalaria XML scaffold to use
+    exp.openmalaria_survey_step = '5d'  # '30d'
     exp.malariasimulation_script = 'malariasimulation_base.R'
     exp.analyzer_script = ['analyze_sim.py']
     exp.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'timeavrg']  # ['all_age_analyzer', '5day', 'annual','monthly','timeavrg'.'daily']
