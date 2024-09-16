@@ -9,5 +9,5 @@
 #SBATCH --error=log/analyze_malariasimulation.%j.err
 #SBATCH --output=log/analyze_malariasimulation.%j.out
 
-cd /home/mrm9534/model-characterization/MalSim
+cd /home/mrm9534/model-characterization/malariasimulation
 python analyze_sim.py --job_dir "/projects/b1139/emod-om/experiments/mrm9534/sim_20240830/forcedEIR_CM0_eirsweep"

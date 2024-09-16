@@ -20,7 +20,7 @@ def create_scenarios(exp, scen_df):
     xml = xml.replace("@burnin_start_year@", f"{exp.sim_start_year_openmalaria}")
     xml = xml.replace("@start_year@", f"{exp.start_year-1}")
     xml = xml.replace("@end_year@", f"{exp.end_year-1}")
-    xml = xml.replace("@survey_step@", f"{exp.om_survey_step}")
+    xml = xml.replace("@survey_step@", f"{exp.openmalaria_survey_step}")
     xml = xml.replace("@entomology_mode@", f"{exp.entomology_mode}")
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
     xml = xml.replace('@importation_rate@', f"{exp.importation_rate}")

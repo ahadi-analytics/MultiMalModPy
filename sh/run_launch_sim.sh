@@ -15,7 +15,7 @@ ml python/3.8.4
 source /projects/b1139/environments/emodpy_om/bin/activate
 
 # EMOD burnin and pickup in one
-python launch_sim.py  --models EMOD MalSim OpenMalaria -r test
+python launch_sim.py  --models EMOD malariasimulation OpenMalaria -r test
 
 ### EMOD burnin separate from pickup
 #python launch_sim.py --emodstep burnin --models EMOD malariasimulation OpenMalaria

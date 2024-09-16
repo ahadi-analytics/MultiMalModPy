@@ -15,4 +15,4 @@ ml python/3.8.4
 source /projects/b1139/environments/emodpy_om/bin/activate
 
 cd /home/mrm9534/model-characterization
-python plot_agecurves.py -d /projects/b1139/emod-om/simulation_outputs/mrm9534/sim_20240830/forcedEIR_CM0_eirsweep --modelname EMOD MalSim OpenMalaria
+python plot_agecurves.py -d /projects/b1139/emod-om/simulation_outputs/mrm9534/sim_20240830/forcedEIR_CM0_eirsweep --modelname EMOD malariasimulation OpenMalaria

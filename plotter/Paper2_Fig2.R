@@ -57,7 +57,7 @@ dat_total$ageGroup <- factor(dat_total$ageGroup,
 
 
 # Load Interpolation (time avrg) Data
-i_ms <- fread(file.path('/home/rer4177/model-characterization/target_calibration/MalSim/interpolation_data.csv'))
+i_ms <- fread(file.path('/home/rer4177/model-characterization/target_calibration/malariasimulation/interpolation_data.csv'))
 i_em <- fread(file.path('/home/rer4177/model-characterization/target_calibration/EMOD/interpolation_data.csv'))
 i_om <- fread(file.path('/home/rer4177/model-characterization/target_calibration/OpenMalaria/interpolation_data.csv'))
 i_full <- rbind(i_ms, i_em, i_om, fill=TRUE)
