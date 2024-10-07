@@ -12,6 +12,17 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
   timesteps <- (exp$burnin + exp$monitoring_years) * 365
   intervention_list <- exp$intervention_list
 
+  # FIXME for now custom age deography is hardcoded here
+  demog_ages <- round(c(0, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 100) * 365)
+  demog_age_distr <- c(0, 0.03474714994, 0.1276004028, 0.1452151394, 0.1275565434, 0.1083632373, 0.08393312454, 0.07001421452,
+                       0.05800587654, 0.05102136612, 0.04182561874, 0.03339409351, 0.02986112356, 0.02555766582, 0.02332763433,
+                       0.0177400255, 0.01008525491, 0.0074167341, 0.00271863401, 0.00161614642, 0)
+  demog_deathrates <- c(1.041508e-06, 2.67249310936942e-05, 5.64575638098077e-05, 8.43861293688273e-05, 8.04462041187678e-05,
+                        4.11082280836301e-05, 5.99345962817755e-05, 7.82474934107922e-05, 8.63178867406882e-05, 0.000183112406134931,
+                        0.000119826997140995, 0.000115143595605931, 5.0933200098081e-05, 0.000132079859380879, 6.09432150860699e-05,
+                        0.000390068518708017, 0.000419628839514507, 0.00072113681513871, 0.000833775339384449, 0.00107004264783245, 0.00107004264783245)
+
+
   # Run through each row of the input dataframe, parameterise the model, and run the simulation:
   for(i in 1:nrow(parameter_table)) {
     set.seed(seed = parameter_table[i,]$seed)
@@ -50,6 +61,14 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
         severe_incidence_rendering_min_ages = min_ages,
         severe_incidence_rendering_max_ages = max_ages
       ))
+
+      # Define custom deaths rates to modify demography in alignment across models
+      simparams[[i]] <- set_demography(
+        parameters = simparams[[i]],
+        agegroups = demog_ages,
+        timesteps = 0,
+        deathrates = matrix(demog_deathrates, nrow = 1)
+      )
 
       #Parameter Sweeping
       if ("malariasimulation_pv" %in% colnames(parameter_table)){
@@ -153,8 +172,16 @@ run_simulations <- function(exp, parameter_table, write_raw_output = TRUE) {
         severe_incidence_rendering_max_ages = max_ages
       ))
 
+      # Define custom deaths rates to modify demography in alignment across models
+      simparams[[i]] <- set_demography(
+        parameters = simparams[[i]],
+        agegroups = demog_ages,
+        timesteps = 0,
+        deathrates = matrix(demog_deathrates, nrow = 1)
+      )
+
       #Parameter Sweeping
-      if ("ms_pv" %in% colnames(parameter_table)){
+      if ("malariasimulation_pv" %in% colnames(parameter_table)){
       simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
                                           draw = parameter_table[i,]$malariasimulation_pv)
       }

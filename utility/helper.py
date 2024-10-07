@@ -221,6 +221,9 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
         ValueError: If input parameters are invalid.
     """
 
+    if exp.om_survey_step == '30d' and "5day" in exp.analyzer_list:
+        raise Warning('OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
+
     if len(exp.cm_clinical) >1 or len(exp.cm_severe) >1:
         raise Warning('Current implementation only allows single case managamenet level per simulation')
 
