@@ -122,15 +122,19 @@ def get_param_from_dataframe(df, name):
 
     """
 
-    # list of parameters expecting list format
-    listparams = ['seasonality', 'sweep_list', 'cm_clinical', 'output_target', 'intervention_list', 'agebins']
+    # list of parameters expecting list format  # FIXME, better way to do?
+    listparams = ['seasonality', 'sweep_list', 'cm_clinical', 'eir', 'intervention_list', 'agebins']
+    cc_params = ['eir_scalar_malariasimulation', 'eir_malariasimulation', 'eir_scalar_openmalaria', 'eir_scalar_emod',
+                 'eir_openmalaria', 'eir_scalar_openmalaria', 'carrying_capacity_step']
+    
+    listparams = listparams + cc_params
 
     value = df[name].iat[0]
 
     if name in listparams:
         try:
             out = value.replace(' ', '').split(',')
-            out = [float(i) if i.replace('.', '', 1).isdigit() else i for i in out]
+            out = [float(i) if i.isdigit() else i for i in out]  # some might require int?
         except:
             out = [value]
     else:
@@ -173,13 +177,13 @@ def make_dirs(exp, overwrite=False):
 
     # Create subdirectories for specific simulation models included in exp.models_to_run
     if 'EMOD' in exp.models_to_run:
-        os.makedirs(os.path.join(exp.sim_out_dir, 'EMOD'), exist_ok=overwrite)
+        os.makedirs(os.path.join(exp.sim_out_dir, 'em'), exist_ok=overwrite)
 
     if exp.emod_step != 'burnin':
         if 'OpenMalaria' in exp.models_to_run:
-            os.makedirs(os.path.join(exp.sim_out_dir, 'OpenMalaria'), exist_ok=overwrite)
-        if 'malariasimulation' in exp.models_to_run:
-            os.makedirs(os.path.join(exp.sim_out_dir, 'malariasimulation'), exist_ok=overwrite)
+            os.makedirs(os.path.join(exp.sim_out_dir, 'om'), exist_ok=overwrite)
+        if 'MalSim' in exp.models_to_run:
+            os.makedirs(os.path.join(exp.sim_out_dir, 'MalSim'), exist_ok=overwrite)
     return exp
 
 
@@ -217,8 +221,6 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
         ValueError: If input parameters are invalid.
     """
 
-    if print_reminder:
-        print(f'Reminder: Importation is currently set to {exp.importation_rate}')
 
     # Check timesteps, survey intervals and analyer alignment
     if exp.openmalaria_survey_step == '30d' and "5day" in exp.analyzer_list:
@@ -407,10 +409,10 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         exp.importation_rate = 0
         exp.output_target = np.arange(1, 31)
         eir_range = [1.00000000e-01, 1.37382380e-01, 1.88739182e-01, 2.59294380e-01, 3.56224789e-01, 4.89390092e-01,
-                     6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
-                     4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
-                     3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
-                     2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
+                    6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
+                    4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
+                    3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
+                    2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
         x_temp_range = [5.00000000e+00, 6.49828306e+00, 8.44553654e+00, 1.09762974e+01, 1.42654175e+01, 1.85401442e+01,
                         2.40958210e+01, 3.13162930e+01, 4.07004273e+01, 5.28965794e+01, 6.87473892e+01, 8.93479989e+01,
                         1.16121718e+02, 1.50918358e+02, 1.96142042e+02, 2.54917301e+02, 3.31304956e+02, 4.30582677e+02,
@@ -423,9 +425,11 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
     df_array = np.array(list(itertools.product(*my_attrs)))
 
     # Create a DataFrame with the combinations
-    df = pd.DataFrame(df_array, columns=col_list)
-    if 'cc_step' in exp.intervention_list:  # im only including this because itertools.product includes repeats were output_target equal cc_change, if this could be avoided it should be
+    df = pd.DataFrame(df_array, columns = col_list)
+    if 'cc_step' in exp.intervention_list: #im only including this because itertools.product includes repeats were output_target equal cc_change, if this could be avoided it should be
         df = df[df['output_target'] != df['cc_change']]
+        #df = df[df['output_target'] > df['cc_change']] #need a more sophisticated way to determine whether the 
+        #df = df[df['output_target'] < df['cc_change']] #user wants only increasing/decreasing cc_steps
         df = df.reset_index(drop=True)
     df.reset_index(inplace=True)
     df['index'] = df['index'] + 1

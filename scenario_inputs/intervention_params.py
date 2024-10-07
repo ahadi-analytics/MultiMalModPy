@@ -36,15 +36,16 @@ def cc_step_params(exp):
     exp.openmalaria_scaffold = "R0000GA_CC_STEP"
     exp.openmalaria_survey_step = '5d'
 
+
     # Flexible parameters depending on type of run and user-specifications
     if exp.run_mode == 'productionrun':
-        print('Warning: Running cc_step in production mode with predefined parameters that may differ from those in helper.py')
-        exp.mem_increase_factor = 12.0  # FIXME scaling factor on default memory requested, define in check_inputs depending on the population and burnin specified
-        exp.pop_size = 10000
+        print( 'Warning: Running cc_step in production mode with predefined parameters that may differ from those in helper.py')
+        exp.mem_increase_factor = 6.0  # scaling factor on default memory requested
+        exp.pop_size = 50000
         exp.num_seeds_burnin = 1
         exp.num_seeds = 20
         exp.start_year = 1995
-        exp.end_year = 2040
+        exp.end_year = 2050
         exp.burnin = 80
         exp.output_type = 'prevalence_2to10'
         exp.output_target = [0.1, 0.25, 0.5]
@@ -79,18 +80,33 @@ def cc_step_factor_calculator(df, exp, model):
     for i, row in df.iterrows():
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
                       & (data['seasonality'] == row['seasonality'])
-                      & (data['modelname'] == model))]
-        xt = idata['prevalence_2to10']
-        yp = idata['n_total_mos_pop']
-        xold = row['output_target']
-        xnew = row['cc_change']
-
-        interpolated_old = np.interp(xold, xt, yp)
-        interpolated_new = np.interp(xnew, xt, yp)
-        if model != 'OpenMalaria':
-            interpolated_value = interpolated_new / interpolated_old
+                      & (data['modelname'] == model)
+                      & (data['pop_size'] == exp.pop_size))]
+        if model == 'EMOD':
+            xt = idata['prevalence_2to10']
+            yp = idata['input_target']
+            xold = row['output_target']
+            xnew = row['cc_change']
+            interpolated_old= np.interp(xold, xt, yp)
         else:
+            xt = idata['prevalence_2to10']
+            yp = idata['n_total_mos_pop']
+            xold = row['output_target']
+            xnew = row['cc_change']
+            interpolated_old = np.interp(xold, xt, yp)
+        interpolated_new = np.interp(xnew, xt, yp)
+
+        if exp.pop_size == 10000 or exp.pop_size == 50000:
+            pop_fitting_was_run = exp.pop_size
+        else:
+            pop_fitting_was_run = 50000
+        interpolated_old = interpolated_old / (pop_fitting_was_run / exp.pop_size)
+        interpolated_new = interpolated_new / (pop_fitting_was_run / exp.pop_size)
+
+        if model == 'OpenMalaria':
             interpolated_value = 1 - (interpolated_new / interpolated_old)
+        else:
+            interpolated_value = interpolated_new / interpolated_old            
         output.append(interpolated_value)
     return output
 

@@ -452,10 +452,6 @@ def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGrou
     df.loc[(df.measure == mmi['nHost']), 'value'] = df[(df.measure == mmi['nHost'])].value / n_surveys_per_year
     df.loc[(df.measure == mmi['nPatent']), 'value'] = df[(df.measure == mmi['nPatent'])].value / n_surveys_per_year
 
-    # Adjust nHost for age_groups 0 to 1 based on yearsAtRisk
-    yearsAtRisk = np.array(age_bins)
-    yearsAtRisk[yearsAtRisk > 1] = 1
-    df.loc[(df.measure == mmi['nHost']), 'value'] *= yearsAtRisk[df[(df.measure == mmi['nHost'])].ageGroup - 1]
     g = df
 
     # Filter and aggregate data for age groups 2 to 10
@@ -487,14 +483,17 @@ def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days=30, grp_channels=['ageGrou
             nClinicalCases += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
         nSevereCases = 0
-        for m in ['nSevere']:
+        for m in ['expectedSevereWithoutComorbidities']:
             nSevereCases += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
         nDeaths = 0
         for m in ['expectedDirectDeaths', 'expectedIndirectDeaths']:
             nDeaths += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
-        nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
+        if exp.openmalaria_survey_step != '5d' and ages[1] <= 1:
+            nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum() * (1 - (1 - (ages[0] + ages[1]) / 2)  / n_surveys_per_year )
+        else:
+            nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
 
         prevalence = nPatentInfections / nHost  # prevalence
         clinical_incidence = nClinicalCases / nHost  # (events per person per year)
@@ -589,10 +588,6 @@ def AnnualAgebinAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_channels
     df.loc[(df.measure == mmi['nHost']), 'value'] = df[(df.measure == mmi['nHost'])].value / n_surveys_per_year
     df.loc[(df.measure == mmi['nPatent']), 'value'] = df[(df.measure == mmi['nPatent'])].value / n_surveys_per_year
 
-    # Adjust nHost for age groups 0 to 1 based on yearsAtRisk
-    yearsAtRisk = np.array(age_bins)
-    yearsAtRisk[yearsAtRisk > 1] = 1
-    df.loc[(df.measure == mmi['nHost']), 'value'] *= yearsAtRisk[df[(df.measure == mmi['nHost'])].ageGroup - 1]
 
     adf = pd.DataFrame()
     # Iterate over each year
@@ -624,14 +619,17 @@ def AnnualAgebinAnalyzer(exp, mmi, start_year, survey_step_days=30, grp_channels
                 nClinicalCases += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
             nSevereCases = 0
-            for m in ['nSevere']:
+            for m in ['expectedSevereWithoutComorbidities']:
                 nSevereCases += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
             nDeaths = 0
             for m in ['expectedDirectDeaths', 'expectedIndirectDeaths']:
                 nDeaths += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
-            nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
+            if exp.openmalaria_survey_step != '5d' and ages[1] <= 1:
+                nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum() * (1 - (1 - (ages[0] + ages[1]) / 2)  / n_surveys_per_year )
+            else:
+                nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
 
             prevalence = nPatentInfections / nHost  # prevalence
             clinical_incidence = nClinicalCases / nHost  # (events per person per year)
@@ -716,9 +714,6 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     df.loc[(df.measure == mmi['nPatent']), 'value'] = df[(df.measure == mmi['nPatent'])].value / n_surveys_per_year
 
     # Adjust nHost for age groups 0 to 1 based on yearsAtRisk
-    yearsAtRisk = np.array(age_bins)
-    yearsAtRisk[yearsAtRisk > 1] = 1
-    df.loc[(df.measure == mmi['nHost']), 'value'] *= yearsAtRisk[df[(df.measure == mmi['nHost'])].ageGroup - 1]
     sdf = df
 
     adf = pd.DataFrame()
@@ -751,14 +746,17 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
                 nClinicalCases += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
             nSevereCases = 0
-            for m in ['nSevere']:
+            for m in ['expectedSevereWithoutComorbidities']:
                 nSevereCases += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
             nDeaths = 0
             for m in ['expectedDirectDeaths', 'expectedIndirectDeaths']:
                 nDeaths += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
-            nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
+            if exp.openmalaria_survey_step != '5d' and ages[1] <= 1:
+                nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum() * (1 - (1 - (ages[0] + ages[1]) / 2)  / n_surveys_per_year )
+            else:
+                nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
 
             prevalence = nPatentInfections / nHost  # (prevalence)
             clinical_incidence = nClinicalCases / nHost  # (events per person per year) - for each month
@@ -841,11 +839,6 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     # for sum of annual pop not sum of years+months.
     df.loc[(df.measure == mmi['nHost']), 'value'] = df[(df.measure == mmi['nHost'])].value / n_surveys_per_year
     df.loc[(df.measure == mmi['nPatent']), 'value'] = df[(df.measure == mmi['nPatent'])].value / n_surveys_per_year
-
-    # Adjust nHost for age groups 0 to 1 based on yearsAtRisk
-    yearsAtRisk = np.array(age_bins)
-    yearsAtRisk[yearsAtRisk > 1] = 1
-    df.loc[(df.measure == mmi['nHost']), 'value'] *= yearsAtRisk[df[(df.measure == mmi['nHost'])].ageGroup - 1]
     sdf = df
 
     adf = pd.DataFrame()
@@ -879,14 +872,17 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
                 nClinicalCases += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
             nSevereCases = 0
-            for m in ['nSevere']:
+            for m in ['expectedSevereWithoutComorbidities']:
                 nSevereCases += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
             nDeaths = 0
             for m in ['expectedDirectDeaths', 'expectedIndirectDeaths']:
                 nDeaths += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
 
-            nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
+            if exp.openmalaria_survey_step != '5d' and ages[1] <= 1:
+                nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum() * (1 - (1 - (ages[0] + ages[1]) / 2)  / n_surveys_per_year )
+            else:
+                nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
 
             prevalence = nPatentInfections / nHost  # (prevalence)
             clinical_incidence = nClinicalCases / nHost  # (events per person per year) - for each 5day
@@ -934,7 +930,7 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
         None
     """
     print("Running CCStepAnalyzer...", flush=True)
-    channels = ['index', 'survey', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp', 'nSevere', 'Vector_Nv',
+    channels = ['index', 'survey', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp', 'expectedSevereWithoutComorbidities', 'Vector_Nv',
                 'Vector_Sv']
 
     # Read the scenario data from the CSV file
@@ -984,12 +980,20 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
 
     n_surveys_per_year = np.floor((365 / 5))
     df3['nHost'] = (df3['nHost'] / n_surveys_per_year)
+    if exp.openmalaria_survey_step != '5d':
+        for i, row in df3.iterrows():
+            if float(df3.loc[i, 'agebin']) <= 1:
+                age1, age2 = df3.loc[i, 'ageGroup'].split('-')
+                age1 = float(age1)
+                age2 = float(age2)
+                df3.loc[i, 'nHost'] *=  (1 - (1 - (age1 + age2)/2) / n_surveys_per_year)
+
     df3['nPatent'] = (df3['nPatent'] / n_surveys_per_year)
     df3['nUncomp'] = (df3['nUncomp'] / n_surveys_per_year)
-    df3['nSevere'] = (df3['nSevere'] / n_surveys_per_year)
+    df3['expectedSevereWithoutComorbidities'] = (df3['expectedSevereWithoutComorbidities'] / n_surveys_per_year)
     df3['prevalence'] = df3['nPatent'] / df3['nHost']
     df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'])  # per person per annum
-    df3['severe_incidence'] = df3['nSevere'] / (df3['nHost'])  # per person per annum
+    df3['severe_incidence'] = df3['expectedSevereWithoutComorbidities'] / (df3['nHost'])  # per person per annum
 
 
     first_columns = ['seed', 'year', 'month', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
@@ -1003,6 +1007,8 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
                    'month', 'year', 'agebin', 'ageGroup', 'Vector_Nv', 'Vector_Sv',
                    'nHost', 'output_target', 'inputEIR', 'simulatedEIR', 'prevalence', 'clinical_incidence', 'severe_incidence',
                    'nPatent', 'nInfect', 'nUncomp','nSevere', 'cc_factor_openmalaria', 'cc_change','cc_title']]
+
+
     df3 = df3.rename(
             columns={'days': 'timestep','Vector_Nv': 'n_total_mos_pop', 
                      'Vector_Sv': 'n_infectious_mos'})

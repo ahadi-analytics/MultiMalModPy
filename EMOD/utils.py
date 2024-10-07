@@ -82,8 +82,10 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
 
     ## Carrying capacity step change
+
     if 'cc_step' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None): #Make sure to include the cc_step change only at pickup simulations.
         eir_df = pd.DataFrame({'CONSTANT':[row.cc_factor_emod]})
+
         add_scale_larval_habitats(camp, df=eir_df,
                                   start_day=row.cc_timestep_emod,
                                   repetitions = 1)
@@ -243,7 +245,7 @@ def add_annual_reports(task, manifest, sim_start_year, num_year, tot_year=None,
 
     # All years in one report file
     add_malaria_summary_report(task, manifest, start_day=start, end_day=start + (num_year * 365) - 1,
-                               age_bins=age_bins, reporting_interval=365,
+                               age_bins=age_bins, reporting_interval=365, max_number_reports = (tot_year + sim_start_year) - (sim_year + sim_start_year),
                                filename_suffix=desc, pretty_format=False)
 
 
@@ -530,7 +532,7 @@ def set_emod_exp_parameters(config, exp):
     config.parameters.Simulation_Duration = exp.sim_dur_years * 365
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
-
+    max_capacity_multiplier = (exp.pop_size/10000)
 
     # Parameter configurations on climate for dynamic EIR
     if exp.entomology_mode == 'dynamic':
@@ -541,10 +543,16 @@ def set_emod_exp_parameters(config, exp):
             import emod_api.config.default_from_schema_no_validation as dfs
             habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
             habitat1.parameters.Habitat_Type = "CONSTANT"
-            habitat1.parameters.Max_Larval_Capacity = 20000000
+            habitat1.parameters.Max_Larval_Capacity = 20000000 * max_capacity_multiplier
             habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
             malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
-            
+        else:
+            import emod_api.config.default_from_schema_no_validation as dfs
+            habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
+            habitat1.parameters.Habitat_Type = "WATER_VEGETATION"
+            habitat1.parameters.Max_Larval_Capacity = 20000000 * max_capacity_multiplier
+            habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
+            malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
         config.parameters.Air_Temperature_Filename = os.path.join('climate',
                                                                   f'{seasonality_type}_air_temperature_daily.bin')
         config.parameters.Land_Temperature_Filename = os.path.join('climate',

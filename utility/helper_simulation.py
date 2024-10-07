@@ -32,12 +32,16 @@ def output_target_to_xTemp(df, exp,  model):
 
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
                       & (data['seasonality'] == row['seasonality'])
-                      & (data['modelname'] == model))]
+                      & (data['modelname'] == model)
+                      & (data['pop_size'] == exp.pop_size))]
         xt = idata[output_type_col]
         yp = idata['input_target']
         xnew = row['output_target']
         interpolated_value = np.interp(xnew, xt, yp)
-        pop_fitting_was_run = 10000
+        if exp.pop_size == 10000 or exp.pop_size == 50000:
+            pop_fitting_was_run = exp.pop_size
+        else:
+            pop_fitting_was_run = 50000
         interpolated_value = interpolated_value / (pop_fitting_was_run / exp.pop_size)
 
         if interpolated_value <= 0:
@@ -61,7 +65,7 @@ def output_target_to_eir(df, exp, model):
     output = []
     if exp.output_type == 'eir':
         output_type_col = 'simulatedEIR'
-        return df['output_target']
+        #return df['output_target']
     elif exp.output_type == 'prevalence_2to10':
         output_type_col = 'prevalence_2to10'
     elif exp.output_type == 'clinical_incidenceU5':  ## FIXME tbd later on how to add
@@ -73,12 +77,17 @@ def output_target_to_eir(df, exp, model):
 
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
                       & (data['seasonality'] == row['seasonality'])
-                      & (data['modelname'] == model))]
+                      & (data['modelname'] == model)
+                      & (data['pop_size'] == exp.pop_size))]
         xt = idata[output_type_col]
         yp = idata['input_target']
         xnew = row['output_target']
         interpolated_value = np.interp(xnew, xt, yp)
-
+        if exp.pop_size == 10000 or exp.pop_size == 50000:
+            pop_fitting_was_run = exp.pop_size
+        else:
+            pop_fitting_was_run = 50000
+        interpolated_value = interpolated_value / (pop_fitting_was_run / exp.pop_size)
         if interpolated_value <= 0:
             interpolated_value = 0.01
             print("Warning: eir < 0, value set to 0.01 (this will likely cause elimination in the simulations)")
