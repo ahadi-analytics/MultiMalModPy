@@ -227,7 +227,7 @@
             <option name="MAX_DENS_CORRECTION" value="true"/>
             <option name="CFR_PF_USE_HOSPITAL" value="true"/>
         </ModelOptions>
-        <clinical healthSystemMemory="6"/>
+        <clinical healthSystemMemory="@healthSystemMemory@"/>
         <human>
             <availabilityToMosquitoes>
                 <group lowerbound="0.0" value="0.225940909648"/>

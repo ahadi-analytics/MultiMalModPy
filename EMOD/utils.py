@@ -532,6 +532,7 @@ def set_emod_exp_parameters(config, exp):
     config.parameters.Simulation_Duration = exp.sim_dur_years * 365
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
+    config.parameters.Min_Days_Between_Clinical_Incidents = exp.days_between_clinical_cases
     max_capacity_multiplier = (exp.pop_size/10000)
 
     # Parameter configurations on climate for dynamic EIR

@@ -1,3 +1,5 @@
+import numpy as np
+
 from utility.helper import *
 import shutil
 from OpenMalaria.scaffolds.intervention_snippets import *
@@ -14,6 +16,8 @@ def create_scenarios(exp, scen_df):
     with open(os.path.join(exp.openmalaria_input_path, 'scaffolds', f"{exp.openmalaria_scaffold}.xml"), "r") as fp:
         xml = fp.read()
 
+    exp.days_between_clinical_cases_5days  = np.ceil(exp.days_between_clinical_cases / 5)
+
     # Replace placeholders in the XML template with fixed parameters
     xml = xml.replace("@version@", f"{exp.openmalaria_version}")
     xml = xml.replace("@pop_size@", f"{exp.pop_size}")
@@ -24,15 +28,26 @@ def create_scenarios(exp, scen_df):
     xml = xml.replace("@entomology_mode@", f"{exp.entomology_mode}")
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
     xml = xml.replace('@importation_rate@', f"{exp.importation_rate}")
+    xml = xml.replace('@healthSystemMemory@', f"{str(int(days_between_clinical_cases_5days))}")
 
     # Scenario sweeps and runs
     df = rep_scen_df(scen_df)
     for r, row in df.iterrows():
+
+        if row['cm_clinical'] == 0.45:
+            cm_clinical_5daily = 0.209261
+        elif row['cm_clinical'] == 0:
+            cm_clinical_5daily = 0
+        else:
+            raise ValueError('convert_access for OpenMalaria cm_clinical currently not functional')
+            #cm_clinical_5daily = convert_access(row['cm_clinical']) # TODO convert from R function to python
+
         scenario = xml.replace('@seed@', str(row['seed']))
-        scenario = scenario.replace('@cm_clinical@', str(row['cm_clinical']))
+        scenario = scenario.replace('@cm_clinical@', str(cm_clinical_5daily))
         scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
         scenario = scenario.replace('@eir@', str(row['model_input_openmalaria']))
-        if 'cc_step' in exp.intervention_list: # GOING TO HAVE TO CHANGE SIGNIFICANTLY DUE TO INTERPOLATION
+
+        if 'cc_step' in exp.intervention_list:
             scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_openmalaria']))
             scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_openmalaria']))
 

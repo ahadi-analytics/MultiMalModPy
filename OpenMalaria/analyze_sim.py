@@ -1028,7 +1028,7 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     df3 = df3.merge(v, on=grp_channels, how='inner')
     # Save the processed DataFrame to a CSV file
     print(f'\nSaving outputs to: {wdir}')
-    cols_to_keep = ['scen_id', 'seed', 'cm_clinical','seasonality', 'output_target', 'cc_change', 'cc_title', 'ageGroup', 'timestep', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
+    cols_to_keep = ['scen_id', 'seed', 'cm_clinical','cm_severe','seasonality', 'output_target', 'cc_change', 'cc_title', 'ageGroup', 'timestep', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
                     'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']
     df3 = df3[cols_to_keep]
     df3.to_csv((os.path.join(wdir, 'mmmpy_ccstep_daily.csv')), index=False, compression=compr)

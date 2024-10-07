@@ -221,6 +221,9 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
         ValueError: If input parameters are invalid.
     """
 
+    if len(exp.cm_clinical) >1 or len(exp.cm_severe) >1:
+        raise Warning('Current implementation only allows single case managamenet level per simulation')
+
 
     # Check timesteps, survey intervals and analyer alignment
     if exp.openmalaria_survey_step == '30d' and "5day" in exp.analyzer_list:
@@ -401,13 +404,14 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
     """
 
     if col_list is None:
-        col_list = ['output_target', 'cm_clinical', 'seasonality']
+        col_list = ['output_target', 'cm_clinical', 'cm_severe',  'seasonality']
 
     if exp.run_mode == 'calibrun':
         print("Notice: for calibrun simulations, importation will be set to 0")
         print("Depending on EM/OM Performance at lower EIRS at 50k pop, this may change")
         exp.importation_rate = 0
         exp.output_target = np.arange(1, 31)
+
         eir_range = [1.00000000e-01, 1.37382380e-01, 1.88739182e-01, 2.59294380e-01, 3.56224789e-01, 4.89390092e-01,
                     6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
                     4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
@@ -418,6 +422,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                         1.16121718e+02, 1.50918358e+02, 1.96142042e+02, 2.54917301e+02, 3.31304956e+02, 4.30582677e+02,
                         5.59609623e+02, 7.27300347e+02, 9.45240704e+02, 1.22848833e+03, 1.59661298e+03, 2.07504862e+03,
                         2.69685066e+03, 3.50497979e+03, 4.55527016e+03, 5.92028698e+03, 7.69434011e+03, 1.00000000e+04]
+
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
 
@@ -440,11 +445,8 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         df['num_seeds'] = exp.num_seeds
         df['cm_start'] = exp.cm_start
         df['cm_clinical'] = pd.to_numeric(df['cm_clinical'], errors='coerce')
+        df['cm_severe'] = pd.to_numeric(df['cm_severe'], errors='coerce')
 
-        # Parameters requiring adjustment:
-        df['cm_severe'] = np.where(df['cm_clinical'] * 1.15 > exp.cm_severe,
-                                   np.minimum(df['cm_clinical'] * 1.15, 1), exp.cm_severe)
-        df['cm_severe'] = np.where(df['cm_clinical'] == 0, 0, df['cm_severe'])
 
         if exp.run_mode == 'calibrun':
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
@@ -480,7 +482,8 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
                 df['cc_factor_openmalaria'] = cc_step_factor_calculator(df, exp, model='OpenMalaria')
                 df['cc_timestep_openmalaria'] = exp.cc_timestep_openmalaria
-            df['cc_title'] = cc_title_function(df)
+            df['cc_title'] = cc_title_function(df) #FIXME can be moved to postprocessing
+
     return df
 
 

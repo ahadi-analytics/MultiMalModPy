@@ -61,8 +61,10 @@ class LoadExperiment:
         self.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]
         self.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
         self.cm_start = 1
-        self.cm_clinical = [0, 0.45]
-        self.cm_severe = 0.48
+        self.cm_clinical = [0] # , 0.45  # for OpenMalaria gets converted tp cm_clinical_5daily in OpenMalaria.utils.py
+        self.cm_severe = [0] # 0.52
+        #self.cm_severe_clinical_combinations = False
+        self.days_between_clinical_cases = 14  # number of days within clinical infections count as the same case (OpenMalaria and EMOD only, for OpenMalaria get's translated into 5-day timesteps)
         self.detectionLimit = 40
         self.importation_rate = 0
         self.num_seeds_burnin = 1

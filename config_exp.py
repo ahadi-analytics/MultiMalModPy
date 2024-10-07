@@ -49,8 +49,9 @@ def update_exp(exp):
 
         # Define case management start and coverage
         exp.cm_start = 1
-        exp.cm_clinical = [0, 0.45]  # [0, 0.2, 0.4, 0.6, 0.8, 1]  #[0.2029544]
-        exp.cm_severe = 0.48  # keep fixed and single value, if < cm_clinical will be updated automatically to cm_clinical * 1.15
+        exp.cm_clinical = [0]  # , 0.45
+        exp.cm_severe = [0] # , 0.52
+        #exp.cm_severe_clinical_combinations = False # Flag whether to run cm_clinical and cm_severe paramter combinations (default is pairwise  combination)
         exp.detectionLimit = 40
         exp.importation_rate = 0  # number of infections imported per 1000 population per year, i.e. suggested 0 or 5
         exp.num_seeds_burnin = 1  # used only if emod_step=='burnin' (EMOD specific)
