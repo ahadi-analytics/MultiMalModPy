@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Run simulations - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Run simulations";
+        var mkdocs_page_input_path = "guide\\run_sim.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/rust.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/requirements/">Requirements</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../">General use</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Transmission calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../create_sim/">Create simulations</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Run simulations</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#quick-launch">Quick launch</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#run-modes">Run modes</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#normal-run">Normal run</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test-run">Test run</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#production-run">Production run</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#calibration-run">Calibration run</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#customize_">Customize_</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#emod-serialization">EMOD serialization</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../postprocess/">Postprocess outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../outputs/">Output files</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../plots/">Result figures</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/scaffolds/">scaffolds</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/scaffolds/">scaffolds</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >MalSim</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/scaffolds/">scaffolds</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/models/">Malaria models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">User Guide</li>
+      <li class="breadcrumb-item active">Run simulations</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="run-simulations">Run simulations</h1>
+<h2 id="quick-launch">Quick launch</h2>
+<ul>
+<li>Options to launch as simulation experimenr</li>
+<li>via python script</li>
+<li>via shell script (check which submission lines are uncommented)<ul>
+<li><code>run_launch_simulations.sh</code></li>
+<li><code>run_launch_simulations.sh</code></li>
+</ul>
+</li>
+<li>via terminal </li>
+</ul>
+<p>Testrun 
+  - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria --test</code></p>
+<p>Baseline run (accepting defaults, or changed defaults in python file) 
+  - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria</code>
+  - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM</code>  </p>
+<p>Custom simulation experiments (i.e. cc_step)
+  - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria --intervention cc_step --test --emodstep burnin</code>
+  - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test</code>  </p>
+<h2 id="run-modes">Run modes</h2>
+<h3 id="normal-run">Normal run</h3>
+<h3 id="test-run">Test run</h3>
+<h3 id="production-run">Production run</h3>
+<h3 id="calibration-run">Calibration run</h3>
+<h2 id="customize_">Customize_</h2>
+<h2 id="emod-serialization">EMOD serialization</h2>
+<p>One functional difference between EMOD and other malaria models is the process of serialization (to run multiple
+simulations on the same population in series).</p>
+<ul>
+<li>Serialization allows the user to run a simulation, save their status and results at a specified point in time, and
+  start another simulation (i.e. with modified campaigns) that continues from the point saved.</li>
+<li>In EMOD, this is often applied to first run the  <code>burnin</code> the long initial simulation run, during which population
+  immunity is established, followed by the <code>pickup</code> which defines the often typical scenario explorations.</li>
+<li>Hence, to avoid running the long initial period everytime, the user can serialize the population at the end of the
+  burnin and then run shorter simulations on that population with varying campaign parameters (that do not affect
+  population characteristics).</li>
+</ul>
+<p>The following parameters need editing in the <code>launch_sim.py</code> or in the arguments passed on as defined
+in <code>helper.py/launch_parse_args</code>:</p>
+<ul>
+<li>
+<p>To run a burnin simulation :</p>
+<ul>
+<li>Set <code>emod_step = ‘burnin’</code> .</li>
+<li>Set <code>burnin = &lt;num of years&gt;</code> to define duration of the burnin period (which is also used in OpenMalaria, however
+  runs much quicker than in EMOD).</li>
+<li>The experiment ID for this burnin simulation will be needed when running the pickup simulation (and is saved
+  automatically in <exp_name> folder, and also printed to console).</li>
+</ul>
+</li>
+<li>
+<p>To run a pickup simulation(s):</p>
+<ul>
+<li>In latest version of the framework, submitting a burnin simulation will automatically create and run a
+  corresponding pickup simulation via  <code>launch_pickup.sh</code></li>
+<li>In the files, <code>emod_step</code> is set to <code>pickup</code> and <code>emod_serialized_id</code> automatically to <code>&lt;burnin experiment id&gt;</code></li>
+<li>Note, pickup simulations cannot run without an attached experiment id (for EMOD).</li>
+<li>The <code>launch_pickup.sh</code> includes the following lines after the required SBATCH specifications:</li>
+<li>
+<p>```
+     ml singularity/3.8.1 
+     ml python/3.8.4
+     source /projects/b1139/environments/emodpy_om/bin/activate</p>
+<p>cd /projects/b1139/emod-om/model-characterization
+ python launch_sim.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name> --emodstep pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria</p>
+<p>#or
+ python launch_simulations.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name> --emodstep pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria
+ ```</p>
+</li>
+</ul>
+</li>
+<li>
+<p>To run a customized (new) pickup simulation(s):</p>
+<ul>
+<li>Use the generated <code>launch_pickup.sh</code> as a template:</li>
+<li>Modify the <code>expname</code> to specify a new folder to store the simulation files and change <code>emodstep</code> to <code>new_pickup</code></li>
+<li>Edit the <code>launch_sim.py</code> as required, or alternatively use <code>launch_simulations.py</code> with the corresponding csv</li>
+<li>Use launch_sim.py 
+     <code>python launch_sim.py -d &lt;job_directory&gt;/&lt;exp_name&gt;_burnin80 --suite &lt;SUITE_Name&gt; --expname &lt;exp_name_new&gt; --emodstep new_pickup --serializedid &lt;emod_serialized_id&gt; --models EMOD MalSim OpenMalaria</code></li>
+<li>or launch_sim.py  with specified csv
+     <code>python launch_sim.py -d &lt;job_directory&gt;/&lt;exp_name&gt;_burnin80 --suite &lt;SUITE_Name&gt; --expname &lt;exp_name_new&gt; --emodstep new_pickup --serializedid &lt;emod_serialized_id&gt; --models EMOD MalSim OpenMalaria --csv baseline_eirsweep_noCM --rownum 0</code></li>
+<li>In the current version of the framework the new simulation experiments has to remain within the same directory (Suite) as the simulation experiment 'picked up from'.</li>
+</ul>
+</li>
+<li>
+<p>To run a burnin and pickup simulation (without serializing, as selected as default for testing):</p>
+<ul>
+<li>Set <code>emod_step = None</code>, or if running from terminal, do not specify emod_step, which will default to <code>None</code></li>
+</ul>
+</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../create_sim/" class="btn btn-neutral float-left" title="Create simulations"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../postprocess/" class="btn btn-neutral float-right" title="Postprocess outputs">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../create_sim/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../postprocess/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

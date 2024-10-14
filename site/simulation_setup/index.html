@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Simulation configuration - MultiMalModPy</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Simulation configuration";
+        var mkdocs_page_input_path = "simulation_setup\\index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/rust.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/requirements/">Requirements</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration/">Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../guide/">General use</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../guide/calibration/">Transmission calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../guide/parameters/">Input parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../guide/create_sim/">Create simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../guide/run_sim/">Run simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../guide/postprocess/">Postprocess outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../guide/outputs/">Output files</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../guide/plots/">Result figures</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../api_EMOD/scaffolds/">scaffolds</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api_EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api_EMOD/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../api_OpenMalaria/scaffolds/">scaffolds</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api_OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api_OpenMalaria/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >MalSim</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../api_MalSim/scaffolds/">scaffolds</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api_MalSim/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../api_MalSim/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../about/models/">Malaria models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Simulation configuration</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="simulation-configuration">Simulation configuration</h1>
+<p>Parameter specifications for framework and simulation setup:</p>
+<ul>
+<li>
+<p>[ ] <strong>Simulation experiment name, infrastructure, directories and models to run</strong></p>
+<ul>
+<li><code>mem_increase_factor</code>: scaling factor on default memory requested, which usually can be left at 1 for test
+  simulation, but may have to be
+  4 or 8 for larger simulations. The default memory requested also differs for the slurm job submission to run
+  versus to analyze a simulation.</li>
+<li><code>custom_subdir</code>:  If <code>None</code>, no i.e. user specific subdir created, default <code>os.getlogin()</code></li>
+<li><code>SUITEname</code>: overall subdir to declare a group of simulations to run, default is <code>f'{entomology_mode}EIR'</code></li>
+<li><code>exp_name</code>: name of
+  simulation experiment to run, default is <code>f'sim_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'</code>, whereas a more
+  meaningful name might be choosen for simulation experiments to use outputs for some result description rather than
+  just for testing.</li>
+<li><code>models_to_run</code>: Name of models to run (case-sensitive), options are <strong>EMOD</strong> , <strong>OpenMalaria</strong> and/or  <strong>MalSim</strong></li>
+<li><code>om_scaffold</code>: name of <strong>OpenMalaria</strong> input XML to use</li>
+<li><code>MalSim_script</code>: name of <strong>malariasimulation</strong> R script to use</li>
+</ul>
+</li>
+<li>
+<p>[ ] <strong>Population size, agebins and seeds</strong></p>
+<ul>
+<li><code>pop_size</code>: number of individuals to simulate for human population, default for testing <code>1000</code>, which should not
+  be used for actual
+  simulations to generate results</li>
+<li><code>agebins</code>: age groups to monitor (select finest age groups required, can be further combined in postprocessing)</li>
+<li><code>age_groups_aggregates</code>: Age groups to aggregate to in postprocessing</li>
+<li><code>num_seeds_burnin</code>: EMOD specific (even if not declared as such), number of seeds to run for burnin if run
+  separately</li>
+<li><code>num_seeds</code>: number of
+  seeds to run for simulation (applies to all models)</li>
+</ul>
+</li>
+<li>
+<p>[ ] <strong>Simulation time and reporting intervals</strong></p>
+<ul>
+<li><code>start_year</code>: Calendar year at which monitoring period should start (after burnin)</li>
+<li><code>end_year</code>: Calendar year at which monitoring period should end</li>
+<li><code>burnin</code>: Number of years to run prior to monitoring period (from these the simulation start year will be
+  calculated) - 80 years is recommended for all models to establish immunity in the simulated population</li>
+<li><code>om_survey_step</code>: survey intervals for which outcomes are reported in OpenMalaria, default is <code>30d</code>. Note, in
+  EMOD, monthly reports are per default included in monitored simulation period.</li>
+<li><code>emod_step</code>: EMOD allows to run burnin separate from the monitoring period (here equivalent to <code>pickup</code>),
+  if <code>None</code> both similation times
+  are run together, which can be computational and time-wise too extensive when running long burnin, large
+  populations and high EIRs.</li>
+<li><code>emod_serialized_id</code>: ID of EMOD burnin experiment to pickup from, if <code>emod_step ='pickup'</code></li>
+</ul>
+</li>
+<li>
+<p>[ ] <strong>Transmission intensity and seasonality</strong></p>
+<ul>
+<li><code>entomology_mode</code>:    select whether to run with vectors (<code>dynamic</code>) or without (<code>forced</code>)</li>
+<li><code>seasonality</code>: name of pre-defined transmission seasonality profile to simulate (current options
+  are <code>["perennial", "seasonal"]</code>)</li>
+<li><code>eir</code>: annual input EIR (or equivalent, depending on model and entomology mode)</li>
+</ul>
+</li>
+<li>
+<p>[ ] <strong>Case management parameters</strong></p>
+<ul>
+<li><code>cm_start</code>: do not change, can be removed, case managament would always start on day 1, except of having multiple
+  intervention
+  deployments to simulate coverage increase over time (not applicable here)</li>
+<li><code>cm_clinical</code>: clinical case management coverage</li>
+<li><code>cm_severe</code>: do not change, will be adapted depending on clinical case management, but to be at least 48%</li>
+<li><code>detectionLimit</code>: detection limit for parasites per micoliter blood for detection of prevalent malaria infections</li>
+</ul>
+</li>
+<li>
+<p>[ ] <strong>CC step parameters</strong></p>
+<ul>
+<li><code>carrying_capacity_step</code>: Defined the step change from to in a list,
+  example <code>['10%-25%', '10%-50%', '25%-10%', '25%-50%', '50%-10%', '50%-25%']</code></li>
+<li><code>eir_scalar_emod</code>: defines the scalar for each carrying_capacity_step defined that will achieve the desired step
+  change for EMOD</li>
+<li><code>eir_scalar_malsim</code>: defines the scalar for each carrying_capacity_step defined that will achieve the desired step
+  change for malariasimulation</li>
+<li><code>eir_scalar_om</code>: defines the scalar for each carrying_capacity_step defined that will achieve the desired step
+  change for OpenMalaria</li>
+</ul>
+</li>
+<li>
+<p>[ ] <strong>Simulation experiment setup of sweeps and postprocessing</strong></p>
+<ul>
+<li><code>sweep_list</code>: List of parameter names that together uniquely identify a simulation scenario (and will be written
+  into <code>scenarios.csv</code>)</li>
+<li><code>plots_to_run</code>: List of types of plots to run automatically after the simulations finished</li>
+</ul>
+</li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
