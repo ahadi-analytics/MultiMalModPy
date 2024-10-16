@@ -51,8 +51,7 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
       fname <- 'mmmpy_5day.csv'
       cols_to_keep <- c('seed', 'year', 'day', 'prevalence', 'clinical_incidence',
                         'severe_incidence', 'ageGroup', 'prevalence_2to10', 'index',
-                        'output_target', 'model_input_openmalaria', 'model_input_malariasimulation', 'model_input_emod',
-                        'cm_clinical', 'seasonality', 'simulatedEIR', 'n_total_mos_pop')
+                        'output_target','cm_clinical', 'seasonality', 'simulatedEIR', 'n_total_mos_pop')
     }
   }
   if (ccstep) {
@@ -74,7 +73,7 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
       em_df$modelname <- 'EMOD'
       #em_df <- em_df[em_df$simulatedEIR >0,]
     }
-    if ('/malariasimulation' %in% modelname) {
+    if ('malariasimulation' %in% modelname) {
       ms_df <- fread(file.path(wdir, paste('malariasimulation', fname, sep = '/')), select = cols_to_keep)
       ms_df$modelname <- 'malariasimulation'
     }
@@ -122,3 +121,24 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
   return(df)
 }
 
+f_getCustomTheme <- function(fontscl = 1) {
+  customTheme <- theme(
+    strip.text.x = element_text(size = 12 * fontscl, face = "bold"),
+    strip.text.y = element_text(size = 12 * fontscl, face = "bold"),
+    strip.background = element_blank(),
+    plot.title = element_text(size = 14 * fontscl, vjust = -1, hjust = 0),
+    plot.subtitle = element_text(size = 12 * fontscl),
+    plot.caption = element_text(size = 9 * fontscl),
+    legend.title = element_text(size = 12 * fontscl),
+    legend.text = element_text(size = 12 * fontscl),
+    axis.title.x = element_text(size = 12 * fontscl),
+    axis.text.x = element_text(size = 12 * fontscl),
+    axis.title.y = element_text(size = 12 * fontscl),
+    axis.text.y = element_text(size = 12 * fontscl),
+    axis.ticks = element_line(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.5),
+    plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm")
+  )
+  return(customTheme)
+}

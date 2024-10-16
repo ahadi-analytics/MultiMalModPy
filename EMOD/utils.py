@@ -1,6 +1,8 @@
 import copy
 import os
 import sys
+import json
+import pandas as pd
 import subprocess
 from typing import List, Dict, Any
 import pandas as pd
@@ -9,6 +11,7 @@ from COMPS import AuthManager
 from functools import partial
 from EMOD.scaffolds.forcedEIR import *
 from EMOD.scaffolds.interventions import *
+from emod_api.demographics.DemographicsTemplates import CrudeRate
 import emod_api.demographics.PreDefinedDistributions as Distributions
 from emodpy_malaria.reporters.builtin import *
 import emodpy_malaria.demographics.MalariaDemographics as Demographics
@@ -40,31 +43,21 @@ def set_param(simulation, param, value):
     return simulation.task.set_parameter(param, value)
 
 
-def build_demog():
+def build_demog(task, exp):
     """
     Builds the demographic structure for the EMOD simulation.
     """
     # Create a Demographics object and set location and population size
-    demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
-    demog.SetEquilibriumVitalDynamics()
-
-    # Set the age distribution for the population
-    age_distribution = Distributions.AgeDistribution_SSAfrica  ## Keep this for production run
-
-    ## Define custom deaths rates to modify demography in alignment across models
-    # from emod_api.demographics.PreDefinedDistributions import ConstantDistribution
-    # from emod_api.demographics.PropertiesAndAttributes import IndividualAttributes
-    # age_distribution = ConstantDistribution(IndividualAttributes.AgeDistribution(distribution_values=[
-    #     [0, 0.034823157, 0.148672054, 0.279369812, 0.407205378, 0.525827528, 0.615957375, 0.686124742, 0.744257503,
-    #      0.799399225, 0.841316335, 0.874783476, 0.904810137, 0.930423709, 0.959214183, 0.977995201, 0.988102517,
-    #      0.995635694, 0.998360275, 1, 1]],
-    #     result_scale_factor=1,
-    #     result_values=[[0, 365, 1825, 3650, 5475, 7300, 9125, 10950, 12775, 14600, 16425, 18250, 20075, 21900, 23725,
-    #                     25550, 27375, 29200, 31025, 32850, 34675, 36500]]))
-    #
-    # demog.SetAgeDistribution(age_distribution)
-
-    return demog
+    #demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
+    demog = json.load(open(os.path.join(exp.emod_input_path,"demographics.json")))
+    #This calculation is the same as using crude rate, but jsons don't recognize 
+    birthrate = float(34.95*exp.pop_size/365/1000)
+    demog["Defaults"]["NodeAttributes"].update({"BirthRate": birthrate})
+    with open(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"), "w") as outfile: 
+        json.dump(demog, outfile)
+    task.transient_assets.add_asset(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"))
+    task.set_parameter("Demographics_Filenames", [f"demographics_{exp.pop_size}.json"])
+    return task
 
 
 def build_standard_campaign_object():
@@ -94,10 +87,8 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
 
     ## Carrying capacity step change
-
     if 'cc_step' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None): #Make sure to include the cc_step change only at pickup simulations.
         eir_df = pd.DataFrame({'CONSTANT':[row.cc_factor_emod]})
-
         add_scale_larval_habitats(camp, df=eir_df,
                                   start_day=row.cc_timestep_emod,
                                   repetitions = 1)
@@ -152,6 +143,7 @@ def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
         desc = prefix + '%d' % (sim_year + sim_start_year)
         add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365, age_bins=age_bins,
                                    max_number_reports = 366, reporting_interval=1, filename_suffix=desc, pretty_format=False)
+
 
 def add_5daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
                         yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15,20, 125],
@@ -518,7 +510,7 @@ def config_task(platform, exp):
         schema_path=manifest.schema_file,
         param_custom_cb=set_config_parameters,  # (config = config, exp = exp),
         ep4_custom_cb=None,
-        demog_builder=build_demog,
+        demog_builder=None,
         plugin_report=None
     )
     set_emod_exp_parameters(task.config, exp)
@@ -544,7 +536,9 @@ def set_emod_exp_parameters(config, exp):
     config.parameters.Simulation_Duration = exp.sim_dur_years * 365
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
-    config.parameters.Min_Days_Between_Clinical_Incidents = exp.days_between_clinical_cases
+    config.parameters.Birth_Rate_Dependence = "FIXED_BIRTH_RATE"
+    config.parameters.Enable_Demographics_Birth = False
+    config.parameters.Min_Days_Between_Clinical_Incidents = exp.days_between_clinical_cases   
     max_capacity_multiplier = (exp.pop_size/10000)
 
     # Parameter configurations on climate for dynamic EIR
@@ -669,6 +663,7 @@ def submit_run_EMOD(exp, scen_df):
     # create EMODTask
     print("Creating EMODTask (from files)...")
     task = config_task(platform, exp)
+    task = build_demog(task,exp)
 
     if entomology_mode == 'dynamic':
         task.common_assets.add_directory(os.path.join(manifest.input_dir, "example_weather"), relative_path="climate")

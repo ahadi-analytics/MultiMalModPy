@@ -1006,7 +1006,7 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     df3 = df3[['scen_id', 'index', 'seed', 'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey', 'days',
                    'month', 'year', 'agebin', 'ageGroup', 'Vector_Nv', 'Vector_Sv',
                    'nHost', 'output_target', 'inputEIR', 'simulatedEIR', 'prevalence', 'clinical_incidence', 'severe_incidence',
-                   'nPatent', 'nInfect', 'nUncomp','nSevere', 'cc_factor_openmalaria', 'cc_change','cc_title']]
+                   'nPatent','cc_factor_openmalaria', 'cc_change','cc_title']]
 
 
     df3 = df3.rename(

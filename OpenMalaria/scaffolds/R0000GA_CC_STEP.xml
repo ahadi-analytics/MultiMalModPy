@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <om:scenario schemaVersion="@version@" name="R0000" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:om="http://openmalaria.org/schema/scenario_@version@" xsi:schemaLocation="http://openmalaria.org/schema/scenario_@version@ scenario_@version@.xsd">
-    <demography maximumAgeYrs="120" name="Ifakara" popSize="@pop_size@">
-        <ageGroup lowerbound="0">
-            <group poppercent="8.740710473" upperbound="2"/>
-            <group poppercent="7.996992556" upperbound="5"/>
-            <group poppercent="14.01055905" upperbound="10"/>
-            <group poppercent="11.72163745" upperbound="15"/>
-            <group poppercent="9.817686208" upperbound="20"/>
-            <group poppercent="8.218030068" upperbound="25"/>
-            <group poppercent="6.878903161" upperbound="30"/>
-            <group poppercent="5.755154429" upperbound="35"/>
-            <group poppercent="4.820319269" upperbound="40"/>
-            <group poppercent="4.034897012" upperbound="45"/>
-            <group poppercent="3.377460812" upperbound="50"/>
-            <group poppercent="2.825663982" upperbound="55"/>
-            <group poppercent="2.366712471" upperbound="60"/>
-            <group poppercent="1.981063368" upperbound="65"/>
-            <group poppercent="1.658271959" upperbound="70"/>
-            <group poppercent="1.38736474" upperbound="75"/>
-            <group poppercent="1.162008684" upperbound="80"/>
-            <group poppercent="0.97267728" upperbound="85"/>
-            <group poppercent="0.814180931" upperbound="90"/>
-            <group poppercent="1.459706092" upperbound="100"/>
-            <group poppercent="0" upperbound="110"/>
-            <group poppercent="0" upperbound="120"/>
+    <demography maximumAgeYrs="90" name="Ifakara" popSize="@pop_size@">
+        <ageGroup lowerbound="0.0">
+            <group poppercent="3.474714994" upperbound="1"/>
+            <group poppercent="12.76004028" upperbound="5"/>
+            <group poppercent="14.52151394" upperbound="10"/>
+            <group poppercent="12.75565434" upperbound="15"/>
+            <group poppercent="10.83632374" upperbound="20"/>
+            <group poppercent="8.393312454" upperbound="25"/>
+            <group poppercent="7.001421452" upperbound="30"/>
+            <group poppercent="5.800587654" upperbound="35"/>
+            <group poppercent="5.102136612" upperbound="40"/>
+            <group poppercent="4.182561874" upperbound="45"/>
+            <group poppercent="3.339409351" upperbound="50"/>
+            <group poppercent="2.986112356" upperbound="55"/>
+            <group poppercent="2.555766582" upperbound="60"/>
+            <group poppercent="2.332763433" upperbound="65"/>
+            <group poppercent="1.77400255" upperbound="70"/>
+            <group poppercent="1.008525491" upperbound="75"/>
+            <group poppercent="0.74167341" upperbound="80"/>
+            <group poppercent="0.271863401" upperbound="85"/>
+            <group poppercent="0.161614642" upperbound="90"/>
         </ageGroup>
     </demography>
     <monitoring name="output surveys" startDate="@burnin_start_year@-01-01">

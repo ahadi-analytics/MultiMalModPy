@@ -26,7 +26,7 @@ if args.emodstep in ['pickup', 'new_pickup']:
     exp.emod_serialized_id = args.serializedid
     if args.emodstep == 'new_pickup': ## Allows to run a independent pickup from burnin
         ## Optional parameters to update in new run
-        exp.sweep_list = ['eir', 'cm_clinical', 'seasonality']
+        exp.sweep_list = ['eir', 'case_management', 'seasonality']
         # exp.eir = [8]  # note, needs to be one of the eir values included in the burnin
         # exp.cm = [0.4]  # note, depends on user which parameters desired to change and how
         # exp.num_seeds = ''
@@ -54,16 +54,6 @@ else:
     #exp = initialize_exp(args, manifest)
     exp = LoadExperiment(args, manifest)
 
-    if exp.run_mode == None or exp.run_mode == 'test':
-        exp = update_exp(exp)
-
-    if exp.run_mode == 'test':
-        exp.pop_size = 1000
-        exp.num_seeds = 1
-        exp.start_year = 2000
-        exp.end_year = 2005
-        exp.burnin = 10
-
     if exp.emod_calib_params:
         calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, 'emod_best.csv'))
         exp.calib_config_pointer = range(0, len(calib_config_df))  # define rows from calib_params df to run
@@ -74,7 +64,7 @@ else:
         ### Experiment scenario parameter definitions
         exp_scen_df = pd.read_csv(os.path.join(f'scenario_inputs/{args.csv}.csv'))
         exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == args.rownum]
-        exp.SUITEname = f'{args.csv}_{dt.now().strftime("%Y%m%d")}'
+        exp.SUITEname = f'{dt.now().strftime("%Y%m%d")}_{args.csv}'
         exp.exp_name = f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
 
         ## Overwriting default parameters with parameters specific in scenario csv file
@@ -117,7 +107,7 @@ check_exp_inputs(exp)
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, exp.sweep_list)
 exp.nexps = len(scen_df) * exp.num_seeds
-exp.max_running_jobs = min(exp.nexps,150)
+exp.max_running_jobs = min(exp.nexps,100)
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 save_scen(param_variation(rep_scen_df(scen_df), exp), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
@@ -140,7 +130,7 @@ if __name__ == '__main__':
         # Set platform and associated values, such as the maximum number of jobs to run at one time
         platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
                             mem_per_cpu=int(1800 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
-                            time='06:30:00', account=manifest.sh_hpc_config['A'],
+                            time='30:30:00', account=manifest.sh_hpc_config['A'],
                             modules=[manifest.sh_hpc_config['em_modules']],
                             max_running_jobs=exp.max_running_jobs)  # mem_per_cpu default: 2048
         exp.platform = platform

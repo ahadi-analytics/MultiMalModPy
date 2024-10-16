@@ -57,7 +57,7 @@ def cc_step_params(exp):
     exp.sweep_list = exp.sweep_list + ['cc_change']
 
     ## Automatically derived and updated parameters
-    exp.cc_timestep_om = int((73 * (exp.burnin + exp.step_in_years)))  # 5 Years in to the pickup time OpenMalaria
+    exp.cc_timestep_openmalaria = int((73 * (exp.burnin + exp.step_in_years)))  # 5 Years in to the pickup time OpenMalaria
     if exp.emod_step is None:  ## if None, no serialization done, hence burnin period is added to the step_in_years
         exp.cc_timestep_emod = int((exp.burnin + exp.step_in_years)*365)
     else:

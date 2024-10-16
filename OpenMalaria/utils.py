@@ -28,7 +28,7 @@ def create_scenarios(exp, scen_df):
     xml = xml.replace("@entomology_mode@", f"{exp.entomology_mode}")
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
     xml = xml.replace('@importation_rate@', f"{exp.importation_rate}")
-    xml = xml.replace('@healthSystemMemory@', f"{str(int(days_between_clinical_cases_5days))}")
+    xml = xml.replace('@healthSystemMemory@', f"{str(int(exp.days_between_clinical_cases_5days))}")
 
     # Scenario sweeps and runs
     df = rep_scen_df(scen_df)

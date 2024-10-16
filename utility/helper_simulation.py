@@ -29,7 +29,6 @@ def output_target_to_xTemp(df, exp,  model):
         raise ValueError(f'Specified input_type is not valid {exp.output_type}')
 
     for i, row in df.iterrows():
-
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
                       & (data['seasonality'] == row['seasonality'])
                       & (data['modelname'] == model)
@@ -65,7 +64,6 @@ def output_target_to_eir(df, exp, model):
     output = []
     if exp.output_type == 'eir':
         output_type_col = 'simulatedEIR'
-        #return df['output_target']
     elif exp.output_type == 'prevalence_2to10':
         output_type_col = 'prevalence_2to10'
     elif exp.output_type == 'clinical_incidenceU5':  ## FIXME tbd later on how to add
@@ -74,7 +72,6 @@ def output_target_to_eir(df, exp, model):
         raise ValueError(f'Specified input_type is not valid {exp.output_type}')
 
     for i, row in df.iterrows():
-
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
                       & (data['seasonality'] == row['seasonality'])
                       & (data['modelname'] == model)
@@ -181,7 +178,7 @@ def param_variation(df, exp):
     Returns:
     DataFrame with added column 'malariasimulation_pv' representing malariasimulation parameter variation values.
     """
-    if exp.malariasimulation_parameter_variation:
+    if exp.malariasimulation_parameter_variation and 'malariasimulation' in exp.models_to_run:
         from random import sample
         if exp.num_seeds > 1000:
             print("Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values")
