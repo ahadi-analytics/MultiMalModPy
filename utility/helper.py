@@ -421,7 +421,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
     if exp.run_mode == "test" or exp.run_mode is None:
         exp.output_target = np.arange(1,4)
         eir_range = [5,10,20]
-        x_temp_range = [10,20,25]
+        x_temp_range = [100,200,250]
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]

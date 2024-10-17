@@ -57,6 +57,12 @@ def build_demog(task, exp):
         json.dump(demog, outfile)
     task.transient_assets.add_asset(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"))
     task.set_parameter("Demographics_Filenames", [f"demographics_{exp.pop_size}.json"])
+    task.config.parameters.Age_Initialization_Distribution_Type = "DISTRIBUTION_COMPLEX"
+    task.config.parameters.Death_Rate_Dependence = "NONDISEASE_MORTALITY_BY_AGE_AND_GENDER"
+    task.config.parameters.Enable_Demographics_Risk = 1
+    task.config.parameters.Enable_Initial_Prevalence = 1
+    task.config.parameters.Enable_Natural_Mortality = 1
+    task.config.parameters.x_Other_Mortality = 1
     return task
 
 
@@ -537,7 +543,6 @@ def set_emod_exp_parameters(config, exp):
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
     config.parameters.Birth_Rate_Dependence = "FIXED_BIRTH_RATE"
-    config.parameters.Enable_Demographics_Birth = False
     config.parameters.Min_Days_Between_Clinical_Incidents = exp.days_between_clinical_cases   
     max_capacity_multiplier = (exp.pop_size/10000)
 
