@@ -1,6 +1,7 @@
 # Input parameters
 
 
+-------------------------------- 
 
 ## Simulation setup
 
@@ -15,7 +16,9 @@
 ### Output monitoring 
 
 
-## Framework setup
+
+
+-------------------------------- 
 
 ## Malaria setup
 

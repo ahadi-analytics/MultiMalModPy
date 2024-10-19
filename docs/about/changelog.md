@@ -10,17 +10,17 @@ at:  [/model-characterization/issues](https://github.com/numalariamodeling/model
 
 ## Initial development
 
-### 0.9 
+### 0.9.0 
 - Production run 
 - Cleanup and documentation
 - Error capturing
 
-### 0.5 - 0.8
+### 0.5.0  - 0.8.0 
 - Refinement in framework to support flexible simulations
 - Carrying capacity step change and additional vector outcomes
 - Input transmission parameter calibration to a defined output target for either EIR of PfPR2to10
 
-### 0.1 - 0.5
+### 0.1.0  - 0.5.0 
 - Initial python framework, EMOD and OpenMalaria
 - Bugfixes and improvements including default figures
 - Integration of malariasimulation (MalSim)

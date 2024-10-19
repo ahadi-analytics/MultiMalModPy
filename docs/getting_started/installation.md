@@ -1,5 +1,6 @@
 # Installation
 
+
 **Weblinks**:  
 [EMODpy](https://docs.idmod.org/projects/emodpy/en/v1.19.0/installation.html)  
 [OpenMalaria](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria)  
@@ -7,7 +8,7 @@
 
 
 **HPC**  
-The framework only runs on linux clusters with slurm.
+The framework only runs on linux clusters with [Slurm](https://slurm.schedmd.com/documentation.html).
 
 
 **Local**  

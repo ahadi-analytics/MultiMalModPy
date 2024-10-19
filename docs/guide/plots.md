@@ -1,30 +1,25 @@
 # Result figures
 
-The framework comes with three standardized plotting scripts to visualize the 
-- the timeseries for selected outcome measures, 
-- the relation of outcome measures by age groups,
-- relationship between disease transmission and disease outcomes.
-
 ## Default figures 
 
-### Timeseries   
-
-![ ](timeseries_example.png)  
-
-daily, 5-day, monthly or annual time-series
-
-### Age curves  
-
-![ ](agecurve_example.png)  
-
-Specified age groups that include simulated agebins as well as broader, overlapping groups such as 0-2, 0-5, 2-10, 5-15, 15-20, 20-100 years. 
-
-
-### Relationship  
-
-![ ](relationship_example.png)  
-
-Relationship between simulated outcome metrics
+The framework comes with three standardized plotting scripts:    
+-  [plot_timeseries.py](../api/plot_timeseries.md) the timeseries for selected outcome measures,   
+-  [plot_agecurves.py](../api/plot_agecurves.md) the relation of outcome measures by age groups,  
+-  [plot_relationship.py](../api/plot_relationship.md) relationship between disease transmission and disease outcomes.  
 
 
 ## Customizing figures 
+Each of the existing plotting scripts allow for the user to define what outcomes should be displayed in the
+color, the columns, axis and so on. Edits can be directly made in the respective scripts.
+
+## Adding new figures 
+Additional plotting scripts from the user can be added to the `plotter` subdirectory.
+It is recommended to have the filename start with `plot_` for consistency and to facilitate integrating the new plotter into the framework.
+
+At the beginning it will be easiest to run the new plotters manually after the default outputs were 
+successfully  generated.
+
+For instance:   
+`python plotter/plot_custom1.py  --models EMOD malariasimulation OpenMalaria` 
+
+

@@ -7,7 +7,6 @@
   - via python script
   - via shell script (check which submission lines are uncommented)
     - `run_launch_simulations.sh`
-    - `run_launch_simulations.sh`
   - via terminal 
 
 Testrun 
@@ -23,19 +22,9 @@ Custom simulation experiments (i.e. cc_step)
 
 
 
-## Run modes
+## Run modes  
 
-### Normal run
-
-### Test run
-
-### Production run
-
-### Calibration run 
-
-
-## Customize_
-
+Coming soon...
 
 
 ## EMOD serialization

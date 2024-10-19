@@ -1,6 +1,8 @@
 # Getting help
 
-## FAQ
+## FAQ  
+Coming soon...  
+
 
 ## Troubleshooting 
 

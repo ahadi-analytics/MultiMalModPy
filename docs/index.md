@@ -8,40 +8,43 @@ Currently, MultiMalModPy includes the following three models:
 
 **OpenMalaria** [visit documentation ](https://github.com/SwissTPH/openmalaria/wiki)
 
-**malariasimulation (MalSim)** [visit documentation ](https://mrc-ide.github.io/malariasimulation/articles/Model.html)
+**malariasimulation** [visit documentation ](https://mrc-ide.github.io/malariasimulation/articles/Model.html)
 
 
 
 ## Content  
 
-
 **Getting started**   
 &nbsp;&nbsp;&nbsp;&nbsp; _General information for each of the three models and comparison of features._  
 
 **User guide**   
-&nbsp;&nbsp;&nbsp;&nbsp;  _Installation and requirements_  
+&nbsp;&nbsp;&nbsp;&nbsp;  _Instructions and information on how to use the framework and methods used_  
 
-**Model implementation**  
-&nbsp;&nbsp;&nbsp;&nbsp;  _Installation and requirements_    
+**API**  
+&nbsp;&nbsp;&nbsp;&nbsp;  _List of framework-specific functions and scripts_    
 
 **About**     
-&nbsp;&nbsp;&nbsp;&nbsp;  _Installation and requirements_    
+&nbsp;&nbsp;&nbsp;&nbsp;  _Information and links specific to each of the models included in the framework_    
 
 
  
 ## Using MultiMalModPy   
 
-**Contact**: If you want to use MultiMalModPy, please contact ...
+**Contact**    
+&nbsp;&nbsp;&nbsp;&nbsp;  _If you want to use MultiMalModPy, please contact ..._
 
-**Suggested citation**: manuscript in preparation.
+**Suggested citation**  
+&nbsp;&nbsp;&nbsp;&nbsp;  _Coming soon..._
 
-**Reference papers:** 
-- Software paper (Paper 1)
-- Model comparison paper (Paper 2)
+**Reference papers**    
+&nbsp;&nbsp;&nbsp;&nbsp;  _Coming soon..._
+<!-- 
+- Software paper (Paper 1)    
+- Model comparison paper (Paper 2) 
+ -->
 
-
-## Contribute to its development
+## Contribute to its development  
 MultiMalModPy is an open-source framework to which anyone is welcome to contribute.
-Check out the [GitHub repository]() for all the source code, open issues etc. and send us a pull request.
+Check out the [MultiMalModPy GitHub repository](https://github.com/numalariamodeling/MultiMalModPy) for all the source code, open issues etc. and send us a pull request.
 For new feature requests, please check out the open issues and open a new one if a related one does not already exist.
 

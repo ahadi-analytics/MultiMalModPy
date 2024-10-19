@@ -12,7 +12,7 @@ This section requires users to align malaria-related input parameters across all
 _Simulation Setup_  
 The users define the specifics of each new "experiment," including the scenarios to be tested. The simulation/experiment parameters include the population, number of seeds, simulation duration and ‘burnin’ duration, age groups to monitor, and reporting interval for writing out outcome metrics. Scenario-defining parameters are those that can take in multiple values and determine transmission, seasonality, case management and potentially other interventions or parameter explorations.     
 
-Framework Setup   
+_Framework Setup_     
 In this section, users configure overarching parameters, such as selecting which models to run and specifying the outputs to be generated. The setup includes the installation and definition of directories to be used for the simulations to store input and output files. Additionally, cluster specific parameters are required to ensure a smooth processing of the simulations throughout the implemented pipeline.  
 
 
