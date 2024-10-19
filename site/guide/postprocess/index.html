@@ -54,8 +54,6 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/requirements/">Requirements</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
@@ -63,10 +61,6 @@
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../">General use</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Transmission calibration</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../create_sim/">Create simulations</a>
@@ -75,18 +69,60 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Postprocess outputs</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#raw-outputs">Raw outputs</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#standardized-outputs">Standardized Outputs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#run-analyzer">Run analyzer</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#outputs-files">Outputs files</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#output-measures">Output measures</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#customizing-outputs">Customizing outputs</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#result-figures">Result figures</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#default-figures">Default figures</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#customizing-figures">Customizing figures</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#adding-new-figures">Adding new figures</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../outputs/">Output files</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../plots/">Result figures</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Transmission calibration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  <li class="toctree-l1"><a class="" href="../../api/config_exp.md">config_exp.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/shell/">sh scripts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/target_calibration/">target_calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/functions/">functions.R</a>
+                </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >EMOD</a>
     <ul>
@@ -108,13 +144,23 @@
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >MalSim</a>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/scaffolds/">scaffolds</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_relationship/">plot_relationship.py</a>
                 </li>
     </ul>
                   </li>
@@ -154,7 +200,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="submit-run-and-analyze-simulations">Submit run and analyze simulations</h1>
+                <h1 id="postprocess-outputs">Postprocess outputs</h1>
+<h2 id="raw-outputs">Raw outputs</h2>
+<p>Coming soon...</p>
+<h2 id="standardized-outputs">Standardized Outputs</h2>
+<h3 id="run-analyzer">Run analyzer</h3>
 <ul>
 <li>In terminal navigate to repository  <code>cd ~/model-characterization</code></li>
 <li>Run python script that defines the simulation i.e. <code>python launch_sim.py</code> for a test run using defaults specified in
@@ -172,12 +222,56 @@
       fb508aba-2aa7-43b3-b365-ea7c227d7781</code> </li>
 <li>Perform additional analysis or plot custom results</li>
 </ul>
+<h3 id="outputs-files">Outputs files</h3>
+<p>Standardized csv files for selected outcome metrics per age group and either aggregated over time (Benchmark.csv), or aggregated for specific time intervals  (daily, 5-day, monthly or annual time-series) ( PfPRAgebin_<timeseriesname>.csv). In addition, EIR-vector-transmission related metrics across all ages are generated for different time-intervals or aggregated over time written into csv files named “EIR” and specified time aggregation.  </p>
+<p><strong>Time-series:</strong></p>
+<ul>
+<li><code>All_Age_SamplePlot.csv</code>: <em>All age</em> per timestep and basic simulation outputs for checking simulations</li>
+<li><code>PfPR_ClinicalIncidence_mth.csv</code>: <em>Age-bin</em> specific key malaria outcomes* over time aggregated by month-year</li>
+<li><code>PfPR_ClinicalIncidence_yr.csv</code>: <em>Age-bin</em> specific key malaria outcomes* over time aggregated by year</li>
+</ul>
+<p><strong>Aggregated times for relationship and seasonality trends:</strong></p>
+<ul>
+<li><code>Benchmark.csv</code>: <em>Age-group</em> specific key malaria outcomes<em> and transmission outcomes</em>*, aggregated over whole
+  monitoring period</li>
+</ul>
+<p><strong>Additional output files:</strong></p>
+<ul>
+<li><code>EIR.csv</code>, <code>EIR_yr.csv</code> and <code>EIR_mth.csv</code>: All age simulated EIR (added to benchmark output csvs)</li>
+<li><code>Surveyoutput_base.csv</code>: Raw output for OpenMalaria from concatenating survey outputs, optional i.e. for testing.</li>
+<li><code>Event reporters ..</code> to be added</li>
+</ul>
+<h3 id="output-measures">Output measures</h3>
+<p>coming soon</p>
+<h3 id="customizing-outputs">Customizing outputs</h3>
+<p>To customize a simulation, any of the defined parameters listed
+in <a href="https://github.com/numalariamodeling/model-characterization#simulation-experiment-configuration">Simulation experiment configuration</a>
+can be changed.
+Commonly modified parameters are <code>eir</code>, <code>seasonality</code>, <code>burnin</code> period, and sometimes <code>cm_clinical</code>, for base-case
+scenario runs.
+Additional interventions are in progress and instructions for simulating other interventions will come soon.</p>
+<h2 id="result-figures">Result figures</h2>
+<h3 id="default-figures">Default figures</h3>
+<p>The framework comes with three standardized plotting scripts:  <br />
+-  <a href="../../api/plot_timeseries/">plot_timeseries.py</a> the timeseries for selected outcome measures, <br />
+-  <a href="../../api/plot_agecurves/">plot_agecurves.py</a> the relation of outcome measures by age groups,<br />
+-  <a href="../../api/plot_relationship/">plot_relationship.py</a> relationship between disease transmission and disease outcomes.  </p>
+<h3 id="customizing-figures">Customizing figures</h3>
+<p>Each of the existing plotting scripts allow for the user to define what outcomes should be displayed in the
+color, the columns, axis and so on. Edits can be directly made in the respective scripts.</p>
+<h3 id="adding-new-figures">Adding new figures</h3>
+<p>Additional plotting scripts from the user can be added to the <code>plotter</code> subdirectory.
+It is recommended to have the filename start with <code>plot_</code> for consistency and to facilitate integrating the new plotter into the framework.</p>
+<p>At the beginning it will be easiest to run the new plotters manually after the default outputs were 
+successfully  generated.</p>
+<p>For instance: <br />
+<code>python plotter/plot_custom1.py  --models EMOD malariasimulation OpenMalaria</code> </p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../run_sim/" class="btn btn-neutral float-left" title="Run simulations"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../outputs/" class="btn btn-neutral float-right" title="Output files">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../calibration/" class="btn btn-neutral float-right" title="Transmission calibration">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -203,7 +297,7 @@
       <span><a href="../run_sim/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../outputs/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../calibration/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

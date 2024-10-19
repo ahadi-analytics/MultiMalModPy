@@ -49,10 +49,6 @@ nav:
     - License: about/license.md
     - Changelog: about/changelog.md
     - Getting help: about/getting_help.md
-plugins:
-  - search
-  - mkdocs-versioning:
-      version: 0.9.0  # Current version
 theme:
   name: readthedocs
   features:

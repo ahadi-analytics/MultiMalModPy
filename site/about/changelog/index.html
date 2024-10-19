@@ -54,8 +54,6 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/requirements/">Requirements</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
@@ -63,10 +61,6 @@
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/">General use</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Transmission calibration</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/create_sim/">Create simulations</a>
@@ -75,16 +69,34 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/outputs/">Output files</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Result figures</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Transmission calibration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  <li class="toctree-l1"><a class="" href="../../api/config_exp.md">config_exp.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/shell/">sh scripts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/target_calibration/">target_calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/functions/">functions.R</a>
+                </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >EMOD</a>
     <ul>
@@ -106,13 +118,23 @@
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >MalSim</a>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/scaffolds/">scaffolds</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_relationship/">plot_relationship.py</a>
                 </li>
     </ul>
                   </li>
@@ -129,11 +151,11 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#initial-development">Initial development</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#09">0.9</a>
+    <li class="toctree-l3"><a class="reference internal" href="#090">0.9.0</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#05-08">0.5 - 0.8</a>
+    <li class="toctree-l3"><a class="reference internal" href="#050-080">0.5.0 - 0.8.0</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#01-05">0.1 - 0.5</a>
+    <li class="toctree-l3"><a class="reference internal" href="#010-050">0.1.0 - 0.5.0</a>
     </li>
         </ul>
     </li>
@@ -172,19 +194,19 @@ at:  <a href="https://github.com/numalariamodeling/model-characterization/issues
 <h2 id="10-initial-release">1.0 Initial release</h2>
 <hr />
 <h2 id="initial-development">Initial development</h2>
-<h3 id="09">0.9</h3>
+<h3 id="090">0.9.0</h3>
 <ul>
 <li>Production run </li>
 <li>Cleanup and documentation</li>
 <li>Error capturing</li>
 </ul>
-<h3 id="05-08">0.5 - 0.8</h3>
+<h3 id="050-080">0.5.0  - 0.8.0</h3>
 <ul>
 <li>Refinement in framework to support flexible simulations</li>
 <li>Carrying capacity step change and additional vector outcomes</li>
 <li>Input transmission parameter calibration to a defined output target for either EIR of PfPR2to10</li>
 </ul>
-<h3 id="01-05">0.1 - 0.5</h3>
+<h3 id="010-050">0.1.0  - 0.5.0</h3>
 <ul>
 <li>Initial python framework, EMOD and OpenMalaria</li>
 <li>Bugfixes and improvements including default figures</li>

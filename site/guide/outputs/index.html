@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Output files - MultiMalModPy</title>
+    <title>Outputs - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Output files";
+        var mkdocs_page_name = "Outputs";
         var mkdocs_page_input_path = "guide\\outputs.md";
         var mkdocs_page_url = null;
       </script>
@@ -54,19 +54,13 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/requirements/">Requirements</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../">General use</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Transmission calibration</a>
-                  </li>
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../create_sim/">Create simulations</a>
@@ -75,22 +69,34 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../postprocess/">Postprocess outputs</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Output files</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#output-measures">Output measures</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#customizing-outputs">Customizing outputs</a>
-    </li>
-    </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../plots/">Result figures</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Transmission calibration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  <li class="toctree-l1"><a class="" href="../../api/config_exp.md">config_exp.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/shell/">sh scripts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/target_calibration/">target_calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/functions/">functions.R</a>
+                </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >EMOD</a>
     <ul>
@@ -112,13 +118,23 @@
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >MalSim</a>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/scaffolds/">scaffolds</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_relationship/">plot_relationship.py</a>
                 </li>
     </ul>
                   </li>
@@ -148,8 +164,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">User Guide</li>
-      <li class="breadcrumb-item active">Output files</li>
+      <li class="breadcrumb-item active">Outputs</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -189,10 +204,6 @@ Additional interventions are in progress and instructions for simulating other i
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../postprocess/" class="btn btn-neutral float-left" title="Postprocess outputs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../plots/" class="btn btn-neutral float-right" title="Result figures">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -214,10 +225,6 @@ Additional interventions are in progress and instructions for simulating other i
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../postprocess/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../plots/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

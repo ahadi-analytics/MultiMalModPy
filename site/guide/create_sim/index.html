@@ -54,8 +54,6 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/requirements/">Requirements</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
@@ -63,10 +61,6 @@
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../">General use</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Transmission calibration</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Create simulations</a>
@@ -75,24 +69,40 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#customize-simulations">Customize simulations</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#advanced-use">Advanced use</a>
-    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../run_sim/">Run simulations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../postprocess/">Postprocess outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../outputs/">Output files</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../plots/">Result figures</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Transmission calibration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  <li class="toctree-l1"><a class="" href="../../api/config_exp.md">config_exp.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/shell/">sh scripts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/target_calibration/">target_calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/functions/">functions.R</a>
+                </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >EMOD</a>
     <ul>
@@ -114,13 +124,23 @@
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >MalSim</a>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/scaffolds/">scaffolds</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_relationship/">plot_relationship.py</a>
                 </li>
     </ul>
                   </li>
@@ -178,8 +198,28 @@ needed.</p>
 </ul>
 <p>Details provided
 in <a href="https://github.com/numalariamodeling/model-characterization/blob/main/scenario_inputs/README.md">scenario_inputs/README</a></p>
+<p>Example CSV files that specify different simulation experiments to run.
+File and scenario specifications most basic simulation without any interventions or treatment of cases.</p>
+<p><strong>baseline_eirsweep_noCM.csv</strong> <br />
+- No interventions<br />
+- No case management<br />
+- Varying levels of transmission intensity, defined as EIR or equivalent parameter, that stay constant over the total simulation period<br />
+- Seasonality: perennial, seasonal<br />
+- Entomology mode: dynamic, forced  </p>
+<p><strong>baseline_eirsweep_CM.csv</strong><br />
+- No interventions<br />
+- Varying levels of case management, not changing over time<br />
+- Varying levels of transmission intensity, defined as EIR or equivalent parameter, that stay constant over the total simulation period<br />
+- Seasonality: perennial, seasonal<br />
+- Entomology mode: dynamic, forced  </p>
+<p><strong>baseline_eirchange_noCM.csv</strong>  <br />
+- No interventions<br />
+- Varying levels of case management, not changing over time<br />
+- Varying or single levels of transmission intensity, defined as EIR or equivalent parameter, that includes a step change inbetween the simulation period<br />
+- Seasonality: perennial (possibly seasonal)<br />
+- Entomology mode: dynamic (possibly forced)  </p>
 <h2 id="customize-simulations">Customize simulations</h2>
-<h2 id="advanced-use">Advanced use</h2>
+<p>Coming soon..</p>
               
             </div>
           </div><footer>

@@ -54,8 +54,6 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/requirements/">Requirements</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
@@ -63,10 +61,6 @@
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/">General use</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Transmission calibration</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/create_sim/">Create simulations</a>
@@ -75,16 +69,184 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/outputs/">Output files</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Result figures</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Transmission calibration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../launch_sim/">launch_sim.py</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="" href="../config_exp.md">config_exp.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../manifest/">manifest.py</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../shell/">sh scripts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../target_calibration/">target_calibration</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >utility</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">helper.py</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#parse_launch_args">parse_launch_args</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#returns">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#parse_args">parse_args</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_1">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_1">Arguments</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#get_param_from_dataframe">get_param_from_dataframe</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_2">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_2">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example">Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#make_dirs">make_dirs</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_3">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_3">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#description">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#directory-structure">Directory Structure</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example_1">Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#check_exp_inputs">check_exp_inputs</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_4">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#raises">Raises</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#description_1">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example_2">Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#save_scen">save_scen</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_5">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#description_2">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example_3">Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#save_exp_scen">save_exp_scen</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_6">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#description_3">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#behavior">Behavior</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example_4">Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#rep_scen_df">rep_scen_df</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_7">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_4">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#description_4">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#behavior_1">Behavior</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example_5">Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#create_simsetup_csv">create_simsetup_csv</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_8">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#description_5">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#behavior_2">Behavior</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example_6">Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#create_scenarios_csv">create_scenarios_csv</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_9">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_5">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#description_6">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#behavior_3">Behavior</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example_7">Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#as_list">as_list</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_10">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_6">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#description_7">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example_8">Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#write_txt">write_txt</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_11">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#description_8">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example_9">Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#str_to_digit">str_to_digit</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments_12">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_7">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#description_9">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example_10">Example</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../functions/">functions.R</a>
+                </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >EMOD</a>
     <ul>
@@ -106,13 +268,23 @@
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >MalSim</a>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/scaffolds/">scaffolds</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plot_relationship/">plot_relationship.py</a>
                 </li>
     </ul>
                   </li>
@@ -142,6 +314,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API</li>
+          <li class="breadcrumb-item">utility</li>
       <li class="breadcrumb-item active">helper.py</li>
     <li class="wy-breadcrumbs-aside">
     </li>
@@ -152,9 +326,401 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="helperpy">helper.py</h1>
+<p>Several custom functions are defined for facilitating processes of the framework: </p>
+<p><a href="#parse_launch_args">parse_launch_args</a><br />
+<a href="#parse_args">parse_args</a><br />
+<a href="#get_param_from_dataframe">get_param_from_dataframe</a><br />
+<a href="#make_dirs">make_dirs</a><br />
+<a href="#check_exp_inputs">check_exp_inputs</a><br />
+<a href="#save_scen">save_scen</a><br />
+<a href="#save_exp_scen">save_exp_scen</a><br />
+<a href="#rep_scen_df">rep_scen_df</a><br />
+<a href="#create_simsetup_csv">create_simsetup_csv</a>
+<a href="#create_scenarios_csv">create_scenarios_csv</a>
+<a href="#as_list">as_list</a><br />
+<a href="#write_txt">write_txt</a><br />
+<a href="#str_to_digit">str_to_digit</a>  </p>
+<hr />
+<h2 id="parse_launch_args"><code>parse_launch_args</code></h2>
+<p>Parses command-line arguments for the launch of the simulation script.</p>
+<h3 id="returns">Returns</h3>
+<ul>
+<li><code>argparse.Namespace</code>: Parsed command-line arguments.</li>
+</ul>
+<h3 id="arguments">Arguments</h3>
+<ul>
+<li><code>-d</code>, <code>--directory</code> (str, optional): Job directory of burnin; ignored if no EMOD burnin.</li>
+<li><code>--suite</code> (str, optional): Description of the suite name (default: current date and "test").</li>
+<li><code>--expname</code> (str, optional): Description of the experiment name (default: "sims_entomologymode_seasonality_intervention" with current time).</li>
+<li><code>--emodstep</code> (str, optional): Description of EMOD step (choices: None, 'burnin', 'pickup', 'new_pickup').</li>
+<li><code>--serializedid</code> (str, optional): Description of EMOD serialized ID (default: empty string).</li>
+<li><code>--models</code> (list of str, optional): Models to run (default: ['EMOD', 'malariasimulation', 'OpenMalaria']).</li>
+<li><code>--user</code> (str, optional): Subdirectory for simulations by user (default: current user from environment).</li>
+<li><code>--csv</code> (str, optional): Name of scenario CSV.</li>
+<li><code>-i</code>, <code>--interventions</code> (list of str, optional): Specify interventions to run (choices: ['cc_step', 'smc']).</li>
+<li><code>--rownum</code> (int, optional): Row number of specified scenario CSV.</li>
+<li><code>-r</code>, <code>--run_mode</code> (str, optional): Specify run mode (choices: None, 'test', 'calibrun', 'productionrun').</li>
+<li><code>--emod_calib_params</code> (bool, optional): Whether to include calibration parameters as a sweep variable (EMOD only).</li>
+<li><code>--mpv</code> (bool, optional): Specify whether to run malariasimulation with parameter variation (default: True).</li>
+<li><code>--output_type</code> (str, optional): Type of output to align transmission in each model (choices: ['prevalence_2to10', 'eir']).</li>
+</ul>
+<hr />
+<h2 id="parse_args"><code>parse_args</code></h2>
+<p>Parses command-line arguments for simulation specifications.</p>
+<h3 id="returns_1">Returns</h3>
+<ul>
+<li><code>argparse.Namespace</code>: Parsed command-line arguments.</li>
+</ul>
+<h3 id="arguments_1">Arguments</h3>
+<ul>
+<li><code>-d</code>, <code>--directory</code> (str, required): Job Directory where exp.obj is located.</li>
+</ul>
+<hr />
+<h2 id="get_param_from_dataframe"><code>get_param_from_dataframe</code></h2>
+<p>Retrieves a parameter value from a DataFrame and returns it in the correct format for storage in an experiment object (exp).</p>
+<h3 id="arguments_2">Arguments</h3>
+<ul>
+<li><code>df</code> (pandas.DataFrame): The DataFrame containing the parameter value.</li>
+<li><code>name</code> (str): The name of the parameter.</li>
+</ul>
+<h3 id="returns_2">Returns</h3>
+<ul>
+<li><code>Union[list, str]</code>: The parameter value, either as a list or a string based on the parameter's requirements.</li>
+</ul>
+<h3 id="example">Example</h3>
+<pre><code>exp.seasonality = get_param_from_dataframe(exp_scen_df, 'seasonality', listparam=True)
+</code></pre>
+<hr />
+<h2 id="make_dirs"><code>make_dirs</code></h2>
+<p>Creates the necessary directories for a simulation experiment, based on the provided experiment object.</p>
+<h3 id="arguments_3">Arguments</h3>
+<ul>
+<li><code>exp</code> (Experiment): The experiment object that contains project directory information, including:</li>
+<li><code>custom_subdir</code> (str, optional): A custom subdirectory name for organizing directories.</li>
+<li><code>SUITEname</code> (str): The name of the suite under which directories will be organized.</li>
+<li><code>job_directory_manifest</code> (str): The base directory for job-related files.</li>
+<li><code>exp_name</code> (str): The name of the experiment.</li>
+<li><code>output_directory_manifest</code> (str): The base directory for output files.</li>
+<li><code>models_to_run</code> (list of str): A list of simulation models to be executed (e.g., 'EMOD', 'OpenMalaria', 'malariasimulation').</li>
+<li><code>emod_step</code> (str): Specifies the EMOD step being executed (e.g., 'burnin', 'pickup').</li>
+<li><code>overwrite</code> (bool, optional): If set to <code>True</code>, existing directories will be overwritten. Defaults to <code>False</code>.</li>
+</ul>
+<h3 id="returns_3">Returns</h3>
+<ul>
+<li><code>exp</code> (Experiment): The updated experiment object with the paths for various directories populated.</li>
+</ul>
+<h3 id="description">Description</h3>
+<p>This function defines and creates the following directories based on the experiment parameters:</p>
+<ol>
+<li><strong>Suite Directory</strong>: A grouping folder for simulation experiments, determined by the <code>SUITEname</code> and <code>custom_subdir</code> if provided.</li>
+<li><strong>Job Directory</strong>: The directory where simulation files related to the specific experiment will be stored.</li>
+<li><strong>Simulation Output Directory</strong>: The directory for storing result CSV files and figures.</li>
+</ol>
+<h3 id="directory-structure">Directory Structure</h3>
+<p>The function creates the following structure:
+- <code>&lt;job_directory_manifest&gt;/&lt;SUITEname&gt;/&lt;exp_name&gt;/</code>
+  - <code>log/</code> (for storing logs related to the simulation)
+  - <code>&lt;sim_out_dir&gt;/</code>
+    - <code>EMOD/</code> (if 'EMOD' is in <code>models_to_run</code>)
+    - <code>OpenMalaria/</code> (if 'OpenMalaria' is in <code>models_to_run</code> and <code>emod_step</code> is not 'burnin')
+    - <code>malariasimulation/</code> (if 'malariasimulation' is in <code>models_to_run</code> and <code>emod_step</code> is not 'burnin')</p>
+<h3 id="example_1">Example</h3>
+<pre><code># Assuming 'exp' is an instance of the Experiment class with necessary attributes set
+exp = make_dirs(exp, overwrite=True)
+</code></pre>
+<hr />
+<h2 id="check_exp_inputs"><code>check_exp_inputs</code></h2>
+<p>Validates the inputs for a simulation experiment, ensuring all parameters are set correctly before execution.</p>
+<h3 id="arguments_4">Arguments</h3>
+<ul>
+<li><code>exp</code> (Experiment): Custom object containing experiment specifications, including:</li>
+<li><code>openmalaria_survey_step</code> (str): The survey step interval for OpenMalaria.</li>
+<li><code>analyzer_list</code> (list of str): List of analyzers to use.</li>
+<li><code>num_seeds_burnin</code> (int): Number of seeds for EMOD burn-in.</li>
+<li><code>burnin</code> (int): Length of the burn-in period.</li>
+<li><code>age_groups_aggregates</code> (list): Aggregated age groups.</li>
+<li><code>agebins</code> (list): Age bins to be used.</li>
+<li><code>models_to_run</code> (list of str): Models to be executed (e.g., 'EMOD', 'OpenMalaria').</li>
+<li><code>entomology_mode</code> (str): The mode of entomology to be used ('dynamic' or other).</li>
+<li><code>output_type</code> (str): The type of output expected ('eir', 'prevalence_2to10', etc.).</li>
+<li><code>intervention_list</code> (list of str): List of interventions to be applied.</li>
+<li><code>start_year</code> (int): The starting year for the simulation.</li>
+<li><code>end_year</code> (int): The ending year for the simulation.</li>
+<li>
+<p><code>step_in_years</code> (int): The number of years between steps in the simulation.</p>
+</li>
+<li>
+<p><code>print_reminder</code> (bool, optional): If <code>True</code>, print reminders regarding potential issues (default: <code>True</code>).</p>
+</li>
+<li>
+<p><code>intervention_checks</code> (bool, optional): If <code>True</code>, perform checks specific to interventions (default: <code>True</code>).</p>
+</li>
+<li>
+<p><code>attribute_check</code> (bool, optional): If <code>True</code>, check attributes for inclusion in the sweep list (default: <code>False</code>).</p>
+</li>
+</ul>
+<h3 id="raises">Raises</h3>
+<ul>
+<li><code>ValueError</code>: If any input parameters are invalid, with specific messages detailing the issue.</li>
+</ul>
+<h3 id="description_1">Description</h3>
+<p>This function performs various checks on the experiment parameters, including:<br />
+1. <strong>Survey Steps and Analyzers</strong>: Ensures compatibility between the survey steps and analyzers being used.<br />
+2. <strong>Burn-in Period</strong>: Checks for an appropriate burn-in period, raising warnings or errors if conditions are not met.<br />
+3. <strong>Age Bins</strong>: Validates that the specified age bins are adequate for the defined age groups and raises errors if necessary.<br />
+4. <strong>Model-Specific Validations</strong>: Ensures that the parameters align with the requirements of specific models (e.g., EMOD).<br />
+5. <strong>Intervention Validations</strong>: Checks the compatibility of interventions with the overall simulation setup.<br />
+6. <strong>Attribute Checks</strong>: Validates that attributes with multiple values are included in the sweep list where required.  </p>
+<h3 id="example_2">Example</h3>
+<pre><code># Assuming 'exp' is an instance of the Experiment class with necessary attributes set
+try:
+    check_exp_inputs(exp)
+except ValueError as e:
+    print(f&quot;Input validation error: {e}&quot;)
+
+</code></pre>
+<hr />
+<h2 id="save_scen"><code>save_scen</code></h2>
+<p>Saves a scenario DataFrame to a CSV file in the specified directories.</p>
+<h3 id="arguments_5">Arguments</h3>
+<ul>
+<li>
+<p><code>scen_df</code> (pandas.DataFrame): The DataFrame containing the scenario data to be saved.</p>
+</li>
+<li>
+<p><code>fname</code> (str): The name of the CSV file to be created (e.g., <code>'scenario.csv'</code>).</p>
+</li>
+<li>
+<p><code>save_dirs</code> (list of str, optional): A list of directories where the CSV file will be saved. If not provided, the function will not save the file.</p>
+</li>
+</ul>
+<h3 id="description_2">Description</h3>
+<p>This function iterates through the provided list of directories (<code>save_dirs</code>) and saves the specified DataFrame (<code>scen_df</code>) as a CSV file with the given filename (<code>fname</code>). Each directory in the list will receive a copy of the CSV file.</p>
+<h3 id="example_3">Example</h3>
+<pre><code>import pandas as pd
+
+# Create a sample DataFrame
+scenario_data = {
+    'param1': [1, 2, 3],
+    'param2': ['A', 'B', 'C']
+}
+scen_df = pd.DataFrame(scenario_data)
+
+# Define the filename and directories
+fname = 'scenario.csv'
+directories = ['dir1', 'dir2']
+
+# Save the scenario DataFrame to the specified directories
+save_scen(scen_df, fname, save_dirs=directories)
+</code></pre>
+<hr />
+<h2 id="save_exp_scen"><code>save_exp_scen</code></h2>
+<p>Saves the experiment and scenario data to the specified save directories.</p>
+<h3 id="arguments_6">Arguments</h3>
+<ul>
+<li><code>exp</code> (Experiment): The experiment object containing experiment specifications.</li>
+<li><code>scen_df</code> (pandas.DataFrame): The scenario data to be saved.</li>
+<li><code>save_dirs</code> (list): List of directories to save the data.</li>
+</ul>
+<h3 id="description_3">Description</h3>
+<p>This function saves the experiment object and scenario DataFrame to specified directories. The scenario data is saved as a CSV file, and the experiment object is saved using the pickle format.</p>
+<h3 id="behavior">Behavior</h3>
+<ul>
+<li>The function iterates over each directory in <code>save_dirs</code>.</li>
+<li>For each directory:</li>
+<li>The <code>scen_df</code> DataFrame is saved as <code>scenarios.csv</code> without including the index.</li>
+<li>The <code>exp</code> object is serialized and saved as <code>exp.obj</code> using the <code>pickle</code> module.</li>
+</ul>
+<h3 id="example_4">Example</h3>
+<pre><code># Assuming 'exp' is an Experiment object and 'scen_df' is a DataFrame of scenario data
+save_dirs = ['path/to/save/directory1', 'path/to/save/directory2']
+save_exp_scen(exp, scen_df, save_dirs)
+
+</code></pre>
+<hr />
+<h2 id="rep_scen_df"><code>rep_scen_df</code></h2>
+<p>Repeats scenario data in a DataFrame based on the number of seeds.</p>
+<h3 id="arguments_7">Arguments</h3>
+<ul>
+<li><code>df</code> (pandas.DataFrame): The DataFrame containing the scenario data.</li>
+</ul>
+<h3 id="returns_4">Returns</h3>
+<ul>
+<li><code>pandas.DataFrame</code>: A DataFrame with repeated scenario data based on the number of seeds.</li>
+</ul>
+<h3 id="description_4">Description</h3>
+<p>This function takes a DataFrame containing scenario data and repeats each scenario based on the specified number of seeds. The resulting DataFrame will have multiple rows for each original scenario, corresponding to the number of seeds for that scenario.</p>
+<h3 id="behavior_1">Behavior</h3>
+<ul>
+<li>The function first attempts to drop the <code>index</code> column from the DataFrame (if it exists).</li>
+<li>It uses <code>np.repeat</code> to create a new DataFrame (<code>rep_df</code>) where each row in the original DataFrame is repeated according to the value in the <code>num_seeds</code> column.</li>
+<li>The index of the new DataFrame is reset, and a new <code>seed</code> column is created, indicating the seed number for each repeated scenario.</li>
+</ul>
+<h3 id="example_5">Example</h3>
+<pre><code># Assuming 'df' is a DataFrame with scenario data including a 'num_seeds' column
+repeated_df = rep_scen_df(df)
+</code></pre>
+<hr />
+<h2 id="create_simsetup_csv"><code>create_simsetup_csv</code></h2>
+<p>Creates a CSV file containing simulation setup parameters.</p>
+<h3 id="arguments_8">Arguments</h3>
+<ul>
+<li><code>exp</code> (Experiment): The experiment object containing experiment specifications.</li>
+</ul>
+<h3 id="description_5">Description</h3>
+<p>This function generates a CSV file that captures various setup parameters for a simulation experiment. The parameters are derived from the provided <code>exp</code> object and are structured in a way that allows for easy access and understanding.</p>
+<h3 id="behavior_2">Behavior</h3>
+<ul>
+<li>The function constructs a dictionary (<code>setup_dic</code>) containing key simulation parameters, such as:</li>
+<li><code>run_mode</code></li>
+<li><code>job_directory</code></li>
+<li><code>sim_out_dir</code></li>
+<li><code>emod_serialized_id</code></li>
+<li><code>burnin_directory</code></li>
+<li><code>nexps</code></li>
+<li><code>sweep_list</code></li>
+<li><code>monitoring_years</code></li>
+<li><code>pop_size</code></li>
+<li><code>agebins</code></li>
+<li><code>seasonality</code></li>
+<li>Various seasonal and perennial settings, converted to a string format suitable for CSV.</li>
+<li><code>start_year</code> and <code>end_year</code></li>
+<li><code>burnin</code> duration</li>
+<li>Start years for different simulation models</li>
+<li>
+<p>List of interventions</p>
+</li>
+<li>
+<p>A DataFrame (<code>setup_df</code>) is created from this dictionary, with parameters and their corresponding values.</p>
+</li>
+<li>
+<p>The resulting DataFrame is saved as a CSV file named <code>exp_setup_df.csv</code> in the specified directories (both the job directory and simulation output directory).</p>
+</li>
+</ul>
+<h3 id="example_6">Example</h3>
+<pre><code># Assuming 'exp' is an instance of the Experiment class with the necessary attributes
+create_simsetup_csv(exp)
+</code></pre>
+<hr />
+<h2 id="create_scenarios_csv"><code>create_scenarios_csv</code></h2>
+<p>Creates a scenarios CSV file based on the provided experiment object and column list.</p>
+<h3 id="arguments_9">Arguments</h3>
+<ul>
+<li>
+<p><code>exp</code> (Experiment): The experiment object containing the scenario attributes.</p>
+</li>
+<li>
+<p><code>col_list</code> (list): A list of attribute names to include in the scenarios CSV file. </p>
+</li>
+<li>
+<p><strong>Example:</strong> <code>['eirs', 'case_management', 'seasonality']</code>.</p>
+</li>
+<li>
+<p><code>add_cols</code> (bool, optional): Whether to add additional columns such as <code>'entomology_mode'</code>, <code>'num_seeds'</code>, etc. </p>
+</li>
+<li><strong>Default:</strong> <code>True</code>.</li>
+</ul>
+<h3 id="returns_5">Returns</h3>
+<ul>
+<li><code>pandas.DataFrame</code>: A DataFrame representing the scenarios.</li>
+</ul>
+<h3 id="description_6">Description</h3>
+<p>This function generates a DataFrame containing all possible combinations of the specified scenario attributes from the <code>exp</code> object. If the <code>add_cols</code> parameter is set to <code>True</code>, additional columns related to the experiment attributes are added to the DataFrame.</p>
+<h3 id="behavior_3">Behavior</h3>
+<ul>
+<li>
+<p>If <code>col_list</code> is not provided, it defaults to <code>['output_target', 'case_management', 'seasonality']</code>.</p>
+</li>
+<li>
+<p>Depending on the <code>run_mode</code> of the experiment (<code>'calibrun'</code>, <code>'test'</code>, or <code>None</code>), specific values for <code>importation_rate</code>, <code>output_target</code>, and other parameters are set.</p>
+</li>
+<li>
+<p>The function uses <code>itertools.product</code> to generate combinations of the specified attributes, while ensuring that combinations are valid according to the defined constraints.</p>
+</li>
+</ul>
+<h3 id="example_7">Example</h3>
+<pre><code># Assuming 'exp' is an instance of the Experiment class with the necessary attributes
+columns_to_include = ['output_target', 'case_management', 'seasonality']
+scenarios_df = create_scenarios_csv(exp, columns_to_include)
+
+# The resulting DataFrame can be saved to a CSV file or used for further analysis
+print(scenarios_df.head())
+</code></pre>
+<hr />
+<h2 id="as_list"><code>as_list</code></h2>
+<p>Converts the input <code>x</code> to a list if it is not already a list.</p>
+<h3 id="arguments_10">Arguments</h3>
+<ul>
+<li><code>x</code>: The input to be converted to a list. This can be of any type.</li>
+</ul>
+<h3 id="returns_6">Returns</h3>
+<ul>
+<li><code>list</code>: If <code>x</code> is already a list, it returns <code>x</code>. Otherwise, it returns a new list containing <code>x</code> as its sole element.</li>
+</ul>
+<h3 id="description_7">Description</h3>
+<p>This utility function checks the type of the input <code>x</code>. If <code>x</code> is not of type <code>list</code>, it wraps <code>x</code> in a list. If <code>x</code> is already a list, it returns <code>x</code> unchanged.</p>
+<h3 id="example_8">Example</h3>
+<pre><code># Example usages of as_list
+single_value = 42
+result1 = as_list(single_value)
+# result1 is now [42]
+
+existing_list = [1, 2, 3]
+result2 = as_list(existing_list)
+# result2 is now [1, 2, 3], unchanged
+
+empty_value = None
+result3 = as_list(empty_value)
+# result3 is now [None]
+
+</code></pre>
+<hr />
+<h2 id="write_txt"><code>write_txt</code></h2>
+<p>Writes a text object to a file.</p>
+<h3 id="arguments_11">Arguments</h3>
+<ul>
+<li><code>txtobj</code> (<code>str</code>): The text object to write to the file.</li>
+<li><code>path</code> (<code>str</code>): The directory path where the file will be saved.</li>
+<li><code>fname</code> (<code>str</code>): The filename to use for the saved file.</li>
+</ul>
+<h3 id="description_8">Description</h3>
+<p>This function takes a string <code>txtobj</code> and writes it to a specified file in the given directory. The function creates or overwrites the file if it already exists.</p>
+<h3 id="example_9">Example</h3>
+<pre><code># Example usage of write_txt
+text_content = &quot;Hello, world!&quot;
+directory_path = &quot;./&quot;
+filename = &quot;greeting.txt&quot;
+
+write_txt(text_content, directory_path, filename)
+</code></pre>
+<hr />
+<h2 id="str_to_digit"><code>str_to_digit</code></h2>
+<p>Converts a string to a float if possible; otherwise, returns the original string.</p>
+<h3 id="arguments_12">Arguments</h3>
+<ul>
+<li>x (str): The input string to be converted.</li>
+</ul>
+<h3 id="returns_7">Returns</h3>
+<p>float or str: The converted float if the conversion is successful; otherwise, the original string.</p>
+<h3 id="description_9">Description</h3>
+<p>This utility function attempts to convert the input string x into a float. If the conversion fails (for example, if x cannot be converted to a float), it returns the original string unchanged.</p>
+<h3 id="example_10">Example</h3>
+<pre><code># Example usages of str_to_digit
+numeric_str = &quot;3.14&quot;
+result1 = str_to_digit(numeric_str)
+# result1 is now 3.14 (as a float)
+
+non_numeric_str = &quot;abc&quot;
+result2 = str_to_digit(non_numeric_str)
+# result2 is now &quot;abc&quot; (unchanged)
+</code></pre>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../experiment/" class="btn btn-neutral float-left" title="experiment.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../helper_simulation/" class="btn btn-neutral float-right" title="helper_simulation.py">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -176,6 +742,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
+      <span><a href="../experiment/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../helper_simulation/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

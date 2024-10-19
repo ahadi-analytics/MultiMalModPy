@@ -54,8 +54,6 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/requirements/">Requirements</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
@@ -63,10 +61,6 @@
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../">General use</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Transmission calibration</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../create_sim/">Create simulations</a>
@@ -76,18 +70,6 @@
     <li class="toctree-l2"><a class="reference internal" href="#quick-launch">Quick launch</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#run-modes">Run modes</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#normal-run">Normal run</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#test-run">Test run</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#production-run">Production run</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#calibration-run">Calibration run</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#customize_">Customize_</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#emod-serialization">EMOD serialization</a>
     </li>
@@ -95,16 +77,34 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../postprocess/">Postprocess outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../outputs/">Output files</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../plots/">Result figures</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Transmission calibration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  <li class="toctree-l1"><a class="" href="../../api/config_exp.md">config_exp.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/shell/">sh scripts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/target_calibration/">target_calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/functions/">functions.R</a>
+                </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >EMOD</a>
     <ul>
@@ -126,13 +126,23 @@
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >MalSim</a>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/scaffolds/">scaffolds</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_relationship/">plot_relationship.py</a>
                 </li>
     </ul>
                   </li>
@@ -179,7 +189,6 @@
 <li>via python script</li>
 <li>via shell script (check which submission lines are uncommented)<ul>
 <li><code>run_launch_simulations.sh</code></li>
-<li><code>run_launch_simulations.sh</code></li>
 </ul>
 </li>
 <li>via terminal </li>
@@ -193,11 +202,7 @@
   - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria --intervention cc_step --test --emodstep burnin</code>
   - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test</code>  </p>
 <h2 id="run-modes">Run modes</h2>
-<h3 id="normal-run">Normal run</h3>
-<h3 id="test-run">Test run</h3>
-<h3 id="production-run">Production run</h3>
-<h3 id="calibration-run">Calibration run</h3>
-<h2 id="customize_">Customize_</h2>
+<p>Coming soon...</p>
 <h2 id="emod-serialization">EMOD serialization</h2>
 <p>One functional difference between EMOD and other malaria models is the process of serialization (to run multiple
 simulations on the same population in series).</p>

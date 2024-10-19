@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>plot_timeseries.py - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "plot_timeseries.py";
+        var mkdocs_page_input_path = "api\\plot_timeseries.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/rust.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/create_sim/">Create simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/run_sim/">Run simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Transmission calibration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="" href="../config_exp.md">config_exp.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../shell/">sh scripts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../target_calibration/">target_calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../functions/">functions.R</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/scaffolds/">scaffolds</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/scaffolds/">scaffolds</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/scaffolds/">scaffolds</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >plotter</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">plot_timeseries.py</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#monthly_trends">monthly_trends</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#raises">Raises</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#usage-example">Usage Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#monthly_timeseries">monthly_timeseries</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#overview_1">Overview</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_1">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_1">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#usage-example_1">Usage Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#annual_timeseries">annual_timeseries</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#overview_2">Overview</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameters_2">Parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns_2">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#usage-example_2">Usage Example</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plot_relationship/">plot_relationship.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/models/">Malaria models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API</li>
+          <li class="breadcrumb-item">plotter</li>
+      <li class="breadcrumb-item active">plot_timeseries.py</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="plot_timeseriespy">plot_timeseries.py</h1>
+<p>The annual_timeseries, monthly_timeseries, and monthly_trends functions generate visualizations of 
+temporal data, allowing for comparative analysis of model results across different time scales.
+Each function is designed to plot specified outcome variables while accommodating grouping by model
+type or age group, facilitating insights into trends over time. These functions enhance the
+interpretability of complex data by providing clear, customizable plots that aggregate results 
+annually or monthly.</p>
+<p>Function Documentations for:<br />
+<a href="#monthly_trends">monthly_trends</a><br />
+<a href="#monthly_timeseries">monthly_timeseries</a><br />
+<a href="#annual_timeseries">annual_timeseries</a>  </p>
+<hr />
+<h2 id="monthly_trends"><code>monthly_trends</code></h2>
+<h3 id="overview">Overview</h3>
+<p>The <code>monthly_trends</code> function generates line plots to visualize monthly trends for a specified outcome variable, allowing for comparisons across different models or output targets. The data is aggregated across years, assuming a single occurrence per month.</p>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fdir</code></td>
+<td><code>str</code></td>
+<td>Directory where the plot will be saved.</td>
+</tr>
+<tr>
+<td><code>df</code></td>
+<td><code>pandas DataFrame</code></td>
+<td>Dataframe that includes combined model results and relevant variables, including a column for months.</td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code>str</code></td>
+<td>Variable representing the y-axis data to be plotted.</td>
+</tr>
+<tr>
+<td><code>sweepvar</code></td>
+<td><code>str</code>, optional</td>
+<td>Variable to group the data and create multiple lines on the plot. Default is <code>'output_target'</code>.</td>
+</tr>
+<tr>
+<td><code>agegrp</code></td>
+<td><code>str</code>, optional</td>
+<td>Age group filter for the data. Default is <code>'0-100'</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="returns">Returns</h3>
+<ul>
+<li><code>None</code>: The function saves the plots to the specified directory.</li>
+</ul>
+<h3 id="raises">Raises</h3>
+<ul>
+<li><code>ValueError</code>: If no seasonal transmission pattern is specified in the data.</li>
+</ul>
+<h3 id="usage-example">Usage Example</h3>
+<pre><code>import pandas as pd
+
+# Sample DataFrame (make sure to load your actual data)
+data = {
+    'month': list(range(1, 13)) * 2,  # Months from January to December for two years
+    'clinical_incidence': [0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.35, 0.5, 0.45, 0.6, 0.55, 0.7] * 2,
+    'output_target': ['Target A'] * 12 + ['Target B'] * 12,
+    'modelname': ['Model A'] * 12 + ['Model B'] * 12,
+}
+
+df = pd.DataFrame(data)
+
+# Call the function
+monthly_trends('path/to/save/directory', df, 'clinical_incidence')
+</code></pre>
+<hr />
+<h2 id="monthly_timeseries"><code>monthly_timeseries</code></h2>
+<h3 id="overview_1">Overview</h3>
+<p>The <code>monthly_timeseries</code> function generates monthly time series plots for a specified outcome variable, allowing for comparisons across different models and subgroups defined by a facet variable. The plots are saved to a specified directory.</p>
+<h3 id="parameters_1">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fdir</code></td>
+<td><code>str</code></td>
+<td>Directory where the plot will be saved.</td>
+</tr>
+<tr>
+<td><code>df</code></td>
+<td><code>pandas DataFrame</code></td>
+<td>Dataframe that includes combined model results and relevant variables, including a date column.</td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code>str</code></td>
+<td>Variable representing the y-axis data to be plotted.</td>
+</tr>
+<tr>
+<td><code>sweepvar</code></td>
+<td><code>str</code>, optional</td>
+<td>Variable to group the data and create multiple lines on the plot. Default is <code>'modelname'</code>.</td>
+</tr>
+<tr>
+<td><code>facet_var</code></td>
+<td><code>str</code>, optional</td>
+<td>Variable used to create subplots based on its unique values. Default is <code>'ageGroup'</code>. (Consider updating the default)</td>
+</tr>
+<tr>
+<td><code>agegrp</code></td>
+<td><code>str</code>, optional</td>
+<td>Age group filter for the data. Default is <code>'0-100'</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="returns_1">Returns</h3>
+<p><code>None</code>: The function saves the plots to the specified directory.  </p>
+<h3 id="usage-example_1">Usage Example</h3>
+<pre><code>import pandas as pd
+
+# Sample DataFrame (make sure to load your actual data)
+data = {
+    'date': pd.date_range(start='2020-01-01', periods=12, freq='M'),
+    'clinical_incidence': [0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.35, 0.5, 0.45, 0.6, 0.55, 0.7],
+    'modelname': ['Model A'] * 6 + ['Model B'] * 6,
+    'ageGroup': ['0-5'] * 12
+}
+
+df = pd.DataFrame(data)
+
+# Call the function
+monthly_timeseries('path/to/save/directory', df, 'clinical_incidence')
+
+</code></pre>
+<hr />
+<h2 id="annual_timeseries"><code>annual_timeseries</code></h2>
+<h3 id="overview_2">Overview</h3>
+<p>The <code>annual_timeseries</code> function generates annual time series plots for a specified outcome variable, allowing for comparisons across different models and subgroups defined by a facet variable. 
+The plots are saved to a specified directory.</p>
+<h3 id="parameters_2">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fdir</code></td>
+<td><code>str</code></td>
+<td>Directory where the plot will be saved.</td>
+</tr>
+<tr>
+<td><code>df</code></td>
+<td><code>pandas DataFrame</code></td>
+<td>Dataframe that includes combined model results and relevant variables.</td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code>str</code></td>
+<td>Variable representing the y-axis data to be plotted.</td>
+</tr>
+<tr>
+<td><code>sweepvar</code></td>
+<td><code>str</code>, optional</td>
+<td>Variable to group the data and create multiple lines on the plot. Default is <code>'modelname'</code>.</td>
+</tr>
+<tr>
+<td><code>facet_var</code></td>
+<td><code>str</code>, optional</td>
+<td>Variable used to create subplots based on its unique values. Default is <code>'seasonality'</code>. (Update the default if needed)</td>
+</tr>
+<tr>
+<td><code>agegrp</code></td>
+<td><code>str</code>, optional</td>
+<td>Age group filter for the data. Default is <code>'0-100'</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="returns_2">Returns</h3>
+<p><code>None</code>: The function saves the plots to the specified directory.  </p>
+<h3 id="usage-example_2">Usage Example</h3>
+<pre><code>import pandas as pd
+
+# Sample DataFrame (make sure to load your actual data)
+data = {
+    'year': [2000, 2001, 2002, 2003, 2004],
+    'clinical_incidence': [0.1, 0.2, 0.3, 0.4, 0.5],
+    'modelname': ['Model A', 'Model A', 'Model B', 'Model B', 'Model A'],
+    'seasonality': ['Season 1', 'Season 1', 'Season 2', 'Season 2', 'Season 1'],
+    'ageGroup': ['0-5', '0-5', '5-10', '5-10', '0-5']
+}
+
+df = pd.DataFrame(data)
+
+# Call the function
+annual_timeseries('path/to/save/directory', df, 'clinical_incidence')
+
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../plot_agecurves/" class="btn btn-neutral float-left" title="plot_agecurves.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../plot_relationship/" class="btn btn-neutral float-right" title="plot_relationship.py">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../plot_agecurves/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../plot_relationship/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

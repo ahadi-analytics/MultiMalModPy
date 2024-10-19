@@ -54,8 +54,6 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/requirements/">Requirements</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
@@ -63,10 +61,6 @@
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/">General use</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Transmission calibration</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/create_sim/">Create simulations</a>
@@ -75,16 +69,34 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/outputs/">Output files</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Result figures</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Transmission calibration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  <li class="toctree-l1"><a class="" href="../../api/config_exp.md">config_exp.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/shell/">sh scripts</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/target_calibration/">target_calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/functions/">functions.R</a>
+                </li>
+    </ul>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" >EMOD</a>
     <ul class="current">
@@ -92,6 +104,18 @@
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="#">utils.py</a>
     <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#set_param">set_param</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#arguments">Arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#returns">Returns</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#description">Description</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example">Example</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../analyzer/">analyzer.py</a>
@@ -108,13 +132,23 @@
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >MalSim</a>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/scaffolds/">scaffolds</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_MalSim/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/analyzer/">analyzer.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_relationship/">plot_relationship.py</a>
                 </li>
     </ul>
                   </li>
@@ -156,6 +190,39 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="utilspy">utils.py</h1>
+<p>Several functions are defined for processing EMOD simulations:</p>
+<p><a href="#set_param">set_param</a><br />
+<a href="#build_demog">build_demog</a>
+<a href="#build_standard_campaign_object">build_standard_campaign_object</a><br />
+<a href="#all_campaigns">all_campaigns</a><br />
+<a href="#add_daily_reports">add_daily_reports</a><br />
+<a href="#add_5daily_reports">add_5daily_reports</a><br />
+<a href="#add_monthly_reports">add_monthly_reports</a><br />
+<a href="#add_annual_reports">add_annual_reports</a><br />
+<a href="#_get_serialized_filenames">_get_serialized_filenames</a><br />
+<a href="#_get_core_counts">_get_core_counts</a><br />
+<a href="#get_workdir_from_simulations">get_workdir_from_simulations</a><br />
+<a href="#create_sim_directory_map">create_sim_directory_map</a><br />
+<a href="#build_burnin_df">build_burnin_df</a><br />
+<a href="#get_burnin_exp_name">get_burnin_exp_name</a><br />
+<a href="#get_scendf_burnin">get_scendf_burnin</a><br />
+<a href="#sweep_functions">sweep_functions</a><br />
+<a href="#config_task">config_task</a>
+<a href="#set_config_parameters">set_config_parameters</a><br />
+<a href="#set_emod_exp_parameters">set_emod_exp_parameters</a><br />
+<a href="#config_sweep_builder">config_sweep_builder</a><br />
+<a href="#config_sweep_builder_pickup">config_sweep_builder_pickup</a><br />
+<a href="#submit_run_EMOD">submit_run_EMOD</a><br />
+<a href="#submit_analyze_EMOD">submit_analyze_EMOD</a>  </p>
+<hr />
+<h2 id="set_param"><code>set_param</code></h2>
+<h3 id="arguments">Arguments</h3>
+<h3 id="returns">Returns</h3>
+<h3 id="description">Description</h3>
+<h3 id="example">Example</h3>
+<pre><code>
+
+</code></pre>
               
             </div>
           </div><footer>
