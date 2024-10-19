@@ -2,6 +2,9 @@
 
 Documentation of Multi-Malaria-Modelling Python Framework.
 
+This will become the public repository.
+Current framework under development, to be kept private, here: https://github.com/numalariamodeling/model-characterization
+
 Using [mkdocs](https://www.mkdocs.org/getting-started/)
 To view and edit documentation:
 
