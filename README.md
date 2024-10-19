@@ -20,5 +20,11 @@ and
 mkdocs build
 ```
 
+
+To update branch gh-pages and update GitHub pages site run:
+```
+mkdocs gh-deploy
+```
+
 Note, the source code to share along with paper 1 for public view will be 
 added to this repository later on.
