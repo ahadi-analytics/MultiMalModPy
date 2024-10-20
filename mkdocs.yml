@@ -1,46 +1,40 @@
 site_name: MultiMalModPy
+plugins:
+  - search
+  - mkdocstrings
 nav:
   - Home: index.md
   - Getting started:
     - Overview: getting_started/index.md
-    #- Requirements: getting_started/requirements.md
     - Installation: getting_started/installation.md
     - Configuration: getting_started/configuration.md
   - User Guide:
-    #- General use: guide/index.md
     - Input parameters: guide/parameters.md
     - Create simulations: guide/create_sim.md
     - Run simulations: guide/run_sim.md
     - Postprocess outputs: guide/postprocess.md
-    #- Output files: guide/outputs.md
-    #- Result figures: guide/plots.md
     - Transmission calibration: guide/calibration.md
   - API:
     - config_exp.py: api/config_exp.md
     - manifest.py: api/manifest.md
     - launch_sim.py: api/launch_sim.md
-    #- scenario_inputs: api/scenario_inputs.md
-    - sh scripts: api/shell.md
-    - target_calibration: api/target_calibration.md
     - utility:
-      - api/experiment.md
+      #- api/experiment.md
       - api/helper.md
       - api/helper_simulation.md
       - api/helper_slurm.md
       - api/functions.md
     - EMOD:
-      - api_EMOD/scaffolds.md
-      - api_EMOD/utils.md
-      - api_EMOD/analyzer.md
+      - api/EMOD_utils.md
+      - api/EMOD_analyze_sim.md
     - OpenMalaria:
-      - api_OpenMalaria/scaffolds.md
-      - api_OpenMalaria/utils.md
-      - api_OpenMalaria/analyzer.md
+      - api/OpenMalaria_utils.md
+      - api/OpenMalaria_analyze_sim.md
     - malariasimulation:
-      - api_malariasimulation/scaffolds.md
-      - api_malariasimulation/utils.md
-      - api_malariasimulation/analyzer.md
+      - api/malariasimulation_utils.md
+      - api/malariasimulation_analyze_sim.md
     - plotter:
+      - api/plot_helper.md
       - api/plot_agecurves.md
       - api/plot_timeseries.md
       - api/plot_relationship.md
