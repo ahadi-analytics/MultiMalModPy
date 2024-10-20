@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
     
       <script>
         // Current page data
@@ -80,163 +81,35 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../launch_sim/">launch_sim.py</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../shell/">sh scripts</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../target_calibration/">target_calibration</a>
-                  </li>
                   <li class="toctree-l1 current"><a class="reference internal current" >utility</a>
     <ul class="current">
-                <li class="toctree-l2"><a class="reference internal" href="../experiment/">experiment.py</a>
-                </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="#">helper.py</a>
     <ul class="current">
-    <li class="toctree-l3"><a class="reference internal" href="#parse_launch_args">parse_launch_args</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#returns">Returns</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper">helper</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments">Arguments</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.as_list">as_list</a>
     </li>
-        </ul>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.check_exp_inputs">check_exp_inputs</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#parse_args">parse_args</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#returns_1">Returns</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.create_scenarios_csv">create_scenarios_csv</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_1">Arguments</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.create_simsetup_csv">create_simsetup_csv</a>
     </li>
-        </ul>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.get_param_from_dataframe">get_param_from_dataframe</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#get_param_from_dataframe">get_param_from_dataframe</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_2">Arguments</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.make_dirs">make_dirs</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns_2">Returns</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.parse_args">parse_args</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example">Example</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.rep_scen_df">rep_scen_df</a>
     </li>
-        </ul>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.save_exp_scen">save_exp_scen</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#make_dirs">make_dirs</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_3">Arguments</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.save_scen">save_scen</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns_3">Returns</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.str_to_digit">str_to_digit</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#directory-structure">Directory Structure</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_1">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#check_exp_inputs">check_exp_inputs</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_4">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#raises">Raises</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_1">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_2">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#save_scen">save_scen</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_5">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_2">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_3">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#save_exp_scen">save_exp_scen</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_6">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_3">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#behavior">Behavior</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_4">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#rep_scen_df">rep_scen_df</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_7">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns_4">Returns</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_4">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#behavior_1">Behavior</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_5">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#create_simsetup_csv">create_simsetup_csv</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_8">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_5">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#behavior_2">Behavior</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_6">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#create_scenarios_csv">create_scenarios_csv</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_9">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns_5">Returns</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_6">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#behavior_3">Behavior</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_7">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#as_list">as_list</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_10">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns_6">Returns</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_7">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_8">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#write_txt">write_txt</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_11">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_8">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_9">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#str_to_digit">str_to_digit</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_12">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns_7">Returns</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_9">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_10">Example</a>
-    </li>
-        </ul>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper.write_txt">write_txt</a>
     </li>
     </ul>
                 </li>
@@ -250,36 +123,32 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >EMOD</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD_utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/utils/">utils.py</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD_analyze_sim/">analyze_sim.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../OpenMalaria_utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/utils/">utils.py</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../OpenMalaria_analyze_sim/">analyze_sim.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../malariasimulation_utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/utils/">utils.py</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../malariasimulation_analyze_sim/">analyze_sim.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >plotter</a>
     <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../plot_helper/">plot_helper.py</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../plot_agecurves/">plot_agecurves.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../plot_timeseries/">plot_timeseries.py</a>
@@ -326,399 +195,1323 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="helperpy">helper.py</h1>
-<p>Several custom functions are defined for facilitating processes of the framework: </p>
-<p><a href="#parse_launch_args">parse_launch_args</a><br />
-<a href="#parse_args">parse_args</a><br />
-<a href="#get_param_from_dataframe">get_param_from_dataframe</a><br />
-<a href="#make_dirs">make_dirs</a><br />
-<a href="#check_exp_inputs">check_exp_inputs</a><br />
-<a href="#save_scen">save_scen</a><br />
-<a href="#save_exp_scen">save_exp_scen</a><br />
-<a href="#rep_scen_df">rep_scen_df</a><br />
-<a href="#create_simsetup_csv">create_simsetup_csv</a>
-<a href="#create_scenarios_csv">create_scenarios_csv</a>
-<a href="#as_list">as_list</a><br />
-<a href="#write_txt">write_txt</a><br />
-<a href="#str_to_digit">str_to_digit</a>  </p>
-<hr />
-<h2 id="parse_launch_args"><code>parse_launch_args</code></h2>
-<p>Parses command-line arguments for the launch of the simulation script.</p>
-<h3 id="returns">Returns</h3>
-<ul>
-<li><code>argparse.Namespace</code>: Parsed command-line arguments.</li>
-</ul>
-<h3 id="arguments">Arguments</h3>
-<ul>
-<li><code>-d</code>, <code>--directory</code> (str, optional): Job directory of burnin; ignored if no EMOD burnin.</li>
-<li><code>--suite</code> (str, optional): Description of the suite name (default: current date and "test").</li>
-<li><code>--expname</code> (str, optional): Description of the experiment name (default: "sims_entomologymode_seasonality_intervention" with current time).</li>
-<li><code>--emodstep</code> (str, optional): Description of EMOD step (choices: None, 'burnin', 'pickup', 'new_pickup').</li>
-<li><code>--serializedid</code> (str, optional): Description of EMOD serialized ID (default: empty string).</li>
-<li><code>--models</code> (list of str, optional): Models to run (default: ['EMOD', 'malariasimulation', 'OpenMalaria']).</li>
-<li><code>--user</code> (str, optional): Subdirectory for simulations by user (default: current user from environment).</li>
-<li><code>--csv</code> (str, optional): Name of scenario CSV.</li>
-<li><code>-i</code>, <code>--interventions</code> (list of str, optional): Specify interventions to run (choices: ['cc_step', 'smc']).</li>
-<li><code>--rownum</code> (int, optional): Row number of specified scenario CSV.</li>
-<li><code>-r</code>, <code>--run_mode</code> (str, optional): Specify run mode (choices: None, 'test', 'calibrun', 'productionrun').</li>
-<li><code>--emod_calib_params</code> (bool, optional): Whether to include calibration parameters as a sweep variable (EMOD only).</li>
-<li><code>--mpv</code> (bool, optional): Specify whether to run malariasimulation with parameter variation (default: True).</li>
-<li><code>--output_type</code> (str, optional): Type of output to align transmission in each model (choices: ['prevalence_2to10', 'eir']).</li>
-</ul>
-<hr />
-<h2 id="parse_args"><code>parse_args</code></h2>
-<p>Parses command-line arguments for simulation specifications.</p>
-<h3 id="returns_1">Returns</h3>
-<ul>
-<li><code>argparse.Namespace</code>: Parsed command-line arguments.</li>
-</ul>
-<h3 id="arguments_1">Arguments</h3>
-<ul>
-<li><code>-d</code>, <code>--directory</code> (str, required): Job Directory where exp.obj is located.</li>
-</ul>
-<hr />
-<h2 id="get_param_from_dataframe"><code>get_param_from_dataframe</code></h2>
-<p>Retrieves a parameter value from a DataFrame and returns it in the correct format for storage in an experiment object (exp).</p>
-<h3 id="arguments_2">Arguments</h3>
-<ul>
-<li><code>df</code> (pandas.DataFrame): The DataFrame containing the parameter value.</li>
-<li><code>name</code> (str): The name of the parameter.</li>
-</ul>
-<h3 id="returns_2">Returns</h3>
-<ul>
-<li><code>Union[list, str]</code>: The parameter value, either as a list or a string based on the parameter's requirements.</li>
-</ul>
-<h3 id="example">Example</h3>
-<pre><code>exp.seasonality = get_param_from_dataframe(exp_scen_df, 'seasonality', listparam=True)
-</code></pre>
-<hr />
-<h2 id="make_dirs"><code>make_dirs</code></h2>
-<p>Creates the necessary directories for a simulation experiment, based on the provided experiment object.</p>
-<h3 id="arguments_3">Arguments</h3>
-<ul>
-<li><code>exp</code> (Experiment): The experiment object that contains project directory information, including:</li>
-<li><code>custom_subdir</code> (str, optional): A custom subdirectory name for organizing directories.</li>
-<li><code>SUITEname</code> (str): The name of the suite under which directories will be organized.</li>
-<li><code>job_directory_manifest</code> (str): The base directory for job-related files.</li>
-<li><code>exp_name</code> (str): The name of the experiment.</li>
-<li><code>output_directory_manifest</code> (str): The base directory for output files.</li>
-<li><code>models_to_run</code> (list of str): A list of simulation models to be executed (e.g., 'EMOD', 'OpenMalaria', 'malariasimulation').</li>
-<li><code>emod_step</code> (str): Specifies the EMOD step being executed (e.g., 'burnin', 'pickup').</li>
-<li><code>overwrite</code> (bool, optional): If set to <code>True</code>, existing directories will be overwritten. Defaults to <code>False</code>.</li>
-</ul>
-<h3 id="returns_3">Returns</h3>
-<ul>
-<li><code>exp</code> (Experiment): The updated experiment object with the paths for various directories populated.</li>
-</ul>
-<h3 id="description">Description</h3>
-<p>This function defines and creates the following directories based on the experiment parameters:</p>
-<ol>
-<li><strong>Suite Directory</strong>: A grouping folder for simulation experiments, determined by the <code>SUITEname</code> and <code>custom_subdir</code> if provided.</li>
-<li><strong>Job Directory</strong>: The directory where simulation files related to the specific experiment will be stored.</li>
-<li><strong>Simulation Output Directory</strong>: The directory for storing result CSV files and figures.</li>
-</ol>
-<h3 id="directory-structure">Directory Structure</h3>
-<p>The function creates the following structure:
-- <code>&lt;job_directory_manifest&gt;/&lt;SUITEname&gt;/&lt;exp_name&gt;/</code>
-  - <code>log/</code> (for storing logs related to the simulation)
-  - <code>&lt;sim_out_dir&gt;/</code>
-    - <code>EMOD/</code> (if 'EMOD' is in <code>models_to_run</code>)
-    - <code>OpenMalaria/</code> (if 'OpenMalaria' is in <code>models_to_run</code> and <code>emod_step</code> is not 'burnin')
-    - <code>malariasimulation/</code> (if 'malariasimulation' is in <code>models_to_run</code> and <code>emod_step</code> is not 'burnin')</p>
-<h3 id="example_1">Example</h3>
-<pre><code># Assuming 'exp' is an instance of the Experiment class with necessary attributes set
-exp = make_dirs(exp, overwrite=True)
-</code></pre>
-<hr />
-<h2 id="check_exp_inputs"><code>check_exp_inputs</code></h2>
-<p>Validates the inputs for a simulation experiment, ensuring all parameters are set correctly before execution.</p>
-<h3 id="arguments_4">Arguments</h3>
-<ul>
-<li><code>exp</code> (Experiment): Custom object containing experiment specifications, including:</li>
-<li><code>openmalaria_survey_step</code> (str): The survey step interval for OpenMalaria.</li>
-<li><code>analyzer_list</code> (list of str): List of analyzers to use.</li>
-<li><code>num_seeds_burnin</code> (int): Number of seeds for EMOD burn-in.</li>
-<li><code>burnin</code> (int): Length of the burn-in period.</li>
-<li><code>age_groups_aggregates</code> (list): Aggregated age groups.</li>
-<li><code>agebins</code> (list): Age bins to be used.</li>
-<li><code>models_to_run</code> (list of str): Models to be executed (e.g., 'EMOD', 'OpenMalaria').</li>
-<li><code>entomology_mode</code> (str): The mode of entomology to be used ('dynamic' or other).</li>
-<li><code>output_type</code> (str): The type of output expected ('eir', 'prevalence_2to10', etc.).</li>
-<li><code>intervention_list</code> (list of str): List of interventions to be applied.</li>
-<li><code>start_year</code> (int): The starting year for the simulation.</li>
-<li><code>end_year</code> (int): The ending year for the simulation.</li>
-<li>
-<p><code>step_in_years</code> (int): The number of years between steps in the simulation.</p>
-</li>
-<li>
-<p><code>print_reminder</code> (bool, optional): If <code>True</code>, print reminders regarding potential issues (default: <code>True</code>).</p>
-</li>
-<li>
-<p><code>intervention_checks</code> (bool, optional): If <code>True</code>, perform checks specific to interventions (default: <code>True</code>).</p>
-</li>
-<li>
-<p><code>attribute_check</code> (bool, optional): If <code>True</code>, check attributes for inclusion in the sweep list (default: <code>False</code>).</p>
-</li>
-</ul>
-<h3 id="raises">Raises</h3>
-<ul>
-<li><code>ValueError</code>: If any input parameters are invalid, with specific messages detailing the issue.</li>
-</ul>
-<h3 id="description_1">Description</h3>
-<p>This function performs various checks on the experiment parameters, including:<br />
-1. <strong>Survey Steps and Analyzers</strong>: Ensures compatibility between the survey steps and analyzers being used.<br />
-2. <strong>Burn-in Period</strong>: Checks for an appropriate burn-in period, raising warnings or errors if conditions are not met.<br />
-3. <strong>Age Bins</strong>: Validates that the specified age bins are adequate for the defined age groups and raises errors if necessary.<br />
-4. <strong>Model-Specific Validations</strong>: Ensures that the parameters align with the requirements of specific models (e.g., EMOD).<br />
-5. <strong>Intervention Validations</strong>: Checks the compatibility of interventions with the overall simulation setup.<br />
-6. <strong>Attribute Checks</strong>: Validates that attributes with multiple values are included in the sweep list where required.  </p>
-<h3 id="example_2">Example</h3>
-<pre><code># Assuming 'exp' is an instance of the Experiment class with necessary attributes set
-try:
-    check_exp_inputs(exp)
-except ValueError as e:
-    print(f&quot;Input validation error: {e}&quot;)
 
-</code></pre>
-<hr />
-<h2 id="save_scen"><code>save_scen</code></h2>
-<p>Saves a scenario DataFrame to a CSV file in the specified directories.</p>
-<h3 id="arguments_5">Arguments</h3>
-<ul>
-<li>
-<p><code>scen_df</code> (pandas.DataFrame): The DataFrame containing the scenario data to be saved.</p>
-</li>
-<li>
-<p><code>fname</code> (str): The name of the CSV file to be created (e.g., <code>'scenario.csv'</code>).</p>
-</li>
-<li>
-<p><code>save_dirs</code> (list of str, optional): A list of directories where the CSV file will be saved. If not provided, the function will not save the file.</p>
-</li>
-</ul>
-<h3 id="description_2">Description</h3>
-<p>This function iterates through the provided list of directories (<code>save_dirs</code>) and saves the specified DataFrame (<code>scen_df</code>) as a CSV file with the given filename (<code>fname</code>). Each directory in the list will receive a copy of the CSV file.</p>
-<h3 id="example_3">Example</h3>
-<pre><code>import pandas as pd
 
-# Create a sample DataFrame
-scenario_data = {
-    'param1': [1, 2, 3],
-    'param2': ['A', 'B', 'C']
-}
-scen_df = pd.DataFrame(scenario_data)
+<div class="doc doc-object doc-module">
 
-# Define the filename and directories
-fname = 'scenario.csv'
-directories = ['dir1', 'dir2']
 
-# Save the scenario DataFrame to the specified directories
-save_scen(scen_df, fname, save_dirs=directories)
-</code></pre>
-<hr />
-<h2 id="save_exp_scen"><code>save_exp_scen</code></h2>
-<p>Saves the experiment and scenario data to the specified save directories.</p>
-<h3 id="arguments_6">Arguments</h3>
-<ul>
-<li><code>exp</code> (Experiment): The experiment object containing experiment specifications.</li>
-<li><code>scen_df</code> (pandas.DataFrame): The scenario data to be saved.</li>
-<li><code>save_dirs</code> (list): List of directories to save the data.</li>
-</ul>
-<h3 id="description_3">Description</h3>
-<p>This function saves the experiment object and scenario DataFrame to specified directories. The scenario data is saved as a CSV file, and the experiment object is saved using the pickle format.</p>
-<h3 id="behavior">Behavior</h3>
-<ul>
-<li>The function iterates over each directory in <code>save_dirs</code>.</li>
-<li>For each directory:</li>
-<li>The <code>scen_df</code> DataFrame is saved as <code>scenarios.csv</code> without including the index.</li>
-<li>The <code>exp</code> object is serialized and saved as <code>exp.obj</code> using the <code>pickle</code> module.</li>
-</ul>
-<h3 id="example_4">Example</h3>
-<pre><code># Assuming 'exp' is an Experiment object and 'scen_df' is a DataFrame of scenario data
-save_dirs = ['path/to/save/directory1', 'path/to/save/directory2']
-save_exp_scen(exp, scen_df, save_dirs)
 
-</code></pre>
-<hr />
-<h2 id="rep_scen_df"><code>rep_scen_df</code></h2>
-<p>Repeats scenario data in a DataFrame based on the number of seeds.</p>
-<h3 id="arguments_7">Arguments</h3>
-<ul>
-<li><code>df</code> (pandas.DataFrame): The DataFrame containing the scenario data.</li>
-</ul>
-<h3 id="returns_4">Returns</h3>
-<ul>
-<li><code>pandas.DataFrame</code>: A DataFrame with repeated scenario data based on the number of seeds.</li>
-</ul>
-<h3 id="description_4">Description</h3>
-<p>This function takes a DataFrame containing scenario data and repeats each scenario based on the specified number of seeds. The resulting DataFrame will have multiple rows for each original scenario, corresponding to the number of seeds for that scenario.</p>
-<h3 id="behavior_1">Behavior</h3>
-<ul>
-<li>The function first attempts to drop the <code>index</code> column from the DataFrame (if it exists).</li>
-<li>It uses <code>np.repeat</code> to create a new DataFrame (<code>rep_df</code>) where each row in the original DataFrame is repeated according to the value in the <code>num_seeds</code> column.</li>
-<li>The index of the new DataFrame is reset, and a new <code>seed</code> column is created, indicating the seed number for each repeated scenario.</li>
-</ul>
-<h3 id="example_5">Example</h3>
-<pre><code># Assuming 'df' is a DataFrame with scenario data including a 'num_seeds' column
-repeated_df = rep_scen_df(df)
-</code></pre>
-<hr />
-<h2 id="create_simsetup_csv"><code>create_simsetup_csv</code></h2>
-<p>Creates a CSV file containing simulation setup parameters.</p>
-<h3 id="arguments_8">Arguments</h3>
-<ul>
-<li><code>exp</code> (Experiment): The experiment object containing experiment specifications.</li>
-</ul>
-<h3 id="description_5">Description</h3>
-<p>This function generates a CSV file that captures various setup parameters for a simulation experiment. The parameters are derived from the provided <code>exp</code> object and are structured in a way that allows for easy access and understanding.</p>
-<h3 id="behavior_2">Behavior</h3>
-<ul>
-<li>The function constructs a dictionary (<code>setup_dic</code>) containing key simulation parameters, such as:</li>
-<li><code>run_mode</code></li>
-<li><code>job_directory</code></li>
-<li><code>sim_out_dir</code></li>
-<li><code>emod_serialized_id</code></li>
-<li><code>burnin_directory</code></li>
-<li><code>nexps</code></li>
-<li><code>sweep_list</code></li>
-<li><code>monitoring_years</code></li>
-<li><code>pop_size</code></li>
-<li><code>agebins</code></li>
-<li><code>seasonality</code></li>
-<li>Various seasonal and perennial settings, converted to a string format suitable for CSV.</li>
-<li><code>start_year</code> and <code>end_year</code></li>
-<li><code>burnin</code> duration</li>
-<li>Start years for different simulation models</li>
-<li>
-<p>List of interventions</p>
-</li>
-<li>
-<p>A DataFrame (<code>setup_df</code>) is created from this dictionary, with parameters and their corresponding values.</p>
-</li>
-<li>
-<p>The resulting DataFrame is saved as a CSV file named <code>exp_setup_df.csv</code> in the specified directories (both the job directory and simulation output directory).</p>
-</li>
-</ul>
-<h3 id="example_6">Example</h3>
-<pre><code># Assuming 'exp' is an instance of the Experiment class with the necessary attributes
-create_simsetup_csv(exp)
-</code></pre>
-<hr />
-<h2 id="create_scenarios_csv"><code>create_scenarios_csv</code></h2>
-<p>Creates a scenarios CSV file based on the provided experiment object and column list.</p>
-<h3 id="arguments_9">Arguments</h3>
-<ul>
-<li>
-<p><code>exp</code> (Experiment): The experiment object containing the scenario attributes.</p>
-</li>
-<li>
-<p><code>col_list</code> (list): A list of attribute names to include in the scenarios CSV file. </p>
-</li>
-<li>
-<p><strong>Example:</strong> <code>['eirs', 'case_management', 'seasonality']</code>.</p>
-</li>
-<li>
-<p><code>add_cols</code> (bool, optional): Whether to add additional columns such as <code>'entomology_mode'</code>, <code>'num_seeds'</code>, etc. </p>
-</li>
-<li><strong>Default:</strong> <code>True</code>.</li>
-</ul>
-<h3 id="returns_5">Returns</h3>
-<ul>
-<li><code>pandas.DataFrame</code>: A DataFrame representing the scenarios.</li>
-</ul>
-<h3 id="description_6">Description</h3>
-<p>This function generates a DataFrame containing all possible combinations of the specified scenario attributes from the <code>exp</code> object. If the <code>add_cols</code> parameter is set to <code>True</code>, additional columns related to the experiment attributes are added to the DataFrame.</p>
-<h3 id="behavior_3">Behavior</h3>
-<ul>
-<li>
-<p>If <code>col_list</code> is not provided, it defaults to <code>['output_target', 'case_management', 'seasonality']</code>.</p>
-</li>
-<li>
-<p>Depending on the <code>run_mode</code> of the experiment (<code>'calibrun'</code>, <code>'test'</code>, or <code>None</code>), specific values for <code>importation_rate</code>, <code>output_target</code>, and other parameters are set.</p>
-</li>
-<li>
-<p>The function uses <code>itertools.product</code> to generate combinations of the specified attributes, while ensuring that combinations are valid according to the defined constraints.</p>
-</li>
-</ul>
-<h3 id="example_7">Example</h3>
-<pre><code># Assuming 'exp' is an instance of the Experiment class with the necessary attributes
-columns_to_include = ['output_target', 'case_management', 'seasonality']
-scenarios_df = create_scenarios_csv(exp, columns_to_include)
+<a id="MultiMalModPy.utility.helper"></a>
+    <div class="doc doc-contents first">
 
-# The resulting DataFrame can be saved to a CSV file or used for further analysis
-print(scenarios_df.head())
-</code></pre>
-<hr />
-<h2 id="as_list"><code>as_list</code></h2>
-<p>Converts the input <code>x</code> to a list if it is not already a list.</p>
-<h3 id="arguments_10">Arguments</h3>
-<ul>
-<li><code>x</code>: The input to be converted to a list. This can be of any type.</li>
-</ul>
-<h3 id="returns_6">Returns</h3>
-<ul>
-<li><code>list</code>: If <code>x</code> is already a list, it returns <code>x</code>. Otherwise, it returns a new list containing <code>x</code> as its sole element.</li>
-</ul>
-<h3 id="description_7">Description</h3>
-<p>This utility function checks the type of the input <code>x</code>. If <code>x</code> is not of type <code>list</code>, it wraps <code>x</code> in a list. If <code>x</code> is already a list, it returns <code>x</code> unchanged.</p>
-<h3 id="example_8">Example</h3>
-<pre><code># Example usages of as_list
-single_value = 42
-result1 = as_list(single_value)
-# result1 is now [42]
 
-existing_list = [1, 2, 3]
-result2 = as_list(existing_list)
-# result2 is now [1, 2, 3], unchanged
 
-empty_value = None
-result3 = as_list(empty_value)
-# result3 is now [None]
 
-</code></pre>
-<hr />
-<h2 id="write_txt"><code>write_txt</code></h2>
-<p>Writes a text object to a file.</p>
-<h3 id="arguments_11">Arguments</h3>
-<ul>
-<li><code>txtobj</code> (<code>str</code>): The text object to write to the file.</li>
-<li><code>path</code> (<code>str</code>): The directory path where the file will be saved.</li>
-<li><code>fname</code> (<code>str</code>): The filename to use for the saved file.</li>
-</ul>
-<h3 id="description_8">Description</h3>
-<p>This function takes a string <code>txtobj</code> and writes it to a specified file in the given directory. The function creates or overwrites the file if it already exists.</p>
-<h3 id="example_9">Example</h3>
-<pre><code># Example usage of write_txt
-text_content = &quot;Hello, world!&quot;
-directory_path = &quot;./&quot;
-filename = &quot;greeting.txt&quot;
 
-write_txt(text_content, directory_path, filename)
-</code></pre>
-<hr />
-<h2 id="str_to_digit"><code>str_to_digit</code></h2>
-<p>Converts a string to a float if possible; otherwise, returns the original string.</p>
-<h3 id="arguments_12">Arguments</h3>
-<ul>
-<li>x (str): The input string to be converted.</li>
-</ul>
-<h3 id="returns_7">Returns</h3>
-<p>float or str: The converted float if the conversion is successful; otherwise, the original string.</p>
-<h3 id="description_9">Description</h3>
-<p>This utility function attempts to convert the input string x into a float. If the conversion fails (for example, if x cannot be converted to a float), it returns the original string unchanged.</p>
-<h3 id="example_10">Example</h3>
-<pre><code># Example usages of str_to_digit
-numeric_str = &quot;3.14&quot;
-result1 = str_to_digit(numeric_str)
-# result1 is now 3.14 (as a float)
 
-non_numeric_str = &quot;abc&quot;
-result2 = str_to_digit(non_numeric_str)
-# result2 is now &quot;abc&quot; (unchanged)
-</code></pre>
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.as_list" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">as_list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Converts the input x to a list if it is not already a list.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">488</span>
+<span class="normal">489</span>
+<span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">as_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts the input x to a list if it is not already a list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.check_exp_inputs" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">check_exp_inputs</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">print_reminder</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intervention_checks</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attribute_check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Helper function to validate experiment inputs.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp</code></b>
+                  (<code>Experiment</code>)
+              –
+              <div class="doc-md-description">
+                <p>Custom object containing experiment specifications.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>ValueError</code>
+              –
+              <div class="doc-md-description">
+                <p>If input parameters are invalid.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">check_exp_inputs</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">print_reminder</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intervention_checks</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">attribute_check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function to validate experiment inputs.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exp (Experiment): Custom object containing experiment specifications.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If input parameters are invalid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check timesteps, survey intervals and analyer alignment</span>
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_survey_step</span> <span class="o">==</span> <span class="s1">&#39;30d&#39;</span> <span class="ow">and</span> <span class="s2">&quot;5day&quot;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_survey_step</span> <span class="o">==</span> <span class="s1">&#39;30d&#39;</span> <span class="ow">and</span> <span class="s2">&quot;cc_step&quot;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;cc_step interventions requires 5d survey steps in OpenMalaria&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds_burnin</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Current framework only allows 1 seed for EMOD burnin&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">burnin</span> <span class="o">&lt;</span> <span class="mi">80</span> <span class="ow">and</span> <span class="p">((</span><span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span> <span class="ow">and</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">!=</span> <span class="s1">&#39;pickup&#39;</span><span class="p">)</span> <span class="ow">or</span>
+                            <span class="s1">&#39;EMOD&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Warning: Short burnin period of </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">burnin</span><span class="si">}</span><span class="s1"> years. A burnin of at least 80 years is recommended.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check agebins</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="n">age</span> <span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">age_groups_aggregates</span> <span class="k">for</span> <span class="n">age</span> <span class="ow">in</span> <span class="n">interval</span> <span class="k">if</span> <span class="n">age</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">age</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">agebins</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;agebins are not granular enough to allow aggregation by age_groups_aggregates, missing </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="mi">2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">agebins</span> <span class="ow">or</span> <span class="mi">10</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">agebins</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;agebins 2 and 10 are required in the framework, current agebins </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">agebins</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check unique limitations of framework that are in process/not yet working</span>
+    <span class="c1"># if len(exp.seasonality) &gt; 1:</span>
+    <span class="c1">#    raise ValueError(f&#39;Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.&#39;)</span>
+
+    <span class="c1"># Check whether parameters align with current setup in calibruns - &quot;interpolation data&quot;</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">]</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">case_management</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;EMOD is not set up to run dynamic EIR is not set up to run for CM values other than 0 and 0.45 - requires new calibrun&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">]</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">case_management</span><span class="p">)</span> <span class="ow">and</span> <span class="n">exp</span><span class="o">.</span><span class="n">output_type</span> <span class="o">==</span> <span class="s1">&#39;prevalence_2to10&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;output_type prevalence_2to10 is not set up to run for CM values other than 0 and 0.45 - requires new calibrun&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">output_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;eir&#39;</span><span class="p">,</span> <span class="s1">&#39;prevalence_2to10&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid output type: </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">output_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check for interventions added to the framework</span>
+    <span class="k">if</span> <span class="n">intervention_checks</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;cc_step&quot;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">!=</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Invalid entomology_mode for cc_step </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span><span class="si">}</span><span class="s1"> specified, but &quot;dynamic&quot; required&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">output_type</span> <span class="o">!=</span> <span class="s1">&#39;prevalence_2to10&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cc_step requires the output_type to be prevalence_2to10&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">end_year</span> <span class="o">-</span> <span class="n">exp</span><span class="o">.</span><span class="n">start_year</span> <span class="o">&lt;</span> <span class="n">exp</span><span class="o">.</span><span class="n">step_in_years</span><span class="p">:</span>  <span class="c1"># check inputs to be run after all exp parameters were updated</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;step_in_years (</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">step_in_years</span><span class="si">}</span><span class="s2"> years) falls outside of the range of </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">start_year</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">end_year</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check if any attribute in list_attributes_nGT1 is not in sweep_list</span>
+    <span class="k">if</span> <span class="n">attribute_check</span><span class="p">:</span>
+        <span class="n">attributes_dict</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="vm">__dict__</span>
+        <span class="n">list_attributes_nGT1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attributes_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Check if the attribute is a list</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;models_to_run&#39;</span><span class="p">,</span> <span class="s1">&#39;eir_scalar_emod&#39;</span><span class="p">,</span> <span class="s1">&#39;eir_malariasimulation&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;eir_scalar_malariasimulation&#39;</span><span class="p">,</span> <span class="s1">&#39;eir_openmalaria&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;eir_scalar_openmalaria&#39;</span><span class="p">,</span> <span class="s1">&#39;carrying_capacity_step&#39;</span><span class="p">,</span> <span class="s1">&#39;age_groups_aggregates&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;plots_to_run&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;agebins&#39;</span><span class="p">,</span> <span class="s1">&#39;sweep_list&#39;</span><span class="p">,</span> <span class="s1">&#39;season_daily&#39;</span><span class="p">,</span> <span class="s1">&#39;season_month&#39;</span><span class="p">,</span> <span class="s1">&#39;seasonal&#39;</span><span class="p">,</span> <span class="s1">&#39;perennial&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;analyzer_list&#39;</span><span class="p">,</span> <span class="s1">&#39;analyzer_script&#39;</span><span class="p">,</span> <span class="s1">&#39;calib_config_pointer&#39;</span><span class="p">,</span> <span class="s1">&#39;models_to_run_pickup&#39;</span><span class="p">]:</span>
+                    <span class="n">list_attributes_nGT1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="n">list_attr_notsweep</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">list_attributes_nGT1</span> <span class="k">if</span> <span class="n">attr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attributes_dict</span><span class="p">[</span><span class="s1">&#39;sweep_list&#39;</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">list_attr_notsweep</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;The following attributes have more than 1 value but are not included in sweep_list: </span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">list_attr_notsweep</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.create_scenarios_csv" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_scenarios_csv</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">col_list</span><span class="p">,</span> <span class="n">add_cols</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Creates a scenarios CSV file based on the provided experiment object and column list.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp</code></b>
+                  (<code>Experiment</code>)
+              –
+              <div class="doc-md-description">
+                <p>The experiment object containing the scenario attributes.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>col_list</code></b>
+                  (<code>list</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of attribute names to include in the scenarios CSV file.
+Example: ['eirs', 'case_management', 'seasonality'].</p>
+              </div>
+            </li>
+            <li>
+              <b><code>add_cols</code></b>
+                  (<code>bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Whether to add additional columns such as 'entomology_mode',
+'num_seeds', etc. Default is True.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>pandas.DataFrame: A DataFrame representing the scenarios.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span>
+<span class="normal">438</span>
+<span class="normal">439</span>
+<span class="normal">440</span>
+<span class="normal">441</span>
+<span class="normal">442</span>
+<span class="normal">443</span>
+<span class="normal">444</span>
+<span class="normal">445</span>
+<span class="normal">446</span>
+<span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span>
+<span class="normal">450</span>
+<span class="normal">451</span>
+<span class="normal">452</span>
+<span class="normal">453</span>
+<span class="normal">454</span>
+<span class="normal">455</span>
+<span class="normal">456</span>
+<span class="normal">457</span>
+<span class="normal">458</span>
+<span class="normal">459</span>
+<span class="normal">460</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
+<span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
+<span class="normal">475</span>
+<span class="normal">476</span>
+<span class="normal">477</span>
+<span class="normal">478</span>
+<span class="normal">479</span>
+<span class="normal">480</span>
+<span class="normal">481</span>
+<span class="normal">482</span>
+<span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_scenarios_csv</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">col_list</span><span class="p">,</span> <span class="n">add_cols</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a scenarios CSV file based on the provided experiment object and column list.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exp (Experiment): The experiment object containing the scenario attributes.</span>
+<span class="sd">        col_list (list): List of attribute names to include in the scenarios CSV file.</span>
+<span class="sd">            Example: [&#39;eirs&#39;, &#39;case_management&#39;, &#39;seasonality&#39;].</span>
+<span class="sd">        add_cols (bool, optional): Whether to add additional columns such as &#39;entomology_mode&#39;,</span>
+<span class="sd">            &#39;num_seeds&#39;, etc. Default is True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pandas.DataFrame: A DataFrame representing the scenarios.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">col_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">col_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;output_target&#39;</span><span class="p">,</span> <span class="s1">&#39;case_management&#39;</span><span class="p">,</span> <span class="s1">&#39;seasonality&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">run_mode</span> <span class="o">==</span> <span class="s1">&#39;calibrun&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Notice: for calibrun simulations, importation will be set to 0&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Depending on EM/OM Performance at lower EIRS at 50k pop, this may change&quot;</span><span class="p">)</span>
+        <span class="n">exp</span><span class="o">.</span><span class="n">importation_rate</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">exp</span><span class="o">.</span><span class="n">output_target</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
+
+        <span class="n">eir_range</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.00000000e-01</span><span class="p">,</span> <span class="mf">1.37382380e-01</span><span class="p">,</span> <span class="mf">1.88739182e-01</span><span class="p">,</span> <span class="mf">2.59294380e-01</span><span class="p">,</span> <span class="mf">3.56224789e-01</span><span class="p">,</span> <span class="mf">4.89390092e-01</span><span class="p">,</span>
+                     <span class="mf">6.72335754e-01</span><span class="p">,</span> <span class="mf">9.23670857e-01</span><span class="p">,</span> <span class="mf">1.26896100e+00</span><span class="p">,</span> <span class="mf">1.74332882e+00</span><span class="p">,</span> <span class="mf">2.39502662e+00</span><span class="p">,</span> <span class="mf">3.29034456e+00</span><span class="p">,</span>
+                     <span class="mf">4.52035366e+00</span><span class="p">,</span> <span class="mf">6.21016942e+00</span><span class="p">,</span> <span class="mf">8.53167852e+00</span><span class="p">,</span> <span class="mf">1.17210230e+01</span><span class="p">,</span> <span class="mf">1.61026203e+01</span><span class="p">,</span> <span class="mf">2.21221629e+01</span><span class="p">,</span>
+                     <span class="mf">3.03919538e+01</span><span class="p">,</span> <span class="mf">4.17531894e+01</span><span class="p">,</span> <span class="mf">5.73615251e+01</span><span class="p">,</span> <span class="mf">7.88046282e+01</span><span class="p">,</span> <span class="mf">1.08263673e+02</span><span class="p">,</span> <span class="mf">1.48735211e+02</span><span class="p">,</span>
+                     <span class="mf">2.04335972e+02</span><span class="p">,</span> <span class="mf">2.80721620e+02</span><span class="p">,</span> <span class="mf">3.85662042e+02</span><span class="p">,</span> <span class="mf">5.29831691e+02</span><span class="p">,</span> <span class="mf">7.27895384e+02</span><span class="p">,</span> <span class="mf">1.00000000e+03</span><span class="p">]</span>
+        <span class="n">x_temp_range</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.00000000e+00</span><span class="p">,</span> <span class="mf">6.49828306e+00</span><span class="p">,</span> <span class="mf">8.44553654e+00</span><span class="p">,</span> <span class="mf">1.09762974e+01</span><span class="p">,</span> <span class="mf">1.42654175e+01</span><span class="p">,</span> <span class="mf">1.85401442e+01</span><span class="p">,</span>
+                        <span class="mf">2.40958210e+01</span><span class="p">,</span> <span class="mf">3.13162930e+01</span><span class="p">,</span> <span class="mf">4.07004273e+01</span><span class="p">,</span> <span class="mf">5.28965794e+01</span><span class="p">,</span> <span class="mf">6.87473892e+01</span><span class="p">,</span> <span class="mf">8.93479989e+01</span><span class="p">,</span>
+                        <span class="mf">1.16121718e+02</span><span class="p">,</span> <span class="mf">1.50918358e+02</span><span class="p">,</span> <span class="mf">1.96142042e+02</span><span class="p">,</span> <span class="mf">2.54917301e+02</span><span class="p">,</span> <span class="mf">3.31304956e+02</span><span class="p">,</span> <span class="mf">4.30582677e+02</span><span class="p">,</span>
+                        <span class="mf">5.59609623e+02</span><span class="p">,</span> <span class="mf">7.27300347e+02</span><span class="p">,</span> <span class="mf">9.45240704e+02</span><span class="p">,</span> <span class="mf">1.22848833e+03</span><span class="p">,</span> <span class="mf">1.59661298e+03</span><span class="p">,</span> <span class="mf">2.07504862e+03</span><span class="p">,</span>
+                        <span class="mf">2.69685066e+03</span><span class="p">,</span> <span class="mf">3.50497979e+03</span><span class="p">,</span> <span class="mf">4.55527016e+03</span><span class="p">,</span> <span class="mf">5.92028698e+03</span><span class="p">,</span> <span class="mf">7.69434011e+03</span><span class="p">,</span> <span class="mf">1.00000000e+04</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">run_mode</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span> <span class="ow">or</span> <span class="n">exp</span><span class="o">.</span><span class="n">run_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">exp</span><span class="o">.</span><span class="n">output_target</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">eir_range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">]</span>
+        <span class="n">x_temp_range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">250</span><span class="p">]</span>
+
+    <span class="c1"># Get the attribute values from the experiment object</span>
+    <span class="n">my_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">col_list</span><span class="p">]</span>
+    <span class="c1"># Generate all combinations of attribute values</span>
+    <span class="n">df_array</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">my_attrs</span><span class="p">))</span>
+    <span class="c1"># Create a DataFrame with the combinations</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_array</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">col_list</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;cc_step&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>  <span class="c1"># im only including this because itertools.product includes repeats were output_target equal cc_change, if this could be avoided it should be</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;output_target&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cc_change&#39;</span><span class="p">]]</span>
+        <span class="c1"># df = df[df[&#39;output_target&#39;] &gt; df[&#39;cc_change&#39;]] #Decreasing</span>
+        <span class="c1"># df = df[df[&#39;output_target&#39;] &lt; df[&#39;cc_change&#39;]] #Increasing</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;scen_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">add_cols</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;entomology_mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;num_seeds&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cm_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">cm_start</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;cm_clinical&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;case_management&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;cm_severe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;case_management&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;case_management&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">run_mode</span> <span class="o">==</span> <span class="s1">&#39;calibrun&#39;</span> <span class="ow">or</span> <span class="n">exp</span><span class="o">.</span><span class="n">run_mode</span> <span class="o">==</span> <span class="s1">&#39;test&#39;</span> <span class="ow">or</span> <span class="n">exp</span><span class="o">.</span><span class="n">run_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span> <span class="ow">or</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run_pickup</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;model_input_emod&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_temp_range</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;output_target&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">&#39;malariasimulation&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span> <span class="ow">or</span> <span class="s1">&#39;malariasimulation&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run_pickup</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;model_input_malariasimulation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eir_range</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;output_target&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">&#39;OpenMalaria&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span> <span class="ow">or</span> <span class="s1">&#39;OpenMalaria&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run_pickup</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;model_input_openmalaria&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eir_range</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;output_target&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Alignment of model transmission input to target outcome</span>
+            <span class="k">if</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span> <span class="ow">or</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run_pickup</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">:</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;model_input_emod&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_target_to_xTemp</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;EMOD&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;forced&#39;</span><span class="p">:</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;model_input_emod&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_target_to_eir</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;EMOD&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;malariasimulation&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span> <span class="ow">or</span> <span class="s1">&#39;malariasimulation&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run_pickup</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;model_input_malariasimulation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_target_to_eir</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;malariasimulation&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;OpenMalaria&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span> <span class="ow">or</span> <span class="s1">&#39;OpenMalaria&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run_pickup</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;model_input_openmalaria&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_target_to_eir</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;OpenMalaria&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;cc_step&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">scenario_inputs.intervention_params</span> <span class="kn">import</span> <span class="n">cc_step_factor_calculator</span><span class="p">,</span> <span class="n">cc_title_function</span>
+            <span class="k">if</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span> <span class="ow">or</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run_pickup</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cc_factor_emod&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cc_step_factor_calculator</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;EMOD&#39;</span><span class="p">)</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cc_timestep_emod&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">cc_timestep_emod</span>
+            <span class="k">if</span> <span class="s1">&#39;malariasimulation&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span> <span class="ow">or</span> <span class="s1">&#39;malariasimulation&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run_pickup</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cc_factor_malariasimulation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cc_step_factor_calculator</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;malariasimulation&#39;</span><span class="p">)</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cc_timestep_malariasimulation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">cc_timestep_malariasimulation</span>
+            <span class="k">if</span> <span class="s1">&#39;OpenMalaria&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span> <span class="ow">or</span> <span class="s1">&#39;OpenMalaria&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run_pickup</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cc_factor_openmalaria&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cc_step_factor_calculator</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;OpenMalaria&#39;</span><span class="p">)</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cc_timestep_openmalaria&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">cc_timestep_openmalaria</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cc_title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cc_title_function</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>  <span class="c1"># FIXME can be moved to postprocessing</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.create_simsetup_csv" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_simsetup_csv</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Creates a CSV file containing simulation setup parameters.
+Args:
+    exp (Experiment): Experiment object containing experiment specifications.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_simsetup_csv</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a CSV file containing simulation setup parameters.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        exp (Experiment): Experiment object containing experiment specifications.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># If other parameters should be savedm these need to be added to setup_dic</span>
+    <span class="n">setup_dic</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;run_mode&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">run_mode</span><span class="p">,</span>
+                 <span class="s1">&#39;job_directory&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span>
+                 <span class="s1">&#39;sim_out_dir&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">sim_out_dir</span><span class="p">,</span>
+                 <span class="s1">&#39;emod_serialized_id&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_serialized_id</span><span class="p">,</span>
+                 <span class="s1">&#39;burnin_directory&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">burnin_directory</span><span class="p">,</span>
+                 <span class="s1">&#39;nexps&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">nexps</span><span class="p">,</span>
+                 <span class="s1">&#39;sweep_list&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">sweep_list</span><span class="p">,</span>
+                 <span class="s1">&#39;monitoring_years&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">monitoring_years</span><span class="p">,</span>
+                 <span class="s1">&#39;pop_size&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">pop_size</span><span class="p">,</span>
+                 <span class="s1">&#39;agebins&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">agebins</span><span class="p">,</span>
+                 <span class="s1">&#39;seasonality&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">seasonality</span><span class="p">,</span>
+                 <span class="s1">&#39;seasonal_monthly&#39;</span><span class="p">:</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">seasonal</span><span class="p">)),</span>
+                 <span class="s1">&#39;perennial_monthly&#39;</span><span class="p">:</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">perennial</span><span class="p">)),</span>
+                 <span class="s1">&#39;seasonal_daily&#39;</span><span class="p">:</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">season_daily</span><span class="p">)),</span>
+                 <span class="s1">&#39;perennial_daily&#39;</span><span class="p">:</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">perennial_daily</span><span class="p">)),</span>
+                 <span class="s1">&#39;start_year&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span>
+                 <span class="s1">&#39;end_year&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">end_year</span><span class="p">,</span>
+                 <span class="s1">&#39;burnin&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">burnin</span><span class="p">,</span>
+                 <span class="s1">&#39;sim_start_year_openmalaria&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">sim_start_year_openmalaria</span><span class="p">,</span>
+                 <span class="s1">&#39;sim_start_year_emod&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">sim_start_year_emod</span><span class="p">,</span>
+                 <span class="s1">&#39;sim_start_year_malariasimulation&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">sim_start_year_malariasimulation</span><span class="p">,</span>
+                 <span class="s1">&#39;intervention_list&#39;</span><span class="p">:</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span>
+                 <span class="p">}</span>
+
+    <span class="n">setup_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">setup_dic</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">])</span>
+    <span class="n">setup_df</span><span class="p">[</span><span class="s1">&#39;parameter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">setup_df</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">save_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">sim_out_dir</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">sdir</span> <span class="ow">in</span> <span class="n">save_dirs</span><span class="p">:</span>
+        <span class="n">setup_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sdir</span><span class="p">,</span> <span class="s1">&#39;exp_setup_df.csv&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.get_param_from_dataframe" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_param_from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Retrieves a parameter value from a DataFrame and returns it in the correct format for storage in an experiment object (exp).</p>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <p>exp.seasonality = get_param(exp_scen_df, 'seasonality', listparam=True)</p>
+</details>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>df</code></b>
+                  (<code>DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>The DataFrame containing the parameter value.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>name</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The name of the parameter.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>listparam</code></b>
+                  (<code>bool</code>)
+              –
+              <div class="doc-md-description">
+                <p>Indicates whether the parameter value should be returned as a list. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>Union[list, str]: The parameter value, either as a list or a string, based on the 'listparam' argument.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_param_from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves a parameter value from a DataFrame and returns it in the correct format for storage in an experiment object (exp).</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        exp.seasonality = get_param(exp_scen_df, &#39;seasonality&#39;, listparam=True)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (pandas.DataFrame): The DataFrame containing the parameter value.</span>
+<span class="sd">        name (str): The name of the parameter.</span>
+<span class="sd">        listparam (bool, optional): Indicates whether the parameter value should be returned as a list. Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Union[list, str]: The parameter value, either as a list or a string, based on the &#39;listparam&#39; argument.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># list of parameters expecting list format  # FIXME, better way to do?</span>
+    <span class="n">listparams</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;seasonality&#39;</span><span class="p">,</span> <span class="s1">&#39;sweep_list&#39;</span><span class="p">,</span> <span class="s1">&#39;case_management&#39;</span><span class="p">,</span> <span class="s1">&#39;eir&#39;</span><span class="p">,</span> <span class="s1">&#39;intervention_list&#39;</span><span class="p">,</span> <span class="s1">&#39;agebins&#39;</span><span class="p">]</span>
+    <span class="n">cc_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;eir_scalar_malariasimulation&#39;</span><span class="p">,</span> <span class="s1">&#39;eir_malariasimulation&#39;</span><span class="p">,</span> <span class="s1">&#39;eir_scalar_openmalaria&#39;</span><span class="p">,</span> <span class="s1">&#39;eir_scalar_emod&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;eir_openmalaria&#39;</span><span class="p">,</span> <span class="s1">&#39;eir_scalar_openmalaria&#39;</span><span class="p">,</span> <span class="s1">&#39;carrying_capacity_step&#39;</span><span class="p">]</span>
+
+    <span class="n">listparams</span> <span class="o">=</span> <span class="n">listparams</span> <span class="o">+</span> <span class="n">cc_params</span>
+
+    <span class="n">value</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">listparams</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">out</span><span class="p">]</span>  <span class="c1"># some might require int?</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.make_dirs" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">make_dirs</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Creates necessary directories for a simulation experiment.</p>
+<p>Args:
+exp (Experiment): The experiment object containing project directory information.
+overwrite (bool, optional): If True, existing directories will be overwritten. Defaults to False.</p>
+<p>Returns:
+exp (Experiment): The experiment object with updated directory paths.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">make_dirs</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates necessary directories for a simulation experiment.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    exp (Experiment): The experiment object containing project directory information.</span>
+<span class="sd">    overwrite (bool, optional): If True, existing directories will be overwritten. Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    exp (Experiment): The experiment object with updated directory paths.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Define paths based on experiment parameters</span>
+    <span class="c1"># If custom_subdir is specified, writes directories under given name</span>
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">custom_subdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">exp_suite_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">custom_subdir</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">SUITEname</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">exp_suite_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">SUITEname</span><span class="p">)</span>
+
+    <span class="c1"># Define the job directory path and simulation output directory path</span>
+    <span class="n">exp</span><span class="o">.</span><span class="n">suite_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory_manifest</span><span class="p">,</span>
+                                       <span class="n">exp_suite_path</span><span class="p">)</span>  <span class="c1"># Grouping folder for simulation exps</span>
+    <span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory_manifest</span><span class="p">,</span> <span class="n">exp_suite_path</span><span class="p">,</span>
+                                     <span class="n">exp</span><span class="o">.</span><span class="n">exp_name</span><span class="p">)</span>  <span class="c1"># stores simulation files to run</span>
+    <span class="n">exp</span><span class="o">.</span><span class="n">sim_out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">output_directory_manifest</span><span class="p">,</span> <span class="n">exp_suite_path</span><span class="p">,</span>
+                                   <span class="n">exp</span><span class="o">.</span><span class="n">exp_name</span><span class="p">)</span>  <span class="c1"># stores results csvs and figures</span>
+
+    <span class="c1"># Create directories</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">sim_out_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+
+    <span class="c1"># Create subdirectories for specific simulation models included in exp.models_to_run</span>
+    <span class="k">if</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">sim_out_dir</span><span class="p">,</span> <span class="s1">&#39;EMOD&#39;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">!=</span> <span class="s1">&#39;burnin&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;OpenMalaria&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">sim_out_dir</span><span class="p">,</span> <span class="s1">&#39;OpenMalaria&#39;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;malariasimulation&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">sim_out_dir</span><span class="p">,</span> <span class="s1">&#39;malariasimulation&#39;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">exp</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.parse_args" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">parse_args</span><span class="p">()</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Parses command-line arguments for simulation specifications.</p>
+<p>Returns:
+argparse.Namespace: Parsed command-line arguments.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses command-line arguments for simulation specifications.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    argparse.Namespace: Parsed command-line arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Set the description for the argument parser</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Simulation specifications&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">)</span>
+
+    <span class="c1"># Add the required argument for the job directory</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--directory&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Job Directory where exp.obj is located&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Parse the command-line arguments and return the result</span>
+    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.rep_scen_df" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">rep_scen_df</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Repeats scenario data in a DataFrame based on the number of seeds.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>df</code></b>
+                  (<code>DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>The DataFrame containing the scenario data.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>pandas.DataFrame: A DataFrame with repeated scenario data based on the number of seeds.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rep_scen_df</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Repeats scenario data in a DataFrame based on the number of seeds.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (pandas.DataFrame): The DataFrame containing the scenario data.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pandas.DataFrame: A DataFrame with repeated scenario data based on the number of seeds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">rep_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">df</span><span class="o">.</span><span class="n">num_seeds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">rep_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">rep_df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rep_df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">rep_df</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rep_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;scen_id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cumcount</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">rep_df</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.save_exp_scen" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">save_exp_scen</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">,</span> <span class="n">save_dirs</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Saves the experiment and scenario data to the specified save directories.
+Args:
+    exp (Experiment): Experiment object containing experiment specifications.
+    scen_df (pandas.DataFrame): The scenario data to be saved.
+    save_dirs (list): List of directories to save the data.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">save_exp_scen</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">,</span> <span class="n">save_dirs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves the experiment and scenario data to the specified save directories.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        exp (Experiment): Experiment object containing experiment specifications.</span>
+<span class="sd">        scen_df (pandas.DataFrame): The scenario data to be saved.</span>
+<span class="sd">        save_dirs (list): List of directories to save the data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">sdir</span> <span class="ow">in</span> <span class="n">save_dirs</span><span class="p">:</span>
+        <span class="c1"># Save the scenario data as a CSV file</span>
+        <span class="n">scen_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sdir</span><span class="p">,</span> <span class="s1">&#39;scenarios.csv&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Save the experiment object using pickle</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sdir</span><span class="p">,</span> <span class="s2">&quot;exp.obj&quot;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.save_scen" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">save_scen</span><span class="p">(</span><span class="n">scen_df</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">save_dirs</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Saves a scenario DataFrame to a CSV file in the specified directories.
+Args:
+    scen_df (pandas.DataFrame): The DataFrame containing the scenario data.
+    fname (str): The name of the CSV file to be saved.
+    save_dirs (list of str, optional): List of directories to save the CSV file. Defaults to None.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">save_scen</span><span class="p">(</span><span class="n">scen_df</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">save_dirs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves a scenario DataFrame to a CSV file in the specified directories.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        scen_df (pandas.DataFrame): The DataFrame containing the scenario data.</span>
+<span class="sd">        fname (str): The name of the CSV file to be saved.</span>
+<span class="sd">        save_dirs (list of str, optional): List of directories to save the CSV file. Defaults to None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">sdir</span> <span class="ow">in</span> <span class="n">save_dirs</span><span class="p">:</span>
+        <span class="n">scen_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sdir</span><span class="p">,</span> <span class="n">fname</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.str_to_digit" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">str_to_digit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Converts a string to a float if possible, otherwise returns the original string.
+Args:
+    x (str): The input string.
+Returns:
+    float or str: The converted float if conversion is successful, otherwise the original string.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">509</span>
+<span class="normal">510</span>
+<span class="normal">511</span>
+<span class="normal">512</span>
+<span class="normal">513</span>
+<span class="normal">514</span>
+<span class="normal">515</span>
+<span class="normal">516</span>
+<span class="normal">517</span>
+<span class="normal">518</span>
+<span class="normal">519</span>
+<span class="normal">520</span>
+<span class="normal">521</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">str_to_digit</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a string to a float if possible, otherwise returns the original string.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        x (str): The input string.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        float or str: The converted float if conversion is successful, otherwise the original string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="n">x</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper.write_txt" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">write_txt</span><span class="p">(</span><span class="n">txtobj</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Writes a text object to a file.
+Args:
+    txtobj (str): The text object to write.
+    path (str): The path to the directory where the file will be saved.
+    fname (str): The filename to use for the file.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">495</span>
+<span class="normal">496</span>
+<span class="normal">497</span>
+<span class="normal">498</span>
+<span class="normal">499</span>
+<span class="normal">500</span>
+<span class="normal">501</span>
+<span class="normal">502</span>
+<span class="normal">503</span>
+<span class="normal">504</span>
+<span class="normal">505</span>
+<span class="normal">506</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">write_txt</span><span class="p">(</span><span class="n">txtobj</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes a text object to a file.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        txtobj (str): The text object to write.</span>
+<span class="sd">        path (str): The path to the directory where the file will be saved.</span>
+<span class="sd">        fname (str): The filename to use for the file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">fname</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">txtobj</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../experiment/" class="btn btn-neutral float-left" title="experiment.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../launch_sim/" class="btn btn-neutral float-left" title="launch_sim.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../helper_simulation/" class="btn btn-neutral float-right" title="helper_simulation.py">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -742,7 +1535,7 @@ result2 = str_to_digit(non_numeric_str)
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../experiment/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../launch_sim/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../helper_simulation/" style="color: #fcfcfc">Next &raquo;</a></span>

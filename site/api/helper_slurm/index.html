@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
     
       <script>
         // Current page data
@@ -80,79 +81,25 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../launch_sim/">launch_sim.py</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../shell/">sh scripts</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../target_calibration/">target_calibration</a>
-                  </li>
                   <li class="toctree-l1 current"><a class="reference internal current" >utility</a>
     <ul class="current">
-                <li class="toctree-l2"><a class="reference internal" href="../experiment/">experiment.py</a>
-                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../helper/">helper.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../helper_simulation/">helper_simulation.py</a>
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="#">helper_slurm.py</a>
     <ul class="current">
-    <li class="toctree-l3"><a class="reference internal" href="#exec">exec</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments">Arguments</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper_slurm">helper_slurm</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns">Returns</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper_slurm.exec">exec</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description">Description</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper_slurm.shell_header_quest">shell_header_quest</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example">Example</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper_slurm.submit_run_plotters">submit_run_plotters</a>
     </li>
-        </ul>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper_slurm.submit_run_pyscript">submit_run_pyscript</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#shell_header_quest">shell_header_quest</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_1">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns_1">Returns</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_1">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_1">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#submit_run_pyscript">submit_run_pyscript</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_2">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns_2">Returns</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_2">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_2">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#submit_run_plotters">submit_run_plotters</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_3">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns_3">Returns</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_3">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_3">Example</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#write_txt">write_txt</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#arguments_4">Arguments</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns_4">Returns</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#description_4">Description</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#example_4">Example</a>
-    </li>
-        </ul>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.utility.helper_slurm.write_txt">write_txt</a>
     </li>
     </ul>
                 </li>
@@ -162,36 +109,32 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >EMOD</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD_utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/utils/">utils.py</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD_analyze_sim/">analyze_sim.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../OpenMalaria_utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/utils/">utils.py</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../OpenMalaria_analyze_sim/">analyze_sim.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../malariasimulation_utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/utils/">utils.py</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../malariasimulation_analyze_sim/">analyze_sim.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >plotter</a>
     <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../plot_helper/">plot_helper.py</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../plot_agecurves/">plot_agecurves.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../plot_timeseries/">plot_timeseries.py</a>
@@ -238,58 +181,1161 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="helper_slurmpy">helper_slurm.py</h1>
-<p>Several custom functions are defined for processing slurm jobs on the HPC:</p>
-<p><a href="#exec">exec</a><br />
-<a href="#shell_header_quest">shell_header_quest</a>
-<a href="#submit_run_pyscript">submit_run_pyscript</a><br />
-<a href="#submit_run_plotters">submit_run_plotters</a><br />
-<a href="#write_txt">write_txt</a>  </p>
-<hr />
-<h2 id="exec"><code>exec</code></h2>
-<p>The <code>exec</code> function is designed to execute a specified command in a subprocess using Python's <code>subprocess</code> module. This allows you to run shell commands from within your Python code, capturing both standard output and error output.</p>
-<h3 id="arguments">Arguments</h3>
-<h3 id="returns">Returns</h3>
-<h3 id="description">Description</h3>
-<h3 id="example">Example</h3>
-<pre><code>def exec(command: str) -&gt; subprocess.Popen:
 
-</code></pre>
-<hr />
-<h2 id="shell_header_quest"><code>shell_header_quest</code></h2>
-<h3 id="arguments_1">Arguments</h3>
-<h3 id="returns_1">Returns</h3>
-<h3 id="description_1">Description</h3>
-<h3 id="example_1">Example</h3>
-<pre><code>
 
-</code></pre>
-<hr />
-<h2 id="submit_run_pyscript"><code>submit_run_pyscript</code></h2>
-<h3 id="arguments_2">Arguments</h3>
-<h3 id="returns_2">Returns</h3>
-<h3 id="description_2">Description</h3>
-<h3 id="example_2">Example</h3>
-<pre><code>
+<div class="doc doc-object doc-module">
 
-</code></pre>
-<hr />
-<h2 id="submit_run_plotters"><code>submit_run_plotters</code></h2>
-<h3 id="arguments_3">Arguments</h3>
-<h3 id="returns_3">Returns</h3>
-<h3 id="description_3">Description</h3>
-<h3 id="example_3">Example</h3>
-<pre><code>
 
-</code></pre>
-<hr />
-<h2 id="write_txt"><code>write_txt</code></h2>
-<h3 id="arguments_4">Arguments</h3>
-<h3 id="returns_4">Returns</h3>
-<h3 id="description_4">Description</h3>
-<h3 id="example_4">Example</h3>
-<pre><code>
 
-</code></pre>
+<a id="MultiMalModPy.utility.helper_slurm"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper_slurm.exec" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">exec</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Executes the specified command in a subprocess.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>command</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The command to execute.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>subprocess.Popen: A Popen object representing the subprocess.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>ValueError</code>
+              –
+              <div class="doc-md-description">
+                <p>If the command is empty or None.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<details class="notes" open>
+  <summary>Notes</summary>
+  <ul>
+<li>This function runs the command in a new shell and captures both standard output
+  and standard error.</li>
+<li>The output can be accessed through the Popen object returned by this function.</li>
+</ul>
+</details>
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper_slurm.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">exec</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes the specified command in a subprocess.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        command (str): The command to execute.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        subprocess.Popen: A Popen object representing the subprocess.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the command is empty or None.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - This function runs the command in a new shell and captures both standard output</span>
+<span class="sd">          and standard error.</span>
+<span class="sd">        - The output can be accessed through the Popen object returned by this function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                            <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper_slurm.shell_header_quest" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">shell_header_quest</span><span class="p">(</span><span class="n">sh_account</span><span class="p">,</span> <span class="n">time_str</span><span class="o">=</span><span class="s1">&#39;6:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">job_name</span><span class="o">=</span><span class="s1">&#39;myjob&#39;</span><span class="p">,</span> <span class="n">arrayJob</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mem_scl</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Generates the SLURM shell script header for submitting jobs to a high-performance computing cluster.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>sh_account</code></b>
+                  (<code>dict</code>)
+              –
+              <div class="doc-md-description">
+                <p>Dictionary containing account information for SLURM, including the
+account name ('A'), partition ('p'), and whether it is a buy-in account ('buyin').</p>
+              </div>
+            </li>
+            <li>
+              <b><code>time_str</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;6:00:00&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Time limit for the job in the format 'HH:MM:SS'.
+Defaults to '6:00:00'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>memG</code></b>
+                  (<code>int</code>, default:
+                      <code>3</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Memory required for the job in gigabytes. Defaults to 3.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>job_name</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;myjob&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Name of the job. Defaults to 'myjob'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>arrayJob</code></b>
+                  (<code>str</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Specification for array jobs. If provided, the script will
+include array job parameters. Defaults to None.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>mem_scl</code></b>
+                  (<code>float</code>, default:
+                      <code>1</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Memory scaling factor. Defaults to 1.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>str</code></b>              –
+              <div class="doc-md-description">
+                <p>The SLURM shell script header, which includes job submission parameters
+formatted for the SLURM workload manager.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>OSError</code>
+              –
+              <div class="doc-md-description">
+                <p>If unable to create the 'log' directory.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<details class="notes" open>
+  <summary>Notes</summary>
+  <ul>
+<li>The function checks if the 'log' directory exists and creates it if it does not.</li>
+<li>The partition is selected based on the job time limit if the account is not a buy-in account.</li>
+<li>The generated header includes job error and output log file paths based on whether
+  the job is an array job or a single job.</li>
+</ul>
+</details>
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper_slurm.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">shell_header_quest</span><span class="p">(</span><span class="n">sh_account</span><span class="p">,</span> <span class="n">time_str</span><span class="o">=</span><span class="s1">&#39;6:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">job_name</span><span class="o">=</span><span class="s1">&#39;myjob&#39;</span><span class="p">,</span> <span class="n">arrayJob</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mem_scl</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates the SLURM shell script header for submitting jobs to a high-performance computing cluster.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sh_account (dict): Dictionary containing account information for SLURM, including the</span>
+<span class="sd">            account name (&#39;A&#39;), partition (&#39;p&#39;), and whether it is a buy-in account (&#39;buyin&#39;).</span>
+<span class="sd">        time_str (str, optional): Time limit for the job in the format &#39;HH:MM:SS&#39;.</span>
+<span class="sd">            Defaults to &#39;6:00:00&#39;.</span>
+<span class="sd">        memG (int, optional): Memory required for the job in gigabytes. Defaults to 3.</span>
+<span class="sd">        job_name (str, optional): Name of the job. Defaults to &#39;myjob&#39;.</span>
+<span class="sd">        arrayJob (str, optional): Specification for array jobs. If provided, the script will</span>
+<span class="sd">            include array job parameters. Defaults to None.</span>
+<span class="sd">        mem_scl (float, optional): Memory scaling factor. Defaults to 1.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The SLURM shell script header, which includes job submission parameters</span>
+<span class="sd">            formatted for the SLURM workload manager.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        OSError: If unable to create the &#39;log&#39; directory.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - The function checks if the &#39;log&#39; directory exists and creates it if it does not.</span>
+<span class="sd">        - The partition is selected based on the job time limit if the account is not a buy-in account.</span>
+<span class="sd">        - The generated header includes job error and output log file paths based on whether</span>
+<span class="sd">          the job is an array job or a single job.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sh_account</span><span class="p">[</span><span class="s1">&#39;buyin&#39;</span><span class="p">]:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time_str</span><span class="p">,</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">hour</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">sh_account</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;short&#39;</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">sh_account</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;normal&#39;</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">12</span><span class="p">:</span>
+            <span class="n">sh_account</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;long&#39;</span>
+
+    <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;#!/bin/bash</span><span class="se">\n</span><span class="s1">&#39;</span> \
+             <span class="sa">f</span><span class="s1">&#39;#SBATCH -A </span><span class="si">{</span><span class="n">sh_account</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span> \
+             <span class="sa">f</span><span class="s1">&#39;#SBATCH -p </span><span class="si">{</span><span class="n">sh_account</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span> \
+             <span class="sa">f</span><span class="s1">&#39;#SBATCH -t </span><span class="si">{</span><span class="n">time_str</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span> \
+             <span class="sa">f</span><span class="s1">&#39;#SBATCH -N 1</span><span class="se">\n</span><span class="s1">&#39;</span> \
+             <span class="sa">f</span><span class="s1">&#39;#SBATCH --ntasks-per-node=1</span><span class="se">\n</span><span class="s1">&#39;</span> \
+             <span class="sa">f</span><span class="s1">&#39;#SBATCH --mem-per-cpu=</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">memG</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mem_scl</span><span class="p">)</span><span class="si">}</span><span class="s1">G</span><span class="se">\n</span><span class="s1">&#39;</span> \
+             <span class="sa">f</span><span class="s1">&#39;#SBATCH --job-name=&quot;</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">if</span> <span class="n">arrayJob</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">arrayJob</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;#SBATCH --error=log/</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s1">_%A_%a.err</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;#SBATCH --output=log/</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s1">_%A_%a.out</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="n">array</span> <span class="o">+</span> <span class="n">err</span> <span class="o">+</span> <span class="n">out</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;#SBATCH --error=log/</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s1">.%j.err</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;#SBATCH --output=log/</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s1">.%j.out</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="n">err</span> <span class="o">+</span> <span class="n">out</span>
+    <span class="k">return</span> <span class="n">header</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper_slurm.submit_run_plotters" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">submit_run_plotters</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Submits and manages the creation of shell scripts to run standardized plots
+based on the models specified in the experiment.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp</code></b>
+                  (<code>Experiment</code>)
+              –
+              <div class="doc-md-description">
+                <p>The experiment object that contains attributes such as
+<code>models_to_run</code> and <code>plots_to_run</code>, which determine which models and
+plots should be processed.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>None</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<details class="notes" open>
+  <summary>Notes</summary>
+  <ul>
+<li>The function checks which models (EMOD, malariasimulation, OpenMalaria) are
+  specified in <code>exp.models_to_run</code> and sets corresponding job IDs.</li>
+<li>It prepares a submission script for a set of default plots (<code>relationship</code>,
+  <code>timeseries</code>, <code>agecurves</code>) and also handles custom plots if specified in
+  <code>exp.plots_to_run</code>.</li>
+<li>Memory requirements for each plot are defined and passed to the submission
+  script. The default is 20 GB, but this can be adjusted based on specific
+  plot needs (e.g., <code>ccstep</code> requires 80 GB).</li>
+<li>If <code>exp.plots_to_run</code> is set to <code>'all'</code>, all available plots will be processed.</li>
+</ul>
+</details>
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper_slurm.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit_run_plotters</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Submits and manages the creation of shell scripts to run standardized plots</span>
+<span class="sd">    based on the models specified in the experiment.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exp (Experiment): The experiment object that contains attributes such as</span>
+<span class="sd">            `models_to_run` and `plots_to_run`, which determine which models and</span>
+<span class="sd">            plots should be processed.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - The function checks which models (EMOD, malariasimulation, OpenMalaria) are</span>
+<span class="sd">          specified in `exp.models_to_run` and sets corresponding job IDs.</span>
+<span class="sd">        - It prepares a submission script for a set of default plots (`relationship`,</span>
+<span class="sd">          `timeseries`, `agecurves`) and also handles custom plots if specified in</span>
+<span class="sd">          `exp.plots_to_run`.</span>
+<span class="sd">        - Memory requirements for each plot are defined and passed to the submission</span>
+<span class="sd">          script. The default is 20 GB, but this can be adjusted based on specific</span>
+<span class="sd">          plot needs (e.g., `ccstep` requires 80 GB).</span>
+<span class="sd">        - If `exp.plots_to_run` is set to `&#39;all&#39;`, all available plots will be processed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">job_id_EMOD</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">job_id_malariasimulation</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">job_id_OpenMalaria</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span><span class="p">:</span>
+        <span class="n">job_id_EMOD</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="s1">&#39;malariasimulation&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span><span class="p">:</span>
+        <span class="n">job_id_malariasimulation</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="s1">&#39;OpenMalaria&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span><span class="p">:</span>
+        <span class="n">job_id_OpenMalaria</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">plot_names_all</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;relationship&#39;</span><span class="p">,</span> <span class="s1">&#39;timeseries&#39;</span><span class="p">,</span> <span class="s1">&#39;agecurves&#39;</span><span class="p">]</span>
+
+    <span class="n">fdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="n">parent_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fdir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">plot_name</span> <span class="ow">in</span> <span class="n">plot_names_all</span><span class="p">:</span>
+        <span class="n">pyscript_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;-m plotter.plot_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="n">plot_memG</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="n">submit_run_pyscript</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">pyscript</span><span class="o">=</span><span class="n">pyscript_name</span><span class="p">,</span> <span class="n">shname</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;run_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s1">_plots.sh&#39;</span><span class="p">,</span>
+                            <span class="n">custom_args</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;--modelname </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">job</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s1">_plots&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="n">plot_memG</span><span class="p">,</span>
+                            <span class="n">wdir</span> <span class="o">=</span> <span class="n">parent_dir</span> <span class="p">,</span> <span class="n">write_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">plots_to_run</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">plots_to_run</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span> <span class="o">==</span> <span class="s1">&#39;sampleplots&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">plots_to_run</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="n">plots_to_run</span> <span class="o">=</span> <span class="n">plot_names_all</span>
+
+    <span class="k">for</span> <span class="n">plot_name</span> <span class="ow">in</span> <span class="n">plots_to_run</span><span class="p">:</span>
+        <span class="n">pyscript_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;-m plotter.plot_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="n">plot_memG</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="k">if</span> <span class="n">plot_name</span> <span class="o">==</span> <span class="s1">&#39;ccstep&#39;</span><span class="p">:</span>
+            <span class="n">plot_memG</span> <span class="o">=</span> <span class="mi">80</span>
+
+        <span class="n">submit_run_pyscript</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">pyscript</span><span class="o">=</span><span class="n">pyscript_name</span><span class="p">,</span> <span class="n">shname</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;run_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s1">_plots.sh&#39;</span><span class="p">,</span>
+                            <span class="n">custom_args</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;--modelname </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">exp</span><span class="o">.</span><span class="n">models_to_run</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">job_id_EMOD</span><span class="o">=</span><span class="n">job_id_EMOD</span><span class="p">,</span> <span class="n">job_id_malariasimulation</span><span class="o">=</span><span class="n">job_id_malariasimulation</span><span class="p">,</span> <span class="n">job_id_OpenMalaria</span><span class="o">=</span><span class="n">job_id_OpenMalaria</span><span class="p">,</span>
+                            <span class="n">job</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s1">_plots&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="n">plot_memG</span><span class="p">,</span>   <span class="n">wdir</span> <span class="o">=</span> <span class="n">parent_dir</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper_slurm.submit_run_pyscript" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">submit_run_pyscript</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">pyscript</span><span class="o">=</span><span class="s1">&#39;plotter/plot_relationship.py&#39;</span><span class="p">,</span> <span class="n">shname</span><span class="o">=</span><span class="s1">&#39;run_relationship_plots.sh&#39;</span><span class="p">,</span> <span class="n">custom_args</span><span class="o">=</span><span class="s1">&#39;--modelname EMOD malariasimulation OpenMalaria&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;05:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">job_id_EMOD</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">job_id_malariasimulation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">job_id_OpenMalaria</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">job</span><span class="o">=</span><span class="s1">&#39;pyjob&#39;</span><span class="p">,</span> <span class="n">wdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">write_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Submits a job to run a specified Python script using SLURM.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp</code></b>
+                  (<code>Experiment</code>)
+              –
+              <div class="doc-md-description">
+                <p>The experiment object containing job directory and other related information.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>pyscript</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;plotter/plot_relationship.py&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The name of the Python script to run. Defaults to 'plotter/plot_relationship.py'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>shname</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;run_relationship_plots.sh&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The name of the shell script to submit. Defaults to 'run_relationship_plots.sh'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>custom_args</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;--modelname EMOD malariasimulation OpenMalaria&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Custom arguments to pass to the Python script.
+Defaults to '--modelname EMOD malariasimulation OpenMalaria'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>t</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;05:00:00&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Wall time for the job in the format 'HH:MM:SS'. Defaults to '05:00:00'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>memG</code></b>
+                  (<code>int</code>, default:
+                      <code>20</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Memory required for the job in GB. Defaults to 20.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>job_id_EMOD</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>If True, sets the job ID as a dependency for EMOD. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>job_id_malariasimulation</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>If True, sets the job ID as a dependency for malariasimulation. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>job_id_OpenMalaria</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>If True, sets the job ID as a dependency for OpenMalaria. Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>job</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;pyjob&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Name of the job. Defaults to 'pyjob'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>wdir</code></b>
+                  (<code>str</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Location of the working directory. If None, uses the current directory.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>write_only</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>If True, does not submit the job but only writes the script. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>None</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>FileNotFoundError</code>
+              –
+              <div class="doc-md-description">
+                <p>If the specified job directory or dependencies do not exist.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<details class="notes" open>
+  <summary>Notes</summary>
+  <ul>
+<li>The function generates a shell script that includes the SLURM header and the command
+  to run the specified Python script.</li>
+<li>It handles job dependencies based on the provided job IDs for EMOD, malariasimulation,
+  and OpenMalaria.</li>
+<li>The script is written to the job directory and submitted to the SLURM workload manager.</li>
+<li>The submitted job ID is printed to the console for tracking purposes.</li>
+</ul>
+</details>
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper_slurm.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit_run_pyscript</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">pyscript</span><span class="o">=</span><span class="s1">&#39;plotter/plot_relationship.py&#39;</span><span class="p">,</span> <span class="n">shname</span><span class="o">=</span><span class="s1">&#39;run_relationship_plots.sh&#39;</span><span class="p">,</span>
+                        <span class="n">custom_args</span><span class="o">=</span><span class="s1">&#39;--modelname EMOD malariasimulation OpenMalaria&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;05:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">job_id_EMOD</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">job_id_malariasimulation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">job_id_OpenMalaria</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">job</span><span class="o">=</span><span class="s1">&#39;pyjob&#39;</span><span class="p">,</span>  <span class="n">wdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">write_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Submits a job to run a specified Python script using SLURM.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exp (Experiment): The experiment object containing job directory and other related information.</span>
+<span class="sd">        pyscript (str, optional): The name of the Python script to run. Defaults to &#39;plotter/plot_relationship.py&#39;.</span>
+<span class="sd">        shname (str, optional): The name of the shell script to submit. Defaults to &#39;run_relationship_plots.sh&#39;.</span>
+<span class="sd">        custom_args (str, optional): Custom arguments to pass to the Python script.</span>
+<span class="sd">            Defaults to &#39;--modelname EMOD malariasimulation OpenMalaria&#39;.</span>
+<span class="sd">        t (str, optional): Wall time for the job in the format &#39;HH:MM:SS&#39;. Defaults to &#39;05:00:00&#39;.</span>
+<span class="sd">        memG (int, optional): Memory required for the job in GB. Defaults to 20.</span>
+<span class="sd">        job_id_EMOD (bool, optional): If True, sets the job ID as a dependency for EMOD. Defaults to False.</span>
+<span class="sd">        job_id_malariasimulation (bool, optional): If True, sets the job ID as a dependency for malariasimulation. Defaults to False.</span>
+<span class="sd">        job_id_OpenMalaria (bool, optional): If True, sets the job ID as a dependency for OpenMalaria. Defaults to False.</span>
+<span class="sd">        job (str, optional): Name of the job. Defaults to &#39;pyjob&#39;.</span>
+<span class="sd">        wdir (str, optional): Location of the working directory. If None, uses the current directory.</span>
+<span class="sd">        write_only (bool, optional): If True, does not submit the job but only writes the script. Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If the specified job directory or dependencies do not exist.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - The function generates a shell script that includes the SLURM header and the command</span>
+<span class="sd">          to run the specified Python script.</span>
+<span class="sd">        - It handles job dependencies based on the provided job IDs for EMOD, malariasimulation,</span>
+<span class="sd">          and OpenMalaria.</span>
+<span class="sd">        - The script is written to the job directory and submitted to the SLURM workload manager.</span>
+<span class="sd">        - The submitted job ID is printed to the console for tracking purposes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">wdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">wdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+    <span class="n">header_post</span> <span class="o">=</span> <span class="n">shell_header_quest</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">memG</span><span class="p">,</span> <span class="n">job_name</span><span class="o">=</span><span class="n">job</span><span class="p">,</span> <span class="n">mem_scl</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">pycommand</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">python </span><span class="si">{</span><span class="n">pyscript</span><span class="si">}</span><span class="s1"> -d </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">sim_out_dir</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">custom_args</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="n">shname</span><span class="p">)</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header_post</span> <span class="o">+</span> <span class="n">exp</span><span class="o">.</span><span class="n">EMOD_venv</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">cd </span><span class="si">{</span><span class="n">wdir</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">pycommand</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="s1">&#39;--dependency=afterany:&#39;</span>
+    <span class="n">prior_dependency</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">write_only</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">job_id_EMOD</span><span class="p">:</span>
+            <span class="n">id_EMOD</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;job_id_EMODanalyze.txt&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">dependencies</span> <span class="o">=</span> <span class="n">dependencies</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">id_EMOD</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">prior_dependency</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">job_id_malariasimulation</span><span class="p">:</span>
+            <span class="n">id_malariasimulation</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;job_id_malariasimulation_analyze.txt&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prior_dependency</span><span class="p">:</span>
+                <span class="n">dependencies</span> <span class="o">=</span> <span class="n">dependencies</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;,</span><span class="si">{</span><span class="n">id_malariasimulation</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dependencies</span> <span class="o">=</span> <span class="n">dependencies</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">id_malariasimulation</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">prior_dependency</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">job_id_OpenMalaria</span><span class="p">:</span>
+            <span class="n">id_OpenMalaria</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;job_id_OManalyze.txt&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prior_dependency</span><span class="p">:</span>
+                <span class="n">dependencies</span> <span class="o">=</span> <span class="n">dependencies</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;,</span><span class="si">{</span><span class="n">id_OpenMalaria</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dependencies</span> <span class="o">=</span> <span class="n">dependencies</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">id_OpenMalaria</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">job_id_EMOD</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">job_id_malariasimulation</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">job_id_OpenMalaria</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sbatch&#39;</span><span class="p">,</span> <span class="s1">&#39;--parsable&#39;</span><span class="p">,</span> <span class="n">script_path</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                               <span class="n">cwd</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sbatch&#39;</span><span class="p">,</span> <span class="s1">&#39;--parsable&#39;</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">,</span> <span class="n">script_path</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                               <span class="n">cwd</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">))</span>
+
+        <span class="n">slurm_job_id</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Submitted </span><span class="si">{</span><span class="n">shname</span><span class="si">}</span><span class="s1"> to run </span><span class="si">{</span><span class="n">pyscript</span><span class="si">}</span><span class="s1"> - job id: </span><span class="si">{</span><span class="n">slurm_job_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.utility.helper_slurm.write_txt" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">write_txt</span><span class="p">(</span><span class="n">txtobj</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Writes a text object to a specified file.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>txtobj</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The text object to write to the file.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>path</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The path to the directory where the file will be saved.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>fname</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The filename to use for the saved file.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>IOError</code>
+              –
+              <div class="doc-md-description">
+                <p>If there is an issue with writing to the file.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<details class="notes" open>
+  <summary>Notes</summary>
+  <ul>
+<li>This function opens the specified file in write mode and writes the contents of
+  <code>txtobj</code> to it. If the file already exists, it will be overwritten.</li>
+</ul>
+</details>
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\utility\helper_slurm.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">write_txt</span><span class="p">(</span><span class="n">txtobj</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes a text object to a specified file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        txtobj (str): The text object to write to the file.</span>
+<span class="sd">        path (str): The path to the directory where the file will be saved.</span>
+<span class="sd">        fname (str): The filename to use for the saved file.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        IOError: If there is an issue with writing to the file.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - This function opens the specified file in write mode and writes the contents of</span>
+<span class="sd">          `txtobj` to it. If the file already exists, it will be overwritten.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">fname</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">txtobj</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
               
             </div>
           </div><footer>

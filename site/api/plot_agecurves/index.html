@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
     
       <script>
         // Current page data
@@ -80,14 +81,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../launch_sim/">launch_sim.py</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../shell/">sh scripts</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../target_calibration/">target_calibration</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" >utility</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../experiment/">experiment.py</a>
-                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../helper/">helper.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../helper_simulation/">helper_simulation.py</a>
@@ -100,51 +95,37 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >EMOD</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD_utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/utils/">utils.py</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_EMOD/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD_analyze_sim/">analyze_sim.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../OpenMalaria_utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/utils/">utils.py</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_OpenMalaria/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../OpenMalaria_analyze_sim/">analyze_sim.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/scaffolds/">scaffolds</a>
+                <li class="toctree-l2"><a class="reference internal" href="../malariasimulation_utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/utils/">utils.py</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api_malariasimulation/analyzer/">analyzer.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../malariasimulation_analyze_sim/">analyze_sim.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" >plotter</a>
     <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../plot_helper/">plot_helper.py</a>
+                </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="#">plot_agecurves.py</a>
     <ul class="current">
-    <li class="toctree-l3"><a class="reference internal" href="#age_curves">age_curves</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.plotter.plot_agecurves">plot_agecurves</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#requirements">Requirements</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#parameters">Parameters</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#returns">Returns</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#usage-example">Usage Example</a>
-    </li>
-        </ul>
+    <li class="toctree-l3"><a class="reference internal" href="#MultiMalModPy.plotter.plot_agecurves.age_curves">age_curves</a>
     </li>
     </ul>
                 </li>
@@ -192,79 +173,356 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="plot_agecurvespy">plot_agecurves.py</h1>
-<p>Function Documentation</p>
-<h2 id="age_curves"><code>age_curves</code></h2>
-<h3 id="overview">Overview</h3>
-<p>The <code>age_curves</code> function generates plots over age based on the provided dataset. It takes into account the combined model results and allows for visualization of different channels across age groups. The function saves the generated plots to a specified directory.</p>
-<h3 id="requirements">Requirements</h3>
-<p>This function requires the <code>PfPR_ClinicalIncidence_yr.csv</code> data file to be present in the specified directory.</p>
-<h3 id="parameters">Parameters</h3>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>fdir</code></td>
-<td><code>str</code></td>
-<td>Directory where the plot will be saved.</td>
-</tr>
-<tr>
-<td><code>df</code></td>
-<td><code>pandas DataFrame</code></td>
-<td>Dataframe that includes combined model results.</td>
-</tr>
-<tr>
-<td><code>channel</code></td>
-<td><code>str</code></td>
-<td>Variable representing the y-axis data to be plotted.</td>
-</tr>
-<tr>
-<td><code>sweepvar</code></td>
-<td><code>str</code>, optional</td>
-<td>Variable to group the data and create multiple lines on the plot. Default is <code>'modelname'</code>.</td>
-</tr>
-<tr>
-<td><code>facet_var</code></td>
-<td><code>str</code>, optional</td>
-<td>Variable used to create subplots based on its unique values. Default is <code>'output_target'</code>.</td>
-</tr>
-<tr>
-<td><code>age_groups_aggregates</code></td>
-<td><code>list</code>, optional</td>
-<td>List of age groups for aggregating data. Default is <code>['0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100']</code>.</td>
-</tr>
-</tbody>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="MultiMalModPy.plotter.plot_agecurves"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="MultiMalModPy.plotter.plot_agecurves.age_curves" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">age_curves</span><span class="p">(</span><span class="n">fdir</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="s1">&#39;modelname&#39;</span><span class="p">,</span> <span class="n">facet_var</span><span class="o">=</span><span class="s1">&#39;output_target&#39;</span><span class="p">,</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Plots age curves based on model results and saves the figure to the specified directory.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>fdir</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Directory where the plot will be saved.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>df</code></b>
+                  (<code>DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame that includes combined model results.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>channel</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Variable representing the y-axis data to be plotted.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>sweepvar</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;modelname&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Variable to group the data and create multiple lines on the plot.
+                       Defaults to 'modelname'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>facet_var</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;output_target&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Variable used to create subplots based on its unique values.
+                       Defaults to 'output_target'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>age_groups_aggregates</code></b>
+                  (<code>list</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>List of age group labels to use for aggregation.
+                                     If None, default age groups will be used.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
 </table>
-<h3 id="returns">Returns</h3>
-<p><code>None</code>: The function saves the plots to the specified directory.  </p>
-<h3 id="usage-example">Usage Example</h3>
-<pre><code>
-import pandas as pd
 
-# Sample DataFrame (make sure to load your actual data)
-data = {
-    'ageGroup': ['0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100'],
-    'prevalence': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
-    'modelname': ['Model A', 'Model B', 'Model A', 'Model B', 'Model A', 'Model B', 'Model A', 'Model B'],
-    'output_target': ['Target 1', 'Target 2', 'Target 1', 'Target 2', 'Target 1', 'Target 2', 'Target 1', 'Target 2'],
-}
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>ValueError</code>
+              –
+              <div class="doc-md-description">
+                <p>If <code>facet_var</code> is set to 'ageGroup'.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-df = pd.DataFrame(data)
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>None</code></b>              –
+              <div class="doc-md-description">
+                <p>The function saves the generated plots to disk.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-# Call the function
-age_curves('path/to/save/directory', df, 'prevalence')
+<details class="notes" open>
+  <summary>Notes</summary>
+  <ul>
+<li>The function generates a multi-faceted plot with separate subplots for each unique value
+  of the <code>facet_var</code> and lines representing the <code>sweepvar</code> variable.</li>
+<li>Each subplot visualizes the age distribution of the specified <code>channel</code> variable, with
+  filled areas representing the confidence interval.</li>
+</ul>
+</details>
+            <details class="quote">
+              <summary>Source code in <code>MultiMalModPy\plotter\plot_agecurves.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">age_curves</span><span class="p">(</span><span class="n">fdir</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="s1">&#39;modelname&#39;</span><span class="p">,</span> <span class="n">facet_var</span><span class="o">=</span><span class="s1">&#39;output_target&#39;</span><span class="p">,</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots age curves based on model results and saves the figure to the specified directory.</span>
 
-</code></pre>
+<span class="sd">    Args:</span>
+<span class="sd">        fdir (str): Directory where the plot will be saved.</span>
+<span class="sd">        df (pandas.DataFrame): DataFrame that includes combined model results.</span>
+<span class="sd">        channel (str): Variable representing the y-axis data to be plotted.</span>
+<span class="sd">        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot.</span>
+<span class="sd">                                   Defaults to &#39;modelname&#39;.</span>
+<span class="sd">        facet_var (str, optional): Variable used to create subplots based on its unique values.</span>
+<span class="sd">                                   Defaults to &#39;output_target&#39;.</span>
+<span class="sd">        age_groups_aggregates (list, optional): List of age group labels to use for aggregation.</span>
+<span class="sd">                                                 If None, default age groups will be used.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If `facet_var` is set to &#39;ageGroup&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None: The function saves the generated plots to disk.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - The function generates a multi-faceted plot with separate subplots for each unique value</span>
+<span class="sd">          of the `facet_var` and lines representing the `sweepvar` variable.</span>
+<span class="sd">        - Each subplot visualizes the age distribution of the specified `channel` variable, with</span>
+<span class="sd">          filled areas representing the confidence interval.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">facet_var</span> <span class="o">==</span> <span class="s1">&#39;ageGroup&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Age curves designed to have age on the x-axis, ageGroup facets are not supported&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">age_groups_aggregates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">age_groups_aggregates</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0-0.5&#39;</span><span class="p">,</span> <span class="s1">&#39;0.5-1&#39;</span><span class="p">,</span> <span class="s1">&#39;1-2&#39;</span><span class="p">,</span> <span class="s1">&#39;2-5&#39;</span><span class="p">,</span> <span class="s1">&#39;5-10&#39;</span><span class="p">,</span> <span class="s1">&#39;10-15&#39;</span><span class="p">,</span> <span class="s1">&#39;15-20&#39;</span><span class="p">,</span> <span class="s1">&#39;20-100&#39;</span><span class="p">]</span>
+
+    <span class="n">figure_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">channel</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">sweepvar</span><span class="p">,</span> <span class="n">facet_var</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">caption_txt</span> <span class="o">=</span> <span class="n">subset_dataframe_for_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">figure_vars</span><span class="p">)</span>
+
+    <span class="n">firstPlot</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">unique_facets</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">facet_var</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="n">unique_facets</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">)</span>
+    <span class="n">color_palette</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">&#39;colorblind&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">sweepvar</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span> <span class="mi">4</span><span class="p">))</span>
+
+    <span class="n">nx</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">nx</span><span class="p">,</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">ny</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="n">unique_facets</span><span class="p">:</span>
+        <span class="n">fdf</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">facet_var</span><span class="p">]</span> <span class="o">==</span> <span class="n">fi</span><span class="p">]</span>
+        <span class="n">fdf</span> <span class="o">=</span> <span class="n">fdf</span><span class="p">[</span><span class="n">fdf</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">max_ylim</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">sdf</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">sweepvar</span><span class="p">])):</span>
+            <span class="n">color_key</span> <span class="o">=</span> <span class="n">color_selector</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">ylim_up</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sdf</span><span class="p">[</span><span class="n">channel</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1.1</span>
+            <span class="k">if</span> <span class="n">channel</span> <span class="o">==</span> <span class="s1">&#39;prevalence&#39;</span> <span class="ow">or</span> <span class="n">channel</span> <span class="o">==</span> <span class="s1">&#39;prevalence_2to10&#39;</span><span class="p">:</span>
+                <span class="n">ylim_up</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ylim_up</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">max_ylim</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ylim_up</span><span class="p">)</span>
+            <span class="n">xmean</span><span class="p">,</span> <span class="n">ymean</span> <span class="o">=</span> <span class="n">get_x_y</span><span class="p">(</span><span class="n">sdf</span><span class="p">,</span> <span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+            <span class="n">xmean</span> <span class="o">=</span> <span class="n">xmean</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span>
+            <span class="n">merge_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">xmean</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">ymean</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">)</span>
+            <span class="n">merge_df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">merge_df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">],</span>
+                                                  <span class="n">age_groups_aggregates</span><span class="p">)</span>  <span class="c1"># FIXME returns NA for 0-5 and 0-100, perhaps wanted</span>
+            <span class="n">merge_df</span> <span class="o">=</span> <span class="n">merge_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+            <span class="n">merge_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">merge_df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">],</span> <span class="n">merge_df</span><span class="p">[</span><span class="n">channel</span><span class="p">],</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="n">color_palette</span><span class="p">[</span><span class="n">color_key</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">merge_df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">],</span> <span class="n">merge_df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s1">_min&#39;</span><span class="p">],</span> <span class="n">merge_df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s1">_max&#39;</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                            <span class="n">color</span><span class="o">=</span><span class="n">color_palette</span><span class="p">[</span><span class="n">color_key</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">firstPlot</span><span class="p">:</span>
+            <span class="n">lg</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">firstPlot</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_ylim</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">labelrotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Age (years)&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">get_ylab</span><span class="p">(</span><span class="n">channel</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">facet_var</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">fi</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;agecurves_</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s1">_by_</span><span class="si">{</span><span class="n">sweepvar</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;modelname&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fdir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">.png&#39;</span><span class="p">),</span> <span class="n">bbox_extra_artists</span><span class="o">=</span><span class="p">(</span><span class="n">lg</span><span class="p">,),</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../api_malariasimulation/analyzer/" class="btn btn-neutral float-left" title="analyzer.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../plot_helper/" class="btn btn-neutral float-left" title="plot_helper.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../plot_timeseries/" class="btn btn-neutral float-right" title="plot_timeseries.py">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -288,7 +546,7 @@ age_curves('path/to/save/directory', df, 'prevalence')
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../../api_malariasimulation/analyzer/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../plot_helper/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../plot_timeseries/" style="color: #fcfcfc">Next &raquo;</a></span>
