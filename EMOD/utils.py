@@ -48,12 +48,12 @@ def build_demog(task, exp):
     Builds the demographic structure for the EMOD simulation.
     """
     # Create a Demographics object and set location and population size
-    #demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
-    demog = json.load(open(os.path.join(exp.emod_input_path,"demographics.json")))
-    #This calculation is the same as using crude rate, but jsons don't recognize 
-    birthrate = float(34.95*exp.pop_size/365/1000)
+    # demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
+    demog = json.load(open(os.path.join(exp.emod_input_path, "demographics.json")))
+    # This calculation is the same as using crude rate, but jsons don't recognize
+    birthrate = float(34.95 * exp.pop_size / 365 / 1000)
     demog["Defaults"]["NodeAttributes"].update({"BirthRate": birthrate})
-    with open(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"), "w") as outfile: 
+    with open(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"), "w") as outfile:
         json.dump(demog, outfile)
     task.transient_assets.add_asset(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"))
     task.set_parameter("Demographics_Filenames", [f"demographics_{exp.pop_size}.json"])
@@ -79,7 +79,7 @@ def build_standard_campaign_object():
     return camp
 
 
-def all_campaigns(camp, exp = None, row = None, intervention_list = []):
+def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     """
     Wrapper functions to define all campaigns to go into the campaigns.json
     To be expanded with SMC and other interventions as needed, and use if's to define applicability
@@ -93,14 +93,15 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
 
     ## Carrying capacity step change
-    if 'cc_step' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None): #Make sure to include the cc_step change only at pickup simulations.
-        eir_df = pd.DataFrame({'CONSTANT':[row.cc_factor_emod]})
+    if 'cc_step' in intervention_list and (
+            exp.emod_step == 'pickup' or exp.emod_step is None):  # Make sure to include the cc_step change only at pickup simulations.
+        eir_df = pd.DataFrame({'CONSTANT': [row.cc_factor_emod]})
         add_scale_larval_habitats(camp, df=eir_df,
                                   start_day=row.cc_timestep_emod,
-                                  repetitions = 1)
+                                  repetitions=1)
     if exp.importation_rate != 0:
-        ncases_per_year_per1000pop = ((exp.importation_rate/100)*1000) / exp.pop_size
-        add_outbreak_individual(camp, start_day = 1, demographic_coverage=ncases_per_year_per1000pop,
+        ncases_per_year_per1000pop = ((exp.importation_rate / 100) * 1000) / exp.pop_size
+        add_outbreak_individual(camp, start_day=1, demographic_coverage=ncases_per_year_per1000pop,
                                 repetitions=-1, timesteps_between_repetitions=365)
 
     # SMC using PKPD model
@@ -111,16 +112,16 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
         elif row.model_input_emod == 8:
             start_array = [366, 731, 1096, 1461, 1826]
         else:
-            start_array = [335, 700, 1065, 1430,1795]
-            #add_drug_campaign(camp, campaign_type = "SMC", start_days = [396,761,1126,1491,1856],
+            start_array = [335, 700, 1065, 1430, 1795]
+            # add_drug_campaign(camp, campaign_type = "SMC", start_days = [396,761,1126,1491,1856],
         smc_campaign(camp, row, start_array)
 
     return {'scen_id': int(row.scen_id)}
 
 
 def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
-                      yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15,20, 125],
-                        prefix='Daily_'):
+                      yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15, 20, 125],
+                      prefix='Daily_'):
     """
     Adds daily reports to the simulation task.
     Args:
@@ -148,12 +149,13 @@ def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
         start = yr_plusone + 365 * sim_year
         desc = prefix + '%d' % (sim_year + sim_start_year)
         add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365, age_bins=age_bins,
-                                   max_number_reports = 366, reporting_interval=1, filename_suffix=desc, pretty_format=False)
+                                   max_number_reports=366, reporting_interval=1, filename_suffix=desc,
+                                   pretty_format=False)
 
 
 def add_5daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
-                        yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15,20, 125],
-                        prefix='FiveDaily_'):
+                       yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15, 20, 125],
+                       prefix='FiveDaily_'):
     """
     Adds 5 daily reports to the simulation task.
     Args:
@@ -184,11 +186,12 @@ def add_5daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
         start = yr_plusone + 365 * sim_year
         desc = prefix + '%d' % (sim_year + sim_start_year)
         add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365 - 1, age_bins=age_bins,
-                                   max_number_reports = 366, reporting_interval=5, filename_suffix=desc, pretty_format=False)
+                                   max_number_reports=366, reporting_interval=5, filename_suffix=desc,
+                                   pretty_format=False)
 
 
 def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
-                        yr_plusone=True, age_bins=[0.5,1, 2, 5, 10, 15,20,125],
+                        yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15, 20, 125],
                         prefix='Monthly_'):
     """
     Adds monthly reports to the simulation task.
@@ -224,7 +227,7 @@ def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
 
 
 def add_annual_reports(task, manifest, sim_start_year, num_year, tot_year=None,
-                       yr_plusone=True, age_bins=[0.5,1, 2, 5, 10, 15, 20, 125],
+                       yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15, 20, 125],
                        prefix='Annual_', ipfilter=''):
     """
     Adds annual reports to the simulation task.
@@ -255,7 +258,8 @@ def add_annual_reports(task, manifest, sim_start_year, num_year, tot_year=None,
 
     # All years in one report file
     add_malaria_summary_report(task, manifest, start_day=start, end_day=start + (num_year * 365) - 1,
-                               age_bins=age_bins, reporting_interval=365, max_number_reports = (tot_year + sim_start_year) - (sim_year + sim_start_year),
+                               age_bins=age_bins, reporting_interval=365,
+                               max_number_reports=(tot_year + sim_start_year) - (sim_year + sim_start_year),
                                filename_suffix=desc, pretty_format=False)
 
 
@@ -508,6 +512,20 @@ class CfgFn:
 
 
 def config_task(platform, exp):
+    """
+    Configures and creates an EMODTask based on the provided configuration and experiment parameters.
+
+    This function initializes an EMODTask instance using a default configuration from the specified
+    configuration files and applies any necessary custom settings for the experiment. The task is set
+    up with the required input files and parameters for execution on the specified platform.
+
+    Args:
+        platform (str): The computing platform on which the task will run.
+        exp (Experiment): An instance of the Experiment class containing specific parameters for the simulation.
+
+    Returns:
+        EMODTask: An instance of EMODTask configured with the specified settings and parameters.
+    """
     print("Creating EMODTask (from files)...")
     task = EMODTask.from_default2(
         config_path="config.json",
@@ -538,13 +556,29 @@ def set_config_parameters(config):
 
 
 def set_emod_exp_parameters(config, exp):
+    """
+    Configures EMOD simulation parameters based on the provided experiment settings.
+
+    This function sets various parameters in the EMOD simulation configuration object, `config`,
+    using the properties of the `exp` object, which encapsulates the specific settings for the
+    simulation. The parameters adjusted include population size, simulation duration, detection
+    thresholds, birth rate, climate conditions, and serialization settings.
+
+    Args:
+        config (Config): The EMOD configuration object to be modified.
+        exp (Experiment): An instance of the Experiment class containing specific simulation settings.
+
+    Returns:
+        None
+    """
+
     config.parameters.x_Base_Population = exp.pop_size / 1000
     config.parameters.Simulation_Duration = exp.sim_dur_years * 365
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
     config.parameters.Birth_Rate_Dependence = "FIXED_BIRTH_RATE"
-    config.parameters.Min_Days_Between_Clinical_Incidents = exp.days_between_clinical_cases   
-    max_capacity_multiplier = (exp.pop_size/10000)
+    config.parameters.Min_Days_Between_Clinical_Incidents = exp.days_between_clinical_cases
+    max_capacity_multiplier = (exp.pop_size / 10000)
 
     # Parameter configurations on climate for dynamic EIR
     if exp.entomology_mode == 'dynamic':
@@ -556,15 +590,19 @@ def set_emod_exp_parameters(config, exp):
             habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
             habitat1.parameters.Habitat_Type = "CONSTANT"
             habitat1.parameters.Max_Larval_Capacity = 20000000 * max_capacity_multiplier
-            habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
-            malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
+            habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type,
+                             "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
+            malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list,
+                                             overwrite=True)
         else:
             import emod_api.config.default_from_schema_no_validation as dfs
             habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
             habitat1.parameters.Habitat_Type = "WATER_VEGETATION"
             habitat1.parameters.Max_Larval_Capacity = 20000000 * max_capacity_multiplier
-            habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
-            malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
+            habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type,
+                             "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
+            malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list,
+                                             overwrite=True)
         config.parameters.Air_Temperature_Filename = os.path.join('climate',
                                                                   f'{seasonality_type}_air_temperature_daily.bin')
         config.parameters.Land_Temperature_Filename = os.path.join('climate',
@@ -586,19 +624,42 @@ def set_emod_exp_parameters(config, exp):
 
 
 def config_sweep_builder(exp, scen_df):
+    """
+    Configures a simulation sweep builder based on experiment settings and scenario data.
+
+    This function constructs a `SimulationBuilder` object that defines sweeps for running
+    multiple simulations with varying parameters based on the provided experiment and scenario
+    data. The sweeps are defined according to the specified entomology mode and allow
+    for parameter adjustments related to maternal antibody protection, temporary larval habitats,
+    and other calibration parameters.
+
+    Args:
+        exp (Experiment): An instance of the Experiment class containing simulation settings,
+                          including the number of seeds, EMOD step, and entomology mode.
+        scen_df (DataFrame): A pandas DataFrame containing scenario data used for defining
+                             parameter sweeps.
+
+    Returns:
+        list: A list containing the configured SimulationBuilder object with the sweep definitions.
+
+    Raises:
+        ValueError: If the specified entomology mode in the experiment is not valid.
+    """
+
     builder = SimulationBuilder()
     nseeds = exp.num_seeds
     if exp.emod_step == 'burnin':
         nseeds = exp.num_seeds_burnin
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
-        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_emod)),
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list=exp.intervention_list),
+                   partial(set_param, param='Maternal_Antibody_Protection',
+                           value=matAP * mAb_vs_EIR(row.model_input_emod)),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list=exp.intervention_list),
                    partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
@@ -606,21 +667,43 @@ def config_sweep_builder(exp, scen_df):
     else:
         raise ValueError(f'{exp.entomology_mode} not valid')
 
-    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
+    if exp.emod_calib_params:  # This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
         from EMOD.scaffolds.calib_params import get_emod_calib_params
-        calib_params = get_emod_calib_params(exp,scen_df)
+        calib_params = get_emod_calib_params(exp, scen_df)
         for i in range(0, len(calib_params)):
             sweeps[i] = sweeps[i] + calib_params[i]
     builder.add_sweep_definition(sweep_functions, sweeps)
     return [builder]
-    
+
+
 def config_sweep_builder_pickup(exp, scen_df_pickup):
+    """
+    Configures a simulation sweep builder for pickup scenarios based on experiment settings and scenario data.
+
+    This function constructs a `SimulationBuilder` object that defines sweeps for running
+    multiple simulations with varying parameters specifically tailored for pickup scenarios.
+    The sweeps incorporate serialized population data and may adjust parameters based on
+    the specified entomology mode.
+
+    Args:
+        exp (Experiment): An instance of the Experiment class containing simulation settings,
+                          including the number of seeds and entomology mode.
+        scen_df_pickup (DataFrame): A pandas DataFrame containing scenario data for pickup
+                                     configurations used for defining parameter sweeps.
+
+    Returns:
+        list: A list containing the configured SimulationBuilder object with the sweep definitions.
+
+    Raises:
+        ValueError: If the specified entomology mode in the experiment is not valid.
+    """
+
     builder = SimulationBuilder()
     nseeds = exp.num_seeds
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
         sweeps = [[
-            ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+            ItvFn(all_campaigns, exp, row=row, intervention_list=exp.intervention_list),
             partial(set_param, param='Serialized_Population_Path',
                     value=os.path.join(row["serialized_file_path"], "output")),
             partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
@@ -629,7 +712,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             for i, row in scen_df_pickup.iterrows()
             for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list=exp.intervention_list),
                    partial(set_param, param='Serialized_Population_Path',
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',
@@ -641,9 +724,9 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
     else:
         raise ValueError(f'{exp.entomology_mode} not valid')
 
-    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.
+    if exp.emod_calib_params:  # This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.
         from EMOD.scaffolds.calib_params import get_emod_calib_params
-        calib_params = get_emod_calib_params(exp,scen_df_pickup)
+        calib_params = get_emod_calib_params(exp, scen_df_pickup)
         for i in range(0, len(calib_params)):
             sweeps[i] = sweeps[i] + calib_params[i]
     builder.add_sweep_definition(sweep_functions, sweeps)
@@ -652,9 +735,33 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
 
 def submit_run_EMOD(exp, scen_df):
     """
-    This function is designed to be a parameterized version of the sequence of things we do
-    every time we run an emod experiment.
+    Submits and runs an EMOD experiment based on the provided experiment settings and scenario data.
+
+    This function orchestrates the entire process of setting up and executing an EMOD simulation,
+    including configuration of tasks, sweep builders, report generation, and analysis submission.
+    It handles both standard and pickup scenarios, ensuring appropriate parameters and settings are applied.
+
+    Args:
+        exp (Experiment): An instance of the Experiment class containing settings for the
+                          EMOD simulation, including name, serialized ID, duration, entomology mode,
+                          and other configuration options.
+        scen_df (DataFrame): A pandas DataFrame containing the scenario data relevant to the
+                             EMOD experiment.
+
+    Returns:
+        Experiment: The submitted Experiment object that encapsulates the simulation details
+                     and state.
+
+    Raises:
+        ValueError: If there are issues with the configuration of the experiment or scenario
+                     data.
+
+    Notes:
+        - The function supports both dynamic and forced entomology modes.
+        - Depending on the emod_step, it can configure and run either a standard simulation or a pickup scenario.
+        - It generates various reports based on specified analyzer settings and manages scheduling of analysis tasks.
     """
+
     exp_name = exp.exp_name
     emod_serialized_id = exp.emod_serialized_id
     sim_dur_years = exp.sim_dur_years
@@ -668,7 +775,7 @@ def submit_run_EMOD(exp, scen_df):
     # create EMODTask
     print("Creating EMODTask (from files)...")
     task = config_task(platform, exp)
-    task = build_demog(task,exp)
+    task = build_demog(task, exp)
 
     if entomology_mode == 'dynamic':
         task.common_assets.add_directory(os.path.join(manifest.input_dir, "example_weather"), relative_path="climate")
@@ -684,14 +791,15 @@ def submit_run_EMOD(exp, scen_df):
 
     add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years)
 
-
-
     if emod_step != 'burnin':  # do not generate monthly reports for burnin
         if 'daily' in exp.analyzer_list:
-            add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years) #We shouldn't generate daily reports unless specified
-        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years)
+            add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod,
+                              num_year=sim_dur_years)  # We shouldn't generate daily reports unless specified
+        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod,
+                            num_year=sim_dur_years)
         if '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:  # Note, we will not want to always run 5 days using the analyzer_list as a flag to include this reporter  or not
-            add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years)
+            add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod,
+                               num_year=sim_dur_years)
 
     # Create experiment from builder and run
     experiment = Experiment.from_builder(builder, task, name=exp_name)
@@ -716,10 +824,26 @@ def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=20):
     """
     Submits a job to analyze EMOD simulation results.
 
-    Args:
-        experiment (object): The experiment object containing job directory and other information.
-        platform (object): The platform object representing the HPC platform.
+    This function creates and submits a SLURM job to analyze the results of an EMOD simulation.
+    It generates a shell script that includes commands to execute the analysis using specified
+    Python scripts, handling dependencies based on previous jobs.
 
+    Args:
+        experiment (Experiment): The experiment object containing job directory, analyzer scripts,
+                                 and other information required for the analysis.
+        platform (Platform): The platform object representing the HPC platform, used for job submission.
+        t (str, optional): The wall time for the SLURM job, default is '04:00:00'.
+        memG (int, optional): The memory allocation in gigabytes for the SLURM job, default is 20.
+
+    Returns:
+        None: This function does not return a value but submits a job for execution.
+
+    Raises:
+        OSError: If there is an issue with file writing or job submission.
+
+    Notes:
+        - The function assumes the presence of an active HPC platform and valid job directory structure.
+        - It handles job dependencies based on the provided experiment ID and job type.
     """
 
     # Get the current working directory

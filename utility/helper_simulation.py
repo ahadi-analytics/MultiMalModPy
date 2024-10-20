@@ -12,6 +12,32 @@ from scipy.interpolate import interp1d
 
 
 def output_target_to_xTemp(df, exp,  model):
+    """
+    Interpolates and adjusts the output target to the `x_Temporary_Larval_Habitat` parameter based on input data
+    for different models and experimental conditions.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing simulation job data, with each row representing a specific condition
+            (e.g., `output_target`, `cm_clinical`, `seasonality`).
+        exp (Experiment): Experiment object that contains attributes such as `interp_path`, `output_type`, `pop_size`,
+            and others required for interpolation.
+        model (str): The model name used in the interpolation (e.g., 'malariasimulation', 'OpenMalaria').
+
+    Returns:
+        list: A list of interpolated `x_Temporary_Larval_Habitat` values corresponding to each row of the input DataFrame.
+
+    Raises:
+        ValueError: If the interpolation file is not found at the specified path.
+        ValueError: If the `output_type` specified in the experiment object is not valid.
+
+    Notes:
+        - The function performs interpolation based on the specified output type (`eir`, `prevalence_2to10`, or
+          `clinical_incidenceU5`).
+        - It applies scaling adjustments for population sizes, ensuring that the values are consistent with the
+          `pop_size` defined in the experiment.
+        - Warnings are issued if the interpolated values are outside the valid range (`<= 0` or `>= 10000`), with
+          adjustments made to these values accordingly.
+    """
     interp_path = os.path.join(exp.interp_path, model, exp.interp_csv)
     if not os.path.exists(interp_path):
         raise ValueError(f'interp_file not found: {interp_path}')
@@ -56,6 +82,32 @@ def output_target_to_xTemp(df, exp,  model):
 
 
 def output_target_to_eir(df, exp, model):
+    """
+    Interpolates and adjusts the output target to the expected EIR (Entomological Inoculation Rate) values
+    based on input data for different models and experimental conditions.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing simulation job data, where each row represents a specific condition
+            (e.g., `output_target`, `cm_clinical`, `seasonality`).
+        exp (Experiment): Experiment object that contains attributes such as `interp_path`, `output_type`, `pop_size`,
+            and others required for interpolation.
+        model (str): The model name used in the interpolation (e.g., 'malariasimulation', 'OpenMalaria').
+
+    Returns:
+        list: A list of interpolated EIR values corresponding to each row of the input DataFrame.
+
+    Raises:
+        ValueError: If the interpolation file is not found at the specified path.
+        ValueError: If the `output_type` specified in the experiment object is not valid.
+
+    Notes:
+        - The function performs interpolation based on the specified output type (`eir`, `prevalence_2to10`, or
+          `clinical_incidenceU5`).
+        - It applies scaling adjustments for population sizes, ensuring that the values are consistent with the
+          `pop_size` defined in the experiment.
+        - Warnings are issued if the interpolated values are outside the valid range (`<= 0` or `>= 1000`), with
+          adjustments made to these values accordingly.
+    """
     interp_path = os.path.join(exp.interp_path, model, exp.interp_csv)
     if not os.path.exists(interp_path):
         raise ValueError(f'interp_file not found: {interp_path}')

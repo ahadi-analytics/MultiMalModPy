@@ -16,13 +16,24 @@ from utility.experiment import LoadExperiment
 
 def parse_args():
     """
-    Parses command-line arguments for simulation specifications.
+    Parse command-line arguments for simulation specifications.
+
+    This function sets up the argument parser to handle command-line inputs,
+    specifically for specifying the job directory and an optional experiment ID.
+    The job directory is required to locate the `exp.obj` file, while the
+    experiment ID is optional and is necessary for EMOD runs.
+
+    Returns:
+        Namespace: A namespace object containing the parsed command-line arguments.
+        The attributes include:
+            - directory (str): The job directory where `exp.obj` is located.
+            - exp_id (str or None): The unique ID of the simulation experiment,
+              or None if not specified.
     """
-    # Set the description for the argument parser
+
     description = "Simulation specifications"
     parser = argparse.ArgumentParser(description=description)
 
-    # Add the required argument for the job directory
     parser.add_argument(
         "-d",
         "--directory",
@@ -44,14 +55,19 @@ def parse_args():
 class InsetChartAnalyzer(IAnalyzer):
     """
     A class inherited from idmtools IAnalyzer for analyzing inset chart report output specific to EMOD.
-    Parameters:
-    - expt_name (str): Name of the experiment.
-    - sweep_variables (list): List of sweep variables. Defaults to None.
-    - channels (list): List of inset channels. Defaults to None.
-    - daily (bool): Flag indicating whether the data is daily. Defaults to False.
-    - working_dir (str): Working directory for the analysis. Defaults to "./".
-    - start_year (int): Start year of the simulation. Defaults to 2022.
-    - burnin (None or int): Number of burn-in years to remove from results data. Defaults to None.
+
+    This class provides functionality to parse and analyze output data from inset charts produced
+    by EMOD simulations. It allows for aggregation and processing of simulation results, focusing
+    on various channels of interest.
+
+    Attributes:
+        expt_name (str): Name of the experiment.
+        sweep_variables (list): List of sweep variables. Defaults to None.
+        inset_channels (list): List of inset channels. Defaults to None.
+        daily (bool): Flag indicating whether the data is daily. Defaults to False.
+        working_dir (str): Working directory for the analysis. Defaults to "./".
+        start_year (int): Start year of the simulation. Defaults to 2022.
+        burnin (None or int): Number of burn-in years to remove from results data. Defaults to None.
     """
 
     @classmethod
@@ -80,14 +96,12 @@ class InsetChartAnalyzer(IAnalyzer):
     def map(self, data, simulation: Simulation):
         simdata = pd.DataFrame({x: data[self.filenames[0]]['Channels'][x]['Data'] for x in self.inset_channels})
 
-        # Create time variables
         simdata['Time'] = simdata.index
         simdata['Day'] = simdata['Time'] % 365
         simdata['Year'] = simdata['Time'].apply(lambda x: int(x / 365) + self.start_year)
         simdata['date'] = simdata.apply(
             lambda x: datetime.date(int(x['Year']), 1, 1) + datetime.timedelta(int(x['Day']) - 1), axis=1)
 
-        # Add scenario sweeps (parameter that were varied) to data
         for sweep_var in self.sweep_variables:
             if sweep_var in simulation.tags.keys():
                 simdata[sweep_var] = simulation.tags[sweep_var]
@@ -110,11 +124,9 @@ class InsetChartAnalyzer(IAnalyzer):
         if self.burnin is not None:
             adf = adf[adf['Year'] >= self.start_year + self.burnin]
 
-        # Change data to Year-months format, exclude days
         adf['date'] = pd.to_datetime(adf['date'])
         adf['date'] = adf['date'].dt.strftime('%b-%Y')
 
-        # Aggregate data per date and sweep_variables using sum and mean specific to outcome channel
         sum_channels = ['Births', 'Disease Deaths', 'New Infections', 'Newly Symptomatic', 'New Clinical Cases',
                         'New Severe Cases', 'Infectious Vectors', 'EIR']
         mean_channels = ['Statistical Population', 'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
@@ -128,24 +140,27 @@ class InsetChartAnalyzer(IAnalyzer):
         adf = adf.rename(columns={'Run_Number': 'seed'})
         adf['seed'] = adf['seed'] + 1
 
-        # Save the processed DataFrame to a CSV file named 'All_Age_Outputs.csv'
         adf.to_csv(os.path.join(self.working_dir, 'EMOD', 'All_Age_Outputs.csv'), index=False)
 
 
 class InputEIRAnalyzer(IAnalyzer):
     """
-      A class inherited from idmtools IAnalyzer for generating results dataframe on transmission outcome metrics.
-     Parameters:
-     - expt_name (str): Name of the experiment.
-     - channels (list): List of channels. Defaults to None.
-     - sweep_variables (list): List of sweep variables. Defaults to None.
-     - working_dir (str): Working directory for the analysis. Defaults to "./".
-     - start_year (int): Start year of the analysis. Defaults to 2010.
-     - selected_year (None or int): Year to be extracted from the simulation results. Defaults to None (keep all).
-     - daily_report (bool): Flag indicating whether to save results dataframe with daily transmission data. Defaults to False.
-     - monthly_report (bool): Flag indicating whether to save results dataframe with monthly transmission data. Defaults to False.
-     - burnin (None or int): Number of burn-in years to drop from simulation results. Defaults to None (keep all).
-     """
+    A class inherited from idmtools IAnalyzer for generating results DataFrame on transmission outcome metrics.
+
+    This class processes simulation output data related to transmission metrics and provides
+    functionality to generate daily, monthly, and yearly reports on transmission outcomes.
+
+    Attributes:
+        expt_name (str): Name of the experiment.
+        channels (list): List of channels. Defaults to None.
+        sweep_variables (list): List of sweep variables. Defaults to None.
+        working_dir (str): Working directory for the analysis. Defaults to "./".
+        start_year (int): Start year of the analysis. Defaults to 2010.
+        selected_year (None or int): Year to be extracted from the simulation results. Defaults to None (keep all).
+        daily_report (bool): Flag indicating whether to save results DataFrame with daily transmission data. Defaults to False.
+        monthly_report (bool): Flag indicating whether to save results DataFrame with monthly transmission data. Defaults to False.
+        burnin (None or int): Number of burn-in years to drop from simulation results. Defaults to None (keep all).
+    """
 
     @classmethod
     def monthparser(self, x):
@@ -156,6 +171,21 @@ class InputEIRAnalyzer(IAnalyzer):
 
     def __init__(self, expt_name, channels=None, sweep_variables=None, working_dir='./', start_year=2010,
                  selected_year=None, daily_report=False, monthly_report=False, burnin=None):
+        """
+        Initialize the InputEIRAnalyzer instance.
+
+        Args:
+            expt_name (str): Name of the experiment.
+            channels (list, optional): List of channels. Defaults to None.
+            sweep_variables (list, optional): List of sweep variables. Defaults to None.
+            working_dir (str, optional): Working directory for the analysis. Defaults to "./".
+            start_year (int, optional): Start year of the analysis. Defaults to 2010.
+            selected_year (None or int, optional): Year to be extracted from the simulation results. Defaults to None.
+            daily_report (bool, optional): Flag indicating whether to save results DataFrame with daily transmission data. Defaults to False.
+            monthly_report (bool, optional): Flag indicating whether to save results DataFrame with monthly transmission data. Defaults to False.
+            burnin (None or int, optional): Number of burn-in years to drop from simulation results. Defaults to None.
+        """
+
         super(InputEIRAnalyzer, self).__init__(working_dir=working_dir,
                                                filenames=["output/InsetChart.json"])  # ReportMalariaFiltered
         self.sweep_variables = sweep_variables or ["Run_Number"]
@@ -169,6 +199,16 @@ class InputEIRAnalyzer(IAnalyzer):
         self.burnin = burnin
 
     def map(self, data, simulation):
+        """Process the simulation data and map it to a DataFrame.
+
+        Args:
+            data (dict): Dictionary containing simulation data.
+            simulation (Simulation): The simulation instance for extracting tags.
+
+        Returns:
+            pd.DataFrame: DataFrame containing the mapped simulation data with additional time variables.
+        """
+
         simdata = pd.DataFrame({x: data[self.filenames[0]]['Channels'][x]['Data'] for x in self.channels})
         # simdata = simdata[-365:]
         simdata['time'] = simdata.index
@@ -189,7 +229,14 @@ class InputEIRAnalyzer(IAnalyzer):
         return simdata
 
     def reduce(self, all_data):
+        """Aggregate and process all simulation data.
 
+        Args:
+            all_data (dict): Dictionary containing data from multiple simulations.
+
+        Returns:
+            None: If no data is returned or if processing is complete.
+        """
         selected = [data for sim, data in all_data.items()]
         if len(selected) == 0:
             print("\nWarning: No data have been returned... Exiting...")
@@ -255,27 +302,24 @@ class InputEIRAnalyzer(IAnalyzer):
 
 class TimeavrgAgebinAnalyzer(IAnalyzer):
     """
-    A class inherited from idmtools IAnalyzer and modified for analyzing EMOD summary reports to generate
-    and save a results dataframe for defined age groups aggregated over the monitoring period.
+    A class inherited from idmtools IAnalyzer for analyzing EMOD summary reports to generate
+    and save a results DataFrame for defined age groups aggregated over the monitoring period.
 
-    Parameters:
-        - expt_name (str): Name of the experiment.
-        - sweep_variables (list): List of sweep variables. Defaults to None.
-        - working_dir (str): Working directory for the analysis. Defaults to './'.
-        - start_year (int): Start year of the simulation experiment. Defaults to 1920.
-        - end_year (int): End year of the simulation experiment. Defaults to 2020.
-        - age_groups_aggregates (list): List of age group aggregates. Defaults to None.
-        - burnin (None or int): Number of burn-in iterations. Defaults to None.
-
-    Saves:
-        mmmpy_timeavrg.csv
-
-    Returns:
-        None
+    Args:
+        expt_name (str): Name of the experiment.
+        sweep_variables (list): List of sweep variables. Defaults to None.
+        working_dir (str): Working directory for the analysis. Defaults to './'.
+        start_year (int): Start year of the simulation experiment. Defaults to 1920.
+        end_year (int): End year of the simulation experiment. Defaults to 2020.
+        age_groups_aggregates (list): List of age group aggregates. Defaults to a predefined set of age groups.
+        burnin (None or int): Number of burn-in iterations. Defaults to None.
     """
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
                  end_year=2020, age_groups_aggregates=None, burnin=None):
+        """
+        Initialize the TimeavrgAgebinAnalyzer instance.
+        """
 
         super(TimeavrgAgebinAnalyzer, self).__init__(working_dir=working_dir,
                                                      filenames=[
@@ -290,6 +334,15 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
         self.burnin = burnin
 
     def map(self, data, simulation: Simulation):
+        """Process the simulation data and map it to a DataFrame.
+
+        Args:
+            data (dict): Dictionary containing simulation data.
+            simulation (Simulation): The simulation instance for extracting tags.
+
+        Returns:
+            pd.DataFrame: DataFrame containing the mapped simulation data with additional time variables.
+        """
 
         adf = pd.DataFrame()
         nyears = self.end_year - self.start_year + 1
@@ -328,6 +381,14 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
         return adf
 
     def reduce(self, all_data):
+        """Aggregate and process all simulation data.
+
+        Args:
+            all_data (dict): Dictionary containing data from multiple simulations.
+
+        Returns:
+            None: If no data is returned or if processing is complete.
+        """
 
         selected = [data for sim, data in all_data.items()]
         if len(selected) == 0:
@@ -409,19 +470,25 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
 class DailyAgebinAnalyzer(IAnalyzer):
     """
     A class inherited from idmtools IAnalyzer for analyzing summary report output specific to EMOD.
-    It saves a dataframe per day and year from daily summary reports for each agebin specified in the report.
-    Parameters:
-    - expt_name (str): Name of the experiment.
-    - sweep_variables (list): List of sweep variables. Defaults to None.
-    - working_dir (str): Working directory for the analysis. Defaults to "./".
-    - start_year (int): Start year of the simulation. Defaults to 2022.
-    - end_year (int): End year of the simulation. Defaults to 2022.
-    - burnin (None or int): Number of burn-in years to remove from results data. Defaults to None.
-    - cc (bool): Whether or not to save columns specific only to Carrying Capacity Intervention
+
+    This class saves a DataFrame per day and year from daily summary reports for each age bin
+    specified in the report.
+
+    Args:
+        expt_name (str): Name of the experiment.
+        sweep_variables (list): List of sweep variables. Defaults to None.
+        working_dir (str): Working directory for the analysis. Defaults to "./".
+        start_year (int): Start year of the simulation. Defaults to 2022.
+        end_year (int): End year of the simulation. Defaults to 2022.
+        burnin (None or int): Number of burn-in years to remove from results data. Defaults to None.
+        age_groups_aggregates (list): List of age groups for aggregating results. Defaults to a predefined set of age groups.
     """
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=2000,
                  end_year=2020, age_groups_aggregates=None, burnin=None):
+        """
+        Initialize the DailyAgebinAnalyzer instance.
+        """
 
         super(DailyAgebinAnalyzer, self).__init__(working_dir=working_dir,
                                                   filenames=[f"output/MalariaSummaryReport_Daily_{x}.json"
@@ -502,7 +569,7 @@ class DailyAgebinAnalyzer(IAnalyzer):
                     nHost=('nHost', 'sum'),
                     prevalence=('prevalence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
                     clinical_incidence=(
-                    'clinical_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
+                        'clinical_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
                     severe_incidence=('severe_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
                     prevalence_2to10=('prevalence_2to10', 'mean')
                 ).reset_index()
@@ -527,9 +594,8 @@ class DailyAgebinAnalyzer(IAnalyzer):
 
 class FiveDayAgebinAnalyzer(IAnalyzer):
     """
-    A class inherited from idmtools IAnalyzer and modified for analyzing EMOD summary reports to generate
-    and save a results dataframe for defined age groups over time (5day and years).
-    We have a 5 Day Agebin Analyzer to accommodate OpenMalaria, which has a minimum reporting period of 5 days.
+    A class inherited from idmtools IAnalyzer for analyzing EMOD summary reports
+    and generating results dataframes for defined age groups over time (5-day intervals).
 
     Parameters:
         - expt_name (str): Name of the experiment.
@@ -539,9 +605,10 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         - end_year (int): End year of the simulation experiment. Defaults to 2020.
         - age_groups_aggregates (list): List of age group aggregates. Defaults to None.
         - burnin (None or int): Number of burn-in iterations. Defaults to None.
+        - cc (bool): Flag for change in conditions. Defaults to False.
 
     Saves:
-        mmmpy_5day.csv
+        - mmmpy_5day.csv (or mmmpy_ccstep_daily.csv if cc is True)
 
     Returns:
         None
@@ -564,7 +631,16 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         self.cc = cc
 
     def map(self, data, simulation: Simulation):
+        """
+        Process the simulation data and map it to a DataFrame.
 
+        Args:
+            data (dict): Dictionary containing simulation data.
+            simulation (Simulation): The simulation instance for extracting tags.
+
+        Returns:
+            pd.DataFrame: Mapped DataFrame containing simulation data for age bins.
+        """
         adf = pd.DataFrame()
         # Loop over summary reports (separate ones for each year)
         for year, fname in zip(range(self.start_year, self.end_year), self.filenames):
@@ -610,7 +686,15 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         return adf
 
     def reduce(self, all_data):
+        """
+        Aggregate and process all simulation data.
 
+        Args:
+            all_data (dict): Dictionary containing data from multiple simulations.
+
+        Returns:
+            None: If no data is returned or if processing is complete.
+        """
         selected = [data for sim, data in all_data.items()]
         if len(selected) == 0:
             print("\nWarning: No data have been returned... Exiting...")
@@ -695,20 +779,20 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
 class MonthlyAgebinAnalyzer(IAnalyzer):
     """
-    A class inherited from idmtools IAnalyzer and modified for analyzing EMOD summary reports to generate
-    and save a results dataframe for defined age groups over time (month and years).
+    A class inherited from idmtools IAnalyzer for analyzing EMOD summary reports
+    and generating a results dataframe for defined age groups over time (monthly and yearly).
 
-    Parameters:
-        - expt_name (str): Name of the experiment.
-        - sweep_variables (list): List of sweep variables. Defaults to None.
-        - working_dir (str): Working directory for the analysis. Defaults to './'.
-        - start_year (int): Start year of the simulation experiment. Defaults to 1920.
-        - end_year (int): End year of the simulation experiment. Defaults to 2020.
-        - age_groups_aggregates (list): List of age group aggregates. Defaults to None.
-        - burnin (None or int): Number of burn-in iterations. Defaults to None.
+    Args:
+        expt_name (str): Name of the experiment.
+        sweep_variables (list, optional): List of sweep variables. Defaults to None.
+        working_dir (str, optional): Working directory for the analysis. Defaults to './'.
+        start_year (int, optional): Start year of the simulation experiment. Defaults to 1920.
+        end_year (int, optional): End year of the simulation experiment. Defaults to 2020.
+        age_groups_aggregates (list, optional): List of age group aggregates. Defaults to None.
+        burnin (int, optional): Number of burn-in iterations. Defaults to None.
 
     Saves:
-        PfPR_ClinicalIncidence_mth.csv
+        mmmpy_mth.csv
 
     Returns:
         None
@@ -716,7 +800,9 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
                  end_year=2020, age_groups_aggregates=None, burnin=None):
-
+        """
+        Initializes the MonthlyAgebinAnalyzer with the provided parameters.
+        """
         super(MonthlyAgebinAnalyzer, self).__init__(working_dir=working_dir,
                                                     filenames=[f"output/MalariaSummaryReport_Monthly_{x}.json"
                                                                for x in range(start_year, end_year)]
@@ -730,7 +816,16 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         self.burnin = burnin
 
     def map(self, data, simulation: Simulation):
+        """
+        Processes the simulation data and maps it to a DataFrame.
 
+        Args:
+            data (dict): Dictionary containing simulation data.
+            simulation (Simulation): The simulation instance for extracting tags.
+
+        Returns:
+            pd.DataFrame: Mapped DataFrame containing simulation data for age bins.
+        """
         adf = pd.DataFrame()
         # Loop over summary reports (separate ones for each year)
         for year, fname in zip(range(self.start_year, self.end_year), self.filenames):
@@ -775,7 +870,15 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         return adf
 
     def reduce(self, all_data):
+        """
+        Aggregates and processes all simulation data.
 
+        Args:
+            all_data (dict): Dictionary containing data from multiple simulations.
+
+        Returns:
+            None: If no data is returned or if processing is complete.
+        """
         selected = [data for sim, data in all_data.items()]
         if len(selected) == 0:
             print("\nWarning: No data have been returned... Exiting...")
@@ -879,7 +982,16 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         self.burnin = burnin
 
     def map(self, data, simulation: Simulation):
+        """
+        Processes the simulation data and maps it to a DataFrame.
 
+        Args:
+            data (dict): Dictionary containing simulation data.
+            simulation (Simulation): The simulation instance for extracting tags.
+
+        Returns:
+            pd.DataFrame: Mapped DataFrame containing simulation data for age bins.
+        """
         adf = pd.DataFrame()
         nyears = self.end_year - self.start_year + 1
         for fname in self.filenames:
@@ -919,7 +1031,15 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         return adf
 
     def reduce(self, all_data):
+        """
+        Aggregates and processes all simulation data.
 
+        Args:
+            all_data (dict): Dictionary containing data from multiple simulations.
+
+        Returns:
+            None: If no data is returned or if processing is complete.
+        """
         selected = [data for sim, data in all_data.items()]
         if len(selected) == 0:
             print("\nWarning: No data have been returned... Exiting...")
@@ -990,9 +1110,6 @@ if __name__ == "__main__":
     args = parse_args()
     job_directory = args.directory
     exp_id = args.exp_id
-    # job_directory =
-    # exp_id =
-    # Load experiment object
     file = open(os.path.join(job_directory, "exp.obj"), "rb")
     exp = pickle.load(file)
     # Set location of output files

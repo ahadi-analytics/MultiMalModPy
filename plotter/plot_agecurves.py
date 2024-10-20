@@ -17,17 +17,32 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plotter.plot_helper import *
 
 
-# Plots over age - requires PfPR_ClinicalIncidence_yr.csv
 def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target', age_groups_aggregates=None):
     """
-    Parameters:
+    Plots age curves based on model results and saves the figure to the specified directory.
+
+    Args:
         fdir (str): Directory where the plot will be saved.
-        df (pandas dataframe): Dataframe that includes combined model results.
+        df (pandas.DataFrame): DataFrame that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
-        facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'seasonality'. 
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot.
+                                   Defaults to 'modelname'.
+        facet_var (str, optional): Variable used to create subplots based on its unique values.
+                                   Defaults to 'output_target'.
+        age_groups_aggregates (list, optional): List of age group labels to use for aggregation.
+                                                 If None, default age groups will be used.
+
+    Raises:
+        ValueError: If `facet_var` is set to 'ageGroup'.
+
     Returns:
-        None (plots are saved to disk).
+        None: The function saves the generated plots to disk.
+
+    Notes:
+        - The function generates a multi-faceted plot with separate subplots for each unique value
+          of the `facet_var` and lines representing the `sweepvar` variable.
+        - Each subplot visualizes the age distribution of the specified `channel` variable, with
+          filled areas representing the confidence interval.
     """
 
     if facet_var == 'ageGroup':
@@ -63,7 +78,8 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target
             xmean, ymean = get_x_y(sdf, 'ageGroup', channel, channel)
             xmean = xmean['ageGroup']
             merge_df = pd.merge(left=xmean, right=ymean, on='ageGroup')
-            merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], age_groups_aggregates)  # FIXME returns NA for 0-5 and 0-100, perhaps wanted
+            merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'],
+                                                  age_groups_aggregates)  # FIXME returns NA for 0-5 and 0-100, perhaps wanted
             merge_df = merge_df.dropna()
             merge_df.sort_values('ageGroup', inplace=True)
             ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=0.8, label=f"{s}",
@@ -71,7 +87,7 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target
             ax.fill_between(merge_df['ageGroup'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
                             color=color_palette[color_key])
         if firstPlot:
-            lg = ax.legend(loc='upper left', bbox_to_anchor=(0,1))
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1))
             firstPlot = False
         ax.set_ylim(0, max(max_ylim))
         ax.tick_params(axis='x', labelrotation=45)
@@ -88,13 +104,12 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    modelname = args.modelname #  ['EMOD', 'OpenMalaria', 'malariasimulation']
+    modelname = args.modelname  # ['EMOD', 'OpenMalaria', 'malariasimulation']
     if isinstance(modelname, str):
         modelname = [modelname]
 
     file = open(os.path.join(wdir, "exp.obj"), "rb")
     exp = pickle.load(file)
-
 
     age_groups_aggregates_sub = [x for x in exp.age_groups_aggregates if x not in ([[0, 5], [0, 100]])]
     age_groups_aggregates_sub = ["{}-{}".format(sublist[0], sublist[1]) for sublist in age_groups_aggregates_sub]

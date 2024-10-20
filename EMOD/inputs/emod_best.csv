@@ -1,4 +1,0 @@
-Antigen_Switch_Rate,Base_Gametocyte_Fraction_Male,Base_Gametocyte_Mosquito_Survival_Rate,Base_Gametocyte_Production_Rate,Falciparum_MSP_Variants,Falciparum_Nonspecific_Types,Falciparum_PfEMP1_Variants,Fever_IRBC_Kill_Rate,Gametocyte_Stage_Survival_Rate,Max_Individual_Infections,MSP1_Merozoite_Kill_Fraction,Nonspecific_Antibody_Growth_Rate_Factor,Nonspecific_Antigenicity_Factor,Pyrogenic_Threshold,Innate_Immune_Variation_Type
-7.65E-10,0.2,0.002,0.0615,32,76,1070,1.4,0.5886,3,0.511735322,0.5,0.4151,15000,NONE
-1.53E-05,0.829301667,0.001422667,0.028132303,27,151,18820,579.7106117,0.736081802,20,0.28375446,65.26284066,0.065828093,12461.80752,PYROGENIC_THRESHOLD_VS_AGE
-8.45E-05,0.31316,0.003141232,0.027720432,68,194,3795,39.62780343,0.014653,20,0.917929,0.10752266,0.7473,18103.81089,PYROGENIC_THRESHOLD_VS_AGE

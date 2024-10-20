@@ -1,0 +1,13 @@
+malariasimulation  1.6.0
+malariaEquilibrium
+umbrella
+tidyverse
+tibble
+lubridate
+dplyr
+readr
+argparser
+ggplot2
+base
+utils
+tictoc

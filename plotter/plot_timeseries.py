@@ -18,7 +18,7 @@ from plotter.plot_helper import *
 
 
 # Plots trends over available months, requires PfPR_ClinicalIncidence_mth.csv
-def monthly_trends(fdir, df, channel, sweepvar='modelname',facet_var='output_target', agegrp='0-100'):
+def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='output_target', agegrp='0-100'):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
     Note, assumed single occurence per month, i.e. aggregated across years (reads in mmmpy_mth.csv)
@@ -44,7 +44,8 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname',facet_var='output_tar
     f = 1
     firstPlot = True
     fig = plt.figure(figsize=(10 * nx, 8 * ny))
-    new_index = [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5,  6]  # To better showcase the montly trends, we present the months in this order
+    new_index = [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5,
+                 6]  # To better showcase the montly trends, we present the months in this order
     for fi in unique_facets:
         fdf = df[df[facet_var] == fi]
         ax = fig.add_subplot(ny, nx, f)
@@ -79,7 +80,7 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname',facet_var='output_tar
         ax.set_xlabel('month')
         ax.set_ylabel(get_ylab(channel))
     fname = f'monthly_{channel}_{agegrp}_by_{sweepvar}_{facet_var}'
-    fname = fname.replace('modelname','model')
+    fname = fname.replace('modelname', 'model')
     fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
 

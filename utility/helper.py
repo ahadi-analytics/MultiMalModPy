@@ -126,7 +126,7 @@ def get_param_from_dataframe(df, name):
     listparams = ['seasonality', 'sweep_list', 'case_management', 'eir', 'intervention_list', 'agebins']
     cc_params = ['eir_scalar_malariasimulation', 'eir_malariasimulation', 'eir_scalar_openmalaria', 'eir_scalar_emod',
                  'eir_openmalaria', 'eir_scalar_openmalaria', 'carrying_capacity_step']
-    
+
     listparams = listparams + cc_params
 
     value = df[name].iat[0]
@@ -245,7 +245,7 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
         raise ValueError(f'agebins 2 and 10 are required in the framework, current agebins {exp.agebins}')
 
     # Check unique limitations of framework that are in process/not yet working
-    #if len(exp.seasonality) > 1:
+    # if len(exp.seasonality) > 1:
     #    raise ValueError(f'Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.')
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
@@ -400,7 +400,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
     """
 
     if col_list is None:
-        col_list = ['output_target', 'case_management','seasonality']
+        col_list = ['output_target', 'case_management', 'seasonality']
 
     if exp.run_mode == 'calibrun':
         print("Notice: for calibrun simulations, importation will be set to 0")
@@ -409,30 +409,30 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         exp.output_target = np.arange(1, 31)
 
         eir_range = [1.00000000e-01, 1.37382380e-01, 1.88739182e-01, 2.59294380e-01, 3.56224789e-01, 4.89390092e-01,
-                    6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
-                    4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
-                    3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
-                    2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
+                     6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
+                     4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
+                     3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
+                     2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
         x_temp_range = [5.00000000e+00, 6.49828306e+00, 8.44553654e+00, 1.09762974e+01, 1.42654175e+01, 1.85401442e+01,
                         2.40958210e+01, 3.13162930e+01, 4.07004273e+01, 5.28965794e+01, 6.87473892e+01, 8.93479989e+01,
                         1.16121718e+02, 1.50918358e+02, 1.96142042e+02, 2.54917301e+02, 3.31304956e+02, 4.30582677e+02,
                         5.59609623e+02, 7.27300347e+02, 9.45240704e+02, 1.22848833e+03, 1.59661298e+03, 2.07504862e+03,
                         2.69685066e+03, 3.50497979e+03, 4.55527016e+03, 5.92028698e+03, 7.69434011e+03, 1.00000000e+04]
     if exp.run_mode == "test" or exp.run_mode is None:
-        exp.output_target = np.arange(1,4)
-        eir_range = [5,10,20]
-        x_temp_range = [100,200,250]
+        exp.output_target = np.arange(1, 4)
+        eir_range = [5, 10, 20]
+        x_temp_range = [100, 200, 250]
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
     # Generate all combinations of attribute values
     df_array = list(itertools.product(*my_attrs))
     # Create a DataFrame with the combinations
-    df = pd.DataFrame(df_array, columns = col_list)
-    if 'cc_step' in exp.intervention_list: #im only including this because itertools.product includes repeats were output_target equal cc_change, if this could be avoided it should be
+    df = pd.DataFrame(df_array, columns=col_list)
+    if 'cc_step' in exp.intervention_list:  # im only including this because itertools.product includes repeats were output_target equal cc_change, if this could be avoided it should be
         df = df[df['output_target'] != df['cc_change']]
-        #df = df[df['output_target'] > df['cc_change']] #Decreasing
-        #df = df[df['output_target'] < df['cc_change']] #Increasing
+        # df = df[df['output_target'] > df['cc_change']] #Decreasing
+        # df = df[df['output_target'] < df['cc_change']] #Increasing
         df = df.reset_index(drop=True)
     df.reset_index(inplace=True)
     df['index'] = df['index'] + 1
@@ -444,7 +444,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         df['cm_start'] = exp.cm_start
         for i, row in df.iterrows():
             df.loc[i, 'cm_clinical'] = pd.to_numeric(df.loc[i, 'case_management'][0], errors='coerce')
-            df.loc[i, 'cm_severe'] = pd.to_numeric(df.loc[i, 'case_management'][1],errors='coerce')
+            df.loc[i, 'cm_severe'] = pd.to_numeric(df.loc[i, 'case_management'][1], errors='coerce')
         df = df.drop('case_management', axis=1)
 
         if exp.run_mode == 'calibrun' or exp.run_mode == 'test' or exp.run_mode is None:
@@ -469,7 +469,6 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
                 df['model_input_openmalaria'] = output_target_to_eir(df, exp, model='OpenMalaria')
 
-
         if 'cc_step' in exp.intervention_list:
             from scenario_inputs.intervention_params import cc_step_factor_calculator, cc_title_function
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
@@ -481,7 +480,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
                 df['cc_factor_openmalaria'] = cc_step_factor_calculator(df, exp, model='OpenMalaria')
                 df['cc_timestep_openmalaria'] = exp.cc_timestep_openmalaria
-            df['cc_title'] = cc_title_function(df) #FIXME can be moved to postprocessing
+            df['cc_title'] = cc_title_function(df)  # FIXME can be moved to postprocessing
 
     return df
 
@@ -520,3 +519,4 @@ def str_to_digit(x):
     except:
         x = x
     return x
+
