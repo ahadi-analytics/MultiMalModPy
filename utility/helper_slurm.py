@@ -98,6 +98,7 @@ def submit_run_pyscript(exp, pyscript='plotter/plot_relationship.py', shname='ru
     # Get the current working directory
     if wdir is None:
         wdir = os.path.abspath(os.path.dirname(__file__))
+        wdir = os.path.abspath(os.path.join(wdir, os.pardir))
 
     # Generate the SLURM shell script header for the job
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=job, mem_scl=1)
