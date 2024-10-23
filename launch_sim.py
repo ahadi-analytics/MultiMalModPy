@@ -58,7 +58,6 @@ else:
         calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, 'emod_best.csv'))
         exp.calib_config_pointer = range(0, len(calib_config_df))  # define rows from calib_params df to run
         del calib_config_df
-        exp.sweep_list = exp.sweep_list + ['calib_config_pointer']
 
     if args.csv:
         ### Experiment scenario parameter definitions
@@ -89,7 +88,7 @@ else:
         exp.plots_to_run = []
 
     # Update exp_name - FIXME
-    exp.exp_name = exp.exp_name.replace('seasonality', exp.seasonality[0])
+    exp.exp_name = exp.exp_name.replace('seasonality', '_'.join(exp.seasonality))
     exp.exp_name = exp.exp_name.replace('entomologymode', exp.entomology_mode)
     exp.exp_name = exp.exp_name.replace('intervention',
                                         '_'.join(exp.intervention_list))  # if empty, the 'intervention' gets removed

@@ -55,7 +55,7 @@ class LoadExperiment:
 
         # Entomology settings
         self.entomology_mode = 'dynamic'
-        self.seasonality = ['perennial']
+        self.seasonality = ['perennial','seasonal']
         self.mem_increase_factor = 5.0
 
         # Age groups and case management settings
@@ -63,7 +63,6 @@ class LoadExperiment:
         self.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
         self.cm_start = 1
         self.case_management = [(0,0),(0.45,0.5175)]
-        #self.cm_severe_clinical_combinations = False
         self.days_between_clinical_cases = 14  # number of days within clinical infections count as the same case (OpenMalaria and EMOD only, for OpenMalaria get's translated into 5-day timesteps)
         self.detectionLimit = 40
         self.importation_rate = 0
