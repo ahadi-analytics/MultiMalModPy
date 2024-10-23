@@ -18,10 +18,9 @@ customTheme <- f_getCustomTheme() +
 
 # Load simulation outputs  -------------------------------
 dat_em_45 <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240827/sims_dynamic_perennial__12_07_01", modelname = "EMOD")
-dat_ms_45 <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240827/sims_dynamic_perennial__12_07_01", modelname = "malariasimulation")
+dat_ms_45 <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/20241016_production/sims_dynamic_perennial__08_59_11", modelname = "malariasimulation")
 dat_ms_45 <- dat_ms_45 %>%
-  mutate(severe_incidence = case_when(modelname=='malariasimulation' ~ severe_incidence * (0.5 * cm_severe + (1-cm_severe)),
-                                      .default = severe_incidence))
+  filter(cm_clinical == 0.45)
 dat_om_45 <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/20241011_production/sims_dynamic_perennial__21_32_32", modelname = "OpenMalaria")
 dat_total <- rbind(dat_om_45, dat_em_45, dat_ms_45, fill=TRUE)
 rm(dat_ms_45, dat_em_45, dat_om_45)
@@ -50,9 +49,6 @@ dat_total$ageGroup <- factor(dat_total$ageGroup,
 
 # Load Interpolation (time avrg) Data
 i_ms <- fread(file.path('/home/rer4177/model-characterization/target_calibration/malariasimulation/interpolation_data.csv'))
-i_ms <- i_ms %>%
-  mutate(severe_incidence = case_when(modelname=='malariasimulation' ~ severe_incidence * (0.5 * (cm_clinical*1.15) + (1-(cm_clinical*1.15))),
-                                      .default = severe_incidence))
 i_em <- fread(file.path('/home/rer4177/model-characterization/target_calibration/EMOD/interpolation_data.csv'))
 i_om <- fread(file.path('/home/rer4177/model-characterization/target_calibration/OpenMalaria/interpolation_data.csv'))
 i_full <- rbind(i_om, i_em, i_ms, fill=TRUE)
@@ -61,7 +57,7 @@ rm(i_om, i_em, i_ms)
 
 
 for (ii in unique(dat_total$cm_clinical)){
-  dat_p <- filter(dat_total, cm_clinical == ii, seasonality == 'perennial')
+  dat_p <- filter(dat_total, cm_clinical == ii, seasonality == 'perennial', output_target <= 0.8)
   i_p <- filter(i_full, cm_clinical == ii, seasonality == 'perennial', pop_size == 50000, importation == FALSE)
   i_p <- filter(i_p, simulatedEIR >= 0.01)
   # ------------------------------ Figure 2A and B ------------------------------
@@ -119,6 +115,49 @@ for (ii in unique(dat_total$cm_clinical)){
          subtitle = "")
   pB <- pB1 / pB2
   pB
+  
+  pB1eir <- i_p %>%
+    ggplot() +
+    #geom_ribbon(aes(x = simulatedEIR, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = modelname), alpha = 0.15) +
+    geom_line(aes(x = simulatedEIR, y = clinical_incidence, col = modelname),linewidth=1.25) +
+    expand_limits(y=0) +
+    scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
+    scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+    scale_x_continuous(trans = "log10",expand = expansion(mult = c(0, 0)), breaks=c(0.1,1,10,100,1000),
+                       labels = c(0.1, 1,10,100,1000),limits = c(0.1,1000)) +
+    customTheme +
+    theme(panel.grid.minor = element_blank())+
+    labs(y = "Clinical Incidence\n(ppa)",
+         x = "",
+         title = "",
+         subtitle = "")
+  pB2eir <- i_p %>%
+    mutate(severe_incidence = severe_incidence * 100) %>%
+    ggplot() +
+    #geom_ribbon(aes(x = simulatedEIR, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = modelname), alpha = 0.15) +
+    geom_line(aes(x = simulatedEIR, y = severe_incidence, col = modelname),linewidth=1.25) +
+    expand_limits(y=0) +
+    scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
+    scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+    scale_x_continuous(trans = "log10",expand = expansion(mult = c(0, 0)), breaks=c(0.1,1,10,100,1000),
+                       labels = c(0.1, 1,10,100,1000),limits = c(0.1,1000)) +
+    customTheme +
+    theme(panel.grid.minor = element_blank())+
+    labs(y = "Severe Incidence\n(ppa)",
+         x = "Simulated EIR",
+         title = "",
+         subtitle = "")
+  pBeir <- pB1eir / pB2eir
+  
+  mylayout <- "A
+               B"
+  
+  pAB <- (pA+pBeir)+plot_layout(design=mylayout)
+  pAB
+  ggsave(plot = pAB, filename = file.path(getwd(), paste('Figure2_CM', ii, '_ABeir.pdf',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pAB, filename = file.path(getwd(), paste('Figure2_CM', ii, '_ABeir.png',sep="")), height = 17.89, width = 34.13)
   
   # ------------------------------ Figure 2C ------------------------------
   pfpr_labels <- c('PfPR2-10 5%', 'PfPR2-10 10%', 'PfPR2-10 25%', 'PfPR2-10 50%')
@@ -310,7 +349,7 @@ for (ii in unique(dat_total$cm_clinical)){
   
   pABCD <- (pA+pB+pC+pD)+plot_layout(design=mylayout)
   pABCD
-  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, '_11OCT24.pdf',sep="")), height = 17.89, width = 34.13)
-  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, '_11OCT24.png',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, '.pdf',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, '.png',sep="")), height = 17.89, width = 34.13)
 }
 pABCD

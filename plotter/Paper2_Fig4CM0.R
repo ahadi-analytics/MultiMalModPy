@@ -18,8 +18,10 @@ mmmpy_models <- c("EMOD", "malariasimulation", "OpenMalaria")
 # Load simulation outputs  CCStep_daily.csv-------------------------------
 dat_inc_noImp_emod <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/production_20241010/sims_dynamic_perennial_cc_step_10_19_15'),
                                   modelname = 'EMOD', ccstep=TRUE)
-dat_inc_noImp_malariasimulation <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20241011_production/sims_dynamic_perennial_cc_step_15_34_07'),
+dat_inc_noImp_malariasimulation <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20241016_production/sims_dynamic_perennial_cc_step_08_59_27'),
                                                modelname = 'malariasimulation', ccstep=TRUE)
+dat_inc_noImp_malariasimulation <- dat_inc_noImp_malariasimulation %>%
+  filter(cm_clinical == 0)
 dat_inc_noImp_openmalaria <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20241011_production/sims_dynamic_perennial_cc_step_21_33_07'),
                                          modelname = 'OpenMalaria', ccstep=TRUE)
 dat_inc_noImp <- rbind(dat_inc_noImp_emod, dat_inc_noImp_malariasimulation, dat_inc_noImp_openmalaria, fill=TRUE)
@@ -59,8 +61,10 @@ pA
 
 dat_dec_imp_emod <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/production_20241010/sims_dynamic_perennial_cc_step_10_17_08'),
                                          modelname = 'EMOD', ccstep=TRUE)
-dat_dec_malariasimulation <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20241011_production/sims_dynamic_perennial_cc_step_15_34_07'),
+dat_dec_malariasimulation <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20241016_production/sims_dynamic_perennial_cc_step_08_59_27'),
                                          modelname = 'malariasimulation', ccstep=TRUE)
+dat_dec_malariasimulation <- dat_dec_malariasimulation %>%
+  filter(cm_clinical == 0)
 dat_dec_imp_openmalaria <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20241011_production/sims_dynamic_perennial_cc_step_23_38_48'),
                                          modelname = 'OpenMalaria', ccstep=TRUE)
 dat_dec_imp <- rbind(dat_dec_imp_emod, dat_dec_malariasimulation, dat_dec_imp_openmalaria, fill=TRUE)
@@ -90,7 +94,7 @@ pB<- dat_dec_imp %>%
   scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
   scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
   scale_x_continuous(breaks = c(1825,3650,5475,7300,9125,10950,12775,14600,16425,18250,20075), labels = c('0','','10','','20','','30','','40','','50'), expand = expansion(mult = c(0, 0))) +
-  labs(title = "A",
+  labs(title = "B",
        x = "Years since perturbation",
        y = expression('PfPR'[2-10]),
        color = 'Model',
@@ -103,8 +107,8 @@ mylayout <- "A
 
 pAB <- (pA+pB)+plot_layout(design=mylayout)
 pAB
-ggsave(plot = pAB,filename = file.path(getwd(), 'Figure4_CM0_11Oct24.pdf'), height = 15, width = 22)
-ggsave(plot = pAB, filename = file.path(getwd(), 'Figure4_CM0_11Oct24.png'), height = 15, width = 22)
+ggsave(plot = pAB,filename = file.path(getwd(), 'Figure4_CM0.pdf'), height = 15, width = 22)
+ggsave(plot = pAB, filename = file.path(getwd(), 'Figure4_CM0.png'), height = 15, width = 22)
 
 # dat_elim <- fread(file.path(projdir,exp_name, 'elimination.csv'))
 # dat_elim$modelname <- factor(dat_elim$modelname, levels = mmmpy_models)
