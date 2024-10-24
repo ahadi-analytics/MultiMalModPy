@@ -3,9 +3,8 @@ import manifest
 from utility.helper import *
 from utility.helper_slurm import *
 from utility.helper_simulation import *
-from config_exp import *
 import os
-
+from utility.experiment import LoadExperiment
 # Setting up variables and flags for the simulation
 log = logging.getLogger(__name__)
 
