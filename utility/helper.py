@@ -23,7 +23,7 @@ def parse_launch_args():
                         help="Jobdirectory of burnin, if no EMOD burnin, is ignored")
     parser.add_argument('--suite',
                         type=str,
-                        default=f'test_{dt.now().strftime("%Y%m%d")}',
+                        default=f'{dt.now().strftime("%Y%m%d")}_test',
                         help='Description of SUITEname')
     parser.add_argument('--expname',
                         type=str,
@@ -123,7 +123,7 @@ def get_param_from_dataframe(df, name):
     """
 
     # list of parameters expecting list format  # FIXME, better way to do?
-    listparams = ['seasonality', 'sweep_list', 'cm_clinical', 'eir', 'intervention_list', 'agebins']
+    listparams = ['seasonality', 'sweep_list', 'case_management', 'eir', 'intervention_list', 'agebins']
     cc_params = ['eir_scalar_malariasimulation', 'eir_malariasimulation', 'eir_scalar_openmalaria', 'eir_scalar_emod',
                  'eir_openmalaria', 'eir_scalar_openmalaria', 'carrying_capacity_step']
     
@@ -177,13 +177,13 @@ def make_dirs(exp, overwrite=False):
 
     # Create subdirectories for specific simulation models included in exp.models_to_run
     if 'EMOD' in exp.models_to_run:
-        os.makedirs(os.path.join(exp.sim_out_dir, 'em'), exist_ok=overwrite)
+        os.makedirs(os.path.join(exp.sim_out_dir, 'EMOD'), exist_ok=overwrite)
 
     if exp.emod_step != 'burnin':
         if 'OpenMalaria' in exp.models_to_run:
-            os.makedirs(os.path.join(exp.sim_out_dir, 'om'), exist_ok=overwrite)
-        if 'MalSim' in exp.models_to_run:
-            os.makedirs(os.path.join(exp.sim_out_dir, 'MalSim'), exist_ok=overwrite)
+            os.makedirs(os.path.join(exp.sim_out_dir, 'OpenMalaria'), exist_ok=overwrite)
+        if 'malariasimulation' in exp.models_to_run:
+            os.makedirs(os.path.join(exp.sim_out_dir, 'malariasimulation'), exist_ok=overwrite)
     return exp
 
 
@@ -221,13 +221,6 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
         ValueError: If input parameters are invalid.
     """
 
-    if exp.om_survey_step == '30d' and "5day" in exp.analyzer_list:
-        raise Warning('OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
-
-    if len(exp.cm_clinical) >1 or len(exp.cm_severe) >1:
-        raise Warning('Current implementation only allows single case managamenet level per simulation')
-
-
     # Check timesteps, survey intervals and analyer alignment
     if exp.openmalaria_survey_step == '30d' and "5day" in exp.analyzer_list:
         print('Warning: OpenMalaria runs with 30d survey steps , 5day analyzer will cause an error in postprocessing')
@@ -241,7 +234,7 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
 
     if exp.burnin < 80 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
                             'EMOD' not in exp.models_to_run):
-        print('Warning: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
+        print(f'Warning: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
 
     # Check agebins
     a = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
@@ -252,16 +245,16 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
         raise ValueError(f'agebins 2 and 10 are required in the framework, current agebins {exp.agebins}')
 
     # Check unique limitations of framework that are in process/not yet working
-    if len(exp.seasonality) > 1:
-        raise ValueError(f'Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.')
+    #if len(exp.seasonality) > 1:
+    #    raise ValueError(f'Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.')
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
-    if any(value not in [0, 0.45] for value in exp.cm_clinical) and (exp.entomology_mode == 'dynamic') and (
+    if any(value[0] not in [0, 0.45] for value in exp.case_management) and (exp.entomology_mode == 'dynamic') and (
             'EMOD' in exp.models_to_run):
         raise ValueError(
             'EMOD is not set up to run dynamic EIR is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
-    if any(value not in [0, 0.45] for value in exp.cm_clinical) and exp.output_type == 'prevalence_2to10':
+    if any(value[0] not in [0, 0.45] for value in exp.case_management) and exp.output_type == 'prevalence_2to10':
         raise ValueError(
             'output_type prevalence_2to10 is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
@@ -370,7 +363,7 @@ def create_simsetup_csv(exp):
                  'monitoring_years': exp.monitoring_years,
                  'pop_size': exp.pop_size,
                  'agebins': exp.agebins,
-                 'seasonality': exp.seasonality[0],
+                 'seasonality': exp.seasonality,
                  'seasonal_monthly': ';'.join(map(str, exp.seasonal)),
                  'perennial_monthly': ';'.join(map(str, exp.perennial)),
                  'seasonal_daily': ';'.join(map(str, exp.season_daily)),
@@ -398,7 +391,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
     Args:
         exp (Experiment): The experiment object containing the scenario attributes.
         col_list (list): List of attribute names to include in the scenarios CSV file.
-            Example: ['eirs', 'cm_clinical', 'seasonality'].
+            Example: ['eirs', 'case_management', 'seasonality'].
         add_cols (bool, optional): Whether to add additional columns such as 'entomology_mode',
             'num_seeds', etc. Default is True.
 
@@ -407,7 +400,7 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
     """
 
     if col_list is None:
-        col_list = ['output_target', 'cm_clinical', 'cm_severe',  'seasonality']
+        col_list = ['output_target', 'case_management','seasonality']
 
     if exp.run_mode == 'calibrun':
         print("Notice: for calibrun simulations, importation will be set to 0")
@@ -425,19 +418,21 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                         1.16121718e+02, 1.50918358e+02, 1.96142042e+02, 2.54917301e+02, 3.31304956e+02, 4.30582677e+02,
                         5.59609623e+02, 7.27300347e+02, 9.45240704e+02, 1.22848833e+03, 1.59661298e+03, 2.07504862e+03,
                         2.69685066e+03, 3.50497979e+03, 4.55527016e+03, 5.92028698e+03, 7.69434011e+03, 1.00000000e+04]
+    if exp.run_mode == "test" or exp.run_mode is None:
+        exp.output_target = np.arange(1,4)
+        eir_range = [5,10,20]
+        x_temp_range = [8.93479989e+01,1.50918358e+02,4.30582677e+02]
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
-
     # Generate all combinations of attribute values
-    df_array = np.array(list(itertools.product(*my_attrs)))
-
+    df_array = list(itertools.product(*my_attrs))
     # Create a DataFrame with the combinations
     df = pd.DataFrame(df_array, columns = col_list)
     if 'cc_step' in exp.intervention_list: #im only including this because itertools.product includes repeats were output_target equal cc_change, if this could be avoided it should be
         df = df[df['output_target'] != df['cc_change']]
-        #df = df[df['output_target'] > df['cc_change']] #need a more sophisticated way to determine whether the 
-        #df = df[df['output_target'] < df['cc_change']] #user wants only increasing/decreasing cc_steps
+        #df = df[df['output_target'] > df['cc_change']] #Decreasing
+        #df = df[df['output_target'] < df['cc_change']] #Increasing
         df = df.reset_index(drop=True)
     df.reset_index(inplace=True)
     df['index'] = df['index'] + 1
@@ -447,11 +442,12 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
         df['entomology_mode'] = exp.entomology_mode
         df['num_seeds'] = exp.num_seeds
         df['cm_start'] = exp.cm_start
-        df['cm_clinical'] = pd.to_numeric(df['cm_clinical'], errors='coerce')
-        df['cm_severe'] = pd.to_numeric(df['cm_severe'], errors='coerce')
+        for i, row in df.iterrows():
+            df.loc[i, 'cm_clinical'] = pd.to_numeric(df.loc[i, 'case_management'][0], errors='coerce')
+            df.loc[i, 'cm_severe'] = pd.to_numeric(df.loc[i, 'case_management'][1],errors='coerce')
+        df = df.drop('case_management', axis=1)
 
-
-        if exp.run_mode == 'calibrun':
+        if exp.run_mode == 'calibrun' or exp.run_mode == 'test' or exp.run_mode is None:
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
                 for i, row in df.iterrows():
                     df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]

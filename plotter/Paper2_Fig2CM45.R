@@ -6,33 +6,24 @@ library(data.table)
 library(tidyr)
 library(patchwork)
 
-source('functions.R')
+source('utility/functions.R')
 theme_set(theme_bw())
 
-if (Sys.getenv("OS") == "Windows_NT") {
-  box <- 'NU-malaria-team Dropbox'
-  projdir <- file.path(Sys.getenv('USERPROFILE'), box, 'projects/EMOD_OM')
-}else {
-  username <- Sys.getenv('USER') #Sys.getenv('USERNAME')
-  projdir <- file.path('/projects/b1139/emod-om/simulation_outputs', username)
-}
-
-projdir <- file.path(projdir, 'test_sims_20240725')
-exp_name <- "sims_dynamic_perennial__11_40_01"
-
-
-modelname <- c("EMOD", "malariasimulation", "OpenMalaria")
+modelname <- c("EMOD", "malariasimulation","OpenMalaria")
 agegrps <- c('0-0.5', '0.5-1', '1-2', '2-5', '5-10', '10-15', '15-20', '20-100')
 
 customTheme <- f_getCustomTheme() +
   theme(legend.position = "None",
-        panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())
 
 # Load simulation outputs  -------------------------------
-
-wdir <- file.path(projdir, exp_name)
-dat_total <- get_output_df(wdir, modelname = modelname)
+dat_em_45 <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240827/sims_dynamic_perennial__12_07_01", modelname = "EMOD")
+dat_ms_45 <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/20241016_production/sims_dynamic_perennial__08_59_11", modelname = "malariasimulation")
+dat_ms_45 <- dat_ms_45 %>%
+  filter(cm_clinical == 0.45)
+dat_om_45 <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/20241011_production/sims_dynamic_perennial__21_32_32", modelname = "OpenMalaria")
+dat_total <- rbind(dat_om_45, dat_em_45, dat_ms_45, fill=TRUE)
+rm(dat_ms_45, dat_em_45, dat_om_45)
 
 dat_total <- dat_total %>%
   group_by(output_target, cm_clinical, ageGroup, seasonality, modelname) %>%
@@ -60,28 +51,28 @@ dat_total$ageGroup <- factor(dat_total$ageGroup,
 i_ms <- fread(file.path('/home/rer4177/model-characterization/target_calibration/malariasimulation/interpolation_data.csv'))
 i_em <- fread(file.path('/home/rer4177/model-characterization/target_calibration/EMOD/interpolation_data.csv'))
 i_om <- fread(file.path('/home/rer4177/model-characterization/target_calibration/OpenMalaria/interpolation_data.csv'))
-i_full <- rbind(i_ms, i_em, i_om, fill=TRUE)
-rm(i_om, i_ms, i_em)
+i_full <- rbind(i_om, i_em, i_ms, fill=TRUE)
+rm(i_om, i_em, i_ms)
 
 
 
 for (ii in unique(dat_total$cm_clinical)){
-  dat_p <- filter(dat_total, cm_clinical == ii, seasonality == 'perennial')
-  i_p <- filter(i_full, cm_clinical == ii, seasonality == 'perennial')
+  dat_p <- filter(dat_total, cm_clinical == ii, seasonality == 'perennial', output_target <= 0.8)
+  i_p <- filter(i_full, cm_clinical == ii, seasonality == 'perennial', pop_size == 50000, importation == FALSE)
+  i_p <- filter(i_p, simulatedEIR >= 0.01)
   # ------------------------------ Figure 2A and B ------------------------------
   pA <- i_p %>%
-    filter(simulatedEIR >=0.05, simulatedEIR <= 1000) %>%
     ggplot() +
     #geom_ribbon(aes(x = simulatedEIR, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = modelname), alpha = 0.15) +
-    geom_line(aes(x = simulatedEIR, y = prevalence_2to10, col = modelname),linewidth=1) +
+    geom_line(aes(x = simulatedEIR, y = prevalence_2to10, col = modelname),linewidth=1.25) +
     expand_limits(y=0) +
     scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
     scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
-    scale_x_continuous(trans = "log10",expand = expansion(mult = c(0, 0))) +
+    scale_x_continuous(trans = "log10",expand = expansion(mult = c(0, 0)), breaks=c(0.1,1,10,100,1000),
+                       labels = c(0.1, 1,10,100,1000),limits = c(0.1,1000)) +
     customTheme +
-    theme(panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank())+
+    theme(panel.grid.minor = element_blank())+
     labs(y = expression('PfPR'[2-10]),
          x = "Simulated EIR",
          title = paste("All Ages CM: ", ii),
@@ -89,59 +80,84 @@ for (ii in unique(dat_total$cm_clinical)){
          fill = 'Model',
          color = 'Model') +
     theme(legend.position = c(.15, .65))
-
-  pB1 <- dat_p %>%
-    ungroup() %>%
-    filter(ageGroup %in% '0-100') %>%
-    dplyr::select(output_target, prevalence_2to10__mean, modelname,
-                  clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
-                  severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-    pivot_longer(cols = -c(output_target, modelname, prevalence_2to10__mean)) %>%
-    separate(name, into = c('name', 'stat'), sep = '__') %>%
-    filter(name == 'clinical_incidence') %>%
-    mutate(name = case_when(name == 'clinical_incidence' ~ 'Clinical Incidence\n(ppa)')) %>%
-    pivot_wider(names_from = stat, values_from = value) %>%
+  pA
+  
+  pB1 <- i_p %>%
     ggplot() +
-    geom_ribbon(aes(x = prevalence_2to10__mean, ymin = min, ymax = up, fill = modelname), alpha = 0.15) +
-    geom_line(aes(x = prevalence_2to10__mean, y = mean, col = modelname),linewidth=1) +
+    #geom_ribbon(aes(x = simulatedEIR, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = modelname), alpha = 0.15) +
+    geom_line(aes(x = prevalence_2to10, y = clinical_incidence, col = modelname),linewidth=1.25) +
     expand_limits(y=0) +
     scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
     scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
     scale_x_continuous(expand = expansion(mult = c(0, 0))) +
     customTheme +
+    theme(panel.grid.minor = element_blank())+
     labs(y = "Clinical Incidence\n(ppa)",
          x = "",
          title = "",
          subtitle = "")
-
-  pB2 <- dat_p %>%
-    ungroup() %>%
-    filter(ageGroup %in% '0-100') %>%
-    dplyr::select(output_target, prevalence_2to10__mean, modelname,
-                  clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
-                  severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-    pivot_longer(cols = -c(output_target, modelname, prevalence_2to10__mean)) %>%
-    separate(name, into = c('name', 'stat'), sep = '__') %>%
-    filter(name == 'severe_incidence') %>%
-    mutate(name = case_when(name == 'severe_incidence' ~ 'Severe Incidence\n(ppa)')) %>%
-    pivot_wider(names_from = stat, values_from = value) %>%
+  pB2 <- i_p %>%
+    mutate(severe_incidence = severe_incidence * 100) %>%
     ggplot() +
-    geom_ribbon(aes(x = prevalence_2to10__mean, ymin = min, ymax = up, fill = modelname), alpha = 0.15) +
-    geom_line(aes(x = prevalence_2to10__mean, y = mean, col = modelname),linewidth=1) +
+    #geom_ribbon(aes(x = simulatedEIR, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = modelname), alpha = 0.15) +
+    geom_line(aes(x = prevalence_2to10, y = severe_incidence, col = modelname),linewidth=1.25) +
     expand_limits(y=0) +
     scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
     scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
     scale_x_continuous(expand = expansion(mult = c(0, 0))) +
     customTheme +
-    labs(x = expression('PfPR'[2-10]),
-         y = 'Severe Incidence\n(ppa)',
+    theme(panel.grid.minor = element_blank())+
+    labs(y = "Severe Incidence\n(ppa)",
+         x = expression('PfPR'[2-10]),
          title = "",
          subtitle = "")
-  
   pB <- pB1 / pB2
   pB
+  
+  pB1eir <- i_p %>%
+    ggplot() +
+    #geom_ribbon(aes(x = simulatedEIR, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = modelname), alpha = 0.15) +
+    geom_line(aes(x = simulatedEIR, y = clinical_incidence, col = modelname),linewidth=1.25) +
+    expand_limits(y=0) +
+    scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
+    scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+    scale_x_continuous(trans = "log10",expand = expansion(mult = c(0, 0)), breaks=c(0.1,1,10,100,1000),
+                       labels = c(0.1, 1,10,100,1000),limits = c(0.1,1000)) +
+    customTheme +
+    theme(panel.grid.minor = element_blank())+
+    labs(y = "Clinical Incidence\n(ppa)",
+         x = "",
+         title = "",
+         subtitle = "")
+  pB2eir <- i_p %>%
+    mutate(severe_incidence = severe_incidence * 100) %>%
+    ggplot() +
+    #geom_ribbon(aes(x = simulatedEIR, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = modelname), alpha = 0.15) +
+    geom_line(aes(x = simulatedEIR, y = severe_incidence, col = modelname),linewidth=1.25) +
+    expand_limits(y=0) +
+    scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
+    scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+    scale_x_continuous(trans = "log10",expand = expansion(mult = c(0, 0)), breaks=c(0.1,1,10,100,1000),
+                       labels = c(0.1, 1,10,100,1000),limits = c(0.1,1000)) +
+    customTheme +
+    theme(panel.grid.minor = element_blank())+
+    labs(y = "Severe Incidence\n(ppa)",
+         x = "Simulated EIR",
+         title = "",
+         subtitle = "")
+  pBeir <- pB1eir / pB2eir
+  
+  mylayout <- "A
+               B"
+  
+  pAB <- (pA+pBeir)+plot_layout(design=mylayout)
+  pAB
+  ggsave(plot = pAB, filename = file.path(getwd(), paste('Figure2_CM', ii, '_ABeir.pdf',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pAB, filename = file.path(getwd(), paste('Figure2_CM', ii, '_ABeir.png',sep="")), height = 17.89, width = 34.13)
   
   # ------------------------------ Figure 2C ------------------------------
   pfpr_labels <- c('PfPR2-10 5%', 'PfPR2-10 10%', 'PfPR2-10 25%', 'PfPR2-10 50%')
@@ -158,12 +174,16 @@ for (ii in unique(dat_total$cm_clinical)){
       modelname == 'OpenMalaria' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
       modelname == 'OpenMalaria' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
       modelname == 'OpenMalaria' & output_target %in% pfpr_values[4] ~ pfpr_labels[4],
+      modelname == 'Original' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
+      modelname == 'Original' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
+      modelname == 'Original' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
+      modelname == 'Original' & output_target %in% pfpr_values[4] ~ pfpr_labels[4],
       ## malariasimulation
       modelname == 'malariasimulation' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
       modelname == 'malariasimulation' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
       modelname == 'malariasimulation' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
       modelname == 'malariasimulation' & output_target %in% pfpr_values[4] ~ pfpr_labels[4]),
-           pfpr_grp = factor(pfpr_grp, levels = pfpr_labels, labels = pfpr_labels))
+      pfpr_grp = factor(pfpr_grp, levels = pfpr_labels, labels = pfpr_labels))
   
   
   pC1 <- dat_p %>%
@@ -182,7 +202,7 @@ for (ii in unique(dat_total$cm_clinical)){
     pivot_wider(names_from = stat, values_from = value) %>%
     ggplot() +
     geom_ribbon(aes(x = ageGroup, ymin = min, ymax = up, fill = modelname, group = modelname), alpha = 0.15) +
-    geom_line(aes(x = ageGroup, y = mean, col = modelname, group = modelname),linewidth=1) +
+    geom_line(aes(x = ageGroup, y = mean, col = modelname, group = modelname),linewidth=1.25) +
     expand_limits(y=0) +
     facet_wrap(~ pfpr_grp, scales = 'free', nrow=1) + 
     scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
@@ -195,6 +215,7 @@ for (ii in unique(dat_total$cm_clinical)){
          title = "",
          subtitle = "") +
     theme(axis.text.x = element_text(angle = 45,vjust = 1, hjust=1))
+  pC1
   
   pC2 <- dat_p %>%
     ungroup() %>%
@@ -212,7 +233,7 @@ for (ii in unique(dat_total$cm_clinical)){
     pivot_wider(names_from = stat, values_from = value) %>%
     ggplot() +
     geom_ribbon(aes(x = ageGroup, ymin = min, ymax = up, fill = modelname, group = modelname), alpha = 0.15) +
-    geom_line(aes(x = ageGroup, y = mean, col = modelname, group = modelname),linewidth=1) +
+    geom_line(aes(x = ageGroup, y = mean, col = modelname, group = modelname),linewidth=1.25) +
     expand_limits(y=0) +
     facet_wrap(~ pfpr_grp, scales = 'free', nrow=1) +
     scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
@@ -240,10 +261,11 @@ for (ii in unique(dat_total$cm_clinical)){
     mutate(name = factor(name, levels = c('prevalence', 'clinical_incidence', 'severe_incidence'),
                          labels = c('Prevalence', 'Clinical Incidence (ppa)', 'Severe Incidence (ppa)'))) %>%
     filter(name =='Severe Incidence (ppa)') %>%
+    mutate(value = value * 100) %>%
     pivot_wider(names_from = stat, values_from = value) %>%
     ggplot() +
     geom_ribbon(aes(x = ageGroup, ymin = min, ymax = up, fill = modelname, group = modelname), alpha = 0.15) +
-    geom_line(aes(x = ageGroup, y = mean, col = modelname, group = modelname),linewidth=1) +
+    geom_line(aes(x = ageGroup, y = mean, col = modelname, group = modelname),linewidth=1.25) +
     expand_limits(y=0) +
     facet_wrap(~ pfpr_grp, scales = 'free', nrow=1)+
     scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
@@ -260,8 +282,9 @@ for (ii in unique(dat_total$cm_clinical)){
   
   
   pC <- pC1 / pC2 / pC3
+  pC
+  # ------------------------------ Figure 2D V1------------------------------
   
-  # ------------------------------ Figure 2D V2------------------------------  
   pD1 <- dat_p %>%
     ungroup() %>%
     filter(ageGroup %in% agegrps) %>%
@@ -274,23 +297,21 @@ for (ii in unique(dat_total$cm_clinical)){
     mutate(name = case_when(name == 'clinical_incidence' ~ 'Clinical Incidence\n(ppa)')) %>%
     pivot_wider(names_from = stat, values_from = value) %>%
     ggplot() +
-    geom_ribbon(aes(x = prevalence_2to10__mean, ymin = min, ymax = up, fill = ageGroup), alpha = 0.07) +
-    geom_line(aes(x = prevalence_2to10__mean, y = mean, col = ageGroup),linewidth=1) +
+    geom_ribbon(aes(x = prevalence_2to10__mean, ymin = min, ymax = up, fill = modelname), alpha = 0.15) +
+    geom_line(aes(x = prevalence_2to10__mean, y = mean, col = modelname),linewidth=1) +
     expand_limits(y=0) +
-    facet_wrap(~modelname, scales = 'free_y', nrow = 1) +
-    scale_color_manual(values = c('#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666')) +
-    scale_fill_manual(values = c('#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666'))+
+    facet_wrap(~ageGroup, scales = 'free_y', nrow = 1) +
+    scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
+    scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
     scale_x_continuous(expand = expansion(mult = c(0, 0))) +
     customTheme +
-    labs(x = "PfPR 2to10",
+    labs(x = "",
          y = 'Clinical Incidence\n(ppa)',
-         title = "Incidence by Age Groups",
+         title = "Age Groups",
          subtitle = "") +
-    xlim(0.03, 0.81) +
-    theme(legend.position = "right") +
     theme(axis.text.x =  element_text(angle = 45, vjust = 1, hjust=1))
-
+  
   pD2 <- dat_p %>%
     ungroup() %>%
     filter(ageGroup %in% agegrps) %>%
@@ -301,99 +322,34 @@ for (ii in unique(dat_total$cm_clinical)){
     separate(name, into = c('name', 'stat'), sep = '__') %>%
     filter(name =='severe_incidence') %>%
     mutate(name = case_when(name == 'severe_incidence' ~ 'Severe Incidence\n(ppa)')) %>%
+    mutate(value = value * 100) %>%
     pivot_wider(names_from = stat, values_from = value) %>%
     ggplot() +
-    geom_ribbon(aes(x = prevalence_2to10__mean, ymin = min, ymax = up, fill = ageGroup), alpha = 0.07) +
-    geom_line(aes(x = prevalence_2to10__mean, y = mean, col = ageGroup),linewidth=1) +
+    geom_ribbon(aes(x = prevalence_2to10__mean, ymin = min, ymax = up, fill = modelname), alpha = 0.15) +
+    geom_line(aes(x = prevalence_2to10__mean, y = mean, col = modelname),linewidth=1) +
     expand_limits(y=0) +
-    facet_wrap(~modelname, scales = 'free_y', nrow = 1) +
-    scale_color_manual(values = c('#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666')) +
-    scale_fill_manual(values = c('#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666'))+
+    facet_wrap(~ageGroup, scales = 'free_y', nrow = 1) +
+    scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
+    scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
     scale_x_continuous(expand = expansion(mult = c(0, 0))) +
     customTheme +
     labs(x = "PfPR 2to10",
          y = 'Severe Incidence\n(ppa)',
          subtitle = "") +
-    xlim(0.03, 0.81) +
-    theme(axis.text.x =  element_text(angle = 45, vjust = 1, hjust=1))
+    theme(strip.text.x = element_blank(),
+          axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
   
-  mylayout <- "ACCC
-               BCCC
-               DDEE"
+  pD <- pD1 / pD2
+  mylayout <- "AAACCCCC
+               BBBCCCCC
+               BBBCCCCC
+               DDDDDDDD
+               DDDDDDDD"
   
-  pABCD <- (pA+pB+pC+pD1+pD2)+plot_layout(design=mylayout)
+  pABCD <- (pA+pB+pC+pD)+plot_layout(design=mylayout)
   pABCD
-  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_R_CM_', ii, '.pdf',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, '.pdf',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, '.png',sep="")), height = 17.89, width = 34.13)
 }
-
-
-
-# ------------------------------ Figure 2D V1------------------------------
-
-# pD1 <- dat_p %>%
-#   ungroup() %>%
-#   filter(ageGroup %in% agegrps) %>%
-#   dplyr::select(output_target, ageGroup, prevalence_2to10__mean, modelname,
-#                 clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
-#                 severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-#   pivot_longer(cols = -c(output_target, ageGroup, modelname, prevalence_2to10__mean)) %>%
-#   separate(name, into = c('name', 'stat'), sep = '__') %>%
-#   filter(name =='clinical_incidence') %>%
-#   mutate(name = case_when(name == 'clinical_incidence' ~ 'Clinical Incidence\n(ppa)')) %>%
-#   pivot_wider(names_from = stat, values_from = value) %>%
-#   ggplot() +
-#   geom_ribbon(aes(x = prevalence_2to10__mean, ymin = min, ymax = up, fill = modelname), alpha = 0.15) +
-#   geom_line(aes(x = prevalence_2to10__mean, y = mean, col = modelname),linewidth=1) +
-#   expand_limits(y=0) +
-#   facet_wrap(~ageGroup, scales = 'free_y', nrow = 1) +
-#   scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
-#   scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
-#   scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
-#   scale_x_continuous(expand = expansion(mult = c(0, 0))) +
-#   customTheme +
-#   labs(x = "",
-#        y = 'Clinical Incidence\n(ppa)',
-#        title = "Age Groups",
-#        subtitle = "") +
-#   xlim(0, 0.90) +
-#   theme(axis.text.x =  element_text(angle = 45, vjust = 1, hjust=1))
-
-# pD2 <- dat_p %>%
-#   ungroup() %>%
-#   filter(ageGroup %in% agegrps) %>%
-#   dplyr::select(output_target, ageGroup, prevalence_2to10__mean, modelname,
-#                 clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
-#                 severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-#   pivot_longer(cols = -c(output_target, ageGroup, modelname, prevalence_2to10__mean)) %>%
-#   separate(name, into = c('name', 'stat'), sep = '__') %>%
-#   filter(name =='severe_incidence') %>%
-#   mutate(name = case_when(name == 'severe_incidence' ~ 'Severe Incidence\n(ppa)')) %>%
-#   
-#   pivot_wider(names_from = stat, values_from = value) %>%
-#   ggplot() +
-#   geom_ribbon(aes(x = prevalence_2to10__mean, ymin = min, ymax = up, fill = modelname), alpha = 0.15) +
-#   geom_line(aes(x = prevalence_2to10__mean, y = mean, col = modelname),linewidth=1) +
-#   expand_limits(y=0) +
-#   facet_wrap(~ageGroup, scales = 'free_y', nrow = 1) +
-#   scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
-#   scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
-#   scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
-#   scale_x_continuous(expand = expansion(mult = c(0, 0))) +
-#   customTheme +
-#   labs(x = "PfPR 2to10",
-#        y = 'Severe Incidence\n(ppa)',
-#        subtitle = "") +
-#   xlim(0, 0.90) +
-#   theme(strip.text.x = element_blank(),
-#         axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
-# 
-# pD <- pD1 / pD2
-# mylayout <- "AAACCCCC
-#              BBBCCCCC
-#              BBBCCCCC
-#              DDDDDDDD
-#              DDDDDDDD"
-# 
-# pABCD <- (pA+pB+pC+pD1+pD2)+plot_layout(design=mylayout)
-# pABCD
+pABCD

@@ -1,5 +1,6 @@
 import manifest
 from utility.helper import *
+import warnings
 
 class LoadExperiment:
     def __init__(self, args, manifest):
@@ -54,16 +55,14 @@ class LoadExperiment:
 
         # Entomology settings
         self.entomology_mode = 'dynamic'
-        self.seasonality = ['perennial']
+        self.seasonality = ['perennial','seasonal']
         self.mem_increase_factor = 5.0
 
         # Age groups and case management settings
         self.agebins = [0.5, 1, 2, 5, 10, 15, 20, 100]
         self.age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5], [0, 100]]
         self.cm_start = 1
-        self.cm_clinical = [0] # , 0.45  # for OpenMalaria gets converted tp cm_clinical_5daily in OpenMalaria.utils.py
-        self.cm_severe = [0] # 0.52
-        #self.cm_severe_clinical_combinations = False
+        self.case_management = [(0,0),(0.45,0.5175)]
         self.days_between_clinical_cases = 14  # number of days within clinical infections count as the same case (OpenMalaria and EMOD only, for OpenMalaria get's translated into 5-day timesteps)
         self.detectionLimit = 40
         self.importation_rate = 0
@@ -76,7 +75,7 @@ class LoadExperiment:
         self.configure_run_mode()
 
         # Parameters to vary
-        self.sweep_list = ['output_target', 'cm_clinical', 'seasonality']
+        self.sweep_list = ['output_target', 'case_management', 'seasonality']
         if self.emod_calib_params:
             self.configure_calibration()
 
@@ -85,8 +84,11 @@ class LoadExperiment:
         Configures settings based on the specified run_mode.
         """
         if self.run_mode == 'calibrun':
+            self.SUITEname = self.SUITEname.replace('test', 'calibrun')
+            self.num_seeds = 20
+            self.pop_size = 50000
             if self.output_type != 'eir':
-                raise Warning(f"output_type changed to 'eir' as required for calibrun (not {self.output_type})")
+                warnings.warn(f"Warning: output_type changed to 'eir' as required for calibrun (not {self.output_type})")
             self.output_type = 'eir'
             self.analyzer_list = ['timeavrg']
             self.plots_to_run = ['relationship']
@@ -94,25 +96,27 @@ class LoadExperiment:
                                  2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9,
                                  10, 12, 14, 16, 18, 20, 25, 30, 35, 40,
                                  45, 50, 100, 200, 500, 1000]
+            if self.malariasimulation_parameter_variation:
+                warnings.warn("Warning: malariasimulation should not use parameter variation during calibration run. Parameter variation is now set to False.")
+                self.malariasimulation_parameter_variation = False
 
-        elif self.run_mode == 'test':
+        elif self.run_mode == 'test' or self.run_mode is None:
             self.pop_size = 1000
             self.num_seeds = 1
             self.start_year = 2000
             self.end_year = 2005
             self.burnin = 10
-
-            if self.output_type == 'eir':
-                self.output_target = [1, 5, 10, 20, 35, 50]
-            elif self.output_type == 'prevalence_2to10':
-                self.output_target = [0.05, 0.1, 0.25, 0.4, 0.5, 0.6]
+            if self.output_type != 'eir':
+                warnings.warn(f"Warning: output_type changed to 'eir' as required for test (not {self.output_type})")
+                self.output_type = 'eir'
+            self.output_target = np.arange(1,4)
 
         elif self.run_mode == 'productionrun':
             self.SUITEname = self.SUITEname.replace('test', 'production')
             self.pop_size = 50000
             self.num_seeds = 20
             if self.output_type == 'eir':
-                self.output_target = [1, 5, 10, 20, 50, 100, 500, 1000]
+                self.output_target = [20]
             elif self.output_type == 'prevalence_2to10':
                 self.output_target = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
 

@@ -1,654 +1,19 @@
-import copy
 import os
 import sys
+import json
 import subprocess
-from typing import List, Dict, Any
-import pandas as pd
-import numpy as np
-from COMPS import AuthManager
 from functools import partial
-from EMOD.scaffolds.forcedEIR import *
-from EMOD.scaffolds.interventions import *
-import emod_api.demographics.PreDefinedDistributions as Distributions
-from emodpy_malaria.reporters.builtin import *
-import emodpy_malaria.demographics.MalariaDemographics as Demographics
+from EMOD.scaffolds.reporters import add_annual_reports, add_daily_reports, add_monthly_reports, add_5daily_reports
+from EMOD.scaffolds.EMOD_functions import build_burnin_df, all_campaigns, set_param, ItvFn, CfgFn, sweep_functions, seasonality_setup
+from EMOD.scaffolds.forcedEIR import mAb_vs_EIR
+
 import emodpy_malaria.malaria_config as malaria_config
-from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
-from emodpy_malaria.interventions.outbreak import add_outbreak_individual
 from emodpy.emod_task import EMODTask
 from idmtools.builders import SimulationBuilder
-from idmtools.core import ItemType
-from idmtools.entities.iplatform import IPlatform
-from idmtools.entities.simulation import Simulation
 from idmtools.entities.experiment import Experiment
-
 sys.path.append('../')
 import manifest
 from utility.helper_slurm import shell_header_quest, write_txt
-
-
-def set_param(simulation, param, value):
-    """
-    Set specific parameter value
-    Args:
-        simulation: idmtools Simulation
-        param: parameter
-        value: new value
-    Returns:
-        dict
-    """
-    return simulation.task.set_parameter(param, value)
-
-
-def build_demog():
-    """
-    Builds the demographic structure for the EMOD simulation.
-    """
-    # Create a Demographics object and set location and population size
-    demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
-    demog.SetEquilibriumVitalDynamics()
-
-    # Set the age distribution for the population
-    age_distribution = Distributions.AgeDistribution_SSAfrica  ## Keep this for production run
-
-    ## Define custom deaths rates to modify demography in alignment across models
-    # from emod_api.demographics.PreDefinedDistributions import ConstantDistribution
-    # from emod_api.demographics.PropertiesAndAttributes import IndividualAttributes
-    # age_distribution = ConstantDistribution(IndividualAttributes.AgeDistribution(distribution_values=[
-    #     [0, 0.034823157, 0.148672054, 0.279369812, 0.407205378, 0.525827528, 0.615957375, 0.686124742, 0.744257503,
-    #      0.799399225, 0.841316335, 0.874783476, 0.904810137, 0.930423709, 0.959214183, 0.977995201, 0.988102517,
-    #      0.995635694, 0.998360275, 1, 1]],
-    #     result_scale_factor=1,
-    #     result_values=[[0, 365, 1825, 3650, 5475, 7300, 9125, 10950, 12775, 14600, 16425, 18250, 20075, 21900, 23725,
-    #                     25550, 27375, 29200, 31025, 32850, 34675, 36500]]))
-    #
-    # demog.SetAgeDistribution(age_distribution)
-
-    return demog
-
-
-def build_standard_campaign_object():
-    """
-    Builds a standard campaign object for the simulation.
-    Args:
-        manifest: The manifest object containing the schema file.
-    Returns:
-        campaign_obj: The built campaign object.
-    """
-    import emod_api.campaign as camp
-    camp.set_schema(manifest.schema_file)
-    return camp
-
-
-def all_campaigns(camp, exp = None, row = None, intervention_list = []):
-    """
-    Wrapper functions to define all campaigns to go into the campaigns.json
-    To be expanded with SMC and other interventions as needed, and use if's to define applicability
-    """
-
-    ## If forced EIR, treated as campaign in EMOD
-    if row.entomology_mode == 'forced':
-        set_inputEIR_seasonality(camp, float(row.model_input_em), row.seasonality)
-
-    # Case management
-    treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
-
-    ## Carrying capacity step change
-
-    if 'cc_step' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None): #Make sure to include the cc_step change only at pickup simulations.
-        eir_df = pd.DataFrame({'CONSTANT':[row.cc_factor_emod]})
-
-        add_scale_larval_habitats(camp, df=eir_df,
-                                  start_day=row.cc_timestep_emod,
-                                  repetitions = 1)
-    if exp.importation_rate != 0:
-        ncases_per_year_per1000pop = ((exp.importation_rate/100)*1000) / exp.pop_size
-        add_outbreak_individual(camp, start_day = 1, demographic_coverage=ncases_per_year_per1000pop,
-                                repetitions=-1, timesteps_between_repetitions=365)
-
-    # SMC using PKPD model
-    if 'smc' in intervention_list and exp.emod_step == 'pickup':
-        print(row.smc_coverage)
-        if row.model_input_emod == 4:
-            start_array = [366, 731, 1096, 1461, 1826]
-        elif row.model_input_emod == 8:
-            start_array = [366, 731, 1096, 1461, 1826]
-        else:
-            start_array = [335, 700, 1065, 1430,1795]
-            #add_drug_campaign(camp, campaign_type = "SMC", start_days = [396,761,1126,1491,1856],
-        smc_campaign(camp, row, start_array)
-
-    return {'scen_id': int(row.scen_id)}
-
-
-def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
-                      yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15,20, 125],
-                        prefix='Daily_'):
-    """
-    Adds daily reports to the simulation task.
-    Args:
-        task: The simulation task object.
-        manifest: The manifest object containing the necessary information.
-        sim_start_year: The starting year of the simulation.
-        num_year: The number of years to add monthly reports for.
-        tot_year: The total number of years of the simulation.
-                  If None, it is set to num_year.
-        age_bins: The age bins for reporting.
-        prefix: The prefix to be used for the report filenames.
-    Raises:
-        ValueError: If num_year is greater than tot_year.
-    Returns:
-        None
-    """
-    if tot_year is None:
-        tot_year = num_year
-    if (num_year > tot_year):
-        raise ValueError('num_year must be <= tot_year')
-
-    # Write separate monthly reports for each year
-    for year in range(num_year):
-        sim_year = tot_year - num_year + year
-        start = yr_plusone + 365 * sim_year
-        desc = prefix + '%d' % (sim_year + sim_start_year)
-        add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365, age_bins=age_bins,
-                                   max_number_reports = 366, reporting_interval=1, filename_suffix=desc, pretty_format=False)
-
-def add_5daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
-                        yr_plusone=True, age_bins=[0.5, 1, 2, 5, 10, 15,20, 125],
-                        prefix='FiveDaily_'):
-    """
-    Adds 5 daily reports to the simulation task.
-    Args:
-        task: The simulation task object.
-        manifest: The manifest object containing the necessary information.
-        sim_start_year: The starting year of the simulation.
-        num_year: The number of years to add monthly reports for.
-        tot_year: The total number of years of the simulation.
-                  If None, it is set to num_year.
-        yr_plusone: Whether to add an extra year to the reporting.
-                    If True, reports will cover num_year + 1 years.
-                    If False, reports will cover num_year years.
-        age_bins: The age bins for reporting.
-        prefix: The prefix to be used for the report filenames.
-    Raises:
-        ValueError: If num_year is greater than tot_year.
-    Returns:
-        None
-    """
-    if tot_year is None:
-        tot_year = num_year
-    if (num_year > tot_year):
-        raise ValueError('num_year must be <= tot_year')
-
-    # Write separate monthly reports for each year
-    for year in range(num_year):
-        sim_year = tot_year - num_year + year
-        start = yr_plusone + 365 * sim_year
-        desc = prefix + '%d' % (sim_year + sim_start_year)
-        add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365 - 1, age_bins=age_bins,
-                                   max_number_reports = 366, reporting_interval=5, filename_suffix=desc, pretty_format=False)
-
-
-def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
-                        yr_plusone=True, age_bins=[0.5,1, 2, 5, 10, 15,20,125],
-                        prefix='Monthly_'):
-    """
-    Adds monthly reports to the simulation task.
-    Args:
-        task: The simulation task object.
-        manifest: The manifest object containing the necessary information.
-        sim_start_year: The starting year of the simulation.
-        num_year: The number of years to add monthly reports for.
-        tot_year: The total number of years of the simulation.
-                  If None, it is set to num_year.
-        yr_plusone: Whether to add an extra year to the reporting.
-                    If True, reports will cover num_year + 1 years.
-                    If False, reports will cover num_year years.
-        age_bins: The age bins for reporting.
-        prefix: The prefix to be used for the report filenames.
-    Raises:
-        ValueError: If num_year is greater than tot_year.
-    Returns:
-        None
-    """
-    if tot_year is None:
-        tot_year = num_year
-    if (num_year > tot_year):
-        raise ValueError('num_year must be <= tot_year')
-
-    # Write separate monthly reports for each year
-    for year in range(num_year):
-        sim_year = tot_year - num_year + year
-        start = yr_plusone + 365 * sim_year
-        desc = prefix + '%d' % (sim_year + sim_start_year)
-        add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365 - 1, age_bins=age_bins,
-                                   reporting_interval=30, filename_suffix=desc, pretty_format=False)
-
-
-def add_annual_reports(task, manifest, sim_start_year, num_year, tot_year=None,
-                       yr_plusone=True, age_bins=[0.5,1, 2, 5, 10, 15, 20, 125],
-                       prefix='Annual_', ipfilter=''):
-    """
-    Adds annual reports to the simulation task.
-    Args:
-        task: The simulation task object.
-        manifest: The manifest object containing the necessary information.
-        sim_start_year: The starting year of the simulation.
-        num_year: The number of years to add monthly reports for.
-        tot_year: The total number of years of the simulation.
-                  If None, it is set to num_year.
-        yr_plusone: Whether to add an extra year to the reporting.
-                    If True, reports will cover num_year + 1 years.
-                    If False, reports will cover num_year years.
-        age_bins: The age bins for reporting.
-        prefix: The prefix to be used for the report filenames.
-    Raises:
-        ValueError: If num_year is greater than tot_year.
-    Returns:
-        None
-    """
-    if tot_year is None:
-        tot_year = num_year
-    if (num_year > tot_year):
-        raise ValueError('num_year must be <= tot_year')
-    sim_year = tot_year - num_year
-    start = yr_plusone + 365 * sim_year
-    desc = prefix + '%dto%d' % (sim_year + sim_start_year, tot_year + sim_start_year - 1)
-
-    # All years in one report file
-    add_malaria_summary_report(task, manifest, start_day=start, end_day=start + (num_year * 365) - 1,
-                               age_bins=age_bins, reporting_interval=365, max_number_reports = (tot_year + sim_start_year) - (sim_year + sim_start_year),
-                               filename_suffix=desc, pretty_format=False)
-
-
-def _get_serialized_filenames(num_cores, timesteps):
-    """
-    Generates a list of serialized filenames based on the number of cores and timesteps.
-    Args:
-        num_cores: The number of cores used for parallel simulation.
-        timesteps: The number of timesteps.
-    Returns:
-        A list of serialized filenames.
-    """
-    if num_cores == 1:
-        # For single-core simulation, use a single serialized file
-        serialized_list = [f"state-{str(timesteps).zfill(5)}.dtk"]
-    else:
-        # For multi-core simulation, generate serialized files for each core
-        serialized_list = [f"state-{str(timesteps).zfill(5)}-{str(core_count).zfill(3)}.dtk"
-                           for core_count in range(num_cores)]
-    return serialized_list
-
-
-def _get_core_counts(sim_id, platform):
-    # TODO, get num_cores from simulation in slurm
-    # sim = platform.get_item(sim_id, ItemType.SIMULATION, raw=True)
-    # sim.refresh(QueryCriteria().select_children('hpc_jobs'))
-    # num_cores = int(sim.hpc_jobs[-1].configuration.max_cores)
-    num_cores = 1
-    return num_cores
-
-
-def get_workdir_from_simulations(platform: 'IPlatform', comps_simulations: List[Simulation]) -> Dict[str, str]:
-    """
-    Get COMPS filepath
-    Args:
-        platform: idmtools Platform
-        comps_simulations: COMPS Simulations
-    Returns: dictionary with simid as key and filepath as value
-    """
-
-    if platform.environment.upper() == "SLURMSTAGE" or platform.environment.upper() == "CALCULON":
-        mounts = AuthManager.get_environment_macros(platform.environment)['DOCKER_MOUNTS']
-        mounts = {v[0]: v[1:4] for v in [m.split(';') for m in mounts.split('|')]}
-        # pretend I'm on Linux and set the Linux mapping environment variables
-        for k, v in mounts.items():
-            os.environ[k] = ';'.join([v[0], v[2]])
-    sim_work_dir = {str(sim.id): sim.hpc_jobs[-1].working_directory for sim in comps_simulations if sim.hpc_jobs}
-
-    return sim_work_dir
-
-
-def create_sim_directory_map(exp_id: str, platform: 'IPlatform'):
-    """
-        Return a dataframe which contains simulation's working_path and tags.
-    Args:
-        exp_id: experiment id
-        platform: idmtools platform
-    Returns:
-        dataframe
-    """
-    # Get idmtools Experiment
-    exp = platform.get_item(exp_id, ItemType.EXPERIMENT, raw=False)
-
-    tags_list = []
-    for sim in exp.simulations:
-        tags = copy.deepcopy(sim.tags)
-        tags.update(dict(simid=sim.id))
-        tags_list.append(tags)
-    df = pd.DataFrame(tags_list)
-
-    if len(df) != len(exp.simulations):
-        print(f'Warning: not all jobs in {exp_id} succeeded', ':', )
-        print(len(exp.simulations) - len(df), 'unsucceeded')
-
-    simulations = exp.simulations
-    dir_list = []
-    for sim in simulations:
-        dir_dict = {"simid": str(sim.id), "serialized_file_path": platform._op_client.get_directory(sim)}
-        dir_list.append(dir_dict)
-
-    df_dir = pd.DataFrame(dir_list)
-    df = pd.merge(left=df, right=df_dir, on='simid')
-
-    return df
-
-
-def build_burnin_df(exp_id: str, platform, serialize_days):
-    """
-    return dataframe which contains serialized_file_path, serialized_population_filenames
-    Args:
-        exp_id:
-        platform:
-    Returns:
-        dataframe:
-        Run_Number | Serialization_Time_Steps | task_type | sweep_tag | simid | serialized_file_path|Num_Cores|Serialized_Population_Filenames
-    Note, Serialized_Population_Filenames depends on n_cores. if n_cores = 2, Serialized_Population_Filenames look
-    like these: state-00050-000.dtk, state-00050-001.dtk
-    """
-
-    df = create_sim_directory_map(exp_id, platform)
-    # add Num_Cores to df
-    df["Num_Cores"] = df["simid"].apply(_get_core_counts, platform=platform)
-
-    # try:
-    burnin_length_in_days = serialize_days  # int(df["Serialization_Time_Steps"].iloc[0].strip('[]'))
-    # except AttributeError:
-    # different versions of pandas save this as either a string or a list
-    # burnin_length_in_days = df["Serialization_Time_Steps"].iloc[0][-1]
-
-    df["Serialized_Population_Filenames"] = df["Num_Cores"].apply(_get_serialized_filenames,
-                                                                  timesteps=burnin_length_in_days)
-    df = df.reset_index(drop=True)
-    return df
-
-
-def get_burnin_exp_name(serialized_df):
-    """
-    Retrieve the name of the EMOD burnin experiment from the metadata.json file
-    Parameters:
-    serialized_df (DataFrame): A pandas DataFrame containing serialized data information.
-    Returns:
-    str: The name of the burnin experiment as defined in the serialization df from emod_serialized_id.
-    """
-
-    import json
-    metadata_path = serialized_df.serialized_file_path[0].parent / 'metadata.json'
-    with open(metadata_path, 'r') as json_file:
-        metadata = json.load(json_file)
-    return metadata['name']
-
-
-def get_scendf_burnin(exp, emod_serialized_id, manifest, platform, burnin):
-    """
-    Load the scenarios.csv file associated with the EMOD burnin experiment.
-    Parameters:
-    exp (Experiment): An experiment object containing information about the experiment.
-    emod_serialized_id (str): The serialized ID for the EMOD input data.
-    manifest (Manifest): A manifest object containing job directory information.
-    platform (Platform): A platform object specifying the execution platform.
-    burnin (int): The duration of the burnin period in days.
-    Returns:
-    pandas.DataFrame: A DataFrame containing scenarios from the burn-in experiment.
-    """
-
-    serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
-    exp_name_burnin = get_burnin_exp_name(serialized_df)
-    scen_df_burnin_path = os.path.join(exp.suite_directory, exp_name_burnin)
-    scen_df_burnin = pd.read_csv(os.path.join(scen_df_burnin_path, 'scenarios.csv'))
-    return scen_df_burnin
-
-
-def sweep_functions(simulation: Simulation, func_list: List) -> Dict[str, Any]:
-    """
-    Obtained from IDM's emodpy-snt framework that had been modified for bf-seasonal
-    https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py
-
-    Apply funcs on simulation.
-    Args:
-        simulation: idmtools Simulation
-        func_list: a list of functions
-
-    Returns:
-        dict of parameters
-    """
-    tags_updated = {}
-    for func in func_list:
-        tags = func(simulation)
-        if tags:
-            tags_updated.update(tags)
-    return tags_updated
-
-
-class ItvFn:
-    """
-    Obtained from IDM's emodpy-snt framework that had been modified for bf-seasonal
-    https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py
-
-    Sweeping utility: works for sweeping on interventions.
-    Requirements:
-     - func is a method that takes campaign as first parameter
-     - func return a dict
-
-    Returns:
-        dict
-    """
-
-    def __init__(self, func, *args, **kwargs):
-        self.func = func
-        self.args = args
-        self.kwargs = kwargs
-
-    def __call__(self, simulation: Simulation):
-        import emod_api.campaign as campaign
-        campaign.reset()
-        md = self.func(campaign, *self.args, **self.kwargs)
-
-        # add events
-        events = campaign.campaign_dict["Events"]
-        simulation.task.campaign.add_events(events)
-
-        # update config for adhoc events
-        adhoc_events = campaign.get_adhocs()
-        if len(adhoc_events) > 0:
-            print("Found adhoc events in campaign. Needs some special processing behind the scenes.")
-            if "Custom_Individual_Events" in simulation.task.config.parameters:
-                ev_exist = set(simulation.task.config.parameters.Custom_Individual_Events)
-                ev_addhoc = set(adhoc_events.keys())
-                simulation.task.config.parameters.Custom_Individual_Events = list(ev_exist.union(ev_addhoc))
-            else:
-                simulation.task.config.parameters.Custom_Individual_Events = list(set(adhoc_events.keys()))
-
-        # Make sure we cast numpy types into normal system types
-        if md:
-            for k, v in md.items():
-                if isinstance(v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)):
-                    md[k] = v.item()
-
-        return md
-
-
-class CfgFn:
-    """
-    Obtained from IDM's emodpy-snt framework that had been modified for bf-seasonal
-    https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py
-
-    Sweeping utility: works for sweeping on config parameters.
-    Requirements:
-     - func is a method that takes config as first parameter
-     - func return a dict
-
-    Returns:
-        dict
-    """
-
-    def __init__(self, func, *args, **kwargs):
-        self.func = func
-        self.args = args
-        self.kwargs = kwargs
-
-    def __call__(self, simulation: Simulation):
-        md = self.func(simulation.task.config, *self.args, **self.kwargs)
-
-        # Make sure we cast numpy types into normal system types
-        if md:
-            for k, v in md.items():
-                if isinstance(v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)):
-                    md[k] = v.item()
-
-        return md
-
-
-def config_task(platform, exp):
-    print("Creating EMODTask (from files)...")
-    task = EMODTask.from_default2(
-        config_path="config.json",
-        eradication_path=manifest.eradication_path,
-        campaign_builder=build_standard_campaign_object,
-        schema_path=manifest.schema_file,
-        param_custom_cb=set_config_parameters,  # (config = config, exp = exp),
-        ep4_custom_cb=None,
-        demog_builder=build_demog,
-        plugin_report=None
-    )
-    set_emod_exp_parameters(task.config, exp)
-    task.set_sif(manifest.SIF_PATH, exp.platform)
-    return task
-
-
-def set_config_parameters(config):
-    """
-    This function is a callback that is passed to emod-api.config to set config parameters,
-    including the malaria defaults.
-    Parameters:
-        config (object): The configuration object to be modified.
-    Returns:
-        object: The modified configuration object.
-    """
-    config = malaria_config.set_team_defaults(config, manifest)
-    return config
-
-
-def set_emod_exp_parameters(config, exp):
-    config.parameters.x_Base_Population = exp.pop_size / 1000
-    config.parameters.Simulation_Duration = exp.sim_dur_years * 365
-    config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
-    config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
-    config.parameters.Min_Days_Between_Clinical_Incidents = exp.days_between_clinical_cases
-    max_capacity_multiplier = (exp.pop_size/10000)
-
-    # Parameter configurations on climate for dynamic EIR
-    if exp.entomology_mode == 'dynamic':
-        malaria_config.add_species(config, manifest, ["gambiae"])  # , "arabiensis", "funestus"
-
-        seasonality_type = exp.seasonality[0]  # 'perennial'  # 'seasonal', 'example'  #FIXME enable sweeping
-        if seasonality_type == 'perennial':
-            import emod_api.config.default_from_schema_no_validation as dfs
-            habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
-            habitat1.parameters.Habitat_Type = "CONSTANT"
-            habitat1.parameters.Max_Larval_Capacity = 20000000 * max_capacity_multiplier
-            habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
-            malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
-        else:
-            import emod_api.config.default_from_schema_no_validation as dfs
-            habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
-            habitat1.parameters.Habitat_Type = "WATER_VEGETATION"
-            habitat1.parameters.Max_Larval_Capacity = 20000000 * max_capacity_multiplier
-            habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
-            malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
-        config.parameters.Air_Temperature_Filename = os.path.join('climate',
-                                                                  f'{seasonality_type}_air_temperature_daily.bin')
-        config.parameters.Land_Temperature_Filename = os.path.join('climate',
-                                                                   f'{seasonality_type}_air_temperature_daily.bin')
-        config.parameters.Rainfall_Filename = os.path.join('climate', f'{seasonality_type}_rainfall_daily.bin')
-        config.parameters.Relative_Humidity_Filename = os.path.join('climate',
-                                                                    f'{seasonality_type}_relative_humidity_daily.bin')
-
-    # Serialization configuration
-    if exp.emod_step == 'burnin':
-        config.parameters.Serialized_Population_Writing_Type = "TIMESTEP"
-        config.parameters.Serialization_Time_Steps = [exp.sim_dur_years * 365]
-        config.parameters.Serialization_Mask_Node_Write = 0
-        config.parameters.Serialization_Precision = "REDUCED"
-    if exp.emod_step == 'pickup':
-        config.parameters.Serialized_Population_Reading_Type = "READ"
-        config.parameters.Serialization_Mask_Node_Read = 0
-        config.parameters.Serialization_Time_Steps = [exp.burnin * 365]
-
-
-def config_sweep_builder(exp, scen_df):
-    builder = SimulationBuilder()
-    nseeds = exp.num_seeds
-    if exp.emod_step == 'burnin':
-        nseeds = exp.num_seeds_burnin
-    if exp.entomology_mode == 'forced':
-        matAP = 0.1327
-        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_emod)),
-                   partial(set_param, param='Run_Number', value=s)]
-                  for i, row in scen_df.iterrows()
-                  for s in range(nseeds)]
-    elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
-                   partial(set_param, param='Run_Number', value=s)]
-                  for i, row in scen_df.iterrows()
-                  for s in range(nseeds)]
-    else:
-        raise ValueError(f'{exp.entomology_mode} not valid')
-
-    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
-        from EMOD.scaffolds.calib_params import get_emod_calib_params
-        calib_params = get_emod_calib_params(exp,scen_df)
-        for i in range(0, len(calib_params)):
-            sweeps[i] = sweeps[i] + calib_params[i]
-    builder.add_sweep_definition(sweep_functions, sweeps)
-    return [builder]
-    
-def config_sweep_builder_pickup(exp, scen_df_pickup):
-    builder = SimulationBuilder()
-    nseeds = exp.num_seeds
-    if exp.entomology_mode == 'forced':
-        matAP = 0.1327
-        sweeps = [[
-            ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-            partial(set_param, param='Serialized_Population_Path',
-                    value=os.path.join(row["serialized_file_path"], "output")),
-            partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
-            partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_emod)),
-            partial(set_param, param='Run_Number', value=s)]
-            for i, row in scen_df_pickup.iterrows()
-            for s in range(nseeds)]
-    elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   partial(set_param, param='Serialized_Population_Path',
-                           value=os.path.join(row["serialized_file_path"], "output")),
-                   partial(set_param, param='Serialized_Population_Filenames',
-                           value=row["Serialized_Population_Filenames"]),
-                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
-                   partial(set_param, param='Run_Number', value=s)]
-                  for i, row in scen_df_pickup.iterrows()
-                  for s in range(nseeds)]
-    else:
-        raise ValueError(f'{exp.entomology_mode} not valid')
-
-    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.
-        from EMOD.scaffolds.calib_params import get_emod_calib_params
-        calib_params = get_emod_calib_params(exp,scen_df_pickup)
-        for i in range(0, len(calib_params)):
-            sweeps[i] = sweeps[i] + calib_params[i]
-    builder.add_sweep_definition(sweep_functions, sweeps)
-    return [builder]
 
 
 def submit_run_EMOD(exp, scen_df):
@@ -669,6 +34,7 @@ def submit_run_EMOD(exp, scen_df):
     # create EMODTask
     print("Creating EMODTask (from files)...")
     task = config_task(platform, exp)
+    task = build_demog(task,exp)
 
     if entomology_mode == 'dynamic':
         task.common_assets.add_directory(os.path.join(manifest.input_dir, "example_weather"), relative_path="climate")
@@ -683,8 +49,6 @@ def submit_run_EMOD(exp, scen_df):
         builder = config_sweep_builder(exp, scen_df)
 
     add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years)
-
-
 
     if emod_step != 'burnin':  # do not generate monthly reports for burnin
         if 'daily' in exp.analyzer_list:
@@ -710,6 +74,161 @@ def submit_run_EMOD(exp, scen_df):
     submit_analyze_EMOD(experiment, platform)
     print(f"Experiment submission {experiment.uid} succeeded.")
     return experiment
+
+
+def config_task(platform, exp):
+    print("Creating EMODTask (from files)...")
+    task = EMODTask.from_default2(
+        config_path="config.json",
+        eradication_path=manifest.eradication_path,
+        campaign_builder=build_standard_campaign_object,
+        schema_path=manifest.schema_file,
+        param_custom_cb=set_config_parameters,  # (config = config, exp = exp),
+        ep4_custom_cb=None,
+        demog_builder=None,
+        plugin_report=None
+    )
+    set_emod_exp_parameters(task.config, exp)
+    task.set_sif(manifest.SIF_PATH, exp.platform)
+    return task
+
+
+def build_standard_campaign_object():
+    """
+    Builds a standard campaign object for the simulation.
+    Args:
+        manifest: The manifest object containing the schema file.
+    Returns:
+        campaign_obj: The built campaign object.
+    """
+    import emod_api.campaign as camp
+    camp.set_schema(manifest.schema_file)
+    return camp
+
+
+def set_config_parameters(config):
+    """
+    This function is a callback that is passed to emod-api.config to set config parameters,
+    including the malaria defaults.
+    Parameters:
+        config (object): The configuration object to be modified.
+    Returns:
+        object: The modified configuration object.
+    """
+    config = malaria_config.set_team_defaults(config, manifest)
+    return config
+
+
+def set_emod_exp_parameters(config, exp):
+    config.parameters.x_Base_Population = exp.pop_size / 1000
+    config.parameters.Simulation_Duration = exp.sim_dur_years * 365
+    config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
+    config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
+    config.parameters.Birth_Rate_Dependence = "FIXED_BIRTH_RATE"
+    config.parameters.Min_Days_Between_Clinical_Incidents = exp.days_between_clinical_cases   
+
+    
+    # Serialization configuration
+    if exp.emod_step == 'burnin':
+        config.parameters.Serialized_Population_Writing_Type = "TIMESTEP"
+        config.parameters.Serialization_Time_Steps = [exp.sim_dur_years * 365]
+        config.parameters.Serialization_Mask_Node_Write = 0
+        config.parameters.Serialization_Precision = "REDUCED"
+    if exp.emod_step == 'pickup':
+        config.parameters.Serialized_Population_Reading_Type = "READ"
+        config.parameters.Serialization_Mask_Node_Read = 0
+        config.parameters.Serialization_Time_Steps = [exp.burnin * 365]
+
+
+def build_demog(task, exp):
+    """
+    Builds the demographic structure for the EMOD simulation.
+    """
+    # Create a Demographics object and set location and population size
+    #demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
+    demog = json.load(open(os.path.join(exp.emod_input_path,"demographics.json")))
+    #This calculation is the same as using crude rate, but jsons don't recognize 
+    birthrate = float(34.95*exp.pop_size/365/1000)
+    demog["Defaults"]["NodeAttributes"].update({"BirthRate": birthrate})
+    with open(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"), "w") as outfile: 
+        json.dump(demog, outfile)
+    task.transient_assets.add_asset(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"))
+    task.set_parameter("Demographics_Filenames", [f"demographics_{exp.pop_size}.json"])
+    task.config.parameters.Age_Initialization_Distribution_Type = "DISTRIBUTION_COMPLEX"
+    task.config.parameters.Death_Rate_Dependence = "NONDISEASE_MORTALITY_BY_AGE_AND_GENDER"
+    task.config.parameters.Enable_Demographics_Risk = 1
+    task.config.parameters.Enable_Initial_Prevalence = 1
+    task.config.parameters.Enable_Natural_Mortality = 1
+    task.config.parameters.x_Other_Mortality = 1
+    return task
+
+
+def config_sweep_builder(exp, scen_df):
+    builder = SimulationBuilder()
+    nseeds = exp.num_seeds
+    if exp.emod_step == 'burnin':
+        nseeds = exp.num_seeds_burnin
+    if exp.entomology_mode == 'forced':
+        matAP = 0.1327
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_emod)),
+                   partial(set_param, param='Run_Number', value=s)]
+                  for i, row in scen_df.iterrows()
+                  for s in range(nseeds)]
+    elif exp.entomology_mode == 'dynamic':
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+                   CfgFn(seasonality_setup, exp, seasonality = row.seasonality),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
+                   partial(set_param, param='Run_Number', value=s)]
+                  for i, row in scen_df.iterrows()
+                  for s in range(nseeds)]
+    else:
+        raise ValueError(f'{exp.entomology_mode} not valid')
+
+    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
+        from EMOD.scaffolds.calib_params import get_emod_calib_params
+        calib_params = get_emod_calib_params(exp,scen_df)
+        for i in range(0, len(calib_params)):
+            sweeps[i] = sweeps[i] + calib_params[i]
+    builder.add_sweep_definition(sweep_functions, sweeps)
+    return [builder]
+
+
+def config_sweep_builder_pickup(exp, scen_df_pickup):
+    builder = SimulationBuilder()
+    nseeds = exp.num_seeds
+    if exp.entomology_mode == 'forced':
+        matAP = 0.1327
+        sweeps = [[
+            ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+            partial(set_param, param='Serialized_Population_Path',
+                    value=os.path.join(row["serialized_file_path"], "output")),
+            partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
+            partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_emod)),
+            partial(set_param, param='Run_Number', value=s)]
+            for i, row in scen_df_pickup.iterrows()
+            for s in range(nseeds)]
+    elif exp.entomology_mode == 'dynamic':
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+                   CfgFn(seasonality_setup, exp, seasonality = row.seasonality),
+                   partial(set_param, param='Serialized_Population_Path',
+                           value=os.path.join(row["serialized_file_path"], "output")),
+                   partial(set_param, param='Serialized_Population_Filenames',
+                           value=row["Serialized_Population_Filenames"]),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
+                   partial(set_param, param='Run_Number', value=s)]
+                  for i, row in scen_df_pickup.iterrows()
+                  for s in range(nseeds)]
+    else:
+        raise ValueError(f'{exp.entomology_mode} not valid')
+
+    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.
+        from EMOD.scaffolds.calib_params import get_emod_calib_params
+        calib_params = get_emod_calib_params(exp,scen_df_pickup)
+        for i in range(0, len(calib_params)):
+            sweeps[i] = sweeps[i] + calib_params[i]
+    builder.add_sweep_definition(sweep_functions, sweeps)
+    return [builder]
 
 
 def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=20):

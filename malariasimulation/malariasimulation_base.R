@@ -47,35 +47,13 @@ exp$agebins <- as.numeric(unlist(strsplit(gsub("\\[|\\]", "", exp$agebins), ", "
 exp$min_ages <- (round(c(0, exp$agebins[1:length(exp$agebins) - 1]) * 365)) + 1
 exp$min_ages[1] <- 0
 exp$max_ages <- (round(exp$agebins * 365))
-exp$seasonality <- exp_setup_df[exp_setup_df$parameter == 'seasonality', 'Value'][1]
-exp$monthly_or_daily_eirs <- 'daily' # This will change so we can toggle between daily and monthly later
-if (exp$monthly_or_daily_eirs == "monthly"){
-  exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality,'_monthly',sep=""), 'Value']
-  exp$eirs <- as.numeric(strsplit(exp$eirs, ';')[[1]])
-  exp$eirs <- c(exp$eirs[2:12], exp$eirs[1])
-}
-if (exp$monthly_or_daily_eirs == "daily"){
-  exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality,'_','daily',sep=""), 'Value']
-  exp$eirs <- as.numeric(strsplit(exp$eirs, ';')[[1]])
-  exp$eirs <- c(exp$eirs[-(1:45)], exp$eirs[1:45])
-}
 exp$intervention_list <- exp_setup_df[exp_setup_df$parameter =='intervention_list','Value']
 exp$intervention_list <- data.frame(interventions = unlist(strsplit(gsub("\\[|\\]|\\'",'',exp$intervention_list),','))) #This helps make the python list readable in R
 exp$intervention_list <- exp$intervention_list$interventions
 
-
 # Store the min/max ages (days):
 min_ages <- exp$min_ages
 max_ages <- exp$max_ages
-
-# Generate the approximate seasonal parameters required to generate similar seasonal rainfall profile
-seasonal_coefficients <- get_seasonality_parameters(eirs = exp$eirs, timeframe = 'daily')
-# Store the seasonality coefficients in the malariasimulation experimental setup parameters list:
-exp$g0 <- as.numeric(seasonal_coefficients$coefficients[1])
-exp$g <- as.numeric(seasonal_coefficients$coefficients[2:4])
-exp$h <- as.numeric(seasonal_coefficients$coefficients[5:7])
-exp$floor <- as.numeric(seasonal_coefficients$floor)
-
 
 if( length(exp$intervention_list)>0){
   print("Adding interventions to simulations...")
@@ -88,5 +66,5 @@ if( length(exp$intervention_list)>0){
 
 # Run the simulations or load example:
 print("Running the simulations...")
-simulation_outputs_raw <- run_simulations(exp = exp, parameter_table = scenario_to_run, write_raw_output = TRUE)
+simulation_outputs_raw <- run_simulations(exp = exp, exp_setup_df = exp_setup_df, parameter_table = scenario_to_run, write_raw_output = TRUE)
 simulation_outputs_df <- simulation_outputs_raw[[2]][[1]]

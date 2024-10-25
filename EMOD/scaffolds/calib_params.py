@@ -1,12 +1,12 @@
+# This is primarily seperate from MultiMalModPy's general function. This will allow  to vary NU's EMOD parameters associated with our within-host calibration efforts.
 import os
 import pandas as pd
 from functools import partial
 from EMOD.utils import set_param
-# This is primarily seperate from EMO's general function. This will allow  to vary NU's EMOD parameters associated with our within-host calibration efforts.
 
 
 def get_emod_calib_params(exp, scen_df):
-    calib_config_df = pd.read_csv(exp.emod_input_path, 'emod_best.csv'))
+    calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, 'emod_best.csv'))
     if exp.emod_step == 'burnin':
         seeds = exp.num_seeds_burnin
     else:
@@ -21,11 +21,15 @@ def get_emod_calib_params(exp, scen_df):
         partial(set_param, param='Falciparum_PfEMP1_Variants', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Falciparum_PfEMP1_Variants'])),
         partial(set_param, param='Fever_IRBC_Kill_Rate', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Fever_IRBC_Kill_Rate'])),
         partial(set_param, param='Gametocyte_Stage_Survival_Rate', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Gametocyte_Stage_Survival_Rate'])),
-        partial(set_param, param='Max_Individual_Infections', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Max_Individual_Infections'])),
         partial(set_param, param='MSP1_Merozoite_Kill_Fraction', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'MSP1_Merozoite_Kill_Fraction'])),
         partial(set_param, param='Nonspecific_Antibody_Growth_Rate_Factor', value = float  (calib_config_df.loc[int(row.calib_config_pointer), 'Nonspecific_Antibody_Growth_Rate_Factor'])),
         partial(set_param, param='Nonspecific_Antigenicity_Factor', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Nonspecific_Antigenicity_Factor'])),
         partial(set_param, param='Pyrogenic_Threshold', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Pyrogenic_Threshold'])),
+        partial(set_param, param='Max_Individual_Infections', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Max_Individual_Infections'])),
+        partial(set_param, param='Erythropoiesis_Anemia_Effect', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Erythropoiesis_Anemia_Effect'])),
+        partial(set_param, param='RBC_Destruction_Multiplier', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'RBC_Destruction_Multiplier'])),
+        partial(set_param, param='Max_Individual_Infections', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Max_Individual_Infections'])),
+        partial(set_param, param='Cytokine_Gametocyte_Inactivation', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Cytokine_Gametocyte_Inactivation'])),
         partial(set_param, param='Innate_Immune_Variation_Type', value = str(calib_config_df.loc[int(row.calib_config_pointer), 'Innate_Immune_Variation_Type']))]
         for i, row in scen_df.iterrows()
         for s in range(seeds)]
