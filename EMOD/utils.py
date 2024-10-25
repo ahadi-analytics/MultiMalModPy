@@ -125,7 +125,7 @@ def set_emod_exp_parameters(config, exp):
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
     config.parameters.Birth_Rate_Dependence = "FIXED_BIRTH_RATE"
-    config.parameters.Min_Days_Between_Clinical_Incidents = exp.days_between_clinical_cases   
+    config.parameters.Min_Days_Between_Clinical_Incidents = 14  
 
     
     # Serialization configuration
