@@ -29,7 +29,11 @@ def create_scenarios(exp, scen_df):
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
     xml = xml.replace('@importation_rate@', f"{exp.importation_rate}")
     xml = xml.replace('@healthSystemMemory@', f"{str(int(exp.days_between_clinical_cases_5days))}")
-
+    xmlageGroups = '<ageGroup lowerbound="0">'
+    for item in exp.agebins:
+        xmlageGroups += f'\n\t\t\t<group upperbound="{item}"/>'
+    xml = xml.replace('<ageGroup lowerbound="0">', xmlageGroups)
+    
     # Scenario sweeps and runs
     df = rep_scen_df(scen_df)
     for r, row in df.iterrows():
