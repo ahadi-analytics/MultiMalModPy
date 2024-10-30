@@ -16,7 +16,7 @@ def create_scenarios(exp, scen_df):
     with open(os.path.join(exp.openmalaria_input_path, 'scaffolds', f"{exp.openmalaria_scaffold}.xml"), "r") as fp:
         xml = fp.read()
 
-    exp.days_between_clinical_cases_5days  = 25 # Aurelien communicated that as long as we use v46, we should have a days_between_clinical_cases of 25 days
+    exp.days_between_clinical_cases_5days  = 5 # Aurelien communicated that as long as we use v46, we should have a days_between_clinical_cases of 25 days
 
     # Replace placeholders in the XML template with fixed parameters
     xml = xml.replace("@version@", f"{exp.openmalaria_version}")
