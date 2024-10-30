@@ -26,7 +26,7 @@ def submit_run_EMOD(exp, scen_df):
     sim_dur_years = exp.sim_dur_years
     entomology_mode = exp.entomology_mode
     emod_step = exp.emod_step
-    burnin = exp.burnin
+    burnin = exp.emod_burnin
     platform = exp.platform
     agebins = exp.agebins
     sim_start_year_emod = exp.sim_start_year_emod
@@ -120,7 +120,7 @@ def set_config_parameters(config):
 
 
 def set_emod_exp_parameters(config, exp):
-    config.parameters.x_Base_Population = exp.pop_size / 1000
+    config.parameters.x_Base_Population = exp.emod_pop_size / 1000
     config.parameters.Simulation_Duration = exp.sim_dur_years * 365
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
@@ -148,12 +148,12 @@ def build_demog(task, exp):
     #demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
     demog = json.load(open(os.path.join(exp.emod_input_path,"demographics.json")))
     #This calculation is the same as using crude rate, but jsons don't recognize 
-    birthrate = float(34.95*exp.pop_size/365/1000)
+    birthrate = float(34.95*exp.emod_pop_size/365/1000)
     demog["Defaults"]["NodeAttributes"].update({"BirthRate": birthrate})
-    with open(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"), "w") as outfile: 
+    with open(os.path.join(exp.emod_input_path, f"demographics_{exp.emod_pop_size}.json"), "w") as outfile: 
         json.dump(demog, outfile)
-    task.transient_assets.add_asset(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"))
-    task.set_parameter("Demographics_Filenames", [f"demographics_{exp.pop_size}.json"])
+    task.transient_assets.add_asset(os.path.join(exp.emod_input_path, f"demographics_{exp.emod_pop_size}.json"))
+    task.set_parameter("Demographics_Filenames", [f"demographics_{exp.emod_pop_size}.json"])
     task.config.parameters.Age_Initialization_Distribution_Type = "DISTRIBUTION_COMPLEX"
     task.config.parameters.Death_Rate_Dependence = "NONDISEASE_MORTALITY_BY_AGE_AND_GENDER"
     task.config.parameters.Enable_Demographics_Risk = 1

@@ -20,7 +20,7 @@ def create_scenarios(exp, scen_df):
 
     # Replace placeholders in the XML template with fixed parameters
     xml = xml.replace("@version@", f"{exp.openmalaria_version}")
-    xml = xml.replace("@pop_size@", f"{exp.pop_size}")
+    xml = xml.replace("@pop_size@", f"{exp.openmalaria_pop_size}")
     xml = xml.replace("@burnin_start_year@", f"{exp.sim_start_year_openmalaria}")
     xml = xml.replace("@start_year@", f"{exp.start_year-1}")
     xml = xml.replace("@end_year@", f"{exp.end_year-1}")

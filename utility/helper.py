@@ -232,9 +232,9 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
         if exp.num_seeds_burnin != 1:
             raise ValueError('Current framework only allows 1 seed for EMOD burnin')
 
-    if exp.burnin < 80 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
+    if exp.emod_burnin < 100 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
                             'EMOD' not in exp.models_to_run):
-        print(f'Warning: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
+        print(f'Warning: Short burnin period of {exp.emod_burnin} years. A burnin of at least 100 years is recommended.')
 
     # Check agebins
     a = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
@@ -249,12 +249,12 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
     #    raise ValueError(f'Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.')
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
-    if any(value[0] not in [0, 0.45] for value in exp.case_management) and (exp.entomology_mode == 'dynamic') and (
+    if any(value[0] not in [0, 0.15, 0.45] for value in exp.case_management) and (exp.entomology_mode == 'dynamic') and (
             'EMOD' in exp.models_to_run):
         raise ValueError(
             'EMOD is not set up to run dynamic EIR is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
-    if any(value[0] not in [0, 0.45] for value in exp.case_management) and exp.output_type == 'prevalence_2to10':
+    if any(value[0] not in [0, 0.15, 0.45] for value in exp.case_management) and exp.output_type == 'prevalence_2to10':
         raise ValueError(
             'output_type prevalence_2to10 is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
@@ -361,7 +361,9 @@ def create_simsetup_csv(exp):
                  'nexps': exp.nexps,
                  'sweep_list': exp.sweep_list,
                  'monitoring_years': exp.monitoring_years,
-                 'pop_size': exp.pop_size,
+                 'pop_size_emod': exp.emod_pop_size,
+                 'pop_size_malariasimulation': exp.malariasimulation_pop_size,
+                 'pop_size_openmalaria': exp.openmalaria_pop_size,
                  'agebins': exp.agebins,
                  'seasonality': exp.seasonality,
                  'seasonal_monthly': ';'.join(map(str, exp.seasonal)),
@@ -370,7 +372,9 @@ def create_simsetup_csv(exp):
                  'perennial_daily': ';'.join(map(str, exp.perennial_daily)),
                  'start_year': exp.start_year,
                  'end_year': exp.end_year,
-                 'burnin': exp.burnin,
+                 'burnin_emod':exp.emod_burnin,
+                 'burnin_malariasimulation': exp.malariasimulation_burnin,
+                 'burnin_openmalaria': exp.openmalaria_burnin,
                  'sim_start_year_openmalaria': exp.sim_start_year_openmalaria,
                  'sim_start_year_emod': exp.sim_start_year_emod,
                  'sim_start_year_malariasimulation': exp.sim_start_year_malariasimulation,

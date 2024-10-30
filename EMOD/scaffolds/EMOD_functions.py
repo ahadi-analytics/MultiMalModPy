@@ -82,7 +82,7 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
                                   start_day=row.cc_timestep_emod,
                                   repetitions = 1)
     if exp.importation_rate != 0:
-        ncases_per_year_per1000pop = ((exp.importation_rate/100)*1000) / exp.pop_size
+        ncases_per_year_per1000pop = ((exp.importation_rate/100)*1000) / exp.emod_pop_size
         add_outbreak_individual(camp, start_day = 1, demographic_coverage=ncases_per_year_per1000pop,
                                 repetitions=-1, timesteps_between_repetitions=365)
 

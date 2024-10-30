@@ -19,9 +19,14 @@ class LoadExperiment:
         self.models_to_run = args.models
         self.intervention_list = args.interventions
         self.run_mode = args.run_mode
-        self.emod_calib_params = args.emod_calib_params
-        self.malariasimulation_parameter_variation = args.mpv
         self.output_type = args.output_type
+        self.burnin = 80
+        self.start_year = 2000
+        self.end_year = 2005
+        self.mem_increase_factor = 5.0
+        self.analyzer_script = ['analyze_sim.py']
+        self.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'timeavrg']
+        self.plots_to_run = ['relationship', 'timeseries', 'agecurves'] # 'anova_rmse', 'ccstep', 'smc'  ## plot for internal version, cleanup in mmmpy public
 
         # User and directory settings
         self.user = args.user
@@ -45,13 +50,23 @@ class LoadExperiment:
         self.interp_csv = manifest.interp_csv
         self.burnin_directory = None
 
-        # OpenMalaria and malariasimulation settings
+         # EMOD Settings
+        self.emod_burnin = 200
+        self.emod_pop_size = 10000
+        self.emod_calib_params = args.emod_calib_params
+
+        # malariasimulation Settings
+        self.malariasimulation_burnin = 25
+        self.malariasimulation_pop_size = 50000
+        self.malariasimulation_script = 'malariasimulation_base.R'
+        self.malariasimulation_parameter_variation = args.mpv
+
+        # OpenMalaria Settings
+        self.openmalaria_burnin = 25
+        self.openmalaria_pop_size = 50000
         self.openmalaria_scaffold = "R0000GA"
         self.openmalaria_survey_step = '5d'
-        self.malariasimulation_script = 'malariasimulation_base.R'
-        self.analyzer_script = ['analyze_sim.py']
-        self.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'timeavrg']
-        self.plots_to_run = ['relationship', 'timeseries', 'agecurves'] # 'anova_rmse', 'ccstep', 'smc'  ## plot for internal version, cleanup in mmmpy public
+
 
         # Entomology settings
         self.entomology_mode = 'dynamic'
@@ -85,7 +100,8 @@ class LoadExperiment:
         if self.run_mode == 'calibrun':
             self.SUITEname = self.SUITEname.replace('test', 'calibrun')
             self.num_seeds = 20
-            self.pop_size = 50000
+            self.start_year = 2000
+            self.end_year = 2005
             if self.output_type != 'eir':
                 warnings.warn(f"Warning: output_type changed to 'eir' as required for calibrun (not {self.output_type})")
             self.output_type = 'eir'
@@ -100,11 +116,15 @@ class LoadExperiment:
                 self.malariasimulation_parameter_variation = False
 
         elif self.run_mode == 'test' or self.run_mode is None:
-            self.pop_size = 1000
             self.num_seeds = 1
             self.start_year = 2000
             self.end_year = 2005
-            self.burnin = 10
+            self.emod_burnin = 5
+            self.openmalaria_burnin = 5
+            self.malariasimulation_burnin = 5
+            self.openmalaria_pop_size = 1000
+            self.malariasimulation_pop_size = 1000
+            self.emod_pop_size = 1000
             if self.output_type != 'eir':
                 warnings.warn(f"Warning: output_type changed to 'eir' as required for test (not {self.output_type})")
                 self.output_type = 'eir'
@@ -112,7 +132,6 @@ class LoadExperiment:
 
         elif self.run_mode == 'productionrun':
             self.SUITEname = self.SUITEname.replace('test', 'production')
-            self.pop_size = 50000
             self.num_seeds = 20
             if self.output_type == 'eir':
                 self.output_target = [20]
@@ -121,7 +140,6 @@ class LoadExperiment:
 
         else:  # Default to simulation
             self.SUITEname = self.SUITEname.replace('test', 'sim')
-            self.pop_size = 10000
             self.num_seeds = 3
             if self.output_type == 'eir':
                 self.output_target = [1, 5, 10, 20, 50, 100, 500, 1000]
