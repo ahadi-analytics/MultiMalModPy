@@ -1042,6 +1042,7 @@ if __name__ == "__main__":
         daily_analyzers = [DailyAgebinAnalyzer(expt_name=exp_name,
                                                start_year=start_year,
                                                end_year=end_year,
+                                               age_groups_aggregates=age_groups_aggregates,
                                                sweep_variables=exp_tags,
                                                working_dir=wdir,
                                                burnin=burnin)]
@@ -1049,6 +1050,7 @@ if __name__ == "__main__":
         fiveday_analyzers = [FiveDayAgebinAnalyzer(expt_name=exp_name,
                                                    start_year=start_year,
                                                    end_year=end_year,
+                                                   age_groups_aggregates=age_groups_aggregates,
                                                    sweep_variables=exp_tags,
                                                    working_dir=wdir,
                                                    burnin=burnin)]
@@ -1056,6 +1058,7 @@ if __name__ == "__main__":
         monthly_analyzers = [MonthlyAgebinAnalyzer(expt_name=exp_name,
                                                    start_year=start_year,
                                                    end_year=end_year,
+                                                   age_groups_aggregates=age_groups_aggregates,
                                                    sweep_variables=exp_tags,
                                                    working_dir=wdir,
                                                    burnin=burnin)]
@@ -1065,6 +1068,7 @@ if __name__ == "__main__":
                                                  working_dir=wdir,
                                                  start_year=start_year,
                                                  end_year=end_year - 1,
+                                                 age_groups_aggregates=age_groups_aggregates,
                                                  burnin=burnin)]
 
         analyzers_timeavrg = [TimeavrgAgebinAnalyzer(expt_name=exp_name,

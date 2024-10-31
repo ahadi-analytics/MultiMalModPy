@@ -1,6 +1,5 @@
 import argparse
 import os
-import subprocess
 import itertools
 import pickle
 from datetime import datetime
@@ -234,7 +233,7 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
 
     if exp.emod_burnin < 100 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
                             'EMOD' not in exp.models_to_run):
-        print(f'Warning: Short burnin period of {exp.emod_burnin} years. A burnin of at least 100 years is recommended.')
+        print(f'Warning: For EMOD a burnin of at least 100 years is recommended. A short burnin period of {exp.emod_burnin} years was used.')
 
     # Check agebins
     a = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
@@ -423,9 +422,9 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                         5.59609623e+02, 7.27300347e+02, 9.45240704e+02, 1.22848833e+03, 1.59661298e+03, 2.07504862e+03,
                         2.69685066e+03, 3.50497979e+03, 4.55527016e+03, 5.92028698e+03, 7.69434011e+03, 1.00000000e+04]
     if exp.run_mode == "test" or exp.run_mode is None:
-        exp.output_target = np.arange(1,4)
-        eir_range = [5,10,20]
-        x_temp_range = [8.93479989e+01,1.50918358e+02,4.30582677e+02]
+        exp.output_target = np.arange(1,2)
+        eir_range = [50]
+        x_temp_range = [1]
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
