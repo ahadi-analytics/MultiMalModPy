@@ -10,9 +10,6 @@ from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_
 from emodpy_malaria.interventions.outbreak import add_outbreak_individual
 from emodpy_malaria.reporters.builtin import *
 import emodpy_malaria.malaria_config as malaria_config
-import emodpy_malaria.demographics.MalariaDemographics as Demographics
-from emod_api.demographics.DemographicsTemplates import CrudeRate
-import emod_api.demographics.PreDefinedDistributions as Distributions
 from idmtools.core import ItemType
 from idmtools.entities.iplatform import IPlatform
 from idmtools.entities.simulation import Simulation
@@ -101,32 +98,37 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
     return {'scen_id': int(row.scen_id)}
 
 
-def seasonality_setup(config, exp, seasonality = None):
+def habitat_setup(config, exp, row):
 # Parameter configurations on climate for dynamic EIR
     malaria_config.add_species(config, manifest, ["gambiae"])  # , "arabiensis", "funestus"
-    max_capacity_multiplier = (exp.pop_size/10000)
-    seasonality_type = seasonality  # 'perennial'  # 'seasonal', 'example'  #FIXME enable sweeping
-    if seasonality_type == 'perennial':
-        import emod_api.config.default_from_schema_no_validation as dfs
+    max_capacity_multiplier = (exp.emod_pop_size/1000)
+    import emod_api.config.default_from_schema_no_validation as dfs
+    if row.seasonality == 'perennial':
         habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat1.parameters.Habitat_Type = "CONSTANT"
-        habitat1.parameters.Max_Larval_Capacity = 20000000 * max_capacity_multiplier
+        habitat1.parameters.Max_Larval_Capacity = 10000000 * max_capacity_multiplier * row.model_input_emod_constant
         habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
         malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
     else:
-        import emod_api.config.default_from_schema_no_validation as dfs
         habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
-        habitat1.parameters.Habitat_Type = "WATER_VEGETATION"
-        habitat1.parameters.Max_Larval_Capacity = 20000000 * max_capacity_multiplier
+        habitat1.parameters.Habitat_Type = "TEMPORARY_RAINFALL"
+        habitat1.parameters.Max_Larval_Capacity = 100000000 * max_capacity_multiplier * row.model_input_emod_temprain
         habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
         malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
-    config.parameters.Air_Temperature_Filename = os.path.join('climate',
-                                                                f'{seasonality_type}_air_temperature_daily.bin')
-    config.parameters.Land_Temperature_Filename = os.path.join('climate',
-                                                                f'{seasonality_type}_air_temperature_daily.bin')
-    config.parameters.Rainfall_Filename = os.path.join('climate', f'{seasonality_type}_rainfall_daily.bin')
-    config.parameters.Relative_Humidity_Filename = os.path.join('climate',
-                                                                f'{seasonality_type}_relative_humidity_daily.bin')
+        habitat2 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
+        habitat2.parameters.Habitat_Type = "CONSTANT"
+        habitat2.parameters.Max_Larval_Capacity = 1000000 * max_capacity_multiplier * row.model_input_emod_constant
+        habitat_list = [{"Habitat_Type": habitat2.parameters.Habitat_Type, "Max_Larval_Capacity": habitat2.parameters.Max_Larval_Capacity}]
+        malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = False)
+
+def climate_setup(task, seasonality = None):
+    task.config.parameters.Air_Temperature_Filename = os.path.join('climate',
+                                                                f'{seasonality}_air_temperature_daily.bin')
+    task.config.parameters.Land_Temperature_Filename = os.path.join('climate',
+                                                                f'{seasonality}_air_temperature_daily.bin')
+    task.config.parameters.Rainfall_Filename = os.path.join('climate', f'{seasonality}_rainfall_daily.bin')
+    task.config.parameters.Relative_Humidity_Filename = os.path.join('climate',
+                                                                f'{seasonality}_relative_humidity_daily.bin')
 
 
 def _get_serialized_filenames(num_cores, timesteps):
@@ -347,3 +349,25 @@ class CfgFn:
 
         return md
 
+class SwpFn:
+    """
+    Sweeping utility: works for sweeping on report, demographics, migrations and climate, etc.
+    Requirements:
+     - func is a method that takes task as first parameter
+     - func return a dict
+    Returns:
+        dict
+    """
+    def __init__(self, func, *args, **kwargs):
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+    def __call__(self, simulation: Simulation):
+        md = self.func(simulation.task, *self.args, **self.kwargs)
+        # Make sure we cast numpy types into normal system types
+        if md:
+            for k, v in md.items():
+                if isinstance(v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)):
+                    md[k] = v.item()
+        return md
+    

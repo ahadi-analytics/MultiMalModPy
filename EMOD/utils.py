@@ -4,7 +4,7 @@ import json
 import subprocess
 from functools import partial
 from EMOD.scaffolds.reporters import add_annual_reports, add_daily_reports, add_monthly_reports, add_5daily_reports
-from EMOD.scaffolds.EMOD_functions import build_burnin_df, all_campaigns, set_param, ItvFn, CfgFn, sweep_functions, seasonality_setup
+from EMOD.scaffolds.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup 
 from EMOD.scaffolds.forcedEIR import mAb_vs_EIR
 
 import emodpy_malaria.malaria_config as malaria_config
@@ -160,6 +160,7 @@ def build_demog(task, exp):
     task.config.parameters.Enable_Initial_Prevalence = 1
     task.config.parameters.Enable_Natural_Mortality = 1
     task.config.parameters.x_Other_Mortality = 1
+    task.config.parameters["logLevel_Memory"] = "WARNING"
     return task
 
 
@@ -177,8 +178,9 @@ def config_sweep_builder(exp, scen_df):
                   for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   CfgFn(seasonality_setup, exp, seasonality = row.seasonality),
-                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
+                   CfgFn(habitat_setup, exp, row=row),
+                   SwpFn(climate_setup,  seasonality = row.seasonality),
+                   #partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
@@ -210,12 +212,13 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   CfgFn(seasonality_setup, exp, seasonality = row.seasonality),
+                   CfgFn(habitat_setup, exp, seasonality = row.seasonality),
+                   SwpFn(climate_setup,  seasonality = row.seasonality),
                    partial(set_param, param='Serialized_Population_Path',
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',
                            value=row["Serialized_Population_Filenames"]),
-                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
+                   #partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df_pickup.iterrows()
                   for s in range(nseeds)]
