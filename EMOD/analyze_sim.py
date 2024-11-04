@@ -75,7 +75,7 @@ class InsetChartAnalyzer(IAnalyzer):
         self.expt_name = expt_name
         self.start_year = start_year
         self.daily = daily
-        self.burnin = burnin
+        self.emod_burnin = burnin
 
     def map(self, data, simulation: Simulation):
         simdata = pd.DataFrame({x: data[self.filenames[0]]['Channels'][x]['Data'] for x in self.inset_channels})
@@ -107,8 +107,8 @@ class InsetChartAnalyzer(IAnalyzer):
         if self.daily:
             adf.to_csv(os.path.join(self.working_dir, 'EMOD', 'All_Age_InsetChart_daily.csv'), index=False)
 
-        if self.burnin is not None:
-            adf = adf[adf['Year'] >= self.start_year + self.burnin]
+        if self.emod_burnin is not None:
+            adf = adf[adf['Year'] >= self.start_year + self.emod_burnin]
 
         # Change data to Year-months format, exclude days
         adf['date'] = pd.to_datetime(adf['date'])
@@ -166,7 +166,7 @@ class InputEIRAnalyzer(IAnalyzer):
         self.daily_report = daily_report
         self.monthly_report = monthly_report
         self.expt_name = expt_name
-        self.burnin = burnin
+        self.emod_burnin = burnin
 
     def map(self, data, simulation):
         simdata = pd.DataFrame({x: data[self.filenames[0]]['Channels'][x]['Data'] for x in self.channels})
@@ -197,8 +197,8 @@ class InputEIRAnalyzer(IAnalyzer):
 
         adf = pd.concat(selected).reset_index(drop=True)
         adf['Infectious Vectors'] = round(adf['Infectious Vectors'] * adf['Adult Vectors'], 0)
-        if self.burnin is not None:
-            adf = adf[adf['year'] >= self.start_year + self.burnin]
+        if self.emod_burnin is not None:
+            adf = adf[adf['year'] >= self.start_year + self.emod_burnin]
 
         # Aggregate data and save for specified time intervals (daily, monthly, annually)
         grp_channels = self.sweep_variables  # [x for x in self.sweep_variables if x != "Run_Number"] ## Keep runs
@@ -219,7 +219,7 @@ class InputEIRAnalyzer(IAnalyzer):
             df = df.rename(columns={'Daily EIR': 'simulatedEIR', 'time': 'timestep'})
 
             df['day'] = df['day'] + 1
-            df['timestep'] = (df['timestep'] + 1) - (self.burnin * 365)
+            df['timestep'] = (df['timestep'] + 1) - (self.emod_burnin * 365)
             df.to_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_daily.csv'), index=False)
         else:
             sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
@@ -287,7 +287,7 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
         self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
                                                                [15, 20], [20, 100],
                                                                [0, 5], [0, 100]]
-        self.burnin = burnin
+        self.emod_burnin = burnin
 
     def map(self, data, simulation: Simulation):
 
@@ -335,8 +335,8 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
             return
 
         df = pd.concat(selected).reset_index(drop=True)
-        if self.burnin is not None:
-            df = df[df['year'] >= self.start_year + self.burnin]
+        if self.emod_burnin is not None:
+            df = df[df['year'] >= self.start_year + self.emod_burnin]
         df_pfpr2to10 = df.groupby(self.sweep_variables)[['prevalence_2to10']].agg(np.mean).reset_index()
 
         ## Aggregate years
@@ -432,7 +432,7 @@ class DailyAgebinAnalyzer(IAnalyzer):
         self.end_year = end_year
         self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
                                                                [15, 20], [20, 100], [0, 5], [0, 100]]
-        self.burnin = burnin
+        self.emod_burnin = burnin
 
     def map(self, data, simulation: Simulation):
 
@@ -486,8 +486,8 @@ class DailyAgebinAnalyzer(IAnalyzer):
             print("\nWarning: No data have been returned... Exiting...")
             return
         df = pd.concat(selected).reset_index(drop=True)
-        if self.burnin is not None:
-            df = df[df['year'] >= self.start_year + self.burnin]
+        if self.emod_burnin is not None:
+            df = df[df['year'] >= self.start_year + self.emod_burnin]
 
         cdf = pd.DataFrame()
         # Age group labels
@@ -560,7 +560,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         self.end_year = end_year
         self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
                                                                [15, 20], [20, 100], [0, 5], [0, 100]]
-        self.burnin = burnin
+        self.emod_burnin = burnin
         self.cc = cc
 
     def map(self, data, simulation: Simulation):
@@ -619,8 +619,8 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
         print(f'\nSaving outputs to: {os.path.join(self.working_dir, "EMOD")}')
 
-        if self.burnin is not None:
-            df = df[df['year'] >= self.start_year + self.burnin]
+        if self.emod_burnin is not None:
+            df = df[df['year'] >= self.start_year + self.emod_burnin]
 
         df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'day'])[['prevalence_2to10']].agg(
             np.mean).reset_index()
@@ -727,7 +727,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         self.end_year = end_year
         self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
                                                                [15, 20], [20, 100], [0, 5], [0, 100]]
-        self.burnin = burnin
+        self.emod_burnin = burnin
 
     def map(self, data, simulation: Simulation):
 
@@ -784,8 +784,8 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
 
         print(f'\nSaving outputs to: {os.path.join(self.working_dir, "EMOD")}')
 
-        if self.burnin is not None:
-            df = df[df['year'] >= self.start_year + self.burnin]
+        if self.emod_burnin is not None:
+            df = df[df['year'] >= self.start_year + self.emod_burnin]
 
         df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'month'])[['prevalence_2to10']].agg(
             np.mean).reset_index()
@@ -876,7 +876,7 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         self.end_year = end_year
         self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
                                                                [15, 20], [20, 100], [0, 5], [0, 100]]
-        self.burnin = burnin
+        self.emod_burnin = burnin
 
     def map(self, data, simulation: Simulation):
 
@@ -926,8 +926,8 @@ class AnnualAgebinAnalyzer(IAnalyzer):
             return
 
         df = pd.concat(selected).reset_index(drop=True)
-        if self.burnin is not None:
-            df = df[df['year'] >= self.start_year + self.burnin]
+        if self.emod_burnin is not None:
+            df = df[df['year'] >= self.start_year + self.emod_burnin]
         df_pfpr2to10 = df.groupby(self.sweep_variables + ['year'])[['prevalence_2to10']].agg(np.mean).reset_index()
 
         # Aggregate months to years
@@ -1009,12 +1009,12 @@ if __name__ == "__main__":
     monitoring_start = end_year - exp.monitoring_years
 
     if exp.emod_step == 'burnin':
-        end_year = start_year + exp.burnin
+        end_year = start_year + exp.emod_burnin
         burnin = 0  ## Keep all years
     elif exp.emod_step == 'pickup':
         burnin = 0
     else:
-        burnin = int(exp.burnin)  ## Years burnin to discard when running burnin+pickup together
+        burnin = int(exp.emod_burnin)  ## Years burnin to discard when running burnin+pickup together
 
     # Define which outcome metrics to process in inset_chart (all age per daily timestep)
     channels_inset_chart = ['Statistical Population', 'Births', 'Disease Deaths',
