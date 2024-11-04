@@ -65,7 +65,7 @@
                     @start_year@-12-27
     			</surveyTime>
     		</surveys>
-        <ageGroup lowerbound="0">
+        <@age_groups@>
         </ageGroup>
     </monitoring>
     <interventions name="CC_STEP">
