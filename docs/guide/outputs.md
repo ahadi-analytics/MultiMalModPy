@@ -30,7 +30,7 @@ coming soon
 ## Customizing outputs
 
 To customize a simulation, any of the defined parameters listed
-in [Simulation experiment configuration](https://github.com/numalariamodeling/model-characterization#simulation-experiment-configuration)
+in [Simulation experiment configuration](https://github.com/ahadi-analytics/model-characterization#simulation-experiment-configuration)
 can be changed.
 Commonly modified parameters are `eir`, `seasonality`, `burnin` period, and sometimes `cm_clinical`, for base-case
 scenario runs.

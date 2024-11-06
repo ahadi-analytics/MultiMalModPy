@@ -13,7 +13,7 @@ Coming soon...
 - In terminal navigate to repository  `cd ~/model-characterization`
 - Run python script that defines the simulation i.e. `python launch_sim.py` for a test run using defaults specified in
   the script and `parse_launch_args` (see helper.py)
-    - Other options defined in the [run_launch_sim.sh](https://github.com/numalariamodeling/model-characterization/blob/main/run_launch_sim.sh)
+    - Other options defined in the [run_launch_sim.sh](https://github.com/ahadi-analytics/model-characterization/blob/main/run_launch_sim.sh)
     - `python launch_sim.py --emodstep burnin --models EMOD MalSim OpenMalaria`
     - `python launch_sim.py --models EMOD MalSim OpenMalaria --rownum 0 --csv baseline_eirsweep_noCM`
 - Check simulations via `squeue -u <username>`
@@ -57,7 +57,7 @@ coming soon
 ### Customizing outputs
 
 To customize a simulation, any of the defined parameters listed
-in [Simulation experiment configuration](https://github.com/numalariamodeling/model-characterization#simulation-experiment-configuration)
+in [Simulation experiment configuration](https://github.com/ahadi-analytics/model-characterization#simulation-experiment-configuration)
 can be changed.
 Commonly modified parameters are `eir`, `seasonality`, `burnin` period, and sometimes `cm_clinical`, for base-case
 scenario runs.

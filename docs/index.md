@@ -1,6 +1,6 @@
 # MultiMalModPy Documentation
 
-Documentation of [MultiMalModPy](https://github.com/numalariamodeling/model-characterization),  a novel programmatic framework for running three individual-based malaria transmission models.
+Documentation of [MultiMalModPy](https://github.com/ahadi-analytics/model-characterization),  a novel programmatic framework for running three individual-based malaria transmission models.
 
 Currently, MultiMalModPy includes the following three models:
 
@@ -45,6 +45,6 @@ Currently, MultiMalModPy includes the following three models:
 
 ## Contribute to its development  
 MultiMalModPy is an open-source framework to which anyone is welcome to contribute.
-Check out the [MultiMalModPy GitHub repository](https://github.com/numalariamodeling/MultiMalModPy) for all the source code, open issues etc. and send us a pull request.
+Check out the [MultiMalModPy GitHub repository](https://github.com/ahadi-analytics/MultiMalModPy) for all the source code, open issues etc. and send us a pull request.
 For new feature requests, please check out the open issues and open a new one if a related one does not already exist.
 

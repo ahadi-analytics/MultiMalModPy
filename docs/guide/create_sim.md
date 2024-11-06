@@ -23,7 +23,7 @@ Scenarios csvs are stored in the `scenario_inputs` sub-directory:
 - ...
 
 Details provided
-in [scenario_inputs/README](https://github.com/numalariamodeling/model-characterization/blob/main/scenario_inputs/README.md)
+in [scenario_inputs/README](https://github.com/ahadi-analytics/model-characterization/blob/main/scenario_inputs/README.md)
 
 
 Example CSV files that specify different simulation experiments to run.

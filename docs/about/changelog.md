@@ -1,7 +1,7 @@
 # Changelog
 
 See planned next steps and issues
-at:  [/model-characterization/issues](https://github.com/numalariamodeling/model-characterization/issues#workspaces/emodopenmalaria-643ac4533584b28586ce8b39/roadmap)
+at:  [/model-characterization/issues](https://github.com/ahadi-analytics/model-characterization/issues#workspaces/emodopenmalaria-643ac4533584b28586ce8b39/roadmap)
 
 
 ## 1.0 Initial release
