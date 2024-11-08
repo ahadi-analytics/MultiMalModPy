@@ -106,18 +106,18 @@ def habitat_setup(config, exp, row):
     if row.seasonality == 'perennial':
         habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat1.parameters.Habitat_Type = "CONSTANT"
-        habitat1.parameters.Max_Larval_Capacity = 10000000 * max_capacity_multiplier * row.model_input_emod_constant
+        habitat1.parameters.Max_Larval_Capacity = 100000000 * max_capacity_multiplier
         habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
         malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
     else:
         habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat1.parameters.Habitat_Type = "TEMPORARY_RAINFALL"
-        habitat1.parameters.Max_Larval_Capacity = 100000000 * max_capacity_multiplier * row.model_input_emod_temprain
+        habitat1.parameters.Max_Larval_Capacity = 100000000 * max_capacity_multiplier
         habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
         malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
         habitat2 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat2.parameters.Habitat_Type = "CONSTANT"
-        habitat2.parameters.Max_Larval_Capacity = 1000000 * max_capacity_multiplier * row.model_input_emod_constant
+        habitat2.parameters.Max_Larval_Capacity = 1000000 * max_capacity_multiplier
         habitat_list = [{"Habitat_Type": habitat2.parameters.Habitat_Type, "Max_Larval_Capacity": habitat2.parameters.Max_Larval_Capacity}]
         malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = False)
 

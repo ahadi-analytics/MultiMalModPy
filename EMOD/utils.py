@@ -160,7 +160,6 @@ def build_demog(task, exp):
     task.config.parameters.Enable_Initial_Prevalence = 1
     task.config.parameters.Enable_Natural_Mortality = 1
     task.config.parameters.x_Other_Mortality = 1
-    task.config.parameters["logLevel_Memory"] = "WARNING"
     return task
 
 
@@ -180,7 +179,7 @@ def config_sweep_builder(exp, scen_df):
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
                    CfgFn(habitat_setup, exp, row=row),
                    SwpFn(climate_setup,  seasonality = row.seasonality),
-                   #partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
@@ -218,7 +217,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',
                            value=row["Serialized_Population_Filenames"]),
-                   #partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df_pickup.iterrows()
                   for s in range(nseeds)]

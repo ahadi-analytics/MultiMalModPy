@@ -49,8 +49,8 @@ class LoadExperiment:
         self.burnin_directory = None
 
          # EMOD Settings
-        self.emod_burnin = 200
-        self.emod_pop_size = 10000
+        self.emod_burnin = 100
+        self.emod_pop_size = 1000
         self.emod_calib_params = args.emod_calib_params
 
         # malariasimulation Settings
@@ -68,7 +68,7 @@ class LoadExperiment:
 
         # Entomology settings
         self.entomology_mode = 'dynamic'
-        self.seasonality = ['perennial','seasonal']
+        self.seasonality = ['perennial']
         self.mem_increase_factor = 5.0
 
         # Age groups and case management settings

@@ -416,26 +416,18 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                     4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
                     3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
                     2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
-        perennial_constant = [5.00000000e+00, 6.49828306e+00, 8.44553654e+00, 1.09762974e+01, 1.42654175e+01, 1.85401442e+01,
-                        2.40958210e+01, 3.13162930e+01, 4.07004273e+01, 5.28965794e+01, 6.87473892e+01, 8.93479989e+01,
-                        1.16121718e+02, 1.50918358e+02, 1.96142042e+02, 2.54917301e+02, 3.31304956e+02, 4.30582677e+02,
-                        5.59609623e+02, 7.27300347e+02, 9.45240704e+02, 1.22848833e+03, 1.59661298e+03, 2.07504862e+03,
-                        2.69685066e+03, 3.50497979e+03, 4.55527016e+03, 5.92028698e+03, 7.69434011e+03, 1.00000000e+04]
-        seasonal_constant = [5.00000000e-01, 6.49828306e-01, 8.44553654e-01, 1.09762974e+00, 1.42654175e+00, 1.85401442e+00,
-                        2.40958210e+00, 3.13162930e+00, 4.07004273e+00, 5.28965794e+00, 6.87473892e+00, 8.93479989e+00,
-                        1.16121718e+01, 1.50918358e+01, 1.96142042e+01, 2.54917301e+01, 3.31304956e+01, 4.30582677e+01,
-                        5.59609623e+01, 7.27300347e+01, 9.45240704e+01, 1.22848833e+02, 1.59661298e+02, 2.07504862e+02,
-                        2.69685066e+02, 3.50497979e+02, 4.55527016e+02, 5.92028698e+02, 7.69434011e+02, 1.00000000e+03]
-        seasonal_temprain = [5.00000000e+00, 6.49828306e+00, 8.44553654e+00, 1.09762974e+01, 1.42654175e+01, 1.85401442e+01,
-                        2.40958210e+01, 3.13162930e+01, 4.07004273e+01, 5.28965794e+01, 6.87473892e+01, 8.93479989e+01,
-                        1.16121718e+02, 1.50918358e+02, 1.96142042e+02, 2.54917301e+02, 3.31304956e+02, 4.30582677e+02,
-                        5.59609623e+02, 7.27300347e+02, 9.45240704e+02, 1.22848833e+03, 1.59661298e+03, 2.07504862e+03,
-                        2.69685066e+03, 3.50497979e+03, 4.55527016e+03, 5.92028698e+03, 7.69434011e+03, 1.00000000e+04]
+        x_temp_range = [1.00000000e-01, 1.26896100e-01, 1.61026203e-01, 2.04335972e-01, 
+                        2.59294380e-01, 3.29034456e-01, 4.17531894e-01, 5.29831691e-01,
+                        6.72335754e-01, 8.53167852e-01, 1.08263673e+00, 1.37382380e+00,
+                        1.74332882e+00, 2.21221629e+00, 2.80721620e+00, 3.56224789e+00,
+                        4.52035366e+00, 5.73615251e+00, 7.27895384e+00, 9.23670857e+00,
+                        1.17210230e+01, 1.48735211e+01, 1.88739182e+01, 2.39502662e+01,
+                        3.03919538e+01, 3.85662042e+01, 4.89390092e+01, 6.21016942e+01,
+                        7.88046282e+01, 1.00000000e+02]
     if exp.run_mode == "test" or exp.run_mode is None:
         exp.output_target = np.arange(1,2)
-        eir_range = [50]
-        perennial_multipliers = [0.9, 1,10]
-        seasonal_multipliers = [(1,.5), (1.1,0.9),(90,1)]
+        eir_range = [25, 50, 100]
+        x_temp_range = [10]
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
@@ -465,11 +457,9 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
                 for i, row in df.iterrows():
                     if df.loc[i, 'seasonality'] == 'perennial':
-                        df.loc[i, 'model_input_emod_constant'] = perennial_constant[int(df.loc[i, 'output_target']) - 1]
-                        df.loc[i, 'model_input_emod_temprain'] = 1
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]               
                     else:
-                        df.loc[i, 'model_input_emod_constant'] = seasonal_constant[int(df.loc[i, 'output_target']) - 1]
-                        df.loc[i, 'model_input_emod_temprain'] = seasonal_temprain[int(df.loc[i, 'output_target']) - 1]
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]
             if 'malariasimulation' in exp.models_to_run or 'malariasimulation' in exp.models_to_run_pickup:
                 for i, row in df.iterrows():
                     df.loc[i, 'model_input_malariasimulation'] = eir_range[int(df.loc[i, 'output_target']) - 1]
@@ -480,11 +470,9 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
                 for i, row in df.iterrows():
                     if df.loc[i, 'seasonality'] == 'perennial':
-                        df.loc[i, 'model_input_emod_constant'] = perennial_multipliers[int(df.loc[i, 'output_target']) - 1]
-                        df.loc[i, 'model_input_emod_temprain'] = 1
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]               
                     else:
-                        df.loc[i, 'model_input_emod_constant'] = seasonal_multipliers[int(df.loc[i, 'output_target']) - 1][1]
-                        df.loc[i, 'model_input_emod_temprain'] = seasonal_multipliers[int(df.loc[i, 'output_target']) - 1][0]
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]
             if 'malariasimulation' in exp.models_to_run or 'malariasimulation' in exp.models_to_run_pickup:
                 for i, row in df.iterrows():
                     df.loc[i, 'model_input_malariasimulation'] = eir_range[int(df.loc[i, 'output_target']) - 1]
@@ -496,11 +484,9 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
                 if exp.entomology_mode == 'dynamic':
                     if df.loc[i, 'seasonality'] == 'perennial':
-                        df.loc[i, 'model_input_emod_constant'] = perennial_constant[int(df.loc[i, 'output_target']) - 1]
-                        df.loc[i, 'model_input_emod_temprain'] = 1
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]               
                     else:
-                        df.loc[i, 'model_input_emod_constant'] = seasonal_constant[int(df.loc[i, 'output_target']) - 1]
-                        df.loc[i, 'model_input_emod_temprain'] = seasonal_temprain[int(df.loc[i, 'output_target']) - 1]
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]
                 if exp.entomology_mode == 'forced':
                     df['model_input_emod'] = output_target_to_eir(df, exp, model='EMOD')
             if 'malariasimulation' in exp.models_to_run or 'malariasimulation' in exp.models_to_run_pickup:
