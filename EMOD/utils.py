@@ -124,6 +124,7 @@ def set_emod_exp_parameters(config, exp):
     config.parameters.Simulation_Duration = exp.sim_dur_years * 365
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
+    config.parameters.Report_Parasite_Smear_Sensitivity = 1
     config.parameters.Birth_Rate_Dependence = "FIXED_BIRTH_RATE"
     config.parameters.Min_Days_Between_Clinical_Incidents = 14  
 
