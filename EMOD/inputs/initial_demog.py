@@ -1,29 +1,5 @@
-import copy
-import os
-import sys
-import json
-import pandas as pd
-import subprocess
-from typing import List, Dict, Any
-import pandas as pd
-import numpy as np
-from COMPS import AuthManager
-from functools import partial
-from EMOD.scaffolds.forcedEIR import *
-from EMOD.scaffolds.interventions import *
 from emod_api.demographics.DemographicsTemplates import CrudeRate
-import emod_api.demographics.PreDefinedDistributions as Distributions
-from emodpy_malaria.reporters.builtin import *
 import emodpy_malaria.demographics.MalariaDemographics as Demographics
-import emodpy_malaria.malaria_config as malaria_config
-from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
-from emodpy_malaria.interventions.outbreak import add_outbreak_individual
-from emodpy.emod_task import EMODTask
-from idmtools.builders import SimulationBuilder
-from idmtools.core import ItemType
-from idmtools.entities.iplatform import IPlatform
-from idmtools.entities.simulation import Simulation
-from idmtools.entities.experiment import Experiment
 
 def build_demog():
     """
@@ -50,5 +26,15 @@ def build_demog():
         result_values=[0, 365, 1825, 3650, 5475, 7300, 9125,
                        10950, 12775, 14600, 16425, 18250, 20075, 21900,
                        23725, 25550, 27375, 29200, 31025, 32850]))
+    mortality_distribution = ConstantDistribution(IndividualAttributes.MortalityDistribution(
+        axis_names = ["gender", "age"],
+        axis_scale_factors = [1,365],
+        axis_units=["male=0,female=1","years"],
+        population_groups=[[0,1],[0,100]],
+        result_scale_factor=1,
+        result_units="daily probability of dying",
+        result_values=[[9.575800930934081e-05,0.99],[9.575800930934081e-05,0.99]]
+    ))
     demog.SetAgeDistribution(age_distribution)
+    demog.SetMortalityDistribution(mortality_distribution)
     return demog
