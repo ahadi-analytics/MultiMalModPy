@@ -123,8 +123,8 @@ def post_processing(exp, job_directory):
         output = convert_to_long(df, age_groups, agebins)
         output['year'] = output['year'] + exp.sim_start_year_malariasimulation
         output = output[needed_channels]
-        output = output[output['timestep'] > (exp.burnin * 365)]
-        output['timestep'] = output['timestep'] - (exp.burnin * 365)
+        output = output[output['timestep'] > (exp.malariasimulation_burnin * 365)]
+        output['timestep'] = output['timestep'] - (exp.malariasimulation_burnin * 365)
         #output.to_csv(os.path.join(job_directory, f'malariasimulation_jobs/{i}_daily.csv'), index=False) # not need to be written out per default, since daily.csv is used
         daily = pd.concat([daily, output], axis=0)
     daily.to_csv((os.path.join(wdir, 'daily.csv')), index=False)

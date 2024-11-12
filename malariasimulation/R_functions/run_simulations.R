@@ -56,8 +56,8 @@ run_simulations <- function(exp, exp_setup_df, parameter_table, write_raw_output
       rainfall_floor = exp$floor,
 
       # Average age of human population (affects demographic make-up)
-      average_age = 21 * 365,
-
+      #average_age = 23.32067006 * 365, #average age of OpenMalaria's input age demography
+      average_age = 26 * 365, # average age that looked closer to OM's input age demography.
       # Render prevalence in age groups 0-5, 5-10, 10-15, and 15-20, and 2-10 (for PfPR_2-10)
       prevalence_rendering_min_ages = c(min_ages, (2 * 365)),
       prevalence_rendering_max_ages = c(max_ages, (10 * 365)),

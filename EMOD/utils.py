@@ -4,7 +4,7 @@ import json
 import subprocess
 from functools import partial
 from EMOD.scaffolds.reporters import add_annual_reports, add_daily_reports, add_monthly_reports, add_5daily_reports
-from EMOD.scaffolds.EMOD_functions import build_burnin_df, all_campaigns, set_param, ItvFn, CfgFn, sweep_functions, seasonality_setup
+from EMOD.scaffolds.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup 
 from EMOD.scaffolds.forcedEIR import mAb_vs_EIR
 
 import emodpy_malaria.malaria_config as malaria_config
@@ -26,7 +26,7 @@ def submit_run_EMOD(exp, scen_df):
     sim_dur_years = exp.sim_dur_years
     entomology_mode = exp.entomology_mode
     emod_step = exp.emod_step
-    burnin = exp.burnin
+    burnin = exp.emod_burnin
     platform = exp.platform
     agebins = exp.agebins
     sim_start_year_emod = exp.sim_start_year_emod
@@ -120,10 +120,11 @@ def set_config_parameters(config):
 
 
 def set_emod_exp_parameters(config, exp):
-    config.parameters.x_Base_Population = exp.pop_size / 1000
+    config.parameters.x_Base_Population = exp.emod_pop_size / 1000
     config.parameters.Simulation_Duration = exp.sim_dur_years * 365
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
+    config.parameters.Report_Parasite_Smear_Sensitivity = 1
     config.parameters.Birth_Rate_Dependence = "FIXED_BIRTH_RATE"
     config.parameters.Min_Days_Between_Clinical_Incidents = 14  
 
@@ -148,12 +149,12 @@ def build_demog(task, exp):
     #demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
     demog = json.load(open(os.path.join(exp.emod_input_path,"demographics.json")))
     #This calculation is the same as using crude rate, but jsons don't recognize 
-    birthrate = float(34.95*exp.pop_size/365/1000)
+    birthrate = float(34.95*exp.emod_pop_size/365/1000)
     demog["Defaults"]["NodeAttributes"].update({"BirthRate": birthrate})
-    with open(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"), "w") as outfile: 
+    with open(os.path.join(exp.emod_input_path, f"demographics_{exp.emod_pop_size}.json"), "w") as outfile: 
         json.dump(demog, outfile)
-    task.transient_assets.add_asset(os.path.join(exp.emod_input_path, f"demographics_{exp.pop_size}.json"))
-    task.set_parameter("Demographics_Filenames", [f"demographics_{exp.pop_size}.json"])
+    task.transient_assets.add_asset(os.path.join(exp.emod_input_path, f"demographics_{exp.emod_pop_size}.json"))
+    task.set_parameter("Demographics_Filenames", [f"demographics_{exp.emod_pop_size}.json"])
     task.config.parameters.Age_Initialization_Distribution_Type = "DISTRIBUTION_COMPLEX"
     task.config.parameters.Death_Rate_Dependence = "NONDISEASE_MORTALITY_BY_AGE_AND_GENDER"
     task.config.parameters.Enable_Demographics_Risk = 1
@@ -177,7 +178,8 @@ def config_sweep_builder(exp, scen_df):
                   for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   CfgFn(seasonality_setup, exp, seasonality = row.seasonality),
+                   CfgFn(habitat_setup, exp, row=row),
+                   SwpFn(climate_setup,  seasonality = row.seasonality),
                    partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
@@ -210,7 +212,8 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   CfgFn(seasonality_setup, exp, seasonality = row.seasonality),
+                   CfgFn(habitat_setup, exp, seasonality = row.seasonality),
+                   SwpFn(climate_setup,  seasonality = row.seasonality),
                    partial(set_param, param='Serialized_Population_Path',
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',

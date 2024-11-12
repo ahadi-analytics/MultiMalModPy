@@ -128,13 +128,9 @@ def get_simulation_time_params(exp):
     """
 
     start_year = exp.start_year
-    burnin = exp.burnin
     end_year = exp.end_year
     models_to_run = exp.models_to_run
     emod_step = exp.emod_step
-
-    # Calculate the burn-in start year (per default set to be not monitored)
-    burnin_start_year = start_year - burnin
 
     # Calculate the number of years to monitor
     monitoring_years = end_year - start_year
@@ -142,12 +138,14 @@ def get_simulation_time_params(exp):
     if emod_step is None:
         if 'EMOD' in models_to_run:
             print(" --------| Running EMOD burnin + pickup time in one simulation run |--------")
+        burnin_start_year = start_year - exp.emod_burnin
         sim_dur_years = end_year - burnin_start_year
         sim_start_year = burnin_start_year
     elif emod_step == 'burnin':
         if 'EMOD' in models_to_run:
             print(" --------| Running EMOD burnin (step 1) |--------")
-        sim_dur_years = burnin
+        sim_dur_years = exp.emod_burnin
+        burnin_start_year = start_year - exp.emod_burnin
         sim_start_year = burnin_start_year
     elif emod_step == 'pickup':
         if 'EMOD' in models_to_run:
@@ -159,11 +157,10 @@ def get_simulation_time_params(exp):
 
     # Update experiment object with simulation start year and duration
     exp.sim_start_year_emod = sim_start_year
-    exp.sim_start_year_openmalaria = start_year - burnin
-    exp.sim_start_year_malariasimulation = exp.sim_start_year_openmalaria
+    exp.sim_start_year_openmalaria = start_year - exp.openmalaria_burnin
+    exp.sim_start_year_malariasimulation = start_year - exp.malariasimulation_burnin
     exp.monitoring_years = monitoring_years
     exp.sim_dur_years = sim_dur_years
-
     return exp
 
 

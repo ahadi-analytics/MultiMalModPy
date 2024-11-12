@@ -1,6 +1,5 @@
 import argparse
 import os
-import subprocess
 import itertools
 import pickle
 from datetime import datetime
@@ -232,9 +231,9 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
         if exp.num_seeds_burnin != 1:
             raise ValueError('Current framework only allows 1 seed for EMOD burnin')
 
-    if exp.burnin < 80 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
+    if exp.emod_burnin < 100 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
                             'EMOD' not in exp.models_to_run):
-        print(f'Warning: Short burnin period of {exp.burnin} years. A burnin of at least 80 years is recommended.')
+        print(f'Warning: For EMOD a burnin of at least 100 years is recommended. A short burnin period of {exp.emod_burnin} years was used.')
 
     # Check agebins
     a = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
@@ -249,12 +248,12 @@ def check_exp_inputs(exp, print_reminder=True, intervention_checks=True, attribu
     #    raise ValueError(f'Only one seasonality pattern is allowed, but {len(exp.seasonality)} specified.')
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
-    if any(value[0] not in [0, 0.45] for value in exp.case_management) and (exp.entomology_mode == 'dynamic') and (
+    if any(value[0] not in [0, 0.15, 0.45] for value in exp.case_management) and (exp.entomology_mode == 'dynamic') and (
             'EMOD' in exp.models_to_run):
         raise ValueError(
             'EMOD is not set up to run dynamic EIR is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
-    if any(value[0] not in [0, 0.45] for value in exp.case_management) and exp.output_type == 'prevalence_2to10':
+    if any(value[0] not in [0, 0.15, 0.45] for value in exp.case_management) and exp.output_type == 'prevalence_2to10':
         raise ValueError(
             'output_type prevalence_2to10 is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
@@ -361,7 +360,9 @@ def create_simsetup_csv(exp):
                  'nexps': exp.nexps,
                  'sweep_list': exp.sweep_list,
                  'monitoring_years': exp.monitoring_years,
-                 'pop_size': exp.pop_size,
+                 'pop_size_emod': exp.emod_pop_size,
+                 'pop_size_malariasimulation': exp.malariasimulation_pop_size,
+                 'pop_size_openmalaria': exp.openmalaria_pop_size,
                  'agebins': exp.agebins,
                  'seasonality': exp.seasonality,
                  'seasonal_monthly': ';'.join(map(str, exp.seasonal)),
@@ -370,7 +371,9 @@ def create_simsetup_csv(exp):
                  'perennial_daily': ';'.join(map(str, exp.perennial_daily)),
                  'start_year': exp.start_year,
                  'end_year': exp.end_year,
-                 'burnin': exp.burnin,
+                 'burnin_emod':exp.emod_burnin,
+                 'burnin_malariasimulation': exp.malariasimulation_burnin,
+                 'burnin_openmalaria': exp.openmalaria_burnin,
                  'sim_start_year_openmalaria': exp.sim_start_year_openmalaria,
                  'sim_start_year_emod': exp.sim_start_year_emod,
                  'sim_start_year_malariasimulation': exp.sim_start_year_malariasimulation,
@@ -413,15 +416,18 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                     4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
                     3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
                     2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
-        x_temp_range = [5.00000000e+00, 6.49828306e+00, 8.44553654e+00, 1.09762974e+01, 1.42654175e+01, 1.85401442e+01,
-                        2.40958210e+01, 3.13162930e+01, 4.07004273e+01, 5.28965794e+01, 6.87473892e+01, 8.93479989e+01,
-                        1.16121718e+02, 1.50918358e+02, 1.96142042e+02, 2.54917301e+02, 3.31304956e+02, 4.30582677e+02,
-                        5.59609623e+02, 7.27300347e+02, 9.45240704e+02, 1.22848833e+03, 1.59661298e+03, 2.07504862e+03,
-                        2.69685066e+03, 3.50497979e+03, 4.55527016e+03, 5.92028698e+03, 7.69434011e+03, 1.00000000e+04]
+        x_temp_range = [1.00000000e-01, 1.26896100e-01, 1.61026203e-01, 2.04335972e-01, 
+                        2.59294380e-01, 3.29034456e-01, 4.17531894e-01, 5.29831691e-01,
+                        6.72335754e-01, 8.53167852e-01, 1.08263673e+00, 1.37382380e+00,
+                        1.74332882e+00, 2.21221629e+00, 2.80721620e+00, 3.56224789e+00,
+                        4.52035366e+00, 5.73615251e+00, 7.27895384e+00, 9.23670857e+00,
+                        1.17210230e+01, 1.48735211e+01, 1.88739182e+01, 2.39502662e+01,
+                        3.03919538e+01, 3.85662042e+01, 4.89390092e+01, 6.21016942e+01,
+                        7.88046282e+01, 1.00000000e+02]
     if exp.run_mode == "test" or exp.run_mode is None:
-        exp.output_target = np.arange(1,4)
-        eir_range = [5,10,20]
-        x_temp_range = [8.93479989e+01,1.50918358e+02,4.30582677e+02]
+        exp.output_target = np.arange(1,2)
+        eir_range = [25, 50, 100]
+        x_temp_range = [10]
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
@@ -447,10 +453,26 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             df.loc[i, 'cm_severe'] = pd.to_numeric(df.loc[i, 'case_management'][1],errors='coerce')
         df = df.drop('case_management', axis=1)
 
-        if exp.run_mode == 'calibrun' or exp.run_mode == 'test' or exp.run_mode is None:
+        if exp.run_mode == 'calibrun': 
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
                 for i, row in df.iterrows():
-                    df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]
+                    if df.loc[i, 'seasonality'] == 'perennial':
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]               
+                    else:
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]
+            if 'malariasimulation' in exp.models_to_run or 'malariasimulation' in exp.models_to_run_pickup:
+                for i, row in df.iterrows():
+                    df.loc[i, 'model_input_malariasimulation'] = eir_range[int(df.loc[i, 'output_target']) - 1]
+            if 'OpenMalaria' in exp.models_to_run or 'OpenMalaria' in exp.models_to_run_pickup:
+                for i, row in df.iterrows():
+                    df.loc[i, 'model_input_openmalaria'] = eir_range[int(df.loc[i, 'output_target']) - 1]
+        elif exp.run_mode == 'test' or exp.run_mode is None:
+            if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
+                for i, row in df.iterrows():
+                    if df.loc[i, 'seasonality'] == 'perennial':
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]               
+                    else:
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]
             if 'malariasimulation' in exp.models_to_run or 'malariasimulation' in exp.models_to_run_pickup:
                 for i, row in df.iterrows():
                     df.loc[i, 'model_input_malariasimulation'] = eir_range[int(df.loc[i, 'output_target']) - 1]
@@ -461,7 +483,10 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             # Alignment of model transmission input to target outcome
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
                 if exp.entomology_mode == 'dynamic':
-                    df['model_input_emod'] = output_target_to_xTemp(df, exp, model='EMOD')
+                    if df.loc[i, 'seasonality'] == 'perennial':
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]               
+                    else:
+                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]
                 if exp.entomology_mode == 'forced':
                     df['model_input_emod'] = output_target_to_eir(df, exp, model='EMOD')
             if 'malariasimulation' in exp.models_to_run or 'malariasimulation' in exp.models_to_run_pickup:

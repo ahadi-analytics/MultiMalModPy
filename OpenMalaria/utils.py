@@ -20,7 +20,7 @@ def create_scenarios(exp, scen_df):
 
     # Replace placeholders in the XML template with fixed parameters
     xml = xml.replace("@version@", f"{exp.openmalaria_version}")
-    xml = xml.replace("@pop_size@", f"{exp.pop_size}")
+    xml = xml.replace("@pop_size@", f"{exp.openmalaria_pop_size}")
     xml = xml.replace("@burnin_start_year@", f"{exp.sim_start_year_openmalaria}")
     xml = xml.replace("@start_year@", f"{exp.start_year-1}")
     xml = xml.replace("@end_year@", f"{exp.end_year-1}")
@@ -29,7 +29,11 @@ def create_scenarios(exp, scen_df):
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
     xml = xml.replace('@importation_rate@', f"{exp.importation_rate}")
     xml = xml.replace('@healthSystemMemory@', f"{str(int(exp.days_between_clinical_cases_5days))}")
-
+    xmlageGroups = '\t\t<ageGroup lowerbound="0">'
+    for item in exp.agebins:
+        xmlageGroups += f'\n\t\t\t<group upperbound="{item}"/>'
+    xml = xml.replace('<@age_groups@>', xmlageGroups)
+    
     # Scenario sweeps and runs
     df = rep_scen_df(scen_df)
     for r, row in df.iterrows():

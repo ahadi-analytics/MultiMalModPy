@@ -105,7 +105,7 @@ check_exp_inputs(exp)
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, exp.sweep_list)
 exp.nexps = len(scen_df) * exp.num_seeds
-exp.max_running_jobs = min(exp.nexps,100)
+exp.max_running_jobs = min(exp.nexps,300)
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
 save_scen(param_variation(rep_scen_df(scen_df), exp), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
@@ -127,8 +127,8 @@ if __name__ == '__main__':
 
         # Set platform and associated values, such as the maximum number of jobs to run at one time
         platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
-                            mem_per_cpu=int(1800 * exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
-                            time='30:30:00', account=manifest.sh_hpc_config['A'],
+                            mem_per_cpu=int(3500), partition=manifest.sh_hpc_config['p'],
+                            time='05:30:00', account=manifest.sh_hpc_config['A'],
                             modules=[manifest.sh_hpc_config['em_modules']],
                             max_running_jobs=exp.max_running_jobs)  # mem_per_cpu default: 2048
         exp.platform = platform

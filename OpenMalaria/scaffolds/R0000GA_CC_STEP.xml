@@ -65,15 +65,7 @@
                     @start_year@-12-27
     			</surveyTime>
     		</surveys>
-        <ageGroup lowerbound="0">
-        <group upperbound="0.5"/>
-        <group upperbound="1"/>
-        <group upperbound="2"/>
-        <group upperbound="5"/>
-        <group upperbound="10"/>
-        <group upperbound="15"/>
-        <group upperbound="20"/>
-        <group upperbound="100"/>
+        <@age_groups@>
         </ageGroup>
     </monitoring>
     <interventions name="CC_STEP">
