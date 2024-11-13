@@ -1,4 +1,3 @@
-# This is primarily seperate from MultiMalModPy's general function. This will allow  to vary NU's EMOD parameters associated with our within-host calibration efforts.
 import os
 import pandas as pd
 from functools import partial
@@ -6,6 +5,23 @@ from EMOD.utils import set_param
 
 
 def get_emod_calib_params(exp, scen_df):
+    """
+    Retrieves and prepares the calibration parameters for EMOD.
+
+    This function loads calibration parameters from a pre-defined CSV file and uses them to create a list of partial
+    functions that will set specific model parameters.
+
+    Args:
+        exp (Experiment): An object containing experiment configuration, including the paths to input files,
+                           the number of seeds to use, and the step of the simulation (e.g., 'burnin').
+        scen_df (pandas.DataFrame): A DataFrame containing scenario-specific information, including a pointer
+                                     to the row in the calibration configuration CSV file.
+
+    Returns:
+        list: A list of lists, where each inner list contains partial functions (from `functools.partial`) that, when called,
+              will set the corresponding model parameters for the EMOD simulation.
+    """
+
     calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, 'emod_best.csv'))
     if exp.emod_step == 'burnin':
         seeds = exp.num_seeds_burnin

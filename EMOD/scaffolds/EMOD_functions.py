@@ -14,20 +14,38 @@ from idmtools.core import ItemType
 from idmtools.entities.iplatform import IPlatform
 from idmtools.entities.simulation import Simulation
 import sys
+
 sys.path.append('../../')
 import manifest
 
+
 def build_burnin_df(exp_id: str, platform, serialize_days):
     """
-    return dataframe which contains serialized_file_path, serialized_population_filenames
+    Builds a DataFrame containing information about serialized files and simulation configurations
+    for the burn-in process of the experiment.
+    The serialized population filenames are in the format: `state-{step}-{core}.dtk`, where `{step}` refers to
+    the serialization timestep and `{core}` refers to the core number.
+    The `Serialized_Population_Filenames` field varies based on the number of cores used. For example,
+    if `Num_Cores = 2`, the filenames will look like this: `state-00050-000.dtk` and `state-00050-001.dtk`.
+
     Args:
-        exp_id:
-        platform:
+        exp_id (str): The unique experiment identifier for which the burn-in DataFrame is being created.
+        platform (object): The platform object that represents the high-performance computing environment.
+                           Used to retrieve core count and other platform-related information.
+        serialize_days (int): The number of days over which serialization occurs. This is used to determine
+                               the length of time steps for the serialized population.
+
     Returns:
-        dataframe:
-        Run_Number | Serialization_Time_Steps | task_type | sweep_tag | simid | serialized_file_path|Num_Cores|Serialized_Population_Filenames
-    Note, Serialized_Population_Filenames depends on n_cores. if n_cores = 2, Serialized_Population_Filenames look
-    like these: state-00050-000.dtk, state-00050-001.dtk
+        pd.DataFrame: A DataFrame containing the following columns:
+            - `Run_Number`: The simulation run number.
+            - `Serialization_Time_Steps`: The number of time steps for serialization.
+            - `task_type`: Type of the task being run (e.g., simulation).
+            - `sweep_tag`: The tag associated with the current simulation sweep.
+            - `simid`: The unique simulation ID.
+            - `serialized_file_path`: Path to the serialized files for the simulation.
+            - `Num_Cores`: The number of cores allocated for the simulation.
+            - `Serialized_Population_Filenames`: The filenames of the serialized population files.
+
     """
 
     df = create_sim_directory_map(exp_id, platform)
@@ -59,10 +77,23 @@ def set_param(simulation, param, value):
     return simulation.task.set_parameter(param, value)
 
 
-def all_campaigns(camp, exp = None, row = None, intervention_list = []):
+def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     """
-    Wrapper functions to define all campaigns to go into the campaigns.json
-    To be expanded with SMC and other interventions as needed, and use if's to define applicability
+    Defines and adds various interventions and campaigns to be included in the `campaigns.json` for EMOD.
+    The function serves as a wrapper that conditionally applies different campaigns based on the values in
+    the provided `row` (e.g., from a scenario DataFrame), experiment configuration (`exp`), and the
+    `intervention_list` parameter.
+
+    Args:
+        camp (object): The campaign object to which the interventions will be applied.
+        exp (object, optional): The experiment configuration containing simulation parameters (default is None).
+        row (pandas.Series, optional): A row of data containing scenario parameters for the campaign (default is None).
+        intervention_list (list, optional): List of interventions to be included in the simulation (default is empty list).
+
+    Returns:
+        dict: A dictionary containing the scenario ID (scen_id) associated with the campaign.
+              Example: {'scen_id': 1}
+
     """
 
     ## If forced EIR, treated as campaign in EMOD
@@ -73,62 +104,94 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
 
     ## Carrying capacity step change
-    if 'cc_step' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None): #Make sure to include the cc_step change only at pickup simulations.
-        eir_df = pd.DataFrame({'CONSTANT':[row.cc_factor_emod]})
+    if 'cc_step' in intervention_list and (
+            exp.emod_step == 'pickup' or exp.emod_step is None):  # Make sure to include the cc_step change only at pickup simulations.
+        eir_df = pd.DataFrame({'CONSTANT': [row.cc_factor_emod]})
         add_scale_larval_habitats(camp, df=eir_df,
                                   start_day=row.cc_timestep_emod,
-                                  repetitions = 1)
+                                  repetitions=1)
     if exp.importation_rate != 0:
-        ncases_per_year_per1000pop = ((exp.importation_rate/100)*1000) / exp.emod_pop_size
-        add_outbreak_individual(camp, start_day = 1, demographic_coverage=ncases_per_year_per1000pop,
+        ncases_per_year_per1000pop = ((exp.importation_rate / 100) * 1000) / exp.emod_pop_size
+        add_outbreak_individual(camp, start_day=1, demographic_coverage=ncases_per_year_per1000pop,
                                 repetitions=-1, timesteps_between_repetitions=365)
 
     # SMC using PKPD model
-    if 'smc' in intervention_list and exp.emod_step == 'pickup':
-        print(row.smc_coverage)
-        if row.model_input_emod == 4:
-            start_array = [366, 731, 1096, 1461, 1826]
-        elif row.model_input_emod == 8:
-            start_array = [366, 731, 1096, 1461, 1826]
-        else:
-            start_array = [335, 700, 1065, 1430,1795]
-            #add_drug_campaign(camp, campaign_type = "SMC", start_days = [396,761,1126,1491,1856],
-        smc_campaign(camp, row, start_array)
+    if 'smc' in intervention_list:
+        raise ValueError('SMC currently not supported.')
+
+    # if 'smc' in intervention_list and exp.emod_step == 'pickup':
+    #     print(row.smc_coverage)
+    #     if row.model_input_emod == 4:
+    #         start_array = [366, 731, 1096, 1461, 1826]
+    #     elif row.model_input_emod == 8:
+    #         start_array = [366, 731, 1096, 1461, 1826]
+    #     else:
+    #         start_array = [335, 700, 1065, 1430, 1795]
+    #         # add_drug_campaign(camp, campaign_type = "SMC", start_days = [396,761,1126,1491,1856],
+    #     smc_campaign(camp, row, start_array)
 
     return {'scen_id': int(row.scen_id)}
 
 
 def habitat_setup(config, exp, row):
-# Parameter configurations on climate for dynamic EIR
+    """
+    Sets up the habitat parameters for malaria vector species in EMOD, based on the climate seasonality
+    and experiment configuration. The function configures different habitat types ("CONSTANT" or "TEMPORARY_RAINFALL")
+    and larval capacity based on the seasonality condition ('perennial' or 'seasonal') for the specified malaria species (gambiae).
+
+    Args:
+        config (object): The configuration object that holds the simulation settings and parameters.
+        exp (object): The experiment object containing the population size and other simulation configurations.
+        row (pandas.Series): A row of data containing scenario-specific information, such as seasonality.
+
+    Returns:
+        None
+    """
+
+    # Parameter configurations on climate for dynamic EIR
     malaria_config.add_species(config, manifest, ["gambiae"])  # , "arabiensis", "funestus"
-    max_capacity_multiplier = (exp.emod_pop_size/1000)
+    max_capacity_multiplier = (exp.emod_pop_size / 1000)
+
     import emod_api.config.default_from_schema_no_validation as dfs
+
     if row.seasonality == 'perennial':
         habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat1.parameters.Habitat_Type = "CONSTANT"
         habitat1.parameters.Max_Larval_Capacity = 100000000 * max_capacity_multiplier
-        habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
-        malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
+        habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type,
+                         "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
+        malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list, overwrite=True)
     else:
         habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat1.parameters.Habitat_Type = "TEMPORARY_RAINFALL"
         habitat1.parameters.Max_Larval_Capacity = 100000000 * max_capacity_multiplier
-        habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
-        malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
+        habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type,
+                         "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
+        malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list, overwrite=True)
         habitat2 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat2.parameters.Habitat_Type = "CONSTANT"
         habitat2.parameters.Max_Larval_Capacity = 1000000 * max_capacity_multiplier
-        habitat_list = [{"Habitat_Type": habitat2.parameters.Habitat_Type, "Max_Larval_Capacity": habitat2.parameters.Max_Larval_Capacity}]
-        malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = False)
+        habitat_list = [{"Habitat_Type": habitat2.parameters.Habitat_Type,
+                         "Max_Larval_Capacity": habitat2.parameters.Max_Larval_Capacity}]
+        malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list, overwrite=False)
 
-def climate_setup(task, seasonality = None):
-    task.config.parameters.Air_Temperature_Filename = os.path.join('climate',
-                                                                f'{seasonality}_air_temperature_daily.bin')
-    task.config.parameters.Land_Temperature_Filename = os.path.join('climate',
-                                                                f'{seasonality}_air_temperature_daily.bin')
+
+def climate_setup(task, seasonality=None):
+    """
+    The function sets up the climate input filenames for EMOD.
+
+    Args:
+        task (object): The task object that holds the configuration and parameters for the simulation.
+        seasonality (str, optional): The seasonality type (e.g., 'perennial' or 'seasonal') that determines the climate files.
+                                      If not provided, defaults to None.
+
+    Returns:
+        None
+    """
+    task.config.parameters.Air_Temperature_Filename = os.path.join('climate', f'{seasonality}_air_temperature_daily.bin')
+    task.config.parameters.Land_Temperature_Filename = os.path.join('climate', f'{seasonality}_air_temperature_daily.bin')
     task.config.parameters.Rainfall_Filename = os.path.join('climate', f'{seasonality}_rainfall_daily.bin')
-    task.config.parameters.Relative_Humidity_Filename = os.path.join('climate',
-                                                                f'{seasonality}_relative_humidity_daily.bin')
+    task.config.parameters.Relative_Humidity_Filename = os.path.join('climate', f'{seasonality}_relative_humidity_daily.bin')
 
 
 def _get_serialized_filenames(num_cores, timesteps):
@@ -217,10 +280,10 @@ def create_sim_directory_map(exp_id: str, platform: 'IPlatform'):
 def get_burnin_exp_name(serialized_df):
     """
     Retrieve the name of the EMOD burnin experiment from the metadata.json file
-    Parameters:
-    serialized_df (DataFrame): A pandas DataFrame containing serialized data information.
+    Args:
+        serialized_df (DataFrame): A pandas DataFrame containing serialized data information.
     Returns:
-    str: The name of the burnin experiment as defined in the serialization df from emod_serialized_id.
+        str: The name of the burnin experiment as defined in the serialization df from emod_serialized_id.
     """
 
     import json
@@ -233,14 +296,15 @@ def get_burnin_exp_name(serialized_df):
 def get_scendf_burnin(exp, emod_serialized_id, manifest, platform, burnin):
     """
     Load the scenarios.csv file associated with the EMOD burnin experiment.
-    Parameters:
-    exp (Experiment): An experiment object containing information about the experiment.
-    emod_serialized_id (str): The serialized ID for the EMOD input data.
-    manifest (Manifest): A manifest object containing job directory information.
-    platform (Platform): A platform object specifying the execution platform.
-    burnin (int): The duration of the burnin period in days.
+
+    Args:
+        exp (Experiment): An experiment object containing information about the experiment.
+        emod_serialized_id (str): The serialized ID for the EMOD input data.
+        manifest (Manifest): A manifest object containing job directory information.
+        platform (Platform): A platform object specifying the execution platform.
+        burnin (int): The duration of the burnin period in days.
     Returns:
-    pandas.DataFrame: A DataFrame containing scenarios from the burn-in experiment.
+        pandas.DataFrame: A DataFrame containing scenarios from the burn-in experiment.
     """
 
     serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
@@ -349,6 +413,7 @@ class CfgFn:
 
         return md
 
+
 class SwpFn:
     """
     Sweeping utility: works for sweeping on report, demographics, migrations and climate, etc.
@@ -358,10 +423,12 @@ class SwpFn:
     Returns:
         dict
     """
+
     def __init__(self, func, *args, **kwargs):
         self.func = func
         self.args = args
         self.kwargs = kwargs
+
     def __call__(self, simulation: Simulation):
         md = self.func(simulation.task, *self.args, **self.kwargs)
         # Make sure we cast numpy types into normal system types
@@ -370,4 +437,3 @@ class SwpFn:
                 if isinstance(v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)):
                     md[k] = v.item()
         return md
-    

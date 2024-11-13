@@ -18,8 +18,30 @@ from utility.helper_slurm import shell_header_quest, write_txt
 
 def submit_run_EMOD(exp, scen_df):
     """
-    This function is designed to be a parameterized version of the sequence of things we do
-    every time we run an emod experiment.
+    Submit and run an EMOD experiment, parameterizing various steps involved in the simulation.
+    This function sets up the experiment, configures input files, manages reporting, and submits the experiment.
+
+    This function handles the creation and configuration of the EMOD task based on the provided
+    experiment parameters, including setting up entomology, serialized input data, and specifying
+    how to handle different simulation steps (e.g., 'pickup', 'burnin'). It also schedules necessary
+    reports for analysis and prepares the experiment for execution. The experiment is then submitted
+    for execution on the provided platform, and the experiment analysis is scheduled.
+
+    Args:
+        exp (ExperimentConfig): An instance of the `ExperimentConfig` class that contains all the parameters
+                                necessary to configure and run the EMOD simulation. This includes simulation
+                                duration, entomology mode, burn-in period, platform configuration, and more.
+        scen_df (pandas.DataFrame): A DataFrame containing the scenario data to be used for the experiment.
+                                    The dataframe should include the scenario IDs and relevant parameters
+                                    that define the experiment conditions.
+
+    Returns:
+        experiment (Experiment): The configured and submitted `Experiment` object that represents the
+                                  EMOD experiment that was created and submitted for execution.
+
+    Raises:
+        ValueError: If the experiment configuration or scenario data is incomplete or invalid.
+
     """
     exp_name = exp.exp_name
     emod_serialized_id = exp.emod_serialized_id
@@ -77,6 +99,27 @@ def submit_run_EMOD(exp, scen_df):
 
 
 def config_task(platform, exp):
+    """
+    Configure and create an EMODTask for running EMOD.
+    This function initializes an EMODTask by loading configuration files, setting up custom campaign parameters,
+    and configuring simulation parameters.
+
+    Args:
+        platform (str): The platform on which the simulation is to be executed (e.g., HPC, local machine).
+        exp (ExperimentConfig): An instance of the `ExperimentConfig` class containing all necessary parameters
+                                for configuring the EMOD simulation, such as simulation duration, entomology mode,
+                                and other experiment-specific settings.
+
+    Returns:
+        EMODTask: An instance of the `EMODTask` class that is configured with the relevant experiment settings
+                  and is ready to be run on the specified platform.
+
+    Raises:
+        FileNotFoundError: If the required configuration files (e.g., "config.json", schema files) are not found
+                            at the specified paths.
+        ValueError: If there are any issues in setting up the EMODTask, such as missing or incorrect experiment parameters.
+
+    """
     print("Creating EMODTask (from files)...")
     task = EMODTask.from_default2(
         config_path="config.json",
@@ -110,7 +153,7 @@ def set_config_parameters(config):
     """
     This function is a callback that is passed to emod-api.config to set config parameters,
     including the malaria defaults.
-    Parameters:
+    Args:
         config (object): The configuration object to be modified.
     Returns:
         object: The modified configuration object.
@@ -120,6 +163,25 @@ def set_config_parameters(config):
 
 
 def set_emod_exp_parameters(config, exp):
+    """
+    Set the experiment-specific parameters in the EMOD configuration.
+    This function takes an `exp` object containing experiment settings and applies these settings to the
+    provided EMOD `config` object. The parameters configured include population size, simulation duration,
+    detection thresholds, and serialization settings. The function handles different configurations depending
+    on the experiment step (e.g., "burnin" or "pickup").
+
+    Args:
+        config (EMODConfig): The EMOD configuration object to be modified with experiment parameters.
+        exp (ExperimentConfig): An instance of the `ExperimentConfig` class containing parameters for the simulation,
+                                such as population size, duration, detection limits, and serialization settings.
+
+    Returns:
+        None: The function modifies the `config` object in place.
+
+    Raises:
+        ValueError: If the `exp.emod_step` is not one of the expected values ("burnin", "pickup").
+
+    """
     config.parameters.x_Base_Population = exp.emod_pop_size / 1000
     config.parameters.Simulation_Duration = exp.sim_dur_years * 365
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
@@ -165,6 +227,23 @@ def build_demog(task, exp):
 
 
 def config_sweep_builder(exp, scen_df):
+    """
+    Builds the demographic structure for the EMOD simulation and updates the task configuration.
+    This function reads a demographic template, modifies the birth rate based on the experiment population size,
+    and writes the updated demographic data to a new JSON file. It then adds this file to the task as a transient asset
+    and configures EMOD simulation parameters related to demographics and mortality.
+
+    Args:
+        task (EMODTask): The EMOD task object that represents the simulation run. The task will be updated with
+                         demographic data and the relevant parameters.
+        exp (ExperimentConfig): An instance of the `ExperimentConfig` class containing the experiment settings,
+                                 including population size and input file paths. This object is used to update the
+                                 demographics and configuration for the simulation.
+
+    Returns:
+        EMODTask: The updated `task` object with demographic and simulation parameters configured.
+
+    """
     builder = SimulationBuilder()
     nseeds = exp.num_seeds
     if exp.emod_step == 'burnin':
@@ -197,6 +276,28 @@ def config_sweep_builder(exp, scen_df):
 
 
 def config_sweep_builder_pickup(exp, scen_df_pickup):
+    """
+    Configures the sweep builder for an EMOD experiment in 'pickup' mode, where a previous simulation's state
+    is loaded to continue the experiment.
+
+    This function creates a sweep configuration based on the experiment settings and the given scenario data frame.
+    It sets up intervention strategies, serialized population paths, and entomology-related parameters for both
+    'forced' and 'dynamic' entomology modes. It also handles adding calibration parameters if specified.
+
+    Args:
+        exp (ExperimentConfig): The experiment configuration object containing various experiment parameters,
+                                 such as entomology mode, intervention list, number of seeds, and serialized
+                                 population settings.
+        scen_df_pickup (pandas.DataFrame): The scenario data frame containing the specific scenario settings for
+                                            each sweep, including serialized population paths and filenames.
+
+    Returns:
+        list: A list containing the configured `SimulationBuilder` object with the sweep definition added.
+
+    Raises:
+        ValueError: If the `entomology_mode` in `exp` is not recognized ('forced' or 'dynamic').
+
+    """
     builder = SimulationBuilder()
     nseeds = exp.num_seeds
     if exp.entomology_mode == 'forced':
@@ -236,12 +337,20 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
 
 def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=20):
     """
-    Submits a job to analyze EMOD simulation results.
+    Submits a job to analyze EMOD simulation outputs on a high-performance computing (HPC) platform.
+
+    This function creates a SLURM shell script for submitting an analysis job, which processes the EMOD simulation
+    outputs. It sets up the job environment, defines dependencies on previous jobs, and submits the job to the platform.
 
     Args:
-        experiment (object): The experiment object containing job directory and other information.
-        platform (object): The platform object representing the HPC platform.
+        experiment (Experiment): The experiment object containing relevant parameters such as job directory,
+                                  EMOD virtual environment, and analyzer script(s).
+        platform (Platform): The platform object representing the HPC system where the job will be submitted.
+        t (str, optional): The time limit for the job in HH:MM:SS format. Defaults to '04:00:00'.
+        memG (int, optional): The amount of memory (in GB) allocated for the job. Defaults to 20 GB.
 
+    Returns:
+        None
     """
 
     # Get the current working directory

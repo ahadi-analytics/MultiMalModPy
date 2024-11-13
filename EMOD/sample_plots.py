@@ -18,8 +18,17 @@ mpl.rcParams['pdf.fonttype'] = 42
 
 def parse_args():
     """
-    Parses command-line arguments for simulation specifications.
+    Parse command-line arguments for simulation specifications.
+    This function sets up the argument parser to handle command-line inputs,
+    specifically for specifying the job directory and an optional experiment ID.
+    The job directory is required to locate the `exp.obj` file.
+
+    Returns:
+        Namespace: A namespace object containing the parsed command-line arguments.
+        The attributes include:
+            - directory (str): The job directory where `exp.obj` is located.
     """
+
     # Set the description for the argument parser
     description = "Simulation specifications"
     parser = argparse.ArgumentParser(description=description)
@@ -37,10 +46,22 @@ def parse_args():
 def all_age_sample_plot(wdir, sweep_variables, sample_channels, fts=8):
     """
     Generate a sample plot for all age data from the 'All_Age_Outputs.csv' file.
-    Parameters:
-    - wdir (str): Working directory.
-    - sweep_variables (list): List of sweep variables.
-    - sample_channels (list): List of channels for the Figure.
+    This function reads data from a CSV file containing outputs for all age groups, aggregates
+    the data based on the provided sweep variables, and generates a set of plots for specified
+    channels. The function saves the generated plots as a PDF file in the specified working directory.
+
+    Args:
+        wdir (str): Working directory where the 'All_Age_Outputs.csv' file is located,
+                    and where the plots will be saved.
+        sweep_variables (list): List of sweep variables to be considered for grouping the data.
+        sample_channels (list): List of channels to be plotted in the figure.
+        fts (int, optional): Font size for the plot. Defaults to 8.
+
+    Returns:
+        None
+
+    Saves:
+       AllAge_sample_plot.pdf.
     """
     # Read the data from a CSV file
     df = pd.read_csv(os.path.join(wdir, 'All_Age_Outputs.csv'))
@@ -75,7 +96,7 @@ def all_age_sample_plot(wdir, sweep_variables, sample_channels, fts=8):
         ax.tick_params(axis='x', labelsize=fts)
         ax.tick_params(axis='y', labelsize=fts)
 
-        # Uncomment the following lines if you want to add a legend
+    ## Add legend
     # if len(sweep_variables) > 0:
     #    axes[-1].legend(title=sweep_variables, loc=7)
 
@@ -89,17 +110,34 @@ def all_age_sample_plot(wdir, sweep_variables, sample_channels, fts=8):
 
 def sample_plot_yr(wdir, sweep_variables, agebin=5, fts=8):
     """
-    Generate a sample plot for annual  data from PfPR_ClinicalIncidence_yr.csv
-    Parameters:
-    - wdir (str): Working directory.
-    - sweep_variables (list): List of sweep variables.
-    - agebin (int): Age bin. Defaults to 5.
+    Generate a sample plot for annual data from the 'mmmpy_yr.csv' file.
+
+    This function reads data from a CSV file containing annual clinical incidence data,
+    and generates a set of plots for different clinical outcome channels across simulation years.
+    It aggregates the data based on the provided sweep variables and age group bin, and creates
+    plots for each channel showing trends across the years. The function saves the generated plots
+    as a PDF file in the specified working directory.
+
+    Args:
+        wdir (str): Working directory where the 'mmmpy_yr.csv' file is located,
+                    and where the plots will be saved.
+        sweep_variables (list): List of sweep variables to be considered for grouping the data.
+                                 The variable `seed` is automatically excluded from this list.
+        agebin (int, optional): The age bin (in years) for which the plot will be generated.
+                                Defaults to 5.
+        fts (int, optional): Font size for the plot. Defaults to 8.
+
+    Returns:
+        None
+
+    Saves:
+        mmmpy_yr_agebin{agebin}.pdf
     """
     # Outcome channels to plot
     channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'prevalence', 'prevalence_2to10']
 
     # Read the data from a CSV file
-    df = pd.read_csv(os.path.join(wdir, 'PfPR_ClinicalIncidence_yr.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'mmmpy_yr.csv'))
     sweep_variables = [s for s in sweep_variables if s != 'seed']
 
     # Group and aggregate the data
@@ -116,7 +154,7 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5, fts=8):
             pass
 
     # Create the figure and subplots
-    fig = plt.figure('PfPR_ClinicalIncidence_yr', figsize=(10, 8))
+    fig = plt.figure('mmmpy_yr', figsize=(10, 8))
     fig.subplots_adjust(hspace=0.5, left=0.08, right=0.97)
     fig.suptitle(f'agebin: {agebin}')
     axes = [fig.add_subplot(3, 2, x + 1) for x in range(6)]
@@ -138,23 +176,38 @@ def sample_plot_yr(wdir, sweep_variables, agebin=5, fts=8):
         ax.tick_params(axis='x', labelsize=fts)
         ax.tick_params(axis='y', labelsize=fts)
 
-        # Uncomment the following lines if you want to add a legend
+    ## Add a legend
     # if len(sweep_variables) > 0:
     #     lg = axes[-1].legend(title=sweep_variables, bbox_to_anchor=(1.05, 1.0), loc='upper left')
     fig.text(0.02, 0.5, 'Value', ha='center', va='center', rotation='vertical', fontsize=fts)
     fig.text(0.5, 0.02, 'Simulation time (years)', ha='center', va='center', fontsize=fts)
 
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
-    fig.savefig(os.path.join(wdir, 'plots', f'PfPR_ClinicalIncidence_yr_agebin{agebin}.pdf'))
+    fig.savefig(os.path.join(wdir, 'plots', f'mmmpy_yr_agebin{agebin}.pdf'))
 
 
 def sample_plot_mth(wdir, sweep_variables, agebin=5, fts=8):
     """
-    Generate a sample plot for monthly data from PfPR_ClinicalIncidence_mth.csv
-    Parameters:
-    - wdir (str): Working directory.
-    - sweep_variables (list): List of sweep variables.
-    - agebin (int): Age bin. Defaults to 5.
+    Generate a sample plot for monthly data from the 'mmmpy_mth.csv' file.
+    This function reads data from a CSV file containing monthly clinical incidence data,
+    and generates a set of plots for different clinical outcome channels over a single year
+    of simulation. It aggregates the data based on the provided sweep variables and age group
+    bin, and then creates plots for each channel showing trends over the months of the year.
+
+    Args:
+        wdir (str): Working directory where the 'mmmpy_mth.csv' file is located,
+                    and where the plots will be saved.
+        sweep_variables (list): List of sweep variables to be considered for grouping the data.
+                                 The variable `seed` is automatically excluded from this list.
+        agebin (int, optional): The age bin (in years) for which the plot will be generated.
+                                Defaults to 5.
+        fts (int, optional): Font size for the plot. Defaults to 8.
+
+    Returns:
+        None
+
+    Saves:
+        mmmpy_mth_agebin{agebin}.pdf
     """
     # Outcome channels to plot
     channels = ['nHost', 'nUncomp', 'nSevere', 'nInfect', 'prevalence', 'prevalence_2to10']
@@ -163,7 +216,7 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5, fts=8):
     sweep_variables = [s for s in sweep_variables if s != 'seed']
 
     # Read the data from a CSV file
-    df = pd.read_csv(os.path.join(wdir, 'PfPR_ClinicalIncidence_mth.csv'))
+    df = pd.read_csv(os.path.join(wdir, 'mmmpy_mth.csv'))
     df['day'] = 1
     df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
 
@@ -185,7 +238,7 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5, fts=8):
             pass
 
     # Create the figure and subplots
-    fig1 = plt.figure('PfPR_ClinicalIncidence_mth', figsize=(10, 8))
+    fig1 = plt.figure('mmmpy_mth', figsize=(10, 8))
     fig1.subplots_adjust(hspace=0.5, left=0.08, right=0.97)
     fig1.suptitle(f'agebin: {agebin}')
     axes = [fig1.add_subplot(3, 2, x + 1) for x in range(6)]
@@ -207,13 +260,13 @@ def sample_plot_mth(wdir, sweep_variables, agebin=5, fts=8):
         ax.tick_params(axis='x', labelsize=fts)
         ax.tick_params(axis='y', labelsize=fts)
 
-        # Uncomment the following lines if you want to add a legend
+    ## Add a legend
     # if len(sweep_variables) > 0:
     #    lg = axes[-1].legend(title=sweep_variables, bbox_to_anchor=(1.05, 1.0), loc='upper left')
     fig1.text(0.02, 0.5, 'Value', ha='center', va='center', rotation='vertical', fontsize=fts)
     fig1.text(0.5, 0.02, f'Months (single year {yr})', ha='center', va='center', fontsize=fts)
     # Additions to savefig call: bbox_extra_artists=(lg,), bbox_inches='tight')
-    fig1.savefig(os.path.join(wdir, 'plots', f'PfPR_ClinicalIncidence_mth_agebin{agebin}.pdf'))
+    fig1.savefig(os.path.join(wdir, 'plots', f'mmmpy_mth_agebin{agebin}.pdf'))
 
 
 if __name__ == "__main__":
@@ -232,10 +285,10 @@ if __name__ == "__main__":
     # Define tags and channels for sample plots
     exp_tags = [x for x in exp.sweep_list if x != 'seed']  # + ['seed']
     sample_channels = ['Statistical Population', 'Births', 'Disease Deaths',
-                            'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
-                            'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
-                            'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
-                            'Infectious Vectors', 'EIR']
+                       'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
+                       'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
+                       'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
+                       'Infectious Vectors', 'EIR']
 
     # Create sample plots
     all_age_sample_plot(wdir, exp_tags, sample_channels)

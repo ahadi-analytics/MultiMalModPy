@@ -13,8 +13,20 @@ from utility.experiment import LoadExperiment
 
 def parse_args():
     """
-    Parses command-line arguments for simulation specifications.
+    Parse command-line arguments for simulation specifications.
+    This function sets up the argument parser to handle command-line inputs,
+    specifically for specifying the job directory and an optional experiment ID.
+    The job directory is required to locate the `exp.obj` file.
+
+    Args:
+        None
+
+    Returns:
+        Namespace: A namespace object containing the parsed command-line arguments.
+        The attributes include:
+            - job_dir (str): The job directory where `exp.obj` is located.
     """
+
     # Set the description for the argument parser
     description = "Simulation specifications"
     parser = argparse.ArgumentParser(description=description)
@@ -75,16 +87,16 @@ def post_processing(exp, job_directory):
     Perform post-processing of malariasimulation simulation output data.
     This was previously done in R, but was brought to python to match the two other models.
 
-    Parameters:
-    - exp: Experiment object.
-    - job_directory: Directory containing raw simulation output files.
+    Args:
+        exp: Experiment object.
+        job_directory: Directory containing raw simulation output files.
 
     Saves:
-    - {i}_daily.csv: for each simulation {i} in an experiment, saves the processed daily output.
-    - daily.csv: combines all the processed daily outputs for each simulation in the experiment.
+        {i}_daily.csv: for each simulation {i} in an experiment, saves the processed daily output.
+        daily.csv: combines all the processed daily outputs for each simulation in the experiment.
     
     Returns:
-    None
+        None
     """
     agebins = exp.agebins
     agebins_days = [a * 365 for a in exp.agebins]
@@ -132,8 +144,28 @@ def post_processing(exp, job_directory):
 
 def InputEIRAnalyzer(jdir, wdir, daily=False):
     """
-    Run the InputEIRAnalyzer for Malariasimulation experiments.
-    If daily is True, generate the EIR_daily.csv ONLY.
+    Run the InputEIRAnalyzer for malariasimulation experiments.
+    This function generates daily or aggregated EIR (Entomological Inoculation Rate) reports.
+    It filters and processes relevant columns, and saves the results as CSV files.
+
+    Args:
+        jdir (str): Path to the directory containing the scenario data file `scenarios_wseeds.csv`.
+        wdir (str): Path to the directory containing the simulation data file `daily.csv`, and where
+            output CSV files will be saved.
+        daily (bool, optional): If `True`, only the daily EIR data (`EIR_daily.csv`) will be processed and saved.
+            If `False`, monthly, yearly, and multi-year mean EIR files will also be generated and saved.
+            Defaults to `False`.
+
+    Raises:
+        FileNotFoundError: If the required `scenarios_wseeds.csv` or `daily.csv` files are not found in `jdir` or `wdir`.
+        ValueError: If data columns necessary for processing (e.g., 'EIR_gamb') are missing in the input files.
+
+    Saves:
+        One or more CSV files based on the `daily` flag:
+            - `EIR_daily.csv`: Contains daily EIR data, if `daily=True`.
+            - `EIR_mth.csv`: Contains monthly aggregated EIR data, if `daily=False`.
+            - `EIR_yr.csv`: Contains yearly aggregated EIR data, if `daily=False`.
+            - `EIR.csv`: Contains mean EIR over the monitoring period, if `daily=False`.
     """
     print("Running InputEIRAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
@@ -208,8 +240,24 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
 
 def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
     """
-    Run the SurveyAllAgeAnalyzer for malariasimulation experiments.
+    Run the SurveyAllAgeAnalyzer for malariasimulation outputs.
+    This function postprocesses outputs by age-groups across dates and variables defined by `sweep_variables`.
+    The function reads, filters, and aggregates relevant columns, and then saves the processed data to a CSV file.
+
+    Args:
+        jdir (str): Path to the directory containing the scenario data file `scenarios_wseeds.csv`.
+        wdir (str): Path to the directory containing the experiment data file `daily.csv`, and where
+            the output CSV file will be saved.
+        sweep_variables (list of str): List of column names used as grouping variables in the aggregation.
+
+    Raises:
+        FileNotFoundError: If the required `scenarios_wseeds.csv` or `daily.csv` files are not found in `jdir` or `wdir`.
+        ValueError: If data columns necessary for processing (e.g., 'n_inc') are missing in the input files.
+
+    Saves:
+        `All_Age_Outputs.csv`
     """
+
     print("Running SurveyAllAgeAnalyzer...", flush=True)
 
     # Read the scenario data from the CSV file
@@ -322,10 +370,10 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on='index', how='inner')
 
-    #Severe Incidence Recalculation
+    # Severe Incidence Recalculation
     cdf['severe_incidence'] = cdf['severe_incidence']  * ( 0.5 * cdf['cm_severe'] + ( 1 - cdf['cm_severe']) )
     
-    # Rename columns for alignment with OpenMalaria results
+    # Rename columns for standardization across models
     cdf['mortality'] = ''
     
     cdf = cdf.rename({'n': 'nHost'}, axis=1)
@@ -353,15 +401,24 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
 def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables,age_groups_aggregates=None):
     """
     Run the DailyAgeBinAnalyzer equivalent for malariasimulation experiments.
+    This function processes daily simulation outputs, aggregating malaria-related metrics across specified
+    age bins and sweep variables. The function reads, filters, and aggregates relevant columns,
+    including age group aggregates if provided, and saves the processed data to a CSV file.
+
     Args:
-        exp: The experiment object.
-        mm: The measure map object.
-        start_year: The starting year for the analysis.
-        compr: The compression type for saving the output CSV file (default: 'infer').
-    Saves: CSV dataframe of simulation outcome metrics per agebin, month and grp_channels
-           surveys aggregated per surveytimestep (year and month)
-    Returns:
-        None
+        jdir (str): Path to the directory containing the scenario data file `scenarios_wseeds.csv`.
+        wdir (str): Path to the directory containing the experiment data file `daily.csv`, and where
+            the output CSV file will be saved.
+        sweep_variables (list of str): List of column names used as grouping variables in the aggregation.
+        age_groups_aggregates (list of lists, optional): List of age ranges to aggregate in the form of
+            [[min_age, max_age], ...]. If None, default age bins will be used.
+
+    Raises:
+        FileNotFoundError: If the required `scenarios_wseeds.csv` or `daily.csv` files are not found in `jdir` or `wdir`.
+        ValueError: If data columns necessary for processing (e.g., 'n_inc') are missing in the input files.
+
+    Saves:
+        `mmmpy_daily.csv`
     """
     print("Running DailyAgeBinAnalyzer...", flush=True)
 
@@ -435,19 +492,26 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables,age_groups_aggregates=None):
 def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None, cc = None):
     """
     Run the FiveDayAgebinAnalyzer for OpenMalaria experiments to generate
-    and save a results dataframe for defined age groups over time (5days and years).
+    and save a results dataframe for defined age groups over time (5-day intervals and years).
+    This function processes simulation outputs, aggregating malaria-related metrics every five days
+    and across specified age bins and sweep variables. It outputs metrics like prevalence, clinical
+    incidence, and severe incidence per age group. The processed data is saved to a CSV file.
 
     Args:
-        jdir (str): Path to the directory containing simulation job data.
-        wdir (str): Path to the working directory.
-        sweep_variables (list): List of sweep variables.
-        age_groups_aggregates (list, optional): List of age group aggregates. Defaults to None.
+        jdir (str): Path to the directory containing the scenario data file `scenarios_wseeds.csv`.
+        wdir (str): Path to the working directory, where the experiment data (`daily.csv`) is stored and output is saved.
+        sweep_variables (list of str): List of column names used for grouping in the aggregation.
+        age_groups_aggregates (list of lists, optional): List of age ranges to aggregate in the form of
+            [[min_age, max_age], ...]. Defaults to standard age bins if not provided.
+        cc (bool, optional): If True, an additional climate change data file `mmmpy_ccstep_daily.csv` will be generated.
+
+    Raises:
+        FileNotFoundError: If required files (`daily.csv`, `EIR_daily.csv`, or `scenarios_wseeds.csv`) are missing.
+        ValueError: If expected data columns are not found in the input files.
 
     Saves:
         mmmpy_5day.csv
-
-    Returns:
-        None
+        mmmpy_ccstep_daily.csv (if `cc=True`).
     """
     print("Running FiveDayAgebinAnalyzer...", flush=True)
 
@@ -546,14 +610,16 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
 def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     """
-    Run the MonthlyAgebinAnalyzer for OpenMalaria experiments to generate
-    and save a results dataframe for defined age groups over time (month and years).
+    Process monthly data for malariasimulation experiments, generating a dataframe of malaria metrics over time
+    by age group. Aggregates daily data into monthly averages or sums, calculates prevalence and incidence rates,
+    and merges experimental metadata for analysis.
 
     Args:
-        jdir (str): Path to the directory containing simulation job data.
-        wdir (str): Path to the working directory.
-        sweep_variables (list): List of sweep variables.
-        age_groups_aggregates (list, optional): List of age group aggregates. Defaults to None.
+        jdir (str): Path to the directory containing scenario job data, including metadata.
+        wdir (str): Path to the working directory containing input data CSV files and where the output will be saved.
+        sweep_variables (list): List of columns that identify experimental sweeps (e.g., parameter values).
+        age_groups_aggregates (list, optional): List of age ranges for aggregating results. Each entry is a [min_age, max_age] list.
+            Defaults to None, in which case it uses predefined age bins.
 
     Saves:
         mmmpy_mth.csv
@@ -638,14 +704,16 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
 def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
     """
-    Run the AnnualAgebinAnalyzer for OpenMalaria experiments to generate
-    and save a results dataframe for defined age groups over time (years).
+    Process annual data for malariasimulation experiments, generating a dataframe of malaria metrics over time
+    by age group. Aggregates daily data into yearly sums, calculates prevalence and incidence rates,
+    and merges experimental metadata for analysis.
 
     Args:
-        jdir (str): Path to the directory containing simulation job data.
-        wdir (str): Path to the working directory.
-        sweep_variables (list): List of sweep variables.
-        age_groups_aggregates (list, optional): List of age group aggregates. Defaults to None.
+        jdir (str): Path to the directory containing scenario job data, including metadata.
+        wdir (str): Path to the working directory containing input data CSV files and where the output will be saved.
+        sweep_variables (list): List of columns that identify experimental sweeps (e.g., parameter values).
+        age_groups_aggregates (list, optional): List of age ranges for aggregating results. Each entry is a [min_age, max_age] list.
+            Defaults to None, in which case it uses predefined age bins.
 
     Saves:
         mmmpy_yr.csv
