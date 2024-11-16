@@ -1,50 +1,56 @@
 # MultiMalModPy Documentation
 
-Documentation of [MultiMalModPy](https://github.com/ahadi-analytics/model-characterization),  a novel programmatic framework for running three individual-based malaria transmission models.
+Documentation of [MultiMalModPy](https://github.com/ahadi-analytics/model-characterization),  a novel programmatic framework for Multi-Malaria-Model simulation framework.
 
-Currently, MultiMalModPy includes the following three models:
-
-**EMOD malaria** [visit documentation ](https://www.google.com/url?q=https://docs.idmod.org/projects/emod-malaria/en/latest/malaria-model-overview.html&sa=D&source=docs&ust=1725103240542913&usg=AOvVaw1VFxfGLNgJs9OPR3zrlHaE)
-
-**OpenMalaria** [visit documentation ](https://github.com/SwissTPH/openmalaria/wiki)
-
-**malariasimulation** [visit documentation ](https://mrc-ide.github.io/malariasimulation/articles/Model.html)
+MultiMalModPy includes the following three models:   
+[Epidemiological Modeling of Disease Software (EMOD) malaria](https://docs.idmod.org/projects/emod-malaria/en/2.20_a/)  
+[OpenMalaria](https://github.com/SwissTPH/openmalaria/wiki)  
+[malariasimulation](https://mrc-ide.github.io/malariasimulation/index.html)  
 
 
 
 ## Content  
 
-**Getting started**   
-&nbsp;&nbsp;&nbsp;&nbsp; _General information for each of the three models and comparison of features._  
-
-**User guide**   
-&nbsp;&nbsp;&nbsp;&nbsp;  _Instructions and information on how to use the framework and methods used_  
-
-**API**  
-&nbsp;&nbsp;&nbsp;&nbsp;  _List of framework-specific functions and scripts_    
-
-**About**     
-&nbsp;&nbsp;&nbsp;&nbsp;  _Information and links specific to each of the models included in the framework_    
+- **GETTING STARTED**: _General information for each of the three models and comparison of features._  
+- **USER GUIDE**:  _Instructions and information on how to use the framework and methods used_  
+- **API**:  _List of framework-specific functions and scripts_   
+- **ABOUT**:  _Information and links specific to each of the models included in the framework_      
 
 
- 
-## Using MultiMalModPy   
+## Using MultiMalModPy
 
-**Contact**    
-&nbsp;&nbsp;&nbsp;&nbsp;  _If you want to use MultiMalModPy, please contact ..._
+**Public release**  
+  _Coming soon..._
+
+**Contribute to its development**  
+MultiMalModPy will be an open-source framework to which anyone is welcome to contribute.
+Source code will be made available on the  [MultiMalModPy GitHub repository](https://github.com/ahadi-analytics/MultiMalModPy).
 
 **Suggested citation**  
 &nbsp;&nbsp;&nbsp;&nbsp;  _Coming soon..._
 
-**Reference papers**    
+
+------------------
+ 
+### Developers  
+- **Malaria modeling group at Northwestern University**  
+&nbsp;&nbsp;&nbsp;&nbsp; Ricky Richter, Manuela Runge, Jaline Gerardin
+
+- **University of Basel, Basel, Switzerland**  
+&nbsp;&nbsp;&nbsp;&nbsp; Aurelien Cavelan  
+
+- **University of Western Australia, Crawley, WA, Australia
+   Telethon Kids Institute, Nedlands, WA, Australia Center for Child Health Research**  
+&nbsp;&nbsp;&nbsp;&nbsp;  Melissa Penny
+
+### Contributors
+- **Swiss Tropical and Public Health Institute**    
+&nbsp;&nbsp;&nbsp;&nbsp;  Josephine Malinga, Narimane Nekkab  
+
+- **Institute of Disease Modelling, Bill & Melinda Gates Foundation, Seattle, USA**    
+&nbsp;&nbsp;&nbsp;&nbsp;  Caitlin Bever
+
+------------------
+
+### Reference publications and presentations 
 &nbsp;&nbsp;&nbsp;&nbsp;  _Coming soon..._
-<!-- 
-- Software paper (Paper 1)    
-- Model comparison paper (Paper 2) 
- -->
-
-## Contribute to its development  
-MultiMalModPy is an open-source framework to which anyone is welcome to contribute.
-Check out the [MultiMalModPy GitHub repository](https://github.com/ahadi-analytics/MultiMalModPy) for all the source code, open issues etc. and send us a pull request.
-For new feature requests, please check out the open issues and open a new one if a related one does not already exist.
-
