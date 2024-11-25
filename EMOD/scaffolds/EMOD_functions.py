@@ -79,8 +79,8 @@ def all_campaigns(camp, exp = None, row = None, intervention_list = []):
                                   start_day=row.cc_timestep_emod,
                                   repetitions = 1)
     if exp.importation_rate != 0:
-        ncases_per_year_per1000pop = ((exp.importation_rate/100)*1000) / exp.emod_pop_size
-        add_outbreak_individual(camp, start_day = 1, demographic_coverage=ncases_per_year_per1000pop,
+        ncases_per_year_per1000pop = (exp.importation_rate*exp.emod_pop_size)/1000
+        add_outbreak_individual(camp, start_day = 1, target_num_individuals=ncases_per_year_per1000pop,
                                 repetitions=-1, timesteps_between_repetitions=365)
 
     # SMC using PKPD model
@@ -106,7 +106,7 @@ def habitat_setup(config, exp, row):
     if row.seasonality == 'perennial':
         habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat1.parameters.Habitat_Type = "CONSTANT"
-        habitat1.parameters.Max_Larval_Capacity = 100000000 * max_capacity_multiplier
+        habitat1.parameters.Max_Larval_Capacity = 8000000 * max_capacity_multiplier
         habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type, "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
         malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
     else:
@@ -117,7 +117,7 @@ def habitat_setup(config, exp, row):
         malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = True)
         habitat2 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat2.parameters.Habitat_Type = "CONSTANT"
-        habitat2.parameters.Max_Larval_Capacity = 1000000 * max_capacity_multiplier
+        habitat2.parameters.Max_Larval_Capacity = 850000 * max_capacity_multiplier
         habitat_list = [{"Habitat_Type": habitat2.parameters.Habitat_Type, "Max_Larval_Capacity": habitat2.parameters.Max_Larval_Capacity}]
         malaria_config.set_species_param(config, 'gambiae', parameter = "Habitats", value = habitat_list, overwrite = False)
 

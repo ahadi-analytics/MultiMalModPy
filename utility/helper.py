@@ -416,18 +416,16 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
                     4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
                     3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
                     2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
-        x_temp_range = [1.00000000e-01, 1.26896100e-01, 1.61026203e-01, 2.04335972e-01, 
-                        2.59294380e-01, 3.29034456e-01, 4.17531894e-01, 5.29831691e-01,
-                        6.72335754e-01, 8.53167852e-01, 1.08263673e+00, 1.37382380e+00,
-                        1.74332882e+00, 2.21221629e+00, 2.80721620e+00, 3.56224789e+00,
-                        4.52035366e+00, 5.73615251e+00, 7.27895384e+00, 9.23670857e+00,
-                        1.17210230e+01, 1.48735211e+01, 1.88739182e+01, 2.39502662e+01,
-                        3.03919538e+01, 3.85662042e+01, 4.89390092e+01, 6.21016942e+01,
-                        7.88046282e+01, 1.00000000e+02]
+        x_temp_range = [0.1       ,  0.12344971,  0.15239832,  0.18813529,  0.23225247,
+                        0.28671501,  0.35394886,  0.43694886,  0.53941211,  0.66590271,
+                        0.82205498,  1.01482452,  1.25279797,  1.5465755 ,  1.90924303,
+                        2.35695505,  2.90965426,  3.59195985,  4.43426415,  5.47408639,
+                        6.75774397,  8.34241558, 10.29868813, 12.71370101, 15.69502748,
+                       19.37546647, 23.91895786, 29.52788498, 36.45208943, 45.]
     if exp.run_mode == "test" or exp.run_mode is None:
         exp.output_target = np.arange(1,2)
-        eir_range = [25, 50, 100]
-        x_temp_range = [10]
+        eir_range = [50]
+        x_temp_range = [15]
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
@@ -484,9 +482,9 @@ def create_scenarios_csv(exp, col_list, add_cols=True):
             if 'EMOD' in exp.models_to_run or 'EMOD' in exp.models_to_run_pickup:
                 if exp.entomology_mode == 'dynamic':
                     if df.loc[i, 'seasonality'] == 'perennial':
-                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]               
+                        df['model_input_emod'] = output_target_to_xTemp(df, exp, model = 'EMOD')               
                     else:
-                        df.loc[i, 'model_input_emod'] = x_temp_range[int(df.loc[i, 'output_target']) - 1]
+                        df['model_input_emod'] = output_target_to_xTemp(df, exp, model = 'EMOD')   
                 if exp.entomology_mode == 'forced':
                     df['model_input_emod'] = output_target_to_eir(df, exp, model='EMOD')
             if 'malariasimulation' in exp.models_to_run or 'malariasimulation' in exp.models_to_run_pickup:
