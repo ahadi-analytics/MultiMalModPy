@@ -21,14 +21,31 @@ from plotter.plot_helper import *
 def prevalence2to10_to_incidence(fdir, df, sweepvar='modelname', facet_var='seasonality', channel='clinical_incidence',
                                  agegrps=None):
     """
-    Generates line plots for PfPR2to10 and either clinical or severe incidence per sweepvar as colors and modelname as panels.
-    Parameters:
-        fdir (str): Directory where the plot will be saved.
-        modelname (str or list of str): Name of models for which result dataframes should be loaded.
-        sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'modelname'.
-        channel (str): Variable representing the y-axis data to be plotted.
+    Generate line plots for PfPR2to10 and either clinical or severe incidence,
+    grouped by the specified sweep variable and faceted by another variable.
+
+    This function creates a series of line plots where the x-axis represents
+    the prevalence of PfPR2to10, and the y-axis represents either clinical or
+    severe incidence. Each line corresponds to a model, and the plots can be
+    faceted by a specified variable (e.g., seasonality).
+
+    Args:
+        fdir (str): Directory where the generated plot will be saved.
+        df (pd.DataFrame): DataFrame containing the model results for plotting.
+        sweepvar (str, optional): Variable to group the data and create multiple panels
+            on the plot. Default is 'modelname'.
+        facet_var (str, optional): Variable used to create subplots based on its unique
+            values. Default is 'seasonality'.
+        channel (str): Variable representing the y-axis data to be plotted (e.g.,
+            'clinical_incidence').
+        agegrps (list of str, optional): Specific age groups to filter the DataFrame
+            before plotting. Defaults to None, which means all age groups will be used.
+
     Returns:
-        None (plots are saved to disk).
+        None: The function saves the generated plots to disk.
+
+    Raises:
+        ValueError: If an error occurs while filtering the DataFrame or during plotting.
     """
 
     figure_vars = ['prevalence_2to10', channel] + [sweepvar, facet_var]
@@ -94,14 +111,23 @@ def prevalence2to10_to_incidence(fdir, df, sweepvar='modelname', facet_var='seas
 # figure 1 in https://www.nature.com/articles/ncomms9170
 def prevalence2to10_to_incidence_by_age_and_model(fdir, df, sweepvar='modelname', channel='clinical_incidence'):
     """
-    Generates line plots for PfPR2to10 and either clinical or severe incidence as panels seperated by model (columns) and ages (rows).
-    Parameters:
-        fdir (str): Directory where the plot will be saved.
-        modelname (str or list of str): Name of models for which result dataframes should be loaded.
-        sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'modelname'.
-        channel (str): Variable representing the y-axis data to be plotted.
+    Generate line plots for PfPR2to10 and either clinical or severe incidence,
+    separated by model (columns) and age groups (rows).
+
+    This function creates a grid of line plots where each plot corresponds to a
+    specific model and age group for the prevalence of PfPR2to10 on the x-axis
+    and either clinical or severe incidence on the y-axis.
+
+    Args:
+        fdir (str): Directory where the generated plot will be saved.
+        df (pd.DataFrame): DataFrame containing the model results for plotting.
+        sweepvar (str, optional): Variable to group the data and create multiple
+            panels on the plot. Default is 'modelname'.
+        channel (str): Variable representing the y-axis data to be plotted (e.g.,
+            'clinical_incidence').
+
     Returns:
-        None (plots are saved to disk).
+        None: The function saves the generated plots to disk.
     """
 
     seasonality = list(df['seasonality'].unique())
@@ -160,16 +186,27 @@ def prevalence2to10_to_incidence_by_age_and_model(fdir, df, sweepvar='modelname'
 def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', eir_val='simulatedEIR',
                    channel='prevalence_2to10', agegrp='0-5'):
     """
-    Generates line plots for EIR (input or simulated) and a requested outcome variable per modelname as colors and sweepvar as panels.
-    Parameters:
-        fdir (str): Directory where the plot will be saved.
-        df (pandas dataframe): Dataframe that includes combined model results.
-        sweepvar (str, optional): Variable to group the data and create multiple panels on the plot. Default is 'cm_clinical'.
-        eir_val (str, optional): The EIR (entomological inoculation rate) value to be used for plotting. Default is 'simulatedEIR'.
-        channel (str, optional): the outcome variable to compare to eir
-        agegrp (str, optional): Limits the resulting graphs to the selected age group. Default 0-5.
+    Generate line plots for EIR (Entomological Inoculation Rate) and a requested
+    outcome variable, with models represented as colors and sweep variables as panels.
+
+    This function creates line plots where the x-axis represents the EIR and the
+    y-axis represents an outcome variable, with different models indicated by color
+    and organized into panels based on specified facets.
+
+    Args:
+        fdir (str): Directory where the generated plot will be saved.
+        df (pd.DataFrame): DataFrame that includes combined model results.
+        sweepvar (str, optional): Variable to group the data and create multiple
+            panels on the plot. Default is 'cm_clinical'.
+        eir_val (str, optional): The EIR (Entomological Inoculation Rate) value to
+            be used for plotting. Default is 'simulatedEIR'.
+        channel (str, optional): The outcome variable to compare to EIR. Default is
+            'prevalence_2to10'.
+        agegrp (str, optional): Limits the resulting graphs to the selected age group.
+            Default is '0-5'.
+
     Returns:
-        None (plots are saved to disk).
+        None: The function saves the generated plots to disk.
     """
 
     figure_vars = [eir_val, channel] + [sweepvar, facet_var]
@@ -191,7 +228,7 @@ def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', ei
 
         for i, (p, pdf) in enumerate(fdf.groupby([sweepvar])):
             color_key = color_selector(i, p)
-            xmean, ymean = get_x_y(pdf, 'output_target', eir_val, channel)  # get values for x and y axes.
+            xmean, ymean = get_x_y(pdf, 'output_target', eir_val, channel)
             merge_df = pd.merge(left=xmean, right=ymean, on='output_target')
             merge_df.sort_values(by=eir_val, inplace=True)
             ax.plot(merge_df[eir_val], merge_df[channel], '-', linewidth=0.8, label=f"{p}",
@@ -217,14 +254,25 @@ def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', ei
 
 def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonality'):
     """
-    Generates line plots input compared to simulated EIR.
-    Parameters:
-        fdir (str): Directory where the plot will be saved.
-        df (pandas dataframe): Dataframe that includes combined model results.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'cm_clinical'.
+    Generate line plots comparing input EIR to simulated EIR.
+
+    This function creates line plots where the x-axis represents the input EIR values
+    and the y-axis represents the simulated annual EIR. Different models are represented
+    by different lines on the plot, and the plots are organized into panels based on
+    specified facets.
+
+    Args:
+        fdir (str): Directory where the generated plot will be saved.
+        df (pd.DataFrame): DataFrame that includes combined model results.
+        sweepvar (str, optional): Variable to group the data and create multiple lines
+            on the plot. Default is 'cm_clinical'.
+        facet_var (str, optional): Variable to create multiple panels on the plot.
+            Default is 'seasonality'.
+
     Returns:
-        None (plots are saved to disk).
+        None: The function saves the generated plots to disk.
     """
+
     xyvars = ['simulatedEIR', 'output_target']
     figure_vars = xyvars + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars)
@@ -273,8 +321,6 @@ def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonal
     plt.xlabel('Input EIR')
     plt.ylabel('Simulated annual EIR')
 
-    # if ny == 2:
-    #    fig.text(0.95, 0.25, seasonality[1], ha='center', va='center', rotation=-90, fontsize=14)
     fname = f'input_to_simulated_eir_by_{sweepvar}_{facet_var}'
     fname = fname.replace('modelname', 'model')
     fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')

@@ -20,14 +20,30 @@ from plotter.plot_helper import *
 # Plots over age - requires PfPR_ClinicalIncidence_yr.csv
 def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target', age_groups_aggregates=None):
     """
-    Parameters:
+    Plots age curves based on model results and saves the figure to the specified directory.
+
+    Args:
         fdir (str): Directory where the plot will be saved.
-        df (pandas dataframe): Dataframe that includes combined model results.
+        df (pandas.DataFrame): DataFrame that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
-        facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'seasonality'. 
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot.
+                                   Defaults to 'modelname'.
+        facet_var (str, optional): Variable used to create subplots based on its unique values.
+                                   Defaults to 'output_target'.
+        age_groups_aggregates (list, optional): List of age group labels to use for aggregation.
+                                                 If None, default age groups will be used.
+
+    Raises:
+        ValueError: If `facet_var` is set to 'ageGroup'.
+
     Returns:
-        None (plots are saved to disk).
+        None: The function saves the generated plots to disk.
+
+    Notes:
+        - The function generates a multi-faceted plot with separate subplots for each unique value
+          of the `facet_var` and lines representing the `sweepvar` variable.
+        - Each subplot visualizes the age distribution of the specified `channel` variable, with
+          filled areas representing the confidence interval.
     """
 
     if facet_var == 'ageGroup':

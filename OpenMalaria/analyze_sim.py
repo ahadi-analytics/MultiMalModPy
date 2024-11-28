@@ -13,7 +13,19 @@ from utility.experiment import LoadExperiment
 
 def parse_args():
     """
-    Parses command-line arguments for simulation specifications.
+    Parse command-line arguments for simulation specifications.
+    This function sets up the argument parser to handle command-line inputs,
+    specifically for specifying the job directory and an optional experiment ID.
+    The job directory is required to locate the `exp.obj` file.
+
+    Args:
+        None
+
+    Returns:
+        argparse.Namespace: A Namespace object containing the parsed arguments.
+        The object has the attribute `directory` which corresponds to the user-provided path
+        for the job directory.
+
     """
     # Set the description for the argument parser
     description = "Simulation specifications"

@@ -4,26 +4,37 @@ from utility.helper import *
 import shutil
 from OpenMalaria.scaffolds.intervention_snippets import *
 
+
 def create_scenarios(exp, scen_df):
     """
-    Creates OpenMalaria scenarios based on a dataframe containing scenario parameters.
+    Creates OpenMalaria simulation scenarios based on a dataframe containing scenario parameters.
+
+    This function generates multiple OpenMalaria scenario XML files by replacing placeholders in a template
+    XML with specific parameters from the experiment configuration and scenario dataframe. Each scenario is
+    customized based on the parameters from the dataframe, and the resulting XML files are saved to the job directory.
+
     Args:
-        exp: The experiment object containing the experiment configuration.
-        scen_df: The dataframe containing scenario parameters.
+        exp (Experiment): The experiment object containing configuration parameters such as OpenMalaria version,
+                           population size, simulation years, entomology mode, and other parameters required for
+                           generating the scenarios.
+        scen_df (pandas.DataFrame): A dataframe containing scenario parameters such as seed values, clinical malaria
+                                     data, and other model-specific inputs.
+
     Returns:
         None
+
     """
     with open(os.path.join(exp.openmalaria_input_path, 'scaffolds', f"{exp.openmalaria_scaffold}.xml"), "r") as fp:
         xml = fp.read()
 
-    exp.days_between_clinical_cases_5days  = 5 # Aurelien communicated that as long as we use v46, we should have a days_between_clinical_cases of 25 days
+    exp.days_between_clinical_cases_5days = 5  # Aurelien communicated that as long as we use v46, we should have a days_between_clinical_cases of 25 days
 
     # Replace placeholders in the XML template with fixed parameters
     xml = xml.replace("@version@", f"{exp.openmalaria_version}")
     xml = xml.replace("@pop_size@", f"{exp.openmalaria_pop_size}")
     xml = xml.replace("@burnin_start_year@", f"{exp.sim_start_year_openmalaria}")
-    xml = xml.replace("@start_year@", f"{exp.start_year-1}")
-    xml = xml.replace("@end_year@", f"{exp.end_year-1}")
+    xml = xml.replace("@start_year@", f"{exp.start_year - 1}")
+    xml = xml.replace("@end_year@", f"{exp.end_year - 1}")
     xml = xml.replace("@survey_step@", f"{exp.openmalaria_survey_step}")
     xml = xml.replace("@entomology_mode@", f"{exp.entomology_mode}")
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
@@ -33,7 +44,7 @@ def create_scenarios(exp, scen_df):
     for item in exp.agebins:
         xmlageGroups += f'\n\t\t\t<group upperbound="{item}"/>'
     xml = xml.replace('<@age_groups@>', xmlageGroups)
-    
+
     # Scenario sweeps and runs
     df = rep_scen_df(scen_df)
     for r, row in df.iterrows():
@@ -46,7 +57,7 @@ def create_scenarios(exp, scen_df):
             cm_clinical_5daily = 0
         else:
             raise ValueError('convert_access for OpenMalaria cm_clinical currently not functional')
-            #cm_clinical_5daily = convert_access(row['cm_clinical']) # TODO convert from R function to python
+            # cm_clinical_5daily = convert_access(row['cm_clinical']) # TODO convert from R function to python
 
         scenario = xml.replace('@seed@', str(row['seed']))
         scenario = scenario.replace('@cm_clinical@', str(cm_clinical_5daily))
@@ -75,11 +86,25 @@ def create_scenarios(exp, scen_df):
     schema = f"scenario_{exp.openmalaria_version}.xsd"
     shutil.copy(os.path.join(exp.openmalaria_path, schema), exp.job_directory)
 
+
 def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
     """
-    Submits a job to analyze OpenMalaria simulation results.
+    Submits a job to analyze OpenMalaria simulation results on an HPC cluster.
+
+    This function generates a SLURM job submission script to analyze the results of an OpenMalaria simulation.
+    The job runs a Python script (`analyze_sim.py`) in a specified environment to process the simulation results,
+    and it submits the job with a dependency on a previously run job, ensuring the analysis starts after the
+    prior job completes.
+
     Args:
-        exp (object): The experiment object containing job directory information.
+        exp (Experiment): The experiment object containing configuration details such as the job directory,
+                           HPC platform specification (e.g., NUCLUSTER, SCICORE), and virtual environment paths.
+        t (str, optional): The time limit for the job submission in the format 'HH:MM:SS'. Default is '04:00:00'.
+        memG (int, optional): The amount of memory (in GB) to allocate for the job. Default is 4 GB.
+
+    Returns:
+        None
+
     """
     # Generate the SLURM shell script header for the job
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OMsim',
@@ -97,11 +122,11 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
     else:
         raise ValueError('HPC specification not available, must be NUCLUSTER or SCICORE')
 
-
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, 'run_analyzer_OpenMalaria.sh')
     file = open(script_path, 'w')
-    file.write(header_post + exp.EMOD_venv + pycommand) # Also load EMOD's Python virtual environment - needed for handling exp object from idmtools
+    file.write(
+        header_post + exp.EMOD_venv + pycommand)  # Also load EMOD's Python virtual environment - needed for handling exp object from idmtools
     file.close()
 
     # Read the job ID from the 'job_id.txt' file
@@ -122,23 +147,30 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
 
 def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
     """
-    Submits OpenMalaria simulations to a high-performance computing cluster.
+    Submits OpenMalaria simulations to a high-performance computing (HPC) cluster using SLURM.
+
+    This function generates SLURM job scripts to run OpenMalaria simulations on an HPC cluster. It creates necessary
+    directories for storing logs, XML files, and output, generates simulation scenarios, and then submits the simulations
+    as a SLURM array job. After the simulations are submitted, it also triggers a job to analyze the results.
 
     Args:
-        exp (Experiment): An object containing experiment parameters and configuration.
-        scen_df (pandas.DataFrame): A DataFrame containing scenario information.
-        t (str, optional): Wall time for the job in the format 'HH:MM:SS'. Defaults to '01:00:00'.
-        memG (int, optional): Memory required for the job in GB. Defaults to 8.
+        exp (Experiment): An object containing experiment parameters and configuration, including paths,
+                           simulation settings, and HPC-specific configurations.
+        scen_df (pandas.DataFrame): A DataFrame containing scenario parameters such as seeds, clinical model parameters,
+                                     and other model-specific inputs that will be used to generate simulation scenarios.
+        t (str, optional): Wall time for the SLURM job in the format 'HH:MM:SS'. Default is '04:00:00'.
+        memG (int, optional): The amount of memory (in GB) to allocate for the job. Default is 3 GB.
 
     Returns:
         None
+
     """
 
     # Create necessary directories for logs, XML files, and output text files
     os.makedirs(os.path.relpath(f"{exp.job_directory}/log"), exist_ok=True)
     os.makedirs(os.path.relpath(f"{exp.job_directory}/xml"), exist_ok=True)
     os.makedirs(os.path.relpath(f"{exp.job_directory}/txt"), exist_ok=True)
-    #os.makedirs(os.path.relpath(f"{exp.job_directory}/ctsout"), exist_ok=True) # only required when running continuous output
+    # os.makedirs(os.path.relpath(f"{exp.job_directory}/ctsout"), exist_ok=True) # only required when running continuous output
 
     # Generate OpenMalaria scenario XML files
     create_scenarios(exp, scen_df)
@@ -170,6 +202,7 @@ def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
 
     # Submit the job for analysis
     submit_analyze_OpenMalaria(exp)
+
 
 if __name__ == "__main__":
     wdir = ''
