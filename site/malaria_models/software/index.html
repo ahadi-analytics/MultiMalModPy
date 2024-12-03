@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Software - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Software";
+        var mkdocs_page_input_path = "malaria_models\\software.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/rust.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Software</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/create_sim/">Create simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/run_sim/">Run simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Transmission calibration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="../../api/config_exp.md">config_exp.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/functions/">functions.R</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD_utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD_analyze_sim/">analyze_sim.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria_utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria_analyze_sim/">analyze_sim.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation_utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation_analyze_sim/">analyze_sim.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_relationship/">plot_relationship.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Malaria models</li>
+      <li class="breadcrumb-item active">Software</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="malaria-models">Malaria models</h1>
+<h2 id="overview">Overview</h2>
+<p><strong>EMOD</strong> (Epidemiological MODeling software) has been developed and is maintained by
+the <a href="https://www.idmod.org/">Institute for Disease Modeling (IDM)</a>, and also used by
+the <a href="https://www.numalariamodeling.org/">Malaria Modeling Group at Northwestern University</a>.</p>
+<p><strong>OpenMalaria</strong> has been developed and is maintained by
+the <a href="https://www.swisstph.ch/en/about/eph/disease-modelling/">Swiss Tropical and Public Health Institute (Swiss TPH)</a>.</p>
+<p><strong>malariasimulation</strong> has been developed and is maintained by
+the <a href="https://www.imperial.ac.uk/malaria-modelling/">Imperial College London</a>.</p>
+<p>Table: Overview of model software and infrastructure</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>EMOD</th>
+<th>OpenMalaria</th>
+<th>Malariasimulation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Documentation</td>
+<td>https://docs.idmod.org/projects/emod-malaria/en/latest/index.html</td>
+<td>https://github.com/SwissTPH/openmalaria/wiki</td>
+<td>https://github.com/mrc-ide/malariasimulation</td>
+</tr>
+<tr>
+<td>Accessibility</td>
+<td>Open source</td>
+<td>Open source</td>
+<td>Open source (R package)</td>
+</tr>
+<tr>
+<td>Language</td>
+<td>C++</td>
+<td>C++</td>
+<td>C++</td>
+</tr>
+<tr>
+<td>First published</td>
+<td>2013</td>
+<td>2006-2008</td>
+<td></td>
+</tr>
+<tr>
+<td>Framework</td>
+<td>Python (emodpy, idm-tools)</td>
+<td>Python or R, varying by user group</td>
+<td>R &gt;= 4.0.0</td>
+</tr>
+<tr>
+<td>OS</td>
+<td>Windows, Linux</td>
+<td>Windows, Linux, (Mac OS)</td>
+<td>Windows, Linux</td>
+</tr>
+<tr>
+<td>Default timesteps</td>
+<td>1 day</td>
+<td>5  day</td>
+<td>1 day</td>
+</tr>
+<tr>
+<td>Input file type</td>
+<td>json</td>
+<td>XML</td>
+<td>R script</td>
+</tr>
+<tr>
+<td>Output file type</td>
+<td>json</td>
+<td>txt</td>
+<td>R script</td>
+</tr>
+<tr>
+<td>N input files</td>
+<td>5+</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>N output files</td>
+<td>custom</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Glossary</td>
+<td>https://docs.idmod.org/projects/emod-malaria/en/latest/glossary.html</td>
+<td>https://github.com/SwissTPH/openmalaria/wiki/Terminology</td>
+<td><code>help(malariasimulation)</code>, https://mrc-ide.github.io/malariasimulation/articles/Model.html</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../.." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../getting_started/" class="btn btn-neutral float-right" title="Overview">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../.." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../getting_started/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

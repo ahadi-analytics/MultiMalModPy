@@ -4,6 +4,10 @@ plugins:
   - mkdocstrings
 nav:
   - Home: index.md
+  - Malaria models:
+    - Software: malaria_models/software.md
+    #- Structure: malaria_models/structure.md
+    #- Parameters: malaria_models/parameters.md
   - Getting started:
     - Overview: getting_started/index.md
     - Installation: getting_started/installation.md
@@ -39,7 +43,6 @@ nav:
       - api/plot_timeseries.md
       - api/plot_relationship.md
   - About:
-    - Malaria models: about/models.md
     - License: about/license.md
     - Changelog: about/changelog.md
     - Getting help: about/getting_help.md
