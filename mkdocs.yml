@@ -43,6 +43,8 @@ nav:
       - api/plot_timeseries.md
       - api/plot_relationship.md
   - About:
+    - Contact: contributors.md
+    - References: about/citation.md
     - License: about/license.md
     - Changelog: about/changelog.md
     - Getting help: about/getting_help.md

@@ -1,6 +1,6 @@
 # MultiMalModPy Documentation
 
-Documentation of [MultiMalModPy](https://github.com/ahadi-analytics/model-characterization),  a novel programmatic framework for Multi-Malaria-Model simulation framework.
+Documentation of [MultiMalModPy](https://github.com/ahadi-analytics/MultiMalModPy),  a novel programmatic framework for Multi-Malaria-Model simulation framework.
 
 
 
