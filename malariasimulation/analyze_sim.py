@@ -11,6 +11,7 @@ parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)
 from utility.experiment import LoadExperiment
 
+
 def parse_args():
     """
     Parse command-line arguments for simulation specifications.
@@ -48,6 +49,7 @@ def convert_to_long(output, age_groups, agebins):
     Args:
         output (pandas.DataFrame): Input dataframe.
         age_min (list): Minimum age values.
+
         age_max (list): Maximum age values.
 
     Returns:
@@ -104,8 +106,7 @@ def post_processing(exp, job_directory):
     columns_to_keep = ['timestep', 'Sm_gamb_count', 'Pm_gamb_count', 'Im_gamb_count', 'EIR_gamb', 'S_count',
                        'A_count', 'U_count', 'Tr_count', 'D_count', 'index']
 
-    columns_with_ages = ['n', 'n_inc',  'n_inc_clinical', 'n_inc_severe', 'n_detect']
-
+    columns_with_ages = ['n', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_detect']
 
     needed_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev',
                        'index', 'timestep', 'month', 'year', 'ageGroup', 'age_upper', 'EIR_gamb',
@@ -122,7 +123,7 @@ def post_processing(exp, job_directory):
     daily = pd.DataFrame()
     for i in range(1, exp.nexps + 1):
         df = pd.read_csv(os.path.join(job_directory, f'malariasimulation_jobs/{i}_out.csv'))
-        df = df.loc[:, df.columns.isin(columns_to_keep + ['n_detect_730_3650','n_730_3650'])]
+        df = df.loc[:, df.columns.isin(columns_to_keep + ['n_detect_730_3650', 'n_730_3650'])]
         days_in_months = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
         days_in_months = np.repeat(days_in_months, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
         days_in_months = np.tile(days_in_months, int(max(df['timestep']) / 365))
@@ -137,7 +138,7 @@ def post_processing(exp, job_directory):
         output = output[needed_channels]
         output = output[output['timestep'] > (exp.malariasimulation_burnin * 365)]
         output['timestep'] = output['timestep'] - (exp.malariasimulation_burnin * 365)
-        #output.to_csv(os.path.join(job_directory, f'malariasimulation_jobs/{i}_daily.csv'), index=False) # not need to be written out per default, since daily.csv is used
+        # output.to_csv(os.path.join(job_directory, f'malariasimulation_jobs/{i}_daily.csv'), index=False) # not need to be written out per default, since daily.csv is used
         daily = pd.concat([daily, output], axis=0)
     daily.to_csv((os.path.join(wdir, 'daily.csv')), index=False)
 
@@ -166,6 +167,8 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
             - `EIR_mth.csv`: Contains monthly aggregated EIR data, if `daily=False`.
             - `EIR_yr.csv`: Contains yearly aggregated EIR data, if `daily=False`.
             - `EIR.csv`: Contains mean EIR over the monitoring period, if `daily=False`.
+    Returns:
+        None
     """
     print("Running InputEIRAnalyzer...", flush=True)
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
@@ -189,13 +192,15 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
 
         if 'eir_malariasimulation' in df_daily:  # if the user sets different values between malariasimulation and EMOD, this should catch if the
 
-            columns_to_keep = columns_to_keep + ['eir_malariasimulation', 'eir_scalar_timestep_daily', 'eir_scalar_malariasimulation']
+            columns_to_keep = columns_to_keep + ['eir_malariasimulation', 'eir_scalar_timestep_daily',
+                                                 'eir_scalar_malariasimulation']
 
             columns_to_keep = [col for col in columns_to_keep if col in df_daily.columns]
             df_daily = df_daily[columns_to_keep]
             df_daily = df_daily.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
             df_daily = df_daily.rename(
-                {'eir_scalar_timestep_daily': 'eir_scalar_timestep', 'eir_scalar_malariasimulation': 'eir_scalar'}, axis=1)
+                {'eir_scalar_timestep_daily': 'eir_scalar_timestep', 'eir_scalar_malariasimulation': 'eir_scalar'},
+                axis=1)
         else:
             columns_to_keep = columns_to_keep + ['output_target']
             columns_to_keep = [col for col in columns_to_keep if col in df_daily.columns]
@@ -256,6 +261,9 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
 
     Saves:
         `All_Age_Outputs.csv`
+
+    Returns:
+        None
     """
 
     print("Running SurveyAllAgeAnalyzer...", flush=True)
@@ -268,7 +276,7 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
     # Read experiment data daily
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
     mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
-    channels_to_keep = ['index', 'timestep', 'month', 'year','ageGroup',
+    channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
 
     df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
@@ -306,6 +314,7 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
 
     Saves:
         mmmpy_timeavrg.csv
+        interpolation_data.csv (if exp.run_mode == 'calibrun')
 
     Returns:
         None
@@ -318,7 +327,7 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
-    eir_df = eir_df[['index', 'output_target', 'simulatedEIR','n_total_mos_pop']]
+    eir_df = eir_df[['index', 'output_target', 'simulatedEIR', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
@@ -358,7 +367,7 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
 
             # (events per person per annum)
             adf['clinical_incidence'] = adf['n_inc_clinical'] / adf['n']
-            adf['severe_incidence'] = adf['n_inc_severe'] / adf['n'] 
+            adf['severe_incidence'] = adf['n_inc_severe'] / adf['n']
             adf['ageGroup'] = ageCond_labels
             adf['n'] = adf['n'] / n_years
             cdf = pd.concat([cdf, adf])
@@ -371,335 +380,33 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
     cdf = cdf.merge(eir_df, on='index', how='inner')
 
     # Severe Incidence Recalculation
-    cdf['severe_incidence'] = cdf['severe_incidence']  * ( 0.5 * cdf['cm_severe'] + ( 1 - cdf['cm_severe']) )
-    
+    cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
+
     # Rename columns for standardization across models
     cdf['mortality'] = ''
-    
+
     cdf = cdf.rename({'n': 'nHost'}, axis=1)
     cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
 
     print(f'\nSaving outputs to: {wdir}')
     # Save the processed DataFrame to a CSV file named 'mmmpy_timeavrg.csv'
     cdf.to_csv((os.path.join(wdir, 'mmmpy_timeavrg.csv')), index=False)
-    
+
     if exp.run_mode == 'calibrun':
-            u5 = cdf[cdf['ageGroup']=='0-5'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
-            u5 = u5.rename(columns={'clinical_incidence':'clinical_incidence_U5'})
-            all_ages = cdf[cdf['ageGroup']=='0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
-            cdf = cdf[cdf['ageGroup']=='0-100']
-            cdf = cdf.groupby(['scen_id','model_input_malariasimulation','seasonality','cm_clinical'])[['simulatedEIR','prevalence_2to10','prevalence','severe_incidence','n_total_mos_pop']].agg('mean').reset_index()
-            cdf = cdf.merge(all_ages, on = 'scen_id')
-            cdf = cdf.merge(u5, on = 'scen_id')
-            cdf = cdf.drop(['scen_id'],axis=1)
-            cdf['modelname'] = 'malariasimulation'
-            cdf = cdf.rename(columns={'model_input_malariasimulation':'input_target'})
-            cdf.to_csv((os.path.join(wdir, 'interpolation_data.csv')), index=False)
-            cdf.to_csv((os.path.join(exp.interp_path, 'malariasimulation', f'{exp.exp_name}_interpolation_data.csv')))
-
-
-def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables,age_groups_aggregates=None):
-    """
-    Run the DailyAgeBinAnalyzer equivalent for malariasimulation experiments.
-    This function processes daily simulation outputs, aggregating malaria-related metrics across specified
-    age bins and sweep variables. The function reads, filters, and aggregates relevant columns,
-    including age group aggregates if provided, and saves the processed data to a CSV file.
-
-    Args:
-        jdir (str): Path to the directory containing the scenario data file `scenarios_wseeds.csv`.
-        wdir (str): Path to the directory containing the experiment data file `daily.csv`, and where
-            the output CSV file will be saved.
-        sweep_variables (list of str): List of column names used as grouping variables in the aggregation.
-        age_groups_aggregates (list of lists, optional): List of age ranges to aggregate in the form of
-            [[min_age, max_age], ...]. If None, default age bins will be used.
-
-    Raises:
-        FileNotFoundError: If the required `scenarios_wseeds.csv` or `daily.csv` files are not found in `jdir` or `wdir`.
-        ValueError: If data columns necessary for processing (e.g., 'n_inc') are missing in the input files.
-
-    Saves:
-        `mmmpy_daily.csv`
-    """
-    print("Running DailyAgeBinAnalyzer...", flush=True)
-
-    if not age_groups_aggregates:
-        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
-                                 [0, 100]]
-
-    # Convert the experiment data to a DataFrame and format it
-    sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
-    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev', 'n_infectious_mos', 'n_total_mos_pop']
-    channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup',
-                        'age_upper'] + sum_channels + mean_channels
-    # df = load_combined_daily_output(jdir, channels_to_keep)
-    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
-    df = df[channels_to_keep]
-    df['n_prev'] = df['prev'] * df['n']
-    df['incidence'] = (df['n_inc'] / df['n'])
-    df['clinical_incidence'] = (df['n_inc_clinical'] / (df['n'] / 365)) ## Daily to annualized incidence
-    df['severe_incidence'] = (df['n_inc_severe'] / (df['n'] / 365))
-    df['agebin'] = round(df['age_upper'] / 365, 1)
-
-    # Align to common output terminology used
-    df = df.rename({'n': 'nHost', 'n_inc': 'nInfect', 'n_inc_clinical': 'nUncomp', 'n_inc_severe': 'nSevere',
-                    'prev': 'prevalence'}, axis=1)
-
-    ### Add age group aggregates
-    cdf = pd.DataFrame()
-    # Age group labels
-    for i in range(0, len(age_groups_aggregates)):
-        ages = age_groups_aggregates[i]
-        ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
-        adf = df[(df['agebin'] > ages[0]) & (df['agebin'] <= ages[1])]
-        if adf.empty:
-            pass
-        else:
-            adf = adf.groupby(sweep_variables + ['timestep','month', 'year']).agg(
-                nHost=('nHost', 'sum'),
-                prevalence=('prevalence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
-                clinical_incidence=('clinical_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
-                severe_incidence=('severe_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
-                prevalence_2to10=('prevalence_2to10', 'mean')
-            ).reset_index()
-            adf['ageGroup'] = ageCond_labels
-            cdf = pd.concat([cdf, adf])
-
-    ## Add scenarios variables
-    scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'], axis=1, errors='ignore')  ## remove EMOD specific columns
-
-    df = cdf.merge(scen_df, on=sweep_variables, how='inner')
-    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
-    eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'output_target']]
-    df = df.merge(eir_df, on=['index', 'timestep', 'month', 'year'], how='inner')
-
-    #Severe Incidence Recalculation
-    df['severe_incidence'] = df['severe_incidence']  * ( 0.5 * df['cm_severe'] + ( 1 - df['cm_severe']) )
-
-    # Let's limit the output of daily, so its a little more reasonable for us to process.
-    columns_to_keep = ['index', 'scen_id', 'seed', 'ageGroup', 'timestep', 'simulatedEIR', 'n_infectious_mos',
-                       'n_total_mos_pop', 'nHost', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10']
-
-    # Iterate over columns to drop and check if they exist
-    columns_to_keep = [col for col in columns_to_keep if col in df.columns]
-    df = df[columns_to_keep]
-
-    # Save the processed DataFrame to a CSV file
-    print(f'\nSaving outputs to: {wdir}')
-    df.to_csv((os.path.join(wdir, 'mmmpy_daily.csv')), index=False)
-
-
-def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None, cc = None):
-    """
-    Run the FiveDayAgebinAnalyzer for OpenMalaria experiments to generate
-    and save a results dataframe for defined age groups over time (5-day intervals and years).
-    This function processes simulation outputs, aggregating malaria-related metrics every five days
-    and across specified age bins and sweep variables. It outputs metrics like prevalence, clinical
-    incidence, and severe incidence per age group. The processed data is saved to a CSV file.
-
-    Args:
-        jdir (str): Path to the directory containing the scenario data file `scenarios_wseeds.csv`.
-        wdir (str): Path to the working directory, where the experiment data (`daily.csv`) is stored and output is saved.
-        sweep_variables (list of str): List of column names used for grouping in the aggregation.
-        age_groups_aggregates (list of lists, optional): List of age ranges to aggregate in the form of
-            [[min_age, max_age], ...]. Defaults to standard age bins if not provided.
-        cc (bool, optional): If True, an additional climate change data file `mmmpy_ccstep_daily.csv` will be generated.
-
-    Raises:
-        FileNotFoundError: If required files (`daily.csv`, `EIR_daily.csv`, or `scenarios_wseeds.csv`) are missing.
-        ValueError: If expected data columns are not found in the input files.
-
-    Saves:
-        mmmpy_5day.csv
-        mmmpy_ccstep_daily.csv (if `cc=True`).
-    """
-    print("Running FiveDayAgebinAnalyzer...", flush=True)
-
-    if not age_groups_aggregates:
-        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],[0, 100]]
-
-    # Read the EIR data from the CSV file
-    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
-    eir_df = eir_df.groupby(sweep_variables + ['year', 'timestep'])[['simulatedEIR', 'output_target','n_infectious_mos', 'n_total_mos_pop']].agg( np.mean).reset_index()  # mean across runs per  timestep , month and year
-    eir_df = eir_df[['index', 'timestep', 'year', 'simulatedEIR' ,'n_infectious_mos', 'n_total_mos_pop']]
-
-    # Convert the experiment data to a DataFrame and format it
-    channels_to_keep = ['index', 'timestep',  'year', 'ageGroup', 'age_upper',
-                        'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev']
-
-    df = pd.read_csv(os.path.join(wdir, 'daily.csv'),usecols=channels_to_keep)
-    #df = df[channels_to_keep]
-    df['agebin'] = round(df['age_upper'] / 365, 1)
-    df['n_prev'] = df['prev'] * df['n']
-
-    df['day'] = (df['timestep'] - 1) % 365 + 1
-    df['5day'] = df['day'].apply(lambda x: 5 * math.ceil(x/5))
-    df = df.groupby(sweep_variables + ['agebin', '5day',  'year']).agg({'n_prev':['sum'],
-                                                                        'n_inc':['sum'], 
-                                                                        'n_inc_clinical':['sum'], 
-                                                                        'n_inc_severe':['sum'], 
-                                                                        'n':['sum'],
-                                                                        'nPopulation':['mean'],
-                                                                        'prevalence_2to10':['mean'],
-                                                                        'prev':['mean']}).reset_index()
-    df.columns = df.columns.get_level_values(0)
-    df = df.rename(columns={'5day': 'day'})
-
-    ## EIR
-    eir_df['day'] = (eir_df['timestep'] - 1) % 365 + 1
-    eir_df['5day'] = eir_df['day'].apply(lambda x: 5 * math.ceil(x/5))
-    eir_df = eir_df.groupby(sweep_variables + ['5day','year']).agg({'simulatedEIR':['sum'],'n_infectious_mos':['mean'], 
-                                                          'n_total_mos_pop':['mean'], 'timestep':['max']}).reset_index()
-    eir_df.columns = eir_df.columns.get_level_values(0)
-    eir_df = eir_df.rename(columns={'5day': 'day'})
-    df_pfpr2to10 = df.groupby(sweep_variables + ['day', 'year'])[['prevalence_2to10']].agg(
-        np.mean).reset_index()
-    df = df[sweep_variables +['agebin', 'day', 'year', 'n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']]
-
-    df['n'] = df['n'] / (365 / 73)
-    df['n_prev'] = df['n_prev'] / (365 / 73)
-
-    cdf = pd.DataFrame()
-
-    # Loop over age groups to aggregate results data
-    for i in range(0, len(age_groups_aggregates)):
-        ages = age_groups_aggregates[i]
-        ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
-        adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
-        if adf.empty:
-            pass
-        else:
-            ## Aggregate by age group
-            adf = adf.groupby(sweep_variables + ['day','year'])[
-                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
-
-            adf['prevalence'] = adf['n_prev'] / (adf['n'])
-            # events per person per annum (annualized)
-            # adf['incidence'] = (adf['n_inc'] / adf['n']/ 12)
-            adf['clinical_incidence'] = (adf['n_inc_clinical'] / (adf['n'] / 73))  ## 5-Daily to annualized incidence
-            adf['severe_incidence'] = (adf['n_inc_severe'] / (adf['n'] / 73))
-            adf['ageGroup'] = ageCond_labels
-            cdf = pd.concat([cdf, adf])
-
-    cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['day', 'year'])
-    scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['entomology_mode'],
-                           axis=1, errors='ignore')  ## remove EMOD specific columns
-    cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
-
-    cdf = cdf.merge(eir_df, on=['index', 'day',  'year'], how='inner')
-
-    #Severe Incidence Recalculation
-    cdf['severe_incidence'] = cdf['severe_incidence']  * ( 0.5 * cdf['cm_severe'] + ( 1 - cdf['cm_severe']) )
-
-    # Rename columns for alignment with OpenMalaria results
-    cdf['mortality'] = ''
-    cdf = cdf.rename({'n': 'nHost'}, axis=1)
-    cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
-    #cdf['date'] = cdf.apply(lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(days=int(x['day']) - 1), axis=1)
-
-    print(f'\nSaving outputs to: {wdir}')
-    # Save the processed DataFrame to a CSV file
-    cdf.to_csv((os.path.join(wdir, 'mmmpy_5day.csv')), index=False)
-    if cc:
-        cdf = cdf[['scen_id', 'seed', 'timestep', 'cm_clinical', 'seasonality', 'output_target', 'cc_change', 
-                'cc_title', 'ageGroup', 'timestep', 'simulatedEIR', 'prevalence_2to10', 'prevalence', 
-                'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']]
-        cdf.to_csv((os.path.join(wdir, 'mmmpy_ccstep_daily.csv')), index=False)
-
-
-def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
-    """
-    Process monthly data for malariasimulation experiments, generating a dataframe of malaria metrics over time
-    by age group. Aggregates daily data into monthly averages or sums, calculates prevalence and incidence rates,
-    and merges experimental metadata for analysis.
-
-    Args:
-        jdir (str): Path to the directory containing scenario job data, including metadata.
-        wdir (str): Path to the working directory containing input data CSV files and where the output will be saved.
-        sweep_variables (list): List of columns that identify experimental sweeps (e.g., parameter values).
-        age_groups_aggregates (list, optional): List of age ranges for aggregating results. Each entry is a [min_age, max_age] list.
-            Defaults to None, in which case it uses predefined age bins.
-
-    Saves:
-        mmmpy_mth.csv
-
-    Returns:
-        None
-    """
-    print("Running MonthlyAgebinAnalyzer...", flush=True)
-
-    if not age_groups_aggregates:
-        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
-                                 [0, 100]]
-
-    # Read the EIR data from the CSV file
-    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
-    eir_df = eir_df.groupby(sweep_variables + ['month', 'year'])[['simulatedEIR', 'output_target', 'n_total_mos_pop']].agg(
-        np.mean).reset_index()  # mean across runs per month and year
-    eir_df = eir_df[['index', 'month', 'year', 'output_target', 'simulatedEIR', 'n_total_mos_pop']]
-
-    # Convert the experiment data to a DataFrame and format it
-    channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup', 'age_upper',
-                        'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev']
-
-    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
-    df = df[channels_to_keep]
-    df['agebin'] = round(df['age_upper'] / 365, 1)
-    df['n_prev'] = df['prev'] * df['n']
-
-    df_pfpr2to10 = df.groupby(sweep_variables + ['month', 'year'])[['prevalence_2to10']].agg(np.mean).reset_index()
-
-    ## Aggregate days to month and years
-    n_surveys_per_year = int(round(len(df['timestep'].unique()) / len(df['year'].unique()), 0))
-
-    df = df.groupby(sweep_variables + ['agebin', 'month', 'year'])[
-        ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
-
-    df['n'] = df['n'] / (365 / 12)
-    df['n_prev'] = df['n_prev'] / (365 / 12)
-
-    cdf = pd.DataFrame()
-
-    # Loop over age groups to aggregate results data
-    for i in range(0, len(age_groups_aggregates)):
-        ages = age_groups_aggregates[i]
-        ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
-        adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
-        if adf.empty:
-            pass
-        else:
-            ## Aggregate by age group
-            adf = adf.groupby(sweep_variables + ['month', 'year'])[
-                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
-
-            adf['prevalence'] = adf['n_prev'] / (adf['n'])
-            # events per person per annum (annualized)
-            # adf['incidence'] = (adf['n_inc'] / adf['n']/ 12)
-            adf['clinical_incidence'] = (adf['n_inc_clinical'] / (adf['n'] / 12))
-            adf['severe_incidence'] = (adf['n_inc_severe'] / (adf['n'] / 12))
-            adf['ageGroup'] = ageCond_labels
-            cdf = pd.concat([cdf, adf])
-
-    cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['month', 'year'])
-    scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
-    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
-                           axis=1, errors='ignore')  ## remove EMOD specific columns
-    cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
-    cdf = cdf.merge(eir_df, on=['index', 'month', 'year'], how='inner')
-
-    #Severe Incidence Recalculation
-    cdf['severe_incidence'] = cdf['severe_incidence']  * ( 0.5 * cdf['cm_severe'] + ( 1 - cdf['cm_severe']) )
-
-    # Rename columns for alignment with OpenMalaria results
-    cdf['mortality'] = ''
-    cdf = cdf.rename({'n': 'nHost'}, axis=1)
-    cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
-    cdf['date'] = cdf.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
-
-    print(f'\nSaving outputs to: {wdir}')
-    # Save the processed DataFrame to a CSV file
-    cdf.to_csv((os.path.join(wdir, 'mmmpy_mth.csv')), index=False)
+        u5 = cdf[cdf['ageGroup'] == '0-5'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
+        u5 = u5.rename(columns={'clinical_incidence': 'clinical_incidence_U5'})
+        all_ages = cdf[cdf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
+        cdf = cdf[cdf['ageGroup'] == '0-100']
+        cdf = cdf.groupby(['scen_id', 'model_input_malariasimulation', 'seasonality', 'cm_clinical'])[
+            ['simulatedEIR', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
+            'mean').reset_index()
+        cdf = cdf.merge(all_ages, on='scen_id')
+        cdf = cdf.merge(u5, on='scen_id')
+        cdf = cdf.drop(['scen_id'], axis=1)
+        cdf['modelname'] = 'malariasimulation'
+        cdf = cdf.rename(columns={'model_input_malariasimulation': 'input_target'})
+        cdf.to_csv((os.path.join(wdir, 'interpolation_data.csv')), index=False)
+        cdf.to_csv((os.path.join(exp.interp_path, 'malariasimulation', f'{exp.exp_name}_interpolation_data.csv')))
 
 
 def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
@@ -778,8 +485,8 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index', 'year'], how='inner')
 
-    #Severe Incidence Recalculation
-    cdf['severe_incidence'] = cdf['severe_incidence']  * ( 0.5 * cdf['cm_severe'] + ( 1 - cdf['cm_severe']) )
+    # Severe Incidence Recalculation
+    cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
 
     # Rename columns for alignment with OpenMalaria results
     cdf['mortality'] = ''
@@ -789,6 +496,323 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
     print(f'\nSaving outputs to: {wdir}')
     # Save the processed DataFrame to a CSV file
     cdf.to_csv((os.path.join(wdir, 'mmmpy_yr.csv')), index=False)
+
+
+def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
+    """
+    Process monthly data for malariasimulation experiments, generating a dataframe of malaria metrics over time
+    by age group. Aggregates daily data into monthly averages or sums, calculates prevalence and incidence rates,
+    and merges experimental metadata for analysis.
+
+    Args:
+        jdir (str): Path to the directory containing scenario job data, including metadata.
+        wdir (str): Path to the working directory containing input data CSV files and where the output will be saved.
+        sweep_variables (list): List of columns that identify experimental sweeps (e.g., parameter values).
+        age_groups_aggregates (list, optional): List of age ranges for aggregating results. Each entry is a [min_age, max_age] list.
+            Defaults to None, in which case it uses predefined age bins.
+
+    Saves:
+        mmmpy_mth.csv
+
+    Returns:
+        None
+    """
+    print("Running MonthlyAgebinAnalyzer...", flush=True)
+
+    if not age_groups_aggregates:
+        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
+                                 [0, 100]]
+
+    # Read the EIR data from the CSV file
+    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
+    eir_df = eir_df.groupby(sweep_variables + ['month', 'year'])[
+        ['simulatedEIR', 'output_target', 'n_total_mos_pop']].agg(
+        np.mean).reset_index()  # mean across runs per month and year
+    eir_df = eir_df[['index', 'month', 'year', 'output_target', 'simulatedEIR', 'n_total_mos_pop']]
+
+    # Convert the experiment data to a DataFrame and format it
+    channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup', 'age_upper',
+                        'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev']
+
+    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
+    df = df[channels_to_keep]
+    df['agebin'] = round(df['age_upper'] / 365, 1)
+    df['n_prev'] = df['prev'] * df['n']
+
+    df_pfpr2to10 = df.groupby(sweep_variables + ['month', 'year'])[['prevalence_2to10']].agg(np.mean).reset_index()
+
+    ## Aggregate days to month and years
+    n_surveys_per_year = int(round(len(df['timestep'].unique()) / len(df['year'].unique()), 0))
+
+    df = df.groupby(sweep_variables + ['agebin', 'month', 'year'])[
+        ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
+
+    df['n'] = df['n'] / (365 / 12)
+    df['n_prev'] = df['n_prev'] / (365 / 12)
+
+    cdf = pd.DataFrame()
+
+    # Loop over age groups to aggregate results data
+    for i in range(0, len(age_groups_aggregates)):
+        ages = age_groups_aggregates[i]
+        ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
+        adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
+        if adf.empty:
+            pass
+        else:
+            ## Aggregate by age group
+            adf = adf.groupby(sweep_variables + ['month', 'year'])[
+                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
+
+            adf['prevalence'] = adf['n_prev'] / (adf['n'])
+            # events per person per annum (annualized)
+            # adf['incidence'] = (adf['n_inc'] / adf['n']/ 12)
+            adf['clinical_incidence'] = (adf['n_inc_clinical'] / (adf['n'] / 12))
+            adf['severe_incidence'] = (adf['n_inc_severe'] / (adf['n'] / 12))
+            adf['ageGroup'] = ageCond_labels
+            cdf = pd.concat([cdf, adf])
+
+    cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['month', 'year'])
+    scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'],
+                           axis=1, errors='ignore')  ## remove EMOD specific columns
+    cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
+    cdf = cdf.merge(eir_df, on=['index', 'month', 'year'], how='inner')
+
+    # Severe Incidence Recalculation
+    cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
+
+    # Rename columns for alignment with OpenMalaria results
+    cdf['mortality'] = ''
+    cdf = cdf.rename({'n': 'nHost'}, axis=1)
+    cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
+    cdf['date'] = cdf.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
+
+    print(f'\nSaving outputs to: {wdir}')
+    # Save the processed DataFrame to a CSV file
+    cdf.to_csv((os.path.join(wdir, 'mmmpy_mth.csv')), index=False)
+
+
+def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None, cc=None):
+    """
+    Run the FiveDayAgebinAnalyzer for OpenMalaria experiments to generate
+    and save a results dataframe for defined age groups over time (5-day intervals and years).
+    This function processes simulation outputs, aggregating malaria-related metrics every five days
+    and across specified age bins and sweep variables. It outputs metrics like prevalence, clinical
+    incidence, and severe incidence per age group. The processed data is saved to a CSV file.
+
+    Args:
+        jdir (str): Path to the directory containing the scenario data file `scenarios_wseeds.csv`.
+        wdir (str): Path to the working directory, where the experiment data (`daily.csv`) is stored and output is saved.
+        sweep_variables (list of str): List of column names used for grouping in the aggregation.
+        age_groups_aggregates (list of lists, optional): List of age ranges to aggregate in the form of
+            [[min_age, max_age], ...]. Defaults to standard age bins if not provided.
+        cc (bool, optional): If True, an additional climate change data file `mmmpy_ccstep_daily.csv` will be generated.
+
+    Raises:
+        FileNotFoundError: If required files (`daily.csv`, `EIR_daily.csv`, or `scenarios_wseeds.csv`) are missing.
+        ValueError: If expected data columns are not found in the input files.
+
+    Saves:
+        mmmpy_5day.csv
+        mmmpy_ccstep_daily.csv (if `cc=True`).
+
+    Returns:
+        None
+    """
+    print("Running FiveDayAgebinAnalyzer...", flush=True)
+
+    if not age_groups_aggregates:
+        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
+                                 [0, 100]]
+
+    # Read the EIR data from the CSV file
+    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
+    eir_df = eir_df.groupby(sweep_variables + ['year', 'timestep'])[
+        ['simulatedEIR', 'output_target', 'n_infectious_mos', 'n_total_mos_pop']].agg(
+        np.mean).reset_index()  # mean across runs per  timestep , month and year
+    eir_df = eir_df[['index', 'timestep', 'year', 'simulatedEIR', 'n_infectious_mos', 'n_total_mos_pop']]
+
+    # Convert the experiment data to a DataFrame and format it
+    channels_to_keep = ['index', 'timestep', 'year', 'ageGroup', 'age_upper',
+                        'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n', 'nPopulation', 'prevalence_2to10', 'prev']
+
+    df = pd.read_csv(os.path.join(wdir, 'daily.csv'), usecols=channels_to_keep)
+    # df = df[channels_to_keep]
+    df['agebin'] = round(df['age_upper'] / 365, 1)
+    df['n_prev'] = df['prev'] * df['n']
+
+    df['day'] = (df['timestep'] - 1) % 365 + 1
+    df['5day'] = df['day'].apply(lambda x: 5 * math.ceil(x / 5))
+    df = df.groupby(sweep_variables + ['agebin', '5day', 'year']).agg({'n_prev': ['sum'],
+                                                                       'n_inc': ['sum'],
+                                                                       'n_inc_clinical': ['sum'],
+                                                                       'n_inc_severe': ['sum'],
+                                                                       'n': ['sum'],
+                                                                       'nPopulation': ['mean'],
+                                                                       'prevalence_2to10': ['mean'],
+                                                                       'prev': ['mean']}).reset_index()
+    df.columns = df.columns.get_level_values(0)
+    df = df.rename(columns={'5day': 'day'})
+
+    ## EIR
+    eir_df['day'] = (eir_df['timestep'] - 1) % 365 + 1
+    eir_df['5day'] = eir_df['day'].apply(lambda x: 5 * math.ceil(x / 5))
+    eir_df = eir_df.groupby(sweep_variables + ['5day', 'year']).agg(
+        {'simulatedEIR': ['sum'], 'n_infectious_mos': ['mean'],
+         'n_total_mos_pop': ['mean'], 'timestep': ['max']}).reset_index()
+    eir_df.columns = eir_df.columns.get_level_values(0)
+    eir_df = eir_df.rename(columns={'5day': 'day'})
+    df_pfpr2to10 = df.groupby(sweep_variables + ['day', 'year'])[['prevalence_2to10']].agg(
+        np.mean).reset_index()
+    df = df[sweep_variables + ['agebin', 'day', 'year', 'n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']]
+
+    df['n'] = df['n'] / (365 / 73)
+    df['n_prev'] = df['n_prev'] / (365 / 73)
+
+    cdf = pd.DataFrame()
+
+    # Loop over age groups to aggregate results data
+    for i in range(0, len(age_groups_aggregates)):
+        ages = age_groups_aggregates[i]
+        ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
+        adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
+        if adf.empty:
+            pass
+        else:
+            ## Aggregate by age group
+            adf = adf.groupby(sweep_variables + ['day', 'year'])[
+                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']].agg(np.sum).reset_index()
+
+            adf['prevalence'] = adf['n_prev'] / (adf['n'])
+            # events per person per annum (annualized)
+            # adf['incidence'] = (adf['n_inc'] / adf['n']/ 12)
+            adf['clinical_incidence'] = (adf['n_inc_clinical'] / (adf['n'] / 73))  ## 5-Daily to annualized incidence
+            adf['severe_incidence'] = (adf['n_inc_severe'] / (adf['n'] / 73))
+            adf['ageGroup'] = ageCond_labels
+            cdf = pd.concat([cdf, adf])
+
+    cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['day', 'year'])
+    scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
+    scen_df = scen_df.drop(['entomology_mode'],
+                           axis=1, errors='ignore')  ## remove EMOD specific columns
+    cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
+
+    cdf = cdf.merge(eir_df, on=['index', 'day', 'year'], how='inner')
+
+    # Severe Incidence Recalculation
+    cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
+
+    # Rename columns for alignment with OpenMalaria results
+    cdf['mortality'] = ''
+    cdf = cdf.rename({'n': 'nHost'}, axis=1)
+    cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
+    # cdf['date'] = cdf.apply(lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(days=int(x['day']) - 1), axis=1)
+
+    print(f'\nSaving outputs to: {wdir}')
+    # Save the processed DataFrame to a CSV file
+    cdf.to_csv((os.path.join(wdir, 'mmmpy_5day.csv')), index=False)
+    if cc:
+        cdf = cdf[['scen_id', 'seed', 'timestep', 'cm_clinical', 'seasonality', 'output_target', 'cc_change',
+                   'cc_title', 'ageGroup', 'timestep', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
+                   'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']]
+        cdf.to_csv((os.path.join(wdir, 'mmmpy_ccstep_daily.csv')), index=False)
+
+
+def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
+    """
+    Run the DailyAgeBinAnalyzer equivalent for malariasimulation experiments.
+    This function processes daily simulation outputs, aggregating malaria-related metrics across specified
+    age bins and sweep variables. The function reads, filters, and aggregates relevant columns,
+    including age group aggregates if provided, and saves the processed data to a CSV file.
+
+    Args:
+        jdir (str): Path to the directory containing the scenario data file `scenarios_wseeds.csv`.
+        wdir (str): Path to the directory containing the experiment data file `daily.csv`, and where
+            the output CSV file will be saved.
+        sweep_variables (list of str): List of column names used as grouping variables in the aggregation.
+        age_groups_aggregates (list of lists, optional): List of age ranges to aggregate in the form of
+            [[min_age, max_age], ...]. If None, default age bins will be used.
+
+    Raises:
+        FileNotFoundError: If the required `scenarios_wseeds.csv` or `daily.csv` files are not found in `jdir` or `wdir`.
+        ValueError: If data columns necessary for processing (e.g., 'n_inc') are missing in the input files.
+
+    Saves:
+        `mmmpy_daily.csv`
+
+    Returns:
+        None
+    """
+    print("Running DailyAgeBinAnalyzer...", flush=True)
+
+    if not age_groups_aggregates:
+        age_groups_aggregates = [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15], [15, 20], [20, 100], [0, 5],
+                                 [0, 100]]
+
+    # Convert the experiment data to a DataFrame and format it
+    sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
+    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev', 'n_infectious_mos', 'n_total_mos_pop']
+    channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup',
+                        'age_upper'] + sum_channels + mean_channels
+    # df = load_combined_daily_output(jdir, channels_to_keep)
+    df = pd.read_csv(os.path.join(wdir, 'daily.csv'))
+    df = df[channels_to_keep]
+    df['n_prev'] = df['prev'] * df['n']
+    df['incidence'] = (df['n_inc'] / df['n'])
+    df['clinical_incidence'] = (df['n_inc_clinical'] / (df['n'] / 365))  ## Daily to annualized incidence
+    df['severe_incidence'] = (df['n_inc_severe'] / (df['n'] / 365))
+    df['agebin'] = round(df['age_upper'] / 365, 1)
+
+    # Align to common output terminology used
+    df = df.rename({'n': 'nHost', 'n_inc': 'nInfect', 'n_inc_clinical': 'nUncomp', 'n_inc_severe': 'nSevere',
+                    'prev': 'prevalence'}, axis=1)
+
+    ### Add age group aggregates
+    cdf = pd.DataFrame()
+    # Age group labels
+    for i in range(0, len(age_groups_aggregates)):
+        ages = age_groups_aggregates[i]
+        ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
+        adf = df[(df['agebin'] > ages[0]) & (df['agebin'] <= ages[1])]
+        if adf.empty:
+            pass
+        else:
+            adf = adf.groupby(sweep_variables + ['timestep', 'month', 'year']).agg(
+                nHost=('nHost', 'sum'),
+                prevalence=('prevalence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
+                clinical_incidence=('clinical_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
+                severe_incidence=('severe_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
+                prevalence_2to10=('prevalence_2to10', 'mean')
+            ).reset_index()
+            adf['ageGroup'] = ageCond_labels
+            cdf = pd.concat([cdf, adf])
+
+    ## Add scenarios variables
+    scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds.csv'))
+    scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'output_target'], axis=1,
+                           errors='ignore')  ## remove EMOD specific columns
+
+    df = cdf.merge(scen_df, on=sweep_variables, how='inner')
+    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
+    eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'output_target']]
+    df = df.merge(eir_df, on=['index', 'timestep', 'month', 'year'], how='inner')
+
+    # Severe Incidence Recalculation
+    df['severe_incidence'] = df['severe_incidence'] * (0.5 * df['cm_severe'] + (1 - df['cm_severe']))
+
+    # Let's limit the output of daily, so its a little more reasonable for us to process.
+    columns_to_keep = ['index', 'scen_id', 'seed', 'ageGroup', 'timestep', 'simulatedEIR', 'n_infectious_mos',
+                       'n_total_mos_pop', 'nHost', 'clinical_incidence', 'severe_incidence', 'prevalence',
+                       'prevalence_2to10']
+
+    # Iterate over columns to drop and check if they exist
+    columns_to_keep = [col for col in columns_to_keep if col in df.columns]
+    df = df[columns_to_keep]
+
+    # Save the processed DataFrame to a CSV file
+    print(f'\nSaving outputs to: {wdir}')
+    df.to_csv((os.path.join(wdir, 'mmmpy_daily.csv')), index=False)
 
 
 if __name__ == "__main__":
@@ -811,22 +835,18 @@ if __name__ == "__main__":
     # Run analyzers
     InputEIRAnalyzer(jdir, wdir)
 
-    ## all age by reporting steps
-    if 'all_age' in exp.analyzer_list:
+    # Age groups aggregated to all and time intervals are kept unaggregated (1day)
+    if 'surveyallage' in exp.analyzer_list:
         SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables)
-
-    ## Monthly timeseries per age groups
-    if 'monthly' in exp.analyzer_list:
-        MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
-
-    ## Annual timeseries per age groups
-    if 'annual' in exp.analyzer_list:
-        AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
-
     ## Aggregated timeseries per age groups
     if 'timeavrg' in exp.analyzer_list:
         TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
-
+    ## Annual timeseries per age groups
+    if 'annual' in exp.analyzer_list:
+        AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
+    ## Monthly timeseries per age groups
+    if 'monthly' in exp.analyzer_list:
+        MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
     ## 5 day (or daily) timeseries per age groups
     if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:
         InputEIRAnalyzer(jdir, wdir, daily=True)
@@ -834,4 +854,4 @@ if __name__ == "__main__":
             DailyAgeBinAnalyzer(jdir, wdir, sweep_variables)
         if '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:
             ccstep = 'cc_step' in exp.intervention_list
-            FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates,cc=ccstep)
+            FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates, cc=ccstep)

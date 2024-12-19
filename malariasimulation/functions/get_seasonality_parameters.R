@@ -1,3 +1,25 @@
+#' Get Seasonality Parameters
+#' Computes Fourier coefficients to model seasonality from entomological inoculation rate (EIR) data.
+#' The function supports both daily and monthly EIR timeframes and allows for different midpoint settings.
+#'
+#' @param eirs A numeric vector representing EIR values.
+#'             If \code{timeframe} is "monthly", this should contain one value per month.
+#'             If \code{timeframe} is "daily", this should contain one value per day.
+#' @param timeframe A string indicating the timeframe of the \code{eirs} data. Accepted values are:
+#'        \itemize{
+#'          \item \code{"daily"}: EIR data is provided for each day of the year.
+#'          \item \code{"monthly"}: EIR data is provided for each month of the year.
+#'        }
+#' @param midpoint_setting A string specifying how to calculate midpoints for the monthly timeframe.
+#'        Accepted values are:
+#'        \itemize{
+#'          \item \code{"default"}: Midpoints are set to the 15th day of each month.
+#'          \item \code{"calendar"}: Midpoints are calculated based on the exact day distribution of each month.
+#'        }
+#'
+#' @return A list of Fourier coefficients that model the seasonality based on the provided EIR data.
+#'
+#' @export
 get_seasonality_parameters <- function(eirs, timeframe, midpoint_setting = "default") {
   if(!timeframe %in% c("daily", "monthly")) {
     stop("EIR timeframe not from accepted values (daily or monthly")

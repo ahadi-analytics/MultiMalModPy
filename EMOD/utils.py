@@ -3,9 +3,9 @@ import sys
 import json
 import subprocess
 from functools import partial
-from EMOD.scaffolds.reporters import add_annual_reports, add_daily_reports, add_monthly_reports, add_5daily_reports
-from EMOD.scaffolds.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup 
-from EMOD.scaffolds.forcedEIR import mAb_vs_EIR
+from EMOD.functions.reporters import add_annual_reports, add_daily_reports, add_monthly_reports, add_5daily_reports
+from EMOD.functions.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup
+from EMOD.functions.forcedEIR import mAb_vs_EIR
 
 import emodpy_malaria.malaria_config as malaria_config
 from emodpy.emod_task import EMODTask
@@ -267,7 +267,7 @@ def config_sweep_builder(exp, scen_df):
         raise ValueError(f'{exp.entomology_mode} not valid')
 
     if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
-        from EMOD.scaffolds.calib_params import get_emod_calib_params
+        from EMOD.functions.calib_params import get_emod_calib_params
         calib_params = get_emod_calib_params(exp,scen_df)
         for i in range(0, len(calib_params)):
             sweeps[i] = sweeps[i] + calib_params[i]

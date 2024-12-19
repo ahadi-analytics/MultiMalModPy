@@ -1,8 +1,6 @@
-import numpy as np
-
 from utility.helper import *
 import shutil
-from OpenMalaria.scaffolds.intervention_snippets import *
+#from functions.interventions import * # Currently not supported
 
 
 def create_scenarios(exp, scen_df):
@@ -67,9 +65,10 @@ def create_scenarios(exp, scen_df):
         if 'cc_step' in exp.intervention_list:
             scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_openmalaria']))
             scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_openmalaria']))
-
-        if 'smc' in exp.intervention_list:
-            scenario = write_smc_deployment(scenario, row)
+        
+        #SMC currently not supported
+        #if 'smc' in exp.intervention_list:
+        #    scenario = write_smc_deployment(scenario, row)
 
         seasonality = getattr(exp, row['seasonality'])
 

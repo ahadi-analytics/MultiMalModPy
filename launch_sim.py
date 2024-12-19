@@ -60,7 +60,7 @@ else:
 
     if args.csv:
         ### Experiment scenario parameter definitions
-        exp_scen_df = pd.read_csv(os.path.join(f'scenario_inputs/{args.csv}.csv'))
+        exp_scen_df = pd.read_csv(os.path.join(f'scenario_csv/{args.csv}.csv'))
         exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == args.rownum]
         exp.SUITEname = f'{dt.now().strftime("%Y%m%d")}_{args.csv}'
         exp.exp_name = f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
@@ -98,6 +98,8 @@ exp = make_dirs(exp)
 # Simulation duration, start and end configuration
 exp = get_simulation_time_params(exp)
 
+# Configure for calibration
+exp = configure_calib_scenarios(exp)
 
 # Check whether defined input parameter are all valid
 check_exp_inputs(exp)

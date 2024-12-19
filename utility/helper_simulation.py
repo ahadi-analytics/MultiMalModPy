@@ -11,138 +11,6 @@ from scipy.interpolate import interp1d
 #from idmtools.entities.experiment import Experiment
 
 
-def output_target_to_xTemp(df, exp,  model):
-    """
-    Interpolates and adjusts the output target to the `x_Temporary_Larval_Habitat` parameter based on input data
-    for different models and experimental conditions.
-
-    Args:
-        df (pd.DataFrame): DataFrame containing simulation job data, with each row representing a specific condition
-            (e.g., `output_target`, `cm_clinical`, `seasonality`).
-        exp (Experiment): Experiment object that contains attributes such as `interp_path`, `output_type`, `pop_size`,
-            and others required for interpolation.
-        model (str): The model name used in the interpolation (e.g., 'malariasimulation', 'OpenMalaria').
-
-    Returns:
-        list: A list of interpolated `x_Temporary_Larval_Habitat` values corresponding to each row of the input DataFrame.
-
-    Raises:
-        ValueError: If the interpolation file is not found at the specified path.
-        ValueError: If the `output_type` specified in the experiment object is not valid.
-
-    Notes:
-        - The function performs interpolation based on the specified output type (`eir`, `prevalence_2to10`, or
-          `clinical_incidenceU5`).
-        - It applies scaling adjustments for population sizes, ensuring that the values are consistent with the
-          `pop_size` defined in the experiment.
-        - Warnings are issued if the interpolated values are outside the valid range (`<= 0` or `>= 10000`), with
-          adjustments made to these values accordingly.
-    """
-    interp_path = os.path.join(exp.interp_path, model, exp.interp_csv)
-    if not os.path.exists(interp_path):
-        raise ValueError(f'interp_file not found: {interp_path}')
-
-    data = pd.read_csv(interp_path)
-    output = []
-
-    if exp.output_type == 'eir':
-        output_type_col = 'simulatedEIR'
-    elif exp.output_type == 'prevalence_2to10':
-        output_type_col = 'prevalence_2to10'
-    elif exp.output_type == 'clinical_incidenceU5':  ## FIXME tbd later on how to add
-        output_type_col = 'clinical_cases'  # name including age group?
-    else:
-        raise ValueError(f'Specified input_type is not valid {exp.output_type}')
-
-    for i, row in df.iterrows():
-        idata = data[((data['cm_clinical'] == row['cm_clinical'])
-                      & (data['seasonality'] == row['seasonality'])
-                      & (data['modelname'] == model)
-                      & (data['pop_size'] == exp.emod_pop_size))]
-        xt = idata[output_type_col]
-        yp = idata['input_target']
-        xnew = row['output_target']
-        interpolated_value = np.interp(xnew, xt, yp)
-
-        if interpolated_value <= 0:
-            interpolated_value = 0.01
-            print(
-                "Warning: EMOD's x_Temporary_Larval_Habitat < 0, value set to 0.01 (this will likely cause elimination in the simulations)")
-        if interpolated_value >= 10000:
-            interpolated_value = 10000
-            print(
-                "Warning: EMOD's x_Temporary_Larval_Habitat > 10000, value set to 10000 (higher values cannot be reasonably simulated)")
-        output.append(interpolated_value)
-    return output
-
-
-def output_target_to_eir(df, exp, model):
-    """
-    Interpolates and adjusts the output target to the expected EIR (Entomological Inoculation Rate) values
-    based on input data for different models and experimental conditions.
-
-    Args:
-        df (pd.DataFrame): DataFrame containing simulation job data, where each row represents a specific condition
-            (e.g., `output_target`, `cm_clinical`, `seasonality`).
-        exp (Experiment): Experiment object that contains attributes such as `interp_path`, `output_type`, `pop_size`,
-            and others required for interpolation.
-        model (str): The model name used in the interpolation (e.g., 'malariasimulation', 'OpenMalaria').
-
-    Returns:
-        list: A list of interpolated EIR values corresponding to each row of the input DataFrame.
-
-    Raises:
-        ValueError: If the interpolation file is not found at the specified path.
-        ValueError: If the `output_type` specified in the experiment object is not valid.
-
-    Notes:
-        - The function performs interpolation based on the specified output type (`eir`, `prevalence_2to10`, or
-          `clinical_incidenceU5`).
-        - It applies scaling adjustments for population sizes, ensuring that the values are consistent with the
-          `pop_size` defined in the experiment.
-        - Warnings are issued if the interpolated values are outside the valid range (`<= 0` or `>= 1000`), with
-          adjustments made to these values accordingly.
-    """
-    interp_path = os.path.join(exp.interp_path, model, exp.interp_csv)
-    if not os.path.exists(interp_path):
-        raise ValueError(f'interp_file not found: {interp_path}')
-
-    data = pd.read_csv(interp_path)
-    output = []
-    if exp.output_type == 'eir':
-        output_type_col = 'simulatedEIR'
-    elif exp.output_type == 'prevalence_2to10':
-        output_type_col = 'prevalence_2to10'
-    elif exp.output_type == 'clinical_incidenceU5':  ## FIXME tbd later on how to add
-        output_type_col = 'clinical_cases'  # name including age group?
-    else:
-        raise ValueError(f'Specified input_type is not valid {exp.output_type}')
-    if model == 'EMOD':
-        popsize = exp.emod_pop_size
-    elif model == 'malariasimulation':
-        popsize = exp.malariasimulation_pop_size
-    elif model == 'OpenMalaria':
-        popsize = exp.openmalaria_pop_size
-    else:
-        raise ValueError(f'Specified model is not valid {model}')    
-    
-    for i, row in df.iterrows():
-        idata = data[((data['cm_clinical'] == row['cm_clinical'])
-                      & (data['seasonality'] == row['seasonality'])
-                      & (data['modelname'] == model)
-                      & (data['pop_size'] == popsize))]
-        xt = idata[output_type_col]
-        yp = idata['input_target']
-        xnew = row['output_target']
-        interpolated_value = np.interp(xnew, xt, yp)
-        if interpolated_value <= 0:
-            interpolated_value = 0.01
-            print("Warning: eir < 0, value set to 0.01 (this will likely cause elimination in the simulations)")
-        if interpolated_value >= 1000:
-            interpolated_value = 1000
-            print("Warning:  eir > 1000, value set to 1000 (higher values cannot be reasonably simulated)")
-        output.append(interpolated_value)
-    return output
 
 
 def get_intervention_params(exp):
@@ -155,7 +23,7 @@ def get_intervention_params(exp):
     Returns:
     Intervention parameters based on the specified experiment.
     """
-    from scenario_inputs.intervention_params import exp_params_to_update
+    from utility.helper_interventions import exp_params_to_update
     return exp_params_to_update(exp)
 
 
@@ -311,3 +179,45 @@ def monthly_to_daily_EIR(monthly_EIR):
     daily_EIR = [max(x, 0) for x in daily_EIR]
 
     return daily_EIR
+
+
+
+def check_exp_input_parameters(exp):
+    # Check agebins
+    a = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
+    if len(a) > 0:
+        raise ValueError(f'agebins are not granular enough to allow aggregation by age_groups_aggregates, missing {a}')
+
+    if 2 not in exp.agebins or 10 not in exp.agebins:
+        raise ValueError(f'agebins 2 and 10 are required in the framework, current agebins {exp.agebins}')
+
+    # Check seasonality
+    if len(exp.seasonality) > 2:
+        raise ValueError(f'Only two seasonality patterns are allowed, but {len(exp.seasonality)} specified.')
+
+
+
+def check_exp_inputs_emod(exp):
+
+    if exp.emod_step:
+        if exp.num_seeds_burnin != 1:
+            raise ValueError('Current framework only allows 1 seed for EMOD burnin')
+
+    if exp.emod_burnin < 100 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
+                            'EMOD' not in exp.models_to_run):
+        print(f'Warning: For EMOD a burnin of at least 100 years is recommended. A short burnin period of {exp.emod_burnin} years was used.')
+
+
+def check_exp_inputs_openmalaria(exp):
+
+    # Check timesteps, survey intervals and analyer alignment
+    if exp.openmalaria_survey_step == '30d' and "5day" in exp.analyzer_list:
+        print('Warning: OpenMalaria runs with 30d survey steps, 5day analyzer will cause an error in postprocessing')
+
+    if exp.openmalaria_survey_step == '30d' and "cc_step" in exp.intervention_list:
+        raise ValueError('cc_step interventions requires 5d survey steps in OpenMalaria')
+
+def check_exp_inputs_malariasimulation(exp):
+
+    pass
+

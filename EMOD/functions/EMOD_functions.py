@@ -4,8 +4,8 @@ from typing import List, Dict, Any
 import pandas as pd
 import numpy as np
 from COMPS import AuthManager
-from EMOD.scaffolds.forcedEIR import *
-from EMOD.scaffolds.interventions import *
+from EMOD.functions.forcedEIR import *
+from EMOD.functions.interventions import *
 from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
 from emodpy_malaria.interventions.outbreak import add_outbreak_individual
 from emodpy_malaria.reporters.builtin import *
@@ -115,17 +115,18 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
         add_outbreak_individual(camp, start_day=1, target_num_individuals=ncases_per_year_per1000pop,
                                 repetitions=-1, timesteps_between_repetitions=365)
 
+    # SMC currently not supported
     # SMC using PKPD model
-    if 'smc' in intervention_list and exp.emod_step == 'pickup':
-        print(row.smc_coverage)
-        if row.model_input_emod == 4:
-            start_array = [366, 731, 1096, 1461, 1826]
-        elif row.model_input_emod == 8:
-            start_array = [366, 731, 1096, 1461, 1826]
-        else:
-            start_array = [335, 700, 1065, 1430, 1795]
-            # add_drug_campaign(camp, campaign_type = "SMC", start_days = [396,761,1126,1491,1856],
-        smc_campaign(camp, row, start_array)
+    #if 'smc' in intervention_list and exp.emod_step == 'pickup':
+    #    print(row.smc_coverage)
+    #    if row.model_input_emod == 4:
+    #        start_array = [366, 731, 1096, 1461, 1826]
+    #    elif row.model_input_emod == 8:
+    #        start_array = [366, 731, 1096, 1461, 1826]
+    #    else:
+    #        start_array = [335, 700, 1065, 1430, 1795]
+    #        # add_drug_campaign(camp, campaign_type = "SMC", start_days = [396,761,1126,1491,1856],
+    #    smc_campaign(camp, row, start_array)
 
     return {'scen_id': int(row.scen_id)}
 

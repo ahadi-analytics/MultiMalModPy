@@ -1,5 +1,36 @@
+
+#' Run malariasimulation
+#'
+#' Defines and runs malariasimulation for multiple parameter sets, parameterizes models, applies interventions,
+#' and outputs results.
+#'
+#' @param exp A list containing experiment settings, including burn-in period, monitoring years,
+#'        population size, intervention lists, and more.
+#' @param exp_setup_df A data frame containing experimental setup details, such as EIR values
+#'        associated with seasonality profiles.
+#' @param parameter_table A data frame where each row specifies simulation parameters, including:
+#'        \itemize{
+#'          \item \code{seed}: Random seed for reproducibility.
+#'          \item \code{seasonality}: Seasonality type (e.g., perennial, seasonal).
+#'          \item \code{cm_clinical}: Clinical coverage values.
+#'          \item \code{model_input_malariasimulation}: EIR input values for simulations.
+#'          \item Additional columns depending on the interventions.
+#'        }
+#' @param write_raw_output Logical. If \code{TRUE}, writes raw output CSV files for each simulation
+#'        to the specified directory.
+#'
+#' @return A list containing:
+#' \itemize{
+#'   \item Simulation parameter objects for each run.
+#'   \item Simulation output data for each run.
+#' }
+#'
+#' @export
 run_simulations <- function(exp, exp_setup_df, parameter_table, write_raw_output = TRUE) {
 
+  #-------------------------
+  # 1. Define simulation
+  #-------------------------
   # Open a list to store the simulation parameter lists in:
   simparams <- list()
 
@@ -75,7 +106,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table, write_raw_output
       severe_incidence_rendering_max_ages = max_ages
     ))
 
-    #Parameter Sweeping
+    # Parameter Sweeping
     if ("malariasimulation_pv" %in% colnames(parameter_table)){
     simparams[[i]] <- set_parameter_draw(parameters= simparams[[i]],
                                         draw = parameter_table[i,]$malariasimulation_pv)
@@ -115,7 +146,10 @@ run_simulations <- function(exp, exp_setup_df, parameter_table, write_raw_output
       # Calibrate to the initial EIR (same across models):
       simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
                                       init_EIR = parameter_table[i,]$model_input_malariasimulation)}
-    # Run the simulations:
+
+    #-------------------------
+    # 2. Run simulations:
+    #-------------------------
     simulation_outputs_list[[i]] <- run_simulation(timesteps = timesteps, parameters = simparams[[i]])
 
     # Add simulation identifiers to the output data frame:

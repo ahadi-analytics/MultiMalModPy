@@ -23,8 +23,8 @@ class LoadExperiment:
         self.end_year = 2005
         self.mem_increase_factor = 5.0
         self.analyzer_script = ['analyze_sim.py']
-        self.analyzer_list = ['all_age_analyzer', 'annual', '5day', 'monthly', 'timeavrg']
-        self.plots_to_run = ['relationship', 'timeseries', 'agecurves'] # 'anova_rmse', 'ccstep', 'smc'  ## plot for internal version, cleanup in mmmpy public
+        self.analyzer_list = ['timeavrg', 'annual', 'monthly', '5day']  # openmalaria_base, surveyallage
+        self.plots_to_run = ['relationship', 'timeseries', 'agecurves']  # 'ccstep'
 
         # User and directory settings
         self.user = args.user
@@ -56,7 +56,6 @@ class LoadExperiment:
         # malariasimulation Settings
         self.malariasimulation_burnin = 25
         self.malariasimulation_pop_size = 50000
-        self.malariasimulation_script = 'malariasimulation_base.R'
         self.malariasimulation_parameter_variation = args.mpv
 
         # OpenMalaria Settings

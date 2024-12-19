@@ -1,11 +1,7 @@
 #----------------------------------------------------------------------------------------------------#
-#----- malariasimulation MMMPy base simulation      -----#
+#----- malariasimulation                                                                        -----#
 #----------------------------------------------------------------------------------------------------#
-
-#--- README ---#
-#--------------#
-
-##' 
+##'
 ##' This script combines the input processing, simulation running and output processing steps
 ##' required to integrate malariasimulation into the MultiMalModPy framework. 
 ##' The current iteration of the work flow allows us to run simulations from a .csv
@@ -13,7 +9,7 @@
 ##' summary metrics of interest in monthly and annual aggregations.
 ##' 
 
-# Load in the requisite packages:
+# Load the requisite packages:
 library(malariasimulation); library(malariaEquilibrium); library(lubridate)
 library(dplyr); library(tibble); library(readr); library(umbrella)
 
@@ -31,7 +27,7 @@ for (i in 1:length(list.files(".", pattern = ".R"))) {
 # Get the number of days in each month (non leap year: 2023):
 days_per_month <- days_in_month(seq(from = dmy("01-01-2023"), length.out = 12, by = "months"))
 
-# Load in the .csv of parameters as a data frame:
+# Load the .csv of parameters as a data frame:
 scenario_to_run <- read.csv(file.path(job_directory, 'scenarios_wseeds.csv'))
 scenario_to_run <- scenario_to_run[scen_id,]
 exp_setup_df <- read.csv(file.path(job_directory, 'exp_setup_df.csv'))

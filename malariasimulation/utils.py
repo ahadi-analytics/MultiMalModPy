@@ -57,8 +57,8 @@ def submit_run_malariasimulation(exp, t='10:00:00', memG=3):
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='run_malariasimulation', arrayJob=array)
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
-    r_file_path = os.path.join(ROOT_DIR, exp.malariasimulation_script)
-    r_folder_path = os.path.join(ROOT_DIR, 'R_functions/')
+    r_file_path = os.path.join(ROOT_DIR, 'malariasimulation.R')
+    r_folder_path = os.path.join(ROOT_DIR, 'functions/')
     script_path = os.path.join(exp.job_directory, 'run_malariasimulation.sh')
 
     malariasimulation_input_path = exp.malariasimulation_input_path
