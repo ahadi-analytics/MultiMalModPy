@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/api/EMOD/functions/reporters/" />
+      <link rel="shortcut icon" href="../../../../img/favicon.ico" />
+    <title>reporters.py - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "reporters.py";
+        var mkdocs_page_input_path = "api\\EMOD\\functions\\reporters.md";
+        var mkdocs_page_url = "/MultiMalModPy/api/EMOD/functions/reporters/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../../..">
+          <img src="../../../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/software/">Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/parameter-glossary/">Parameter Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/configuration/">Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/parameters/">Input parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/run_sim/">Run simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/postprocess/">Postprocess outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/plots/">Visualize outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/calibration/">Calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/model_specificities/">Model specificities</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD_functions/">EMOD_functions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/contributors/">Contact</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">reporters.py</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/api/EMOD/functions/reporters.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="reporterspy">reporters.py</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="EMOD.functions.reporters"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.reporters.add_5daily_reports" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">add_5daily_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="p">,</span> <span class="n">num_year</span><span class="p">,</span> <span class="n">tot_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yr_plusone</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">125</span><span class="p">],</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;FiveDaily_&#39;</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Adds 5 daily reports to the simulation task.
+Args:
+    task: The simulation task object.
+    manifest: The manifest object containing the necessary information.
+    sim_start_year: The starting year of the simulation.
+    num_year: The number of years to add monthly reports for.
+    tot_year: The total number of years of the simulation.
+              If None, it is set to num_year.
+    yr_plusone: Whether to add an extra year to the reporting.
+                If True, reports will cover num_year + 1 years.
+                If False, reports will cover num_year years.
+    age_bins: The age bins for reporting.
+    prefix: The prefix to be used for the report filenames.
+Raises:
+    ValueError: If num_year is greater than tot_year.
+Returns:
+    None</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD\functions\reporters.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">add_5daily_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="p">,</span> <span class="n">num_year</span><span class="p">,</span> <span class="n">tot_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">yr_plusone</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span> <span class="mi">125</span><span class="p">],</span>
+                        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;FiveDaily_&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds 5 daily reports to the simulation task.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task: The simulation task object.</span>
+<span class="sd">        manifest: The manifest object containing the necessary information.</span>
+<span class="sd">        sim_start_year: The starting year of the simulation.</span>
+<span class="sd">        num_year: The number of years to add monthly reports for.</span>
+<span class="sd">        tot_year: The total number of years of the simulation.</span>
+<span class="sd">                  If None, it is set to num_year.</span>
+<span class="sd">        yr_plusone: Whether to add an extra year to the reporting.</span>
+<span class="sd">                    If True, reports will cover num_year + 1 years.</span>
+<span class="sd">                    If False, reports will cover num_year years.</span>
+<span class="sd">        age_bins: The age bins for reporting.</span>
+<span class="sd">        prefix: The prefix to be used for the report filenames.</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If num_year is greater than tot_year.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tot_year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tot_year</span> <span class="o">=</span> <span class="n">num_year</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">num_year</span> <span class="o">&gt;</span> <span class="n">tot_year</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;num_year must be &lt;= tot_year&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Write separate monthly reports for each year</span>
+    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_year</span><span class="p">):</span>
+        <span class="n">sim_year</span> <span class="o">=</span> <span class="n">tot_year</span> <span class="o">-</span> <span class="n">num_year</span> <span class="o">+</span> <span class="n">year</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">yr_plusone</span> <span class="o">+</span> <span class="mi">365</span> <span class="o">*</span> <span class="n">sim_year</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sim_year</span> <span class="o">+</span> <span class="n">sim_start_year</span><span class="p">)</span>
+        <span class="n">add_malaria_summary_report</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_day</span><span class="o">=</span><span class="n">start</span> <span class="o">+</span> <span class="mi">365</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="n">age_bins</span><span class="p">,</span>
+                                   <span class="n">max_number_reports</span> <span class="o">=</span> <span class="mi">366</span><span class="p">,</span> <span class="n">reporting_interval</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">filename_suffix</span><span class="o">=</span><span class="n">desc</span><span class="p">,</span> <span class="n">pretty_format</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.reporters.add_annual_reports" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">add_annual_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="p">,</span> <span class="n">num_year</span><span class="p">,</span> <span class="n">tot_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yr_plusone</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">125</span><span class="p">],</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;Annual_&#39;</span><span class="p">,</span> <span class="n">ipfilter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Adds annual reports to the simulation task.
+Args:
+    task: The simulation task object.
+    manifest: The manifest object containing the necessary information.
+    sim_start_year: The starting year of the simulation.
+    num_year: The number of years to add monthly reports for.
+    tot_year: The total number of years of the simulation.
+              If None, it is set to num_year.
+    yr_plusone: Whether to add an extra year to the reporting.
+                If True, reports will cover num_year + 1 years.
+                If False, reports will cover num_year years.
+    age_bins: The age bins for reporting.
+    prefix: The prefix to be used for the report filenames.
+Raises:
+    ValueError: If num_year is greater than tot_year.
+Returns:
+    None</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD\functions\reporters.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">add_annual_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="p">,</span> <span class="n">num_year</span><span class="p">,</span> <span class="n">tot_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">yr_plusone</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">125</span><span class="p">],</span>
+                       <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;Annual_&#39;</span><span class="p">,</span> <span class="n">ipfilter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds annual reports to the simulation task.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task: The simulation task object.</span>
+<span class="sd">        manifest: The manifest object containing the necessary information.</span>
+<span class="sd">        sim_start_year: The starting year of the simulation.</span>
+<span class="sd">        num_year: The number of years to add monthly reports for.</span>
+<span class="sd">        tot_year: The total number of years of the simulation.</span>
+<span class="sd">                  If None, it is set to num_year.</span>
+<span class="sd">        yr_plusone: Whether to add an extra year to the reporting.</span>
+<span class="sd">                    If True, reports will cover num_year + 1 years.</span>
+<span class="sd">                    If False, reports will cover num_year years.</span>
+<span class="sd">        age_bins: The age bins for reporting.</span>
+<span class="sd">        prefix: The prefix to be used for the report filenames.</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If num_year is greater than tot_year.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tot_year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tot_year</span> <span class="o">=</span> <span class="n">num_year</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">num_year</span> <span class="o">&gt;</span> <span class="n">tot_year</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;num_year must be &lt;= tot_year&#39;</span><span class="p">)</span>
+    <span class="n">sim_year</span> <span class="o">=</span> <span class="n">tot_year</span> <span class="o">-</span> <span class="n">num_year</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">yr_plusone</span> <span class="o">+</span> <span class="mi">365</span> <span class="o">*</span> <span class="n">sim_year</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">to</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sim_year</span> <span class="o">+</span> <span class="n">sim_start_year</span><span class="p">,</span> <span class="n">tot_year</span> <span class="o">+</span> <span class="n">sim_start_year</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># All years in one report file</span>
+    <span class="n">add_malaria_summary_report</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_day</span><span class="o">=</span><span class="n">start</span> <span class="o">+</span> <span class="p">(</span><span class="n">num_year</span> <span class="o">*</span> <span class="mi">365</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                               <span class="n">age_bins</span><span class="o">=</span><span class="n">age_bins</span><span class="p">,</span> <span class="n">reporting_interval</span><span class="o">=</span><span class="mi">365</span><span class="p">,</span> <span class="n">max_number_reports</span> <span class="o">=</span> <span class="p">(</span><span class="n">tot_year</span> <span class="o">+</span> <span class="n">sim_start_year</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">sim_year</span> <span class="o">+</span> <span class="n">sim_start_year</span><span class="p">),</span>
+                               <span class="n">filename_suffix</span><span class="o">=</span><span class="n">desc</span><span class="p">,</span> <span class="n">pretty_format</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.reporters.add_daily_reports" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">add_daily_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="p">,</span> <span class="n">num_year</span><span class="p">,</span> <span class="n">tot_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yr_plusone</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">125</span><span class="p">],</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;Daily_&#39;</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Adds daily reports to the simulation task.
+Args:
+    task: The simulation task object.
+    manifest: The manifest object containing the necessary information.
+    sim_start_year: The starting year of the simulation.
+    num_year: The number of years to add monthly reports for.
+    tot_year: The total number of years of the simulation.
+              If None, it is set to num_year.
+    age_bins: The age bins for reporting.
+    prefix: The prefix to be used for the report filenames.
+Raises:
+    ValueError: If num_year is greater than tot_year.
+Returns:
+    None</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD\functions\reporters.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">add_daily_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="p">,</span> <span class="n">num_year</span><span class="p">,</span> <span class="n">tot_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">yr_plusone</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span> <span class="mi">125</span><span class="p">],</span>
+                        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;Daily_&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds daily reports to the simulation task.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task: The simulation task object.</span>
+<span class="sd">        manifest: The manifest object containing the necessary information.</span>
+<span class="sd">        sim_start_year: The starting year of the simulation.</span>
+<span class="sd">        num_year: The number of years to add monthly reports for.</span>
+<span class="sd">        tot_year: The total number of years of the simulation.</span>
+<span class="sd">                  If None, it is set to num_year.</span>
+<span class="sd">        age_bins: The age bins for reporting.</span>
+<span class="sd">        prefix: The prefix to be used for the report filenames.</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If num_year is greater than tot_year.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tot_year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tot_year</span> <span class="o">=</span> <span class="n">num_year</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">num_year</span> <span class="o">&gt;</span> <span class="n">tot_year</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;num_year must be &lt;= tot_year&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Write separate monthly reports for each year</span>
+    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_year</span><span class="p">):</span>
+        <span class="n">sim_year</span> <span class="o">=</span> <span class="n">tot_year</span> <span class="o">-</span> <span class="n">num_year</span> <span class="o">+</span> <span class="n">year</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">yr_plusone</span> <span class="o">+</span> <span class="mi">365</span> <span class="o">*</span> <span class="n">sim_year</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sim_year</span> <span class="o">+</span> <span class="n">sim_start_year</span><span class="p">)</span>
+        <span class="n">add_malaria_summary_report</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_day</span><span class="o">=</span><span class="n">start</span> <span class="o">+</span> <span class="mi">365</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="n">age_bins</span><span class="p">,</span>
+                                   <span class="n">max_number_reports</span> <span class="o">=</span> <span class="mi">366</span><span class="p">,</span> <span class="n">reporting_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">filename_suffix</span><span class="o">=</span><span class="n">desc</span><span class="p">,</span> <span class="n">pretty_format</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.reporters.add_monthly_reports" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">add_monthly_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="p">,</span> <span class="n">num_year</span><span class="p">,</span> <span class="n">tot_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yr_plusone</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">125</span><span class="p">],</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;Monthly_&#39;</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Adds monthly reports to the simulation task.
+Args:
+    task: The simulation task object.
+    manifest: The manifest object containing the necessary information.
+    sim_start_year: The starting year of the simulation.
+    num_year: The number of years to add monthly reports for.
+    tot_year: The total number of years of the simulation.
+              If None, it is set to num_year.
+    yr_plusone: Whether to add an extra year to the reporting.
+                If True, reports will cover num_year + 1 years.
+                If False, reports will cover num_year years.
+    age_bins: The age bins for reporting.
+    prefix: The prefix to be used for the report filenames.
+Raises:
+    ValueError: If num_year is greater than tot_year.
+Returns:
+    None</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD\functions\reporters.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">add_monthly_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="p">,</span> <span class="n">num_year</span><span class="p">,</span> <span class="n">tot_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">yr_plusone</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">125</span><span class="p">],</span>
+                        <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;Monthly_&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds monthly reports to the simulation task.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task: The simulation task object.</span>
+<span class="sd">        manifest: The manifest object containing the necessary information.</span>
+<span class="sd">        sim_start_year: The starting year of the simulation.</span>
+<span class="sd">        num_year: The number of years to add monthly reports for.</span>
+<span class="sd">        tot_year: The total number of years of the simulation.</span>
+<span class="sd">                  If None, it is set to num_year.</span>
+<span class="sd">        yr_plusone: Whether to add an extra year to the reporting.</span>
+<span class="sd">                    If True, reports will cover num_year + 1 years.</span>
+<span class="sd">                    If False, reports will cover num_year years.</span>
+<span class="sd">        age_bins: The age bins for reporting.</span>
+<span class="sd">        prefix: The prefix to be used for the report filenames.</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If num_year is greater than tot_year.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tot_year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tot_year</span> <span class="o">=</span> <span class="n">num_year</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">num_year</span> <span class="o">&gt;</span> <span class="n">tot_year</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;num_year must be &lt;= tot_year&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Write separate monthly reports for each year</span>
+    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_year</span><span class="p">):</span>
+        <span class="n">sim_year</span> <span class="o">=</span> <span class="n">tot_year</span> <span class="o">-</span> <span class="n">num_year</span> <span class="o">+</span> <span class="n">year</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">yr_plusone</span> <span class="o">+</span> <span class="mi">365</span> <span class="o">*</span> <span class="n">sim_year</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sim_year</span> <span class="o">+</span> <span class="n">sim_start_year</span><span class="p">)</span>
+        <span class="n">add_malaria_summary_report</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_day</span><span class="o">=</span><span class="n">start</span> <span class="o">+</span> <span class="mi">365</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="n">age_bins</span><span class="p">,</span>
+                                   <span class="n">reporting_interval</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">filename_suffix</span><span class="o">=</span><span class="n">desc</span><span class="p">,</span> <span class="n">pretty_format</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

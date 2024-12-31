@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/api/EMOD/utils/" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>utils.py - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "utils.py";
+        var mkdocs_page_input_path = "api\\EMOD\\utils.md";
+        var mkdocs_page_url = "/MultiMalModPy/api/EMOD/utils/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../..">
+          <img src="../../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/software/">Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/parameter-glossary/">Parameter Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/parameters/">Input parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/run_sim/">Run simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/postprocess/">Postprocess outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/plots/">Visualize outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/calibration/">Calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/model_specificities/">Model specificities</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >EMOD</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">utils.py</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.utils">utils</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.utils.build_demog">build_demog</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.utils.build_standard_campaign_object">build_standard_campaign_object</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.utils.config_sweep_builder">config_sweep_builder</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.utils.config_sweep_builder_pickup">config_sweep_builder_pickup</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.utils.config_task">config_task</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.utils.set_config_parameters">set_config_parameters</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.utils.set_emod_exp_parameters">set_emod_exp_parameters</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.utils.submit_analyze_EMOD">submit_analyze_EMOD</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.utils.submit_run_EMOD">submit_run_EMOD</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/contributors/">Contact</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API</li>
+          <li class="breadcrumb-item">EMOD</li>
+      <li class="breadcrumb-item active">utils.py</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/api/EMOD/utils.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="utilspy">utils.py</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="EMOD.utils"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.utils.build_demog" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">build_demog</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Builds the demographic structure for the EMOD simulation.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">build_demog</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Builds the demographic structure for the EMOD simulation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create a Demographics object and set location and population size</span>
+    <span class="c1">#demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name=&quot;Example_Site&quot;)</span>
+    <span class="n">demog</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_input_path</span><span class="p">,</span><span class="s2">&quot;demographics.json&quot;</span><span class="p">)))</span>
+    <span class="c1">#This calculation is the same as using crude rate, but jsons don&#39;t recognize </span>
+    <span class="n">birthrate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mf">34.95</span><span class="o">*</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="o">/</span><span class="mi">365</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">demog</span><span class="p">[</span><span class="s2">&quot;Defaults&quot;</span><span class="p">][</span><span class="s2">&quot;NodeAttributes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;BirthRate&quot;</span><span class="p">:</span> <span class="n">birthrate</span><span class="p">})</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_input_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;demographics_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span> 
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">demog</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">transient_assets</span><span class="o">.</span><span class="n">add_asset</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_input_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;demographics_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">))</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="s2">&quot;Demographics_Filenames&quot;</span><span class="p">,</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;demographics_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">])</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Age_Initialization_Distribution_Type</span> <span class="o">=</span> <span class="s2">&quot;DISTRIBUTION_COMPLEX&quot;</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Death_Rate_Dependence</span> <span class="o">=</span> <span class="s2">&quot;NONDISEASE_MORTALITY_BY_AGE_AND_GENDER&quot;</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Enable_Demographics_Risk</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Enable_Initial_Prevalence</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Enable_Natural_Mortality</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">x_Other_Mortality</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">task</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.utils.build_standard_campaign_object" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">build_standard_campaign_object</span><span class="p">()</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Builds a standard campaign object for the simulation.
+Args:
+    manifest: The manifest object containing the schema file.
+Returns:
+    campaign_obj: The built campaign object.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">build_standard_campaign_object</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Builds a standard campaign object for the simulation.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        manifest: The manifest object containing the schema file.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        campaign_obj: The built campaign object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">emod_api.campaign</span> <span class="k">as</span> <span class="nn">camp</span>
+    <span class="n">camp</span><span class="o">.</span><span class="n">set_schema</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">schema_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">camp</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.utils.config_sweep_builder" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">config_sweep_builder</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Builds the demographic structure for the EMOD simulation and updates the task configuration.
+This function reads a demographic template, modifies the birth rate based on the experiment population size,
+and writes the updated demographic data to a new JSON file. It then adds this file to the task as a transient asset
+and configures EMOD simulation parameters related to demographics and mortality.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>task</code></b>
+                  (<code>EMODTask</code>)
+              –
+              <div class="doc-md-description">
+                <p>The EMOD task object that represents the simulation run. The task will be updated with
+             demographic data and the relevant parameters.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>exp</code></b>
+                  (<code>ExperimentConfig</code>)
+              –
+              <div class="doc-md-description">
+                <p>An instance of the <code>ExperimentConfig</code> class containing the experiment settings,
+                     including population size and input file paths. This object is used to update the
+                     demographics and configuration for the simulation.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>EMODTask</code></b>              –
+              <div class="doc-md-description">
+                <p>The updated <code>task</code> object with demographic and simulation parameters configured.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">config_sweep_builder</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Builds the demographic structure for the EMOD simulation and updates the task configuration.</span>
+<span class="sd">    This function reads a demographic template, modifies the birth rate based on the experiment population size,</span>
+<span class="sd">    and writes the updated demographic data to a new JSON file. It then adds this file to the task as a transient asset</span>
+<span class="sd">    and configures EMOD simulation parameters related to demographics and mortality.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        task (EMODTask): The EMOD task object that represents the simulation run. The task will be updated with</span>
+<span class="sd">                         demographic data and the relevant parameters.</span>
+<span class="sd">        exp (ExperimentConfig): An instance of the `ExperimentConfig` class containing the experiment settings,</span>
+<span class="sd">                                 including population size and input file paths. This object is used to update the</span>
+<span class="sd">                                 demographics and configuration for the simulation.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        EMODTask: The updated `task` object with demographic and simulation parameters configured.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">builder</span> <span class="o">=</span> <span class="n">SimulationBuilder</span><span class="p">()</span>
+    <span class="n">nseeds</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds</span>
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;burnin&#39;</span><span class="p">:</span>
+        <span class="n">nseeds</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds_burnin</span>
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;forced&#39;</span><span class="p">:</span>
+        <span class="n">matAP</span> <span class="o">=</span> <span class="mf">0.1327</span>
+        <span class="n">sweeps</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ItvFn</span><span class="p">(</span><span class="n">all_campaigns</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">intervention_list</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">),</span>
+                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Maternal_Antibody_Protection&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">matAP</span> <span class="o">*</span> <span class="n">mAb_vs_EIR</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">model_input_emod</span><span class="p">)),</span>
+                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Run_Number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
+                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">scen_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+                  <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nseeds</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">:</span>
+        <span class="n">sweeps</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ItvFn</span><span class="p">(</span><span class="n">all_campaigns</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">intervention_list</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">),</span>
+                   <span class="n">CfgFn</span><span class="p">(</span><span class="n">habitat_setup</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">),</span>
+                   <span class="n">SwpFn</span><span class="p">(</span><span class="n">climate_setup</span><span class="p">,</span>  <span class="n">seasonality</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">seasonality</span><span class="p">),</span>
+                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;x_Temporary_Larval_Habitat&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">model_input_emod</span><span class="p">),</span>
+                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Run_Number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
+                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">scen_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+                  <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nseeds</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span><span class="si">}</span><span class="s1"> not valid&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_calib_params</span><span class="p">:</span> <span class="c1">#This will allow us to vary EMOD parameters associated with NU&#39;s within-host calibration efforts.</span>
+        <span class="kn">from</span> <span class="nn">EMOD.functions.calib_params</span> <span class="kn">import</span> <span class="n">get_emod_calib_params</span>
+        <span class="n">calib_params</span> <span class="o">=</span> <span class="n">get_emod_calib_params</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span><span class="n">scen_df</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">calib_params</span><span class="p">)):</span>
+            <span class="n">sweeps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sweeps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">calib_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_sweep_definition</span><span class="p">(</span><span class="n">sweep_functions</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">builder</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.utils.config_sweep_builder_pickup" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">config_sweep_builder_pickup</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df_pickup</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Configures the sweep builder for an EMOD experiment in 'pickup' mode, where a previous simulation's state
+is loaded to continue the experiment.</p>
+<p>This function creates a sweep configuration based on the experiment settings and the given scenario data frame.
+It sets up intervention strategies, serialized population paths, and entomology-related parameters for both
+'forced' and 'dynamic' entomology modes. It also handles adding calibration parameters if specified.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp</code></b>
+                  (<code>ExperimentConfig</code>)
+              –
+              <div class="doc-md-description">
+                <p>The experiment configuration object containing various experiment parameters,
+                     such as entomology mode, intervention list, number of seeds, and serialized
+                     population settings.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>scen_df_pickup</code></b>
+                  (<code>DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>The scenario data frame containing the specific scenario settings for
+                                each sweep, including serialized population paths and filenames.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>list</code></b>              –
+              <div class="doc-md-description">
+                <p>A list containing the configured <code>SimulationBuilder</code> object with the sweep definition added.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>ValueError</code>
+              –
+              <div class="doc-md-description">
+                <p>If the <code>entomology_mode</code> in <code>exp</code> is not recognized ('forced' or 'dynamic').</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">config_sweep_builder_pickup</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df_pickup</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configures the sweep builder for an EMOD experiment in &#39;pickup&#39; mode, where a previous simulation&#39;s state</span>
+<span class="sd">    is loaded to continue the experiment.</span>
+
+<span class="sd">    This function creates a sweep configuration based on the experiment settings and the given scenario data frame.</span>
+<span class="sd">    It sets up intervention strategies, serialized population paths, and entomology-related parameters for both</span>
+<span class="sd">    &#39;forced&#39; and &#39;dynamic&#39; entomology modes. It also handles adding calibration parameters if specified.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exp (ExperimentConfig): The experiment configuration object containing various experiment parameters,</span>
+<span class="sd">                                 such as entomology mode, intervention list, number of seeds, and serialized</span>
+<span class="sd">                                 population settings.</span>
+<span class="sd">        scen_df_pickup (pandas.DataFrame): The scenario data frame containing the specific scenario settings for</span>
+<span class="sd">                                            each sweep, including serialized population paths and filenames.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: A list containing the configured `SimulationBuilder` object with the sweep definition added.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the `entomology_mode` in `exp` is not recognized (&#39;forced&#39; or &#39;dynamic&#39;).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">builder</span> <span class="o">=</span> <span class="n">SimulationBuilder</span><span class="p">()</span>
+    <span class="n">nseeds</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds</span>
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;forced&#39;</span><span class="p">:</span>
+        <span class="n">matAP</span> <span class="o">=</span> <span class="mf">0.1327</span>
+        <span class="n">sweeps</span> <span class="o">=</span> <span class="p">[[</span>
+            <span class="n">ItvFn</span><span class="p">(</span><span class="n">all_campaigns</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">intervention_list</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">),</span>
+            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Serialized_Population_Path&#39;</span><span class="p">,</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;serialized_file_path&quot;</span><span class="p">],</span> <span class="s2">&quot;output&quot;</span><span class="p">)),</span>
+            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Serialized_Population_Filenames&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;Serialized_Population_Filenames&quot;</span><span class="p">]),</span>
+            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Maternal_Antibody_Protection&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">matAP</span> <span class="o">*</span> <span class="n">mAb_vs_EIR</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">model_input_emod</span><span class="p">)),</span>
+            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Run_Number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">scen_df_pickup</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nseeds</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">:</span>
+        <span class="n">sweeps</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ItvFn</span><span class="p">(</span><span class="n">all_campaigns</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">intervention_list</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">),</span>
+                   <span class="n">CfgFn</span><span class="p">(</span><span class="n">habitat_setup</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">seasonality</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">seasonality</span><span class="p">),</span>
+                   <span class="n">SwpFn</span><span class="p">(</span><span class="n">climate_setup</span><span class="p">,</span>  <span class="n">seasonality</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">seasonality</span><span class="p">),</span>
+                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Serialized_Population_Path&#39;</span><span class="p">,</span>
+                           <span class="n">value</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;serialized_file_path&quot;</span><span class="p">],</span> <span class="s2">&quot;output&quot;</span><span class="p">)),</span>
+                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Serialized_Population_Filenames&#39;</span><span class="p">,</span>
+                           <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;Serialized_Population_Filenames&quot;</span><span class="p">]),</span>
+                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;x_Temporary_Larval_Habitat&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">model_input_emod</span><span class="p">),</span>
+                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Run_Number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
+                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">scen_df_pickup</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+                  <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nseeds</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span><span class="si">}</span><span class="s1"> not valid&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_calib_params</span><span class="p">:</span> <span class="c1">#This will allow us to vary EMOD parameters associated with  NU&#39;s within-host calibration efforts.</span>
+        <span class="kn">from</span> <span class="nn">EMOD.scaffolds.calib_params</span> <span class="kn">import</span> <span class="n">get_emod_calib_params</span>
+        <span class="n">calib_params</span> <span class="o">=</span> <span class="n">get_emod_calib_params</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span><span class="n">scen_df_pickup</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">calib_params</span><span class="p">)):</span>
+            <span class="n">sweeps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sweeps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">calib_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">builder</span><span class="o">.</span><span class="n">add_sweep_definition</span><span class="p">(</span><span class="n">sweep_functions</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">builder</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.utils.config_task" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">config_task</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Configure and create an EMODTask for running EMOD.
+This function initializes an EMODTask by loading configuration files, setting up custom campaign parameters,
+and configuring simulation parameters.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>platform</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The platform on which the simulation is to be executed (e.g., HPC, local machine).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>exp</code></b>
+                  (<code>ExperimentConfig</code>)
+              –
+              <div class="doc-md-description">
+                <p>An instance of the <code>ExperimentConfig</code> class containing all necessary parameters
+                    for configuring the EMOD simulation, such as simulation duration, entomology mode,
+                    and other experiment-specific settings.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>EMODTask</code></b>              –
+              <div class="doc-md-description">
+                <p>An instance of the <code>EMODTask</code> class that is configured with the relevant experiment settings
+      and is ready to be run on the specified platform.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>FileNotFoundError</code>
+              –
+              <div class="doc-md-description">
+                <p>If the required configuration files (e.g., "config.json", schema files) are not found
+                at the specified paths.</p>
+              </div>
+            </li>
+            <li>
+                  <code>ValueError</code>
+              –
+              <div class="doc-md-description">
+                <p>If there are any issues in setting up the EMODTask, such as missing or incorrect experiment parameters.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">config_task</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure and create an EMODTask for running EMOD.</span>
+<span class="sd">    This function initializes an EMODTask by loading configuration files, setting up custom campaign parameters,</span>
+<span class="sd">    and configuring simulation parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        platform (str): The platform on which the simulation is to be executed (e.g., HPC, local machine).</span>
+<span class="sd">        exp (ExperimentConfig): An instance of the `ExperimentConfig` class containing all necessary parameters</span>
+<span class="sd">                                for configuring the EMOD simulation, such as simulation duration, entomology mode,</span>
+<span class="sd">                                and other experiment-specific settings.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        EMODTask: An instance of the `EMODTask` class that is configured with the relevant experiment settings</span>
+<span class="sd">                  and is ready to be run on the specified platform.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If the required configuration files (e.g., &quot;config.json&quot;, schema files) are not found</span>
+<span class="sd">                            at the specified paths.</span>
+<span class="sd">        ValueError: If there are any issues in setting up the EMODTask, such as missing or incorrect experiment parameters.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating EMODTask (from files)...&quot;</span><span class="p">)</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">EMODTask</span><span class="o">.</span><span class="n">from_default2</span><span class="p">(</span>
+        <span class="n">config_path</span><span class="o">=</span><span class="s2">&quot;config.json&quot;</span><span class="p">,</span>
+        <span class="n">eradication_path</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">eradication_path</span><span class="p">,</span>
+        <span class="n">campaign_builder</span><span class="o">=</span><span class="n">build_standard_campaign_object</span><span class="p">,</span>
+        <span class="n">schema_path</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">schema_file</span><span class="p">,</span>
+        <span class="n">param_custom_cb</span><span class="o">=</span><span class="n">set_config_parameters</span><span class="p">,</span>  <span class="c1"># (config = config, exp = exp),</span>
+        <span class="n">ep4_custom_cb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">demog_builder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">plugin_report</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">)</span>
+    <span class="n">set_emod_exp_parameters</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">set_sif</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">SIF_PATH</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">platform</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">task</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.utils.set_config_parameters" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_config_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>This function is a callback that is passed to emod-api.config to set config parameters,
+including the malaria defaults.
+Args:
+    config (object): The configuration object to be modified.
+Returns:
+    object: The modified configuration object.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_config_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function is a callback that is passed to emod-api.config to set config parameters,</span>
+<span class="sd">    including the malaria defaults.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        config (object): The configuration object to be modified.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        object: The modified configuration object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">malaria_config</span><span class="o">.</span><span class="n">set_team_defaults</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">manifest</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.utils.set_emod_exp_parameters" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_emod_exp_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set the experiment-specific parameters in the EMOD configuration.
+This function takes an <code>exp</code> object containing experiment settings and applies these settings to the
+provided EMOD <code>config</code> object. The parameters configured include population size, simulation duration,
+detection thresholds, and serialization settings. The function handles different configurations depending
+on the experiment step (e.g., "burnin" or "pickup").</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>config</code></b>
+                  (<code>EMODConfig</code>)
+              –
+              <div class="doc-md-description">
+                <p>The EMOD configuration object to be modified with experiment parameters.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>exp</code></b>
+                  (<code>ExperimentConfig</code>)
+              –
+              <div class="doc-md-description">
+                <p>An instance of the <code>ExperimentConfig</code> class containing parameters for the simulation,
+                    such as population size, duration, detection limits, and serialization settings.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>None</code></b>              –
+              <div class="doc-md-description">
+                <p>The function modifies the <code>config</code> object in place.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>ValueError</code>
+              –
+              <div class="doc-md-description">
+                <p>If the <code>exp.emod_step</code> is not one of the expected values ("burnin", "pickup").</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_emod_exp_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set the experiment-specific parameters in the EMOD configuration.</span>
+<span class="sd">    This function takes an `exp` object containing experiment settings and applies these settings to the</span>
+<span class="sd">    provided EMOD `config` object. The parameters configured include population size, simulation duration,</span>
+<span class="sd">    detection thresholds, and serialization settings. The function handles different configurations depending</span>
+<span class="sd">    on the experiment step (e.g., &quot;burnin&quot; or &quot;pickup&quot;).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        config (EMODConfig): The EMOD configuration object to be modified with experiment parameters.</span>
+<span class="sd">        exp (ExperimentConfig): An instance of the `ExperimentConfig` class containing parameters for the simulation,</span>
+<span class="sd">                                such as population size, duration, detection limits, and serialization settings.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None: The function modifies the `config` object in place.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the `exp.emod_step` is not one of the expected values (&quot;burnin&quot;, &quot;pickup&quot;).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">x_Base_Population</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span> <span class="o">/</span> <span class="mi">1000</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Simulation_Duration</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">sim_dur_years</span> <span class="o">*</span> <span class="mi">365</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Report_Detection_Threshold_Blood_Smear_Parasites</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">detectionLimit</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Report_Detection_Threshold_Blood_Smear_Gametocytes</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">detectionLimit</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Report_Parasite_Smear_Sensitivity</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Birth_Rate_Dependence</span> <span class="o">=</span> <span class="s2">&quot;FIXED_BIRTH_RATE&quot;</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Min_Days_Between_Clinical_Incidents</span> <span class="o">=</span> <span class="mi">14</span>  
+
+
+    <span class="c1"># Serialization configuration</span>
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;burnin&#39;</span><span class="p">:</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialized_Population_Writing_Type</span> <span class="o">=</span> <span class="s2">&quot;TIMESTEP&quot;</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialization_Time_Steps</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp</span><span class="o">.</span><span class="n">sim_dur_years</span> <span class="o">*</span> <span class="mi">365</span><span class="p">]</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialization_Mask_Node_Write</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialization_Precision</span> <span class="o">=</span> <span class="s2">&quot;REDUCED&quot;</span>
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;pickup&#39;</span><span class="p">:</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialized_Population_Reading_Type</span> <span class="o">=</span> <span class="s2">&quot;READ&quot;</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialization_Mask_Node_Read</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialization_Time_Steps</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp</span><span class="o">.</span><span class="n">burnin</span> <span class="o">*</span> <span class="mi">365</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.utils.submit_analyze_EMOD" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">submit_analyze_EMOD</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;04:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Submits a job to analyze EMOD simulation outputs on a high-performance computing (HPC) platform.</p>
+<p>This function creates a SLURM shell script for submitting an analysis job, which processes the EMOD simulation
+outputs. It sets up the job environment, defines dependencies on previous jobs, and submits the job to the platform.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>experiment</code></b>
+                  (<code>Experiment</code>)
+              –
+              <div class="doc-md-description">
+                <p>The experiment object containing relevant parameters such as job directory,
+                      EMOD virtual environment, and analyzer script(s).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>platform</code></b>
+                  (<code>Platform</code>)
+              –
+              <div class="doc-md-description">
+                <p>The platform object representing the HPC system where the job will be submitted.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>t</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;04:00:00&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The time limit for the job in HH:MM:SS format. Defaults to '04:00:00'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>memG</code></b>
+                  (<code>int</code>, default:
+                      <code>20</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The amount of memory (in GB) allocated for the job. Defaults to 20 GB.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>None</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit_analyze_EMOD</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;04:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Submits a job to analyze EMOD simulation outputs on a high-performance computing (HPC) platform.</span>
+
+<span class="sd">    This function creates a SLURM shell script for submitting an analysis job, which processes the EMOD simulation</span>
+<span class="sd">    outputs. It sets up the job environment, defines dependencies on previous jobs, and submits the job to the platform.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        experiment (Experiment): The experiment object containing relevant parameters such as job directory,</span>
+<span class="sd">                                  EMOD virtual environment, and analyzer script(s).</span>
+<span class="sd">        platform (Platform): The platform object representing the HPC system where the job will be submitted.</span>
+<span class="sd">        t (str, optional): The time limit for the job in HH:MM:SS format. Defaults to &#39;04:00:00&#39;.</span>
+<span class="sd">        memG (int, optional): The amount of memory (in GB) allocated for the job. Defaults to 20 GB.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get the current working directory</span>
+    <span class="n">wdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+    <span class="c1"># Generate the SLURM shell script header for the job</span>
+    <span class="n">header_post</span> <span class="o">=</span> <span class="n">shell_header_quest</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">memG</span><span class="p">,</span> <span class="n">job_name</span><span class="o">=</span><span class="s1">&#39;analyze_EMODsim&#39;</span><span class="p">,</span>
+                                     <span class="n">mem_scl</span><span class="o">=</span><span class="n">experiment</span><span class="o">.</span><span class="n">mem_increase_factor</span><span class="p">)</span>
+
+    <span class="c1"># Get the EMODpy virtual environment path</span>
+    <span class="n">emodpy_venv</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">EMOD_venv</span>
+
+    <span class="c1"># Generate the Python commands to run additional scripts</span>
+    <span class="c1"># If any, add  python or R scripts to directly run after analyzer can be added below</span>
+    <span class="n">pycommand</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">python </span><span class="si">{</span><span class="n">scr</span><span class="si">}</span><span class="s1"> -d </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s1"> -i </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">scr</span> <span class="ow">in</span> <span class="n">experiment</span><span class="o">.</span><span class="n">analyzer_script</span><span class="p">])</span>
+
+    <span class="c1"># Write the shell script to a file</span>
+    <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;run_analyzer_EMOD.sh&#39;</span><span class="p">)</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header_post</span> <span class="o">+</span> <span class="n">emodpy_venv</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">cd </span><span class="si">{</span><span class="n">wdir</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">pycommand</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Get the job ID</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">_op_client</span><span class="o">.</span><span class="n">get_job_id</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">item_type</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Submit the job with dependency on the previous job</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sbatch&#39;</span><span class="p">,</span> <span class="s1">&#39;--parsable&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;--dependency=afterany:</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">script_path</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                       <span class="n">cwd</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">))</span>
+
+    <span class="c1"># Extract the SLURM job ID from the output</span>
+    <span class="n">slurm_job_id</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Print the submitted job ID</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Submitted EMOD analyzer - job id: </span><span class="si">{</span><span class="n">slurm_job_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Write out the job IDs and experiment ID to files</span>
+    <span class="n">write_txt</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;job_id_EMODsim.txt&#39;</span><span class="p">)</span>
+    <span class="n">write_txt</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;exp_id_EMODsim.txt&#39;</span><span class="p">)</span>
+    <span class="n">write_txt</span><span class="p">(</span><span class="n">slurm_job_id</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;job_id_EMODanalyze.txt&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.utils.submit_run_EMOD" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">submit_run_EMOD</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Submit and run an EMOD experiment, parameterizing various steps involved in the simulation.
+This function sets up the experiment, configures input files, manages reporting, and submits the experiment.</p>
+<p>This function handles the creation and configuration of the EMOD task based on the provided
+experiment parameters, including setting up entomology, serialized input data, and specifying
+how to handle different simulation steps (e.g., 'pickup', 'burnin'). It also schedules necessary
+reports for analysis and prepares the experiment for execution. The experiment is then submitted
+for execution on the provided platform, and the experiment analysis is scheduled.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp</code></b>
+                  (<code>ExperimentConfig</code>)
+              –
+              <div class="doc-md-description">
+                <p>An instance of the <code>ExperimentConfig</code> class that contains all the parameters
+                    necessary to configure and run the EMOD simulation. This includes simulation
+                    duration, entomology mode, burn-in period, platform configuration, and more.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>scen_df</code></b>
+                  (<code>DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>A DataFrame containing the scenario data to be used for the experiment.
+                        The dataframe should include the scenario IDs and relevant parameters
+                        that define the experiment conditions.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>experiment</code></b>(                  <code>Experiment</code>
+)              –
+              <div class="doc-md-description">
+                <p>The configured and submitted <code>Experiment</code> object that represents the
+                      EMOD experiment that was created and submitted for execution.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>ValueError</code>
+              –
+              <div class="doc-md-description">
+                <p>If the experiment configuration or scenario data is incomplete or invalid.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span>
+<span class="normal">97</span>
+<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit_run_EMOD</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Submit and run an EMOD experiment, parameterizing various steps involved in the simulation.</span>
+<span class="sd">    This function sets up the experiment, configures input files, manages reporting, and submits the experiment.</span>
+
+<span class="sd">    This function handles the creation and configuration of the EMOD task based on the provided</span>
+<span class="sd">    experiment parameters, including setting up entomology, serialized input data, and specifying</span>
+<span class="sd">    how to handle different simulation steps (e.g., &#39;pickup&#39;, &#39;burnin&#39;). It also schedules necessary</span>
+<span class="sd">    reports for analysis and prepares the experiment for execution. The experiment is then submitted</span>
+<span class="sd">    for execution on the provided platform, and the experiment analysis is scheduled.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exp (ExperimentConfig): An instance of the `ExperimentConfig` class that contains all the parameters</span>
+<span class="sd">                                necessary to configure and run the EMOD simulation. This includes simulation</span>
+<span class="sd">                                duration, entomology mode, burn-in period, platform configuration, and more.</span>
+<span class="sd">        scen_df (pandas.DataFrame): A DataFrame containing the scenario data to be used for the experiment.</span>
+<span class="sd">                                    The dataframe should include the scenario IDs and relevant parameters</span>
+<span class="sd">                                    that define the experiment conditions.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        experiment (Experiment): The configured and submitted `Experiment` object that represents the</span>
+<span class="sd">                                  EMOD experiment that was created and submitted for execution.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the experiment configuration or scenario data is incomplete or invalid.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">exp_name</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">exp_name</span>
+    <span class="n">emod_serialized_id</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_serialized_id</span>
+    <span class="n">sim_dur_years</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">sim_dur_years</span>
+    <span class="n">entomology_mode</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span>
+    <span class="n">emod_step</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span>
+    <span class="n">burnin</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_burnin</span>
+    <span class="n">platform</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">platform</span>
+    <span class="n">agebins</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">agebins</span>
+    <span class="n">sim_start_year_emod</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">sim_start_year_emod</span>
+
+    <span class="c1"># create EMODTask</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating EMODTask (from files)...&quot;</span><span class="p">)</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">config_task</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">build_demog</span><span class="p">(</span><span class="n">task</span><span class="p">,</span><span class="n">exp</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">:</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">common_assets</span><span class="o">.</span><span class="n">add_directory</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">input_dir</span><span class="p">,</span> <span class="s2">&quot;example_weather&quot;</span><span class="p">),</span> <span class="n">relative_path</span><span class="o">=</span><span class="s2">&quot;climate&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;pickup&#39;</span><span class="p">:</span>
+        <span class="n">serialized_df</span> <span class="o">=</span> <span class="n">build_burnin_df</span><span class="p">(</span><span class="n">emod_serialized_id</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">burnin</span> <span class="o">*</span> <span class="mi">365</span><span class="p">)</span>
+        <span class="n">serialized_df</span> <span class="o">=</span> <span class="n">serialized_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x_Temporary_Larval_Habitat&#39;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+        <span class="n">scen_df_pickup</span> <span class="o">=</span> <span class="n">scen_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">serialized_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;scen_id&#39;</span><span class="p">],</span>
+                                       <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>  <span class="c1">## FIXME when running expanded pickup from burnin</span>
+        <span class="n">builder</span> <span class="o">=</span> <span class="n">config_sweep_builder_pickup</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df_pickup</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">builder</span> <span class="o">=</span> <span class="n">config_sweep_builder</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">)</span>
+
+    <span class="n">add_annual_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="n">agebins</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="o">=</span><span class="n">sim_start_year_emod</span><span class="p">,</span> <span class="n">num_year</span><span class="o">=</span><span class="n">sim_dur_years</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">emod_step</span> <span class="o">!=</span> <span class="s1">&#39;burnin&#39;</span><span class="p">:</span>  <span class="c1"># do not generate monthly reports for burnin</span>
+        <span class="k">if</span> <span class="s1">&#39;daily&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span><span class="p">:</span>
+            <span class="n">add_daily_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="n">agebins</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="o">=</span><span class="n">sim_start_year_emod</span><span class="p">,</span> <span class="n">num_year</span><span class="o">=</span><span class="n">sim_dur_years</span><span class="p">)</span> <span class="c1">#We shouldn&#39;t generate daily reports unless specified</span>
+        <span class="n">add_monthly_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="n">agebins</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="o">=</span><span class="n">sim_start_year_emod</span><span class="p">,</span> <span class="n">num_year</span><span class="o">=</span><span class="n">sim_dur_years</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;5day&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span> <span class="ow">or</span> <span class="s1">&#39;cc_step&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span><span class="p">:</span>  <span class="c1"># Note, we will not want to always run 5 days using the analyzer_list as a flag to include this reporter  or not</span>
+            <span class="n">add_5daily_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="n">agebins</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="o">=</span><span class="n">sim_start_year_emod</span><span class="p">,</span> <span class="n">num_year</span><span class="o">=</span><span class="n">sim_dur_years</span><span class="p">)</span>
+
+    <span class="c1"># Create experiment from builder and run</span>
+    <span class="n">experiment</span> <span class="o">=</span> <span class="n">Experiment</span><span class="o">.</span><span class="n">from_builder</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">exp_name</span><span class="p">)</span>
+    <span class="n">experiment</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">wait_until_done</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">platform</span><span class="o">=</span><span class="n">platform</span><span class="p">)</span>
+
+    <span class="c1"># Additional step to schedule analyzer</span>
+    <span class="n">experiment</span><span class="o">.</span><span class="n">hpc</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">hpc</span>
+    <span class="n">experiment</span><span class="o">.</span><span class="n">sh_hpc_config</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">sh_hpc_config</span>
+    <span class="n">experiment</span><span class="o">.</span><span class="n">mem_increase_factor</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">mem_increase_factor</span>
+    <span class="n">experiment</span><span class="o">.</span><span class="n">EMOD_venv</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">EMOD_venv</span>
+    <span class="n">experiment</span><span class="o">.</span><span class="n">analyzer_script</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_script</span>
+    <span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span>
+    <span class="n">experiment</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span>
+    <span class="n">experiment</span><span class="o">.</span><span class="n">start_end</span> <span class="o">=</span> <span class="p">[</span><span class="n">sim_start_year_emod</span><span class="p">,</span> <span class="n">sim_start_year_emod</span> <span class="o">+</span> <span class="n">sim_dur_years</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">submit_analyze_EMOD</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Experiment submission </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">uid</span><span class="si">}</span><span class="s2"> succeeded.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">experiment</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../utility/helper_slurm/" class="btn btn-neutral float-left" title="helper_slurm.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../analyze_sim/" class="btn btn-neutral float-right" title="analyze_sim.py">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../../utility/helper_slurm/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../analyze_sim/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

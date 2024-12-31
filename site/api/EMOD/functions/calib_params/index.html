@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/api/EMOD/functions/calib_params/" />
+      <link rel="shortcut icon" href="../../../../img/favicon.ico" />
+    <title>calib_params.py - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "calib_params.py";
+        var mkdocs_page_input_path = "api\\EMOD\\functions\\calib_params.md";
+        var mkdocs_page_url = "/MultiMalModPy/api/EMOD/functions/calib_params/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../../..">
+          <img src="../../../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/software/">Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/parameter-glossary/">Parameter Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/configuration/">Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/parameters/">Input parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/run_sim/">Run simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/postprocess/">Postprocess outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/plots/">Visualize outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/calibration/">Calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/model_specificities/">Model specificities</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD_functions/">EMOD_functions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/contributors/">Contact</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">calib_params.py</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/api/EMOD/functions/calib_params.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="calib_paramspy">calib_params.py</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="EMOD.functions.calib_params"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.calib_params.get_emod_calib_params" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_emod_calib_params</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Retrieves and prepares the calibration parameters for EMOD.</p>
+<p>This function loads calibration parameters from a pre-defined CSV file and uses them to create a list of partial
+functions that will set specific model parameters.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp</code></b>
+                  (<code>Experiment</code>)
+              –
+              <div class="doc-md-description">
+                <p>An object containing experiment configuration, including the paths to input files,
+               the number of seeds to use, and the step of the simulation (e.g., 'burnin').</p>
+              </div>
+            </li>
+            <li>
+              <b><code>scen_df</code></b>
+                  (<code>DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>A DataFrame containing scenario-specific information, including a pointer
+                         to the row in the calibration configuration CSV file.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>list</code></b>              –
+              <div class="doc-md-description">
+                <p>A list of lists, where each inner list contains partial functions (from <code>functools.partial</code>) that, when called,
+  will set the corresponding model parameters for the EMOD simulation.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD\functions\calib_params.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_emod_calib_params</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves and prepares the calibration parameters for EMOD.</span>
+
+<span class="sd">    This function loads calibration parameters from a pre-defined CSV file and uses them to create a list of partial</span>
+<span class="sd">    functions that will set specific model parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exp (Experiment): An object containing experiment configuration, including the paths to input files,</span>
+<span class="sd">                           the number of seeds to use, and the step of the simulation (e.g., &#39;burnin&#39;).</span>
+<span class="sd">        scen_df (pandas.DataFrame): A DataFrame containing scenario-specific information, including a pointer</span>
+<span class="sd">                                     to the row in the calibration configuration CSV file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: A list of lists, where each inner list contains partial functions (from `functools.partial`) that, when called,</span>
+<span class="sd">              will set the corresponding model parameters for the EMOD simulation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">calib_config_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_input_path</span><span class="p">,</span> <span class="s1">&#39;emod_best.csv&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;burnin&#39;</span><span class="p">:</span>
+        <span class="n">seeds</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds_burnin</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">seeds</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds</span>
+    <span class="n">calib_params</span> <span class="o">=</span> <span class="p">[[</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Antigen_Switch_Rate&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Antigen_Switch_Rate&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Base_Gametocyte_Fraction_Male&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Base_Gametocyte_Fraction_Male&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Base_Gametocyte_Mosquito_Survival_Rate&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span>  <span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Base_Gametocyte_Mosquito_Survival_Rate&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Base_Gametocyte_Production_Rate&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Base_Gametocyte_Production_Rate&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Falciparum_MSP_Variants&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Falciparum_MSP_Variants&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Falciparum_Nonspecific_Types&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Falciparum_Nonspecific_Types&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Falciparum_PfEMP1_Variants&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Falciparum_PfEMP1_Variants&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Fever_IRBC_Kill_Rate&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Fever_IRBC_Kill_Rate&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Gametocyte_Stage_Survival_Rate&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Gametocyte_Stage_Survival_Rate&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;MSP1_Merozoite_Kill_Fraction&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;MSP1_Merozoite_Kill_Fraction&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Nonspecific_Antibody_Growth_Rate_Factor&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span>  <span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Nonspecific_Antibody_Growth_Rate_Factor&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Nonspecific_Antigenicity_Factor&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Nonspecific_Antigenicity_Factor&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Pyrogenic_Threshold&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Pyrogenic_Threshold&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Max_Individual_Infections&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Max_Individual_Infections&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Erythropoiesis_Anemia_Effect&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Erythropoiesis_Anemia_Effect&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;RBC_Destruction_Multiplier&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;RBC_Destruction_Multiplier&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Max_Individual_Infections&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Max_Individual_Infections&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Cytokine_Gametocyte_Inactivation&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Cytokine_Gametocyte_Inactivation&#39;</span><span class="p">])),</span>
+        <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Innate_Immune_Variation_Type&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">calib_config_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">calib_config_pointer</span><span class="p">),</span> <span class="s1">&#39;Innate_Immune_Variation_Type&#39;</span><span class="p">]))]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">scen_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">seeds</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">calib_params</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

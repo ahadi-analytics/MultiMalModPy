@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/api/OpenMalaria/utils/" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>utils.py - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "utils.py";
+        var mkdocs_page_input_path = "api\\OpenMalaria\\utils.md";
+        var mkdocs_page_url = "/MultiMalModPy/api/OpenMalaria/utils/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../..">
+          <img src="../../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/software/">Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/parameter-glossary/">Parameter Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/parameters/">Input parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/run_sim/">Run simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/postprocess/">Postprocess outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/plots/">Visualize outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/calibration/">Calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/model_specificities/">Model specificities</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >OpenMalaria</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">utils.py</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#OpenMalaria.utils">utils</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#OpenMalaria.utils.create_scenarios">create_scenarios</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#OpenMalaria.utils.submit_analyze_OpenMalaria">submit_analyze_OpenMalaria</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#OpenMalaria.utils.submit_run_OpenMalaria">submit_run_OpenMalaria</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/contributors/">Contact</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API</li>
+          <li class="breadcrumb-item">OpenMalaria</li>
+      <li class="breadcrumb-item active">utils.py</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/api/OpenMalaria/utils.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="utilspy">utils.py</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="OpenMalaria.utils"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="OpenMalaria.utils.create_scenarios" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_scenarios</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Creates OpenMalaria simulation scenarios based on a dataframe containing scenario parameters.</p>
+<p>This function generates multiple OpenMalaria scenario XML files by replacing placeholders in a template
+XML with specific parameters from the experiment configuration and scenario dataframe. Each scenario is
+customized based on the parameters from the dataframe, and the resulting XML files are saved to the job directory.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp</code></b>
+                  (<code>Experiment</code>)
+              –
+              <div class="doc-md-description">
+                <p>The experiment object containing configuration parameters such as OpenMalaria version,
+               population size, simulation years, entomology mode, and other parameters required for
+               generating the scenarios.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>scen_df</code></b>
+                  (<code>DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>A dataframe containing scenario parameters such as seed values, clinical malaria
+                         data, and other model-specific inputs.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>None</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>OpenMalaria\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_scenarios</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates OpenMalaria simulation scenarios based on a dataframe containing scenario parameters.</span>
+
+<span class="sd">    This function generates multiple OpenMalaria scenario XML files by replacing placeholders in a template</span>
+<span class="sd">    XML with specific parameters from the experiment configuration and scenario dataframe. Each scenario is</span>
+<span class="sd">    customized based on the parameters from the dataframe, and the resulting XML files are saved to the job directory.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exp (Experiment): The experiment object containing configuration parameters such as OpenMalaria version,</span>
+<span class="sd">                           population size, simulation years, entomology mode, and other parameters required for</span>
+<span class="sd">                           generating the scenarios.</span>
+<span class="sd">        scen_df (pandas.DataFrame): A dataframe containing scenario parameters such as seed values, clinical malaria</span>
+<span class="sd">                                     data, and other model-specific inputs.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_input_path</span><span class="p">,</span> <span class="s1">&#39;scaffolds&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_scaffold</span><span class="si">}</span><span class="s2">.xml&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">xml</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">exp</span><span class="o">.</span><span class="n">days_between_clinical_cases_5days</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># Aurelien communicated that as long as we use v46, we should have a days_between_clinical_cases of 25 days</span>
+
+    <span class="c1"># Replace placeholders in the XML template with fixed parameters</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@version@&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@pop_size@&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_pop_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@burnin_start_year@&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">sim_start_year_openmalaria</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@start_year@&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">start_year</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@end_year@&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">end_year</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@survey_step@&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_survey_step</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@entomology_mode@&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@detectionLimit@&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">detectionLimit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@importation_rate@&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">importation_rate</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@healthSystemMemory@&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">days_between_clinical_cases_5days</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">xmlageGroups</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t\t</span><span class="s1">&lt;ageGroup lowerbound=&quot;0&quot;&gt;&#39;</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">agebins</span><span class="p">:</span>
+        <span class="n">xmlageGroups</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n\t\t\t</span><span class="s1">&lt;group upperbound=&quot;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;@age_groups@&gt;&#39;</span><span class="p">,</span> <span class="n">xmlageGroups</span><span class="p">)</span>
+
+    <span class="c1"># Scenario sweeps and runs</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">rep_scen_df</span><span class="p">(</span><span class="n">scen_df</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;cm_clinical&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.45</span><span class="p">:</span>
+            <span class="n">cm_clinical_5daily</span> <span class="o">=</span> <span class="mf">0.209261</span>
+        <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;cm_clinical&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.15</span><span class="p">:</span>
+            <span class="n">cm_clinical_5daily</span> <span class="o">=</span> <span class="mf">0.05161556</span>
+        <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;cm_clinical&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cm_clinical_5daily</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;convert_access for OpenMalaria cm_clinical currently not functional&#39;</span><span class="p">)</span>
+            <span class="c1"># cm_clinical_5daily = convert_access(row[&#39;cm_clinical&#39;]) # TODO convert from R function to python</span>
+
+        <span class="n">scenario</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@seed@&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]))</span>
+        <span class="n">scenario</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@cm_clinical@&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cm_clinical_5daily</span><span class="p">))</span>
+        <span class="n">scenario</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@cm_severe@&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cm_severe&#39;</span><span class="p">]))</span>
+        <span class="n">scenario</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@eir@&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;model_input_openmalaria&#39;</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="s1">&#39;cc_step&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
+            <span class="n">scenario</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@EIR_reduction@&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cc_factor_openmalaria&#39;</span><span class="p">]))</span>
+            <span class="n">scenario</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;@step_change_time@&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;cc_timestep_openmalaria&#39;</span><span class="p">]))</span>
+
+        <span class="c1">#SMC currently not supported</span>
+        <span class="c1">#if &#39;smc&#39; in exp.intervention_list:</span>
+        <span class="c1">#    scenario = write_smc_deployment(scenario, row)</span>
+
+        <span class="n">seasonality</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;seasonality&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Replace seasonality placeholders with corresponding values from the experiment object</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">):</span>
+            <span class="n">scenario</span> <span class="o">=</span> <span class="n">scenario</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;@seasonality</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">@&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">seasonality</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+
+        <span class="c1"># Write the scenario XML file</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2">/xml/</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.xml&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>
+            <span class="n">fo</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scenario</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Copy additional files required by OpenMalaria</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_path</span> <span class="o">+</span> <span class="s2">&quot;/densities.csv&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;scenario_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_version</span><span class="si">}</span><span class="s2">.xsd&quot;</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_path</span><span class="p">,</span> <span class="n">schema</span><span class="p">),</span> <span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="OpenMalaria.utils.submit_analyze_OpenMalaria" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">submit_analyze_OpenMalaria</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;04:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Submits a job to analyze OpenMalaria simulation results on an HPC cluster.</p>
+<p>This function generates a SLURM job submission script to analyze the results of an OpenMalaria simulation.
+The job runs a Python script (<code>analyze_sim.py</code>) in a specified environment to process the simulation results,
+and it submits the job with a dependency on a previously run job, ensuring the analysis starts after the
+prior job completes.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp</code></b>
+                  (<code>Experiment</code>)
+              –
+              <div class="doc-md-description">
+                <p>The experiment object containing configuration details such as the job directory,
+               HPC platform specification (e.g., NUCLUSTER, SCICORE), and virtual environment paths.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>t</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;04:00:00&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The time limit for the job submission in the format 'HH:MM:SS'. Default is '04:00:00'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>memG</code></b>
+                  (<code>int</code>, default:
+                      <code>4</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The amount of memory (in GB) to allocate for the job. Default is 4 GB.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>None</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>OpenMalaria\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit_analyze_OpenMalaria</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;04:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Submits a job to analyze OpenMalaria simulation results on an HPC cluster.</span>
+
+<span class="sd">    This function generates a SLURM job submission script to analyze the results of an OpenMalaria simulation.</span>
+<span class="sd">    The job runs a Python script (`analyze_sim.py`) in a specified environment to process the simulation results,</span>
+<span class="sd">    and it submits the job with a dependency on a previously run job, ensuring the analysis starts after the</span>
+<span class="sd">    prior job completes.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exp (Experiment): The experiment object containing configuration details such as the job directory,</span>
+<span class="sd">                           HPC platform specification (e.g., NUCLUSTER, SCICORE), and virtual environment paths.</span>
+<span class="sd">        t (str, optional): The time limit for the job submission in the format &#39;HH:MM:SS&#39;. Default is &#39;04:00:00&#39;.</span>
+<span class="sd">        memG (int, optional): The amount of memory (in GB) to allocate for the job. Default is 4 GB.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Generate the SLURM shell script header for the job</span>
+    <span class="n">header_post</span> <span class="o">=</span> <span class="n">shell_header_quest</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">memG</span><span class="p">,</span> <span class="n">job_name</span><span class="o">=</span><span class="s1">&#39;analyze_OMsim&#39;</span><span class="p">,</span>
+                                     <span class="n">mem_scl</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">mem_increase_factor</span><span class="p">)</span>
+
+    <span class="c1"># Create the Python command to run the analyzer</span>
+    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">hpc</span> <span class="o">==</span> <span class="s1">&#39;NUCLUSTER&#39;</span><span class="p">:</span>
+        <span class="n">pycommand</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">cd /home/</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">user</span><span class="si">}</span><span class="s1">/model-characterization/OpenMalaria&#39;</span> \
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">python analyze_sim.py --dir &quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+    <span class="k">elif</span> <span class="n">exp</span><span class="o">.</span><span class="n">hpc</span> <span class="o">==</span> <span class="s1">&#39;SCICORE&#39;</span><span class="p">:</span>
+        <span class="n">pycommand</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">cd /scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria&#39;</span> \
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">ml Python/3.9.6-GCCcore-11.2.0-bare&#39;</span> \
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">source /scicore/home/scicore/cavelan/git/model-characterization/emodenv/bin/activate&#39;</span> \
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">python analyze_sim.py --dir &quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;HPC specification not available, must be NUCLUSTER or SCICORE&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Write the shell script to a file</span>
+    <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;run_analyzer_OpenMalaria.sh&#39;</span><span class="p">)</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+        <span class="n">header_post</span> <span class="o">+</span> <span class="n">exp</span><span class="o">.</span><span class="n">EMOD_venv</span> <span class="o">+</span> <span class="n">pycommand</span><span class="p">)</span>  <span class="c1"># Also load EMOD&#39;s Python virtual environment - needed for handling exp object from idmtools</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Read the job ID from the &#39;job_id.txt&#39; file</span>
+    <span class="n">job_id_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;job_id.txt&#39;</span><span class="p">)</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">job_id_path</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c1"># Submit the job with dependency on the previous job</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sbatch&#39;</span><span class="p">,</span> <span class="s1">&#39;--parsable&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;--dependency=afterany:</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">script_path</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                       <span class="n">cwd</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">))</span>
+
+    <span class="c1"># Extract the SLURM job ID from the output</span>
+    <span class="n">slurm_job_id</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Print the submitted job ID and save it to a file</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Submitted OpenMalaria analyzer - job id: </span><span class="si">{</span><span class="n">slurm_job_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">write_txt</span><span class="p">(</span><span class="n">slurm_job_id</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;job_id_OManalyze.txt&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="OpenMalaria.utils.submit_run_OpenMalaria" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">submit_run_OpenMalaria</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;04:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Submits OpenMalaria simulations to a high-performance computing (HPC) cluster using SLURM.</p>
+<p>This function generates SLURM job scripts to run OpenMalaria simulations on an HPC cluster. It creates necessary
+directories for storing logs, XML files, and output, generates simulation scenarios, and then submits the simulations
+as a SLURM array job. After the simulations are submitted, it also triggers a job to analyze the results.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp</code></b>
+                  (<code>Experiment</code>)
+              –
+              <div class="doc-md-description">
+                <p>An object containing experiment parameters and configuration, including paths,
+               simulation settings, and HPC-specific configurations.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>scen_df</code></b>
+                  (<code>DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>A DataFrame containing scenario parameters such as seeds, clinical model parameters,
+                         and other model-specific inputs that will be used to generate simulation scenarios.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>t</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;04:00:00&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Wall time for the SLURM job in the format 'HH:MM:SS'. Default is '04:00:00'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>memG</code></b>
+                  (<code>int</code>, default:
+                      <code>3</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The amount of memory (in GB) to allocate for the job. Default is 3 GB.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>None</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>OpenMalaria\utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit_run_OpenMalaria</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;04:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Submits OpenMalaria simulations to a high-performance computing (HPC) cluster using SLURM.</span>
+
+<span class="sd">    This function generates SLURM job scripts to run OpenMalaria simulations on an HPC cluster. It creates necessary</span>
+<span class="sd">    directories for storing logs, XML files, and output, generates simulation scenarios, and then submits the simulations</span>
+<span class="sd">    as a SLURM array job. After the simulations are submitted, it also triggers a job to analyze the results.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exp (Experiment): An object containing experiment parameters and configuration, including paths,</span>
+<span class="sd">                           simulation settings, and HPC-specific configurations.</span>
+<span class="sd">        scen_df (pandas.DataFrame): A DataFrame containing scenario parameters such as seeds, clinical model parameters,</span>
+<span class="sd">                                     and other model-specific inputs that will be used to generate simulation scenarios.</span>
+<span class="sd">        t (str, optional): Wall time for the SLURM job in the format &#39;HH:MM:SS&#39;. Default is &#39;04:00:00&#39;.</span>
+<span class="sd">        memG (int, optional): The amount of memory (in GB) to allocate for the job. Default is 3 GB.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Create necessary directories for logs, XML files, and output text files</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2">/log&quot;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2">/xml&quot;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2">/txt&quot;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># os.makedirs(os.path.relpath(f&quot;{exp.job_directory}/ctsout&quot;), exist_ok=True) # only required when running continuous output</span>
+
+    <span class="c1"># Generate OpenMalaria scenario XML files</span>
+    <span class="n">create_scenarios</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">)</span>
+
+    <span class="c1"># Set up script for submitting OpenMalaria simulations as a SLURM array job</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;#SBATCH --array=1-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">nexps</span><span class="p">)</span><span class="si">}</span><span class="s1">%</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">max_running_jobs</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">header_post</span> <span class="o">=</span> <span class="n">shell_header_quest</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">memG</span><span class="p">,</span> <span class="n">job_name</span><span class="o">=</span><span class="s1">&#39;run_openmalaria&#39;</span><span class="p">,</span> <span class="n">arrayJob</span><span class="o">=</span><span class="n">array</span><span class="p">)</span>
+    <span class="n">openmalaria</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">OPENMALARIA_venv</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;export PATH=$PATH:</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">slurmID</span> <span class="o">=</span> <span class="s1">&#39;$</span><span class="si">{SLURM_ARRAY_TASK_ID}</span><span class="s1">&#39;</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">openMalaria -s xml/</span><span class="si">{</span><span class="n">slurmID</span><span class="si">}</span><span class="s1">.xml  --output txt/</span><span class="si">{</span><span class="n">slurmID</span><span class="si">}</span><span class="s1">.txt&#39;</span>
+    <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;run_sim_OpenMalaria.sh&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Write the bash script for submitting OpenMalaria simulations</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header_post</span> <span class="o">+</span> <span class="n">openmalaria</span> <span class="o">+</span> <span class="n">path</span> <span class="o">+</span> <span class="n">command</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Submit the OpenMalaria simulations as a SLURM job</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sbatch&#39;</span><span class="p">,</span> <span class="s1">&#39;--parsable&#39;</span><span class="p">,</span> <span class="s1">&#39;run_sim_OpenMalaria.sh&#39;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                       <span class="n">cwd</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">))</span>
+
+    <span class="c1"># Save the SLURM job ID to a file</span>
+    <span class="n">slurm_job_id</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Submitted OpenMalaria simulations - job id: </span><span class="si">{</span><span class="n">slurm_job_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;job_id.txt&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">slurm_job_id</span><span class="p">)</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Submit the job for analysis</span>
+    <span class="n">submit_analyze_OpenMalaria</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../EMOD/functions/EMOD_functions/" class="btn btn-neutral float-left" title="EMOD_functions.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../analyze_sim/" class="btn btn-neutral float-right" title="analyze_sim.py">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../../EMOD/functions/EMOD_functions/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../analyze_sim/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/interventions/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Interventions - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Interventions";
+        var mkdocs_page_input_path = "malaria_models\\interventions.md";
+        var mkdocs_page_url = "/MultiMalModPy/malaria_models/interventions/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../software/">Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Interventions</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#vector-control">Vector control</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#insecticide-treated-bed-nets-itn">Insecticide treated bed nets (ITN)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#indoor-residual-spraying-irs">Indoor residual spraying (IRS)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#larval-source-management-lsm">Larval Source Management (LSM)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#chemoprevention">Chemoprevention</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#seasonal-malaria-chemoprevention-smc">Seasonal Malaria Chemoprevention (SMC)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#perennial-malaria-chemoprevention-pmc">Perennial Malaria Chemoprevention (PMC)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vaccine">Vaccine</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#malaria-vaccine">Malaria vaccine</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameter-glossary/">Parameter Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/run_sim/">Run simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Visualize outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specificities</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Malaria models</li>
+      <li class="breadcrumb-item active">Interventions</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/malaria_models/interventions.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="interventions">Interventions</h1>
+<p>This site is under construction ...</p>
+<ul>
+<li>EMOD<ul>
+<li><a href="https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/malaria-scenarios.html">malaria model scenarios</a></li>
+<li><a href="https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/vector-scenarios.html">vector model scenarios</a></li>
+</ul>
+</li>
+<li>malariasimulation<ul>
+<li>.</li>
+</ul>
+</li>
+<li>OpenMalaria<ul>
+<li>.</li>
+</ul>
+</li>
+</ul>
+<h2 id="vector-control">Vector control</h2>
+<h3 id="insecticide-treated-bed-nets-itn">Insecticide treated bed nets (ITN)</h3>
+<table>
+<thead>
+<tr>
+<th>ITN</th>
+<th>EMOD</th>
+<th>malariasimulation</th>
+<th>OpenMalaria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode of action</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Efficacy and decay of efficacy</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Resistance</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Deployment, timing and frequency</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Target population</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Coverage (effective)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="indoor-residual-spraying-irs">Indoor residual spraying (IRS)</h3>
+<table>
+<thead>
+<tr>
+<th>IRS</th>
+<th>EMOD</th>
+<th>malariasimulation</th>
+<th>OpenMalaria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode of action</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Efficacy and decay of efficacy</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Resistance</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Deployment, timing and frequency</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Target population</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Coverage (effective)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="larval-source-management-lsm">Larval Source Management (LSM)</h3>
+<table>
+<thead>
+<tr>
+<th>LSM</th>
+<th>EMOD</th>
+<th>malariasimulation</th>
+<th>OpenMalaria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode of action</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Efficacy and decay of efficacy</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Resistance</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Deployment, timing and frequency</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Target population</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Coverage (effective)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="chemoprevention">Chemoprevention</h2>
+<h3 id="seasonal-malaria-chemoprevention-smc">Seasonal Malaria Chemoprevention (SMC)</h3>
+<table>
+<thead>
+<tr>
+<th>SMC</th>
+<th>EMOD</th>
+<th>malariasimulation</th>
+<th>OpenMalaria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode of action</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Efficacy and decay of efficacy</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Resistance</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Deployment, timing and frequency</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Target population</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Coverage (effective)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="perennial-malaria-chemoprevention-pmc">Perennial Malaria Chemoprevention (PMC)</h3>
+<table>
+<thead>
+<tr>
+<th>PMC</th>
+<th>EMOD</th>
+<th>malariasimulation</th>
+<th>OpenMalaria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode of action</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Efficacy and decay of efficacy</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Resistance</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Deployment, timing and frequency</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Target population</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Coverage (effective)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="vaccine">Vaccine</h2>
+<h3 id="malaria-vaccine">Malaria vaccine</h3>
+<table>
+<thead>
+<tr>
+<th>Malaria vaccine</th>
+<th>EMOD</th>
+<th>malariasimulation</th>
+<th>OpenMalaria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode of action</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Efficacy and decay of efficacy</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Resistance</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Deployment, timing and frequency</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Target population</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Coverage (effective)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../documentation-and-sourcecode/" class="btn btn-neutral float-left" title="Documentation & Source Code"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../core_parameters/" class="btn btn-neutral float-right" title="Core parameters">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../documentation-and-sourcecode/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../core_parameters/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

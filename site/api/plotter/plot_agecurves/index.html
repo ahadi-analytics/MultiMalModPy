@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/api/plotter/plot_agecurves/" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>plot_agecurves.py - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "plot_agecurves.py";
+        var mkdocs_page_input_path = "api\\plotter\\plot_agecurves.md";
+        var mkdocs_page_url = "/MultiMalModPy/api/plotter/plot_agecurves/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../..">
+          <img src="../../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/software/">Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/parameter-glossary/">Parameter Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/parameters/">Input parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/run_sim/">Run simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/postprocess/">Postprocess outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/plots/">Visualize outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/calibration/">Calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/model_specificities/">Model specificities</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >plotter</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">plot_agecurves.py</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#plotter.plot_agecurves">plot_agecurves</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plotter.plot_agecurves.age_curves">age_curves</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plotter.plot_agecurves.color_selector">color_selector</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plotter.plot_agecurves.convert_to_date">convert_to_date</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plotter.plot_agecurves.custom_sort_key">custom_sort_key</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plotter.plot_agecurves.get_output_df">get_output_df</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plotter.plot_agecurves.get_x_y">get_x_y</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plotter.plot_agecurves.get_ylab">get_ylab</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plotter.plot_agecurves.parse_args">parse_args</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plotter.plot_agecurves.subset_dataframe_for_plot">subset_dataframe_for_plot</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plot_relationship/">plot_relationship.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/contributors/">Contact</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API</li>
+          <li class="breadcrumb-item">plotter</li>
+      <li class="breadcrumb-item active">plot_agecurves.py</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/api/plotter/plot_agecurves.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="plot_agecurvespy">plot_agecurves.py</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="plotter.plot_agecurves"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plotter.plot_agecurves.age_curves" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">age_curves</span><span class="p">(</span><span class="n">fdir</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="s1">&#39;modelname&#39;</span><span class="p">,</span> <span class="n">facet_var</span><span class="o">=</span><span class="s1">&#39;output_target&#39;</span><span class="p">,</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Plots age curves based on model results and saves the figure to the specified directory.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>fdir</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Directory where the plot will be saved.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>df</code></b>
+                  (<code>DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>DataFrame that includes combined model results.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>channel</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Variable representing the y-axis data to be plotted.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>sweepvar</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;modelname&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Variable to group the data and create multiple lines on the plot.
+                       Defaults to 'modelname'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>facet_var</code></b>
+                  (<code>str</code>, default:
+                      <code>&#39;output_target&#39;</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Variable used to create subplots based on its unique values.
+                       Defaults to 'output_target'.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>age_groups_aggregates</code></b>
+                  (<code>list</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>List of age group labels to use for aggregation.
+                                     If None, default age groups will be used.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>ValueError</code>
+              –
+              <div class="doc-md-description">
+                <p>If <code>facet_var</code> is set to 'ageGroup'.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>None</code></b>              –
+              <div class="doc-md-description">
+                <p>The function saves the generated plots to disk.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<details class="notes" open>
+  <summary>Notes</summary>
+  <ul>
+<li>The function generates a multi-faceted plot with separate subplots for each unique value
+  of the <code>facet_var</code> and lines representing the <code>sweepvar</code> variable.</li>
+<li>Each subplot visualizes the age distribution of the specified <code>channel</code> variable, with
+  filled areas representing the confidence interval.</li>
+</ul>
+</details>
+            <details class="quote">
+              <summary>Source code in <code>plotter\plot_agecurves.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">age_curves</span><span class="p">(</span><span class="n">fdir</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="s1">&#39;modelname&#39;</span><span class="p">,</span> <span class="n">facet_var</span><span class="o">=</span><span class="s1">&#39;output_target&#39;</span><span class="p">,</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots age curves based on model results and saves the figure to the specified directory.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fdir (str): Directory where the plot will be saved.</span>
+<span class="sd">        df (pandas.DataFrame): DataFrame that includes combined model results.</span>
+<span class="sd">        channel (str): Variable representing the y-axis data to be plotted.</span>
+<span class="sd">        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot.</span>
+<span class="sd">                                   Defaults to &#39;modelname&#39;.</span>
+<span class="sd">        facet_var (str, optional): Variable used to create subplots based on its unique values.</span>
+<span class="sd">                                   Defaults to &#39;output_target&#39;.</span>
+<span class="sd">        age_groups_aggregates (list, optional): List of age group labels to use for aggregation.</span>
+<span class="sd">                                                 If None, default age groups will be used.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If `facet_var` is set to &#39;ageGroup&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None: The function saves the generated plots to disk.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - The function generates a multi-faceted plot with separate subplots for each unique value</span>
+<span class="sd">          of the `facet_var` and lines representing the `sweepvar` variable.</span>
+<span class="sd">        - Each subplot visualizes the age distribution of the specified `channel` variable, with</span>
+<span class="sd">          filled areas representing the confidence interval.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">facet_var</span> <span class="o">==</span> <span class="s1">&#39;ageGroup&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Age curves designed to have age on the x-axis, ageGroup facets are not supported&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">age_groups_aggregates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">age_groups_aggregates</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;0-0.5&#39;</span><span class="p">,</span> <span class="s1">&#39;0.5-1&#39;</span><span class="p">,</span> <span class="s1">&#39;1-2&#39;</span><span class="p">,</span> <span class="s1">&#39;2-5&#39;</span><span class="p">,</span> <span class="s1">&#39;5-10&#39;</span><span class="p">,</span> <span class="s1">&#39;10-15&#39;</span><span class="p">,</span> <span class="s1">&#39;15-20&#39;</span><span class="p">,</span> <span class="s1">&#39;20-100&#39;</span><span class="p">]</span>
+
+    <span class="n">figure_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">channel</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">sweepvar</span><span class="p">,</span> <span class="n">facet_var</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">caption_txt</span> <span class="o">=</span> <span class="n">subset_dataframe_for_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">figure_vars</span><span class="p">)</span>
+
+    <span class="n">firstPlot</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">unique_facets</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">facet_var</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="n">unique_facets</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">)</span>
+    <span class="n">color_palette</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">&#39;colorblind&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">sweepvar</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span> <span class="mi">4</span><span class="p">))</span>
+
+    <span class="n">nx</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">nx</span><span class="p">,</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">ny</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="n">unique_facets</span><span class="p">:</span>
+        <span class="n">fdf</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">facet_var</span><span class="p">]</span> <span class="o">==</span> <span class="n">fi</span><span class="p">]</span>
+        <span class="n">fdf</span> <span class="o">=</span> <span class="n">fdf</span><span class="p">[</span><span class="n">fdf</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">max_ylim</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">sdf</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">sweepvar</span><span class="p">])):</span>
+            <span class="n">color_key</span> <span class="o">=</span> <span class="n">color_selector</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">ylim_up</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sdf</span><span class="p">[</span><span class="n">channel</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1.1</span>
+            <span class="k">if</span> <span class="n">channel</span> <span class="o">==</span> <span class="s1">&#39;prevalence&#39;</span> <span class="ow">or</span> <span class="n">channel</span> <span class="o">==</span> <span class="s1">&#39;prevalence_2to10&#39;</span><span class="p">:</span>
+                <span class="n">ylim_up</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ylim_up</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">max_ylim</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ylim_up</span><span class="p">)</span>
+            <span class="n">xmean</span><span class="p">,</span> <span class="n">ymean</span> <span class="o">=</span> <span class="n">get_x_y</span><span class="p">(</span><span class="n">sdf</span><span class="p">,</span> <span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+            <span class="n">xmean</span> <span class="o">=</span> <span class="n">xmean</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span>
+            <span class="n">merge_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">xmean</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">ymean</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">)</span>
+            <span class="n">merge_df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">merge_df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">],</span> <span class="n">age_groups_aggregates</span><span class="p">)</span>  <span class="c1"># FIXME returns NA for 0-5 and 0-100, perhaps wanted</span>
+            <span class="n">merge_df</span> <span class="o">=</span> <span class="n">merge_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+            <span class="n">merge_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">merge_df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">],</span> <span class="n">merge_df</span><span class="p">[</span><span class="n">channel</span><span class="p">],</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="n">color_palette</span><span class="p">[</span><span class="n">color_key</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">merge_df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">],</span> <span class="n">merge_df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s1">_min&#39;</span><span class="p">],</span> <span class="n">merge_df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s1">_max&#39;</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                            <span class="n">color</span><span class="o">=</span><span class="n">color_palette</span><span class="p">[</span><span class="n">color_key</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">firstPlot</span><span class="p">:</span>
+            <span class="n">lg</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">firstPlot</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_ylim</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">labelrotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Age (years)&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">get_ylab</span><span class="p">(</span><span class="n">channel</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">facet_var</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">fi</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;agecurves_</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s1">_by_</span><span class="si">{</span><span class="n">sweepvar</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;modelname&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fdir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">.png&#39;</span><span class="p">),</span> <span class="n">bbox_extra_artists</span><span class="o">=</span><span class="p">(</span><span class="n">lg</span><span class="p">,),</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plotter.plot_agecurves.color_selector" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">color_selector</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Select a color index based on the model name.</p>
+<p>This function returns a color index based on the specified model name.
+If the model name is recognized, a predefined index is returned;
+otherwise, the input index is returned.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>i</code></b>
+                  (<code>int</code>)
+              –
+              <div class="doc-md-description">
+                <p>The default index to return if the model name is not recognized.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>s</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The name of the model. Possible values include:
+- 'EMOD'
+- 'malariasimulation'
+- 'OpenMalaria'</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>int</code></b>              –
+              <div class="doc-md-description">
+                <p>The color index corresponding to the model name.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>plotter\plot_helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">color_selector</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select a color index based on the model name.</span>
+
+<span class="sd">    This function returns a color index based on the specified model name.</span>
+<span class="sd">    If the model name is recognized, a predefined index is returned;</span>
+<span class="sd">    otherwise, the input index is returned.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        i (int): The default index to return if the model name is not recognized.</span>
+<span class="sd">        s (str): The name of the model. Possible values include:</span>
+<span class="sd">            - &#39;EMOD&#39;</span>
+<span class="sd">            - &#39;malariasimulation&#39;</span>
+<span class="sd">            - &#39;OpenMalaria&#39;</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: The color index corresponding to the model name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s1">&#39;EMOD&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">s</span> <span class="o">==</span> <span class="s1">&#39;malariasimulation&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">s</span> <span class="o">==</span> <span class="s1">&#39;OpenMalaria&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">i</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plotter.plot_agecurves.convert_to_date" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">convert_to_date</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert a number of days since January 1, 2005, to a date.</p>
+<p>This function takes an integer representing the number of days
+since January 1, 2005, and returns the corresponding date.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>x</code></b>
+                  (<code>int</code>)
+              –
+              <div class="doc-md-description">
+                <p>The number of days since January 1, 2005.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>date</code></b>              –
+              <div class="doc-md-description">
+                <p>A datetime.date object representing the corresponding date.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>plotter\plot_helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">convert_to_date</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a number of days since January 1, 2005, to a date.</span>
+
+<span class="sd">    This function takes an integer representing the number of days</span>
+<span class="sd">    since January 1, 2005, and returns the corresponding date.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (int): The number of days since January 1, 2005.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        date: A datetime.date object representing the corresponding date.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2005</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plotter.plot_agecurves.custom_sort_key" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">custom_sort_key</span><span class="p">(</span><span class="n">age_group</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Custom sort key function for sorting age groups.</p>
+<p>This function extracts the lower bound of an age group represented as
+a string in the format 'X-Y' and returns it as an integer. It is
+primarily used for sorting age groups in ascending order based on
+their lower bounds.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>age_group</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The age group string in the format 'X-Y',
+             where X is the lower bound and Y is the upper bound.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>int</code></b>              –
+              <div class="doc-md-description">
+                <p>The lower bound of the age group as an integer.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>plotter\plot_helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">custom_sort_key</span><span class="p">(</span><span class="n">age_group</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Custom sort key function for sorting age groups.</span>
+
+<span class="sd">    This function extracts the lower bound of an age group represented as</span>
+<span class="sd">    a string in the format &#39;X-Y&#39; and returns it as an integer. It is</span>
+<span class="sd">    primarily used for sorting age groups in ascending order based on</span>
+<span class="sd">    their lower bounds.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        age_group (str): The age group string in the format &#39;X-Y&#39;,</span>
+<span class="sd">                         where X is the lower bound and Y is the upper bound.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: The lower bound of the age group as an integer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">age_group</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plotter.plot_agecurves.get_output_df" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_output_df</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">modelname</span><span class="p">,</span> <span class="n">yr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mth</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">daily</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_combined</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Load and combine data from the model output files.</p>
+<p>This function reads model output files from a specified working directory
+and combines the data into a single DataFrame. It supports different data
+formats based on the specified parameters for yearly, monthly, or daily
+data.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>wdir</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Working directory where the data files are located.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>modelname</code></b>
+                  (<code>str or list of str</code>)
+              –
+              <div class="doc-md-description">
+                <p>Name of models for which result CSVs
+                             should be loaded (case sensitive).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>yr</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Set to True if the data files have yearly data.
+                 Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>mth</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Set to True if the data files have monthly data.
+                 Defaults to False.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>daily</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Set to True if the data files have daily timestep
+                    data. Defaults to False. If both mth and daily
+                    are True, only daily will be processed.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>custom_name</code></b>
+                  (<code>str</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Custom filename to use instead of the default
+                          based on the time period. Defaults to None.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>save_combined</code></b>
+                  (<code>bool</code>, default:
+                      <code>False</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Set to True to save the combined DataFrame
+                             to a CSV file. Defaults to False.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>tuple</code></b>              –
+              <div class="doc-md-description">
+                <p>A tuple containing:
+- df (DataFrame): Combined DataFrame containing the combined data
+                  for the models listed in modelname.
+- wdir (str): Updated working directory (if applicable).</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>ValueError</code>
+              –
+              <div class="doc-md-description">
+                <p>If an invalid modelname value is specified.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>plotter\plot_helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_output_df</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">modelname</span><span class="p">,</span> <span class="n">yr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mth</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">daily</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">save_combined</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load and combine data from the model output files.</span>
+
+<span class="sd">    This function reads model output files from a specified working directory</span>
+<span class="sd">    and combines the data into a single DataFrame. It supports different data</span>
+<span class="sd">    formats based on the specified parameters for yearly, monthly, or daily</span>
+<span class="sd">    data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        wdir (str): Working directory where the data files are located.</span>
+<span class="sd">        modelname (str or list of str): Name of models for which result CSVs</span>
+<span class="sd">                                         should be loaded (case sensitive).</span>
+<span class="sd">        yr (bool, optional): Set to True if the data files have yearly data.</span>
+<span class="sd">                             Defaults to False.</span>
+<span class="sd">        mth (bool, optional): Set to True if the data files have monthly data.</span>
+<span class="sd">                             Defaults to False.</span>
+<span class="sd">        daily (bool, optional): Set to True if the data files have daily timestep</span>
+<span class="sd">                                data. Defaults to False. If both mth and daily</span>
+<span class="sd">                                are True, only daily will be processed.</span>
+<span class="sd">        custom_name (str, optional): Custom filename to use instead of the default</span>
+<span class="sd">                                      based on the time period. Defaults to None.</span>
+<span class="sd">        save_combined (bool, optional): Set to True to save the combined DataFrame</span>
+<span class="sd">                                         to a CSV file. Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: A tuple containing:</span>
+<span class="sd">            - df (DataFrame): Combined DataFrame containing the combined data</span>
+<span class="sd">                              for the models listed in modelname.</span>
+<span class="sd">            - wdir (str): Updated working directory (if applicable).</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If an invalid modelname value is specified.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cols_to_keep</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># default read all</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;mmmpy_timeavrg.csv&#39;</span>
+    <span class="k">if</span> <span class="n">yr</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;mmmpy_yr.csv&#39;</span>
+    <span class="k">if</span> <span class="n">mth</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;mmmpy_mth.csv&#39;</span>
+    <span class="k">if</span> <span class="n">daily</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;mmmpy_daily.csv&#39;</span>
+        <span class="c1"># cols_to_keep = [&#39;index&#39;, &#39;timestep&#39;, &#39;ageGroup&#39;, &#39;simulatedEIR&#39;, &#39;prevalence_2to10&#39;, &#39;prevalence&#39;,</span>
+        <span class="c1">#                &#39;clinical_incidence&#39;, &#39;severe_incidence&#39;, &#39;seed&#39;]</span>
+    <span class="k">if</span> <span class="n">custom_name</span><span class="p">:</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">custom_name</span><span class="si">}</span><span class="s1">.csv&#39;</span>
+
+    <span class="n">file_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)]</span>
+
+    <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">modelname</span><span class="p">:</span>
+        <span class="n">file_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">fname</span><span class="p">))</span>
+
+    <span class="n">existing_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">file_paths</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">existing_files</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">wdir</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)):</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)),</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="n">dfs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">modelname</span><span class="p">:</span>
+            <span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="n">cols_to_keep</span><span class="p">)</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;modelname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span>
+                    <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;EMOD&#39;</span><span class="p">:</span>
+                        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found for </span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dfs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">wdir</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;ageGroup&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">age_grps</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="n">custom_sort_key</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">age_grps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">reorder_categories</span><span class="p">(</span><span class="n">age_grps</span><span class="p">)</span>
+
+        <span class="n">warning_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;simulatedEIR&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">warning_df</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">daily</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>  <span class="c1"># we don&#39;t want to include simulations were eir was 0 or less, because we won&#39;t get any outcome measures and that crashes the system</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: some eirs had simulated EIRS of 0, and were removed&#39;</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;simulatedEIR&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;simulatedEIR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">daily</span> <span class="ow">and</span> <span class="n">save_combined</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">wdir</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plotter.plot_agecurves.get_x_y" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_x_y</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">grpvar</span><span class="p">,</span> <span class="n">x_channel</span><span class="p">,</span> <span class="n">y_channel</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Calculate x-axis and y-axis values for each plot.</p>
+<p>This function groups the input DataFrame by a specified variable and
+calculates the mean values for the specified x and y channels. It also
+computes the 95% confidence interval for the y values.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>df</code></b>
+                  (<code>DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>The DataFrame used to group and calculate x and y values.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>grpvar</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The variable in the DataFrame used to group the x and y values.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>x_channel</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The variable serving as the x-axis in the graph.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>y_channel</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The variable serving as the y-axis in the graph.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>tuple</code></b>              –
+              <div class="doc-md-description">
+                <p>A tuple containing:
+- xmean (DataFrame): A DataFrame containing values for the x-axis.
+- ymean (DataFrame): A DataFrame containing values for the y-axis,
+                     including the 95% confidence interval (min and max).</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>plotter\plot_helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_x_y</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">grpvar</span><span class="p">,</span> <span class="n">x_channel</span><span class="p">,</span> <span class="n">y_channel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate x-axis and y-axis values for each plot.</span>
+
+<span class="sd">    This function groups the input DataFrame by a specified variable and</span>
+<span class="sd">    calculates the mean values for the specified x and y channels. It also</span>
+<span class="sd">    computes the 95% confidence interval for the y values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (DataFrame): The DataFrame used to group and calculate x and y values.</span>
+<span class="sd">        grpvar (str): The variable in the DataFrame used to group the x and y values.</span>
+<span class="sd">        x_channel (str): The variable serving as the x-axis in the graph.</span>
+<span class="sd">        y_channel (str): The variable serving as the y-axis in the graph.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: A tuple containing:</span>
+<span class="sd">            - xmean (DataFrame): A DataFrame containing values for the x-axis.</span>
+<span class="sd">            - ymean (DataFrame): A DataFrame containing values for the y-axis,</span>
+<span class="sd">                                 including the 95% confidence interval (min and max).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">xmean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grpvar</span><span class="p">)[</span><span class="n">x_channel</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="n">ymean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grpvar</span><span class="p">)[</span><span class="n">y_channel</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="n">p_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">grpvar</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_min&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_max&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">ymean</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">grpvar</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="n">grpvar</span><span class="p">]]</span>
+        <span class="n">pmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">y_channel</span><span class="p">],</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">pmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">y_channel</span><span class="p">],</span> <span class="mf">97.5</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">new_row</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span><span class="n">grpvar</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="n">grpvar</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_min&#39;</span><span class="p">:</span> <span class="n">pmin</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_max&#39;</span><span class="p">:</span> <span class="n">pmax</span><span class="p">}])</span>
+        <span class="n">p_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">p_df</span><span class="p">,</span> <span class="n">new_row</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ymean</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">ymean</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">p_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">grpvar</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xmean</span><span class="p">,</span> <span class="n">ymean</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plotter.plot_agecurves.get_ylab" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_ylab</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Retrieve the y-axis label for a given channel.</p>
+<p>This function returns a formatted string representing the y-axis label
+based on the specified channel name. The labels correspond to specific
+epidemiological measures.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>channel</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The name of the channel for which to retrieve the label.
+Possible values include:
+- 'prevalence_2to10'
+- 'prevalence'
+- 'clinical_incidence'
+- 'severe_incidence'
+- 'simulatedEIR'</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>str</code></b>              –
+              <div class="doc-md-description">
+                <p>The corresponding y-axis label for the channel, or None if the</p>
+              </div>
+            </li>
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>channel is not recognized.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>plotter\plot_helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_ylab</span><span class="p">(</span><span class="n">channel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieve the y-axis label for a given channel.</span>
+
+<span class="sd">    This function returns a formatted string representing the y-axis label</span>
+<span class="sd">    based on the specified channel name. The labels correspond to specific</span>
+<span class="sd">    epidemiological measures.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        channel (str): The name of the channel for which to retrieve the label.</span>
+<span class="sd">            Possible values include:</span>
+<span class="sd">            - &#39;prevalence_2to10&#39;</span>
+<span class="sd">            - &#39;prevalence&#39;</span>
+<span class="sd">            - &#39;clinical_incidence&#39;</span>
+<span class="sd">            - &#39;severe_incidence&#39;</span>
+<span class="sd">            - &#39;simulatedEIR&#39;</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The corresponding y-axis label for the channel, or None if the</span>
+<span class="sd">        channel is not recognized.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">channel_labels</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;prevalence_2to10&#39;</span><span class="p">:</span> <span class="s1">&#39;$\it</span><span class="si">{Pf}</span><span class="s1">$PR$_{2-10}$ (%)&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;prevalence&#39;</span><span class="p">:</span> <span class="s1">&#39;$\it</span><span class="si">{Pf}</span><span class="s1">$PR (%)&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;clinical_incidence&#39;</span><span class="p">:</span> <span class="s1">&#39;Clinical incidence (pppy)&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;severe_incidence&#39;</span><span class="p">:</span> <span class="s1">&#39;Severe incidence (pppy)&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;simulatedEIR&#39;</span><span class="p">:</span> <span class="s1">&#39;simulated EIR&#39;</span>
+                      <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">channel_labels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plotter.plot_agecurves.parse_args" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">parse_args</span><span class="p">()</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Parses command-line arguments for simulation specifications.</p>
+<p>This function uses the argparse library to handle command-line inputs
+required for running simulation experiments. It defines required and optional
+arguments, including the job directory and model names.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>argparse.Namespace: An object containing the parsed command-line arguments.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<details class="command-line-arguments" open>
+  <summary>Command Line Arguments</summary>
+  <p>-d/--directory (str): The job directory where the exp.obj file is located. This argument is required.
+-m/--modelname (str): One or more model names to compare. This argument is optional
+                      and defaults to ['EMOD', 'OpenMalaria', 'malariasimulation'].</p>
+</details>
+            <details class="quote">
+              <summary>Source code in <code>plotter\plot_helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses command-line arguments for simulation specifications.</span>
+
+<span class="sd">    This function uses the argparse library to handle command-line inputs</span>
+<span class="sd">    required for running simulation experiments. It defines required and optional</span>
+<span class="sd">    arguments, including the job directory and model names.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        argparse.Namespace: An object containing the parsed command-line arguments.</span>
+
+<span class="sd">    Command Line Arguments:</span>
+<span class="sd">        -d/--directory (str): The job directory where the exp.obj file is located. This argument is required.</span>
+<span class="sd">        -m/--modelname (str): One or more model names to compare. This argument is optional</span>
+<span class="sd">                              and defaults to [&#39;EMOD&#39;, &#39;OpenMalaria&#39;, &#39;malariasimulation&#39;].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Simulation specifications&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--directory&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Job Directory where exp.obj is located&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-m&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--modelname&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of models to compare&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;EMOD&#39;</span><span class="p">,</span> <span class="s1">&#39;OpenMalaria&#39;</span><span class="p">,</span> <span class="s1">&#39;malariasimulation&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plotter.plot_agecurves.subset_dataframe_for_plot" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">subset_dataframe_for_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">figure_vars</span><span class="p">,</span> <span class="n">agegrp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filter_target</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Filter the input DataFrame for plotting based on specified criteria.</p>
+<p>This function filters the DataFrame according to the provided figure variables,
+optional age groups, and other selection criteria to prepare the data for
+visualization. It also returns a string summarizing the filtering applied.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>df</code></b>
+                  (<code>DataFrame</code>)
+              –
+              <div class="doc-md-description">
+                <p>The input DataFrame containing simulation results.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>figure_vars</code></b>
+                  (<code>list of str</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of variables used for plotting, which influences
+the filtering process.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>agegrp</code></b>
+                  (<code>str or list of str</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Specific age group(s) to filter by.
+If provided, only the data for these age groups will be retained.
+Defaults to None, meaning no filtering by age group will occur.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>filter_target</code></b>
+                  (<code>bool</code>, default:
+                      <code>True</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>If True, the function will filter the DataFrame
+to retain the maximum output target value if certain variables are not
+present in <code>figure_vars</code>. Defaults to True.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>tuple</code></b>              –
+              <div class="doc-md-description">
+                <p>A tuple containing:
+- pd.DataFrame: The filtered DataFrame.
+- str: A summary string describing the filtering that was applied.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>ValueError</code>
+              –
+              <div class="doc-md-description">
+                <p>If 'modelname' is not included in <code>figure_vars</code> and there</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>plotter\plot_helper.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">subset_dataframe_for_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">figure_vars</span><span class="p">,</span> <span class="n">agegrp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filter_target</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filter the input DataFrame for plotting based on specified criteria.</span>
+
+<span class="sd">    This function filters the DataFrame according to the provided figure variables,</span>
+<span class="sd">    optional age groups, and other selection criteria to prepare the data for</span>
+<span class="sd">    visualization. It also returns a string summarizing the filtering applied.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (pd.DataFrame): The input DataFrame containing simulation results.</span>
+<span class="sd">        figure_vars (list of str): List of variables used for plotting, which influences</span>
+<span class="sd">            the filtering process.</span>
+<span class="sd">        agegrp (str or list of str, optional): Specific age group(s) to filter by.</span>
+<span class="sd">            If provided, only the data for these age groups will be retained.</span>
+<span class="sd">            Defaults to None, meaning no filtering by age group will occur.</span>
+<span class="sd">        filter_target (bool, optional): If True, the function will filter the DataFrame</span>
+<span class="sd">            to retain the maximum output target value if certain variables are not</span>
+<span class="sd">            present in `figure_vars`. Defaults to True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: A tuple containing:</span>
+<span class="sd">            - pd.DataFrame: The filtered DataFrame.</span>
+<span class="sd">            - str: A summary string describing the filtering that was applied.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If &#39;modelname&#39; is not included in `figure_vars` and there</span>
+<span class="sd">        are multiple unique model names in the DataFrame.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">txt</span> <span class="o">=</span> <span class="s1">&#39;Filtered dataset by: &#39;</span>
+
+    <span class="k">if</span> <span class="n">agegrp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;ageGroup&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agegrp</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">agegrp</span><span class="p">)]</span>
+                <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ageGroup in </span><span class="si">{</span><span class="n">agegrp</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">agegrp</span><span class="p">]</span>
+                <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ageGroup </span><span class="si">{</span><span class="n">agegrp</span><span class="si">}</span><span class="s1">, &#39;</span>
+
+    <span class="k">if</span> <span class="s1">&#39;cm_clinical&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span><span class="p">:</span>
+        <span class="n">selected_cm</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cm_clinical&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;cm_clinical&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_cm</span><span class="p">]</span>
+        <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;cm_clinical </span><span class="si">{</span><span class="n">selected_cm</span><span class="si">}</span><span class="s1">, &#39;</span>
+
+    <span class="k">if</span> <span class="s1">&#39;seasonality&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span><span class="p">:</span>
+        <span class="n">selected_season</span> <span class="o">=</span> <span class="s1">&#39;seasonal&#39;</span> <span class="k">if</span> <span class="s1">&#39;seasonal&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;seasonality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="k">else</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;seasonality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;seasonality&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_season</span><span class="p">]</span>
+        <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;seasonality </span><span class="si">{</span><span class="n">selected_season</span><span class="si">}</span><span class="s1">, &#39;</span>
+
+    <span class="k">if</span> <span class="n">filter_target</span><span class="p">:</span>
+      <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">var</span> <span class="ow">in</span> <span class="n">figure_vars</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;simulatedEIR&#39;</span><span class="p">,</span> <span class="s1">&#39;prevalence_2to10&#39;</span><span class="p">,</span> <span class="s1">&#39;output_target&#39;</span><span class="p">])</span> <span class="p">:</span>
+          <span class="n">selected_output</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;output_target&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+          <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;output_target&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_output</span><span class="p">]</span>
+          <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;output_target </span><span class="si">{</span><span class="n">selected_output</span><span class="si">}</span><span class="s1">, &#39;</span>
+
+    <span class="k">if</span> <span class="s1">&#39;modelname&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span> <span class="ow">and</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;modelname&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;modelname needs to be specified in plot if results were combined for more than 1 model&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Remove trailing comma and space if any filtering has been done</span>
+    <span class="k">if</span> <span class="n">txt</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">):</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="n">txt</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">txt</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../plot_helper/" class="btn btn-neutral float-left" title="plot_helper.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../plot_timeseries/" class="btn btn-neutral float-right" title="plot_timeseries.py">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../plot_helper/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../plot_timeseries/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

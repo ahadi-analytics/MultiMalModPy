@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/software/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
     <title>Software - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
@@ -15,18 +15,18 @@
         // Current page data
         var mkdocs_page_name = "Software";
         var mkdocs_page_input_path = "malaria_models\\software.md";
-        var mkdocs_page_url = null;
+        var mkdocs_page_url = "/MultiMalModPy/malaria_models/software/";
       </script>
     
     <!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/rust.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
       <script>hljs.highlightAll();</script> 
 </head>
@@ -55,9 +55,17 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Software</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
-    </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameter-glossary/">Parameter Glossary</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
@@ -71,77 +79,91 @@
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/">Overview</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/create_sim/">Create simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/run_sim/">Run simulations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Transmission calibration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Visualize outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specificities</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="../../api/config_exp.md">config_exp.py</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >utility</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/helper/">helper.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/experiment/">experiment.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_simulation/">helper_simulation.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper/">helper.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_slurm/">helper_slurm.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_calibration/">helper_calibration.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/functions/">functions.R</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_slurm/">helper_slurm.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >EMOD</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD_utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD_analyze_sim/">analyze_sim.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria_utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria_analyze_sim/">analyze_sim.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/interventions/">interventions.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation_utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation_analyze_sim/">analyze_sim.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >plotter</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_helper/">plot_helper.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_helper/">plot_helper.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_agecurves/">plot_agecurves.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_agecurves/">plot_agecurves.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_timeseries/">plot_timeseries.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_timeseries/">plot_timeseries.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_relationship/">plot_relationship.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
                 </li>
     </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">About</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="../../contributors.md">Contact</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
                   </li>
@@ -169,6 +191,7 @@
           <li class="breadcrumb-item">Malaria models</li>
       <li class="breadcrumb-item active">Software</li>
     <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/malaria_models/software.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -176,14 +199,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="malaria-models">Malaria models</h1>
-<h2 id="overview">Overview</h2>
-<p><strong>EMOD</strong> (Epidemiological MODeling software) has been developed and is maintained by
-the <a href="https://www.idmod.org/">Institute for Disease Modeling (IDM)</a>, and also used by
-the <a href="https://www.numalariamodeling.org/">Malaria Modeling Group at Northwestern University</a>.</p>
-<p><strong>OpenMalaria</strong> has been developed and is maintained by
-the <a href="https://www.swisstph.ch/en/about/eph/disease-modelling/">Swiss Tropical and Public Health Institute (Swiss TPH)</a>.</p>
-<p><strong>malariasimulation</strong> has been developed and is maintained by
+                <h1 id="software">Software</h1>
+<p><strong>EMOD</strong> (Epidemiological MODeling software) development is lead by
+the <a href="https://www.idmod.org/">Institute for Disease Modeling (IDM)</a>, with contributions for the malaria model from the <a href="https://www.numalariamodeling.org/">Malaria Modeling Group at Northwestern University</a>.</p>
+<p><strong>OpenMalaria</strong> development is lead by the <a href="https://www.thekids.org.au/our-research/early-environment/infection-and-vaccines/intervention-and-infectious-disease-modelling/">Intervention and Infectious Disease Modelling Team</a>
+at The Kids Research Institute Australia/University of Western Australia, 
+and  <a href="https://www.swisstph.ch/en/about/eph/disease-modelling/">The Disease Modelling Unit</a> of the Swiss Tropical and Public Health Institute (Swiss TPH).</p>
+<p><strong>malariasimulation</strong> development is lead by
 the <a href="https://www.imperial.ac.uk/malaria-modelling/">Imperial College London</a>.</p>
 <p>Table: Overview of model software and infrastructure</p>
 <table>
@@ -192,7 +214,7 @@ the <a href="https://www.imperial.ac.uk/malaria-modelling/">Imperial College Lon
 <th></th>
 <th>EMOD</th>
 <th>OpenMalaria</th>
-<th>Malariasimulation</th>
+<th>malariasimulation</th>
 </tr>
 </thead>
 <tbody>
@@ -200,13 +222,19 @@ the <a href="https://www.imperial.ac.uk/malaria-modelling/">Imperial College Lon
 <td>Documentation</td>
 <td>https://docs.idmod.org/projects/emod-malaria/en/latest/index.html</td>
 <td>https://github.com/SwissTPH/openmalaria/wiki</td>
+<td>https://mrc-ide.github.io/malariasimulation/index.html</td>
+</tr>
+<tr>
+<td>GitHub</td>
+<td>https://github.com/EMOD-Hub/emodpy-malaria</td>
+<td>https://github.com/SwissTPH/openmalaria/</td>
 <td>https://github.com/mrc-ide/malariasimulation</td>
 </tr>
 <tr>
 <td>Accessibility</td>
 <td>Open source</td>
 <td>Open source</td>
-<td>Open source (R package)</td>
+<td>Open source</td>
 </tr>
 <tr>
 <td>Language</td>
@@ -218,7 +246,7 @@ the <a href="https://www.imperial.ac.uk/malaria-modelling/">Imperial College Lon
 <td>First published</td>
 <td>2013</td>
 <td>2006-2008</td>
-<td></td>
+<td>2010</td>
 </tr>
 <tr>
 <td>Framework</td>
@@ -275,13 +303,14 @@ the <a href="https://www.imperial.ac.uk/malaria-modelling/">Imperial College Lon
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../.." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../getting_started/" class="btn btn-neutral float-right" title="Overview">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../structure/" class="btn btn-neutral float-right" title="Model structure">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
@@ -297,11 +326,15 @@ the <a href="https://www.imperial.ac.uk/malaria-modelling/">Imperial College Lon
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
     
       <span><a href="../.." style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../../getting_started/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../structure/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

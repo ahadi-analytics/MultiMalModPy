@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/core_parameters/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Core parameters - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Core parameters";
+        var mkdocs_page_input_path = "malaria_models\\core_parameters.md";
+        var mkdocs_page_url = "/MultiMalModPy/malaria_models/core_parameters/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../software/">Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Core parameters</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#emod">EMOD</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#malariasimulation">malariasimulation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#openmalaria">OpenMalaria</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameter-glossary/">Parameter Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/">Overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/run_sim/">Run simulations</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Visualize outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specificities</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Malaria models</li>
+      <li class="breadcrumb-item active">Core parameters</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/malaria_models/core_parameters.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="default-parameters">Default parameters</h1>
+<p>This page is under construction.</p>
+<p><em>Depending on latest stable calibration used.</em></p>
+<h2 id="emod">EMOD</h2>
+<p><em>config.json</em></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Age_Dependent_Biting_Risk_Type</td>
+<td>SURFACE_AREA_DEPENDENT</td>
+</tr>
+<tr>
+<td>Age_Initialization_Distribution_Type</td>
+<td>DISTRIBUTION_COMPLEX</td>
+</tr>
+<tr>
+<td>Air_Temperature_Filename</td>
+<td>climate/seasonal_air_temperature_daily.bin</td>
+</tr>
+<tr>
+<td>Air_Temperature_Offset</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Anemia_Mortality_Inverse_Width</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Anemia_Mortality_Threshold</td>
+<td>0.654726663</td>
+</tr>
+<tr>
+<td>Anemia_Severe_Inverse_Width</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Anemia_Severe_Threshold</td>
+<td>4.50775825</td>
+</tr>
+<tr>
+<td>Antibody_CSP_Decay_Days</td>
+<td>90</td>
+</tr>
+<tr>
+<td>Antibody_CSP_Killing_Inverse_Width</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td>Antibody_CSP_Killing_Threshold</td>
+<td>20</td>
+</tr>
+<tr>
+<td>Antibody_Capacity_Growth_Rate</td>
+<td>0.09</td>
+</tr>
+<tr>
+<td>Antibody_IRBC_Kill_Rate</td>
+<td>1.596</td>
+</tr>
+<tr>
+<td>Antibody_Memory_Level</td>
+<td>0.34</td>
+</tr>
+<tr>
+<td>Antibody_Stimulation_C50</td>
+<td>30</td>
+</tr>
+<tr>
+<td>Antigen_Switch_Rate</td>
+<td>7.65E-10</td>
+</tr>
+<tr>
+<td>Base_Air_Temperature</td>
+<td>27</td>
+</tr>
+<tr>
+<td>Base_Gametocyte_Fraction_Male</td>
+<td>0.2</td>
+</tr>
+<tr>
+<td>Base_Gametocyte_Mosquito_Survival_Rate</td>
+<td>0.002011099</td>
+</tr>
+<tr>
+<td>Base_Gametocyte_Production_Rate</td>
+<td>0.06150582</td>
+</tr>
+<tr>
+<td>Base_Land_Temperature</td>
+<td>27</td>
+</tr>
+<tr>
+<td>Base_Rainfall</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Base_Relative_Humidity</td>
+<td>0.75</td>
+</tr>
+<tr>
+<td>Base_Sporozoite_Survival_Fraction</td>
+<td>0.25</td>
+</tr>
+<tr>
+<td>Birth_Rate_Dependence</td>
+<td>POPULATION_DEP_RATE</td>
+</tr>
+<tr>
+<td>Birth_Rate_Time_Dependence</td>
+<td>NONE</td>
+</tr>
+<tr>
+<td>Campaign_Filename</td>
+<td>campaign.json</td>
+</tr>
+<tr>
+<td>Climate_Model</td>
+<td>CLIMATE_BY_DATA</td>
+</tr>
+<tr>
+<td>Climate_Update_Resolution</td>
+<td>CLIMATE_UPDATE_DAY</td>
+</tr>
+<tr>
+<td>Clinical_Fever_Threshold_High</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td>Clinical_Fever_Threshold_Low</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>Config_Name</td>
+<td></td>
+</tr>
+<tr>
+<td>Custom_Coordinator_Events</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>Custom_Individual_Events</td>
+<td>['Received_Treatment', 'Received_Severe_Treatment']</td>
+</tr>
+<tr>
+<td>Custom_Node_Events</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>Custom_Reports_Filename</td>
+<td>custom_reports.json</td>
+</tr>
+<tr>
+<td>Cytokine_Gametocyte_Inactivation</td>
+<td>0.01667</td>
+</tr>
+<tr>
+<td>Death_Rate_Dependence</td>
+<td>NONDISEASE_MORTALITY_BY_AGE_AND_GENDER</td>
+</tr>
+<tr>
+<td>Demographics_Filenames</td>
+<td>['demographics.json']</td>
+</tr>
+<tr>
+<td>Egg_Hatch_Delay_Distribution</td>
+<td>NO_DELAY</td>
+</tr>
+<tr>
+<td>Egg_Hatch_Density_Dependence</td>
+<td>NO_DENSITY_DEPENDENCE</td>
+</tr>
+<tr>
+<td>Egg_Saturation_At_Oviposition</td>
+<td>SATURATION_AT_OVIPOSITION</td>
+</tr>
+<tr>
+<td>Enable_Aging</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Enable_Birth</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Enable_Climate_Stochasticity</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Default_Reporting</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Enable_Demographics_Birth</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Demographics_Builtin</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Demographics_Reporting</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Demographics_Risk</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Enable_Disease_Mortality</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Drought_Egg_Hatch_Delay</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Egg_Mortality</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Infectivity_Reservoir</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Initial_Prevalence</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Enable_Interventions</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Enable_Maternal_Antibodies_Transmission</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Enable_Maternal_Infection_Transmission</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Maternal_Protection</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Natural_Mortality</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Enable_Property_Output</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Skipping</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Spatial_Output</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Superinfection</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Enable_Susceptibility_Scaling</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Temperature_Dependent_Egg_Hatching</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Termination_On_Zero_Total_Infectivity</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Vector_Aging</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Vector_Migration</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Enable_Vector_Migration_Local</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Vector_Migration_Regional</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Vector_Mortality</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Enable_Vector_Species_Report</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Enable_Vital_Dynamics</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Erythropoiesis_Anemia_Effect</td>
+<td>3.5</td>
+</tr>
+<tr>
+<td>Falciparum_MSP_Variants</td>
+<td>32</td>
+</tr>
+<tr>
+<td>Falciparum_Nonspecific_Types</td>
+<td>76</td>
+</tr>
+<tr>
+<td>Falciparum_PfEMP1_Variants</td>
+<td>1070</td>
+</tr>
+<tr>
+<td>Fever_IRBC_Kill_Rate</td>
+<td>1.4</td>
+</tr>
+<tr>
+<td>Fever_Mortality_Inverse_Width</td>
+<td>1895.519716</td>
+</tr>
+<tr>
+<td>Fever_Mortality_Threshold</td>
+<td>3.400500856</td>
+</tr>
+<tr>
+<td>Fever_Severe_Inverse_Width</td>
+<td>27.56535804</td>
+</tr>
+<tr>
+<td>Fever_Severe_Threshold</td>
+<td>3.983542997</td>
+</tr>
+<tr>
+<td>Gametocyte_Stage_Survival_Rate</td>
+<td>0.588569307</td>
+</tr>
+<tr>
+<td>Human_Feeding_Mortality</td>
+<td>0.1</td>
+</tr>
+<tr>
+<td>Incubation_Period_Constant</td>
+<td>7</td>
+</tr>
+<tr>
+<td>Incubation_Period_Distribution</td>
+<td>CONSTANT_DISTRIBUTION</td>
+</tr>
+<tr>
+<td>Individual_Sampling_Type</td>
+<td>TRACK_ALL</td>
+</tr>
+<tr>
+<td>Infection_Updates_Per_Timestep</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Infectious_Period_Exponential</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Infectious_Period_Gaussian_Mean</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Infectious_Period_Gaussian_Std_Dev</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Infectious_Period_Kappa</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Infectious_Period_Lambda</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Infectious_Period_Log_Normal_Mu</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Infectious_Period_Log_Normal_Sigma</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Infectious_Period_Max</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Infectious_Period_Mean_1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Infectious_Period_Mean_2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Infectious_Period_Min</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Infectious_Period_Peak_2_Value</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Infectious_Period_Poisson_Mean</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Infectious_Period_Proportion_0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Infectious_Period_Proportion_1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Infectivity_Scale_Type</td>
+<td>CONSTANT_INFECTIVITY</td>
+</tr>
+<tr>
+<td>Innate_Immune_Variation_Type</td>
+<td>NONE</td>
+</tr>
+<tr>
+<td>Insecticides</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>Inset_Chart_Has_IP</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>Inset_Chart_Has_Interventions</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>Inset_Chart_Include_Pregnancies</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Inset_Chart_Reporting_Include_30Day_Avg_Infection_Duration</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Land_Temperature_Filename</td>
+<td>climate/seasonal_air_temperature_daily.bin</td>
+</tr>
+<tr>
+<td>Land_Temperature_Offset</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Larval_Density_Dependence</td>
+<td>UNIFORM_WHEN_OVERPOPULATION</td>
+</tr>
+<tr>
+<td>Load_Balance_Filename</td>
+<td></td>
+</tr>
+<tr>
+<td>MSP1_Merozoite_Kill_Fraction</td>
+<td>0.511735322</td>
+</tr>
+<tr>
+<td>Malaria_Model</td>
+<td>MALARIA_MECHANISTIC_MODEL</td>
+</tr>
+<tr>
+<td>Malaria_Strain_Model</td>
+<td>FALCIPARUM_RANDOM_STRAIN</td>
+</tr>
+<tr>
+<td>Maternal_Antibodies_Type</td>
+<td>SIMPLE_WANING</td>
+</tr>
+<tr>
+<td>Maternal_Antibody_Decay_Rate</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>Maternal_Antibody_Protection</td>
+<td>0.1327</td>
+</tr>
+<tr>
+<td>Max_Individual_Infections</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Max_MSP1_Antibody_Growthrate</td>
+<td>0.045</td>
+</tr>
+<tr>
+<td>Mean_Egg_Hatch_Delay</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Mean_Sporozoites_Per_Bite</td>
+<td>11</td>
+</tr>
+<tr>
+<td>Memory_Usage_Halting_Threshold_Working_Set_MB</td>
+<td>8000</td>
+</tr>
+<tr>
+<td>Memory_Usage_Warning_Threshold_Working_Set_MB</td>
+<td>7000</td>
+</tr>
+<tr>
+<td>Merozoites_Per_Hepatocyte</td>
+<td>15000</td>
+</tr>
+<tr>
+<td>Merozoites_Per_Schizont</td>
+<td>16</td>
+</tr>
+<tr>
+<td>Min_Adapted_Response</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>Min_Days_Between_Clinical_Incidents</td>
+<td>14</td>
+</tr>
+<tr>
+<td>Nonspecific_Antibody_Growth_Rate_Factor</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>Nonspecific_Antigenicity_Factor</td>
+<td>0.415111634</td>
+</tr>
+<tr>
+<td>Number_Basestrains</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Number_Of_Asexual_Cycles_Without_Gametocytes</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Parasite_Mortality_Inverse_Width</td>
+<td>327.5159451</td>
+</tr>
+<tr>
+<td>Parasite_Mortality_Threshold</td>
+<td>851138.0382</td>
+</tr>
+<tr>
+<td>Parasite_Severe_Inverse_Width</td>
+<td>56.5754896</td>
+</tr>
+<tr>
+<td>Parasite_Severe_Threshold</td>
+<td>851031.2877</td>
+</tr>
+<tr>
+<td>Parasite_Switch_Type</td>
+<td>RATE_PER_PARASITE_7VARS</td>
+</tr>
+<tr>
+<td>PfHRP2_Boost_Rate</td>
+<td>0.018</td>
+</tr>
+<tr>
+<td>PfHRP2_Decay_Rate</td>
+<td>0.167</td>
+</tr>
+<tr>
+<td>Population_Density_Infectivity_Correction</td>
+<td>CONSTANT_INFECTIVITY</td>
+</tr>
+<tr>
+<td>Population_Scale_Type</td>
+<td>FIXED_SCALING</td>
+</tr>
+<tr>
+<td>Pyrogenic_Threshold</td>
+<td>15000</td>
+</tr>
+<tr>
+<td>RBC_Destruction_Multiplier</td>
+<td>3.29</td>
+</tr>
+<tr>
+<td>Rainfall_Filename</td>
+<td>climate/seasonal_rainfall_daily.bin</td>
+</tr>
+<tr>
+<td>Rainfall_In_mm_To_Fill_Swamp</td>
+<td>1000</td>
+</tr>
+<tr>
+<td>Rainfall_Scale_Factor</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Random_Number_Generator_Policy</td>
+<td>ONE_PER_CORE</td>
+</tr>
+<tr>
+<td>Random_Number_Generator_Type</td>
+<td>USE_PSEUDO_DES</td>
+</tr>
+<tr>
+<td>Relative_Humidity_Filename</td>
+<td>climate/seasonal_relative_humidity_daily.bin</td>
+</tr>
+<tr>
+<td>Relative_Humidity_Scale_Factor</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Report_Coordinator_Event_Recorder</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Report_Detection_Threshold_Blood_Smear_Gametocytes</td>
+<td>40</td>
+</tr>
+<tr>
+<td>Report_Detection_Threshold_Blood_Smear_Parasites</td>
+<td>40</td>
+</tr>
+<tr>
+<td>Report_Detection_Threshold_Fever</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Report_Detection_Threshold_PCR_Gametocytes</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>Report_Detection_Threshold_PCR_Parasites</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>Report_Detection_Threshold_PfHRP2</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Report_Detection_Threshold_True_Parasite_Density</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Report_Gametocyte_Smear_Sensitivity</td>
+<td>0.1</td>
+</tr>
+<tr>
+<td>Report_Node_Event_Recorder</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Report_Parasite_Smear_Sensitivity</td>
+<td>0.1</td>
+</tr>
+<tr>
+<td>Report_Surveillance_Event_Recorder</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Run_Number</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Semipermanent_Habitat_Decay_Rate</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>Serialized_Population_Reading_Type</td>
+<td>NONE</td>
+</tr>
+<tr>
+<td>Serialized_Population_Writing_Type</td>
+<td>NONE</td>
+</tr>
+<tr>
+<td>Simulation_Duration</td>
+<td>5475</td>
+</tr>
+<tr>
+<td>Simulation_Timestep</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Simulation_Type</td>
+<td>MALARIA_SIM</td>
+</tr>
+<tr>
+<td>Start_Time</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Temporary_Habitat_Decay_Factor</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>Vector_Larval_Rainfall_Mortality</td>
+<td>NONE</td>
+</tr>
+<tr>
+<td>Vector_Migration_Food_Modifier</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Vector_Migration_Habitat_Modifier</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Vector_Migration_Modifier_Equation</td>
+<td>LINEAR</td>
+</tr>
+<tr>
+<td>Vector_Migration_Stay_Put_Modifier</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Vector_Sampling_Type</td>
+<td>VECTOR_COMPARTMENTS_NUMBER</td>
+</tr>
+<tr>
+<td>Wolbachia_Infection_Modification</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Wolbachia_Mortality_Modification</td>
+<td>1</td>
+</tr>
+<tr>
+<td>x_Base_Population</td>
+<td>1</td>
+</tr>
+<tr>
+<td>x_Birth</td>
+<td>1</td>
+</tr>
+<tr>
+<td>x_Other_Mortality</td>
+<td>1</td>
+</tr>
+<tr>
+<td>x_Temporary_Larval_Habitat</td>
+<td>1.3484</td>
+</tr>
+<tr>
+<td>x_Vector_Migration_Local</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="malariasimulation">malariasimulation</h2>
+<p>Malariasimulation core parameters included in parameter.list object
+Default values were determined by using the median across 50 random sets of parameter draws.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter     Symbol</th>
+<th>Parameter Type</th>
+<th>Parameter Description</th>
+<th>Parameter Default</th>
+<th>Parameter Min</th>
+<th>Parameter Max</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>du</td>
+<td>fixed state transitions</td>
+<td>the delay for humans to move from state U to S</td>
+<td>110</td>
+<td>69.5898</td>
+<td>146.062</td>
+</tr>
+<tr>
+<td>ub</td>
+<td>immunity boost grace periods</td>
+<td>period in   which pre-erythrocytic immunity cannot be boosted</td>
+<td>7.2</td>
+<td>1.06229</td>
+<td>25.8764</td>
+</tr>
+<tr>
+<td>uc</td>
+<td>immunity boost grace periods</td>
+<td>period in   which clinical immunity cannot be boosted</td>
+<td>6.06</td>
+<td>1.48711</td>
+<td>13.58</td>
+</tr>
+<tr>
+<td>ud</td>
+<td>immunity boost grace periods</td>
+<td>period in   which immunity to detectability cannot be boosted</td>
+<td>9.44512</td>
+<td>1.05122</td>
+<td>26.5402</td>
+</tr>
+<tr>
+<td>uv</td>
+<td>immunity boost grace periods</td>
+<td>period in   which severe immunity cannot be boosted</td>
+<td>11.4321</td>
+<td>0.0409431</td>
+<td>117.171</td>
+</tr>
+<tr>
+<td>rm</td>
+<td>immunity decay rates</td>
+<td>decay rate for   maternal immunity to clinical disease</td>
+<td>67.6952</td>
+<td>56.0482</td>
+<td>93.1118</td>
+</tr>
+<tr>
+<td>rvm</td>
+<td>immunity decay rates</td>
+<td>decay rate for   maternal immunity to severe disease</td>
+<td>76.8365</td>
+<td>37.8859</td>
+<td>139.677</td>
+</tr>
+<tr>
+<td>ad</td>
+<td>immunity reducing probability of detection</td>
+<td>scale   parameter relating age to immunity</td>
+<td>7993.5</td>
+<td>6554.22</td>
+<td>10094.6</td>
+</tr>
+<tr>
+<td>d1</td>
+<td>immunity reducing probability of detection</td>
+<td>minimum   probability due to immunity</td>
+<td>0.160527</td>
+<td>0.0540254</td>
+<td>0.314522</td>
+</tr>
+<tr>
+<td>fd0</td>
+<td>immunity reducing probability of detection</td>
+<td>time-scale at   which immunity changes with age</td>
+<td>0.007055</td>
+<td>0.00000471</td>
+<td>0.042121</td>
+</tr>
+<tr>
+<td>gammad</td>
+<td>immunity reducing probability of detection</td>
+<td>shape   parameter relating age to immunity</td>
+<td>4.8183</td>
+<td>3.11894</td>
+<td>8.16328</td>
+</tr>
+<tr>
+<td>id0</td>
+<td>immunity reducing probability of detection</td>
+<td>scale   parameter</td>
+<td>1.577533</td>
+<td>0.0567825</td>
+<td>15.44549</td>
+</tr>
+<tr>
+<td>kd</td>
+<td>immunity reducing probability of detection</td>
+<td>shape   parameter</td>
+<td>0.476614</td>
+<td>0.190643</td>
+<td>1.26744</td>
+</tr>
+<tr>
+<td>cd</td>
+<td>infectivity towards mosquitoes</td>
+<td>infectivity of   clinically diseased humans towards mosquitoes</td>
+<td>0.068</td>
+<td>0.0262169</td>
+<td>0.193139</td>
+</tr>
+<tr>
+<td>cu</td>
+<td>infectivity towards mosquitoes</td>
+<td>infectivity of   sub-patent infection</td>
+<td>0.0062</td>
+<td>0.0000708</td>
+<td>0.029169</td>
+</tr>
+<tr>
+<td>gamma1</td>
+<td>infectivity towards mosquitoes</td>
+<td>parameter for infectivity   of asymptomatic humans</td>
+<td>1.82425</td>
+<td>0.123118</td>
+<td>16.5369</td>
+</tr>
+<tr>
+<td>pcm</td>
+<td>mortality parameters</td>
+<td>new-born   clinical immunity relative to mother's</td>
+<td>0.774368</td>
+<td>0.420769</td>
+<td>0.998944</td>
+</tr>
+<tr>
+<td>pvm</td>
+<td>mortality parameters</td>
+<td>new-born   severe immunity relative to mother's</td>
+<td>0.195768</td>
+<td>0.0925639</td>
+<td>0.855581</td>
+</tr>
+<tr>
+<td>ic0</td>
+<td>probability of clinical infection</td>
+<td>scale   parameter</td>
+<td>18.02366</td>
+<td>10.63586</td>
+<td>36.79639</td>
+</tr>
+<tr>
+<td>kc</td>
+<td>probability of clinical infection</td>
+<td>shape   parameter</td>
+<td>2.36949</td>
+<td>1.76969</td>
+<td>3.21076</td>
+</tr>
+<tr>
+<td>phi0</td>
+<td>probability of clinical infection</td>
+<td>maximum   probability due to no immunity</td>
+<td>0.792</td>
+<td>0.352825</td>
+<td>0.986045</td>
+</tr>
+<tr>
+<td>phi1</td>
+<td>probability of clinical infection</td>
+<td>maximum   reduction due to immunity</td>
+<td>0.00074</td>
+<td>0.00000228</td>
+<td>0.003369</td>
+</tr>
+<tr>
+<td>b0</td>
+<td>probability of pre-erythrocytic infection</td>
+<td>maximum   probability due to no immunity</td>
+<td>0.59</td>
+<td>0.349146</td>
+<td>0.989847</td>
+</tr>
+<tr>
+<td>ib0</td>
+<td>probability of pre-erythrocytic infection</td>
+<td>scale   parameter</td>
+<td>43.9</td>
+<td>13.25245</td>
+<td>148.795</td>
+</tr>
+<tr>
+<td>kb</td>
+<td>probability of pre-erythrocytic infection</td>
+<td>shape   parameter</td>
+<td>2.16</td>
+<td>0.908016</td>
+<td>3.44781</td>
+</tr>
+<tr>
+<td>av</td>
+<td>probability of severe infection</td>
+<td>age dependent   modifier</td>
+<td>2493.41</td>
+<td>924.234</td>
+<td>5067.72</td>
+</tr>
+<tr>
+<td>fv0</td>
+<td>probability of severe infection</td>
+<td>age dependent   modifier</td>
+<td>0.141195</td>
+<td>0.0043904</td>
+<td>0.994957</td>
+</tr>
+<tr>
+<td>gammav</td>
+<td>probability of severe infection</td>
+<td>age dependent   modifier</td>
+<td>2.91282</td>
+<td>0.272665</td>
+<td>5.95187</td>
+</tr>
+<tr>
+<td>iv0</td>
+<td>probability of severe infection</td>
+<td>scale   parameter</td>
+<td>1.09629</td>
+<td>0.3073822</td>
+<td>3.734202</td>
+</tr>
+<tr>
+<td>kv</td>
+<td>probability of severe infection</td>
+<td>shape   parameter</td>
+<td>2.00048</td>
+<td>1.27469</td>
+<td>3.17738</td>
+</tr>
+<tr>
+<td>theta0</td>
+<td>probability of severe infection</td>
+<td>maximum   probability due to no immunity</td>
+<td>0.074989</td>
+<td>0.0085529</td>
+<td>0.204342</td>
+</tr>
+<tr>
+<td>theta1</td>
+<td>probability of severe infection</td>
+<td>maximum   reduction due to immunity</td>
+<td>0.000119</td>
+<td>0.0000077</td>
+<td>0.000846</td>
+</tr>
+</tbody>
+</table>
+<h2 id="openmalaria">OpenMalaria</h2>
+<p>Table layout adapted from supplementary file
+from <a href="https://www.nature.com/articles/s41467-021-27486-z">Reiker et al 2021</a></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Meaning</th>
+<th>Unit/ dimension</th>
+<th>Estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>'-ln(1-Sinf)'</td>
+<td>Lower limit of success probability of inoculations</td>
+<td>Proportion</td>
+<td>0.050736</td>
+</tr>
+<tr>
+<td>Estar</td>
+<td></td>
+<td>Inoculations/personnight</td>
+<td>0.03247</td>
+</tr>
+<tr>
+<td>Simm</td>
+<td>Lower limit of success probability of inoculations in  immune individuals</td>
+<td>Proportion</td>
+<td>0.092699</td>
+</tr>
+<tr>
+<td>Xstar_p</td>
+<td>Critical value of cumulative number of entomologic  inoculations</td>
+<td>Inoculations</td>
+<td>4158.408</td>
+</tr>
+<tr>
+<td>gamma_p</td>
+<td>Steepness of relationship between success of inoculation</td>
+<td>Dimensionless constant</td>
+<td>0.607779</td>
+</tr>
+<tr>
+<td>sigma2i</td>
+<td>Variation between hosts on parasite densities (variance of log-normal distribution)</td>
+<td></td>
+<td>8.731388</td>
+</tr>
+<tr>
+<td>CumulativeYstar</td>
+<td>Critical value  of cumulative number of parasite days</td>
+<td></td>
+<td>3.42E+09</td>
+</tr>
+<tr>
+<td>CumulativeHstar</td>
+<td>Critical value   of cumulative number of infections</td>
+<td>Infections</td>
+<td>79.63425</td>
+</tr>
+<tr>
+<td>'-ln(1-alpha_m)'</td>
+<td>Maternal protection at birth</td>
+<td>Dimensionless</td>
+<td>5.459868</td>
+</tr>
+<tr>
+<td>decay_m</td>
+<td>Decay of maternal protection</td>
+<td>Per year</td>
+<td>5.273989</td>
+</tr>
+<tr>
+<td>sigma2_0</td>
+<td>Fixed variance component for densities</td>
+<td></td>
+<td>0.963133</td>
+</tr>
+<tr>
+<td>Xstar_v</td>
+<td>Critical value of cumulative number of infections for variance in parasite densities</td>
+<td>Infections</td>
+<td>0.889578</td>
+</tr>
+<tr>
+<td>Ystar2</td>
+<td></td>
+<td>Parasites/microliter</td>
+<td>26.2003</td>
+</tr>
+<tr>
+<td>alpha</td>
+<td>Factor determining increase in</td>
+<td></td>
+<td>147000.4</td>
+</tr>
+<tr>
+<td>Density bias (non Garki)</td>
+<td>Density bias (non Garki)</td>
+<td>Dimensionless</td>
+<td>0.177379</td>
+</tr>
+<tr>
+<td>sigma2</td>
+<td>Mass action parameter</td>
+<td>Dimensionless</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>log oddsr CF community</td>
+<td>Case fatality for severe episodes in the community compared to hospital</td>
+<td>Log odds</td>
+<td>1.86078</td>
+</tr>
+<tr>
+<td>Indirect risk cofactor</td>
+<td>Co-morbidity intercept relevant to indirect mortality</td>
+<td>Proportion</td>
+<td>0.004234</td>
+</tr>
+<tr>
+<td>Non-malaria infant mortality</td>
+<td>Non-malaria intercept for infant mortality</td>
+<td>Deaths / 1000 live births</td>
+<td>61.75034</td>
+</tr>
+<tr>
+<td>Density bias  (Garki)</td>
+<td>Density bias (Garki)</td>
+<td>Dimensionless</td>
+<td>4.796108</td>
+</tr>
+<tr>
+<td>Severe Malaria Threshhold</td>
+<td>Parasitaemia threshold for severe episodes type Y/</td>
+<td></td>
+<td>14753690</td>
+</tr>
+<tr>
+<td>Immunity Penalty</td>
+<td>Immune penalty</td>
+<td></td>
+<td>1</td>
+</tr>
+<tr>
+<td>Immune effector decay</td>
+<td>Immune effector decay</td>
+<td></td>
+<td>0</td>
+</tr>
+<tr>
+<td>comorbidity intercept</td>
+<td>Prevalence of comorbidity/susceptibility at birth relevant to severe episodes</td>
+<td>proportion</td>
+<td>0.006827</td>
+</tr>
+<tr>
+<td>Ystar half life</td>
+<td></td>
+<td>Years</td>
+<td>1.383771</td>
+</tr>
+<tr>
+<td>Ystar1</td>
+<td></td>
+<td></td>
+<td>1177.043</td>
+</tr>
+<tr>
+<td>Asexual immunity decay</td>
+<td></td>
+<td></td>
+<td>0</td>
+</tr>
+<tr>
+<td>Ystar0</td>
+<td></td>
+<td></td>
+<td>68.86192</td>
+</tr>
+<tr>
+<td>Idete multiplier</td>
+<td></td>
+<td>Dimensionless</td>
+<td>2.797524</td>
+</tr>
+<tr>
+<td>critical age for comorbidity</td>
+<td></td>
+<td>Years</td>
+<td>0.152848</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../interventions/" class="btn btn-neutral float-left" title="Interventions"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../parameter-glossary/" class="btn btn-neutral float-right" title="Parameter Glossary">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../interventions/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../parameter-glossary/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

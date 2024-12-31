@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/run_sim/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
     <title>Run simulations - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
@@ -15,18 +15,18 @@
         // Current page data
         var mkdocs_page_name = "Run simulations";
         var mkdocs_page_input_path = "guide\\run_sim.md";
-        var mkdocs_page_url = null;
+        var mkdocs_page_url = "/MultiMalModPy/guide/run_sim/";
       </script>
     
     <!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/rust.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
       <script>hljs.highlightAll();</script> 
 </head>
@@ -55,6 +55,16 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/software/">Software</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/parameter-glossary/">Parameter Glossary</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul>
@@ -67,85 +77,99 @@
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../">Overview</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../create_sim/">Create simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Run simulations</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#quick-launch">Quick launch</a>
+    <li class="toctree-l2"><a class="reference internal" href="#pre-defined-simulation-options">Pre-defined simulation options</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#run-modes">Run modes</a>
+    <li class="toctree-l2"><a class="reference internal" href="#change-input-parameters">Change input parameters</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#emod-serialization">EMOD serialization</a>
+    <li class="toctree-l2"><a class="reference internal" href="#launch-simulations">Launch simulations</a>
     </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../postprocess/">Postprocess outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Transmission calibration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../plots/">Visualize outputs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specificities</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="../../api/config_exp.md">config_exp.py</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >utility</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/helper/">helper.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/experiment/">experiment.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_simulation/">helper_simulation.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper/">helper.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/helper_slurm/">helper_slurm.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_calibration/">helper_calibration.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/functions/">functions.R</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_slurm/">helper_slurm.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >EMOD</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD_utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD_analyze_sim/">analyze_sim.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria_utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria_analyze_sim/">analyze_sim.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/interventions/">interventions.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation_utils/">utils.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation_analyze_sim/">analyze_sim.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
                 </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" >plotter</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_helper/">plot_helper.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_helper/">plot_helper.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_agecurves/">plot_agecurves.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_agecurves/">plot_agecurves.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_timeseries/">plot_timeseries.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_timeseries/">plot_timeseries.py</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../api/plot_relationship/">plot_relationship.py</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
                 </li>
     </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">About</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="../../contributors.md">Contact</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
                   </li>
@@ -173,6 +197,7 @@
           <li class="breadcrumb-item">User Guide</li>
       <li class="breadcrumb-item active">Run simulations</li>
     <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/run_sim.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -181,16 +206,23 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="run-simulations">Run simulations</h1>
-<h2 id="quick-launch">Quick launch</h2>
+<h2 id="pre-defined-simulation-options">Pre-defined simulation options</h2>
+<p>Coming soon...</p>
+<h2 id="change-input-parameters">Change input parameters</h2>
+<h2 id="launch-simulations">Launch simulations</h2>
 <ul>
-<li>Options to launch as simulation experimenr</li>
-<li>via python script</li>
-<li>via shell script (check which submission lines are uncommented)<ul>
-<li><code>run_launch_simulations.sh</code></li>
+<li>In terminal navigate to repository  <code>cd ~/model-characterization</code></li>
+<li>Run python script that defines the simulation i.e. <code>python launch_sim.py</code> for a test run using defaults specified in
+  the script and <code>parse_launch_args</code> (see helper.py)</li>
+<li>Check simulations via <code>squeue -u &lt;username&gt;</code> (if on slurm)</li>
+<li>Wait for simulations to finish after which analyzer scripts and default plots will automatically start running</li>
 </ul>
-</li>
-<li>via terminal </li>
-</ul>
+<p><strong>Submission examples</strong>
+- Options to launch as simulation experimenr
+  - via python script
+  - via shell script (check which submission lines are uncommented)
+    - <code>run_launch_simulations.sh</code>
+  - via terminal </p>
 <p>Testrun 
   - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria --test</code></p>
 <p>Baseline run (accepting defaults, or changed defaults in python file) 
@@ -199,79 +231,11 @@
 <p>Custom simulation experiments (i.e. cc_step)
   - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria --intervention cc_step --test --emodstep burnin</code>
   - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test</code>  </p>
-<h2 id="run-modes">Run modes</h2>
-<p>Coming soon...</p>
-<h2 id="emod-serialization">EMOD serialization</h2>
-<p>One functional difference between EMOD and other malaria models is the process of serialization (to run multiple
-simulations on the same population in series).</p>
-<ul>
-<li>Serialization allows the user to run a simulation, save their status and results at a specified point in time, and
-  start another simulation (i.e. with modified campaigns) that continues from the point saved.</li>
-<li>In EMOD, this is often applied to first run the  <code>burnin</code> the long initial simulation run, during which population
-  immunity is established, followed by the <code>pickup</code> which defines the often typical scenario explorations.</li>
-<li>Hence, to avoid running the long initial period everytime, the user can serialize the population at the end of the
-  burnin and then run shorter simulations on that population with varying campaign parameters (that do not affect
-  population characteristics).</li>
-</ul>
-<p>The following parameters need editing in the <code>launch_sim.py</code> or in the arguments passed on as defined
-in <code>helper.py/launch_parse_args</code>:</p>
-<ul>
-<li>
-<p>To run a burnin simulation :</p>
-<ul>
-<li>Set <code>emod_step = ‘burnin’</code> .</li>
-<li>Set <code>burnin = &lt;num of years&gt;</code> to define duration of the burnin period (which is also used in OpenMalaria, however
-  runs much quicker than in EMOD).</li>
-<li>The experiment ID for this burnin simulation will be needed when running the pickup simulation (and is saved
-  automatically in <exp_name> folder, and also printed to console).</li>
-</ul>
-</li>
-<li>
-<p>To run a pickup simulation(s):</p>
-<ul>
-<li>In latest version of the framework, submitting a burnin simulation will automatically create and run a
-  corresponding pickup simulation via  <code>launch_pickup.sh</code></li>
-<li>In the files, <code>emod_step</code> is set to <code>pickup</code> and <code>emod_serialized_id</code> automatically to <code>&lt;burnin experiment id&gt;</code></li>
-<li>Note, pickup simulations cannot run without an attached experiment id (for EMOD).</li>
-<li>The <code>launch_pickup.sh</code> includes the following lines after the required SBATCH specifications:</li>
-<li>
-<p>```
-     ml singularity/3.8.1 
-     ml python/3.8.4
-     source /projects/b1139/environments/emodpy_om/bin/activate</p>
-<p>cd /projects/b1139/emod-om/model-characterization
- python launch_sim.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name> --emodstep pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria</p>
-<p>#or
- python launch_simulations.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name> --emodstep pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria
- ```</p>
-</li>
-</ul>
-</li>
-<li>
-<p>To run a customized (new) pickup simulation(s):</p>
-<ul>
-<li>Use the generated <code>launch_pickup.sh</code> as a template:</li>
-<li>Modify the <code>expname</code> to specify a new folder to store the simulation files and change <code>emodstep</code> to <code>new_pickup</code></li>
-<li>Edit the <code>launch_sim.py</code> as required, or alternatively use <code>launch_simulations.py</code> with the corresponding csv</li>
-<li>Use launch_sim.py 
-     <code>python launch_sim.py -d &lt;job_directory&gt;/&lt;exp_name&gt;_burnin80 --suite &lt;SUITE_Name&gt; --expname &lt;exp_name_new&gt; --emodstep new_pickup --serializedid &lt;emod_serialized_id&gt; --models EMOD MalSim OpenMalaria</code></li>
-<li>or launch_sim.py  with specified csv
-     <code>python launch_sim.py -d &lt;job_directory&gt;/&lt;exp_name&gt;_burnin80 --suite &lt;SUITE_Name&gt; --expname &lt;exp_name_new&gt; --emodstep new_pickup --serializedid &lt;emod_serialized_id&gt; --models EMOD MalSim OpenMalaria --csv baseline_eirsweep_noCM --rownum 0</code></li>
-<li>In the current version of the framework the new simulation experiments has to remain within the same directory (Suite) as the simulation experiment 'picked up from'.</li>
-</ul>
-</li>
-<li>
-<p>To run a burnin and pickup simulation (without serializing, as selected as default for testing):</p>
-<ul>
-<li>Set <code>emod_step = None</code>, or if running from terminal, do not specify emod_step, which will default to <code>None</code></li>
-</ul>
-</li>
-</ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../create_sim/" class="btn btn-neutral float-left" title="Create simulations"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../parameters/" class="btn btn-neutral float-left" title="Input parameters"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../postprocess/" class="btn btn-neutral float-right" title="Postprocess outputs">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -279,6 +243,7 @@ in <code>helper.py/launch_parse_args</code>:</p>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
@@ -294,8 +259,12 @@ in <code>helper.py/launch_parse_args</code>:</p>
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
     
-      <span><a href="../create_sim/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+      <span><a href="../parameters/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../postprocess/" style="color: #fcfcfc">Next &raquo;</a></span>
