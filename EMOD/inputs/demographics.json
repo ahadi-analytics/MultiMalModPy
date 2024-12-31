@@ -1,0 +1,132 @@
+{
+   "Defaults": {
+      "IndividualAttributes": {
+         "AgeDistribution": {
+            "DistributionValues": [
+               0,
+               0.03474715,
+               0.162347553,
+               0.307562692,
+               0.435119236,
+               0.543482473,
+               0.627415598,
+               0.697429812,
+               0.755435689,
+               0.806457055,
+               0.848282673,
+               0.881676767,
+               0.911537891,
+               0.937095556,
+               0.960423191,
+               0.978163216,
+               0.988248471,
+               0.995665205,
+               0.998383839,
+               0.999999986
+            ],
+            "ResultScaleFactor": 1,
+            "ResultValues": [
+               0,
+               365,
+               1825,
+               3650,
+               5475,
+               7300,
+               9125,
+               10950,
+               12775,
+               14600,
+               16425,
+               18250,
+               20075,
+               21900,
+               23725,
+               25550,
+               27375,
+               29200,
+               31025,
+               32850
+            ]
+         },
+         "AgeDistribution1": 0,
+         "AgeDistribution2": 18250,
+         "AgeDistributionFlag": 1,
+         "InitialPrevalence": 0,
+         "MortalityDistribution": {
+            "AxisNames": [
+               "gender",
+               "age"
+            ],
+            "AxisScaleFactors": [
+               1,
+               1
+            ],
+            "AxisUnits": [
+               "male=0,female=1",
+               "years"
+            ],
+            "PopulationGroups": [
+               [
+                  0,
+                  1
+               ],
+               [
+                  0, 
+                  36499.5,
+                  36499.6
+               ]
+            ],
+            "ResultScaleFactor": 1,
+            "ResultUnits": "daily probability of dying",
+            "ResultValues": [
+               [
+                  9.575800930934081e-05, 
+                  9.575800930934081e-05, 
+                  0.99
+               ],
+               [
+                  9.575800930934081e-05, 
+                  9.575800930934081e-05, 
+                  0.99
+               ]
+            ]
+         },
+         "PrevalenceDist_Description": "Uniform draw from 0.2 to 0.2",
+         "PrevalenceDistribution1": 0.2,
+         "PrevalenceDistribution2": 0.2,
+         "PrevalenceDistributionFlag": 1,
+         "PrevalenceDistribution_Description": "Constant Initial Prevalence (0.2)",
+         "RiskDist_Description": "LogNormal distributed risk",
+         "RiskDistribution1": 0.0,
+         "RiskDistribution2": 1.6,
+         "RiskDistributionFlag": 5
+      },
+      "IndividualProperties": [],
+      "NodeAttributes": {
+         "Airport": 1,
+         "Altitude": 0,
+         "BirthRate": 0.09575342465753425,
+         "Region": 1,
+         "Seaport": 1
+      }
+   },
+   "Metadata": {
+      "Author": "rer4177",
+      "DateCreated": "11/04/2024",
+      "IdReference": "Gridded world grump2.5arcmin",
+      "NodeCount": 1,
+      "Tool": "emod-api"
+   },
+   "Nodes": [
+      {
+         "IndividualAttributes": {},
+         "NodeAttributes": {
+            "FacilityName": "Example_Site",
+            "InitialPopulation": 1000,
+            "Latitude": 1,
+            "Longitude": 2
+         },
+         "NodeID": 1
+      }
+   ]
+}

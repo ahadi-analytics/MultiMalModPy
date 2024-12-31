@@ -1,0 +1,15 @@
+diff a/OpenMalaria/utils.py b/OpenMalaria/utils.py	(rejected hunks)
+@@ -1,12 +1,13 @@
+  from utility.helper import *
+  import shutil
+  
+ -# from OpenMalaria.functions.interventions import * # Currently not supported
+ -from OpenMalaria.functions.convert_access import convert_access_lookup
+ +
+ +# from functions.interventions import * # Currently not supported
+ +
+  
++ 
+  def create_scenarios(exp, scen_df):
+      """
+      Creates OpenMalaria simulation scenarios based on a dataframe containing scenario parameters.

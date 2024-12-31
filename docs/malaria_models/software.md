@@ -1,31 +1,31 @@
+# Software
 
-# Malaria models 
 
-## Overview
-**EMOD** (Epidemiological MODeling software) has been developed and is maintained by
-the [Institute for Disease Modeling (IDM)](https://www.idmod.org/), and also used by
-the [Malaria Modeling Group at Northwestern University](https://www.numalariamodeling.org/).
+**EMOD** (Epidemiological MODeling software) development is lead by
+the [Institute for Disease Modeling (IDM)](https://www.idmod.org/), with contributions for the malaria model from the [Malaria Modeling Group at Northwestern University](https://www.numalariamodeling.org/).
 
-**OpenMalaria** has been developed and is maintained by
-the [Swiss Tropical and Public Health Institute (Swiss TPH)](https://www.swisstph.ch/en/about/eph/disease-modelling/).
+**OpenMalaria** development is lead by the [Intervention and Infectious Disease Modelling Team](https://www.thekids.org.au/our-research/early-environment/infection-and-vaccines/intervention-and-infectious-disease-modelling/)
+at The Kids Research Institute Australia/University of Western Australia, 
+and  [The Disease Modelling Unit](https://www.swisstph.ch/en/about/eph/disease-modelling/) of the Swiss Tropical and Public Health Institute (Swiss TPH).
 
-**malariasimulation** has been developed and is maintained by
+**malariasimulation** development is lead by
 the [Imperial College London](https://www.imperial.ac.uk/malaria-modelling/).
 
 Table: Overview of model software and infrastructure
 
-|                   | EMOD                                                                                                   | OpenMalaria                                                                         | Malariasimulation                                                                          |
-|-------------------|--------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
-| Documentation     | https://docs.idmod.org/projects/emod-malaria/en/latest/index.html                                      | https://github.com/SwissTPH/openmalaria/wiki                                        | https://github.com/mrc-ide/malariasimulation                                               |
-| Accessibility     | Open source                                                                                            | Open source                                                                         | Open source (R package)                                                                    |
-| Language          | C++                                                                                                    | C++                                                                                 | C++                                                                                        |
-| First published   | 2013                                                                                                   | 2006-2008                                                                           |                                                                                            |
-| Framework         | Python (emodpy, idm-tools)                                                                             | Python or R, varying by user group                                                  | R >= 4.0.0                                                                                 |                       
-| OS                | Windows, Linux                                                                                         | Windows, Linux, (Mac OS)                                                            | Windows, Linux                                                                             |            
-| Default timesteps | 1 day                                                                                                  | 5  day                                                                              | 1 day                                                                                      |                                                           
-| Input file type   | json                                                                                                   | XML                                                                                 | R script                                                                                   |                                                       
-| Output file type  | json                                                                                                   | txt                                                                                 | R script                                                                                   |                                          
-| N input files     | 5+                                                                                                     | 1                                                                                   | 1                                                                                          |  
-| N output files    | custom                                                                                                 | 2                                                                                   | 1                                                                                          |   
-| Glossary          | https://docs.idmod.org/projects/emod-malaria/en/latest/glossary.html                                   | https://github.com/SwissTPH/openmalaria/wiki/Terminology                            | `help(malariasimulation)`, https://mrc-ide.github.io/malariasimulation/articles/Model.html |  
+|                   | EMOD                                                                 | OpenMalaria                                              | malariasimulation                                                                          |
+|-------------------|----------------------------------------------------------------------|----------------------------------------------------------|--------------------------------------------------------------------------------------------|
+| Documentation     | https://docs.idmod.org/projects/emod-malaria/en/latest/index.html    | https://github.com/SwissTPH/openmalaria/wiki             | https://mrc-ide.github.io/malariasimulation/index.html                                     |
+| GitHub            | https://github.com/EMOD-Hub/emodpy-malaria                           | https://github.com/SwissTPH/openmalaria/                 | https://github.com/mrc-ide/malariasimulation                                               |
+| Accessibility     | Open source                                                          | Open source                                              | Open source                                                                                |
+| Language          | C++                                                                  | C++                                                      | C++                                                                                        |
+| First published   | 2013                                                                 | 2006-2008                                                | 2010                                                                                       |
+| Framework         | Python (emodpy, idm-tools)                                           | Python or R, varying by user group                       | R >= 4.0.0                                                                                 |                       
+| OS                | Windows, Linux                                                       | Windows, Linux, (Mac OS)                                 | Windows, Linux                                                                             |            
+| Default timesteps | 1 day                                                                | 5  day                                                   | 1 day                                                                                      |                                                           
+| Input file type   | json                                                                 | XML                                                      | R script                                                                                   |                                                       
+| Output file type  | json                                                                 | txt                                                      | R script                                                                                   |                                          
+| N input files     | 5+                                                                   | 1                                                        | 1                                                                                          |  
+| N output files    | custom                                                               | 2                                                        | 1                                                                                          |   
+| Glossary          | https://docs.idmod.org/projects/emod-malaria/en/latest/glossary.html | https://github.com/SwissTPH/openmalaria/wiki/Terminology | `help(malariasimulation)`, https://mrc-ide.github.io/malariasimulation/articles/Model.html |  
 

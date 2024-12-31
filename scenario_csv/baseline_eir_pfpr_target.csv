@@ -1,0 +1,11 @@
+﻿rownum,exp_short,exp_name,pop_size,burnin,monitoring,num_seeds,entomology_mode,seasonality,output_type,output_target,cm_clinical
+0,base_pfpr_test,base_pfpr_test_dynamic_seasonal,1000,5,5,3,dynamic,seasonal,prevalence_2to10,"0.1,0.25,0.5","0, 0.45"
+1,base_pfpr_1,base_pfpr_dynamic_seasonal,10000,80,10,20,dynamic,seasonal,prevalence_2to10,"0.05,0.1,0.25,0.4,0.5,0.6","0, 0.45"
+2,base_pfpr_2,base_pfpr_dynamic_perennial,10000,80,10,20,dynamic,perennial,prevalence_2to10,"0.05,0.1,0.25,0.4,0.5,0.6","0, 0.45"
+3,base_pfpr_3,base_pfpr_forced_seasonal,10000,80,10,20,forced,seasonal,prevalence_2to10,"0.05,0.1,0.25,0.4,0.5,0.6","0, 0.45"
+4,base_pfpr_4,base_pfpr_forced_perennial,10000,80,10,20,forced,perennial,prevalence_2to10,"0.05,0.1,0.25,0.4,0.5,0.6","0, 0.45"
+5,base_eir_test,base_eir_test_dynamic_seasonal,1000,5,5,3,dynamic,seasonal,eir,"1,5,10,20,50","0, 0.45"
+6,base_eir_1,base_eir_dynamic_seasonal,10000,80,10,20,dynamic,seasonal,eir,"1,5,10,20,35,50","0, 0.45"
+7,base_eir_2,base_eir_dynamic_perennial,10000,80,10,20,dynamic,perennial,eir,"1,5,10,20,35,50","0, 0.45"
+8,base_eir_3,base_eir_forced_seasonal,10000,80,10,20,forced,seasonal,eir,"1,5,10,20,35,50","0, 0.45"
+9,base_eir_4,base_eir_forced_perennial,10000,80,10,20,forced,perennial,eir,"1,5,10,20,35,50","0, 0.45"

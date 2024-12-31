@@ -1,10 +1,12 @@
 # Calibration
 
 
+This page is currently under construction.
+
+## Transmission target
 
 The `target_calibration`  directory includes `interpolation_data.csv` for each of the models included in the framework.
-The `interpolation_data.csv` data is generated via the transmission calibration, when running via `calib_run` further
-described in the User Guide under [Transmission calibration](../guide/calibration.md).
+The `interpolation_data.csv` data is generated via the transmission calibration, when running via `calib_run` .
 
 The table below summarizes the results from an epidemiological simulation model,
 detailing various metrics related to malaria incidence and prevalence on the example for EMOD.
@@ -37,6 +39,12 @@ detailing various metrics related to malaria incidence and prevalence on the exa
 
 
 
+
+## Seasonality
+
+
+
+![seasonality.png](../img/seasonality_calib.png)
 
 
 

@@ -1,47 +1,67 @@
 site_name: MultiMalModPy
+docs_dir: 'docs'
+site_url: https://ahadi-analytics.github.io/MultiMalModPy/
+repo_url: https://github.com/ahadi-analytics/MultiMalModPy
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a>
+
+
 plugins:
   - search
+  - autorefs
   - mkdocstrings
 nav:
   - Home: index.md
   - Malaria models:
     - Software: malaria_models/software.md
-    #- Structure: malaria_models/structure.md
-    #- Parameters: malaria_models/parameters.md
+    - Model structure: malaria_models/structure.md
+    - Documentation & Source Code: malaria_models/documentation-and-sourcecode.md
+    - Interventions: malaria_models/interventions.md
+    - Core parameters: malaria_models/core_parameters.md
+    - Parameter Glossary: malaria_models/parameter-glossary.md
   - Getting started:
     - Overview: getting_started/index.md
     - Installation: getting_started/installation.md
     - Configuration: getting_started/configuration.md
   - User Guide:
+    - Overview: guide/index.md
     - Input parameters: guide/parameters.md
-    - Create simulations: guide/create_sim.md
     - Run simulations: guide/run_sim.md
     - Postprocess outputs: guide/postprocess.md
-    - Transmission calibration: guide/calibration.md
+    - Visualize outputs: guide/plots.md
+    - Calibration: guide/calibration.md
+    - Model specificities: guide/model_specificities.md
   - API:
-    - config_exp.py: api/config_exp.md
     - manifest.py: api/manifest.md
     - launch_sim.py: api/launch_sim.md
     - utility:
-      #- api/experiment.md
-      - api/helper.md
-      - api/helper_simulation.md
-      - api/helper_slurm.md
-      - api/functions.md
+      - api/utility/experiment.md
+      - api/utility/helper.md
+      - api/utility/helper_calibration.md
+      - api/utility/helper_interventions.md
+      - api/utility/helper_simulation.md
+      - api/utility/helper_slurm.md
     - EMOD:
-      - api/EMOD_utils.md
-      - api/EMOD_analyze_sim.md
+      - api/EMOD/utils.md
+      - api/EMOD/analyze_sim.md
+      #- api/EMOD/functions/forcedEIR.py
+      - api/EMOD/functions/interventions.md
+      - api/EMOD/functions/EMOD_functions.md
+      #- api/EMOD/functions/forcedEIR.py
+      #- api/EMOD/functions/reporters.py
     - OpenMalaria:
-      - api/OpenMalaria_utils.md
-      - api/OpenMalaria_analyze_sim.md
+      - api/OpenMalaria/utils.md
+      - api/OpenMalaria/analyze_sim.md
+      - api/OpenMalaria/functions/measures.md
+      - api/OpenMalaria/functions/interventions.md
     - malariasimulation:
-      - api/malariasimulation_utils.md
-      - api/malariasimulation_analyze_sim.md
+      - api/malariasimulation/utils.md
+      - api/malariasimulation/analyze_sim.md
     - plotter:
-      - api/plot_helper.md
-      - api/plot_agecurves.md
-      - api/plot_timeseries.md
-      - api/plot_relationship.md
+      - api/plotter/plot_helper.md
+      - api/plotter/plot_agecurves.md
+      - api/plotter/plot_timeseries.md
+      - api/plotter/plot_relationship.md
   - About:
     - Contact:  about/contributors.md
     - References: about/citation.md
@@ -51,15 +71,24 @@ nav:
 theme:
   name: readthedocs
   features:
-    - versioning
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.action.edit
+    - content.code.copy
   highlightjs: true
   hljs_languages:
-    - yaml
-    - rust
+    - json
     - python
     - r
     - shell
+    - bash
     - xml
+  icon:
+    edit: material/pencil
+    view: material/eye
   locale: en
   favicon: favicon.ico
   logo: assets/images/logo.png
+  extra_css:
+    - stylesheets/extra.css
