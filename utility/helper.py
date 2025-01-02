@@ -10,11 +10,40 @@ from scipy.interpolate import interp1d
 # from idmtools.entities.experiment import Experiment
 from utility.helper_slurm import *
 from utility.helper_simulation import *
-from utility.helper_calibration import get_calib_range, output_target_to_xTemp, output_target_to_eir
+from utility.helper_calibration import output_target_to_xTemp, output_target_to_eir
 from utility.helper_interventions import intervention_params_to_check
 
 
 def parse_launch_args():
+    """
+    Parses command-line arguments for launching a simulation experiment.
+
+    This function defines and parses several command-line arguments required for running a simulation experiment.
+    The arguments specify parameters such as the job directory, suite name, experiment name, model to run, user directory,
+    interventions, run mode, and output type. The parsed arguments are returned as a Namespace object.
+
+    Args:
+        None
+
+    Returns:
+        argparse.Namespace: An object containing the parsed command-line arguments.
+
+    Command-Line Arguments:
+        -d, --directory (str): Job directory for burnin; ignored if no EMOD burnin is provided.
+        --suite (str): Name of the suite; default is the current date followed by "_test".
+        --expname (str): Name of the experiment; default includes the current time.
+        --emodstep (str): The step for EMOD, such as 'burnin', 'pickup', or 'new_pickup'.
+        --serializedid (str): Serialized ID for EMOD, if applicable.
+        --models (list): List of models to run, default includes 'EMOD', 'malariasimulation', and 'OpenMalaria'.
+        --user (str): Subdirectory for simulations, based on the current user or 'b1139' for NUCLUSTER.
+        --csv (str): Name of the scenario CSV file.
+        -i, --interventions (list): Interventions to run; options include 'cc_step'.
+        --rownum (int): Row number from the specified scenario CSV.
+        -r, --run_mode (str): Type of run (e.g., 'test', 'calibrun', 'productionrun').
+        --emod_calib_params (bool): Flag indicating whether to include calibration parameters for EMOD.
+        --mpv (bool): Flag for running malariasimulation with parameter variation (default is True).
+        --output_type (str): Specifies whether to align transmission by EIR or by prevalence_2to10.
+    """
     parser = argparse.ArgumentParser(description="Description of your script.")
 
     # Define command-line arguments with default values
@@ -76,8 +105,8 @@ def parse_launch_args():
     parser.add_argument('--output_type',
                         type=str,
                         default='prevalence_2to10',
-                        choices=['prevalence_2to10', 'eir'],  # clinical_incidenceU5 #
-                        help='Specify whether to align transmission in each model by EIR or by prevalence_2to10')  # , or by clinical incidence
+                        choices=['prevalence_2to10', 'eir','clinical_incidence_U5'],
+                        help='Specify whether to align transmission in each model by EIR, by prevalence_2to10 or by clinical incidence U5')
     return parser.parse_args()
 
 
@@ -189,6 +218,18 @@ def make_dirs(exp, overwrite=False):
 
 
 def exp_obj_to_csv(file_path):
+    """
+    Converts the experiment object (stored as a pickle file) to a CSV file.
+
+    This function reads a pickle file containing an experiment object (`exp.obj`), and then converts it to a CSV
+    file format (`exp_obj.csv`). The function supports two data types: dictionaries and lists.
+    - If the data is a dictionary, it writes each key-value pair to the CSV with columns "Key" and "Value".
+    - If the data is a list, it writes each item in the list as a row in the CSV (assuming each item is a list or tuple).
+
+    Args:
+        file_path (str): Path to the directory where the pickle file (`exp.obj`) is located and where the CSV file will be saved.
+
+    """
     # Load the pickle object
     with open(os.path.join(file_path, 'exp.obj'), 'rb') as pickle_file:
         data = pickle.load(pickle_file)
@@ -315,9 +356,18 @@ def rep_scen_df(df):
 
 def create_simsetup_csv(exp):
     """
-    Creates a CSV file containing simulation setup parameters.
+    Creates a CSV file containing the simulation setup parameters from the given experiment object.
+
+    This function collects various parameters from the `exp` (Experiment) object and writes them to a CSV file.
+    The CSV contains the following fields:
+    - `run_mode`, `job_directory`, `sim_out_dir`, `emod_serialized_id`, and other simulation-specific parameters.
+    - Additionally, various burnin, population size, age group settings, seasonal data, and intervention lists are included.
+
+    The resulting CSV is saved in the directories specified by `job_directory` and `sim_out_dir`.
+
     Args:
-        exp (Experiment): Experiment object containing experiment specifications.
+        exp (Experiment): An instance of the `Experiment` class that contains experiment settings, simulation configurations,
+                          and paths for output.
     """
 
     # If other parameters should be savedm these need to be added to setup_dic
@@ -346,7 +396,9 @@ def create_simsetup_csv(exp):
                  'sim_start_year_openmalaria': exp.sim_start_year_openmalaria,
                  'sim_start_year_emod': exp.sim_start_year_emod,
                  'sim_start_year_malariasimulation': exp.sim_start_year_malariasimulation,
-                 'intervention_list': exp.intervention_list
+                 'intervention_list': exp.intervention_list,
+                 'output_type': exp.output_type,
+                 'output_target':  ';'.join(map(str, exp.output_target))
                  }
 
     setup_df = pd.DataFrame.from_dict(setup_dic, orient='index', columns=['Value'])
@@ -354,28 +406,6 @@ def create_simsetup_csv(exp):
     save_dirs = [exp.job_directory, exp.sim_out_dir]
     for sdir in save_dirs:
         setup_df.to_csv(os.path.join(sdir, 'exp_setup_df.csv'), index=False)
-
-
-def configure_calib_scenarios(exp):
-    """
-    Configures experiment-specific attributes based on the run mode.
-    """
-    if exp.run_mode == 'calibrun':
-        print("Notice: for calibrun simulations, importation will be set to 0")
-        eir_range, x_temp_range = get_calib_range()
-        #importation_rate should be 5 for emod, 0 (for now) for OpenMalaria
-        #we will need to think of how we will want to implement this moving foward.
-        exp.importation_rate = 5
-        print(f"Notice: for calibrun simulations, importation will be set to {exp.importation_rate}")
-        exp.output_target = np.arange(1, 31)
-        exp.eir_range = eir_range
-        exp.x_temp_range =x_temp_range
-    else :
-        exp.output_target = np.arange(1, 2)
-        exp.eir_range = [50]
-        exp.x_temp_range = [15]
-        
-    return exp
 
 
 def process_case_management(df):
@@ -412,14 +442,14 @@ def map_model_calib_inputs(exp, df):
     """
     models_to_run = list(set(exp.models_to_run + exp.models_to_run_pickup))
 
-    if exp.run_mode == 'calibrun' or exp.run_mode == 'test' or exp.run_mode is None:
+    if exp.run_mode == 'calibrun':
         for model in models_to_run:
             for i, row in df.iterrows():
                 value = exp.eir_range[int(row['output_target']) - 1] if model != 'EMOD' else exp.x_temp_range[int(row['output_target']) - 1]
                 df.loc[i, f'model_input_{model.lower()}'] = value
     else:
         for model in models_to_run:
-            if model in  ['malariasimulation', 'OpenMalaria']:
+            if model in ['malariasimulation', 'OpenMalaria']:
                 df[f'model_input_{model}'] = output_target_to_eir(df, exp, model=model)
             if model == 'EMOD':
                 if exp.entomology_mode == 'dynamic':

@@ -1,6 +1,9 @@
 from utility.helper import *
 import shutil
-#from functions.interventions import * # Currently not supported
+
+# from OpenMalaria.functions.interventions import * # Currently not supported
+from OpenMalaria.functions.convert_access import convert_access_lookup
+
 
 
 def create_scenarios(exp, scen_df):
@@ -54,17 +57,18 @@ def create_scenarios(exp, scen_df):
         elif row['cm_clinical'] == 0:
             cm_clinical_5daily = 0
         else:
-            raise ValueError('convert_access for OpenMalaria cm_clinical currently not functional')
+            cm_clinical_5daily = convert_access_lookup(row['cm_clinical']) #  converted from R function to python, returns an error if value outside of lookup range
             # cm_clinical_5daily = convert_access(row['cm_clinical']) # TODO convert from R function to python
+
 
         scenario = xml.replace('@seed@', str(row['seed']))
         scenario = scenario.replace('@cm_clinical@', str(cm_clinical_5daily))
         scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
-        scenario = scenario.replace('@eir@', str(row['model_input_openmalaria']))
+        scenario = scenario.replace('@eir@', str(row['model_input_OpenMalaria']))
 
         if 'cc_step' in exp.intervention_list:
-            scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_openmalaria']))
-            scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_openmalaria']))
+            scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_OpenMalaria']))
+            scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_OpenMalaria']))
         
         #SMC currently not supported
         #if 'smc' in exp.intervention_list:

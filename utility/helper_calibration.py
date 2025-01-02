@@ -41,7 +41,7 @@ def output_target_to_xTemp(df, exp, model):
 
     Notes:
         - The function performs interpolation based on the specified output type (`eir`, `prevalence_2to10`, or
-          `clinical_incidenceU5`).
+          `clinical_incidence_U5`).
         - It applies scaling adjustments for population sizes, ensuring that the values are consistent with the
           `pop_size` defined in the experiment.
         - Warnings are issued if the interpolated values are outside the valid range (`<= 0` or `>= 10000`), with
@@ -58,8 +58,8 @@ def output_target_to_xTemp(df, exp, model):
         output_type_col = 'simulatedEIR'
     elif exp.output_type == 'prevalence_2to10':
         output_type_col = 'prevalence_2to10'
-    elif exp.output_type == 'clinical_incidenceU5':  ## FIXME tbd later on how to add
-        output_type_col = 'clinical_cases'  # name including age group?
+    elif exp.output_type == 'clinical_incidence_U5':
+        output_type_col = 'clinical_incidence_U5'
     else:
         raise ValueError(f'Specified input_type is not valid {exp.output_type}')
 
@@ -106,7 +106,7 @@ def output_target_to_eir(df, exp, model):
 
     Notes:
         - The function performs interpolation based on the specified output type (`eir`, `prevalence_2to10`, or
-          `clinical_incidenceU5`).
+          `clinical_incidence_U5`).
         - It applies scaling adjustments for population sizes, ensuring that the values are consistent with the
           `pop_size` defined in the experiment.
         - Warnings are issued if the interpolated values are outside the valid range (`<= 0` or `>= 1000`), with
@@ -122,8 +122,8 @@ def output_target_to_eir(df, exp, model):
         output_type_col = 'simulatedEIR'
     elif exp.output_type == 'prevalence_2to10':
         output_type_col = 'prevalence_2to10'
-    elif exp.output_type == 'clinical_incidenceU5':
-        output_type_col = 'clinical_incidenceU5'
+    elif exp.output_type == 'clinical_incidence_U5':
+        output_type_col = 'clinical_incidence_U5'
     else:
         raise ValueError(f'Specified input_type is not valid {exp.output_type}')
     if model == 'EMOD':
@@ -134,6 +134,10 @@ def output_target_to_eir(df, exp, model):
         popsize = exp.openmalaria_pop_size
     else:
         raise ValueError(f'Specified model is not valid {model}')
+
+    # FIXME allow this hack, or is there a better one? For testrun, or introduce 'debug run' to allow running lower  populations
+    if exp.run_mode =='test' and popsize is not data.loc[data['modelname'] == model, 'pop_size'].unique():
+        popsize = data.loc[data['modelname'] == model, 'pop_size'].min()
 
     for i, row in df.iterrows():
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
@@ -156,14 +160,35 @@ def output_target_to_eir(df, exp, model):
 
 def check_transmission_targets_input(exp):
 
+    for model in exp.models_to_run:
+        if model == 'EMOD':
+            popsize = exp.emod_pop_size
+        elif model == 'malariasimulation':
+            popsize = exp.malariasimulation_pop_size
+        elif model == 'OpenMalaria':
+            popsize = exp.openmalaria_pop_size
+        else:
+            raise ValueError(f'Specified model is not valid {model}')
+
+        interp_path = os.path.join(exp.interp_path, model, exp.interp_csv)
+        if not os.path.exists(interp_path):
+            raise ValueError(f'interp_file not found: {interp_path}')
+        data = pd.read_csv(interp_path)
+
+        popsize_options = list( data.loc[data['modelname'] == model, 'pop_size'].unique())
+        if  popsize is not popsize_options:
+            if exp.run_mode == 'test':
+                print(f'Warning: the popsize specified for {model} ({popsize}) is not in the interpolation dataset, since test run, {min(popsize_options)} will be used') # see L140
+            else:
+                raise ValueError(f"Selected popsize not availabe, options for {model} are  {', '.join([str(x) for x in popsize_options])}")
+
     # Check whether parameters align with current setup in calibruns - "interpolation data"
-    if any(value[0] not in [0, 0.15, 0.45] for value in exp.case_management) and (exp.entomology_mode == 'dynamic') and (
-            'EMOD' in exp.models_to_run):
+    if any(value[0] not in [0, 0.15, 0.45] for value in exp.case_management) and (exp.entomology_mode == 'dynamic') and ('EMOD' in exp.models_to_run):
         raise ValueError( 'EMOD is not set up to run dynamic EIR is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
 
-    if any(value[0] not in [0, 0.15, 0.45] for value in exp.case_management) and exp.output_type == 'prevalence_2to10':
-        raise ValueError('output_type prevalence_2to10 is not set up to run for CM values other than 0 and 0.45 - requires new calibrun')
+    if any(value[0] not in [0, 0.15, 0.45] for value in exp.case_management) and exp.output_type.isin(['prevalence_2to10','clinical_incidence_U5']) :
+        raise ValueError('output_type prevalence_2to10 and clinical_incidence_U5 are not set up to run for CM values other than 0, 0.15 0.45 - requires new calibrun')
 
-    if exp.output_type not in ['eir', 'prevalence_2to10','clinical_incidenceU5']:
+    if exp.output_type not in ['eir', 'prevalence_2to10','clinical_incidence_U5']:
         raise ValueError(f"Invalid output type: {exp.output_type}")
 

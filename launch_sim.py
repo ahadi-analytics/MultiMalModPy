@@ -98,9 +98,6 @@ exp = make_dirs(exp)
 # Simulation duration, start and end configuration
 exp = get_simulation_time_params(exp)
 
-# Configure for calibration
-exp = configure_calib_scenarios(exp)
-
 # Check whether defined input parameter are all valid
 check_exp_inputs(exp)
 

@@ -27,6 +27,11 @@ def exp_params_to_update(exp):
         ValueError: If an invalid intervention is specified in the `intervention_list`.
 
     """
+
+    # Note having unique levels of those two parameters is currently needed in the plotting scripts
+    exp.cm_clinical = [x[0] for x in exp.case_management]
+    exp.cm_severe = [x[1] for x in exp.case_management]
+
     if not exp.intervention_list or exp.intervention_list == []:
         print('No interventions specified')
     else:

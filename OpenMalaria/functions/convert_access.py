@@ -26,6 +26,26 @@ from scipy.interpolate import UnivariateSpline
 
 
 def convert_access(pamd):
+    """
+    This function performs a two-step conversion process to calculate the 5-day treatment probability
+    corresponding to a given daily probability of treatment. The process involves:
+    1. Interpolating the input value (`pamd`) using data from Crowell et al. (Figure 5a).
+    2. Using the interpolated value to convert from a daily treatment probability to a 5-day treatment probability
+       using data from Crowell et al. (Figure 7c, black line).
+
+    The conversion process is done using cubic splines (using `UnivariateSpline`).
+
+    Parameters:
+    pamd (float): The daily probability of treatment as a percentage (between 0 and 100). This is the input value
+                  to convert to a 5-day treatment probability.
+
+    Returns:
+    float: The predicted 5-day treatment probability corresponding to the input daily probability (`pamd`).
+
+    Note:
+        Currently deprecated since returned values differ from conver_access.R
+    """
+
     # Digitized data from Crowell et al., figure 5a
     pt_x = [0, 0.005427408, 0.01492537, 0.02170963, 0.02985075, 0.04070556, 0.05291723, 0.0651289, 0.08005427,
                0.09497965, 0.1071913, 0.1180461, 0.1275441, 0.1383989, 0.1506106, 0.165536, 0.1804613, 0.1940299,
@@ -72,5 +92,58 @@ def convert_access(pamd):
     return pred_pamd
 
 
-## Test
-# convert_access(45)
+def convert_access_lookup(pamd):
+    """
+    Access Lookup function that returns the probability of access based on the input 'pamd'.
+
+    The function uses a dictionary to perform a lookup of the given 'pamd' value and returns the corresponding
+    probability of access. The 'pamd' value is used to find the nearest index in the dictionary of ivals and
+    pvals, and the corresponding probability value is returned.
+
+    Parameters:
+    pamd (float): The input parameter for which the access probability is to be calculated. The value of 'pamd'
+                  should be between 0 and 100.
+
+    Returns:
+    float: The corresponding 5-day treatment probability based on the input `pamd`.
+
+    Raises:
+    ValueError: If the input `pamd` is outside the allowed range (0 to 1, in increments of 0.01).
+    """
+
+    probtreat_daily  =  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+                21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+                39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
+                57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74,
+                75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92,
+                93, 94, 95, 96, 97, 98, 99, 100]
+
+    probtreat_5daily = [7.934353e-05, 3.655052e-03, 7.259242e-03, 1.089065e-02, 1.454715e-02, 1.821375e-02,
+                2.185895e-02, 2.545025e-02, 2.895516e-02, 3.234127e-02, 3.558067e-02, 3.870637e-02,
+                4.179515e-02, 4.492462e-02, 4.817231e-02, 5.161556e-02, 5.531544e-02, 5.926860e-02,
+                6.345559e-02, 6.785690e-02, 7.245236e-02, 7.721322e-02, 8.210456e-02, 8.709143e-02,
+                9.213899e-02, 9.721381e-02, 1.022998e-01, 1.073931e-01, 1.124904e-01, 1.175883e-01,
+                1.226833e-01, 1.277816e-01, 1.329135e-01, 1.381124e-01, 1.434117e-01, 1.488444e-01,
+                1.544396e-01, 1.601931e-01, 1.660799e-01, 1.720749e-01, 1.781534e-01, 1.842907e-01,
+                1.904703e-01, 1.966911e-01, 2.029544e-01, 2.092610e-01, 2.156120e-01, 2.220045e-01,
+                2.284170e-01, 2.348223e-01, 2.411937e-01, 2.475042e-01, 2.537213e-01, 2.598108e-01,
+                2.657407e-01, 2.715380e-01, 2.773034e-01, 2.831406e-01, 2.891962e-01, 2.957379e-01,
+                3.030474e-01, 3.113960e-01, 3.209671e-01, 3.317720e-01, 3.437782e-01, 3.566707e-01,
+                3.699061e-01, 3.828218e-01, 3.949100e-01, 4.061192e-01, 4.164699e-01, 4.261829e-01,
+                4.355614e-01, 4.448962e-01, 4.544731e-01, 4.645689e-01, 4.754909e-01, 4.875557e-01,
+                5.010331e-01, 5.159051e-01, 5.318855e-01, 5.483645e-01, 5.644357e-01, 5.793443e-01,
+                5.929385e-01, 6.057272e-01, 6.184566e-01, 6.318566e-01, 6.465634e-01, 6.629652e-01,
+                6.812664e-01, 7.013116e-01, 7.223719e-01, 7.436717e-01, 7.665125e-01, 7.933986e-01,
+                8.262853e-01, 8.660768e-01, 9.114032e-01, 9.580364e-01, 9.984184e-01]
+
+
+    # Create the dictionary mapping daily values to 5-day treatment probabilities
+    data_dict = dict(zip(probtreat_daily, probtreat_5daily))
+
+    if pamd in probtreat_daily:
+        return data_dict.get(pamd)
+    else:
+        raise ValueError("cm_clinical outside of OpenMalaria's convert_access lookup range, values must be between 0 and 1 in intervals of 0.01")
+
+
+

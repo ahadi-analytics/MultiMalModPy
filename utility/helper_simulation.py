@@ -186,41 +186,162 @@ def monthly_to_daily_EIR(monthly_EIR):
 
 
 def check_exp_input_parameters(exp):
-    # Check agebins
-    a = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
-    if len(a) > 0:
-        raise ValueError(f'agebins are not granular enough to allow aggregation by age_groups_aggregates, missing {a}')
+    """
+    Validates the input parameters and experiment configuration.
 
+    This function performs the following checks:
+    1. Verifies that the 'agebins' parameter contains all age groups referenced in 'age_groups_aggregates'.
+    2. Ensures that 'agebins' includes both the values 2 and 10.
+    3. Confirms that the 'seasonality' parameter contains no more than two seasonality patterns.
+
+    Args:
+        exp (object): An experiment object containing the attributes 'age_groups_aggregates', 'agebins', and 'seasonality'.
+
+    Raises:
+        ValueError: If any of the validation checks fail, an error is raised with a descriptive message indicating the issue.
+    """
+
+    # Check agebins against age_groups_aggregates
+    missing_agebins  = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
+    if len(missing_agebins ) > 0:
+        raise ValueError(
+            f"The 'agebins' parameter is not granular enough to allow aggregation by 'age_groups_aggregates'. "
+            f"The following age groups are missing from 'agebins': {missing_agebins}. Please ensure they are included."
+        )
+
+    # Ensure agebins contain required values
     if 2 not in exp.agebins or 10 not in exp.agebins:
-        raise ValueError(f'agebins 2 and 10 are required in the framework, current agebins {exp.agebins}')
+        raise ValueError(
+            f"The 'agebins' parameter must include both 2 and 10. Current 'agebins' values are {exp.agebins}. "
+            "Please include both values to meet the framework's requirements."
+        )
 
-    # Check seasonality
+    # Check that only two seasonality patterns are specified
     if len(exp.seasonality) > 2:
-        raise ValueError(f'Only two seasonality patterns are allowed, but {len(exp.seasonality)} specified.')
-
-
+        raise ValueError(
+            f"Only two seasonality patterns are allowed, but {len(exp.seasonality)} were specified. "
+            "Please limit the number of seasonality patterns to two."
+        )
 
 def check_exp_inputs_emod(exp):
+    """
+    Checks input parameter compatibility with the framework configurations for EMOD.
+
+    This function performs the following checks:
+    1. Ensures that only a single seed is specified for EMOD burn-in simulations.
+    2. Issues a warning if the burn-in period is less than 100 years, which may lead to inaccurate results.
+    3. Issues a warning if the population size is below 1000, which may lead to inaccurate results.
+    4. Issues a warning if the population size exceeds 10000, which may cause computational or memory issues.
+
+    Args:
+        exp (object): An experiment object containing the attributes 'emod_step', 'num_seeds_burnin',
+                      'emod_burnin', 'emod_pop_size', and 'models_to_run'.
+
+    Raises:
+        ValueError: If the 'num_seeds_burnin' is not set to 1 during an EMOD burn-in simulation.
+    """
+
+    if exp.hpc == 'LOCAL':
+        raise ValueError("Local execution of the framework is not functional for EMOD.")
+
 
     if exp.emod_step:
         if exp.num_seeds_burnin != 1:
-            raise ValueError('Current framework only allows 1 seed for EMOD burnin')
+            raise ValueError(
+                "The current framework supports only a single seed for EMOD burn-in simulations. "
+                "Please set 'num_seeds_burnin' to 1 to proceed."
+            )
 
-    if exp.emod_burnin < 100 and (('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
-                            'EMOD' not in exp.models_to_run):
-        print(f'Warning: For EMOD a burnin of at least 100 years is recommended. A short burnin period of {exp.emod_burnin} years was used.')
+    if exp.emod_burnin < 100 and (
+            ('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
+            'EMOD' not in exp.models_to_run ):
+        print(
+            f"Warning: A burn-in period of at least 100 years is recommended for EMOD. "
+            f"Currently, a shorter burn-in of {exp.emod_burnin} years has been configured, which may lead to inaccurate results."
+        )
+
+    if exp.emod_pop_size < 1000:
+        print(
+            f"Warning: A population of at least 1000 is recommended for EMOD. "
+            f"Current pop_size {exp.emod_pop_size}  may lead to inaccurate results."
+        )
+
+    if exp.emod_pop_size > 10000:
+        print(
+            f"Warning: A high population of over 10000 is causing computational challenges for EMOD"
+            f"Current pop_size {exp.emod_pop_size}  may lead to memory related issues."
+        )
+
 
 
 def check_exp_inputs_openmalaria(exp):
+    """
+    Checks input parameter compatibility with the framework configurations for OpenMalaria.
 
-    # Check timesteps, survey intervals and analyer alignment
+    This function performs the following checks:
+    1. Issues a warning if OpenMalaria is configured with 30-day survey steps and a 5-day analyzer, as this configuration will cause errors during post-processing.
+    2. Raises a ValueError if the 'cc_step' intervention is specified with 30-day survey steps, which is incompatible.
+    3. Issues a warning if the burn-in period is less than 80 years, which may lead to inaccurate results.
+    4. Issues a warning if the population size is below 10000, which may lead to inaccurate results.
+
+    Args:
+        exp (object): An experiment object containing the attributes 'openmalaria_survey_step', 'analyzer_list',
+                      'intervention_list', 'openmalaria_burnin', and 'openmalaria_pop_size'.
+
+    Raises:
+        ValueError: If the 'cc_step' intervention is specified with a 30-day survey step in OpenMalaria.
+    """
+
     if exp.openmalaria_survey_step == '30d' and "5day" in exp.analyzer_list:
-        print('Warning: OpenMalaria runs with 30d survey steps, 5day analyzer will cause an error in postprocessing')
+        print("Warning: OpenMalaria is configured with 30-day survey steps. Using a 5-day analyzer will cause errors during post-processing. Adjust your configuration to ensure compatibility.")
 
     if exp.openmalaria_survey_step == '30d' and "cc_step" in exp.intervention_list:
-        raise ValueError('cc_step interventions requires 5d survey steps in OpenMalaria')
+        raise ValueError("The 'cc_step' intervention requires 5-day survey steps in OpenMalaria. Please update the survey step configuration.")
+
+    if exp.openmalaria_burnin < 80:
+        print(
+            f"Warning: A burn-in period of at least 80 years is recommended for OpenMalaria. "
+            f"Currently, a shorter burn-in of {exp.openmalaria_burnin} years has been configured, which may lead to inaccurate results."
+        )
+
+    if exp.openmalaria_pop_size < 10000:
+        print(
+            f"Warning: A population of at least 10000 is recommended for OpenMalaria. "
+            f"Current pop_size {exp.openmalaria_pop_size}  may lead to inaccurate results."
+        )
+
+
 
 def check_exp_inputs_malariasimulation(exp):
+    """
+    Checks input parameter compatibility with the framework configurations for malariasimulation
 
-    pass
+    This function performs the following checks:
+    1. Raises a ValueError if the 'forced EIR' option is selected for entomology mode, as it is not supported.
+    2. Issues a warning if the burn-in period is less than 80 years, which may lead to inaccurate results.
+    3. Issues a warning if the population size is below 1000, which may lead to inaccurate results.
+
+    Args:
+        exp (object): An experiment object containing the attributes 'entomology_mode', 'malariasimulation_burnin',
+                      and 'malariasimulation_pop_size'.
+
+    Raises:
+        ValueError: If the 'forced EIR' entomology mode is selected for MalariaSimulation.
+    """
+
+    if exp.entomology_mode == 'forced' :
+        raise ValueError("The 'forced EIR' option is not supported in malariasimulation. Please select a valid entomology mode.")
+
+    if exp.malariasimulation_burnin < 80:
+        print(
+            f"Warning: A burn-in period of at least 80 years is recommended for malariasimulation. "
+            f"Currently, a shorter burn-in of {exp.malariasimulation_burnin} years has been configured, which may lead to inaccurate results."
+        )
+
+    if exp.malariasimulation_pop_size < 1000:
+        print(
+            f"Warning: A population of at least 1000 is recommended for malariasimulation. "
+            f"Current pop_size {exp.malariasimulation_pop_size}  may lead to inaccurate results."
+        )
+
 

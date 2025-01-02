@@ -45,3 +45,12 @@ convert_access <- function(pamd) {
 }
 
 convert_access(15)
+
+
+## Generate values for loopup in convert_access.py
+# ivals <- seq(0, 100, 1)
+# pvals <- c()
+# for (i in ivals) { pvals <- c(pvals, convert_access(i)) }
+# df <- data.frame(ivals = ivals, pvals = pvals)
+
+

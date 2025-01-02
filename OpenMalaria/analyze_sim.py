@@ -558,14 +558,14 @@ def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days, grp_channels=['ageGroup',
         u5 = u5.rename(columns={'clinical_incidence': 'clinical_incidence_U5'})
         all_ages = adf[adf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         adf = adf[adf['ageGroup'] == '0-100']
-        adf = adf.groupby(['scen_id', 'model_input_openmalaria', 'seasonality', 'cm_clinical'])[
+        adf = adf.groupby(['scen_id', 'model_input_OpenMalaria', 'seasonality', 'cm_clinical'])[
             ['simulatedEIR', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
             'mean').reset_index()
         adf = adf.merge(all_ages, on='scen_id')
         adf = adf.merge(u5, on='scen_id')
         adf = adf.drop(['scen_id'], axis=1)
         adf['modelname'] = 'OpenMalaria'
-        adf = adf.rename(columns={'model_input_openmalaria': 'input_target'})
+        adf = adf.rename(columns={'model_input_OpenMalaria': 'input_target'})
         adf.to_csv((os.path.join(wdir, 'interpolation_data.csv')), index=False)
         adf.to_csv((os.path.join(exp.interp_path, 'OpenMalaria', f'{exp.exp_name}_interpolation_data.csv')))
 

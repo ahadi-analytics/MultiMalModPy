@@ -206,7 +206,7 @@ def set_emod_exp_parameters(config, exp):
     if exp.emod_step == 'pickup':
         config.parameters.Serialized_Population_Reading_Type = "READ"
         config.parameters.Serialization_Mask_Node_Read = 0
-        config.parameters.Serialization_Time_Steps = [exp.burnin * 365]
+        config.parameters.Serialization_Time_Steps = [exp.emod_burnin * 365]
 
 
 def build_demog(task, exp):
