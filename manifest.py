@@ -14,18 +14,18 @@ ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 # Location of the file containing AssetCollection id for the dtk sif (singularity image)
 sif_id = os.path.join(os.pardir, 'dtk_sif.id')
 
-# The script is going to use this to store the downloaded schema file. Create 'download' directory or change to your preferred (existing) location.
-schema_file = os.path.join(os.path.expanduser('~'), "download/schema.json")
-
-# The script is going to use this to store the downloaded Eradication binary. Create 'download' directory or change to your preferred (existing) location.
-eradication_path = os.path.join(os.path.expanduser('~'), "download/Eradication")
-
 # Create 'Assets' directory or change to a path you prefer. idmtools will upload files found here.
 assets_input_dir = "Assets"
 plugins_folder = "download/reporter_plugins"
 
 # This is where your inputs are located
 input_dir = os.path.join(ROOT_DIR, "EMOD/inputs")
+
+# The script is going to use this to store the downloaded schema file. Create 'download' directory or change to your preferred (existing) location.
+schema_file = os.path.join(ROOT_DIR, "EMOD/download/schema.json")
+
+# The script is going to use this to store the downloaded Eradication binary. Create 'download' directory or change to your preferred (existing) location.
+eradication_path = os.path.join(ROOT_DIR, "EMOD/download/Eradication")
 # ----------------------------- EMOD generic settings end -----------------------------
 
 if os.name != 'posix':

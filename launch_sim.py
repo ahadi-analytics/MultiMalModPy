@@ -124,8 +124,8 @@ if __name__ == '__main__':
     if 'EMOD' in exp.models_to_run:
         from idmtools.core.platform_factory import Platform
         from idmtools.entities.experiment import Experiment
-        import emod_malaria.bootstrap as dtk
-        import pathlib
+        #import emod_malaria.bootstrap as dtk
+        #import pathlib
 
         # Set platform and associated values, such as the maximum number of jobs to run at one time
         platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
@@ -135,7 +135,8 @@ if __name__ == '__main__':
                             max_running_jobs=exp.max_running_jobs)  # mem_per_cpu default: 2048
         exp.platform = platform
 
-        dtk.setup(pathlib.Path(manifest.eradication_path).parent)
+        # For the time being, until emodpy-malaria updates we do not want to grab eradication from EMOD-malaria
+        #dtk.setup(pathlib.Path(manifest.eradication_path).parent)
         from EMOD.utils import submit_run_EMOD
         emod_exp = submit_run_EMOD(exp, scen_df)
         exp.emod_id = emod_exp.id

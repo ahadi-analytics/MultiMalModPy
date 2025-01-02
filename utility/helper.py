@@ -363,7 +363,10 @@ def configure_calib_scenarios(exp):
     if exp.run_mode == 'calibrun':
         print("Notice: for calibrun simulations, importation will be set to 0")
         eir_range, x_temp_range = get_calib_range()
-        exp.importation_rate = 0
+        #importation_rate should be 5 for emod, 0 (for now) for OpenMalaria
+        #we will need to think of how we will want to implement this moving foward.
+        exp.importation_rate = 5
+        print(f"Notice: for calibrun simulations, importation will be set to {exp.importation_rate}")
         exp.output_target = np.arange(1, 31)
         exp.eir_range = eir_range
         exp.x_temp_range =x_temp_range
@@ -392,6 +395,7 @@ def process_case_management(df):
     for i, row in df.iterrows():
         df.loc[i, 'cm_clinical'] = pd.to_numeric(df.loc[i, 'case_management'][0], errors='coerce')
         df.loc[i, 'cm_severe'] = pd.to_numeric(df.loc[i, 'case_management'][1], errors='coerce')
+    df['cm_start'] = 1
     df = df.drop('case_management', axis=1)
 
     return df

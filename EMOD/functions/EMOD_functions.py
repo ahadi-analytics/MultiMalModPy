@@ -166,7 +166,7 @@ def habitat_setup(config, exp, row):
         malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list, overwrite=True)
         habitat2 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat2.parameters.Habitat_Type = "CONSTANT"
-        habitat2.parameters.Max_Larval_Capacity = 850000 * max_capacity_multiplier
+        habitat2.parameters.Max_Larval_Capacity = 950000 * max_capacity_multiplier
         habitat_list = [{"Habitat_Type": habitat2.parameters.Habitat_Type,
                          "Max_Larval_Capacity": habitat2.parameters.Max_Larval_Capacity}]
         malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list, overwrite=False)

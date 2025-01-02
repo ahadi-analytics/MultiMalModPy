@@ -70,14 +70,18 @@ def submit_run_EMOD(exp, scen_df):
     else:
         builder = config_sweep_builder(exp, scen_df)
 
-    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years)
+    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, 
+                       num_year=sim_dur_years, detection_threshold=exp.detectionLimit)
 
     if emod_step != 'burnin':  # do not generate monthly reports for burnin
         if 'daily' in exp.analyzer_list:
-            add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years) #We shouldn't generate daily reports unless specified
-        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years)
+            add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years,
+                              detection_threshold=exp.detectionLimit) #We shouldn't generate daily reports unless specified
+        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years,
+                            detection_threshold=exp.detectionLimit)
         if '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:  # Note, we will not want to always run 5 days using the analyzer_list as a flag to include this reporter  or not
-            add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years)
+            add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years,
+                               detection_threshold=exp.detectionLimit)
 
     # Create experiment from builder and run
     experiment = Experiment.from_builder(builder, task, name=exp_name)
@@ -186,6 +190,8 @@ def set_emod_exp_parameters(config, exp):
     config.parameters.Simulation_Duration = exp.sim_dur_years * 365
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
+    #We may no longer need to indicate blood smear parasites and gametocytes, instead we do need to indicate true parasite density
+    config.parameters.Report_Detection_Threshold_True_Parasite_Density = exp.detectionLimit
     config.parameters.Report_Parasite_Smear_Sensitivity = 1
     config.parameters.Birth_Rate_Dependence = "FIXED_BIRTH_RATE"
     config.parameters.Min_Days_Between_Clinical_Incidents = 14  

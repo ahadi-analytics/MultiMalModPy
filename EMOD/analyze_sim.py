@@ -358,10 +358,10 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
         for fname in self.filenames:
 
             age_bins = data[fname]['Metadata']['Age Bins']
-            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10'][:nyears]
+            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True'][:nyears]
 
             for age in list(range(0, len(age_bins))):
-                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin'][:nyears]
+                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin-True'][:nyears]
                 pfpr = [x[age] for x in d]
                 d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin'][:nyears]
                 clinical_cases = [x[age] for x in d]
@@ -527,11 +527,11 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         for fname in self.filenames:
 
             age_bins = data[fname]['Metadata']['Age Bins']
-            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10'][:nyears]
+            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True'][:nyears]
 
             for age in list(range(0, len(age_bins))):
                 # Extract data for each age bin
-                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin'][:nyears]
+                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin-True'][:nyears]
                 pfpr = [x[age] for x in d]
                 d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin'][:nyears]
                 clinical_cases = [x[age] for x in d]
@@ -684,11 +684,11 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         for year, fname in zip(range(self.start_year, self.end_year), self.filenames):
 
             age_bins = data[fname]['Metadata']['Age Bins']
-            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10'][:12]
+            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True'][:12]
 
             for age in list(range(0, len(age_bins))):
                 # Extract data per agebin
-                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin'][:12]
+                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin-True'][:12]
                 pfpr = [x[age] for x in d]
                 d = data[fname]['DataByTimeAndAgeBins']['New Infections by Age Bin'][:12]
                 new_infect = [x[age] for x in d]
@@ -854,12 +854,12 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         for year, fname in zip(range(self.start_year, self.end_year), self.filenames):
 
             age_bins = data[fname]['Metadata']['Age Bins']
-            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10'][:73]
+            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True'][:73]
             # timestep = data[fname]['DataByTime']['Time Of Report'][:73]
 
             for age in list(range(0, len(age_bins))):
                 # Extract data per agebin
-                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin'][:73]
+                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin-True'][:73]
                 pfpr = [x[age] for x in d]
                 d = data[fname]['DataByTimeAndAgeBins']['New Infections by Age Bin'][:73]
                 new_infect = [x[age] for x in d]
@@ -1032,11 +1032,11 @@ class DailyAgebinAnalyzer(IAnalyzer):
         for year, fname in zip(range(self.start_year, self.end_year), self.filenames):
 
             age_bins = data[fname]['Metadata']['Age Bins']
-            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10']
+            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True']
 
             for age in list(range(0, len(age_bins))):
                 # Extract data per agebin
-                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin']
+                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin-True']
                 pfpr = [x[age] for x in d]
                 d = data[fname]['DataByTimeAndAgeBins']['New Infections by Age Bin']
                 new_infect = [x[age] for x in d]

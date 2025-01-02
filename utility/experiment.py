@@ -54,12 +54,12 @@ class LoadExperiment:
         self.emod_calib_params = args.emod_calib_params
 
         # malariasimulation Settings
-        self.malariasimulation_burnin = 25
+        self.malariasimulation_burnin = 100
         self.malariasimulation_pop_size = 50000
         self.malariasimulation_parameter_variation = args.mpv
 
         # OpenMalaria Settings
-        self.openmalaria_burnin = 25
+        self.openmalaria_burnin = 100
         self.openmalaria_pop_size = 50000
         self.openmalaria_scaffold = "R0000GA"
         self.openmalaria_survey_step = '5d'
@@ -67,7 +67,7 @@ class LoadExperiment:
 
         # Entomology settings
         self.entomology_mode = 'dynamic'
-        self.seasonality = ['perennial']
+        self.seasonality = ['perennial', 'seasonal']
         self.mem_increase_factor = 5.0
 
         # Age groups and case management settings
@@ -78,7 +78,7 @@ class LoadExperiment:
         #                            [35,40], [40,45], [45,50], [50,55], [55,60], [60,65], [65,70], [70, 75],
         #                            [75,80], [80,85], [85,90], [90,95], [95,100], [0, 5], [0, 100]]
         self.cm_start = 1
-        self.case_management = [(0,0)]
+        self.case_management = [(0,0), (0.15,0.50)]
         self.detectionLimit = 40
         self.importation_rate = 0
         self.num_seeds_burnin = 1
@@ -115,15 +115,15 @@ class LoadExperiment:
                 warnings.warn("Warning: malariasimulation should not use parameter variation during calibration run. Parameter variation is now set to False.")
                 self.malariasimulation_parameter_variation = False
 
-        elif self.run_mode == 'test' or self.run_mode is None:
-            self.num_seeds = 20
+        elif self.run_mode == 'test':
+            self.num_seeds = 5
             self.start_year = 2000
             self.end_year = 2005
-            self.emod_burnin = 100
+            self.emod_burnin = 25
             self.openmalaria_burnin = 25
             self.malariasimulation_burnin = 25
-            self.openmalaria_pop_size = 50000
-            self.malariasimulation_pop_size = 50000
+            self.openmalaria_pop_size = 1000
+            self.malariasimulation_pop_size = 1000
             self.emod_pop_size = 1000
             if self.output_type != 'eir':
                 warnings.warn(f"Warning: output_type changed to 'eir' as required for test (not {self.output_type})")
@@ -140,7 +140,7 @@ class LoadExperiment:
 
         else:  # Default to simulation
             self.SUITEname = self.SUITEname.replace('test', 'sim')
-            self.num_seeds = 3
+            self.num_seeds = 10
             if self.output_type == 'eir':
                 self.output_target = [1, 5, 10, 20, 50, 100, 500, 1000]
             elif self.output_type == 'prevalence_2to10':
