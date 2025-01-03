@@ -5,10 +5,9 @@ import pickle
 import datetime
 import pandas as pd
 import numpy as np
-from OpenMalaria.functions.measures import mm, mmi
-
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)
+from OpenMalaria.functions.measures import mm, mmi
 from utility.experiment import LoadExperiment
 
 

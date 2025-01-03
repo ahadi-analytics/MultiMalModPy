@@ -59,7 +59,7 @@ def submit_run_EMOD(exp, scen_df):
     task = build_demog(task,exp)
 
     if entomology_mode == 'dynamic':
-        task.common_assets.add_directory(os.path.join(manifest.input_dir, "example_weather"), relative_path="climate")
+        task.common_assets.add_directory(os.path.join(manifest.input_dir, "weather"), relative_path="climate")
 
     if emod_step == 'pickup':
         serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
@@ -257,7 +257,7 @@ def config_sweep_builder(exp, scen_df):
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_emod)),
+                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_EMOD)),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
@@ -265,7 +265,7 @@ def config_sweep_builder(exp, scen_df):
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
                    CfgFn(habitat_setup, exp, row=row),
                    SwpFn(climate_setup,  seasonality = row.seasonality),
-                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_EMOD),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
@@ -313,7 +313,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             partial(set_param, param='Serialized_Population_Path',
                     value=os.path.join(row["serialized_file_path"], "output")),
             partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
-            partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_emod)),
+            partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.model_input_EMOD)),
             partial(set_param, param='Run_Number', value=s)]
             for i, row in scen_df_pickup.iterrows()
             for s in range(nseeds)]
@@ -325,7 +325,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',
                            value=row["Serialized_Population_Filenames"]),
-                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_emod),
+                   partial(set_param, param='x_Temporary_Larval_Habitat', value=row.model_input_EMOD),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df_pickup.iterrows()
                   for s in range(nseeds)]

@@ -176,11 +176,11 @@ def check_transmission_targets_input(exp):
         data = pd.read_csv(interp_path)
 
         popsize_options = list( data.loc[data['modelname'] == model, 'pop_size'].unique())
-        if  popsize is not popsize_options:
+        if  popsize not in popsize_options:
             if exp.run_mode == 'test':
                 print(f'Warning: the popsize specified for {model} ({popsize}) is not in the interpolation dataset, since test run, {min(popsize_options)} will be used') # see L140
             else:
-                raise ValueError(f"Selected popsize not availabe, options for {model} are  {', '.join([str(x) for x in popsize_options])}")
+                raise ValueError(f"Selected popsize {popsize} not availabe, options for {model} are  {', '.join([str(x) for x in popsize_options])}")
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
     if any(value[0] not in [0, 0.15, 0.45] for value in exp.case_management) and (exp.entomology_mode == 'dynamic') and ('EMOD' in exp.models_to_run):
