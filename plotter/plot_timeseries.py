@@ -60,9 +60,9 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='output_ta
 
         f += 1
         max_ylim = []
-        for i, (m, mdf) in enumerate(fdf.groupby(sweepvar)):
-            m = m[0]
-            color_key = color_selector(i, m)
+        for i, grp in enumerate(unique_groups):
+            mdf = fdf[fdf[sweepvar] == grp]
+            color_key = color_selector(i, grp)
             ylim_up = np.max(mdf[channel]) * 1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
@@ -139,9 +139,9 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
 
         f += 1
         max_ylim = []
-        for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
-            s = s[0]
-            color_key = color_selector(i, s)
+        for i, grp in enumerate(unique_groups):
+            sdf = fdf[fdf[sweepvar] == grp]
+            color_key = color_selector(i, grp)
             ylim_up = np.max(sdf[channel]) * 1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
@@ -150,7 +150,7 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
             xmean = xmean['date']
             merge_df = pd.merge(left=xmean, right=ymean, on='date')
             merge_df.sort_values(by='date', inplace=True)
-            ax.plot(merge_df['date'], merge_df[channel], '-', linewidth=0.8, label=f"{s}",
+            ax.plot(merge_df['date'], merge_df[channel], '-', linewidth=0.8, label=f"{grp}",
                     color=color_palette[color_key])
             ax.fill_between(merge_df['date'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
                             color=color_palette[color_key])
@@ -224,9 +224,9 @@ def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='season
         f += 1
         max_ylim = []
 
-        for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
-            s = s[0]
-            color_key = color_selector(i, s)
+        for i, grp in enumerate(unique_groups):
+            sdf = fdf[fdf[sweepvar] == grp]
+            color_key = color_selector(i, grp)
             ylim_up = np.max(sdf[channel]) * 1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
@@ -235,7 +235,7 @@ def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='season
             xmean = xmean['year']
             merge_df = pd.merge(left=xmean, right=ymean, on='year')
             merge_df.sort_values(by='year', inplace=True)
-            ax.plot(merge_df['year'], merge_df[channel], '-', linewidth=0.8, label=f"{s}",
+            ax.plot(merge_df['year'], merge_df[channel], '-', linewidth=0.8, label=f"{grp}",
                     color=color_palette[color_key])
             ax.fill_between(merge_df['year'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
                             color=color_palette[color_key])

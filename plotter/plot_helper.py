@@ -356,16 +356,12 @@ def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True)
 
     if agegrps is not None:
         if isinstance(agegrps, list):
-            if len(agegrps) > 1 and 'ageGroup' not in figure_vars:
-                raise ValueError(f'Multiple agegrps are specified, however age is not one of the variables to display in the plot')
-            else:
-                df = df[df['ageGroup'].isin(agegrps)]
-                txt += f'ageGroup in {agegrps}, '
+            df = df[df['ageGroup'].isin(agegrps)]
+            txt += f'ageGroup in {agegrps}, '
         else:
             df = df[df['ageGroup'] == agegrps]
             txt += f'ageGroup {agegrps}, '
-    if agegrps is None and len(df['ageGroup'].unique())>1 and 'ageGroup' not in figure_vars:
-        raise ValueError(f'No agegrps are specified, however age is not one of the variables to display in the plot')
+
 
     if 'cm_clinical' not in figure_vars:
         selected_cm = df['cm_clinical'].min()

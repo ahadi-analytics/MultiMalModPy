@@ -211,10 +211,10 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
             else:
                 y_lim = max(adf[channel]) * 1.01
             ax.set_ylim(0, y_lim)
-            ax.set_xlim(0, 100)
+            ax.set_xlim(0, 1)
             ax.set_xticks([0, 0.20, 0.40, 0.60, 0.80, 1])
             ax.set_ylabel(f'{ages_labels[a]}\n,{get_label(channel)}')
-            ax.set_xlabel('$\it{Pf}$PR$_{2-10}$ (%)')
+            ax.set_xlabel('$\it{Pf}$PR$_{2-10}$')
 
     fname = f'pfpr2to10_to_{channel}_age_model_{season}'
     fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_inches='tight')
@@ -397,7 +397,7 @@ if __name__ == "__main__":
         for channel in channel_list:
             print(f'#----- Plotting simulated EIR to {channel} -----#')
             eir_to_outcome(out_dir, df, sweepvar=sweepvar, facet_var='seasonality', eir_val='simulatedEIR',
-                           channel=channel, agegrps='0-100')
+                           channel=channel, agegrp='0-100')
             # eir_to_outcome(out_dir, df, sweepvar='cm_clinical', facet_var='modelname') # for paper 1
 
         channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
