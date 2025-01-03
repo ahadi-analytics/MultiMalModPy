@@ -25,7 +25,7 @@ class RunModeManager:
 
     def _configure_calibrun(self):
         self.experiment.SUITEname = self.experiment.SUITEname.replace('test','calibrun')
-        self.experiment.importation_rate = 5
+        self.experiment.importation_rate = 0 # need to be 0 for OpenMalaria and 5 for EMOD, we need to figure out a better way to do this.
         self.experiment.num_seeds = 20
         self.experiment.start_year = 2000
         self.experiment.end_year = 2005
