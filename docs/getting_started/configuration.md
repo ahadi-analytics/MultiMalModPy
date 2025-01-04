@@ -1,4 +1,4 @@
-# Configuration
+# First time user configurations
 
 Simulations are assumed to run on a Linux based high performance cluster (HPC), the framework is not designed for  running simulations locally
 

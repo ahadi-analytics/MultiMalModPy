@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/model_specificities/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Model specificities - MultiMalModPy</title>
+    <title>Model specific configurations - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Model specificities";
+        var mkdocs_page_name = "Model specific configurations";
         var mkdocs_page_input_path = "guide\\model_specificities.md";
         var mkdocs_page_url = "/MultiMalModPy/guide/model_specificities/";
       </script>
@@ -48,7 +48,7 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                <li class="toctree-l1"><a class="" href="../../_index.md">Home</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Malaria models</span></p>
@@ -63,55 +63,35 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/parameter-glossary/">Parameter Glossary</a>
-                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation and requirements</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configure MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">Input parameters and predefined options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/model_specificities/">Model specific options</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../">Overview</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../_index/">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters</a>
+                  <li class="toctree-l1"><a class="" href="../setup.md">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../run_sim/">Run simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../launch_and_run/">Launch simulations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../postprocess/">Postprocess outputs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../plots/">Visualize outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Calibration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Calibrate transmission targets</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Model specificities</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#emod">EMOD</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#serialization">Serialization</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#parameter-sampling">Parameter sampling</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#malariasimulation">malariasimulation</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#parameter-sampling_1">Parameter sampling</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#openmalaria">OpenMalaria</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#model-variants">Model variants</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../development/">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -208,8 +188,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">User Guide</li>
-      <li class="breadcrumb-item active">Model specificities</li>
+      <li class="breadcrumb-item active">Model specific configurations</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/model_specificities.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -310,10 +289,6 @@ However, for simplicity in MultiMalModPy, only the base model is included.
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../calibration/" class="btn btn-neutral float-left" title="Calibration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../api/manifest/" class="btn btn-neutral float-right" title="manifest.py">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -340,10 +315,6 @@ However, for simplicity in MultiMalModPy, only the base model is included.
         </span>
     
     
-      <span><a href="../calibration/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../../api/manifest/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -19,8 +19,9 @@
 | Stochastic Variation                   | [parameter-configuration-setup](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/parameter-configuration-setup.html)                                                                                                                                | [Stochastic_Variation](https://mrc-ide.github.io/malariasimulation/articles/Variation.html)                                                                                                              |                                                                                                                                                                                                                                              |
 | Parameter & model uncertainty          | [software-parameter-sweep](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-parameter-sweep.html)                                                                                                                                          | [Parameter_variation](https://mrc-ide.github.io/malariasimulation/articles/Parameter_variation.html)                                                                                                     | [specification-of-model-variants](https://github.com/SwissTPH/openmalaria/wiki/ModelWithinHost#specification-of-model-variants)                                                                                                                                                                                                                                         |
 
-
+<!---
 ## Overview of Source Code
 
 This section is under construction ...
 
+-->

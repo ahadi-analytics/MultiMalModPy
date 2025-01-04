@@ -2,222 +2,250 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/about/changelog/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/about/citation/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/about/contributors/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/about/getting_help/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/about/license/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/launch_sim/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/manifest/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/EMOD/analyze_sim/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/EMOD/utils/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/EMOD/functions/EMOD_functions/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/EMOD/functions/calib_params/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/EMOD/functions/forcedEIR/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/EMOD/functions/interventions/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/EMOD/functions/reporters/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/OpenMalaria/analyze_sim/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/OpenMalaria/utils/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/OpenMalaria/functions/interventions/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/OpenMalaria/functions/measures/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/malariasimulation/analyze_sim/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/malariasimulation/utils/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/malariasimulation/functions/interventions/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/plotter/plot_agecurves/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/plotter/plot_helper/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/plotter/plot_relationship/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/plotter/plot_timeseries/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/utility/experiment/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/utility/helper/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/utility/helper_calibration/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/utility/helper_interventions/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/utility/helper_simulation/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/api/utility/helper_slurm/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/getting_started/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/getting_started/configuration/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/getting_started/installation/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
+    </url>
+    <url>
+         <loc>https://ahadi-analytics.github.io/MultiMalModPy/getting_started/model_specificities/</loc>
+         <lastmod>2025-01-04</lastmod>
+    </url>
+    <url>
+         <loc>https://ahadi-analytics.github.io/MultiMalModPy/getting_started/overview/</loc>
+         <lastmod>2025-01-04</lastmod>
+    </url>
+    <url>
+         <loc>https://ahadi-analytics.github.io/MultiMalModPy/getting_started/parameters/</loc>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/getting_started/requirements/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
+    </url>
+    <url>
+         <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/_index/</loc>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/calibration/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/create_sim/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
+    </url>
+    <url>
+         <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/development/</loc>
+         <lastmod>2025-01-04</lastmod>
+    </url>
+    <url>
+         <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/launch_and_run/</loc>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/model_specificities/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/outputs/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/parameters/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/plots/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/postprocess/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/run_sim/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
+    </url>
+    <url>
+         <loc>https://ahadi-analytics.github.io/MultiMalModPy/guide/setup_sim/</loc>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/core_parameters/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/documentation-and-sourcecode/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/interventions/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/parameter-glossary/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/software/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/structure/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/simulation_setup/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/simulation_setup/demography/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/simulation_setup/monitoring_outputs/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
     <url>
          <loc>https://ahadi-analytics.github.io/MultiMalModPy/simulation_setup/simulation_time/</loc>
-         <lastmod>2024-12-31</lastmod>
+         <lastmod>2025-01-04</lastmod>
     </url>
 </urlset>

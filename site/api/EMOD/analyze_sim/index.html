@@ -48,7 +48,7 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                <li class="toctree-l1"><a class="" href="../../../_index.md">Home</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Malaria models</span></p>
@@ -63,33 +63,35 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/core_parameters/">Core parameters</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/parameter-glossary/">Parameter Glossary</a>
-                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation and requirements</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configuration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configure MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/parameters/">Input parameters and predefined options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/model_specificities/">Model specific options</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/_index/">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/parameters/">Input parameters</a>
+                  <li class="toctree-l1"><a class="" href="../../../guide/setup.md">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/run_sim/">Run simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/launch_and_run/">Launch simulations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/postprocess/">Postprocess outputs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/plots/">Visualize outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/calibration/">Calibration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/calibration/">Calibrate transmission targets</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/model_specificities/">Model specificities</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/development/">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -407,7 +409,7 @@ and save a results dataframe for defined age groups over time (years).</p>
 
               <details class="quote">
                 <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">479</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">479</span>
 <span class="normal">480</span>
 <span class="normal">481</span>
 <span class="normal">482</span>
@@ -729,7 +731,7 @@ and save a results dataframe for defined age groups over time (years).</p>
 
 
 <h3 id="EMOD.analyze_sim.AnnualAgebinAnalyzer.map" class="doc doc-heading">
-            <code class="highlight language-python"><span class="nb">map</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="nb">map</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span></code>
 
 </h3>
 
@@ -794,7 +796,7 @@ and save a results dataframe for defined age groups over time (years).</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">514</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">514</span>
 <span class="normal">515</span>
 <span class="normal">516</span>
 <span class="normal">517</span>
@@ -899,7 +901,7 @@ and save a results dataframe for defined age groups over time (years).</p>
 
 
 <h3 id="EMOD.analyze_sim.AnnualAgebinAnalyzer.reduce" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span></code>
 
 </h3>
 
@@ -956,7 +958,7 @@ and save a results dataframe for defined age groups over time (years).</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">563</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">563</span>
 <span class="normal">564</span>
 <span class="normal">565</span>
 <span class="normal">566</span>
@@ -1243,7 +1245,7 @@ specified in the report.</p>
 
               <details class="quote">
                 <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 988</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 988</span>
 <span class="normal"> 989</span>
 <span class="normal"> 990</span>
 <span class="normal"> 991</span>
@@ -1519,7 +1521,7 @@ specified in the report.</p>
 
 
 <h3 id="EMOD.analyze_sim.DailyAgebinAnalyzer.__init__" class="doc doc-heading">
-            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">expt_name</span><span class="p">,</span> <span class="n">sweep_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">working_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">burnin</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">expt_name</span><span class="p">,</span> <span class="n">sweep_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">working_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">burnin</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
@@ -1530,7 +1532,7 @@ specified in the report.</p>
 
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1011</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1011</span>
 <span class="normal">1012</span>
 <span class="normal">1013</span>
 <span class="normal">1014</span>
@@ -1723,7 +1725,7 @@ We have a 5 Day Agebin Analyzer to accommodate OpenMalaria, which has a minimum 
 
               <details class="quote">
                 <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">802</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">802</span>
 <span class="normal">803</span>
 <span class="normal">804</span>
 <span class="normal">805</span>
@@ -2109,7 +2111,7 @@ We have a 5 Day Agebin Analyzer to accommodate OpenMalaria, which has a minimum 
 
 
 <h3 id="EMOD.analyze_sim.FiveDayAgebinAnalyzer.map" class="doc doc-heading">
-            <code class="highlight language-python"><span class="nb">map</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="nb">map</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span></code>
 
 </h3>
 
@@ -2174,7 +2176,7 @@ We have a 5 Day Agebin Analyzer to accommodate OpenMalaria, which has a minimum 
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">841</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">841</span>
 <span class="normal">842</span>
 <span class="normal">843</span>
 <span class="normal">844</span>
@@ -2291,7 +2293,7 @@ We have a 5 Day Agebin Analyzer to accommodate OpenMalaria, which has a minimum 
 
 
 <h3 id="EMOD.analyze_sim.FiveDayAgebinAnalyzer.reduce" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span></code>
 
 </h3>
 
@@ -2348,7 +2350,7 @@ We have a 5 Day Agebin Analyzer to accommodate OpenMalaria, which has a minimum 
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">896</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">896</span>
 <span class="normal">897</span>
 <span class="normal">898</span>
 <span class="normal">899</span>
@@ -2681,7 +2683,7 @@ functionality to generate daily, monthly, and yearly reports on transmission out
 
               <details class="quote">
                 <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">155</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">155</span>
 <span class="normal">156</span>
 <span class="normal">157</span>
 <span class="normal">158</span>
@@ -2995,7 +2997,7 @@ functionality to generate daily, monthly, and yearly reports on transmission out
 
 
 <h3 id="EMOD.analyze_sim.InputEIRAnalyzer.map" class="doc doc-heading">
-            <code class="highlight language-python"><span class="nb">map</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="nb">map</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span></code>
 
 </h3>
 
@@ -3060,7 +3062,7 @@ functionality to generate daily, monthly, and yearly reports on transmission out
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">203</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">203</span>
 <span class="normal">204</span>
 <span class="normal">205</span>
 <span class="normal">206</span>
@@ -3127,7 +3129,7 @@ functionality to generate daily, monthly, and yearly reports on transmission out
 
 
 <h3 id="EMOD.analyze_sim.InputEIRAnalyzer.reduce" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span></code>
 
 </h3>
 
@@ -3184,7 +3186,7 @@ functionality to generate daily, monthly, and yearly reports on transmission out
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">233</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">233</span>
 <span class="normal">234</span>
 <span class="normal">235</span>
 <span class="normal">236</span>
@@ -3474,7 +3476,7 @@ and generating a results dataframe for defined age groups over time (monthly and
 
               <details class="quote">
                 <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">633</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">633</span>
 <span class="normal">634</span>
 <span class="normal">635</span>
 <span class="normal">636</span>
@@ -3826,7 +3828,7 @@ and generating a results dataframe for defined age groups over time (monthly and
 
 
 <h3 id="EMOD.analyze_sim.MonthlyAgebinAnalyzer.__init__" class="doc doc-heading">
-            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">expt_name</span><span class="p">,</span> <span class="n">sweep_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">working_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">1920</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">burnin</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">expt_name</span><span class="p">,</span> <span class="n">sweep_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">working_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">1920</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">burnin</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
@@ -3837,7 +3839,7 @@ and generating a results dataframe for defined age groups over time (monthly and
 
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">654</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">654</span>
 <span class="normal">655</span>
 <span class="normal">656</span>
 <span class="normal">657</span>
@@ -3878,7 +3880,7 @@ and generating a results dataframe for defined age groups over time (monthly and
 
 
 <h3 id="EMOD.analyze_sim.MonthlyAgebinAnalyzer.map" class="doc doc-heading">
-            <code class="highlight language-python"><span class="nb">map</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="nb">map</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span></code>
 
 </h3>
 
@@ -3943,7 +3945,7 @@ and generating a results dataframe for defined age groups over time (monthly and
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">671</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">671</span>
 <span class="normal">672</span>
 <span class="normal">673</span>
 <span class="normal">674</span>
@@ -4058,7 +4060,7 @@ and generating a results dataframe for defined age groups over time (monthly and
 
 
 <h3 id="EMOD.analyze_sim.MonthlyAgebinAnalyzer.reduce" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span></code>
 
 </h3>
 
@@ -4115,7 +4117,7 @@ and generating a results dataframe for defined age groups over time (monthly and
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">725</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">725</span>
 <span class="normal">726</span>
 <span class="normal">727</span>
 <span class="normal">728</span>
@@ -4391,7 +4393,7 @@ Returns:</p>
 
               <details class="quote">
                 <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 55</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 55</span>
 <span class="normal"> 56</span>
 <span class="normal"> 57</span>
 <span class="normal"> 58</span>
@@ -4747,7 +4749,7 @@ interpolation_data.csv (if exp.run_mode == 'calibrun')</p>
 
               <details class="quote">
                 <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">305</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">305</span>
 <span class="normal">306</span>
 <span class="normal">307</span>
 <span class="normal">308</span>
@@ -5109,7 +5111,7 @@ interpolation_data.csv (if exp.run_mode == 'calibrun')</p>
 
 
 <h3 id="EMOD.analyze_sim.TimeavrgAgebinAnalyzer.__init__" class="doc doc-heading">
-            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">expt_name</span><span class="p">,</span> <span class="n">sweep_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">working_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">1920</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">burnin</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">expt_name</span><span class="p">,</span> <span class="n">sweep_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">working_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">1920</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">burnin</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
@@ -5120,7 +5122,7 @@ interpolation_data.csv (if exp.run_mode == 'calibrun')</p>
 
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">327</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">327</span>
 <span class="normal">328</span>
 <span class="normal">329</span>
 <span class="normal">330</span>
@@ -5163,7 +5165,7 @@ interpolation_data.csv (if exp.run_mode == 'calibrun')</p>
 
 
 <h3 id="EMOD.analyze_sim.TimeavrgAgebinAnalyzer.map" class="doc doc-heading">
-            <code class="highlight language-python"><span class="nb">map</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="nb">map</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">simulation</span><span class="p">)</span></code>
 
 </h3>
 
@@ -5228,7 +5230,7 @@ interpolation_data.csv (if exp.run_mode == 'calibrun')</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">345</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">345</span>
 <span class="normal">346</span>
 <span class="normal">347</span>
 <span class="normal">348</span>
@@ -5329,7 +5331,7 @@ interpolation_data.csv (if exp.run_mode == 'calibrun')</p>
 
 
 <h3 id="EMOD.analyze_sim.TimeavrgAgebinAnalyzer.reduce" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span></code>
 
 </h3>
 
@@ -5386,7 +5388,7 @@ interpolation_data.csv (if exp.run_mode == 'calibrun')</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">392</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">392</span>
 <span class="normal">393</span>
 <span class="normal">394</span>
 <span class="normal">395</span>
@@ -5574,7 +5576,7 @@ interpolation_data.csv (if exp.run_mode == 'calibrun')</p>
 
 
 <h2 id="EMOD.analyze_sim.parse_args" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">parse_args</span><span class="p">()</span></code>
+            <code class=" language-python"><span class="n">parse_args</span><span class="p">()</span></code>
 
 </h2>
 
@@ -5620,7 +5622,7 @@ experiment ID is optional and is necessary for EMOD runs.</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>

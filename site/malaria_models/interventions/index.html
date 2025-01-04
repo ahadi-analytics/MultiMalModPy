@@ -48,7 +48,7 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                <li class="toctree-l1"><a class="" href="../../_index.md">Home</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Malaria models</span></p>
@@ -61,27 +61,13 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Interventions</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#vector-control">Vector control</a>
+    <li class="toctree-l2"><a class="reference internal" href="#case-management">Case management</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#insecticide-treated-bed-nets-itn">Insecticide treated bed nets (ITN)</a>
+    <li class="toctree-l3"><a class="reference internal" href="#emod">EMOD</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#indoor-residual-spraying-irs">Indoor residual spraying (IRS)</a>
+    <li class="toctree-l3"><a class="reference internal" href="#malariasimulation">malariasimulation</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#larval-source-management-lsm">Larval Source Management (LSM)</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#chemoprevention">Chemoprevention</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#seasonal-malaria-chemoprevention-smc">Seasonal Malaria Chemoprevention (SMC)</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#perennial-malaria-chemoprevention-pmc">Perennial Malaria Chemoprevention (PMC)</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#vaccine">Vaccine</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#malaria-vaccine">Malaria vaccine</a>
+    <li class="toctree-l3"><a class="reference internal" href="#openmalaria">OpenMalaria</a>
     </li>
         </ul>
     </li>
@@ -89,33 +75,35 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../core_parameters/">Core parameters</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../parameter-glossary/">Parameter Glossary</a>
-                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation and requirements</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configure MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">Input parameters and predefined options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/model_specificities/">Model specific options</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/_index/">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
+                  <li class="toctree-l1"><a class="" href="../../guide/setup.md">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/run_sim/">Run simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/launch_and_run/">Launch simulations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Visualize outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibrate transmission targets</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specificities</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/development/">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -224,319 +212,323 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="interventions">Interventions</h1>
-<p>This site is under construction ...</p>
+<p>This page provides an overview to the available interventions and their implementation in each model <em>as used in
+MultiMalModPy</em>.<br />
+The function and implementation/use in the framework can be found in the <a href="">API</a>, specifically the <code>intervention.py</code>
+script for each model.</p>
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>⚠️NOTE:</em></strong> 
+  For latest and complete documentation, please visit the documentation sites from the maintaining institutions under the provided links.
+</div>
+
+<p><strong>Other interventions than case management are not part of the initial release and will be added in near future.</strong></p>
+<h2 id="case-management">Case management</h2>
+<p>Each model simulates case management differently and has a different definition of a malaria case.</p>
+<p>🚩 <strong>Model alignment and implementation in MultiMalModPy:</strong> <br />
+<em>Box is checked if aligned</em>  </p>
+<p>✗ <strong>Mode of action</strong>   <em>The level of detail varies across the models which cannot be aligned</em><br />
+ ✗ <strong>Case definition</strong>   <em>The case definition for each model has been checked and defaults for each model were kept.</em><br />
+ ✔ <strong>Drug used</strong>   <em>All models use ACT as the first line treatment for uncomplicated malaria.</em><br />
+ ✔ <strong>Coverage</strong>   <em>Treatment coverage is implemented differently in each model and was aligned to correspond to a 14 day coverage.</em><br />
+ ✔ <strong>Target population</strong>   <em>Whole population targeted and treated equally, i.e. no distinction by age.</em><br />
+ ✔ <strong>Resistance</strong>   <em>Drug resistance not included.</em><br />
+ ✔ <strong>Deployment time and duration</strong>   <em>Intervention starts from the beginning of the simulation and stays constant throughout.</em>  </p>
+<h3 id="emod">EMOD</h3>
 <ul>
-<li>EMOD<ul>
-<li><a href="https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/malaria-scenarios.html">malaria model scenarios</a></li>
-<li><a href="https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/vector-scenarios.html">vector model scenarios</a></li>
+<li>Documentation main
+  page:<a href="https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/malaria-model-antimalarial-drugs.html">malaria-model-antimalarial-drugs</a>  </li>
+<li>Function: <a href="https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/interventions/treatment_seeking.py">treatment_seeking.py</a>  </li>
+<li>Related publications: <a href="https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-015-0887-y">Gerardin et al 2015</a> </li>
+<li>Additional: <a href="https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/malaria_drug_params.csv">malaria_drug_params.csv</a>  </li>
+</ul>
+<details><summary><span>treatment_seeking</span></summary>   
+<p>
+
+
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">add_treatment_seeking</span><span class="p">(</span><span class="n">campaign</span><span class="p">,</span>
+                          <span class="n">start_day</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                          <span class="n">targets</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">drug</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">node_ids</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">ind_property_restrictions</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">drug_ineligibility_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                          <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                          <span class="n">broadcast_event_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Received_Treatment&#39;</span><span class="p">):</span>
+    <span class="n">camp_events</span> <span class="o">=</span> <span class="n">_get_events</span><span class="p">(</span><span class="n">campaign</span><span class="o">=</span><span class="n">campaign</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">start_day</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span> <span class="n">drug</span><span class="o">=</span><span class="n">drug</span><span class="p">,</span> <span class="n">node_ids</span><span class="o">=</span><span class="n">node_ids</span><span class="p">,</span>
+                              <span class="n">ind_property_restrictions</span><span class="o">=</span><span class="n">ind_property_restrictions</span><span class="p">,</span>
+                              <span class="n">drug_ineligibility_duration</span><span class="o">=</span><span class="n">drug_ineligibility_duration</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+                              <span class="n">broadcast_event_name</span><span class="o">=</span><span class="n">broadcast_event_name</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">camp_events</span><span class="p">:</span>
+        <span class="n">campaign</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</code></pre></div>
+
+
+
+
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="nv">targets</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nv">list</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="nv">dictionaries</span><span class="w"> </span><span class="nv">defining</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">trigger</span><span class="w"> </span><span class="nv">event</span><span class="w"> </span><span class="nv">and</span><span class="w"> </span><span class="nv">coverage</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">and</span>
+<span class="w">    </span><span class="nv">properties</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="nv">individuals</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">target</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">intervention</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">all</span><span class="w"> </span><span class="nv">possible</span><span class="w"> </span><span class="nv">options</span><span class="w"> </span><span class="nv">being</span>:
+<span class="w">    </span>[{<span class="s2">&quot;trigger&quot;</span>:<span class="s2">&quot;NewClinicalCase&quot;</span>,<span class="s2">&quot;coverage&quot;</span>:<span class="mi">0</span>.<span class="mi">8</span>,<span class="s2">&quot;agemin&quot;</span>:<span class="mi">15</span>,<span class="s2">&quot;agemax&quot;</span>:<span class="mi">70</span>,<span class="w"> </span><span class="s2">&quot;rate&quot;</span>:<span class="mi">0</span>.<span class="mi">3</span>}]
+<span class="w">    </span><span class="s2">&quot;rate&quot;</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">inverse</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">average</span><span class="w"> </span><span class="nv">delay</span><span class="w"> </span><span class="nv">in</span><span class="w"> </span><span class="nv">time</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">treatment</span><span class="w"> </span><span class="nv">seeking</span><span class="w"> </span><span class="nv">from</span><span class="w"> </span><span class="nv">an</span><span class="w"> </span><span class="nv">exponential</span><span class="w"> </span><span class="nv">distribution</span>
+<span class="w">    </span><span class="s2">&quot;trigger&quot;</span><span class="w"> </span><span class="nv">must</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">defined</span>,<span class="w"> </span><span class="nv">but</span><span class="w"> </span><span class="nv">everything</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="nv">has</span><span class="w"> </span><span class="nv">defaults</span>:
+<span class="w">    </span><span class="nv">coverage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>,<span class="w"> </span><span class="nv">affects</span><span class="w"> </span><span class="nv">all</span>
+<span class="w">    </span><span class="nv">agemin</span><span class="o">/</span><span class="nv">agemax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">/</span><span class="mi">125</span>,<span class="w"> </span><span class="nv">affects</span><span class="w"> </span><span class="nv">all</span>
+<span class="w">    </span><span class="nv">rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>,<span class="w"> </span><span class="nv">no</span><span class="w"> </span><span class="nv">delay</span>,<span class="w"> </span><span class="nv">seek</span><span class="w"> </span><span class="nv">treatment</span><span class="w"> </span><span class="nv">immediately</span>
+</code></pre></div>
+
+
+
+</p>
+</details>
+
+<details><summary><span>json snippet (example)</span></summary>   
+<p>
+
+
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CampaignEvent&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;Event_Coordinator_Config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;StandardInterventionDistributionEventCoordinator&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Demographic_Coverage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Individual_Selection_Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DEMOGRAPHIC_COVERAGE&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Intervention_Config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NodeLevelHealthTriggeredIV&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Actual_IndividualIntervention_Config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DelayedIntervention&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Actual_IndividualIntervention_Configs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AntimalarialDrug&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Cost_To_Consumer&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Disqualifying_Properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">            </span><span class="nt">&quot;Dont_Allow_Duplicates&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Drug_Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Artemether&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Intervention_Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AntimalarialDrug_Artemether&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;New_Property_Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">          </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AntimalarialDrug&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Cost_To_Consumer&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Disqualifying_Properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">            </span><span class="nt">&quot;Dont_Allow_Duplicates&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Drug_Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lumefantrine&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Intervention_Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AntimalarialDrug_Lumefantrine&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;New_Property_Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">          </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BroadcastEvent&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Broadcast_Event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Received_Treatment&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Disqualifying_Properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">            </span><span class="nt">&quot;Dont_Allow_Duplicates&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Intervention_Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BroadcastEvent&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;New_Property_Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;Coverage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Delay_Period_Distribution&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EXPONENTIAL_DISTRIBUTION&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Delay_Period_Exponential&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.3333333333333335</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Disqualifying_Properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">        </span><span class="nt">&quot;Dont_Allow_Duplicates&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;Intervention_Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DelayedIntervention&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;New_Property_Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;Blackout_Event_Trigger&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Blackout_On_First_Occurrence&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Blackout_Period&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Demographic_Coverage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Disqualifying_Properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">&quot;Distribute_On_Return_Home&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Dont_Allow_Duplicates&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Intervention_Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NodeLevelHealthTriggeredIV&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;New_Property_Value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Node_Property_Restrictions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">&quot;Property_Restrictions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">&quot;Target_Age_Max&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">115</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Target_Age_Min&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Target_Demographic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ExplicitAgeRanges&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Target_Gender&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;All&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Target_Residents_Only&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;Targeting_Config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;HasIP&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;HasIntervention&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;IsPregnant&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="nt">&quot;TargetingLogic&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;Trigger_Condition_List&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;NewClinicalCase&quot;</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;Node_Property_Restrictions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">    </span><span class="nt">&quot;Number_Repetitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Property_Restrictions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">    </span><span class="nt">&quot;Property_Restrictions_Within_Node&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">    </span><span class="nt">&quot;Target_Demographic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Everyone&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Target_Gender&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;All&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Target_Residents_Only&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Targeting_Config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;HasIP&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">      </span><span class="nt">&quot;HasIntervention&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">      </span><span class="nt">&quot;IsPregnant&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">      </span><span class="nt">&quot;TargetingLogic&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;Timesteps_Between_Repetitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Nodeset_Config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NodeSetAll&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;Start_Day&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+
+</p>
+</details>
+
+<p><br></p>
+<h3 id="malariasimulation">malariasimulation</h3>
+<ul>
+<li>Documentation main page: <a href="https://mrc-ide.github.io/malariasimulation/articles/Treatment.html">treatment</a></li>
+<li>Function: <a href="https://github.com/mrc-ide/malariasimulation/blob/master/R/drug_parameters.R#L49">set_clinical_treatment</a></li>
+<li>Related publications:  <a href="https://doi.org/10.1038/ncomms6606">Okell et al (2014).</a></li>
+</ul>
+<details><summary><span>set_clinical_treatment</span></summary>   
+<p>
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">set_clinical_treatment</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span><span class="w"> </span><span class="n">drug</span><span class="p">,</span><span class="w"> </span><span class="n">timesteps</span><span class="p">,</span><span class="w"> </span><span class="n">coverages</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stopifnot</span><span class="p">(</span><span class="nf">all</span><span class="p">(</span><span class="n">coverages</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="n">coverages</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+<span class="w">  </span><span class="n">n_drugs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">parameters</span><span class="o">$</span><span class="n">drug_efficacy</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">if </span><span class="p">(</span><span class="n">drug</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">drug</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">n_drugs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">stop</span><span class="p">(</span><span class="s">&#39;Drug index is invalid, please set drugs using set_drugs&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">drug_index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_drugs</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">drug</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">if </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">drug_index</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">drug_index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_drugs</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_drugs</span><span class="p">[[</span><span class="n">drug_index</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">drug</span>
+<span class="w">  </span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_timesteps</span><span class="p">[[</span><span class="n">drug_index</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">timesteps</span>
+<span class="w">  </span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_coverages</span><span class="p">[[</span><span class="n">drug_index</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">coverages</span>
+<span class="w">  </span><span class="n">last_timestep</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="nf">unlist</span><span class="p">(</span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_timesteps</span><span class="p">))</span>
+
+<span class="w">  </span><span class="nf">for </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="n">last_timestep</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">if </span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="nf">get_treatment_coverages</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">))</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nf">stop</span><span class="p">(</span><span class="s">&#39;The sum of drug coverages cannot be greater than 1 at any timestep&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">parameters</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+
+</p>
+</details>
+
+<p><br></p>
+<h3 id="openmalaria">OpenMalaria</h3>
+<ul>
+<li>Documentation main page:<ul>
+<li><a href="https://github.com/SwissTPH/openmalaria/wiki/ScenarioHealthSystem">ScenarioHealthSystem</a></li>
+<li><a href="https://github.com/SwissTPH/openmalaria/wiki/ScenarioPharmacology#antimalarial-drug-modelling">ScenarioPharmacology</a></li>
 </ul>
 </li>
-<li>malariasimulation<ul>
-<li>.</li>
+<li>Function: <a href="https://github.com/mrc-ide/malariasimulation/blob/master/R/drug_parameters.R#L49">set_clinical_treatment</a></li>
+<li>Related
+  publications:  <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0127818">Galactionova et al (2015).</a></li>
 </ul>
-</li>
-<li>OpenMalaria<ul>
-<li>.</li>
-</ul>
-</li>
-</ul>
-<h2 id="vector-control">Vector control</h2>
-<h3 id="insecticide-treated-bed-nets-itn">Insecticide treated bed nets (ITN)</h3>
-<table>
-<thead>
-<tr>
-<th>ITN</th>
-<th>EMOD</th>
-<th>malariasimulation</th>
-<th>OpenMalaria</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mode of action</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Efficacy and decay of efficacy</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Resistance</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Deployment, timing and frequency</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Target population</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Coverage (effective)</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h3 id="indoor-residual-spraying-irs">Indoor residual spraying (IRS)</h3>
-<table>
-<thead>
-<tr>
-<th>IRS</th>
-<th>EMOD</th>
-<th>malariasimulation</th>
-<th>OpenMalaria</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mode of action</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Efficacy and decay of efficacy</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Resistance</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Deployment, timing and frequency</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Target population</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Coverage (effective)</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h3 id="larval-source-management-lsm">Larval Source Management (LSM)</h3>
-<table>
-<thead>
-<tr>
-<th>LSM</th>
-<th>EMOD</th>
-<th>malariasimulation</th>
-<th>OpenMalaria</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mode of action</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Efficacy and decay of efficacy</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Resistance</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Deployment, timing and frequency</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Target population</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Coverage (effective)</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h2 id="chemoprevention">Chemoprevention</h2>
-<h3 id="seasonal-malaria-chemoprevention-smc">Seasonal Malaria Chemoprevention (SMC)</h3>
-<table>
-<thead>
-<tr>
-<th>SMC</th>
-<th>EMOD</th>
-<th>malariasimulation</th>
-<th>OpenMalaria</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mode of action</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Efficacy and decay of efficacy</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Resistance</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Deployment, timing and frequency</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Target population</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Coverage (effective)</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h3 id="perennial-malaria-chemoprevention-pmc">Perennial Malaria Chemoprevention (PMC)</h3>
-<table>
-<thead>
-<tr>
-<th>PMC</th>
-<th>EMOD</th>
-<th>malariasimulation</th>
-<th>OpenMalaria</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mode of action</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Efficacy and decay of efficacy</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Resistance</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Deployment, timing and frequency</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Target population</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Coverage (effective)</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h2 id="vaccine">Vaccine</h2>
-<h3 id="malaria-vaccine">Malaria vaccine</h3>
-<table>
-<thead>
-<tr>
-<th>Malaria vaccine</th>
-<th>EMOD</th>
-<th>malariasimulation</th>
-<th>OpenMalaria</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mode of action</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Efficacy and decay of efficacy</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Resistance</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Deployment, timing and frequency</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Target population</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Coverage (effective)</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<details><summary><span>ImmediateOutcomes</span></summary>   
+<p>
+
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>⚠️ NOTE:</em></strong> 
+  Multiple options for simulating 'case management' exist. Below is the  implementation as used in MultiMalModPy.
+</div>  
+
+
+<div class="codehilite"><pre><span></span><code><span class="nt">&lt;ImmediateOutcomes</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;example name&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;drugRegimen</span><span class="w"> </span><span class="na">firstLine=</span><span class="s">&quot;ACT&quot;</span><span class="w"> </span><span class="na">inpatient=</span><span class="s">&quot;QN&quot;</span><span class="w"> </span><span class="na">secondLine=</span><span class="s">&quot;ACT&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;initialACR&gt;</span>
+<span class="w">        </span><span class="nt">&lt;ACT</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;1.0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;QN</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;1.0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;selfTreatment</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;0.0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/initialACR&gt;</span>
+<span class="w">    </span><span class="nt">&lt;compliance&gt;</span>
+<span class="w">        </span><span class="nt">&lt;ACT</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;1.00&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;selfTreatment</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;1.0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/compliance&gt;</span>
+<span class="w">    </span><span class="nt">&lt;nonCompliersEffective&gt;</span>
+<span class="w">        </span><span class="nt">&lt;ACT</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;selfTreatment</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/nonCompliersEffective&gt;</span>
+<span class="w">    </span><span class="nt">&lt;treatmentActions&gt;</span><span class="w"> </span><span class="cm">&lt;!-- only from schema 32 --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;ACT</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;clear blood-stage infections&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;clearInfections</span><span class="w"> </span><span class="na">stage=</span><span class="s">&quot;blood&quot;</span><span class="w"> </span><span class="na">timesteps=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/ACT&gt;</span>
+<span class="w">        </span><span class="nt">&lt;QN</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;clear blood-stage infections&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;clearInfections</span><span class="w"> </span><span class="na">stage=</span><span class="s">&quot;blood&quot;</span><span class="w"> </span><span class="na">timesteps=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/QN&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/treatmentActions&gt;</span>
+<span class="w">    </span><span class="nt">&lt;pSeekOfficialCareUncomplicated1</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;0.04&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;pSelfTreatUncomplicated</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;0.0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;pSeekOfficialCareUncomplicated2</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;0.04&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;pSeekOfficialCareSevere</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;0.48&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/ImmediateOutcomes&gt;</span>
+</code></pre></div>
+
+
+
+</p>
+</details>
+
+<p><br></p>
+<!---
+
+## Vector control
+
+### Insecticide treated bed nets (ITN)
+
+#### EMOD
+#### malariasimulation
+#### OpenMalaria
+
+### Indoor residual spraying (IRS)
+
+#### EMOD
+#### malariasimulation
+#### OpenMalaria
+
+### Larval Source Management (LSM)
+
+#### EMOD
+#### malariasimulation
+#### OpenMalaria
+
+
+## Chemoprevention
+
+### Seasonal Malaria Chemoprevention (SMC)
+
+#### EMOD
+#### malariasimulation
+#### OpenMalaria
+
+
+### Perennial Malaria Chemoprevention (PMC)
+
+#### EMOD
+#### malariasimulation
+#### OpenMalaria
+
+
+## Vaccine
+
+### Malaria vaccine
+
+#### EMOD
+#### malariasimulation
+#### OpenMalaria
+
+-->
               
             </div>
           </div><footer>

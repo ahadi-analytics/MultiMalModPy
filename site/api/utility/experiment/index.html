@@ -48,7 +48,7 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                <li class="toctree-l1"><a class="" href="../../../_index.md">Home</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Malaria models</span></p>
@@ -63,33 +63,35 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/core_parameters/">Core parameters</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/parameter-glossary/">Parameter Glossary</a>
-                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation and requirements</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configuration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configure MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/parameters/">Input parameters and predefined options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/model_specificities/">Model specific options</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/_index/">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/parameters/">Input parameters</a>
+                  <li class="toctree-l1"><a class="" href="../../../guide/setup.md">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/run_sim/">Run simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/launch_and_run/">Launch simulations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/postprocess/">Postprocess outputs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/plots/">Visualize outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/calibration/">Calibration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/calibration/">Calibrate transmission targets</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/model_specificities/">Model specificities</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/development/">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -221,10 +223,11 @@ The constructor initializes the LoadExperiment object with basic settings, user 
 and manifest-related attributes.
 It also configures the run mode and parameters to vary based on the provided arguments.</p>
 <h3 id="import-statements">Import Statements</h3>
-<pre><code>import manifest
-from utility.helper import *
-import warnings
-</code></pre>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">manifest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">utility.helper</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+</code></pre></div>
+
 <h3 id="methods">Methods</h3>
 <ol>
 <li>
@@ -261,28 +264,27 @@ Updates the attributes of the LoadExperiment instance with new values provided a
 <li><strong><code>burnin_directory</code></strong>: Directory for burn-in outputs (default is None).</li>
 </ul>
 <h2 id="example">Example</h2>
-<pre><code>import argparse
-from manifest import Manifest
-from load_experiment import LoadExperiment
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">manifest</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">Manifest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">load_experiment</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">LoadExperiment</span>
 
-# Example of argument parsing
-parser = argparse.ArgumentParser(description='Load Experiment Settings')
-parser.add_argument('--suite', required=True, help='Suite name for the experiment')
-parser.add_argument('--expname', required=True, help='Name of the experiment')
-# Add additional arguments as necessary
-args = parser.parse_args()
+<span class="c1"># Example of argument parsing</span>
+<span class="n">parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Load Experiment Settings&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--suite&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="w"> </span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Suite name for the experiment&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--expname&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="w"> </span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name of the experiment&#39;</span><span class="p">)</span>
+<span class="c1"># Add additional arguments as necessary</span>
+<span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
-# Load manifest
-manifest = Manifest()  # Initialize the manifest with appropriate configurations
+<span class="c1"># Load manifest</span>
+<span class="n">manifest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Manifest</span><span class="p">()</span><span class="w">  </span><span class="c1"># Initialize the manifest with appropriate configurations</span>
 
-# Create LoadExperiment object
-experiment = LoadExperiment(args, manifest)
+<span class="c1"># Create LoadExperiment object</span>
+<span class="n">experiment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoadExperiment</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">manifest</span><span class="p">)</span>
 
-# Accessing attributes
-print(experiment.SUITEname)
-print(experiment.output_type)
-
-</code></pre>
+<span class="c1"># Accessing attributes</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">SUITEname</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">output_type</span><span class="p">)</span>
+</code></pre></div>
               
             </div>
           </div><footer>

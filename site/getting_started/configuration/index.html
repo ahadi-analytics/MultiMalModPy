@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/getting_started/configuration/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Configuration - MultiMalModPy</title>
+    <title>Configure MultiMalModPy - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Configuration";
+        var mkdocs_page_name = "Configure MultiMalModPy";
         var mkdocs_page_input_path = "getting_started\\configuration.md";
         var mkdocs_page_url = "/MultiMalModPy/getting_started/configuration/";
       </script>
@@ -48,7 +48,7 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                <li class="toctree-l1"><a class="" href="../../_index.md">Home</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Malaria models</span></p>
@@ -63,16 +63,14 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/parameter-glossary/">Parameter Glossary</a>
-                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation and requirements</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Configuration</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Configure MultiMalModPy</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#configuration-parameters">Configuration parameters</a>
     </li>
@@ -80,22 +78,26 @@
     </li>
     </ul>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters and predefined options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/_index/">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
+                  <li class="toctree-l1"><a class="" href="../../guide/setup.md">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/run_sim/">Run simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/launch_and_run/">Launch simulations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Visualize outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibrate transmission targets</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specificities</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/development/">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -193,7 +195,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Getting started</li>
-      <li class="breadcrumb-item active">Configuration</li>
+      <li class="breadcrumb-item active">Configure MultiMalModPy</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/getting_started/configuration.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -203,7 +205,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="configuration">Configuration</h1>
+                <h1 id="first-time-user-configurations">First time user configurations</h1>
 <p>Simulations are assumed to run on a Linux based high performance cluster (HPC), the framework is not designed for  running simulations locally</p>
 <p>When running for the first time, open and edit <code>manifest.py</code> to enter HPC specification and default directories</p>
 <p>This Python script is designed for configuring input file and directory settings for running EMOD (Epidemiological Modeling Software). Users can modify settings to tailor the environment to their specific computational platform and requirements.</p>
@@ -331,8 +333,8 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../installation/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../guide/" class="btn btn-neutral float-right" title="Overview">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../installation/" class="btn btn-neutral float-left" title="Installation and requirements"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../parameters/" class="btn btn-neutral float-right" title="Input parameters and predefined options">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -363,7 +365,7 @@
       <span><a href="../installation/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../../guide/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../parameters/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

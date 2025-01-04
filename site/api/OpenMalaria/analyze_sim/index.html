@@ -48,7 +48,7 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                <li class="toctree-l1"><a class="" href="../../../_index.md">Home</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Malaria models</span></p>
@@ -63,33 +63,35 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/core_parameters/">Core parameters</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/parameter-glossary/">Parameter Glossary</a>
-                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation and requirements</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configuration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configure MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/parameters/">Input parameters and predefined options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/model_specificities/">Model specific options</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/_index/">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/parameters/">Input parameters</a>
+                  <li class="toctree-l1"><a class="" href="../../../guide/setup.md">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/run_sim/">Run simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/launch_and_run/">Launch simulations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/postprocess/">Postprocess outputs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/plots/">Visualize outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/calibration/">Calibration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/calibration/">Calibrate transmission targets</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/model_specificities/">Model specificities</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/development/">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -261,7 +263,7 @@
 
 
 <h2 id="OpenMalaria.analyze_sim.AnnualAgebinAnalyzer" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">AnnualAgebinAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mmi</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="p">,</span> <span class="n">grp_channels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">AnnualAgebinAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mmi</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="p">,</span> <span class="n">grp_channels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
@@ -368,7 +370,7 @@ and save a results dataframe for defined age groups over time (years).</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">573</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">573</span>
 <span class="normal">574</span>
 <span class="normal">575</span>
 <span class="normal">576</span>
@@ -619,7 +621,7 @@ and save a results dataframe for defined age groups over time (years).</p>
 
 
 <h2 id="OpenMalaria.analyze_sim.BaseAnalyzer" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">BaseAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">saveExtract</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compr</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">BaseAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">saveExtract</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compr</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span></code>
 
 </h2>
 
@@ -659,7 +661,7 @@ Saves:
 </table>
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">313</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">313</span>
 <span class="normal">314</span>
 <span class="normal">315</span>
 <span class="normal">316</span>
@@ -766,7 +768,7 @@ Saves:
 
 
 <h2 id="OpenMalaria.analyze_sim.CCStepAnalyzer" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">CCStepAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">compr</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">CCStepAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">compr</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span></code>
 
 </h2>
 
@@ -786,7 +788,7 @@ Returns:
 
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 955</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 955</span>
 <span class="normal"> 956</span>
 <span class="normal"> 957</span>
 <span class="normal"> 958</span>
@@ -1039,7 +1041,7 @@ Returns:
 
 
 <h2 id="OpenMalaria.analyze_sim.FiveDayAgebinAnalyzer" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">FiveDayAgebinAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mmi</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">grp_channels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">FiveDayAgebinAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mmi</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">grp_channels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1138,7 +1140,7 @@ and save a results dataframe for defined age groups over time (5day and years).<
 </table>
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">826</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">826</span>
 <span class="normal">827</span>
 <span class="normal">828</span>
 <span class="normal">829</span>
@@ -1401,7 +1403,7 @@ and save a results dataframe for defined age groups over time (5day and years).<
 
 
 <h2 id="OpenMalaria.analyze_sim.InputEIRAnalyzer" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">InputEIRAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">compr</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">InputEIRAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">compr</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1474,7 +1476,7 @@ and save a results dataframe for defined age groups over time (5day and years).<
 
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">192</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">192</span>
 <span class="normal">193</span>
 <span class="normal">194</span>
 <span class="normal">195</span>
@@ -1721,7 +1723,7 @@ and save a results dataframe for defined age groups over time (5day and years).<
 
 
 <h2 id="OpenMalaria.analyze_sim.MonthlyAgebinAnalyzer" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">MonthlyAgebinAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mmi</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="p">,</span> <span class="n">grp_channels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">MonthlyAgebinAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mmi</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="p">,</span> <span class="n">grp_channels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1828,7 +1830,7 @@ and save a results dataframe for defined age groups over time (month and years).
 </table>
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">696</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">696</span>
 <span class="normal">697</span>
 <span class="normal">698</span>
 <span class="normal">699</span>
@@ -2093,7 +2095,7 @@ and save a results dataframe for defined age groups over time (month and years).
 
 
 <h2 id="OpenMalaria.analyze_sim.SurveyAllAgeAnalyzer" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">SurveyAllAgeAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">compr</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">SurveyAllAgeAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mm</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">compr</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span></code>
 
 </h2>
 
@@ -2114,7 +2116,7 @@ Returns:
 
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">364</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">364</span>
 <span class="normal">365</span>
 <span class="normal">366</span>
 <span class="normal">367</span>
@@ -2255,7 +2257,7 @@ Returns:
 
 
 <h2 id="OpenMalaria.analyze_sim.TimeavrgAgebinAnalyzer" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">TimeavrgAgebinAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mmi</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="p">,</span> <span class="n">grp_channels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">TimeavrgAgebinAnalyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">mmi</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="p">,</span> <span class="n">grp_channels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">age_groups_aggregates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
@@ -2355,7 +2357,7 @@ interpolation_data.csv (if exp.run_mode == 'calibrun')</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">432</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">432</span>
 <span class="normal">433</span>
 <span class="normal">434</span>
 <span class="normal">435</span>
@@ -2642,7 +2644,7 @@ interpolation_data.csv (if exp.run_mode == 'calibrun')</p>
 
 
 <h2 id="OpenMalaria.analyze_sim.add_measure_names" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">add_measure_names</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">mm</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">add_measure_names</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">mm</span><span class="p">)</span></code>
 
 </h2>
 
@@ -2658,7 +2660,7 @@ Returns:
 
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 99</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 99</span>
 <span class="normal">100</span>
 <span class="normal">101</span>
 <span class="normal">102</span>
@@ -2697,7 +2699,7 @@ Returns:
 
 
 <h2 id="OpenMalaria.analyze_sim.format_df" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">format_df</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">format_df</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></code>
 
 </h2>
 
@@ -2708,7 +2710,7 @@ Returns:
 
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">77</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">77</span>
 <span class="normal">78</span>
 <span class="normal">79</span>
 <span class="normal">80</span>
@@ -2757,7 +2759,7 @@ Returns:
 
 
 <h2 id="OpenMalaria.analyze_sim.parse_args" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">parse_args</span><span class="p">()</span></code>
+            <code class=" language-python"><span class="n">parse_args</span><span class="p">()</span></code>
 
 </h2>
 
@@ -2805,7 +2807,7 @@ The job directory is required to locate the <code>exp.obj</code> file.</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
 <span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
@@ -2872,7 +2874,7 @@ The job directory is required to locate the <code>exp.obj</code> file.</p>
 
 
 <h2 id="OpenMalaria.analyze_sim.pivot_wider" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pivot_wider</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">names_from</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values_from</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">pivot_wider</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">names_from</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values_from</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
@@ -2890,7 +2892,7 @@ Returns:
 
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">157</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">157</span>
 <span class="normal">158</span>
 <span class="normal">159</span>
 <span class="normal">160</span>
@@ -2953,7 +2955,7 @@ Returns:
 
 
 <h2 id="OpenMalaria.analyze_sim.survey_to_date" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">survey_to_date</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">survey_to_date</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></code>
 
 </h2>
 
@@ -2973,7 +2975,7 @@ Raises:
 
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">116</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
 <span class="normal">119</span>
@@ -3060,7 +3062,7 @@ Raises:
 
 
 <h2 id="OpenMalaria.analyze_sim.to_df" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">to_df</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">to_df</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span></code>
 
 </h2>
 
@@ -3075,7 +3077,7 @@ Returns:
 
             <details class="quote">
               <summary>Source code in <code>OpenMalaria\analyze_sim.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">46</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">46</span>
 <span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/create_sim/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Create simulations - MultiMalModPy</title>
+    <title>Create sim - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Create simulations";
+        var mkdocs_page_name = "Create sim";
         var mkdocs_page_input_path = "guide\\create_sim.md";
         var mkdocs_page_url = "/MultiMalModPy/guide/create_sim/";
       </script>
@@ -48,7 +48,7 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                <li class="toctree-l1"><a class="" href="../../_index.md">Home</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Malaria models</span></p>
@@ -63,33 +63,35 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/parameter-glossary/">Parameter Glossary</a>
-                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation and requirements</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configuration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configure MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">Input parameters and predefined options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/model_specificities/">Model specific options</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../_index/">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters</a>
+                  <li class="toctree-l1"><a class="" href="../setup.md">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../run_sim/">Run simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../launch_and_run/">Launch simulations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../postprocess/">Postprocess outputs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../plots/">Visualize outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Calibration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Calibrate transmission targets</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specificities</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../development/">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -186,7 +188,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Create simulations</li>
+      <li class="breadcrumb-item active">Create sim</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/create_sim.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -196,46 +198,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="create-simulations">Create simulations</h1>
-<p>The <code>launch_sim.py</code> script launches simulation runs, with the possibility to change and
-edit parameters directly in the python script or to read in parameter values from a csv file.</p>
-<p>The configuration had been moved to the <code>helper.py</code> script, allowing the launch python script to overwrite parameters as
-needed.</p>
-<h2 id="scenarios-implemented">Scenarios implemented</h2>
-<p>Scenarios csvs are stored in the <code>scenario_inputs</code> sub-directory:</p>
-<ul>
-<li><code>baseline_eirsweep_noCM.csv</code>: most basic simulation without any interventions or treatment of cases<br />
-  Forthcoming examples may include:</li>
-<li><code>baseline_eirsweep_CM.csv</code>:</li>
-<li><code>baseline_eirchange_noCM.csv</code>:</li>
-<li><code>cc_step_test.csv</code>: ...</li>
-<li><code>smc_eirsweep_noCM.csv</code>: ...</li>
-<li>...</li>
-</ul>
-<p>Details provided
-in <a href="https://github.com/ahadi-analytics/model-characterization/blob/main/scenario_inputs/README.md">scenario_inputs/README</a></p>
-<p>Example CSV files that specify different simulation experiments to run.
-File and scenario specifications most basic simulation without any interventions or treatment of cases.</p>
-<p><strong>baseline_eirsweep_noCM.csv</strong> <br />
-- No interventions<br />
-- No case management<br />
-- Varying levels of transmission intensity, defined as EIR or equivalent parameter, that stay constant over the total simulation period<br />
-- Seasonality: perennial, seasonal<br />
-- Entomology mode: dynamic, forced  </p>
-<p><strong>baseline_eirsweep_CM.csv</strong><br />
-- No interventions<br />
-- Varying levels of case management, not changing over time<br />
-- Varying levels of transmission intensity, defined as EIR or equivalent parameter, that stay constant over the total simulation period<br />
-- Seasonality: perennial, seasonal<br />
-- Entomology mode: dynamic, forced  </p>
-<p><strong>baseline_eirchange_noCM.csv</strong>  <br />
-- No interventions<br />
-- Varying levels of case management, not changing over time<br />
-- Varying or single levels of transmission intensity, defined as EIR or equivalent parameter, that includes a step change inbetween the simulation period<br />
-- Seasonality: perennial (possibly seasonal)<br />
-- Entomology mode: dynamic (possibly forced)  </p>
-<h2 id="customize-simulations">Customize simulations</h2>
-<p>Coming soon..</p>
+                
               
             </div>
           </div><footer>

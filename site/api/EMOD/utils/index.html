@@ -48,7 +48,7 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                <li class="toctree-l1"><a class="" href="../../../_index.md">Home</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Malaria models</span></p>
@@ -63,33 +63,35 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/core_parameters/">Core parameters</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../malaria_models/parameter-glossary/">Parameter Glossary</a>
-                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation and requirements</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configuration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configure MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/parameters/">Input parameters and predefined options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/model_specificities/">Model specific options</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/_index/">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/parameters/">Input parameters</a>
+                  <li class="toctree-l1"><a class="" href="../../../guide/setup.md">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/run_sim/">Run simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/launch_and_run/">Launch simulations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/postprocess/">Postprocess outputs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/plots/">Visualize outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/calibration/">Calibration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/calibration/">Calibrate transmission targets</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/model_specificities/">Model specificities</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/development/">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -251,7 +253,7 @@
 
 
 <h2 id="EMOD.utils.build_demog" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">build_demog</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">build_demog</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span></code>
 
 </h2>
 
@@ -262,7 +264,7 @@
 
             <details class="quote">
               <summary>Source code in <code>EMOD\utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">206</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">206</span>
 <span class="normal">207</span>
 <span class="normal">208</span>
 <span class="normal">209</span>
@@ -313,7 +315,7 @@
 
 
 <h2 id="EMOD.utils.build_standard_campaign_object" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">build_standard_campaign_object</span><span class="p">()</span></code>
+            <code class=" language-python"><span class="n">build_standard_campaign_object</span><span class="p">()</span></code>
 
 </h2>
 
@@ -328,7 +330,7 @@ Returns:
 
             <details class="quote">
               <summary>Source code in <code>EMOD\utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">139</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">139</span>
 <span class="normal">140</span>
 <span class="normal">141</span>
 <span class="normal">142</span>
@@ -359,7 +361,7 @@ Returns:
 
 
 <h2 id="EMOD.utils.config_sweep_builder" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">config_sweep_builder</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">config_sweep_builder</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">)</span></code>
 
 </h2>
 
@@ -430,7 +432,7 @@ and configures EMOD simulation parameters related to demographics and mortality.
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">229</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">229</span>
 <span class="normal">230</span>
 <span class="normal">231</span>
 <span class="normal">232</span>
@@ -533,7 +535,7 @@ and configures EMOD simulation parameters related to demographics and mortality.
 
 
 <h2 id="EMOD.utils.config_sweep_builder_pickup" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">config_sweep_builder_pickup</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df_pickup</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">config_sweep_builder_pickup</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df_pickup</span><span class="p">)</span></code>
 
 </h2>
 
@@ -628,7 +630,7 @@ It sets up intervention strategies, serialized population paths, and entomology-
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">278</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">278</span>
 <span class="normal">279</span>
 <span class="normal">280</span>
 <span class="normal">281</span>
@@ -753,7 +755,7 @@ It sets up intervention strategies, serialized population paths, and entomology-
 
 
 <h2 id="EMOD.utils.config_task" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">config_task</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">config_task</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span></code>
 
 </h2>
 
@@ -854,7 +856,7 @@ and configuring simulation parameters.</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">101</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">101</span>
 <span class="normal">102</span>
 <span class="normal">103</span>
 <span class="normal">104</span>
@@ -935,7 +937,7 @@ and configuring simulation parameters.</p>
 
 
 <h2 id="EMOD.utils.set_config_parameters" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">set_config_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">set_config_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></code>
 
 </h2>
 
@@ -951,7 +953,7 @@ Returns:
 
             <details class="quote">
               <summary>Source code in <code>EMOD\utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">152</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">152</span>
 <span class="normal">153</span>
 <span class="normal">154</span>
 <span class="normal">155</span>
@@ -982,7 +984,7 @@ Returns:
 
 
 <h2 id="EMOD.utils.set_emod_exp_parameters" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">set_emod_exp_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">set_emod_exp_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1075,7 +1077,7 @@ on the experiment step (e.g., "burnin" or "pickup").</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">165</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">165</span>
 <span class="normal">166</span>
 <span class="normal">167</span>
 <span class="normal">168</span>
@@ -1162,7 +1164,7 @@ on the experiment step (e.g., "burnin" or "pickup").</p>
 
 
 <h2 id="EMOD.utils.submit_analyze_EMOD" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">submit_analyze_EMOD</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;04:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">submit_analyze_EMOD</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;04:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1250,7 +1252,7 @@ outputs. It sets up the job environment, defines dependencies on previous jobs, 
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">338</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">338</span>
 <span class="normal">339</span>
 <span class="normal">340</span>
 <span class="normal">341</span>
@@ -1371,7 +1373,7 @@ outputs. It sets up the job environment, defines dependencies on previous jobs, 
 
 
 <h2 id="EMOD.utils.submit_run_EMOD" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">submit_run_EMOD</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">)</span></code>
+            <code class=" language-python"><span class="n">submit_run_EMOD</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1471,7 +1473,7 @@ for execution on the provided platform, and the experiment analysis is scheduled
 </table>
             <details class="quote">
               <summary>Source code in <code>EMOD\utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>

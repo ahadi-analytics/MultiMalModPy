@@ -3,9 +3,9 @@
 ## Default figures 
 
 The framework comes with three standardized plotting scripts:    
--  [plot_timeseries.py](../api/plotter/plot_timeseries.md) the timeseries for selected outcome measures,   
--  [plot_agecurves.py](../api/plotter/plot_agecurves.md) the relation of outcome measures by age groups,  
--  [plot_relationship.py](../api/plotter/plot_relationship.md) relationship between disease transmission and disease outcomes.  
+-  [plot_timeseries.py](../../_scratch/api/plotter/plot_timeseries.md) the timeseries for selected outcome measures,   
+-  [plot_agecurves.py](../../_scratch/api/plotter/plot_agecurves.md) the relation of outcome measures by age groups,  
+-  [plot_relationship.py](../../_scratch/api/plotter/plot_relationship.md) relationship between disease transmission and disease outcomes.  
 
 
 ## Customizing figures 

@@ -1,5 +1,14 @@
 # Getting help
 
+
+## Issues
+
+If you have any issues with using MultiMalModPy, please report them on the repository:
+
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/issues/new"><button class="btn btn-primary btn-lg" type="submit"><i class="fab fa-github fa-2x"></i> Report Issue</button></a>
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/issues"><button class="btn btn-primary btn-lg" type="submit"> Active Issues <i class="fab fa-github fa-2x"></i></button></a>
+
+
 ## FAQ  
 Coming soon...  
 

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/getting_started/installation/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Installation - MultiMalModPy</title>
+    <title>Installation and requirements - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Installation";
+        var mkdocs_page_name = "Installation and requirements";
         var mkdocs_page_input_path = "getting_started\\installation.md";
         var mkdocs_page_url = "/MultiMalModPy/getting_started/installation/";
       </script>
@@ -48,7 +48,7 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                <li class="toctree-l1"><a class="" href="../../_index.md">Home</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Malaria models</span></p>
@@ -63,35 +63,53 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/parameter-glossary/">Parameter Glossary</a>
-                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Installation</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Installation and requirements</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#software-requirements">Software requirements</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#install-and-setup-emod">Install and setup EMOD</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#install-and-setup-openmalaria">Install and setup OpenMalaria</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#install-on-hpc">Install on HPC</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#installation-when-running-locally">Installation when running locally</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#install-and-setup-malariasimulation">Install and setup malariasimulation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#installation-when-using-the-container">Installation when using the container</a>
+    </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../configuration/">Configuration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration/">Configure MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters and predefined options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">User Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/">Overview</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/_index/">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/parameters/">Input parameters</a>
+                  <li class="toctree-l1"><a class="" href="../../guide/setup.md">Setup simulations</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/run_sim/">Run simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/launch_and_run/">Launch simulations</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Visualize outputs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibration</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibrate transmission targets</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specificities</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/development/">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -189,7 +207,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Getting started</li>
-      <li class="breadcrumb-item active">Installation</li>
+      <li class="breadcrumb-item active">Installation and requirements</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/getting_started/installation.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -199,21 +217,233 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="installation">Installation</h1>
-<p><strong>Weblinks</strong>:<br />
-<a href="https://docs.idmod.org/projects/emodpy/en/v1.19.0/installation.html">EMODpy</a><br />
-<a href="https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria">OpenMalaria</a><br />
-<a href="https://github.com/ahadi-analytics/model-characterization/tree/main/MalSim#requirements-for-running-malsim-r-scripts">malariasimulation</a>  </p>
-<p><strong>HPC</strong><br />
-The framework only runs on linux clusters with <a href="https://slurm.schedmd.com/documentation.html">Slurm</a>.</p>
-<p><strong>Local</strong><br />
-Local run is currently not supported.</p>
+                <h1 id="installation-and-requirements">Installation and requirements</h1>
+<h2 id="software-requirements">Software requirements</h2>
+<ul>
+<li>MultiMalModPy </li>
+<li>Python &gt;= 4.0.0  </li>
+<li>R &gt;= 4.0.0  </li>
+<li>malariasimulation</li>
+<li>malariaEquilibrium</li>
+<li>lubridate</li>
+<li>dplyr </li>
+<li>tibble </li>
+<li>readr </li>
+<li>umbrella</li>
+<li>EMOD</li>
+<li>OpenMalaria</li>
+</ul>
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>📝 NOTE:</em></strong> 
+   Simulations are assumed to run on a linux based high performance cluster (HPC).
+   Functionality to run locally is restricted for test runs using malariasimulation and OpenMalaria.
+</div>
+
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>💡 TIP:</em></strong>
+   Knowledge of shell, powershell, xml, json can be helpful when using MultiMalModPy.   
+</div>
+
+<p><br></p>
+<h2 id="install-and-setup-emod">Install and setup EMOD</h2>
+<ul>
+<li><strong>EMOD</strong>  <ul>
+<li><a href="https://docs.idmod.org/projects/emodpy/en/v1.19.0/installation.html">EMODpy</a>     </li>
+<li>idmtools</li>
+<li>emodpy-malaria    </li>
+</ul>
+</li>
+</ul>
+<p><strong>Helpful additional installation guides for the Northwestern University cluster:</strong> <br />
+-  <a href="https://numalariamodeling.github.io/FE-2023-quarto-website/guides/install_guide.html">Faculty Enrichment Program Installation guide</a></p>
+<h2 id="install-and-setup-openmalaria">Install and setup OpenMalaria</h2>
+<p><a href="https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria">OpenMalaria v46</a>  </p>
+<h3 id="install-on-hpc">Install on HPC</h3>
+<details><summary><span>Helpful additional installation guides for the Northwestern University cluster:</span></summary>   
+<p>
+
+NU IT research built a container and sent instructions which have been edited for completeness and are
+shown below:
+One can build the container on Quest using the remote Sylabs build environment.
+
+Updating to the latest OpenMalaria version:
+
+1) Create a new folder for the version to install
+
+
+<div class="codehilite"><pre><span></span><code>mkdir /projects/b1139/OpenMalaria/om_v46/
+</code></pre></div>
+
+
+
+And copy into the new folder the latest schema files (not source code), available
+from https://github.com/SwissTPH/openmalaria/releases.
+
+Copy the OpenMalaria.def and modules from the prevvious release to the new one.
+Note these files were created by Scott Coughlin to facilitate installation on Quest, without having to use cmake.
+
+
+<div class="codehilite"><pre><span></span><code>cp /projects/b1139/OpenMalaria/om_v43/OpenMalaria.def  /projects/b1139/OpenMalaria/om_v46/OpenMalaria.def
+cp -r /projects/b1139/OpenMalaria/om_v43/modules  /projects/b1139/OpenMalaria/om_v46/
+</code></pre></div>
+
+
+
+The def files includes the following lines and does not require change (for information shown below)
+
+
+<div class="codehilite"><pre><span></span><code><span class="nl">Bootstrap</span><span class="p">:</span><span class="w"> </span><span class="n">docker</span>
+<span class="nl">From</span><span class="p">:</span><span class="w"> </span><span class="n">ubuntu</span><span class="o">:</span><span class="mf">20.04</span>
+
+<span class="nf">%post</span>
+<span class="w">    </span><span class="n">apt</span><span class="o">-</span><span class="n">get</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>\
+<span class="w">    </span><span class="n">DEBIAN_FRONTEND</span><span class="o">=</span><span class="n">noninteractive</span><span class="w"> </span><span class="n">apt</span><span class="o">-</span><span class="n">get</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"> </span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">recommends</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">git</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">cmake</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">libboost</span><span class="o">-</span><span class="n">dev</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">libgsl</span><span class="o">-</span><span class="n">dev</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">libxerces</span><span class="o">-</span><span class="n">c</span><span class="o">-</span><span class="n">dev</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">xsdcxx</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">zlib1g</span><span class="o">-</span><span class="n">dev</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">python3</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">build</span><span class="o">-</span><span class="n">essential</span>
+
+<span class="w">    </span><span class="n">git</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">--</span><span class="n">global</span><span class="w"> </span><span class="n">http</span><span class="p">.</span><span class="n">sslverify</span><span class="w"> </span><span class="nb">false</span>
+<span class="w">    </span><span class="n">git</span><span class="w"> </span><span class="n">clone</span><span class="w"> </span><span class="n">https</span><span class="o">:</span><span class="c1">//github.com/SwissTPH/openmalaria.git /openmalaria</span>
+<span class="w">    </span><span class="n">cd</span><span class="w"> </span><span class="n">openmalaria</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="n">build</span><span class="p">.</span><span class="n">sh</span><span class="w"> </span><span class="o">-</span><span class="n">r</span>
+</code></pre></div>
+
+
+
+However, the `modules/openmalaria/43.0.lua` needs to be renamed to the new version, and its content also updated to the
+latest version.
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">help</span><span class="p">([[</span>
+<span class="n">This</span><span class="w"> </span><span class="n">git</span><span class="o">-</span><span class="n">repository</span><span class="w"> </span><span class="n">contains</span><span class="w"> </span><span class="n">source</span><span class="o">-</span><span class="n">code</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Open</span><span class="w"> </span><span class="n">Malaria</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">simulator</span><span class="w"> </span><span class="n">program</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">studying</span><span class="w"> </span><span class="n">malaria</span><span class="w"> </span><span class="n">epidemiology</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">impacts</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">interventions</span><span class="w"> </span><span class="n">against</span><span class="w"> </span><span class="n">malaria</span><span class="p">.</span>
+<span class="p">]])</span>
+
+<span class="n">local</span><span class="w"> </span><span class="n">pkgName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;openmalaria&quot;</span>
+<span class="n">local</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;46.0&quot;</span>
+
+<span class="n">whatis</span><span class="p">(</span><span class="s">&quot;Name: &quot;</span><span class="w"> </span><span class="p">..</span><span class="w"> </span><span class="n">pkgName</span><span class="p">)</span>
+<span class="n">whatis</span><span class="p">(</span><span class="s">&quot;Version: &quot;</span><span class="w"> </span><span class="p">..</span><span class="w"> </span><span class="n">version</span><span class="p">)</span>
+
+<span class="n">depends_on</span><span class="p">(</span><span class="s">&quot;singularity&quot;</span><span class="p">)</span>
+
+<span class="n">local</span><span class="w"> </span><span class="n">bashStr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">&#39;</span><span class="n">singularity</span><span class="w"> </span><span class="n">exec</span><span class="w"> </span><span class="o">-</span><span class="n">B</span><span class="w"> </span><span class="o">/</span><span class="n">projects</span><span class="o">:/</span><span class="n">projects</span><span class="w"> </span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">b1139</span><span class="o">/</span><span class="n">OpenMalaria</span><span class="o">/</span><span class="n">om_v46</span><span class="o">/</span><span class="n">OpenMalaria</span><span class="p">.</span><span class="n">sif</span><span class="w"> </span><span class="o">/</span><span class="n">openmalaria</span><span class="o">/</span><span class="n">openMalaria</span><span class="mf">-46.0</span><span class="o">/</span><span class="n">openMalaria</span><span class="w"> </span><span class="s">&quot;$@&quot;</span><span class="err">&#39;</span>
+
+<span class="n">set_shell_function</span><span class="p">(</span><span class="s">&quot;openMalaria&quot;</span><span class="p">,</span><span class="n">bashStr</span><span class="p">)</span>
+</code></pre></div>
+
+
+
+Then, actually install the latest OpenMalaria by generating a container following as follows:
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">singularity</span>
+<span class="n">singularity</span><span class="w"> </span><span class="k">remote</span><span class="w"> </span><span class="n">login</span>
+</code></pre></div>
+
+
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">singularity</span>
+<span class="n">singularity</span><span class="w"> </span><span class="k">remote</span><span class="w"> </span><span class="n">login</span>
+</code></pre></div>
+
+
+
+An access token is already set for this remote. Replace it? [N/y] y
+Generate an access token at https://cloud.sylabs.io/auth/tokens, and paste it here.
+
+
+<div class="codehilite"><pre><span></span><code>singularity build --remote OpenMalaria.sif OpenMalaria.def
+</code></pre></div>
+
+
+
+Because calling containers is very annoying, Scott also added a module file in this folder which wraps the call to
+openMalaria to make it easier to use, which is located in the modules/openmalaria folder copied and modified in an
+earlier step (lua file)
+
+Test to run new version
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">cd</span><span class="w"> </span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">b1139</span><span class="o">/</span><span class="n">OpenMalaria</span><span class="o">/</span><span class="n">om_v46</span><span class="o">/</span>
+<span class="n">module</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">b1139</span><span class="o">/</span><span class="n">OpenMalaria</span><span class="o">/</span><span class="n">om_v46</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span>
+<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">openmalaria</span>
+<span class="n">openMalaria</span><span class="w"> </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="n">example_scenario</span><span class="o">.</span><span class="n">xml</span>
+</code></pre></div>
+
+
+
+</p>
+</details>
+
+<p><br></p>
+<h3 id="installation-when-running-locally">Installation when running locally</h3>
+<p>Local run is currently only supported for 2 of the 3 models (malariasimulation and OpenMalaria).
+In addition, the recommended use of running simulations locally is for testing and other <code>run_mode</code>s are disabled.</p>
+<ol>
+<li>
+<p>For each model, follow the installation guidelines under the links provided at the top of the page.
+   Once installed, create a folder <code>dependencies</code> under this repository, with subfolders for each model.</p>
+</li>
+<li>
+<p>For <strong>OpenMalaria</strong>, additional subfolders by version are needed i.e. <code>v46</code>, under which the downloaded files are
+   located.<br />
+   The OpenMalaria dependencies include:</p>
+<ul>
+<li><code>autoRegressionParameters.csv</code></li>
+<li><code>densities.csv</code></li>
+<li><code>openMalaria.exe</code></li>
+<li><code>scenario_46.xsd</code></li>
+</ul>
+</li>
+<li>
+<p>Once all files are in place, update the <code>manifest.py</code> file to make the necessary path update configurations.</p>
+</li>
+<li>It is also recommended to add R (<code>Rscript</code>), Python (<code>python</code>) and OpenMalaria (<code>openMalaria</code>) to the environment
+   variables (optional).</li>
+</ol>
+<h2 id="install-and-setup-malariasimulation">Install and setup malariasimulation</h2>
+<ul>
+<li>
+<p><strong>malariasimulation R packages</strong>     </p>
+</li>
+<li>
+<p><a href="https://github.com/mrc-ide/malariasimulation/">malariasimulation</a>
+   <code># install.packages("remotes")
+     # library('remotes')
+    install_github('mrc-ide/malariasimulation')</code></p>
+</li>
+<li>
+<p><a href="https://github.com/mrc-ide/umbrella">umbrella</a>
+   <code># install.packages("devtools")
+     # library('devtools')
+     devtools::install_github("mrc-ide/umbrella")</code></p>
+</li>
+<li>
+<p>Other R packages:</p>
+</li>
+<li>lubridate</li>
+<li>dplyr </li>
+<li>tibble </li>
+<li>readr </li>
+<li>umbrella</li>
+</ul>
+<p><br></p>
+<h2 id="installation-when-using-the-container">Installation when using the container</h2>
+<p>This section is under construction...<br />
+A singularity container will be made available to allow running MultiMalModPy instantly, without the need for
+installations. </p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../" class="btn btn-neutral float-left" title="Overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../configuration/" class="btn btn-neutral float-right" title="Configuration">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../overview/" class="btn btn-neutral float-left" title="Overview of MultiMalModPy"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../configuration/" class="btn btn-neutral float-right" title="Configure MultiMalModPy">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -241,7 +471,7 @@ Local run is currently not supported.</p>
         </span>
     
     
-      <span><a href="../" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../overview/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../configuration/" style="color: #fcfcfc">Next &raquo;</a></span>
