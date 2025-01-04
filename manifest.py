@@ -22,10 +22,9 @@ plugins_folder = "download/reporter_plugins"
 input_dir = os.path.join(ROOT_DIR, "EMOD/inputs")
 
 # The script is going to use this to store the downloaded schema file. Create 'download' directory or change to your preferred (existing) location.
-schema_file = os.path.join(ROOT_DIR, "EMOD/download/schema.json")
-
+schema_file = os.path.join(os.path.expanduser('~'), "download/schema.json")
 # The script is going to use this to store the downloaded Eradication binary. Create 'download' directory or change to your preferred (existing) location.
-eradication_path = os.path.join(ROOT_DIR, "EMOD/download/Eradication")
+eradication_path = os.path.join(os.path.expanduser('~'), "download/Eradication")
 # ----------------------------- EMOD generic settings end -----------------------------
 
 if os.name != 'posix':

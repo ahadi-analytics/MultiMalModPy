@@ -1,5 +1,4 @@
-from EMOD.download.builtin import *
-#from emodpy_malaria.reporters.builtin import *
+from emodpy_malaria.reporters.builtin import *
 
 
 def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,

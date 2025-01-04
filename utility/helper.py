@@ -268,7 +268,8 @@ def check_exp_inputs(exp, attribute_check=False):
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
     from utility.helper_calibration import check_transmission_targets_input
-    check_transmission_targets_input(exp)
+    if exp.run_mode != 'calibrun':
+        check_transmission_targets_input(exp)
 
     ## Model specific checks
     if 'OpenMalaria'  in exp.models_to_run:
@@ -446,16 +447,16 @@ def map_model_calib_inputs(exp, df):
         for model in models_to_run:
             for i, row in df.iterrows():
                 value = exp.eir_range[int(row['output_target']) - 1] if model != 'EMOD' else exp.x_temp_range[int(row['output_target']) - 1]
-                df.loc[i, f'model_input_{model.lower()}'] = value
+                df.loc[i, f'model_input_{model}'] = value
     else:
         for model in models_to_run:
             if model in ['malariasimulation', 'OpenMalaria']:
                 df[f'model_input_{model}'] = output_target_to_eir(df, exp, model=model)
             if model == 'EMOD':
                 if exp.entomology_mode == 'dynamic':
-                    df['model_input_emod'] = output_target_to_xTemp(df, exp, model='EMOD')
+                    df['model_input_EMOD'] = output_target_to_xTemp(df, exp, model='EMOD')
                 elif exp.entomology_mode == 'forced':
-                    df['model_input_emod'] = output_target_to_eir(df, exp, model='EMOD')
+                    df['model_input_EMOD'] = output_target_to_eir(df, exp, model='EMOD')
 
     return df
 

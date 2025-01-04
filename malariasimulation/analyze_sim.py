@@ -406,7 +406,7 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
         cdf['modelname'] = 'malariasimulation'
         cdf = cdf.rename(columns={'model_input_malariasimulation': 'input_target'})
         cdf.to_csv((os.path.join(wdir, 'interpolation_data.csv')), index=False)
-        cdf.to_csv((os.path.join(exp.interp_path, 'malariasimulation', f'{exp.exp_name}_interpolation_data.csv')))
+        cdf.to_csv((os.path.join(exp.interp_path, 'malariasimulation', f'{exp.exp_name}_interpolation_data.csv')), index=False)
 
 
 def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):

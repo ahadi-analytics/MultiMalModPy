@@ -24,27 +24,33 @@ class RunModeManager:
             # self._configure_simulation()
 
     def _configure_calibrun(self):
-        self.experiment.SUITEname = self.experiment.SUITEname.replace('calibrun')
-        self.importation_rate = 0
+        self.experiment.SUITEname = self.experiment.SUITEname.replace('test','calibrun')
+        self.experiment.importation_rate = 0 # need to be 0 for OpenMalaria and 5 for EMOD, we need to figure out a better way to do this.
         self.experiment.num_seeds = 20
         self.experiment.start_year = 2000
         self.experiment.end_year = 2005
+        self.experiment.emod_burnin = 100
+        self.experiment.openmalaria_burnin = 100
+        self.experiment.malariasimulation_burnin = 100
+        self.experiment.openmalaria_pop_size = 50000
+        self.experiment.malariasimulation_pop_size = 50000
+        self.experiment.emod_pop_size = 1000
         if self.experiment.output_type != 'eir':
             warnings.warn(
                 f"Warning: output_type changed to 'eir' as required for calibrun (not {self.experiment.output_type})")
         self.experiment.output_type = 'eir'
         self.experiment.analyzer_list = ['timeavrg']
         self.experiment.plots_to_run = ['relationship']
-        #self.output_target = np.arange(1, 31)
-        self.experiment.output_target = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2,
-                                         2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9,
-                                         10, 12, 14, 16, 18, 20, 25, 30, 35, 40,
-                                         45, 50, 100, 200, 500, 1000]
+        self.output_target = np.arange(1, 31)
+        #self.experiment.output_target = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2,
+        #                                 2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9,
+        #                                 10, 12, 14, 16, 18, 20, 25, 30, 35, 40,
+        #                                 45, 50, 100, 200, 500, 1000]
 
-        ## Configure calib ru
+        ## Configure calib run
         eir_range, x_temp_range = get_calib_range()
-        self.eir_range = eir_range
-        self.x_temp_range =x_temp_range
+        self.experiment.eir_range = eir_range
+        self.experiment.x_temp_range =x_temp_range
 
         if self.experiment.malariasimulation_parameter_variation:
             warnings.warn(
@@ -157,6 +163,7 @@ class LoadExperiment:
         # Custom settings based on run_mode
         self.run_mode_manager = RunModeManager(self)
         self.run_mode_manager.configure(args.run_mode)
+        self._assign_attributes(self.run_mode_manager)
 
         # Configure calibration if needed, #FIXME update naming
         if self.emod_calib_params:
