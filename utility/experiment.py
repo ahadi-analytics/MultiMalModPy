@@ -5,26 +5,47 @@ import warnings
 
 
 class RunModeManager:
+    """
+    A manager class to configure and manage experiment settings based on the selected run mode.
+
+    Attributes:
+        experiment: An object representing the experiment configuration. This is modified
+                    based on the chosen run mode and test settings.
+
+    Args:
+        run_mode (str): The mode to configure the experiment and overwrite parameters from setup_sim.py Options are:
+                        - 'custom': No change
+                        - 'calibration': For calibration-specific settings.
+                        - 'simple': For basic experimental runs.
+                        - 'production': For production-level runs.
+        test (bool): If True, overwrites certain settings for testing purposes.
+    """
     def __init__(self, experiment):
         self.experiment = experiment
 
-    def configure(self, run_mode):
+    def configure(self, run_mode, test):
         """
         Configures settings based on the specified run_mode.
         """
-        if run_mode == 'calibrun':
-            self._configure_calibrun()
-        elif run_mode == 'test':
-            self._configure_test()
-        elif run_mode == 'productionrun':
-            self._configure_productionrun()
-        else:
+        if run_mode == 'calibration':
+            self._configure_calibration()
+        elif run_mode == 'simple':
+            self._configure_simple()
+        elif run_mode == 'production':
+            self._configure_production()
+        elif run_mode == 'custom':
             ## User provided values will be kept as is
             pass
-            # self._configure_simulation()
+        else:
+            raise ValueError("run_mode {run_mode} is not valid. ")
 
-    def _configure_calibrun(self):
-        self.experiment.SUITEname = self.experiment.SUITEname.replace('test','calibrun')
+        # If test flag True, overwrite popsize, burnin and seeds to run a lower computational intensive simulation.
+        # This is useful for debugging and testing new features as they allow for faster simulation runs (at the cost of being able to use results).
+        if test:
+            self._configure_test_overwrite()
+
+    def _configure_calibration(self):
+        self.experiment.SUITEname = f'{self.experiment.SUITEname}_calibration'
         self.experiment.importation_rate = 0 # need to be 0 for OpenMalaria and 5 for EMOD, we need to figure out a better way to do this.
         self.experiment.num_seeds = 20
         self.experiment.start_year = 2000
@@ -37,7 +58,7 @@ class RunModeManager:
         self.experiment.emod_pop_size = 1000
         if self.experiment.output_type != 'eir':
             warnings.warn(
-                f"Warning: output_type changed to 'eir' as required for calibrun (not {self.experiment.output_type})")
+                f"Warning: output_type changed to 'eir' as required for calibration (not {self.experiment.output_type})")
         self.experiment.output_type = 'eir'
         self.experiment.analyzer_list = ['timeavrg']
         self.experiment.plots_to_run = ['relationship']
@@ -57,15 +78,19 @@ class RunModeManager:
                 "Warning: malariasimulation should not use parameter variation during calibration run. Parameter variation is now set to False.")
             self.experiment.malariasimulation_parameter_variation = False
 
-    def _configure_test(self):
+    def _configure_simple(self):
+        """
+        Configures the experiment for a pre-defined simple run.
+        Using fewer seeds and reduced ranges for output targets.
+        Keeps appropriate values for popsize and burnin to ensure accurary of results.
+        """
+        self.experiment.SUITEname = f'{self.experiment.SUITEname}_simple'
         self.experiment.num_seeds = 3
-        self.experiment.start_year = 2000
-        self.experiment.end_year = 2005
-        self.experiment.emod_burnin = 25
-        self.experiment.openmalaria_burnin = 25
-        self.experiment.malariasimulation_burnin = 25
-        self.experiment.openmalaria_pop_size = 1000
-        self.experiment.malariasimulation_pop_size = 1000
+        self.experiment.emod_burnin = 100
+        self.experiment.openmalaria_burnin = 100
+        self.experiment.malariasimulation_burnin = 100
+        self.experiment.openmalaria_pop_size = 50000
+        self.experiment.malariasimulation_pop_size = 50000
         self.experiment.emod_pop_size = 1000
         if self.experiment.output_type == 'eir':
             self.experiment.output_target = np.arange(1, 4)
@@ -74,8 +99,12 @@ class RunModeManager:
         if self.experiment.output_type == 'clinical_incidence_U5':
             self.experiment.output_target = [0.5, 1.2, 2.0]
 
-    def _configure_productionrun(self):
-        self.experiment.SUITEname = self.experiment.SUITEname.replace('test', 'production')
+    def _configure_production(self):
+        """
+        Configures the experiment for a pre-defined production run.
+        Using appropriate number of seeds and large ranges for output targets.
+        """
+        self.experiment.SUITEname = f'{self.experiment.SUITEname}_production'
         self.experiment.num_seeds = 20
         self.experiment.emod_burnin = 100
         self.experiment.openmalaria_burnin = 100
@@ -90,13 +119,19 @@ class RunModeManager:
         if self.experiment.output_type == 'clinical_incidence_U5':
             raise ValueError('output_type clinical_incidence_U5 not defined for production run')
 
-    # def _configure_simulation(self):
-    #     self.experiment.SUITEname = self.experiment.SUITEname.replace('test', 'sim')
-    #     self.experiment.num_seeds = 3
-    #     if self.experiment.output_type == 'eir':
-    #         self.experiment.output_target = [1, 5, 10, 20, 50, 100, 500, 1000]
-    #     if self.experiment.output_type == 'prevalence_2to10':
-    #         self.experiment.output_target = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
+
+    def _configure_test_overwrite(self):
+        """
+        Overwrites popsize, burnin periods and seeds to allow a faster run of simulations (i.e. for testing, debugging).
+        """
+        self.experiment.SUITEname = f'{self.experiment.SUITEname}_TEST'
+        self.experiment.num_seeds = 3
+        self.experiment.emod_burnin = 10
+        self.experiment.openmalaria_burnin = 10
+        self.experiment.malariasimulation_burnin = 10
+        self.experiment.openmalaria_pop_size = 1000
+        self.experiment.malariasimulation_pop_size = 1000
+        self.experiment.emod_pop_size = 1000
 
 
 class ArgsConfig:
@@ -107,15 +142,16 @@ class ArgsConfig:
     def __init__(self, args):
         self.SUITEname = args.suite
         self.exp_name = args.expname
-        self.emod_step = args.emodstep
         self.models_to_run = args.models
-        self.intervention_list = args.interventions  # TODO move to MalariaConfig?
+        self.intervention_list = args.interventions
         self.run_mode = args.run_mode
         self.output_type = args.output_type
+        self.test = args.test
         # User and directory settings
         self.user = args.user
         self.custom_subdir = self.user
-
+        # Model specific args
+        self.emod_step = args.emodstep
         self.emod_calib_params = args.emod_calib_params
         self.malariasimulation_parameter_variation = args.mpv
 
@@ -168,15 +204,15 @@ class LoadExperiment:
 
         # Custom settings based on run_mode
         self.run_mode_manager = RunModeManager(self)
-        self.run_mode_manager.configure(args.run_mode)
+        self.run_mode_manager.configure(args.run_mode, args.test)
         self._assign_attributes(self.run_mode_manager)
 
-        # Configure calibration if needed, #FIXME update naming
+        # Configure EMOD model calibration parameter use if needed,
         if self.emod_calib_params:
-            self.configure_calibration()
+            self.configure_emod_calibration()
 
             
-    def configure_calibration(self):
+    def configure_emod_calibration(self):
         """
         Configures calibration settings if emod_calib_params is enabled.
         """

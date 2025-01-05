@@ -18,7 +18,7 @@ def cc_step_params(exp):
     exp.openmalaria_survey_step = '5d'
 
     # Flexible parameters depending on type of run and user-specifications
-    if exp.run_mode == 'productionrun':
+    if exp.run_mode == 'production':
         print('Warning: Running cc_step in production mode with pre-defined not user-defined parameters')
         exp.mem_increase_factor = 6.0  # scaling factor on default memory requested
         exp.pop_size = 50000

@@ -48,9 +48,9 @@ class SimulationConfig:
         1. Malaria Config
         """
         self.entomology_mode = 'dynamic'
-        self.seasonality = ['perennial']
+        self.seasonality = ['seasonal']
         self.cm_start = 1
-        self.case_management = [(0, 0)]
+        self.case_management = [(0, 0), (0.45, 0)]
         self.detectionLimit = 40
         self.importation_rate = 0
 
@@ -59,7 +59,7 @@ class SimulationConfig:
         # These settings define the type of output metric and its target values.
         # Note: These will be overwritten if a specific run mode is specified, as run modes may have their own defaults.
         self.output_type = 'prevalence_2to10'
-        self.output_target = [0.2]
+        self.output_target = [0.25, 0.5]
         self.intervention_list = []
 
         # Parameters to vary

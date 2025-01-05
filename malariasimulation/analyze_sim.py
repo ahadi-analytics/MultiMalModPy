@@ -314,7 +314,7 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
 
     Saves:
         mmmpy_timeavrg.csv
-        interpolation_data.csv (if exp.run_mode == 'calibrun')
+        interpolation_data.csv (if exp.run_mode == 'calibration')
 
     Returns:
         None
@@ -392,7 +392,7 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
     # Save the processed DataFrame to a CSV file named 'mmmpy_timeavrg.csv'
     cdf.to_csv((os.path.join(wdir, 'mmmpy_timeavrg.csv')), index=False)
 
-    if exp.run_mode == 'calibrun':
+    if exp.run_mode == 'calibration':
         u5 = cdf[cdf['ageGroup'] == '0-5'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         u5 = u5.rename(columns={'clinical_incidence': 'clinical_incidence_U5'})
         all_ages = cdf[cdf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()

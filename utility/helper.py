@@ -39,7 +39,7 @@ def parse_launch_args():
         --csv (str): Name of the scenario CSV file.
         -i, --interventions (list): Interventions to run; options include 'cc_step'.
         --rownum (int): Row number from the specified scenario CSV.
-        -r, --run_mode (str): Type of run (e.g., 'test', 'calibrun', 'productionrun').
+        -r, --run_mode (str): Type of run (e.g.,None, 'calibration', 'simple', 'production').
         --emod_calib_params (bool): Flag indicating whether to include calibration parameters for EMOD.
         --mpv (bool): Flag for running malariasimulation with parameter variation (default is True).
         --output_type (str): Specifies whether to align transmission by EIR or by prevalence_2to10.
@@ -53,7 +53,7 @@ def parse_launch_args():
                         help="Jobdirectory of burnin, if no EMOD burnin, is ignored")
     parser.add_argument('--suite',
                         type=str,
-                        default=f'{dt.now().strftime("%Y%m%d")}_test',
+                        default=f'{dt.now().strftime("%Y%m%d")}',
                         help='Description of SUITEname')
     parser.add_argument('--expname',
                         type=str,
@@ -82,19 +82,19 @@ def parse_launch_args():
                         required=False,
                         help='Name of scenario csv')
     parser.add_argument('-i', '--interventions',
-                        nargs='+',  # FIXME how to handle combinations if those should even be allowed
+                        nargs='+',
                         default=[],
-                        choices=['cc_step'], # , 'smc'
-                        help='Specify which interventions to run, if any')
+                        choices=['cc_step'], # 'smc'
+                        help='Specify which interventions to run apart from case management (per default included)')
     parser.add_argument('--rownum',
                         type=int,
                         required=False,
                         help='Row number of specified scenario csv')
     parser.add_argument('-r', '--run_mode',
                         type=str,
-                        default=None,
-                        choices=[None, 'test', 'calibrun', 'productionrun'],
-                        help='Specify whether to run a normal run, a test run, calibration run or production run, population and burnin and seeds will be adjusted automatically')
+                        default='custom',
+                        choices=['custom','calibration', 'simple', 'production'],
+                        help='Specify type of simulation to run, None (use user inputs), or one of the pre-defined calibration, simple or production run ')
     parser.add_argument('--emod_calib_params',
                         action='store_true',
                         help='Specify whether to run including calibration parameters as a sweep variable (EMOD only)')
@@ -107,6 +107,9 @@ def parse_launch_args():
                         default='prevalence_2to10',
                         choices=['prevalence_2to10', 'eir','clinical_incidence_U5'],
                         help='Specify whether to align transmission in each model by EIR, by prevalence_2to10 or by clinical incidence U5')
+    parser.add_argument('-t','--test',
+                        action='store_true',
+                        help='If true runs simulation with lower population and burnin, and fewer seeds.')
     return parser.parse_args()
 
 
@@ -268,7 +271,7 @@ def check_exp_inputs(exp, attribute_check=False):
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
     from utility.helper_calibration import check_transmission_targets_input
-    if exp.run_mode != 'calibrun':
+    if exp.run_mode != 'calibration':
         check_transmission_targets_input(exp)
 
     ## Model specific checks
@@ -443,7 +446,7 @@ def map_model_calib_inputs(exp, df):
     """
     models_to_run = list(set(exp.models_to_run + exp.models_to_run_pickup))
 
-    if exp.run_mode == 'calibrun':
+    if exp.run_mode == 'calibration':
         for model in models_to_run:
             for i, row in df.iterrows():
                 value = exp.eir_range[int(row['output_target']) - 1] if model != 'EMOD' else exp.x_temp_range[int(row['output_target']) - 1]
