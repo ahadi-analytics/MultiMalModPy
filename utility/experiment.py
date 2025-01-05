@@ -9,23 +9,38 @@ class RunModeManager:
     A manager class to configure and manage experiment settings based on the selected run mode.
 
     Attributes:
-        experiment: An object representing the experiment configuration. This is modified
-                    based on the chosen run mode and test settings.
+        experiment (object): An object representing the experiment configuration. This object is updated
+                             with specific settings based on the chosen run mode and testing requirements.
 
-    Args:
-        run_mode (str): The mode to configure the experiment and overwrite parameters from setup_sim.py Options are:
-                        - 'custom': No change
-                        - 'calibration': For calibration-specific settings.
-                        - 'simple': For basic experimental runs.
-                        - 'production': For production-level runs.
-        test (bool): If True, overwrites certain settings for testing purposes.
+    Methods:
+        configure(run_mode, test):
+            Configures the experiment settings based on the selected run mode and whether testing is enabled.
+        _configure_calibration():
+            Applies configuration specific to calibration runs, including output types, population sizes, and ranges.
+        _configure_simple():
+            Configures the experiment for simplified runs with reduced seeds and population settings.
+        _configure_production():
+            Configures the experiment for production-level runs, with optimized seeds and target ranges.
+        _configure_csv():
+            Reads experiment-specific settings from a CSV file and updates the experiment accordingly.
+        _configure_test_overwrite():
+            Overwrites settings to enable faster runs for testing or debugging purposes.
     """
     def __init__(self, experiment):
         self.experiment = experiment
 
     def configure(self, run_mode, test):
         """
-        Configures settings based on the specified run_mode.
+        Configures the experiment based on the specified run mode.
+
+        Args:
+            run_mode (str): The mode of the run. Options include:
+                - 'custom': No changes to the default setup.
+                - 'calibration': Applies calibration-specific configurations.
+                - 'simple': Simplified experimental setup.
+                - 'production': Production-level configurations.
+                - 'csv': Settings derived from a CSV file.
+            test (bool): If True, applies test-specific overwrites for faster execution.
         """
         if run_mode == 'calibration':
             self._configure_calibration()
@@ -33,11 +48,13 @@ class RunModeManager:
             self._configure_simple()
         elif run_mode == 'production':
             self._configure_production()
+        elif run_mode == 'csv':
+            self._configure_csv()
         elif run_mode == 'custom':
             ## User provided values will be kept as is
             pass
         else:
-            raise ValueError("run_mode {run_mode} is not valid. ")
+            raise ValueError(f"run_mode {run_mode} is not valid. ")
 
         # If test flag True, overwrite popsize, burnin and seeds to run a lower computational intensive simulation.
         # This is useful for debugging and testing new features as they allow for faster simulation runs (at the cost of being able to use results).
@@ -119,6 +136,21 @@ class RunModeManager:
         if self.experiment.output_type == 'clinical_incidence_U5':
             raise ValueError('output_type clinical_incidence_U5 not defined for production run')
 
+    def _configure_csv(self):
+        """
+        Configures the experiment based on user-defined parameters in the specified csv file
+        If not specified, parameters as defined in setup_sim.py are used.
+        """
+        self.experiment.SUITEname = f'{self.experiment.SUITEname}_CSV'
+        exp_scen_df = pd.read_csv(os.path.join(f'scenario_csv/{self.experiment.csv}.csv'))
+        exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == self.experiment.rownum]
+        self.experiment.exp_name = f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
+
+        ## Overwriting default parameters with parameters specific in scenario csv file
+        not_param_columns = ['rownum', 'exp_name']
+        for col in exp_scen_df.columns:
+            if col not in not_param_columns:
+                setattr(self.experiment, col, get_param_from_dataframe(exp_scen_df, col, self.experiment.sim_params_list))
 
     def _configure_test_overwrite(self):
         """
@@ -136,31 +168,77 @@ class RunModeManager:
 
 class ArgsConfig:
     """
-    Manages user-defined parameters provided via args when launching simulations.
+    A class to configure the user-defined parameters provided via command-line arguments when launching simulations.
+
+    Attributes:
+        SUITEname (str): Name of the simulation suite, typically used for grouping related experiments.
+        exp_name (str): Name of the specific experiment being launched.
+        models_to_run (list): List of models to execute in the simulation (e.g., ['EMOD', 'OpenMalaria']).
+        run_mode (str): Specifies the type of simulation to run (e.g., 'custom', 'calibration', 'simple', 'production').
+        test (bool): Indicates if the simulation should run in test mode with reduced resources.
+        csv (str): Path to a CSV file specifying scenario parameters.
+        rownum (int): Row number in the CSV file to be used for the current simulation.
+        intervention_list (list): List of interventions to include in the simulation.
+        output_type (str): Specifies the output alignment for the simulation (e.g., 'prevalence_2to10', 'eir').
+        directory (str): Directory for storing or accessing simulation-related files.
+        user (str): Name of the user launching the simulation; also used for organizing directories.
+        custom_subdir (str): Subdirectory for simulations, often derived from the `user` attribute.
+        emod_step (str): Specifies the EMOD simulation step (e.g., 'burnin', 'pickup', 'new_pickup').
+        serializedid (str): Serialized ID for initializing an EMOD simulation.
+        emod_calib_params (bool): Indicates if calibration parameters should be included for EMOD.
+        malariasimulation_parameter_variation (bool): Specifies whether parameter variation is enabled for malariasimulation.
+
+    Methods:
+        __init__(args): Initializes the ArgsConfig object by mapping command-line arguments to attributes.
     """
 
     def __init__(self, args):
         self.SUITEname = args.suite
         self.exp_name = args.expname
+        ## Parameter specifying setup and type of simulations to run and models to use
         self.models_to_run = args.models
-        self.intervention_list = args.interventions
         self.run_mode = args.run_mode
-        self.output_type = args.output_type
         self.test = args.test
+        self.csv = args.csv
+        self.rownum = args.rownum
+        ## Allow to overwrite interventions or output_type if specified when running launch_sim.py
+        self.intervention_list = args.interventions
+        self.output_type = args.output_type
         # User and directory settings
+        self.directory = args.directory
         self.user = args.user
         self.custom_subdir = self.user
         # Model specific args
         self.emod_step = args.emodstep
+        self.serializedid = args.serializedid
         self.emod_calib_params = args.emod_calib_params
         self.malariasimulation_parameter_variation = args.mpv
 
 
 class ManifestConfig:
     """
-    Encapsulates default settings from the manifest.
-    """
+    A class to configure the parameters provided by the manifest.py .
 
+    Attributes:
+        hpc (bool): Indicates whether the simulation is configured to run on a High-Performance Computing (HPC) platform.
+        sh_hpc_config (str): Path to the HPC configuration script or settings.
+        selected_platform (str): The computing platform selected for the simulation (e.g., local, HPC, cloud).
+        emod_build (str): Path or identifier for the EMOD build used in the simulation.
+        emod_input_path (str): Path to the input files for the EMOD simulation framework.
+        EMOD_venv (str): Path to the virtual environment for the EMOD framework.
+        OPENMALARIA_venv (str): Path to the virtual environment for the OpenMalaria framework.
+        openmalaria_path (str): Path to the OpenMalaria executable or installation directory.
+        openmalaria_version (str): Version of the OpenMalaria framework being used.
+        openmalaria_input_path (str): Path to the input files for OpenMalaria simulations.
+        malariasimulation_input_path (str): Path to the input files for malariasimulation simulations.
+        job_directory_manifest (str): Directory where job-specific files from the manifest are stored.
+        output_directory_manifest (str): Directory where simulation output files from the manifest will be saved.
+        interp_path (str): Path to the interpolation data files or directory.
+        interp_csv (str): Path to the CSV file containing interpolation configuration or data.
+
+    Methods:
+        __init__(manifest): Initializes the ManifestConfig object by mapping manifest attributes to class attributes.
+    """
     def __init__(self, manifest):
         self.hpc = manifest.hpc
         self.sh_hpc_config = manifest.sh_hpc_config
@@ -180,6 +258,33 @@ class ManifestConfig:
 
 
 class LoadExperiment:
+    """
+    A class to initialize and manage the configuration of a simulation experiment, incorporating user-defined arguments,
+    manifest settings, and runtime-specific configurations.
+
+    Attributes:
+        manifest_config (ManifestConfig): Encapsulates manifest-related settings, including HPC and path configurations.
+        simulation_config (SimulationConfig): Stores simulation-related default settings and configurations.
+        args_config (ArgsConfig): Manages user-defined arguments provided at launch.
+        run_mode_manager (RunModeManager): Handles configuration of the experiment based on the specified run mode.
+        emod_calib_params (bool): Indicates if EMOD calibration parameters are used.
+        calib_config_pointer (range): Points to the indices of the calibration configuration data, if applicable.
+        sweep_list (list): List of parameters to be included in the simulation sweeps.
+
+    Methods:
+        __init__(args, manifest):
+            Initializes the LoadExperiment object by combining configurations from arguments, manifest, and simulation settings.
+
+        configure_emod_calibration():
+            Configures calibration settings for EMOD simulations when calibration parameters are enabled.
+
+        update(**kwargs):
+            Updates specific attributes of the LoadExperiment instance with new values.
+
+        _assign_attributes(source_obj):
+            Copies all attributes from a given source object to the current instance.
+    """
+
     def __init__(self, args, manifest):
         """
         Initializes the LoadExperiment object with simulation and HPC settings based on the provided arguments

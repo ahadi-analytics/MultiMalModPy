@@ -2,7 +2,6 @@ import argparse
 import os
 import itertools
 import pickle
-from datetime import datetime
 from datetime import datetime as dt
 import pandas as pd
 import numpy as np
@@ -39,7 +38,7 @@ def parse_launch_args():
         --csv (str): Name of the scenario CSV file.
         -i, --interventions (list): Interventions to run; options include 'cc_step'.
         --rownum (int): Row number from the specified scenario CSV.
-        -r, --run_mode (str): Type of run (e.g.,None, 'calibration', 'simple', 'production').
+        -r, --run_mode (str): Type of run (e.g., None, 'calibration', 'simple', 'production').
         --emod_calib_params (bool): Flag indicating whether to include calibration parameters for EMOD.
         --mpv (bool): Flag for running malariasimulation with parameter variation (default is True).
         --output_type (str): Specifies whether to align transmission by EIR or by prevalence_2to10.
@@ -88,12 +87,12 @@ def parse_launch_args():
                         help='Specify which interventions to run apart from case management (per default included)')
     parser.add_argument('--rownum',
                         type=int,
-                        required=False,
+                        default=0,
                         help='Row number of specified scenario csv')
     parser.add_argument('-r', '--run_mode',
                         type=str,
                         default='custom',
-                        choices=['custom','calibration', 'simple', 'production'],
+                        choices=['custom','calibration', 'simple', 'production', 'csv'],
                         help='Specify type of simulation to run, None (use user inputs), or one of the pre-defined calibration, simple or production run ')
     parser.add_argument('--emod_calib_params',
                         action='store_true',
@@ -110,7 +109,26 @@ def parse_launch_args():
     parser.add_argument('-t','--test',
                         action='store_true',
                         help='If true runs simulation with lower population and burnin, and fewer seeds.')
-    return parser.parse_args()
+
+    args = parser.parse_args()
+
+
+    # Check eligibility of parsed args
+    if args.run_mode == "calibration" and args.interventions is not []:
+        raise ValueError(
+            "Interventions are not allowed in calibration mode. "
+            "Please ensure 'exp.interventions' is an empty list when using the 'calibration' run mode."
+        )
+
+    if args.csv:
+        if not args.rownum:
+            print(f"The '--csv' argument was specified ({args.csv}) but no rownum"
+                   "Using default 'rownum' 0 to run first row")
+        args.run_mode = "csv"
+        print(f"The '--csv' argument was specified ({args.csv}). "
+              "Setting 'run_mode' to 'csv'.")
+
+    return args
 
 
 def parse_args():
@@ -138,7 +156,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def get_param_from_dataframe(df, name):
+def get_param_from_dataframe(df, name, sim_params_list):
     """
     Retrieves a parameter value from a DataFrame and returns it in the correct format for storage in an experiment object (exp).
 
@@ -155,23 +173,20 @@ def get_param_from_dataframe(df, name):
 
     """
 
-    # list of parameters expecting list format  # FIXME, better way to do?
-    listparams = ['seasonality', 'sweep_list', 'case_management', 'eir', 'intervention_list', 'agebins']
-    cc_params = ['eir_scalar_malariasimulation', 'eir_malariasimulation', 'eir_scalar_openmalaria', 'eir_scalar_emod',
-                 'eir_openmalaria', 'eir_scalar_openmalaria', 'carrying_capacity_step']
-    
-    listparams = listparams + cc_params
-
     value = df[name].iat[0]
 
-    if name in listparams:
-        try:
-            out = value.replace(' ', '').split(',')
-            out = [float(i) if i.isdigit() else i for i in out]  # some might require int?
-        except:
-            out = [value]
+    if name == "case_management":
+        import ast
+        out = ast.literal_eval(f'[{value}]')
     else:
-        out = value
+        if name in sim_params_list:
+            try:
+                out = value.replace(' ', '').split(',')
+                out = [float(i) if i.isdigit() else i for i in out]  # some might require int?
+            except:
+                out = [value]
+        else:
+            out = value
 
     return out
 

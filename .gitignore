@@ -7,3 +7,4 @@ dependencies/
 simulations_local/
 site/
 .cache/
+*.rej

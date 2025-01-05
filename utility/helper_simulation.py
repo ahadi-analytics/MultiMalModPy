@@ -222,13 +222,6 @@ def check_exp_input_parameters(exp):
             f"Only two seasonality patterns are allowed, but {len(exp.seasonality)} were specified. "
             "Please limit the number of seasonality patterns to two."
         )
-
-    # Check run mode and intervention eligibility
-    if exp.run_mode == "calibration" and exp.interventions is not []:
-        raise ValueError(
-            "Interventions are not allowed in calibration mode. "
-            "Please ensure 'exp.interventions' is an empty list when using the 'calibration' run mode."
-        )
     
 def check_exp_inputs_emod(exp):
     """

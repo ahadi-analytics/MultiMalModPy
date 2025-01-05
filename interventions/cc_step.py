@@ -52,6 +52,11 @@ def cc_step_params(exp):
     exp.openmalaria_scaffold = "R0000GA_CC_STEP"  # defining which OpenMalaria XML scaffold to use
     exp.plots_to_run = ['ccstep']
     exp.analyzer_list = ['surveyallage', 'cc_step']
+
+    # Required for flagging list items when running from CSV
+    exp.sim_params_list += ['eir_scalar_malariasimulation', 'eir_malariasimulation', 'eir_scalar_openmalaria',
+                     'eir_scalar_emod',  'eir_openmalaria', 'eir_scalar_openmalaria', 'carrying_capacity_step']
+
     return exp
 
 
