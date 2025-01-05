@@ -77,6 +77,12 @@ class RunModeManager:
     def _configure_productionrun(self):
         self.experiment.SUITEname = self.experiment.SUITEname.replace('test', 'production')
         self.experiment.num_seeds = 20
+        self.experiment.emod_burnin = 100
+        self.experiment.openmalaria_burnin = 100
+        self.experiment.malariasimulation_burnin = 100
+        self.experiment.openmalaria_pop_size = 50000
+        self.experiment.malariasimulation_pop_size = 50000
+        self.experiment.emod_pop_size = 50000
         if self.experiment.output_type == 'eir':
             self.experiment.output_target = [20]
         if self.experiment.output_type == 'prevalence_2to10':
