@@ -1,4 +1,5 @@
 site_name: MultiMalModPy
+site_description: Documentation and user guide of the Multi-Malaria-Modeling Python framework.
 docs_dir: 'docs'
 site_url: https://ahadi-analytics.github.io/MultiMalModPy/
 repo_url: https://github.com/ahadi-analytics/MultiMalModPy
@@ -18,7 +19,7 @@ markdown_extensions:
   - admonition
   - codehilite
 nav:
-  - Home: _index.md
+  - Home: index.md
   - Malaria models:
     - Software: malaria_models/software.md
     - Model structure: malaria_models/structure.md
@@ -34,7 +35,6 @@ nav:
     - Model specific options: getting_started/model_specificities.md
   - User Guide:
     - Setup simulations: guide/_index.md
-    - Setup simulations: guide/setup.md
     - Launch simulations: guide/launch_and_run.md
     - Postprocess outputs: guide/postprocess.md
     - Visualize outputs: guide/plots.md

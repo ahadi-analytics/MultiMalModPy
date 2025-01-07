@@ -54,5 +54,15 @@ This documentation includes:
 _Initial release expected in Q1 2025._
 
 
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/tags">
+  <button class="btn btn-primary btn-lg" type="submit">
+    View all releases 
+    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" style="width: 20px; height: 20px; vertical-align: middle;">
+  </button>
+</a>
+
+
+
+
 
 
