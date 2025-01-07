@@ -261,39 +261,69 @@ def color_selector(i, s):
         return i
 
 
-def get_ylab(channel):
+def get_label(channel):
     """
-    Retrieve the y-axis label for a given channel.
-
+    Retrieve the label for a given outcome.
     This function returns a formatted string representing the y-axis label
     based on the specified channel name. The labels correspond to specific
-    epidemiological measures.
+    epidemiological measures. If the channel is not recognized, the function
+    simply returns the input channel name as-is.
 
     Args:
         channel (str): The name of the channel for which to retrieve the label.
-            Possible values include:
-            - 'prevalence_2to10'
-            - 'prevalence'
-            - 'clinical_incidence'
-            - 'severe_incidence'
-            - 'simulatedEIR'
+            Possible values include (but are not limited to):
+            - 'prevalence_2to10': Represents $\it{Pf}$PR$_{2-10}$ (%) prevalence.
+            - 'prevalence': Represents $\it{Pf}$PR (%) prevalence.
+            - 'clinical_incidence': Represents clinical incidence (per person per year).
+            - 'severe_incidence': Represents severe incidence (per person per year).
+            - 'simulatedEIR': Represents simulated entomological inoculation rate (EIR).
+            - 'n_total_mos_pop': Represents the total female mosquito population.
 
     Returns:
-        str: The corresponding y-axis label for the channel, or None if the
-        channel is not recognized.
+        str: The corresponding y-axis label for the channel if recognized.
+        If the channel is not recognized, the channel name itself is returned.
     """
 
-    channel_labels = {'prevalence_2to10': '$\it{Pf}$PR$_{2-10}$ (%)',
-                      'prevalence': '$\it{Pf}$PR (%)',
+    channel_labels = {'ageGroup': 'Age group',
+                      'prevalence_2to10': '$\it{Pf}$PR$_{2-10}$',   # (%) if %, then pfpr outcomes need to be *100
+                      'prevalence': '$\it{Pf}$PR',    # (%)
                       'clinical_incidence': 'Clinical incidence (pppy)',
                       'severe_incidence': 'Severe incidence (pppy)',
-                      'simulatedEIR': 'simulated EIR'
+                      'simulatedEIR': 'simulated EIR',
+                      'n_total_mos_pop': 'Total female mosquito population'
                       }
 
-    return channel_labels.get(channel)
+    return channel_labels.get(channel, channel)
 
+def clean_fname(fname, sweepvar= None,unique_groups=None, facet_var = None, unique_facets= None):
+    """
+    Clean and modify a given filename by replacing placeholder variables with actual values.
+    This function replaces placeholder values in the provided filename based on the provided
+    parameters. Specifically, it replaces instances of the sweep variable and facet variable
+    with values from the unique groups and facets, if applicable, and changes 'modelname' to 'model'.
 
-def subset_dataframe_for_plot(df, figure_vars, agegrp=None, filter_target=True):
+    Args:
+        fname (str): The filename to be cleaned and modified.
+        sweepvar (str, optional): The name of the sweep variable in the filename. Defaults to None.
+        unique_groups (list, optional): A list of unique group names (e.g., model names) to replace
+            the sweep variable placeholder. Defaults to None.
+        facet_var (str, optional): The name of the facet variable in the filename. Defaults to None.
+        unique_facets (list, optional): A list of unique facet names to replace the facet variable
+            placeholder. Defaults to None.
+
+    Returns:
+        str: The cleaned and modified filename.
+    """
+    if unique_facets is not None  :
+        if len(unique_facets) == 1 and not isinstance(unique_facets[0], int):
+            fname = fname.replace(facet_var, unique_facets[0])
+    if sweepvar is not None :
+        if len(unique_groups) == 1 and not isinstance(unique_groups[0], int):
+            fname = fname.replace(sweepvar, unique_groups[0])
+    fname = fname.replace('modelname', 'model')
+    return fname
+
+def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True):
     """
     Filter the input DataFrame for plotting based on specified criteria.
 
@@ -305,7 +335,7 @@ def subset_dataframe_for_plot(df, figure_vars, agegrp=None, filter_target=True):
         df (pd.DataFrame): The input DataFrame containing simulation results.
         figure_vars (list of str): List of variables used for plotting, which influences
             the filtering process.
-        agegrp (str or list of str, optional): Specific age group(s) to filter by.
+        agegrps (str or list of str, optional): Specific age group(s) to filter by.
             If provided, only the data for these age groups will be retained.
             Defaults to None, meaning no filtering by age group will occur.
         filter_target (bool, optional): If True, the function will filter the DataFrame
@@ -324,14 +354,14 @@ def subset_dataframe_for_plot(df, figure_vars, agegrp=None, filter_target=True):
 
     txt = 'Filtered dataset by: '
 
-    if agegrp is not None:
-        if 'ageGroup' not in figure_vars:
-            if isinstance(agegrp, list):
-                df = df[df['ageGroup'].isin(agegrp)]
-                txt += f'ageGroup in {agegrp}, '
-            else:
-                df = df[df['ageGroup'] == agegrp]
-                txt += f'ageGroup {agegrp}, '
+    if agegrps is not None:
+        if isinstance(agegrps, list):
+            df = df[df['ageGroup'].isin(agegrps)]
+            txt += f'ageGroup in {agegrps}, '
+        else:
+            df = df[df['ageGroup'] == agegrps]
+            txt += f'ageGroup {agegrps}, '
+
 
     if 'cm_clinical' not in figure_vars:
         selected_cm = df['cm_clinical'].min()
@@ -357,3 +387,42 @@ def subset_dataframe_for_plot(df, figure_vars, agegrp=None, filter_target=True):
         txt = txt[:-2]
 
     return df, txt
+
+
+def sorted_list(string_char):
+    return sorted(string_char.unique(), key=lambda x: (str(x).lower() if isinstance(x, str) else x))
+
+# Function to assign an age range to a category
+def assign_age_group(age_range, categories):
+    """
+    Assign an age group based on a given age range and predefined category bounds.
+    This function checks which predefined age category a given age range falls into by comparing
+    the minimum and maximum age values with the bounds of each category. If the range overlaps
+    or fits entirely within a category, the corresponding category is returned. If no match is found,
+    the function returns None.
+
+    Args:
+        age_range (tuple): A tuple containing the minimum and maximum age of the range (e.g., (0.5, 1)).
+        categories (dict): A dictionary of age categories, where each key is a category name, and
+                           the value is another dictionary with 'min' and 'max' keys defining the
+                           age bounds of the category.
+
+    Returns:
+        str or None: The name of the category the age range fits into, or None if no match is found.
+    """
+    min_age, max_age = age_range
+    for category, bounds in categories.items():
+        if float(min_age) >= bounds["min"] and float(max_age) <= bounds["max"]:
+            return category
+    # Handle overlapping or inclusive ranges
+    for category, bounds in categories.items():
+        if float(min_age) < bounds["max"] and float(max_age) > bounds["min"]:
+            return category
+    return None  # If no category fits
+
+
+def year_to_custom(x,  start_year=None):
+    year = mdates.num2date(x).year
+    return year - start_year  # Adjust to 0-based range
+
+

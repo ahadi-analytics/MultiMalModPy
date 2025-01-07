@@ -4,12 +4,8 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
-
 import seaborn as sns
-
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-
 mpl.rcParams['pdf.fonttype'] = 3
 plt.rcParams.update({'font.size': 16})
 plt.rcParams.update({'font.sans-serif': "Arial"})
@@ -18,8 +14,8 @@ from plotter.plot_helper import *
 
 
 # Plots prevalence 2 to 10 by output variable, requires mmmpy_timeavrg.csv
-def prevalence2to10_to_incidence(fdir, df, sweepvar='modelname', facet_var='seasonality', channel='clinical_incidence',
-                                 agegrps=None):
+def prevalence2to10_to_outcome(fdir, df, sweepvar='modelname', facet_var='seasonality', channel='clinical_incidence',
+                               agegrps=None):
     """
     Generate line plots for PfPR2to10 and either clinical or severe incidence,
     grouped by the specified sweep variable and faceted by another variable.
@@ -51,31 +47,35 @@ def prevalence2to10_to_incidence(fdir, df, sweepvar='modelname', facet_var='seas
     figure_vars = ['prevalence_2to10', channel] + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars, agegrps)
 
-    unique_facets = df[facet_var].unique()
+    unique_facets = sorted_list(df[facet_var])
+    unique_groups = sorted_list(df[sweepvar])
+    num_colors = len(unique_groups)
+    color_palette = sns.color_palette('colorblind', max(num_colors, 4))
+
     nx = len(df['ageGroup'].unique())
     ny = 1
     f = 1
     firstPlot = True
     fig = plt.figure(figsize=(10 * nx, 10 * ny))
 
-    unique_groups = df[sweepvar].unique()
-    unique_groups = np.sort(unique_groups)
-    num_colors = len(unique_groups)
-    color_palette = sns.color_palette('colorblind', max(num_colors, 4))
+    if agegrps is None:
+        agegrps = df['ageGroup'].unique()
 
     # for each age group, plot x = prevalence 2_to_10, y = incidences (or prevalence)
     for fi in unique_facets:
         fdf = df[df[facet_var] == fi]
 
-        for agroup in fdf['ageGroup'].unique():
+        for agegrp in agegrps:
             ax = fig.add_subplot(ny, nx, f)
-            ax.set_title(f'{fi}, {agroup}')
+            ax.set_title(f'{fi}, Age group: {agegrp}')
+            if len(unique_facets) == 1:
+                ax.set_title(f'Age group: {agegrp}')
             f += 1
-            adf = fdf[fdf.ageGroup == agroup]
+            adf = fdf[fdf.ageGroup == agegrp]
 
-            for mi, model in enumerate(unique_groups):
-                pdf = adf[adf[sweepvar] == model]
-                color_key = color_selector(mi, model)
+            for mi, grp in enumerate(unique_groups):
+                pdf = adf[adf[sweepvar] == grp]
+                color_key = color_selector(mi, grp)
                 if not pd.isnull(pdf['prevalence_2to10']).all():
                     # plot mean, min and max of seeds
                     xmean, ymean = get_x_y(pdf, 'output_target', 'prevalence_2to10', channel)
@@ -84,7 +84,7 @@ def prevalence2to10_to_incidence(fdir, df, sweepvar='modelname', facet_var='seas
                         merge_df.sort_values(by='output_target', inplace=True)
                     else:
                         merge_df.sort_values(by='prevalence_2to10', inplace=True)
-                    ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=model,
+                    ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=grp,
                             color=color_palette[color_key])
                     ax.fill_between(merge_df['prevalence_2to10'], merge_df[f'{channel}_min'],
                                     merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[color_key])
@@ -95,89 +95,128 @@ def prevalence2to10_to_incidence(fdir, df, sweepvar='modelname', facet_var='seas
             ax.set_ylim(0, y_lim)
             ax.set_xlim(0, 1)
             ax.set_xticks([0, 0.2, 0.4, 0.6, 0.8, 1])
-            ax.title.set_text(f'{agroup}')
-            ax.set_ylabel(get_ylab(channel))
+            ax.set_ylabel(get_label(channel))
             ax.set_xlabel('$\it{Pf}$PR$_{2-10}$ (%)')
             if firstPlot:
                 lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.2))
                 firstPlot = False
 
-    fname = f'pfpr2to10_to_{channel}'
+    fname = f'pfpr2to10_to_{channel}_{sweepvar}_{facet_var}'
+    fname = clean_fname(fname, sweepvar, unique_groups, facet_var, unique_facets)
+
     fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
 
 
-# Plots prevalence 2 to 10 by incidence, with subplots seperated by 3 age groups. These graphs were requested by Narimane to reflect 
-# figure 1 in https://www.nature.com/articles/ncomms9170
-def prevalence2to10_to_incidence_by_age_and_model(fdir, df, sweepvar='modelname', channel='clinical_incidence'):
+# Plots prevalence 2 to 10 by incidence, with subplots seperated by 3 age groups.
+def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_incidence', season=None):
     """
-    Generate line plots for PfPR2to10 and either clinical or severe incidence,
-    separated by model (columns) and age groups (rows).
+    Generate grid plots of PfPR2to10 prevalence vs. clinical or severe incidence by age and model.
 
-    This function creates a grid of line plots where each plot corresponds to a
-    specific model and age group for the prevalence of PfPR2to10 on the x-axis
-    and either clinical or severe incidence on the y-axis.
+    This function creates a grid of line plots where:
+      - The x-axis represents the prevalence of PfPR2to10.
+      - The y-axis represents either clinical or severe incidence (as specified by the `channel` argument).
+      - Rows correspond to different age groups.
+      - Columns correspond to different models.
+
+    The function aggregates data for each model and age group, computes mean and confidence intervals
+    (min-max range), and plots these statistics with confidence bands.
 
     Args:
-        fdir (str): Directory where the generated plot will be saved.
-        df (pd.DataFrame): DataFrame containing the model results for plotting.
-        sweepvar (str, optional): Variable to group the data and create multiple
-            panels on the plot. Default is 'modelname'.
-        channel (str): Variable representing the y-axis data to be plotted (e.g.,
-            'clinical_incidence').
+        fdir (str): Path to the directory where the resulting plot will be saved.
+        df (pd.DataFrame): DataFrame containing the input data. Must include columns for model name,
+            age group, prevalence, and incidence metrics.
+        channel (str): The y-axis variable to plot (e.g., 'clinical_incidence', 'severe_incidence').
+            Defaults to 'clinical_incidence'.
+        season (str, optional): Seasonality condition to filter the data. If None, the first unique
+            seasonality value in the dataset will be used. Defaults to None.
 
     Returns:
-        None: The function saves the generated plots to disk.
+        None: The function generates and saves a plot as a PNG file in the specified directory.
+
+    Notes:
+        - Age groups are categorized into infants and young children (0-5 years), older children
+          (5-15 years), and adults (>15 years).
+        - Models are distinguished using unique colors.
+        - The function requires helper functions for selecting colors (`color_selector`) and for
+          data aggregation (`get_x_y`).
     """
 
-    seasonality = list(df['seasonality'].unique())
-    nx = 3
-    ny = 3
-    f = 1
-    fig = plt.figure(figsize=(10 * nx, 10 * ny))
+    unique_groups = sorted_list(df['modelname'])
 
-    unique_groups = df[sweepvar].unique()
-    unique_groups = np.sort(unique_groups)
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('colorblind', max(num_colors, 4))
-    young_child = ['0-0.5', '0.5-1', '1-2', '2-5']
-    older_child = ['5-10', '10-15']
-    adult = ['15-20', '20-100']
-    ages_list = [young_child, older_child, adult]
+
+    # Define the age categories
+    age_categories = {
+        "young_child": {"min": 0, "max": 5},
+        "older_child": {"min": 5, "max": 15},
+        "adult": {"min": 15, "max": float('inf')}
+    }
+    ages_dict = {
+        "young_child": [],
+        "older_child": [],
+        "adult": []
+    }
+    ages_labels = ['Infants and young\nchildren(0-5 yrs)', 'Older children\n(5-15 yrs)', 'Adults\n(>15 yrs)']
+
+    # Assign each age range to the appropriate category
+    age_ranges = [[start, end] for start, end in (item.split('-') for item in list(df['ageGroup'].unique()))]
+    for age_range in age_ranges:
+        category = assign_age_group(age_range, age_categories)
+        if category:
+            age_range_str = f"{age_range[0]}-{age_range[1]}"
+            ages_dict[category].append(age_range_str)
+        else:
+            print(f"Age range {age_range} does not fit any category.")
+
     mean_vars = [channel, 'prevalence_2to10']
 
+    nx = len(modelname)
+    ny = len(ages_dict)
+    f = 1
+    fig = plt.figure(figsize=(10 * nx, 6 * ny))
+
     # for each age group, plot x = prevalence 2_to_10, y = incidences (or prevalence)
-    for si, season in enumerate(seasonality):
-        sdf = df[df.seasonality == season]
-        for ages in ages_list:
-            adf = sdf[sdf['ageGroup'].isin(ages)]
-            for mi, model in enumerate(unique_groups):
-                color_key = color_selector(mi, model)
-                ax = fig.add_subplot(ny, nx, f)
-                ax.set_title(f'{season} {model}')
-                f += 1
-                mdf = adf[adf.modelname == model]
-                mdf = mdf.groupby(['seed', 'output_target'])[mean_vars].agg(np.mean).reset_index()
-                if not pd.isnull(mdf['prevalence_2to10']).all():
-                    # plot mean, min and max of seeds
-                    xmean, ymean = get_x_y(mdf, 'output_target', 'prevalence_2to10', channel)
-                    merge_df = pd.merge(left=xmean, right=ymean, on='output_target')
-                    merge_df.sort_values(by='prevalence_2to10', inplace=True)
-                    ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=model,
-                            color=color_palette[color_key])
-                    ax.fill_between(merge_df['prevalence_2to10'], merge_df[f'{channel}_min'],
-                                    merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[color_key])
-                if channel == "prevalence":
-                    y_lim = 1
-                else:
-                    y_lim = max(adf[channel]) * 1.01
-                ax.set_ylim(0, y_lim)
-                ax.set_xlim(0, 1)
-                ax.set_xticks([0, 0.2, 0.4, 0.6, 0.8, 1])
-                ax.title.set_text(f'{model}: {ages}')
-                ax.set_ylabel(get_ylab(channel))
-                ax.set_xlabel('$\it{Pf}$PR$_{2-10}$ (%)')
-    fname = f'pfpr2to10_to_{channel}_by_age_by_model'
+    if season is None:
+        season = df.seasonality.unique()[0]
+    sdf = df[df.seasonality == season]
+
+    for a, ages in enumerate(ages_dict.values()):
+        adf = sdf[sdf['ageGroup'].isin(ages)]
+
+        for mi, grp in enumerate(unique_groups):
+            color_key = color_selector(mi, grp)
+            ax = fig.add_subplot(ny, nx, f)
+            ax.title.set_text(f'{grp}')
+
+            f += 1
+            mdf = adf[adf['modelname'] == grp]
+            # mdf = mdf.groupby(['seed', 'output_target'])[mean_vars].agg(np.mean).reset_index()
+            # Population weighted mean for each output_target (relevant for incidence)
+            mdf = mdf.groupby(['seed', 'output_target'])[mean_vars + ['nHost']].apply(
+                lambda x: pd.Series({col: np.average(x[col], weights=x['nHost']) for col in mean_vars})).reset_index()
+
+            if not pd.isnull(mdf['prevalence_2to10']).all():
+                # plot mean, min and max of seeds
+                xmean, ymean = get_x_y(mdf, 'output_target', 'prevalence_2to10', channel)
+                merge_df = pd.merge(left=xmean, right=ymean, on='output_target')
+                merge_df.sort_values(by='prevalence_2to10', inplace=True)
+                ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=grp,
+                        color=color_palette[color_key])
+                ax.fill_between(merge_df['prevalence_2to10'], merge_df[f'{channel}_min'],
+                                merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[color_key])
+            if channel == "prevalence":
+                y_lim = 1
+            else:
+                y_lim = max(adf[channel]) * 1.01
+            ax.set_ylim(0, y_lim)
+            ax.set_xlim(0, 1)
+            ax.set_xticks([0, 0.20, 0.40, 0.60, 0.80, 1])
+            ax.set_ylabel(f'{ages_labels[a]}\n,{get_label(channel)}')
+            ax.set_xlabel('$\it{Pf}$PR$_{2-10}$')
+
+    fname = f'pfpr2to10_to_{channel}_age_model_{season}'
     fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_inches='tight')
     plt.close()
 
@@ -214,8 +253,10 @@ def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', ei
     color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
 
     firstPlot = True
-    unique_facets = df[facet_var].unique()
-    nx = len(df[sweepvar].unique())
+    unique_facets = sorted_list(df[facet_var])
+    unique_groups = sorted_list(df[sweepvar])
+
+    nx = len(unique_groups)
     ny = len(unique_facets)
     f = 1
     fig = plt.figure(figsize=(10 * nx, 10 * ny))
@@ -223,31 +264,34 @@ def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', ei
     for fi in unique_facets:
         ax = fig.add_subplot(ny, nx, f)
         ax.set_title(fi)
+        if len(unique_facets) == 1:
+            ax.set_title('')
+
         f += 1
         fdf = df[(df[facet_var] == fi)]
 
-        for i, (p, pdf) in enumerate(fdf.groupby([sweepvar])):
-            color_key = color_selector(i, p)
-            xmean, ymean = get_x_y(pdf, 'output_target', eir_val, channel)
+        for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
+            s = s[0]
+            color_key = color_selector(i, s)
+            xmean, ymean = get_x_y(sdf, 'output_target', eir_val, channel)
             merge_df = pd.merge(left=xmean, right=ymean, on='output_target')
             merge_df.sort_values(by=eir_val, inplace=True)
-            ax.plot(merge_df[eir_val], merge_df[channel], '-', linewidth=0.8, label=f"{p}",
+            ax.plot(merge_df[eir_val], merge_df[channel], '-', linewidth=0.8, label=f"{s}",
                     color=color_palette[color_key])
             ax.fill_between(merge_df[eir_val], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
                             color=color_palette[color_key])
+
         if firstPlot:
             lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1))
             firstPlot = False
+
         ax.set_xlim(0.1, 1000)
         ax.set_xscale('symlog')
         ax.set_xlabel(f'{eir_val.replace("EIR", " annual EIR")}', fontsize=14)
-        ax.set_ylabel(get_ylab(channel))
+        ax.set_ylabel(get_label(channel))
 
-    fname = f'{eir_val}_{channel}_{agegrp}_by_{sweepvar}_{facet_var}'
-    if channel == 'prevalence_2to10':
-        fname = f'{eir_val}_{channel}_by_{sweepvar}_{facet_var}'
-    fname = fname.replace('modelname', 'model')
-
+    fname = f'{eir_val}_{channel}_{agegrp}_{sweepvar}_{facet_var}'
+    fname = clean_fname(fname, sweepvar, unique_groups, facet_var, unique_facets)
     fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
 
@@ -273,12 +317,16 @@ def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonal
         None: The function saves the generated plots to disk.
     """
 
+    if sweepvar != 'modelname' and facet_var != 'modelname':
+        print('Either sweepvar or facet_var should be modelname')
+        return
+
     xyvars = ['simulatedEIR', 'output_target']
     figure_vars = xyvars + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars)
-    unique_facets = df[facet_var].unique()
-    unique_groups = df[sweepvar].unique()
-    unique_groups = np.sort(unique_groups)
+    unique_facets = sorted_list(df[facet_var])
+    unique_groups = sorted_list(df[sweepvar])
+
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('colorblind', max(num_colors, 4))
     firstPlot = True
@@ -292,23 +340,21 @@ def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonal
         ax = fig.add_subplot(ny, nx, f)
         ax.set_title(fi)
         f += 1
-        for i, (p, pdf) in enumerate(fdf.groupby([sweepvar])):
+        for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
+            s = s[0]
             # plot mean, min and max of seeds and age groups
-            color_key = color_selector(i, p)
-            if p == 'EMOD':
-                model = 'em'
-            elif p == 'OpenMalaria':
-                model = 'om'
-            elif p == 'malariasimulation':
-                model = 'ms'
+            color_key = color_selector(i, s)
+            if sweepvar == 'modelname':
+                xchannel = f'model_input_{s}'
             else:
-                print(f'Warning: Model not recognized: {p}')
-            xmean, ymean = get_x_y(pdf, 'output_target', f'model_input_{model}', 'simulatedEIR')
+                xchannel = f'model_input_{fi}'
+
+            xmean, ymean = get_x_y(sdf, 'output_target', xchannel, 'simulatedEIR')
             merge_df = pd.merge(left=xmean, right=ymean, on='output_target')
-            merge_df.sort_values(by=f'model_input_{model}', inplace=True)
-            ax.plot(merge_df[f'model_input_{model}'], merge_df['simulatedEIR'], '-', linewidth=0.8, label=f"{p}",
+            merge_df.sort_values(by=xchannel, inplace=True)
+            ax.plot(merge_df[xchannel], merge_df['simulatedEIR'], '-', linewidth=0.8, label=f"{s}",
                     color=color_palette[color_key])
-            ax.fill_between(merge_df[f'model_input_{model}'], merge_df['simulatedEIR_min'],
+            ax.fill_between(merge_df[xchannel], merge_df['simulatedEIR_min'],
                             merge_df['simulatedEIR_max'], alpha=0.1, color=color_palette[color_key])
         if firstPlot:
             lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1))
@@ -321,11 +367,11 @@ def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonal
     plt.xlabel('Input EIR')
     plt.ylabel('Simulated annual EIR')
 
-    fname = f'input_to_simulated_eir_by_{sweepvar}_{facet_var}'
-    fname = fname.replace('modelname', 'model')
+    fname = f'input_to_simulated_eir_{sweepvar}_{facet_var}'
+    fname = clean_fname(fname, sweepvar, unique_groups, facet_var, unique_facets)
+
     fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
-
 
 
 if __name__ == "__main__":
@@ -345,16 +391,23 @@ if __name__ == "__main__":
         sweepvar = 'modelname'
         print('#----- Plotting input to simulated EIR -----#')
         input_to_simulated_eir(out_dir, df, sweepvar=sweepvar)
+        # input_to_simulated_eir(out_dir, df, sweepvar='cm_clinical', facet_var='modelname') # for paper 1
 
         channel_list = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence']
         for channel in channel_list:
             print(f'#----- Plotting simulated EIR to {channel} -----#')
-            eir_to_outcome(out_dir, df, sweepvar=sweepvar, facet_var='seasonality', eir_val='simulatedEIR', channel=channel, agegrp='0-100')
+            eir_to_outcome(out_dir, df, sweepvar=sweepvar, facet_var='seasonality', eir_val='simulatedEIR',
+                           channel=channel, agegrp='0-100')
+            # eir_to_outcome(out_dir, df, sweepvar='cm_clinical', facet_var='modelname') # for paper 1
 
         channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
         for channel in channel_list:
             print(f'#----- Plotting prevalence_2_to_10 to {channel} -----#')
-            prevalence2to10_to_incidence(out_dir, df, channel=channel)
-            # prevalence2to10_to_incidence_by_age_and_model(out_dir,modelname,channel=channel) #This is new plotter, we don't have to make it everytime, but its available.
+            # agegrps = None # plot all age groups
+            agegrps = ['0-5', '0-100']
+            prevalence2to10_to_outcome(out_dir, df, channel=channel, agegrps=agegrps)
+
+            # This figure reflects figure 1 in https://www.nature.com/articles/ncomms9170
+            prevalence2to10_to_outcome_by_age_and_model(out_dir, df, channel=channel)
     else:
         print(f'Too few EIR values to be able to run relationship plots')
