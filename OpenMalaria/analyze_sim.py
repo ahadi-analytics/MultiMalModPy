@@ -444,7 +444,7 @@ def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days, grp_channels=['ageGroup',
 
     Saves:
         mmmpy_timeavrg.csv
-        interpolation_data.csv (if exp.run_mode == 'calibrun')
+        interpolation_data.csv (if exp.run_mode == 'calibration')
 
     Returns:
         None

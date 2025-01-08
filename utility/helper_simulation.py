@@ -222,7 +222,7 @@ def check_exp_input_parameters(exp):
             f"Only two seasonality patterns are allowed, but {len(exp.seasonality)} were specified. "
             "Please limit the number of seasonality patterns to two."
         )
-
+    
 def check_exp_inputs_emod(exp):
     """
     Checks input parameter compatibility with the framework configurations for EMOD.

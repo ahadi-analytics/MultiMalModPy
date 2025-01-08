@@ -50,7 +50,6 @@ if args.emodstep in ['pickup', 'new_pickup']:
 
 else:
     # Creating an Experiment object and setting its attributes, saved as exp.obj
-    #exp = initialize_exp(args, manifest)
     exp = LoadExperiment(args, manifest)
 
     if exp.emod_calib_params:
@@ -58,18 +57,6 @@ else:
         exp.calib_config_pointer = range(0, len(calib_config_df))  # define rows from calib_params df to run
         del calib_config_df
 
-    if args.csv:
-        ### Experiment scenario parameter definitions
-        exp_scen_df = pd.read_csv(os.path.join(f'scenario_csv/{args.csv}.csv'))
-        exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == args.rownum]
-        exp.SUITEname = f'{dt.now().strftime("%Y%m%d")}_{args.csv}'
-        exp.exp_name = f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
-
-        ## Overwriting default parameters with parameters specific in scenario csv file
-        not_param_columns = ['rownum', 'exp_short', 'exp_name']
-        for col in exp_scen_df.columns:
-            if col not in not_param_columns:
-                setattr(exp, col, get_param_from_dataframe(exp_scen_df, col))
 
     # Entomology mode: Dynamic EIR configuration if selected
     exp = get_seasonal_eir(exp)

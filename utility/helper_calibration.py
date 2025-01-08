@@ -66,7 +66,7 @@ def output_target_to_xTemp(df, exp, model):
 
     # FIXME allow this hack, or is there a better one? For testrun, or introduce 'debug run' to allow running lower  populations
     popsize = exp.emod_pop_size
-    if exp.run_mode =='test' and popsize is not data.loc[data['modelname'] == model, 'pop_size'].unique():
+    if exp.test and popsize is not data.loc[data['modelname'] == model, 'pop_size'].unique():
         popsize = data.loc[data['modelname'] == model, 'pop_size'].min()
 
     for i, row in df.iterrows():
@@ -142,7 +142,7 @@ def output_target_to_eir(df, exp, model):
         raise ValueError(f'Specified model is not valid {model}')
 
     # FIXME allow this hack, or is there a better one? For testrun, or introduce 'debug run' to allow running lower  populations
-    if exp.run_mode =='test' and popsize is not data.loc[data['modelname'] == model, 'pop_size'].unique():
+    if exp.test and popsize is not data.loc[data['modelname'] == model, 'pop_size'].unique():
         popsize = data.loc[data['modelname'] == model, 'pop_size'].min()
 
     for i, row in df.iterrows():
@@ -183,8 +183,8 @@ def check_transmission_targets_input(exp):
 
         popsize_options = list( data.loc[data['modelname'] == model, 'pop_size'].unique())
         if  popsize not in popsize_options:
-            if exp.run_mode == 'test':
-                print(f'Warning: the popsize specified for {model} ({popsize}) is not in the interpolation dataset, since test run, {min(popsize_options)} will be used') # see L140
+            if exp.test:
+                print(f'Warning: the popsize specified for {model} ({popsize}) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize ({min(popsize_options)})') # see L140
             else:
                 raise ValueError(f"Selected popsize {popsize} not availabe, options for {model} are  {', '.join([str(x) for x in popsize_options])}")
 
