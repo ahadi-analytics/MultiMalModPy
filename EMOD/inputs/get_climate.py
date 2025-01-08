@@ -8,7 +8,8 @@ def get_climate(tag = "default", start_year = "2019", start_day="001", end_year=
     end = "".join((end_year,end_day))
     
     #Demographics
-    demo = "".join(("~/model-characterization/EMOD/inputs/",demo_fname))
+    ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
+    demo = os.path.join(ROOT_DIR,demo_fname)
     
     #Output folder to store climate files
     dir1 = "/".join(("inputs/climate",tag,"-".join((start,end))))

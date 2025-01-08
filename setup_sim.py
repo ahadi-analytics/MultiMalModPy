@@ -52,8 +52,9 @@ class SimulationConfig:
         self.cm_start = 1
         self.case_management = [(0, 0)]
         self.detectionLimit = 40
-        self.importation_rate = 0
-
+        self.emod_importation_rate = 5
+        self.openmalaria_importation_rate = 0
+        
         # Parameters also modifiable via args (if specified in args, those will get priority)
         # FIXME - should those be removed from args ?
         # Transmission intensity calibration settings.
@@ -85,6 +86,7 @@ class SimulationConfig:
         # EMOD Settings
         self.emod_burnin = 100
         self.emod_pop_size = 1000
+        self.emod_calib_type = 'emod_severe' #could be 'emod_severe' or 'emod_best'
 
         # malariasimulation Settings
         self.malariasimulation_burnin = 25
@@ -99,7 +101,7 @@ class SimulationConfig:
         """
         3. Framework Config
         """
-        self.mem_increase_factor = 5.0
+        self.mem_increase_factor = 1.0
         self.analyzer_script = ['analyze_sim.py']
         self.analyzer_list = ['timeavrg', 'annual', 'monthly', '5day']  # openmalaria_base, surveyallage
         self.plots_to_run = ['relationship', 'timeseries', 'agecurves']  # 'ccstep'
