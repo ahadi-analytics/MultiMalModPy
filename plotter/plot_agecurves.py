@@ -56,8 +56,8 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars)
 
     firstPlot = True
-    unique_facets = df[facet_var].unique()
-    unique_facets = sorted(unique_facets)
+    unique_facets = sorted_list(df[facet_var])
+    unique_groups = sorted_list(df[sweepvar])
     color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
 
     nx = round(len(unique_facets) / 2)
@@ -68,9 +68,16 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target
         fdf = df[df[facet_var] == fi]
         fdf = fdf[fdf[channel].notnull()]
         ax = fig.add_subplot(ny, nx, f)
+        ax.set_title(f"{facet_var} = {fi}")
+        if facet_var == 'modelname':
+            ax.set_title(fi)
+        if facet_var == 'output_target':
+            ax.set_title(f"{exp.output_type} = {fi}")
+
         f += 1
         max_ylim = []
         for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
+            s = s[0]
             color_key = color_selector(i, s)
             ylim_up = np.max(sdf[channel]) * 1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
@@ -92,11 +99,10 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target
         ax.set_ylim(0, max(max_ylim))
         ax.tick_params(axis='x', labelrotation=45)
         ax.set_xlabel('Age (years)')
-        ax.set_ylabel(get_ylab(channel))
-        ax.set_title(f"{facet_var} = {fi}")
+        ax.set_ylabel(get_label(channel))
 
-    fname = f'agecurves_{channel}_by_{sweepvar}'
-    fname = fname.replace('modelname', 'model')
+    fname = f'agecurves_{channel}_{sweepvar}_{facet_var}'
+    fname = clean_fname(fname, sweepvar, unique_groups, facet_var, unique_facets)
     fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
 
@@ -104,7 +110,7 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    modelname = args.modelname #  ['EMOD', 'OpenMalaria', 'malariasimulation']
+    modelname = args.modelname
     if isinstance(modelname, str):
         modelname = [modelname]
 
@@ -132,5 +138,10 @@ if __name__ == "__main__":
 
     for channel in channel_list:
         print(f'#----- Plotting Age Curves for {channel}-----#')
-        age_curves(out_dir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
-                   age_groups_aggregates=age_groups_aggregates_sub)
+        age_curves(out_dir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,  age_groups_aggregates=age_groups_aggregates_sub)
+
+    sweepvar =  'output_target'
+    facet_var =  'modelname'
+    for channel in channel_list:
+        print(f'#----- Plotting Age Curves for {channel}-----#')
+        age_curves(out_dir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,  age_groups_aggregates=age_groups_aggregates_sub)

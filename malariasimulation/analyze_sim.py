@@ -275,7 +275,7 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
 
     # Read experiment data daily
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n']
-    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev']
+    mean_channels = ['nPopulation', 'prevalence_2to10', 'prev','n_infectious_mos', 'n_total_mos_pop', 'EIR_gamb']
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup',
                         'age_upper'] + sum_channels + mean_channels
 

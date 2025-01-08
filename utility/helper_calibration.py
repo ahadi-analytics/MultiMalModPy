@@ -64,11 +64,16 @@ def output_target_to_xTemp(df, exp, model):
     else:
         raise ValueError(f'Specified input_type is not valid {exp.output_type}')
 
+    # FIXME allow this hack, or is there a better one? For testrun, or introduce 'debug run' to allow running lower  populations
+    popsize = exp.emod_pop_size
+    if exp.run_mode =='test' and popsize is not data.loc[data['modelname'] == model, 'pop_size'].unique():
+        popsize = data.loc[data['modelname'] == model, 'pop_size'].min()
+
     for i, row in df.iterrows():
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
                       & (data['seasonality'] == row['seasonality'])
                       & (data['modelname'] == model)
-                      & (data['pop_size'] == exp.emod_pop_size))]
+                      & (data['pop_size'] == popsize))]
         xt = idata[output_type_col]
         yp = idata['input_target']
         xnew = row['output_target']
