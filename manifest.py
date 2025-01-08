@@ -28,7 +28,8 @@ eradication_path = os.path.join(os.path.expanduser('~'), "download/Eradication")
 # ----------------------------- EMOD generic settings end -----------------------------
 
 if os.name != 'posix':
-    raise ValueError("Current framework does not allow local runs")
+    hpc ='LOCAL'
+    print("Running the framework locally. Note: Local execution is supported only for OpenMalaria and malariasimulation.")
 
 # ----------------------------- Framework and cluster specific settings start -----------------------------
 # job_directory is where your simulations and outputs will be stored
@@ -40,9 +41,10 @@ if hpc == 'NUCLUSTER':
     projdir = os.path.join('/projects/b1139/emod-om/')
     job_directory = os.path.join(projdir, 'experiments')
     output_directory = os.path.join(projdir, 'simulation_outputs')
+    
     SIF_PATH = "--bind /projects /projects/b1139/images/dtk_run_rocky_py39.sif"
     if openmalaria_version == 43:
-        OPENMALARIA_PATH = "/projects/b1139/OpenMalaria/"
+        OPENMALARIA_PATH = "/projects/b1139/OpenMalaria/om_v43/"
     elif openmalaria_version == 46:
         OPENMALARIA_PATH = "/projects/b1139/OpenMalaria/om_v46/"
     else:
@@ -63,6 +65,8 @@ elif hpc == 'SCICORE':
     sh_hpc_config = {'A': 'penny', 'p': 'scicore', 'em_modules': '', 'buyin': True}
     projdir = os.path.join('/scicore/home/scicore/cavelan/git/model-characterization')
     job_directory = os.path.join(projdir, 'experiments')
+    output_directory = os.path.join(projdir, 'simulation_outputs')
+
     SIF_PATH = "/scicore/home/scicore/cavelan/git/emodpy/dtk_run_rocky_py39.sif"
     OPENMALARIA_PATH = "/scicore/home/penny/GROUP/OpenMalaria/OM_schema46/"
 
@@ -80,7 +84,38 @@ elif hpc == 'SCICORE':
     emod_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/EMOD/inputs/'
     openmalaria_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria/'
     malariasimulation_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/malariasimulation/'
+
+    interp_path = os.path.join('/scicore/home/scicore/cavelan/git/model-characterization/target_calibration/')
+    interp_csv = 'interpolation_data.csv'
+
+elif hpc == 'LOCAL':
+    sh_hpc_config = {'A': 'Local', 'p': None, 'em_modules': None, 'buyin': None}
+    projdir = os.path.join(ROOT_DIR, 'simulations_local')
+    os.makedirs(projdir, exist_ok=True)
+    job_directory = os.path.join(projdir, 'experiments')
     output_directory = os.path.join(projdir, 'simulation_outputs')
+    SIF_PATH = ""
+    OPENMALARIA_venv = ''
+    r_local = "C:/Program Files/R/R-4.2.3/bin"
+
+    if openmalaria_version == 43:
+        OPENMALARIA_PATH = os.path.join(ROOT_DIR, 'dependencies/OpenMalaria/om_v43')
+    elif openmalaria_version == 46:
+        OPENMALARIA_PATH = os.path.join(ROOT_DIR, 'dependencies/OpenMalaria/om_v46')
+    else:
+        raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
+
+    EMOD_venv_modules = os.path.join('')
+    EMOD_venv_path = os.path.join(f'\nsource {ROOT_DIR}/dependencies/mmmpy_venv/bin/activate\n')
+    EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
+
+    emod_input_path = os.path.join(f'{ROOT_DIR}/EMOD/inputs/')
+    openmalaria_input_path = os.path.join(f'{ROOT_DIR}/OpenMalaria/')
+    malariasimulation_input_path = os.path.join(f'{ROOT_DIR}/malariasimulation/')
+
+    interp_path = os.path.join(f'{ROOT_DIR}/target_calibration/')
+    interp_csv = 'interpolation_data.csv'
+
 else:
     job_directory = os.path.join(os.path.expanduser('~'), 'experiments/')
     SIF_PATH = ""

@@ -26,7 +26,7 @@
 #' }
 #'
 #' @export
-run_simulations <- function(exp, exp_setup_df, parameter_table, write_raw_output = TRUE) {
+run_simulations <- function(exp, exp_setup_df, parameter_table) {
 
   #-------------------------
   # 1. Define simulation
@@ -171,10 +171,10 @@ run_simulations <- function(exp, exp_setup_df, parameter_table, write_raw_output
     else{
       simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
     }
-    
-    if (write_raw_output) {
-      write_csv(simulation_outputs_list[[i]], file.path(exp$job_directory, 'malariasimulation_jobs', paste0(parameter_table[i,]$index, '_out.csv')))
-    }
+
+    # When running simulation scenarios in parallel as on HPC, those always need to be saved, part of the framework
+    # If run as a standalone and all simulations scenarios as part of the for loop, this would not be needed.
+    write_csv(simulation_outputs_list[[i]], file.path(exp$job_directory, 'malariasimulation_jobs', paste0(parameter_table[i,]$index, '_out.csv')))
 
     # Print the function progress:
     print(paste0("Simulation ", parameter_table[i,]$index, " complete (", round(x = i / nrow(parameter_table) * 100, digits = 3), "% complete)"))

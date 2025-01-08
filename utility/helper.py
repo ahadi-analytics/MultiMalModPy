@@ -281,6 +281,9 @@ def check_exp_inputs(exp, attribute_check=False):
         ValueError: If input parameters are invalid.
     """
 
+    if exp.hpc == 'LOCAL' and not exp.test :
+        raise ValueError("Local execution of the framework is only permitted for test runs.")
+
     ## Generell check on input parameter combinations and formats
     check_exp_input_parameters(exp)
 

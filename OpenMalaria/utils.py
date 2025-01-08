@@ -178,7 +178,39 @@ def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
     # Generate OpenMalaria scenario XML files
     create_scenarios(exp, scen_df)
 
-    # Set up script for submitting OpenMalaria simulations as a SLURM array job
+    if exp.hpc == 'LOCAL':
+        from utility.helper_local import write_ps1_analyzer
+        # Write local submission script
+        write_ps1_OpenMalaria(exp)
+        write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='OpenMalaria')
+        # Note handled via submit_run_all_local
+        from utility.helper_local import submit_runmodel_local
+        submit_runmodel_local(exp, model_to_run='OpenMalaria')
+    elif exp.hpc == 'CONTAINER':
+        # TODO coming soon
+        pass
+    else:
+        submit_run_OpenMalaria_slurm(exp, t, memG)
+
+
+def submit_run_OpenMalaria_slurm(exp, t='04:00:00', memG=3):
+    """
+    Submits OpenMalaria simulations as a SLURM array job for parallel execution.
+
+    This function generates a SLURM script for running OpenMalaria simulations, configures job parameters like
+    time, memory, and job array size, and then submits the job to a SLURM job scheduler. The job is submitted
+    with the specified wall time and memory requirements, and it runs the OpenMalaria simulations for each task
+    in the array.
+
+    Args:
+        exp (object): An experiment object containing attributes like 'nexps', 'max_running_jobs',
+                      'sh_hpc_config', 'job_directory', and 'OPENMALARIA_venv' needed for job configuration and submission.
+        t (str): The wall time for the SLURM job, default is '04:00:00'.
+        memG (int): The memory in gigabytes allocated for each SLURM job, default is 3GB.
+
+    Raises:
+        subprocess.CalledProcessError: If there is an issue with running the SLURM job submission command.
+    """
     array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='run_openmalaria', arrayJob=array)
     openmalaria = exp.OPENMALARIA_venv
@@ -205,6 +237,64 @@ def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
 
     # Submit the job for analysis
     submit_analyze_OpenMalaria(exp)
+
+
+def write_ps1_OpenMalaria(exp):
+    """
+    Creates a PowerShell script to run OpenMalaria simulations (sequentially) locally.
+
+    This function generates a PowerShell script that:
+    1. Sets job parameters, including the path to the OpenMalaria executable and the job directory.
+    2. Ensures the log directory exists, creating it if necessary.
+    3. Iterates over all experiments, running the OpenMalaria simulation for each one.
+    4. Logs the output and errors to respective log files.
+
+    Args:
+        exp (object): An experiment object containing attributes such as 'job_directory', 'nexps', and paths
+                      necessary for setting up and running the simulation.
+
+    Raises:
+        IOError: If there is an issue with writing the PowerShell script to the file.
+    """
+    # Define file path for PowerShell script
+    file_path = os.path.join(exp.job_directory, 'run_openmalaria.ps1')
+
+    # Get the absolute path of the working directory
+    wdir = os.path.abspath(os.path.dirname(__file__))
+    wdir = os.path.abspath(os.path.join(wdir, os.pardir))
+
+    # Construct the content of the PowerShell script
+    ps_content = f"""
+# Job settings
+$job_name = "run_openmalaria"
+$exe_path = "{os.path.join(wdir, 'dependencies/OpenMalaria/om_v46')}"
+$jobdir = "{exp.job_directory}"
+$log_dir = Join-Path $jobdir "log"
+
+# Create log directory if it doesn't exist
+if (-not (Test-Path -Path $log_dir)) {{
+    New-Item -ItemType Directory -Force -Path $log_dir
+}}
+
+# Navigate to the working directory
+Set-Location -Path $jobdir
+
+# Run the OpenMalaria simulation for each experiment
+for ($i = 1; $i -le {exp.nexps}; $i++) {{
+    # Run the openMalaria command
+    & "$exe_path/openMalaria.exe" -s "xml/$i.xml" --output "txt/$i.txt" `
+    >> "$log_dir/run_openmalaria.log" 2>> "$log_dir/run_openmalaria.err"
+}}
+
+Write-Host "OpenMalaria simulation complete."
+"""
+
+    # Write the PowerShell content to a .ps1 file
+    with open(file_path, 'w') as file:
+        file.write(ps_content)
+    print(f"PowerShell script written successfully at {file_path}")
+
+
 
 
 if __name__ == "__main__":

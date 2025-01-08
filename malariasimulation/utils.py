@@ -38,6 +38,42 @@ def submit_analyze_outputs(exp, t='01:00:00', memG=4):
 
 def submit_run_malariasimulation(exp, t='10:00:00', memG=3):
     """
+    Submits a malariasimulation job for execution on different platforms.
+
+    This function prepares the necessary scripts and submits the malariasimulation job based on the specified HPC configuration.
+    If the job is to be run locally, it generates the required PowerShell script for running malariasimulation and submits
+    it for execution. For SLURM-based jobs, it delegates the submission to the SLURM-specific function.
+
+    Args:
+        exp (object): An experiment object containing attributes like 'job_directory', 'hpc', 'analyzer_script',
+                      and 'malariasimulation_jobs' needed for job configuration and submission.
+        t (str): The wall time for the SLURM job, default is '10:00:00'.
+        memG (int): The memory in gigabytes allocated for each SLURM job, default is 3GB.
+
+    Raises:
+        ValueError: If an unsupported HPC configuration is provided.
+        subprocess.CalledProcessError: If there is an issue with running the job submission command for SLURM.
+    """
+    os.makedirs(os.path.join(exp.job_directory, 'malariasimulation_jobs'), exist_ok=True)
+
+    if exp.hpc == 'LOCAL':
+        from utility.helper_local import write_ps1_analyzer
+        # Write local submission script
+        write_ps1_malariasimulation(exp)
+        write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='malariasimulation')
+        # Note handled via submit_run_all_local
+        from utility.helper_local import submit_runmodel_local
+        submit_runmodel_local(exp, model_to_run='malariasimulation')
+        pass
+    elif exp.hpc == 'CONTAINER':
+        # TODO coming soon
+        pass
+    else:
+        # Default, run via SLURM on HPC
+        submit_run_malariasimulation_slurm(exp, t, memG)
+
+def submit_run_malariasimulation_slurm(exp, t='10:00:00', memG=3):
+    """
     Submits a SLURM array job to run malaria simulations using an R script.
 
     This function generates a shell script to execute the malaria simulation for a specified number of experiments
@@ -58,12 +94,9 @@ def submit_run_malariasimulation(exp, t='10:00:00', memG=3):
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
     r_file_path = os.path.join(ROOT_DIR, 'malariasimulation.R')
-    r_folder_path = os.path.join(ROOT_DIR, 'functions/')
     script_path = os.path.join(exp.job_directory, 'run_malariasimulation.sh')
-
     malariasimulation_input_path = exp.malariasimulation_input_path
     slurmID = '${SLURM_ARRAY_TASK_ID}'
-    os.makedirs(os.path.join(exp.job_directory, 'malariasimulation_jobs'), exist_ok=True)
 
     # Set up script for submitting malariasimulation simulations as a SLURM array job
     # The command structure for running an R Script as a subprocess is:
@@ -72,7 +105,7 @@ def submit_run_malariasimulation(exp, t='10:00:00', memG=3):
     #    3) the inputs we want in our Rscript
     file = open(script_path, 'w')
     file.write(header_post + f'\ncd {malariasimulation_input_path}')
-    file.write(f'\nRscript {r_file_path} {r_folder_path} {exp.job_directory} {slurmID}')
+    file.write(f'\nRscript {r_file_path} {ROOT_DIR} {exp.job_directory} {slurmID}')
     file.close()
 
     # Now we can run the rscript as a subprocess via sbatch
@@ -83,3 +116,53 @@ def submit_run_malariasimulation(exp, t='10:00:00', memG=3):
     write_txt(slurm_job_id, exp.job_directory, 'job_id_malariasimulation.txt')
     submit_analyze_outputs(exp)
     return
+
+
+def write_ps1_malariasimulation(exp):
+    """
+    Creates a PowerShell script to run malariasimulation simulations (sequentially) locally.
+
+    This function generates a PowerShell script that:
+    1. Sets job parameters, including the path to the malariasimulation executable and the job directory.
+    2. Ensures the log directory exists, creating it if necessary.
+    3. Iterates over all experiments, running the malariasimulation for each one using the specified R script.
+    4. Logs the output and errors to respective log files.
+
+    Args:
+        exp (object): An experiment object containing attributes such as 'job_directory', 'nexps', 'r_local', and paths
+                      necessary for setting up and running the malariasimulation.
+
+    Raises:
+        IOError: If there is an issue with writing the PowerShell script to the file.
+    """
+
+    file_path = os.path.join(exp.job_directory, 'run_malariasimulation.ps1')  # Change file extension to .ps1
+    wdir = os.path.abspath(os.path.dirname(__file__))
+    wdir = os.path.abspath(os.path.join(wdir, os.pardir))
+
+    # Define the content of the PowerShell script
+    powershell_content = f"""
+# Job settings
+$job_name = "run_malariasimulation"
+$exe_path = "{os.path.join(exp.r_local)}"
+$work_dir = "{os.path.join(os.getcwd(),'malariasimulation')}"
+$jobdir = "{exp.job_directory}"
+$log_dir = Join-Path $jobdir "log"
+
+# Navigate to the working directory
+Set-Location -Path "$work_dir"
+
+# Loop to run the malariasimulation command
+for ($i = 1; $i -le {exp.nexps}; $i++) {{
+    # Run the malariasimulation command
+    & "$exe_path/Rscript.exe" "$work_dir\malariasimulation.R" "$work_dir" "$jobdir" $i >> "$log_dir/run_malariasimulation.log" 2>> "$log_dir/run_malariasimulation.err"
+}}
+
+# Pause to keep the console open
+Write-Host "malariasimulation simulation complete."
+    """
+
+    # Write the PowerShell script
+    with open(file_path, 'w') as file:
+        file.write(powershell_content)
+    print(f"PowerShell script written successfully at {file_path}")

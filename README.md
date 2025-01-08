@@ -220,6 +220,7 @@ openMalaria -s example_scenario.xml
 ------------------------------------    
 
 ## Change log
+- January 2025 - Introduced setup_sim, local launch and bugfixes, updated seasonality, cleanup for public version.  
 - September 2024 - Framework restructuring and preparation/cleanup for public version. The initial structure is archived in the branch [production_run_initial_structure](https://github.com/numalariamodeling/model-characterization/tree/production_run_initial_structure)
 - August 2024 - Production runs, carrying capacity step with automatically defined scaling factors leveraging calibrun
 - July 2024 - Input transmission paramter calibration to a defined output target for either EIR of PfPR2to10  - introduced calibrun

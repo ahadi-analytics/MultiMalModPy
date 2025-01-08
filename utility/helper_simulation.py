@@ -184,6 +184,22 @@ def monthly_to_daily_EIR(monthly_EIR):
     return daily_EIR
 
 
+def submit_run_plotters(exp):
+    """
+    Submits a plotter job for execution, either locally or via SLURM based on the HPC configuration:
+    - If running locally, it generates and submits the plotter job using a local submission script.
+    - If using SLURM, it delegates the submission to the SLURM-specific plotter submission function.
+
+    Args:
+        exp (object): An experiment object containing the necessary attributes, such as 'hpc',
+                      to determine the appropriate submission method.
+    """
+    if exp.hpc == 'LOCAL':
+        from utility.helper_local import submit_run_plotters_local
+        submit_run_plotters_local(exp)
+    else:
+        from utility.helper_slurm import submit_run_plotters_slurm
+        submit_run_plotters_slurm(exp)
 
 def check_exp_input_parameters(exp):
     """

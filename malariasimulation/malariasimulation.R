@@ -13,15 +13,18 @@
 library(malariasimulation); library(malariaEquilibrium); library(lubridate)
 library(dplyr); library(tibble); library(readr); library(umbrella)
 
-arguments <- commandArgs(trailingOnly = TRUE)
-# Change the working directory:
-setwd(arguments[1])
-job_directory = arguments[2]
-scen_id = arguments[3]
 
-# Load the functions required:
-for (i in 1:length(list.files(".", pattern = ".R"))) {
-  source(list.files(".", pattern = ".R")[i])
+# Parse arguments
+arguments <- commandArgs(trailingOnly = TRUE)
+wdir <- arguments[1]  # getwd()
+job_directory <- arguments[2]
+scen_id <- arguments[3]  
+
+
+print(" Load the functions required and load experiment objects...")
+rfiles <- list.files(file.path(wdir,'functions'),  pattern = ".R", full.names = T)
+for (i in c(1:length(rfiles))) {
+  source(rfiles[i])
 }
 
 # Get the number of days in each month (non leap year: 2023):
@@ -29,7 +32,7 @@ days_per_month <- days_in_month(seq(from = dmy("01-01-2023"), length.out = 12, b
 
 # Load the .csv of parameters as a data frame:
 scenario_to_run <- read.csv(file.path(job_directory, 'scenarios_wseeds.csv'))
-scenario_to_run <- scenario_to_run[scen_id,]
+if(!is.null(scen_id))scenario_to_run <- scenario_to_run[scen_id,]
 exp_setup_df <- read.csv(file.path(job_directory, 'exp_setup_df.csv'))
 
 exp <- list()
@@ -62,5 +65,5 @@ if( length(exp$intervention_list)>0){
 
 # Run the simulations or load example:
 print("Running the simulations...")
-simulation_outputs_raw <- run_simulations(exp = exp, exp_setup_df = exp_setup_df, parameter_table = scenario_to_run, write_raw_output = TRUE)
+simulation_outputs_raw <- run_simulations(exp = exp, exp_setup_df = exp_setup_df, parameter_table = scenario_to_run)
 simulation_outputs_df <- simulation_outputs_raw[[2]][[1]]

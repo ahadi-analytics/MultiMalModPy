@@ -1,9 +1,10 @@
 import logging
 import manifest
+import os
+import sys
 from utility.helper import *
 from utility.helper_slurm import *
 from utility.helper_simulation import *
-import os
 from utility.experiment import LoadExperiment
 # Setting up variables and flags for the simulation
 log = logging.getLogger(__name__)
@@ -13,8 +14,14 @@ log = logging.getLogger(__name__)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
 # emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
 
+
 # Retrieve parsed arguments
-args = parse_launch_args()
+if "launch_sim.py" in sys.argv:
+    args = parse_launch_args()
+else:
+    from utility.helper_local import LoadLaunchArgs
+    args = LoadLaunchArgs()
+
 
 if args.emodstep in ['pickup', 'new_pickup']:
     file = open(os.path.join(args.directory, "exp.obj"), "rb")
@@ -63,7 +70,7 @@ else:
 
     ## Add intervention params, note, for some interventions this might come only in  pickup, not yet setup
     exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
-    
+
     exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
     # EMOD burn-in and pickup configuration
     exp.emod_serialized_id = ''
@@ -102,7 +109,7 @@ create_simsetup_csv(exp)
 
 if __name__ == '__main__':
     print(f' --------| Running {exp.exp_name} for {", ".join(exp.models_to_run)}: {len(exp.sweep_list)} '
-          f'varying parameters: {", ".join(exp.sweep_list)} |--------')
+          f'varying parameters: {", ".join(exp.sweep_list)}. Run mode:  {exp.run_mode} |--------')
 
     # Submit EMOD simulation as SLURM job, including scheduled analyzer
     if 'EMOD' in exp.models_to_run:
@@ -136,14 +143,12 @@ if __name__ == '__main__':
     # Submit malariasimulation as SLURM job, including scheduled analyzer
     if 'malariasimulation' in exp.models_to_run:
         from malariasimulation.utils import submit_run_malariasimulation
-
         submit_run_malariasimulation(exp)
 
     # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
     if 'OpenMalaria' in exp.models_to_run:
         from OpenMalaria.utils import submit_run_OpenMalaria
-
-        submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files  
+        submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files
 
     ## Submit plotters to run using wrapper function in utility.helper.py
     if exp.emod_step != 'burnin':

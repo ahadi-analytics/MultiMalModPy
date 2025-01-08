@@ -35,7 +35,7 @@ def parse_args():
     # Add the required argument for the job directory
     parser.add_argument(
         "-o",
-        "--job_dir",
+        "--directory",
         type=str,
         required=True,
         help="Job Directory of exp.obj")
@@ -122,7 +122,7 @@ def post_processing(exp, job_directory):
 
     daily = pd.DataFrame()
     for i in range(1, exp.nexps + 1):
-        df = pd.read_csv(os.path.join(job_directory, f'malariasimulation_jobs/{i}_out.csv'))
+        df = pd.read_csv(os.path.join(job_directory, 'malariasimulation_jobs', f'{i}_out.csv'))
         df = df.loc[:, df.columns.isin(columns_to_keep + ['n_detect_730_3650', 'n_730_3650'])]
         days_in_months = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
         days_in_months = np.repeat(days_in_months, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
@@ -817,9 +817,9 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None)
 
 if __name__ == "__main__":
     args = parse_args()
-    jdir = args.job_dir
+    job_directory = args.directory
     # Load experiment object 
-    file = open(os.path.join(jdir, "exp.obj"), "rb")
+    file = open(os.path.join(job_directory, "exp.obj"), "rb")
     exp = pickle.load(file)
 
     wdir = os.path.join(exp.sim_out_dir, 'malariasimulation')
@@ -829,29 +829,29 @@ if __name__ == "__main__":
     age_groups_aggregates = exp.age_groups_aggregates
 
     # Python Post-Processing
-    post_processing(exp, jdir)
+    post_processing(exp, job_directory)
     daily_path = os.path.join(wdir, 'daily.csv')
 
     # Run analyzers
-    InputEIRAnalyzer(jdir, wdir)
+    InputEIRAnalyzer(job_directory, wdir)
 
     # Age groups aggregated to all and time intervals are kept unaggregated (1day)
     if 'surveyallage' in exp.analyzer_list:
-        SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables)
+        SurveyAllAgeAnalyzer(job_directory, wdir, sweep_variables)
     ## Aggregated timeseries per age groups
     if 'timeavrg' in exp.analyzer_list:
-        TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
+        TimeavrgAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates)
     ## Annual timeseries per age groups
     if 'annual' in exp.analyzer_list:
-        AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
+        AnnualAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates)
     ## Monthly timeseries per age groups
     if 'monthly' in exp.analyzer_list:
-        MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates)
+        MonthlyAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates)
     ## 5 day (or daily) timeseries per age groups
     if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:
-        InputEIRAnalyzer(jdir, wdir, daily=True)
+        InputEIRAnalyzer(job_directory, wdir, daily=True)
         if 'daily' in exp.analyzer_list:
-            DailyAgeBinAnalyzer(jdir, wdir, sweep_variables)
+            DailyAgeBinAnalyzer(job_directory, wdir, sweep_variables)
         if '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:
             ccstep = 'cc_step' in exp.intervention_list
-            FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates, cc=ccstep)
+            FiveDayAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates, cc=ccstep)

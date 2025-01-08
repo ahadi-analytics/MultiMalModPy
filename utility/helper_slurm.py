@@ -189,7 +189,7 @@ def submit_run_pyscript(exp, pyscript='plotter/plot_relationship.py', shname='ru
         print(f'Submitted {shname} to run {pyscript} - job id: {slurm_job_id}')
 
 
-def submit_run_plotters(exp):
+def submit_run_plotters_slurm(exp):
     """
     Submits and manages the creation of shell scripts to run standardized plots
     based on the models specified in the experiment.
