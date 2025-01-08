@@ -110,8 +110,8 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
         add_scale_larval_habitats(camp, df=eir_df,
                                   start_day=row.cc_timestep_emod,
                                   repetitions=1)
-    if exp.importation_rate != 0:
-        ncases_per_year_per1000pop = (exp.importation_rate * exp.emod_pop_size) / 1000
+    if exp.emod_importation_rate != 0:
+        ncases_per_year_per1000pop = (exp.emod_importation_rate * exp.emod_pop_size) / 1000
         add_outbreak_individual(camp, start_day=1, target_num_individuals=ncases_per_year_per1000pop,
                                 repetitions=-1, timesteps_between_repetitions=365)
 

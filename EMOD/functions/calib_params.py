@@ -6,13 +6,12 @@ from EMOD.utils import set_param
 
 
 def get_emod_calib_params(exp, scen_df):
-    calib_type = 'emod_severe' #could be 'emod_severe' or 'emod_best'
-    calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, calib_type)+'.csv')
+    calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, exp.emod_calib_type)+'.csv')
     if exp.emod_step == 'burnin':
         seeds = exp.num_seeds_burnin
     else:
         seeds = exp.num_seeds
-    if calib_type == 'emod_best':
+    if exp.emod_calib_type == 'emod_best':
         calib_params = [[
             partial(set_param, param='Antigen_Switch_Rate', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Antigen_Switch_Rate'])),
             partial(set_param, param='Base_Gametocyte_Fraction_Male', value = float(calib_config_df.loc[int(row.calib_config_pointer), 'Base_Gametocyte_Fraction_Male'])),
@@ -35,7 +34,7 @@ def get_emod_calib_params(exp, scen_df):
             partial(set_param, param='Innate_Immune_Variation_Type', value = str(calib_config_df.loc[int(row.calib_config_pointer), 'Innate_Immune_Variation_Type']))]
             for i, row in scen_df.iterrows()
             for s in range(seeds)]
-    elif calib_type == 'emod_severe':
+    elif exp.emod_calib_type == 'emod_severe':
         calib_params = [[
             partial(set_param, param='Fever_Severe_Inverse_Width', value=float(calib_config_df.loc[int(row.calib_config_pointer), 'Fever_Severe_Inverse_Width'])),
             partial(set_param, param='Fever_Severe_Threshold', value=float(calib_config_df.loc[int(row.calib_config_pointer), 'Fever_Severe_Threshold'])),

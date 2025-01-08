@@ -25,7 +25,6 @@ class RunModeManager:
 
     def _configure_calibrun(self):
         self.experiment.SUITEname = self.experiment.SUITEname.replace('test','calibrun')
-        self.experiment.importation_rate = 0 # need to be 0 for OpenMalaria and 5 for EMOD, we need to figure out a better way to do this.
         self.experiment.num_seeds = 20
         self.experiment.start_year = 2000
         self.experiment.end_year = 2005
@@ -77,10 +76,15 @@ class RunModeManager:
     def _configure_productionrun(self):
         self.experiment.SUITEname = self.experiment.SUITEname.replace('test', 'production')
         self.experiment.num_seeds = 20
+        self.experiment.emod_burnin = 100
+        self.experiment.openmalaria_burnin = 100
+        self.experiment.malariasimulation_burnin = 100
+        self.experiment.openmalaria_pop_size = 50000
+        self.experiment.malariasimulation_pop_size = 50000
         if self.experiment.output_type == 'eir':
             self.experiment.output_target = [20]
         if self.experiment.output_type == 'prevalence_2to10':
-            self.experiment.output_target = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
+            self.experiment.output_target = [0.05, 0.1, 0.25, 0.5]
         if self.experiment.output_type == 'clinical_incidence_U5':
             raise ValueError('output_type clinical_incidence_U5 not defined for production run')
 
