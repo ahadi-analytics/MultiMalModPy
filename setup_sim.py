@@ -48,13 +48,15 @@ class SimulationConfig:
         1. Malaria Config
         """
         self.entomology_mode = 'dynamic'
-        self.seasonality = ['seasonal']
+        self.seasonality = ['perennial']
         self.cm_start = 1
-        self.case_management = [(0, 0)]  # format: [(cm_clinical, cm_severe), (...)]
+        self.case_management = [(0, 0)]
         self.detectionLimit = 40
-        self.importation_rate = 0
-
+        self.emod_importation_rate = 5
+        self.openmalaria_importation_rate = 0
+        
         # Parameters also modifiable via args (if specified in args, those will get priority)
+        # FIXME - should those be removed from args ?
         # Transmission intensity calibration settings.
         # These settings define the type of output metric and its target values.
         # Note: These will be overwritten if a specific run mode is specified, as run modes may have their own defaults.
@@ -78,20 +80,20 @@ class SimulationConfig:
         #                            [75,80], [80,85], [85,90], [90,95], [95,100], [0, 5], [0, 100]]
 
         self.num_seeds_burnin = 1
-        self.num_seeds = 25
         self.start_year = 2000
         self.end_year = 2005
 
         # EMOD Settings
         self.emod_burnin = 100
-        self.emod_pop_size = 50000
+        self.emod_pop_size = 1000
+        self.emod_calib_type = 'emod_severe' #could be 'emod_severe' or 'emod_best'
 
         # malariasimulation Settings
-        self.malariasimulation_burnin = 80
+        self.malariasimulation_burnin = 25
         self.malariasimulation_pop_size = 50000
 
         # OpenMalaria Settings
-        self.openmalaria_burnin = 80
+        self.openmalaria_burnin = 25
         self.openmalaria_pop_size = 50000
         self.openmalaria_scaffold = "R0000GA"
         self.openmalaria_survey_step = '5d'
@@ -99,11 +101,8 @@ class SimulationConfig:
         """
         3. Framework Config
         """
-        self.mem_increase_factor = 5.0
+        self.mem_increase_factor = 1.0
         self.analyzer_script = ['analyze_sim.py']
         self.analyzer_list = ['timeavrg', 'annual', 'monthly', '5day']  # openmalaria_base, surveyallage
         self.plots_to_run = ['relationship', 'timeseries', 'agecurves']  # 'ccstep'
         self.burnin_directory = None
-        self.sim_params_list = ['seasonality', 'sweep_list', 'case_management', 'eir', 'intervention_list', 'agebins',
-                                'output_target', 'plots_to_run']
-

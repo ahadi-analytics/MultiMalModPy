@@ -53,7 +53,7 @@ else:
     exp = LoadExperiment(args, manifest)
 
     if exp.emod_calib_params:
-        calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, 'emod_best.csv'))
+        calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, f'{exp.emod_calib_type}.csv'))
         exp.calib_config_pointer = range(0, len(calib_config_df))  # define rows from calib_params df to run
         del calib_config_df
 
@@ -113,8 +113,8 @@ if __name__ == '__main__':
 
         # Set platform and associated values, such as the maximum number of jobs to run at one time
         platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
-                            mem_per_cpu=int(3500), partition=manifest.sh_hpc_config['p'],
-                            time='05:30:00', account=manifest.sh_hpc_config['A'],
+                            mem_per_cpu=int(3500*exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
+                            time='06:30:00', account=manifest.sh_hpc_config['A'],
                             modules=[manifest.sh_hpc_config['em_modules']],
                             max_running_jobs=exp.max_running_jobs)  # mem_per_cpu default: 2048
         exp.platform = platform

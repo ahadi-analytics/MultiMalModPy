@@ -39,7 +39,7 @@ def create_scenarios(exp, scen_df):
     xml = xml.replace("@survey_step@", f"{exp.openmalaria_survey_step}")
     xml = xml.replace("@entomology_mode@", f"{exp.entomology_mode}")
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
-    xml = xml.replace('@importation_rate@', f"{exp.importation_rate}")
+    xml = xml.replace('@importation_rate@', f"{exp.openmalaria_importation_rate}")
     xml = xml.replace('@healthSystemMemory@', f"{str(int(exp.days_between_clinical_cases_5days))}")
     xmlageGroups = '\t\t<ageGroup lowerbound="0">'
     for item in exp.agebins:
