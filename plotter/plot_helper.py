@@ -56,6 +56,51 @@ def parse_args():
     return parser.parse_args()
 
 
+def load_exp(wdir):
+    """
+    Load experiment setup and scenario data into an Exp object.
+
+    Parameters:
+    wdir (str): The working directory containing 'exp_setup_df.csv', 'scenarios.csv',
+                and optionally 'exp.obj'.
+
+    Returns:
+    Exp: An object with attributes set from 'exp.obj', or dynamically built
+         from 'exp_setup_df.csv' and 'scenarios.csv'.
+    """
+    try:
+        # Attempt to load the Exp object from a pickle file
+        with open(os.path.join(wdir, "exp.obj"), "rb") as file:
+            exp = pickle.load(file)
+    except (FileNotFoundError, pickle.UnpicklingError) as e:
+        # If the pickle file doesn't exist or is corrupted, build the object from CSV files
+        class Exp:
+            pass
+
+        exp_setup_file = os.path.join(wdir, 'exp_setup_df.csv')
+        scen_file = os.path.join(wdir, 'scenarios.csv')
+
+        # Check if the required CSV files exist
+        if not os.path.exists(exp_setup_file) or not os.path.exists(scen_file):
+            raise FileNotFoundError("Required files 'exp_setup_df.csv' and 'scenarios.csv' are missing." )
+
+        # Load data from CSV files
+        exp_setup_df = pd.read_csv(exp_setup_file)
+        scen_df = pd.read_csv(scen_file)
+
+        # Create an instance of Exp
+        exp = Exp()
+
+        # Set attributes from exp_setup_df
+        for _, row in exp_setup_df.iterrows():
+            setattr(exp, row["parameter"], row["Value"])
+
+        # Set attributes from scen_df
+        for col in scen_df.columns:
+            setattr(exp, col, scen_df[col].values)
+
+    return exp
+
 def custom_sort_key(age_group):
     """
     Custom sort key function for sorting age groups.
@@ -209,7 +254,8 @@ def get_x_y(df, grpvar, x_channel, y_channel):
         pmin = np.nanpercentile(p[y_channel], 2.5, axis=0)
         pmax = np.nanpercentile(p[y_channel], 97.5, axis=0)
         new_row = pd.DataFrame([{grpvar: row[grpvar], f'{y_channel}_min': pmin, f'{y_channel}_max': pmax}])
-        p_df = pd.concat([p_df, new_row], axis=0, ignore_index=True)
+        if not new_row.empty and not new_row.isna().all(axis=None):
+            p_df = pd.concat([p_df, new_row], axis=0, ignore_index=True)
     ymean = pd.merge(left=ymean, right=p_df, on=grpvar)
     return xmean, ymean
 
@@ -316,10 +362,10 @@ def clean_fname(fname, sweepvar= None,unique_groups=None, facet_var = None, uniq
     """
     if unique_facets is not None  :
         if len(unique_facets) == 1 and not isinstance(unique_facets[0], int):
-            fname = fname.replace(facet_var, unique_facets[0])
+            fname = fname.replace(facet_var, str(unique_facets[0]))
     if sweepvar is not None :
         if len(unique_groups) == 1 and not isinstance(unique_groups[0], int):
-            fname = fname.replace(sweepvar, unique_groups[0])
+            fname = fname.replace(sweepvar, str(unique_groups[0]))
     fname = fname.replace('modelname', 'model')
     return fname
 

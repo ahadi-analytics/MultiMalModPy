@@ -61,7 +61,7 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target
     unique_groups = sorted_list(df[sweepvar])
     color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
 
-    nx = round(len(unique_facets) / 2)
+    nx = max(1, round(len(unique_facets) / 2))
     ny = 2
     f = 1
     fig = plt.figure(figsize=(10 * nx, 10 * ny))
@@ -115,8 +115,7 @@ if __name__ == "__main__":
     if isinstance(modelname, str):
         modelname = [modelname]
 
-    file = open(os.path.join(wdir, "exp.obj"), "rb")
-    exp = pickle.load(file)
+    exp = load_exp(wdir)
 
 
     age_groups_aggregates_sub = [x for x in exp.age_groups_aggregates if x not in ([[0, 5], [0, 100]])]

@@ -320,8 +320,8 @@ if __name__ == "__main__":
     #modelname = ['OpenMalaria']
     if isinstance(modelname, str):
         modelname = [modelname]
-    file = open(os.path.join(wdir, "exp.obj"), "rb")
-    exp = pickle.load(file)
+
+    exp = load_exp(wdir)
 
     df_cc, out_dir = get_output_df(wdir, modelname, custom_name='mmmpy_ccstep_daily')
     out_dir = os.path.join(out_dir, 'plots')

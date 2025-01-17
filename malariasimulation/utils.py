@@ -19,7 +19,7 @@ def submit_analyze_outputs(exp, t='01:00:00', memG=4):
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_malariasimulation',
                                      mem_scl=exp.mem_increase_factor)
     pycommand = f'\ncd /home/{exp.user}/model-characterization/malariasimulation' \
-                f'\npython analyze_sim.py --job_dir "{exp.job_directory}"'
+                f'\npython analyze_sim.py --directory "{exp.job_directory}"'
     script_path = os.path.join(exp.job_directory, 'run_analyzer_malariasimulation.sh')
     file = open(script_path, 'w')
     file.write(header_post + pycommand)

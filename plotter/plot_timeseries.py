@@ -43,13 +43,13 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='output_ta
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
 
-    nx = round(len(df[facet_var].unique()))
+    nx = max(1, round(len(unique_facets)))
     ny = 2
     f = 1
     firstPlot = True
     fig = plt.figure(figsize=(10 * nx, 8 * ny))
     if new_index is None:
-        new_index = range(1, 13)
+        new_index = list(range(1, 13))
 
     for fi in unique_facets:
         fdf = df[df[facet_var] == fi]
@@ -76,12 +76,12 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='output_ta
             merge_df = pd.merge(left=xmean, right=ymean, on='month')
 
             ax.plot(merge_df['month'], merge_df[channel], '-', linewidth=0.8,
-                    label=f"{m}", color=color_palette[color_key])
+                    label=f"{grp} ", color=color_palette[color_key])
             ax.fill_between(merge_df['month'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'],
                             alpha=0.1, color=color_palette[color_key])
 
         if firstPlot:
-            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1))
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1), title=f'{sweepvar}')
             firstPlot = False
 
         ax.set_ylim(0, max(max_ylim))
@@ -125,7 +125,7 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
     color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
 
     firstPlot = True
-    nx = round(len(df[facet_var].unique()) / 2)
+    nx = max(1, round(len(unique_facets) / 2))
     ny = 2
     f = 1
     fig = plt.figure(figsize=(10 * nx, 8 * ny))
@@ -209,7 +209,7 @@ def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='season
     color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
 
     firstPlot = True
-    nx = round(len(unique_facets) / 2)
+    nx = max(1, round(len(unique_facets) / 2))
     ny = 2
     f = 1
     fig = plt.figure(figsize=(10 * nx, 8 * ny))
@@ -267,8 +267,8 @@ if __name__ == "__main__":
     modelname = args.modelname
     if isinstance(modelname, str):
         modelname = [modelname]
-    file = open(os.path.join(wdir, "exp.obj"), "rb")
-    exp = pickle.load(file)
+
+    exp = load_exp(wdir)
 
     ento_channel_list = ['n_total_mos_pop']
     epi_channel_list = ['simulatedEIR', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10']
@@ -287,8 +287,9 @@ if __name__ == "__main__":
         for channel in channel_list:
             try:
                 print(f'#----- Plotting the monthly trends for {channel} -----#')
-                # To better showcase the montly trends, we present the months in this order
-                new_index = [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6]
+                # Example if order or months should be shifted
+                # new_index = [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6]
+                new_index = None  # If none, use default 1-12
                 monthly_trends(out_dir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrps=agegrps,
                                new_index=new_index)
             except:

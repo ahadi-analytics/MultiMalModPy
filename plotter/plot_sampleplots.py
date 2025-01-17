@@ -90,8 +90,8 @@ if __name__ == "__main__":
     modelname = args.modelname
     if isinstance(modelname, str):
         modelname = [modelname]
-    file = open(os.path.join(wdir, "exp.obj"), "rb")
-    exp = pickle.load(file)
+
+    exp = load_exp(wdir)
     exp_tags = [x.replace('case_management', 'cm_clinical') for x in exp.sweep_list]
 
     if 'EMOD' in modelname:

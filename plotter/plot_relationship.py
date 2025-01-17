@@ -55,7 +55,7 @@ def prevalence2to10_to_outcome(fdir, df, sweepvar='modelname', facet_var='season
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('colorblind', max(num_colors, 4))
 
-    nx = len(df['ageGroup'].unique())
+    nx = max(1,len(df['ageGroup'].unique()))
     ny = 1
     f = 1
     firstPlot = True
@@ -175,8 +175,8 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
 
     mean_vars = [channel, 'prevalence_2to10']
 
-    nx = len(modelname)
-    ny = len(ages_dict)
+    nx = max(1, len(modelname))
+    ny = max(1,len(ages_dict))
     f = 1
     fig = plt.figure(figsize=(10 * nx, 6 * ny))
 
@@ -259,8 +259,8 @@ def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', ei
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
 
-    nx = len(unique_groups)
-    ny = len(unique_facets)
+    nx = max(1,len(unique_groups))
+    ny = max(1,len(unique_facets))
     f = 1
     fig = plt.figure(figsize=(10 * nx, 10 * ny))
 
@@ -334,7 +334,7 @@ def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonal
     color_palette = sns.color_palette('colorblind', max(num_colors, 4))
     firstPlot = True
     nx = 1
-    ny = len(unique_facets)
+    ny = max(1, len(unique_facets))
     f = 1
     fig = plt.figure(figsize=(10 * nx, 6 * ny))
     for fi in unique_facets:
@@ -383,8 +383,10 @@ if __name__ == "__main__":
     modelname = args.modelname
     if isinstance(modelname, str):
         modelname = [modelname]
-    file = open(os.path.join(wdir, "exp.obj"), "rb")
-    exp = pickle.load(file)
+
+    exp = load_exp(wdir)
+
+
 
     df, out_dir = get_output_df(wdir, modelname)
     out_dir = os.path.join(out_dir, 'plots')
