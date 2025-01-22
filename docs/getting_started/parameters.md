@@ -1,7 +1,7 @@
 # Parameters and model alignment
 
 
-MultiMalModPy includes three types setup parameters for the user to specify:  
+MultiMalModPy includes three types of setup parameters for the user to specify:  
 
 _Malaria_  
 Define and align malaria-related input parameters across all models to ensure that the simulations are comparable. It involves setting up the key parameters that influence how the malaria environment is represented in the simulations.  
@@ -29,6 +29,10 @@ Configure overarching parameters, such as selecting which models to run and spec
 
 
 #### Simulation time
+
+### Burnin
+
+### Seeds
 
 #### Population size
 

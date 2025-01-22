@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/parameter-glossary/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/about/glossary/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Parameter Glossary - MultiMalModPy</title>
+    <title>Glossary - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Parameter Glossary";
-        var mkdocs_page_input_path = "malaria_models\\parameter-glossary.md";
-        var mkdocs_page_url = "/MultiMalModPy/malaria_models/parameter-glossary/";
+        var mkdocs_page_name = "Glossary";
+        var mkdocs_page_input_path = "about\\glossary.md";
+        var mkdocs_page_url = "/MultiMalModPy/about/glossary/";
       </script>
     
     <!--[if lt IE 9]>
@@ -53,15 +53,15 @@
               </ul>
               <p class="caption"><span class="caption-text">Malaria models</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../software/">Software</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/software/">Software</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../structure/">Model structure</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/structure/">Model structure</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../documentation-and-sourcecode/">Documentation & Source Code</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/documentation-and-sourcecode/">Documentation & Source Code</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../interventions/">Interventions</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/interventions/">Interventions</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../core_parameters/">Core parameters</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
@@ -160,16 +160,20 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">About</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact</a>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../contributors/">Contact</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../citation/">References</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Changelog</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../changelog/">Changelog</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_help/">Getting help</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Glossary</a>
+    <ul class="current">
+    </ul>
                   </li>
               </ul>
       </div>
@@ -186,9 +190,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Parameter Glossary</li>
+          <li class="breadcrumb-item">About</li>
+      <li class="breadcrumb-item active">Glossary</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/malaria_models/parameter-glossary.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/about/glossary.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -196,12 +201,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="parameter-glossary">Parameter Glossary</h1>
-<p>This site is under construction ...</p>
-<p><strong>malariasimulation</strong> offers a <a href="https://mrc-ide.github.io/malariasimulation/reference/get_parameters.html">get_parameters</a> function to view all parameters in the model.</p>
+                <h1 id="glossary">Glossary</h1>
+<p><strong>Burnin</strong><br />
+: A time period used to warm up the model, reaching equilibrium or initializing population immunity or the vector model. 
+  Outputs are typically not monitored during this phase, and handling varies across models.</p>
+<p><strong>experiment ID</strong><br />
+: A unique identifier assigned to each simulation in EMOD.</p>
+<p><strong>manifest</strong><br />
+: The Python script where user-specific configurations, such as paths and installed software versions, are defined (term adopted from IDMTools).</p>
+<p><strong>MultiMalModPy</strong><br />
+: Multi-Malaria-Modeling Framework</p>
+<p><strong>scen_df / scenario csv</strong><br />
+: A CSV file containing all unique parameter combinations for a simulation scenario. Generated in <code>launch_sim.py</code>.</p>
+<p>This site is work in progress ...</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../getting_help/" class="btn btn-neutral float-left" title="Getting help"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
 
   <hr/>
 
@@ -227,6 +245,8 @@
           <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
         </span>
     
+    
+      <span><a href="../getting_help/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
   </span>

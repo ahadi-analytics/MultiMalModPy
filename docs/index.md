@@ -12,7 +12,7 @@ A new HPC-oriented framework in Python and R that enables users to interact with
 This framework is designed for modelers already familiar with one of these models, 
 as well as for those who wish to learn more about all three models in a unified and accessible approach.
 
-MultiMalModPy takes user input to generate experimental scenarios and produces daily, monthly, and yearly outcome measures.
+MultiMalModPy takes user input to generate malaria simulations and produces daily, monthly, and yearly outcome measures.
 It is designed to allow running either one or all three of the models to enable model characterization and comparison. 
 
 

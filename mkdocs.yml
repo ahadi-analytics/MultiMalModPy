@@ -26,7 +26,6 @@ nav:
     - Documentation & Source Code: malaria_models/documentation-and-sourcecode.md
     - Interventions: malaria_models/interventions.md
     - Core parameters: malaria_models/core_parameters.md
-    #- Parameter Glossary: malaria_models/parameter-glossary.md
   - Getting started:
     - Overview of MultiMalModPy: getting_started/overview.md
     - Installation and requirements: getting_started/installation.md
@@ -77,6 +76,7 @@ nav:
     - License: about/license.md
     - Changelog: about/changelog.md
     - Getting help: about/getting_help.md
+    - Glossary: about/glossary.md
 theme:
   name: readthedocs
   features:

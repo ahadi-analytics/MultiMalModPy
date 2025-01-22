@@ -200,43 +200,43 @@ _config.json_
 
 ## malariasimulation
 
-Malariasimulation core parameters included in parameter.list object
+**malariasimulation** offers a [get_parameters](https://mrc-ide.github.io/malariasimulation/reference/get_parameters.html) function to view all parameters in the model.
 Default values were determined by using the median across 50 random sets of parameter draws.
 
-| Parameter     Symbol | Parameter Type                             | Parameter Description                                          | Parameter Default | Parameter Min | Parameter Max |
-|----------------------|--------------------------------------------|----------------------------------------------------------------|-------------------|---------------|---------------|
-| du                   | fixed state transitions                    | the delay for humans to move from state U to S                 | 110               | 69.5898       | 146.062       |
-| ub                   | immunity boost grace periods               | period in   which pre-erythrocytic immunity cannot be boosted  | 7.2               | 1.06229       | 25.8764       |
-| uc                   | immunity boost grace periods               | period in   which clinical immunity cannot be boosted          | 6.06              | 1.48711       | 13.58         |
-| ud                   | immunity boost grace periods               | period in   which immunity to detectability cannot be boosted  | 9.44512           | 1.05122       | 26.5402       |
-| uv                   | immunity boost grace periods               | period in   which severe immunity cannot be boosted            | 11.4321           | 0.0409431     | 117.171       |
-| rm                   | immunity decay rates                       | decay rate for   maternal immunity to clinical disease         | 67.6952           | 56.0482       | 93.1118       |
-| rvm                  | immunity decay rates                       | decay rate for   maternal immunity to severe disease           | 76.8365           | 37.8859       | 139.677       |
-| ad                   | immunity reducing probability of detection | scale   parameter relating age to immunity                     | 7993.5            | 6554.22       | 10094.6       |
-| d1                   | immunity reducing probability of detection | minimum   probability due to immunity                          | 0.160527          | 0.0540254     | 0.314522      |
-| fd0                  | immunity reducing probability of detection | time-scale at   which immunity changes with age                | 0.007055          | 0.00000471    | 0.042121      |
-| gammad               | immunity reducing probability of detection | shape   parameter relating age to immunity                     | 4.8183            | 3.11894       | 8.16328       |
-| id0                  | immunity reducing probability of detection | scale   parameter                                              | 1.577533          | 0.0567825     | 15.44549      |
-| kd                   | immunity reducing probability of detection | shape   parameter                                              | 0.476614          | 0.190643      | 1.26744       |
-| cd                   | infectivity towards mosquitoes             | infectivity of   clinically diseased humans towards mosquitoes | 0.068             | 0.0262169     | 0.193139      |
-| cu                   | infectivity towards mosquitoes             | infectivity of   sub-patent infection                          | 0.0062            | 0.0000708     | 0.029169      |
-| gamma1               | infectivity towards mosquitoes             | parameter for infectivity   of asymptomatic humans             | 1.82425           | 0.123118      | 16.5369       |
-| pcm                  | mortality parameters                       | new-born   clinical immunity relative to mother's              | 0.774368          | 0.420769      | 0.998944      |
-| pvm                  | mortality parameters                       | new-born   severe immunity relative to mother's                | 0.195768          | 0.0925639     | 0.855581      |
-| ic0                  | probability of clinical infection          | scale   parameter                                              | 18.02366          | 10.63586      | 36.79639      |
-| kc                   | probability of clinical infection          | shape   parameter                                              | 2.36949           | 1.76969       | 3.21076       |
-| phi0                 | probability of clinical infection          | maximum   probability due to no immunity                       | 0.792             | 0.352825      | 0.986045      |
-| phi1                 | probability of clinical infection          | maximum   reduction due to immunity                            | 0.00074           | 0.00000228    | 0.003369      |
-| b0                   | probability of pre-erythrocytic infection  | maximum   probability due to no immunity                       | 0.59              | 0.349146      | 0.989847      |
-| ib0                  | probability of pre-erythrocytic infection  | scale   parameter                                              | 43.9              | 13.25245      | 148.795       |
-| kb                   | probability of pre-erythrocytic infection  | shape   parameter                                              | 2.16              | 0.908016      | 3.44781       |
-| av                   | probability of severe infection            | age dependent   modifier                                       | 2493.41           | 924.234       | 5067.72       |
-| fv0                  | probability of severe infection            | age dependent   modifier                                       | 0.141195          | 0.0043904     | 0.994957      |
-| gammav               | probability of severe infection            | age dependent   modifier                                       | 2.91282           | 0.272665      | 5.95187       |
-| iv0                  | probability of severe infection            | scale   parameter                                              | 1.09629           | 0.3073822     | 3.734202      |
-| kv                   | probability of severe infection            | shape   parameter                                              | 2.00048           | 1.27469       | 3.17738       |
-| theta0               | probability of severe infection            | maximum   probability due to no immunity                       | 0.074989          | 0.0085529     | 0.204342      |
-| theta1               | probability of severe infection            | maximum   reduction due to immunity                            | 0.000119          | 0.0000077     | 0.000846      |
+| Parameter     Symbol | Parameter Type                             | Parameter Description                                        | Parameter Default | Parameter Min | Parameter Max |
+|----------------------|--------------------------------------------|--------------------------------------------------------------|-------------------|---------------|---------------|
+| du                   | fixed state transitions                    | the delay for humans to move from state U to S               | 110               | 69.5898       | 146.062       |
+| ub                   | immunity boost grace periods               | period in  which pre-erythrocytic immunity cannot be boosted | 7.2               | 1.06229       | 25.8764       |
+| uc                   | immunity boost grace periods               | period in  which clinical immunity cannot be boosted         | 6.06              | 1.48711       | 13.58         |
+| ud                   | immunity boost grace periods               | period in  which immunity to detectability cannot be boosted | 9.44512           | 1.05122       | 26.5402       |
+| uv                   | immunity boost grace periods               | period in  which severe immunity cannot be boosted           | 11.4321           | 0.0409431     | 117.171       |
+| rm                   | immunity decay rates                       | decay rate for  maternal immunity to clinical disease        | 67.6952           | 56.0482       | 93.1118       |
+| rvm                  | immunity decay rates                       | decay rate for  maternal immunity to severe disease          | 76.8365           | 37.8859       | 139.677       |
+| ad                   | immunity reducing probability of detection | scale  parameter relating age to immunity                    | 7993.5            | 6554.22       | 10094.6       |
+| d1                   | immunity reducing probability of detection | minimum  probability due to immunity                         | 0.160527          | 0.0540254     | 0.314522      |
+| fd0                  | immunity reducing probability of detection | time-scale at   which immunity changes with age              | 0.007055          | 0.00000471    | 0.042121      |
+| gammad               | immunity reducing probability of detection | shape parameter relating age to immunity                     | 4.8183            | 3.11894       | 8.16328       |
+| id0                  | immunity reducing probability of detection | scale parameter                                              | 1.577533          | 0.0567825     | 15.44549      |
+| kd                   | immunity reducing probability of detection | shape parameter                                              | 0.476614          | 0.190643      | 1.26744       |
+| cd                   | infectivity towards mosquitoes             | infectivity of clinically diseased humans towards mosquitoes | 0.068             | 0.0262169     | 0.193139      |
+| cu                   | infectivity towards mosquitoes             | infectivity of sub-patent infection                          | 0.0062            | 0.0000708     | 0.029169      |
+| gamma1               | infectivity towards mosquitoes             | parameter for infectivity   of asymptomatic humans           | 1.82425           | 0.123118      | 16.5369       |
+| pcm                  | mortality parameters                       | new-born  clinical immunity relative to mother's             | 0.774368          | 0.420769      | 0.998944      |
+| pvm                  | mortality parameters                       | new-born  severe immunity relative to mother's               | 0.195768          | 0.0925639     | 0.855581      |
+| ic0                  | probability of clinical infection          | scale  parameter                                             | 18.02366          | 10.63586      | 36.79639      |
+| kc                   | probability of clinical infection          | shape  parameter                                             | 2.36949           | 1.76969       | 3.21076       |
+| phi0                 | probability of clinical infection          | maximum  probability due to no immunity                      | 0.792             | 0.352825      | 0.986045      |
+| phi1                 | probability of clinical infection          | maximum  reduction due to immunity                           | 0.00074           | 0.00000228    | 0.003369      |
+| b0                   | probability of pre-erythrocytic infection  | maximum  probability due to no immunity                      | 0.59              | 0.349146      | 0.989847      |
+| ib0                  | probability of pre-erythrocytic infection  | scale parameter                                              | 43.9              | 13.25245      | 148.795       |
+| kb                   | probability of pre-erythrocytic infection  | shape parameter                                              | 2.16              | 0.908016      | 3.44781       |
+| av                   | probability of severe infection            | age dependent modifier                                       | 2493.41           | 924.234       | 5067.72       |
+| fv0                  | probability of severe infection            | age dependent modifier                                       | 0.141195          | 0.0043904     | 0.994957      |
+| gammav               | probability of severe infection            | age dependent modifier                                       | 2.91282           | 0.272665      | 5.95187       |
+| iv0                  | probability of severe infection            | scale parameter                                              | 1.09629           | 0.3073822     | 3.734202      |
+| kv                   | probability of severe infection            | shape  parameter                                             | 2.00048           | 1.27469       | 3.17738       |
+| theta0               | probability of severe infection            | maximum probability due to no immunity                       | 0.074989          | 0.0085529     | 0.204342      |
+| theta1               | probability of severe infection            | maximum reduction due to immunity                            | 0.000119          | 0.0000077     | 0.000846      |
 
 ## OpenMalaria
 
