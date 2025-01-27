@@ -32,12 +32,15 @@ nav:
     - Configure MultiMalModPy: getting_started/configuration.md
     - Input parameters and predefined options: getting_started/parameters.md
     - Model specific options: getting_started/model_specificities.md
+    - Glossary: getting_started/glossary.md
   - User Guide:
-    - Setup simulations: guide/_index.md
+    - Overview of simulation steps: guide/_index.md
+    - Setup simulations: guide/setup_sim.md
     - Launch simulations: guide/launch_and_run.md
     - Postprocess outputs: guide/postprocess.md
     - Visualize outputs: guide/plots.md
     - Calibrate transmission targets: guide/calibration.md
+    - Example workflows: guide/example_workflows.md
     - Advanced use and developer guide: guide/development.md
   - API:
     - manifest.py: api/manifest.md
@@ -76,7 +79,6 @@ nav:
     - License: about/license.md
     - Changelog: about/changelog.md
     - Getting help: about/getting_help.md
-    - Glossary: about/glossary.md
 theme:
   name: readthedocs
   features:

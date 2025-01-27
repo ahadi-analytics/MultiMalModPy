@@ -1,5 +1,15 @@
 # Installation and requirements  
 
+
+# Table of Contents
+1. [Software requirements](#software_requirements)  
+2. [Install and setup EMOD ](#install-and-setup-emod)  
+3. [Install and setup OpenMalaria ](#install-and-setup-openmalaria)
+4. [Install and setup malariasimulation](#install-and-setup-malariasimulation)  
+5. [Setup when using the container ](#setup-when-using-the-container)  
+6. [Activate virtual envionment ](#activate-virtual-environment)  
+
+
 ## Software requirements   
 
 - MultiMalModPy 
@@ -42,10 +52,13 @@
 -  [Faculty Enrichment Program Installation guide](https://numalariamodeling.github.io/FE-2023-quarto-website/guides/install_guide.html)
    
 
-## Install and setup OpenMalaria   
+## Install and setup OpenMalaria  
 
-[OpenMalaria v46](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria)  
+User guide to install OpenMalaria: [OpenMalaria v46](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria)   
 
+Custom installation and setup for MultiMalModPy:  
+- [Install on HPC](#install-on-hpc)  
+- [Installation when running locally](#installation-when-running-locally)
 
 ### Install on HPC   
 
@@ -210,10 +223,22 @@ In addition, the recommended use of running simulations locally is for testing a
 <br>
 
 
-## Installation when using the container  
+## Setup when using the container  
 
 This section is under construction...  
 A singularity container will be made available to allow running MultiMalModPy instantly, without the need for
 installations. 
 
+
+## Activate virtual environment 
+
+### On Slurm, example for NU cluster
+```
+module purge all
+module load python/3.8.4
+module load singularity/3.8.1
+module load git/2.8.2
+module load R/4.2.3
+source '/projects/b1139/environments/emodpy_bin/activate'
+```
 

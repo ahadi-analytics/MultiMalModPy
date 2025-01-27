@@ -1,14 +1,20 @@
 
 # Overview of using MultiMalModPy  
 
-This page is under construction...   
+The steps below assume that all the models have been installed and a virtual environment has been created (see [installation](docs/installation/installation.md)).
 
-Process for using the framework correctly
+# Table of Contents
+1. [Using default setting](#using-default-setting)  
+2. [Modifying parameter values](#modifying-parameter-value)  
+3. [Defining your own setting](#defining-your-own-setting)  
+   a. [Generate new seasonal profiles](#generate-seasonal-profiles-=)  
+   b. [Generate range of eir/xtemp simulations](#generate-range-of-eirxtemp-simulations)  
+   c. [Changing age demography](#changing-age-demography)  
+   d. [Adding interventions](#adding-interventions)  
+4. [Define target outputs](#define-target-outputs)  
+5. [Plot and view results](#plot-and-view-results)  
 
-1) Get Climate data from desired location  
-2) Run EMOD Simulation with eir of 20 to generate seasonal profile  
-3) Generate range of eir/xtemp simulations in all three models, their outputs will be used for the standard curve (interpolation)  
-4) Run simulations with desired pfprs/eirs/clinical incidences
+
 
 
 
