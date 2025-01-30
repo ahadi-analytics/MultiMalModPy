@@ -1,9 +1,7 @@
-# Calibration
+# Matching defined transmission output targets
 
 
-This page is currently under construction.
-
-## Transmission target
+## Transmission output targets
 
 The `target_calibration`  directory includes `interpolation_data.csv` for each of the models included in the framework.
 The `interpolation_data.csv` data is generated via the transmission calibration, when running via `calib_run` .
@@ -39,12 +37,45 @@ detailing various metrics related to malaria incidence and prevalence on the exa
 
 
 
+## Defining your own transmission target
 
-## Seasonality
+MultiMalModPy offers pre-exisiting datasets as shown above.
+If you are interested in running simulations outside of those limited datasets, this is the process.
+
+```
+python launch_sim.py -r calibrun
+```
+By default, this process runs all three models using the simulation setup you specified.   
+Key parameters to configure include pop_size, burn-in duration, seasonal profiles, and case management levels.  
+Once the simulations and analyzers have completed, new .csv files will be generated inside the model-characterization/target_calibration 
+folder for each model used. 
+These files are named after your most recent calibration run. You will need to review these .csv files and decide
+whether to integrate them into your `interpolation_data.csv` files.
+
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>📝 OpenMalaria Consideration:</em></strong> 
+  It is recommended to discard OpenMalaria simulation outputs where the annual *Pf*PR (_Plasmodium falciparum_ prevalence in ages 2-10) exceeds 0.7, 
+  as these can not be reliably simulated using OpenMalaria.
+</div>  
+
+
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>📝 EMOD Consideration 1:</em></strong> 
+If your calibration simulations for EMOD did not include importation, check whether any lower xtemp simulations resulted in malaria elimination.
+To do this, open the relevant simulation_outputs/EMOD/mmmpy_yr.csv file and look for cases where simulatedEIR equals 0, indicating elimination.
+</div>  
+
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>📝 EMOD Consideration 2:</em></strong>
+If even one of the simulations you ran resulted in elimination, remove that xtemp value from interpolation_data.csv, as it cannot reliably sustain malaria transmission. 
+If the lowest level of malaria EMOD can sustain does not meet your expectations, consider adjusting the max_larval_capacity values in the habitat_setup function (EMOD/functions/EMOD_functions.py).
+</div>  
 
 
 
-![seasonality.png](../img/seasonality_calib.png)
+Once you have finalized your interpolation_data.csv files, you can proceed with running production simulations.
+
+
 
 
 

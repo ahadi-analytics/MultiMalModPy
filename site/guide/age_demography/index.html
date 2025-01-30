@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/postprocess/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/age_demography/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Postprocess outputs - MultiMalModPy</title>
+    <title>Age and population - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Postprocess outputs";
-        var mkdocs_page_input_path = "guide\\postprocess.md";
-        var mkdocs_page_url = "/MultiMalModPy/guide/postprocess/";
+        var mkdocs_page_name = "Age and population";
+        var mkdocs_page_input_path = "guide\\age_demography.md";
+        var mkdocs_page_url = "/MultiMalModPy/guide/age_demography/";
       </script>
     
     <!--[if lt IE 9]>
@@ -74,34 +74,38 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">Input parameters and predefined options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/model_specificities/">Model specific options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../_index/">Setup simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../launch_and_run/">Launch simulations</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Postprocess outputs</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Age and population</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#analyzer-scripts">Analyzer scripts</a>
+    <li class="toctree-l2"><a class="reference internal" href="#population-size">Population size</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#age-demography">Age demography</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#standardized-outputs">Standardized Outputs</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#output-measures">Output measures</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#customizing-outputs">Customizing outputs</a>
+    <li class="toctree-l3"><a class="reference internal" href="#changing-age">Changing age</a>
     </li>
         </ul>
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../plots/">Visualize outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Calibrate transmission targets</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../transmission_calibration/">Transmission intensity</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../development/">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../uncertainty/">Randomness and uncertainty</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../example_workflows.md">Example workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../development.md">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -183,8 +187,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/glossary/">Glossary</a>
-                  </li>
               </ul>
       </div>
     </div>
@@ -200,10 +202,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">User Guide</li>
-      <li class="breadcrumb-item active">Postprocess outputs</li>
+          <li class="breadcrumb-item">Simulation Guide</li>
+      <li class="breadcrumb-item active">Age and population</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/postprocess.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/age_demography.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -211,159 +213,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="postprocess-outputs">Postprocess outputs</h1>
-<h2 id="analyzer-scripts">Analyzer scripts</h2>
-<p>This section is under construction.</p>
-<h3 id="standardized-outputs">Standardized Outputs</h3>
-<p>Each model’s relevant simulation outputs are loaded and combined, assigning the unique identifier that matches the index
-in the scenario data table and saved as a CSV file.
-The outcome metrics are then renamed and conversions into the same units are performed (i.e. annualized incidence per
-person).
-Outcomes are further aggregated to the specified time interval (5 days, monthly, annually, averaged across the whole
-monitoring time), and user-specified age groups.</p>
-<p><strong>Time-series:</strong></p>
-<ul>
-<li><code>mmmpy_yr.csv</code>: <em>Age-bin</em> specific key malaria outcomes* over time aggregated by year</li>
-<li><code>mmmpy_mth.csv</code>: <em>Age-bin</em> specific key malaria outcomes* over time aggregated by month-year</li>
-<li><code>mmmpy_5day.csv</code>: <em>Age-bin</em> specific key malaria outcomes* over time aggregated by 5days-year</li>
-</ul>
-<p>-</p>
-<p><strong>Aggregated times for relationship and seasonality trends:</strong></p>
-<ul>
-<li><code>mmmpy_timeavrg.csv</code>: <em>Age-group</em> specific key malaria outcomes<em> and transmission outcomes</em>*, aggregated over whole
-  monitoring period</li>
-</ul>
-<p><strong>Additional output files:</strong></p>
-<ul>
-<li><code>EIR.csv</code>, <code>EIR_yr.csv</code>,  <code>EIR_mth.csv</code> and <code>EIR_daily.csv</code>: All age simulated EIR (added to benchmark output csvs)</li>
-</ul>
-<h3 id="output-measures">Output measures</h3>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Column</th>
-<th style="text-align: left;">Description</th>
-<th style="text-align: left;">EMOD</th>
-<th style="text-align: left;">malariasimulation</th>
-<th style="text-align: left;">OpenMalaria</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">index</td>
-<td style="text-align: left;">unique identifier (scenario * seed)</td>
-<td style="text-align: left;">Assigned as tag in the simulations</td>
-<td style="text-align: left;">Assigned to csv scenario file name</td>
-<td style="text-align: left;">Assigned to xml scenario input file names</td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">(input)</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">date</td>
-<td style="text-align: left;">Simulation time converted to calendar dates</td>
-<td style="text-align: left;">Simulation start date + days that passed in the simulation</td>
-<td style="text-align: left;">Simulation start date + days that passed in the simulation</td>
-<td style="text-align: left;">days = survey * 5 <br/>  date = year &amp; month &amp; ‘1’ for monthly aggregation)<br/>   month = days/365.0001/12 <br/>  year = days/365.0001</td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">year</td>
-<td style="text-align: left;">Simulation time to calendar year</td>
-<td style="text-align: left;">daily timesteps/365</td>
-<td style="text-align: left;">daily timesteps/365</td>
-<td style="text-align: left;">73 5-day timesteps</td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">ageGroup</td>
-<td style="text-align: left;">Age of human host population  Additional age aggregation performed for custom broader age groups specified by user</td>
-<td style="text-align: left;">Age groups to write out specified in reporter,<br/> can be different from the agebins defined to specify demography</td>
-<td style="text-align: left;">Rendering of age groups need to be specified for each outcome,  <br/> can be different from the agebins defined to specify demography</td>
-<td style="text-align: left;">Age groups that are written out are the same as  defined age bins in the demography section.  <br/></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">nHost</td>
-<td style="text-align: left;">human host population</td>
-<td style="text-align: left;">Input population size is used as scaling factor for   population size defined in the demography file        <br/>  <em>'Average Population by Age Bin'</em></td>
-<td style="text-align: left;">Input population size is written into corresponding   R parameter             Population is  written out per index   and age group n</td>
-<td style="text-align: left;">Input population size is written out per index and age group <br/>   <em>measure 0-‘nHost‘</em></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">prevalence</td>
-<td style="text-align: left;">Proportion of individuals with   patent infections</td>
-<td style="text-align: left;">Based on microscopy with defined diagnostic   threshold, written out per index, time, age bin  <br/>          <em>'PfPR by Age Bin'</em></td>
-<td style="text-align: left;">Calculated from <code>n_detect/ nHost</code> per index, time,   age bin            secondary outcome</td>
-<td style="text-align: left;">Calculated from <code>nPatent / nHost</code> per index, time,   age bin       <em>secondary outcome</em></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">prevalence_2to10</td>
-<td style="text-align: left;">Proportion of individuals with   patent infections in 2-10 year olds</td>
-<td style="text-align: left;">As above, written out for age 2 to 10 (separate   outcome in model)    <br/>   <em>PfPR_2to10</em></td>
-<td style="text-align: left;">Rendered separately  for age 2 to 10 (separate outcome in model) (?)</td>
-<td style="text-align: left;">As above, calculated mean across   <code>prevalence</code> of individuals aged 2 to 10 years</td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">clinical_incidence</td>
-<td style="text-align: left;">Number of clinical cases per   person per year (ppy)</td>
-<td style="text-align: left;">Written out per index, time, age bin   <br/>    <em>Annual Clinical Incidence by Age Bin</em></td>
-<td style="text-align: left;">Calculated from <code>n_inc_clinical, nHost</code> and reporting   interval   <br/>  <em>secondary outcome</em></td>
-<td style="text-align: left;">Calculated from <code>nUncomp, nHost</code> and reporting   interval <br/> <em>secondary outcome</em></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">severe_incidence</td>
-<td style="text-align: left;">Number of severe cases per   person per year (ppy)</td>
-<td style="text-align: left;">Written out per index, time, age bin   <br/>       <em>Annual Severe Incidence by Age Bin</em></td>
-<td style="text-align: left;">Calculated from <code>n_inc_severe, nHost</code> and reporting   interval   <br/>  <em>secondary outcome</em></td>
-<td style="text-align: left;">Calculated from <code>nSevere nHost</code> and reporting   interval  <br/>  <em>secondary outcome</em></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">Simulated EIR</td>
-<td style="text-align: left;">Simulated EIR  - Time unit corresponds to the same as of the output file (daily, monthly, yearly)</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">n_infectious_mos</td>
-<td style="text-align: left;">Number of infectious mosquitoes</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align: left;">n_total_mos_pop</td>
-<td style="text-align: left;">Number of host-seeking mosquitoes</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h3 id="customizing-outputs">Customizing outputs</h3>
-<p><em>This section is under construction.</em></p>
+                <h1 id="age-and-demography">Age and demography</h1>
+<h2 id="population-size">Population size</h2>
+<h2 id="age-demography">Age demography</h2>
+<h3 id="changing-age">Changing age</h3>
+<p>... </p>
+<p>=</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../launch_and_run/" class="btn btn-neutral float-left" title="Launch simulations"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../plots/" class="btn btn-neutral float-right" title="Visualize outputs">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../time/" class="btn btn-neutral float-left" title="Time"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../seasonality/" class="btn btn-neutral float-right" title="Seasonality">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -391,10 +252,10 @@ monitoring time), and user-specified age groups.</p>
         </span>
     
     
-      <span><a href="../launch_and_run/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../time/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../plots/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../seasonality/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

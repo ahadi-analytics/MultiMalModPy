@@ -70,44 +70,34 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Installation and requirements</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#software-requirements">Software requirements</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#install-and-setup-emod">Install and setup EMOD</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#install-and-setup-openmalaria">Install and setup OpenMalaria</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#install-on-hpc">Install on HPC</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#installation-when-running-locally">Installation when running locally</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#install-and-setup-malariasimulation">Install and setup malariasimulation</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#installation-when-using-the-container">Installation when using the container</a>
-    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../configuration/">Configure MultiMalModPy</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters and predefined options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/_index/">Setup simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/launch_and_run/">Launch simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Age and population</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Visualize outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission intensity</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibrate transmission targets</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/development/">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness and uncertainty</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../guide/example_workflows.md">Example workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../guide/development.md">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -189,8 +179,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/glossary/">Glossary</a>
-                  </li>
               </ul>
       </div>
     </div>
@@ -218,6 +206,15 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="installation-and-requirements">Installation and requirements</h1>
+<h1 id="table-of-contents">Table of Contents</h1>
+<ol>
+<li><a href="#software_requirements">Software requirements</a>  </li>
+<li><a href="#install-and-setup-emod">Install and setup EMOD </a>  </li>
+<li><a href="#install-and-setup-openmalaria">Install and setup OpenMalaria </a></li>
+<li><a href="#install-and-setup-malariasimulation">Install and setup malariasimulation</a>  </li>
+<li><a href="#setup-when-using-the-container">Setup when using the container </a>  </li>
+<li><a href="#activate-virtual-environment">Activate virtual envionment </a>  </li>
+</ol>
 <h2 id="software-requirements">Software requirements</h2>
 <ul>
 <li>MultiMalModPy </li>
@@ -257,7 +254,10 @@
 <p><strong>Helpful additional installation guides for the Northwestern University cluster:</strong> <br />
 -  <a href="https://numalariamodeling.github.io/FE-2023-quarto-website/guides/install_guide.html">Faculty Enrichment Program Installation guide</a></p>
 <h2 id="install-and-setup-openmalaria">Install and setup OpenMalaria</h2>
-<p><a href="https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria">OpenMalaria v46</a>  </p>
+<p>User guide to install OpenMalaria: <a href="https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria">OpenMalaria v46</a>   </p>
+<p>Custom installation and setup for MultiMalModPy:<br />
+- <a href="#install-on-hpc">Install on HPC</a><br />
+- <a href="#installation-when-running-locally">Installation when running locally</a></p>
 <h3 id="install-on-hpc">Install on HPC</h3>
 <details><summary><span>Helpful additional installation guides for the Northwestern University cluster:</span></summary>   
 <p>
@@ -434,10 +434,19 @@ In addition, the recommended use of running simulations locally is for testing a
 <li>umbrella</li>
 </ul>
 <p><br></p>
-<h2 id="installation-when-using-the-container">Installation when using the container</h2>
+<h2 id="setup-when-using-the-container">Setup when using the container</h2>
 <p>This section is under construction...<br />
 A singularity container will be made available to allow running MultiMalModPy instantly, without the need for
 installations. </p>
+<h2 id="activate-virtual-environment">Activate virtual environment</h2>
+<h3 id="on-slurm-example-for-nu-cluster">On Slurm, example for NU cluster</h3>
+<div class="codehilite"><pre><span></span><code><span class="n">module</span><span class="w"> </span><span class="n">purge</span><span class="w"> </span><span class="n">all</span>
+<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">python</span><span class="o">/</span><span class="mf">3.8</span><span class="o">.</span><span class="mi">4</span>
+<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">singularity</span><span class="o">/</span><span class="mf">3.8</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">git</span><span class="o">/</span><span class="mf">2.8</span><span class="o">.</span><span class="mi">2</span>
+<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">R</span><span class="o">/</span><span class="mf">4.2</span><span class="o">.</span><span class="mi">3</span>
+<span class="n">source</span><span class="w"> </span><span class="s1">&#39;/projects/b1139/environments/emodpy_bin/activate&#39;</span>
+</code></pre></div>
               
             </div>
           </div><footer>

@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/calibration/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/uncertainty/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Calibrate transmission targets - MultiMalModPy</title>
+    <title>Randomness and uncertainty - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Calibrate transmission targets";
-        var mkdocs_page_input_path = "guide\\calibration.md";
-        var mkdocs_page_url = "/MultiMalModPy/guide/calibration/";
+        var mkdocs_page_name = "Randomness and uncertainty";
+        var mkdocs_page_input_path = "guide\\uncertainty.md";
+        var mkdocs_page_url = "/MultiMalModPy/guide/uncertainty/";
       </script>
     
     <!--[if lt IE 9]>
@@ -74,28 +74,30 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">Input parameters and predefined options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/model_specificities/">Model specific options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../_index/">Setup simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../launch_and_run/">Launch simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../age_demography/">Age and population</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../postprocess/">Postprocess outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../plots/">Visualize outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../transmission_calibration/">Transmission intensity</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Calibrate transmission targets</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Randomness and uncertainty</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#transmission-target">Transmission target</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#seasonality">Seasonality</a>
-    </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../development/">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="" href="../example_workflows.md">Example workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../development.md">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -177,8 +179,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/glossary/">Glossary</a>
-                  </li>
               </ul>
       </div>
     </div>
@@ -194,10 +194,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">User Guide</li>
-      <li class="breadcrumb-item active">Calibrate transmission targets</li>
+          <li class="breadcrumb-item">Simulation Guide</li>
+      <li class="breadcrumb-item active">Randomness and uncertainty</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/calibration.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/uncertainty.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -205,163 +205,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="calibration">Calibration</h1>
-<p>This page is currently under construction.</p>
-<h2 id="transmission-target">Transmission target</h2>
-<p>The <code>target_calibration</code>  directory includes <code>interpolation_data.csv</code> for each of the models included in the framework.
-The <code>interpolation_data.csv</code> data is generated via the transmission calibration, when running via <code>calib_run</code> .</p>
-<p>The table below summarizes the results from an epidemiological simulation model,
-detailing various metrics related to malaria incidence and prevalence on the example for EMOD.</p>
-<table>
-<thead>
-<tr>
-<th>input_target</th>
-<th>seasonality</th>
-<th>cm_clinical</th>
-<th>simulatedEIR</th>
-<th>prevalence_2to10</th>
-<th>prevalence</th>
-<th>severe_incidence</th>
-<th>n_total_mos_pop</th>
-<th>clinical_incidence</th>
-<th>clinical_incidence_U5</th>
-<th>modelname</th>
-<th>pop_size</th>
-<th>importation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>8.44553654</td>
-<td>perennial</td>
-<td>0.45</td>
-<td>0.343540425</td>
-<td>0.020460788</td>
-<td>0.044149221</td>
-<td>0.000403342</td>
-<td>56526.55781</td>
-<td>0.265060585</td>
-<td>0.088925115</td>
-<td>EMOD</td>
-<td>50000</td>
-<td>FALSE</td>
-</tr>
-<tr>
-<td>10.9762974</td>
-<td>perennial</td>
-<td>0.45</td>
-<td>0.932994042</td>
-<td>0.05381089</td>
-<td>0.106625617</td>
-<td>0.000708954</td>
-<td>73407.88671</td>
-<td>0.636199389</td>
-<td>0.235184127</td>
-<td>EMOD</td>
-<td>50000</td>
-<td>FALSE</td>
-</tr>
-<tr>
-<td>14.2654175</td>
-<td>perennial</td>
-<td>0.45</td>
-<td>1.710211503</td>
-<td>0.095421294</td>
-<td>0.173174509</td>
-<td>0.000903154</td>
-<td>95345.36855</td>
-<td>0.956651654</td>
-<td>0.423187833</td>
-<td>EMOD</td>
-<td>50000</td>
-<td>FALSE</td>
-</tr>
-<tr>
-<td>18.5401442</td>
-<td>perennial</td>
-<td>0.45</td>
-<td>2.573332919</td>
-<td>0.138401713</td>
-<td>0.224445658</td>
-<td>0.001041937</td>
-<td>123878.2838</td>
-<td>1.113905394</td>
-<td>0.624657857</td>
-<td>EMOD</td>
-<td>50000</td>
-<td>FALSE</td>
-</tr>
-<tr>
-<td>24.095821</td>
-<td>perennial</td>
-<td>0.45</td>
-<td>3.623527973</td>
-<td>0.185692034</td>
-<td>0.266564637</td>
-<td>0001239512</td>
-<td>160984.3319</td>
-<td>1.22631187</td>
-<td>0.853578362</td>
-<td>EMOD</td>
-<td>50000</td>
-<td>FALSE</td>
-</tr>
-<tr>
-<td>31.316293</td>
-<td>perennial</td>
-<td>0.45</td>
-<td>5.016965242</td>
-<td>0.242720614</td>
-<td>0.307751194</td>
-<td>0.001423436</td>
-<td>209179.4093</td>
-<td>1.326620187</td>
-<td>1.145714057</td>
-<td>EMOD</td>
-<td>50000</td>
-<td>FALSE</td>
-</tr>
-<tr>
-<td>40.7004273</td>
-<td>perennial</td>
-<td>0.45</td>
-<td>6.53350783</td>
-<td>0.295704873</td>
-<td>0.338061961</td>
-<td>0.001647561</td>
-<td>271863.5711</td>
-<td>1.387121162</td>
-<td>1.429262657</td>
-<td>EMOD</td>
-<td>50000</td>
-<td>FALSE</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Column Descriptions</strong></p>
-<ul>
-<li><strong>input_target</strong>: The transmission target input value for the simulation.</li>
-<li><strong>seasonality</strong>: The seasonality type, indicating the transmission pattern (e.g., perennial).</li>
-<li><strong>cm_clinical</strong>: The clinical case management rate.</li>
-<li><strong>simulatedEIR</strong>: The estimated entomological inoculation rate based on the simulation.</li>
-<li><strong>prevalence_2to10</strong>: Prevalence of malaria in children aged 2 to 10 years.</li>
-<li><strong>prevalence</strong>: Overall prevalence of malaria in the population.</li>
-<li><strong>severe_incidence</strong>: The incidence rate of severe malaria cases.</li>
-<li><strong>n_total_mos_pop</strong>: Total number of mosquitoes in the population.</li>
-<li><strong>clinical_incidence</strong>: Overall clinical incidence rate of malaria.</li>
-<li><strong>clinical_incidence_U5</strong>: Clinical incidence rate of malaria in children under 5 years old.</li>
-<li><strong>modelname</strong>: The name of the model used in the simulation (e.g., EMOD).</li>
-<li><strong>pop_size</strong>: The size of the population used in the simulation.</li>
-<li><strong>importation</strong>: Indicates whether importation of cases is considered (TRUE or FALSE).</li>
-</ul>
-<h2 id="seasonality">Seasonality</h2>
-<p><img alt="seasonality.png" src="../../img/seasonality_calib.png" /></p>
+                <h1 id="accounting-for-sources-of-uncertainty">Accounting for sources of uncertainty</h1>
+<p>....</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../plots/" class="btn btn-neutral float-left" title="Visualize outputs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../development/" class="btn btn-neutral float-right" title="Advanced use and developer guide">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../case_management/" class="btn btn-neutral float-left" title="Case management"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../model_specificities/" class="btn btn-neutral float-right" title="Model specific options">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -389,10 +240,10 @@ detailing various metrics related to malaria incidence and prevalence on the exa
         </span>
     
     
-      <span><a href="../plots/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../case_management/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../development/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../model_specificities/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

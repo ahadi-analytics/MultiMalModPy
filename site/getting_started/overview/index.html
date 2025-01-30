@@ -68,9 +68,29 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Overview of MultiMalModPy</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#repository-structure">Repository structure</a>
+    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#setup-and-launch">Setup and launch</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#inputs-simulation-and-output-directories">Inputs, simulation and output directories</a>
+    <li class="toctree-l3"><a class="reference internal" href="#simulation-and-raw-outputs">Simulation and raw outputs</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#postprocessing-and-standardized-outputs">Postprocessing and standardized outputs</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#output-measures">Output measures</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#visualization-of-outputs">Visualization of outputs</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#customizing-figures">Customizing figures</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#adding-new-figures">Adding new figures</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#repository-experiments-and-simulation-output-directories">Repository, experiments, and simulation output directories</a>
     </li>
     </ul>
                   </li>
@@ -80,22 +100,28 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters and predefined options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/_index/">Setup simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/launch_and_run/">Launch simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Age and population</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Visualize outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission intensity</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibrate transmission targets</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/development/">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness and uncertainty</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../guide/example_workflows.md">Example workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../guide/development.md">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -177,8 +203,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/glossary/">Glossary</a>
-                  </li>
               </ul>
       </div>
     </div>
@@ -212,62 +236,237 @@ such as input generation, output processing, and model features.
 All parameters from the global scripts are written into a serializable <code>exp</code> object used by each model during 
 pre- and post-processing. </p>
 <p><img alt="folder structure" src="../../img/MultiMalModPy_framework_for_web.png" /></p>
-<p><strong>1. Setup and launch</strong> requires user input of the parameters for the simulation to run (setup_sim.py). 
-Simulations are submitted via launch_sim .py and all defining parameters are stored  in a seralized python object (exp.obj),
-used throughout the proce ss.<br />
-Shell job submission scripts are created to automatically run subsequent scripts.</p>
-<p><strong>2. Simulations run</strong> automatically after model-specific utiliy functions created scenarios for each model.
-Simulations run independently per model and generate raw outputs. Simulation running time varies from model to model.</p>
-<p><strong>3. Postprocessing</strong> is initiated  once simulations finish. 
-The model-specific raw outputs and outcome measures are aggregated over time and by age and formatted.</p>
-<p><strong>4. Visualization of outputs</strong> starts automatically after the analyzer.
-The standardized CSV files per model are used to generatea set of pre-defined figures.  Figures included are:
-relationship between outcomes, time-series and agecurves. 
-The figures can be modified and extended by the user. </p>
-<h2 id="repository-structure">Repository structure</h2>
-<p><strong>Back-end:</strong><br />
-Subdirectories for each model contain model-specific functions to handle the input and output processing for each
-model. <br />
-To add new functionolaity or custom simulation setups, the <strong>functions</strong> and <strong>interventions.py</strong> under each model
-directory as well as the <strong>experiments.py</strong> will need to be edited.</p>
-<p><strong>Front-end:</strong><br />
-User-facing script are directly under the root directory, and include three scripts:
-<code>manifest.py</code>, <code>setup_sim.py</code>, and <code>launch_sim.py</code>.</p>
-<p><span style="font-size: 18px;">📦<strong>MultiMalModPy</strong></span><br />
-┣ <span style="font-size: 16px;">📂<strong>EMOD</strong></span><br />
-┃ ┗ 📂<strong>functions</strong>  <br />
-┃ &nbsp;&nbsp;&nbsp; ┗ 📜<em>calib_params.py</em>   <br />
-┃ &nbsp;&nbsp;&nbsp; ┗ 📜<em>interventions.py</em>    <br />
-┃ &nbsp;&nbsp;&nbsp; ┗ 📜<em>EMOD_functions.py</em>    <br />
-┃ &nbsp;&nbsp;&nbsp; ┗ 📜<em>forced_EIR.py</em> <br />
-┃ &nbsp;&nbsp;&nbsp; ┗ 📜<em>reporters.py</em>    <br />
-┃ ┗ 📂<strong>inputs</strong>   <br />
-┃ &nbsp;&nbsp;&nbsp; ┗ 📂<strong>weather</strong>   <br />
-┃ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ┗ 📜perennial_rainfall_daily.bin.json    <br />
-┃ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ┗ 📜...   <br />
-┃ ┗ 📜analyze_sim.py  <br />
-┃ ┗ 📜utils.py<br />
-┣ <span style="font-size: 16px;">📂<strong>malariasimulation</strong></span>  <br />
-┃ ┗ 📂<strong>functions</strong>   <br />
-┃ &nbsp;&nbsp;&nbsp; ┗📜<em>get_seasonality_parameters.R</em><br />
-┃ &nbsp;&nbsp;&nbsp; ┗📜<em>interventions.R</em><br />
-┃ &nbsp;&nbsp;&nbsp; ┗📜<em>run_simulations.R</em><br />
-┃ ┗ 📜<em>malariasimulation.R</em><br />
-┃ ┗ 📜<em>analyze_sim.py</em>  <br />
-┃ ┗ 📜<em>utils.py</em><br />
-┣ <span style="font-size: 16px;">📂<strong>OpenMalaria</strong></span><br />
-┃ ┗ 📂<strong>functions</strong> <br />
-┃ &nbsp;&nbsp;&nbsp; ┗ 📜<em>interventions.py</em>   <br />
-┃ ┗ 📂<strong>scaffolds</strong>   <br />
-┃ &nbsp;&nbsp;&nbsp; ┗ 📜<em>R0000GA.xml</em><br />
-┃ ┗ 📂<strong>snippets</strong>   <br />
-┃ &nbsp;&nbsp;&nbsp; ┗ 📜<em>demographics.xml</em>   <br />
-┃ ┗ 📜<em>analyze_sim.py</em>  <br />
-┃ ┗ 📜<em>utils.py</em> <br />
-┣ 📜<em>manifest.py</em> <br />
-┣ 📜<em>setup_sim.py</em> <br />
-┗ 📜<em>launch_sim.py</em></p>
-<h2 id="inputs-simulation-and-output-directories">Inputs, simulation and output directories</h2>
+<h2 id="usage">Usage</h2>
+<h3 id="setup-and-launch">Setup and launch</h3>
+<p>The simulation process begins with user input of simulation parameters, specified in <code>setup_sim.py</code>. 
+Once configured, simulations are submitted using launch_sim.py, and all defining parameters are stored in a serialized Python object (<code>exp.obj</code>).
+This object ensures consistency throughout the simulation process.</p>
+<p>Additionally, shell job submission scripts are generated to automate subsequent script execution,
+streamlining the workflow. The <code>launch_sim.py</code> script provides flexibility by allowing users to modify parameters 
+directly within the script or read them from a CSV file.</p>
+<p>To further enhance modularity, the simulation configuration has been moved to the helper.py script, 
+enabling <code>launch_sim.py</code> to dynamically overwrite parameters as needed.</p>
+<p><strong>Running a Simulation</strong></p>
+<ol>
+<li>Open a terminal and navigate to the repository:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~/model-characterization
+</code></pre></div>
+
+<ol>
+<li>Run the Python script to define and launch the simulation:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>launch_sim.py
+</code></pre></div>
+
+<p>This executes a test run using the default settings specified in the script and <code>parse_launch_args</code> (see <code>helper.py</code>).</p>
+<ol>
+<li>Monitor running simulations (if using SLURM):</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>squeue<span class="w"> </span>-u<span class="w"> </span>&lt;username&gt;
+</code></pre></div>
+
+<ol>
+<li>Once the simulations complete, analyzer scripts and default plots will automatically be generated.</li>
+</ol>
+<p><strong>Example runs</strong></p>
+<ul>
+<li>Testrun: Run a quick test with predefined settings:</li>
+<li>
+<p><code>python launch_sim.py  --models EMOD MalSim OpenMalaria --test</code></p>
+</li>
+<li>
+<p>Baseline run: Run simulations with default settings or modified defaults from the Python file:</p>
+</li>
+<li><code>python launch_sim.py  --models EMOD MalSim OpenMalaria</code></li>
+<li>
+<p><code>python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM</code>  </p>
+</li>
+<li>
+<p>Custom run: Run a simulation with specific interventions and test settings:</p>
+</li>
+<li><code>python launch_sim.py  --models EMOD MalSim OpenMalaria --intervention cc_step --test --emodstep burnin</code></li>
+<li><code>python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test</code>  </li>
+</ul>
+<h3 id="simulation-and-raw-outputs">Simulation and raw outputs</h3>
+<p>Once initiated, the simulation process runs automatically. 
+Model-specific utility functions generate distinct scenarios for each model, ensuring tailored execution. 
+Simulations run independently for each model, producing raw output data. 
+The runtime varies depending on the complexity and computational demands of each model.  </p>
+<h3 id="postprocessing-and-standardized-outputs">Postprocessing and standardized outputs</h3>
+<p>Each model’s relevant simulation outputs are loaded and combined, assigning the unique identifier that matches the index
+in the scenario data table and saved as a CSV file.<br />
+The outcome metrics are then renamed and conversions into the same units are performed (i.e. annualized incidence per
+person). Outcomes are further aggregated to the specified time interval (5 days, monthly, annually, averaged across the whole
+monitoring time), and user-specified age groups.  </p>
+<p><strong>Time-series:</strong></p>
+<ul>
+<li><code>mmmpy_yr.csv</code>: <em>Age-bin</em> specific key malaria outcomes* over time aggregated by year</li>
+<li><code>mmmpy_mth.csv</code>: <em>Age-bin</em> specific key malaria outcomes* over time aggregated by month-year</li>
+<li><code>mmmpy_5day.csv</code>: <em>Age-bin</em> specific key malaria outcomes* over time aggregated by 5days-year</li>
+</ul>
+<p><strong>Aggregated times for relationship and seasonality trends:</strong></p>
+<ul>
+<li><code>mmmpy_timeavrg.csv</code>: <em>Age-group</em> specific key malaria outcomes<em> and transmission outcomes</em>*, aggregated over whole
+  monitoring period</li>
+</ul>
+<p><strong>Additional output files:</strong></p>
+<ul>
+<li><code>EIR.csv</code>, <code>EIR_yr.csv</code>,  <code>EIR_mth.csv</code> and <code>EIR_daily.csv</code>: All age simulated EIR (added to benchmark output csvs)</li>
+</ul>
+<h4 id="output-measures">Output measures</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Column</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">EMOD</th>
+<th style="text-align: left;">malariasimulation</th>
+<th style="text-align: left;">OpenMalaria</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">index</td>
+<td style="text-align: left;">unique identifier (scenario * seed)</td>
+<td style="text-align: left;">Assigned as tag in the simulations</td>
+<td style="text-align: left;">Assigned to csv scenario file name</td>
+<td style="text-align: left;">Assigned to xml scenario input file names</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">(input)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">date</td>
+<td style="text-align: left;">Simulation time converted to calendar dates</td>
+<td style="text-align: left;">Simulation start date + days that passed in the simulation</td>
+<td style="text-align: left;">Simulation start date + days that passed in the simulation</td>
+<td style="text-align: left;">days = survey * 5 <br/>  date = year &amp; month &amp; ‘1’ for monthly aggregation)<br/>   month = days/365.0001/12 <br/>  year = days/365.0001</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">year</td>
+<td style="text-align: left;">Simulation time to calendar year</td>
+<td style="text-align: left;">daily timesteps/365</td>
+<td style="text-align: left;">daily timesteps/365</td>
+<td style="text-align: left;">73 5-day timesteps</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">ageGroup</td>
+<td style="text-align: left;">Age of human host population  Additional age aggregation performed for custom broader age groups specified by user</td>
+<td style="text-align: left;">Age groups to write out specified in reporter,<br/> can be different from the agebins defined to specify demography</td>
+<td style="text-align: left;">Rendering of age groups need to be specified for each outcome,  <br/> can be different from the agebins defined to specify demography</td>
+<td style="text-align: left;">Age groups that are written out are the same as  defined age bins in the demography section.  <br/></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">nHost</td>
+<td style="text-align: left;">human host population</td>
+<td style="text-align: left;">Input population size is used as scaling factor for   population size defined in the demography file        <br/>  <em>'Average Population by Age Bin'</em></td>
+<td style="text-align: left;">Input population size is written into corresponding   R parameter             Population is  written out per index   and age group n</td>
+<td style="text-align: left;">Input population size is written out per index and age group <br/>   <em>measure 0-‘nHost‘</em></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">prevalence</td>
+<td style="text-align: left;">Proportion of individuals with   patent infections</td>
+<td style="text-align: left;">Based on microscopy with defined diagnostic   threshold, written out per index, time, age bin  <br/>          <em>'PfPR by Age Bin'</em></td>
+<td style="text-align: left;">Calculated from <code>n_detect/ nHost</code> per index, time,   age bin            secondary outcome</td>
+<td style="text-align: left;">Calculated from <code>nPatent / nHost</code> per index, time,   age bin       <em>secondary outcome</em></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">prevalence_2to10</td>
+<td style="text-align: left;">Proportion of individuals with   patent infections in 2-10 year olds</td>
+<td style="text-align: left;">As above, written out for age 2 to 10 (separate   outcome in model)    <br/>   <em>PfPR_2to10</em></td>
+<td style="text-align: left;">Rendered separately  for age 2 to 10 (separate outcome in model) (?)</td>
+<td style="text-align: left;">As above, calculated mean across   <code>prevalence</code> of individuals aged 2 to 10 years</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">clinical_incidence</td>
+<td style="text-align: left;">Number of clinical cases per   person per year (ppy)</td>
+<td style="text-align: left;">Written out per index, time, age bin   <br/>    <em>Annual Clinical Incidence by Age Bin</em></td>
+<td style="text-align: left;">Calculated from <code>n_inc_clinical, nHost</code> and reporting   interval   <br/>  <em>secondary outcome</em></td>
+<td style="text-align: left;">Calculated from <code>nUncomp, nHost</code> and reporting   interval <br/> <em>secondary outcome</em></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">severe_incidence</td>
+<td style="text-align: left;">Number of severe cases per   person per year (ppy)</td>
+<td style="text-align: left;">Written out per index, time, age bin   <br/>       <em>Annual Severe Incidence by Age Bin</em></td>
+<td style="text-align: left;">Calculated from <code>n_inc_severe, nHost</code> and reporting   interval   <br/>  <em>secondary outcome</em></td>
+<td style="text-align: left;">Calculated from <code>nSevere nHost</code> and reporting   interval  <br/>  <em>secondary outcome</em></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">Simulated EIR</td>
+<td style="text-align: left;">Simulated EIR  - Time unit corresponds to the same as of the output file (daily, monthly, yearly)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">n_infectious_mos</td>
+<td style="text-align: left;">Number of infectious mosquitoes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">n_total_mos_pop</td>
+<td style="text-align: left;">Number of host-seeking mosquitoes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="visualization-of-outputs">Visualization of outputs</h3>
+<p>Once postprocessing is complete, visualization begins automatically through the analyzer module. 
+Standardized CSV output files for each model are used to generate a set of predefined figures, including relationships between outcomes,
+time-series plots, and age-specific trends. 
+These figures provide an initial visual analysis of the results and can be modified or extended by the user to 
+accommodate specific research needs.  </p>
+<p>The framework comes with three standardized plotting scripts:  <br />
+-  <a href="../../_scratch/api/plotter/plot_timeseries.md">plot_timeseries.py</a> the timeseries for selected outcome measures, <br />
+-  <a href="../../_scratch/api/plotter/plot_agecurves.md">plot_agecurves.py</a> the relation of outcome measures by age groups,<br />
+-  <a href="../../_scratch/api/plotter/plot_relationship.md">plot_relationship.py</a> relationship between disease transmission and disease outcomes.  </p>
+<h4 id="customizing-figures">Customizing figures</h4>
+<p>Each of the existing plotting scripts allow for the user to define what outcomes should be displayed in the
+color, the columns, axis and so on. Edits can be directly made in the respective scripts.</p>
+<h4 id="adding-new-figures">Adding new figures</h4>
+<p>Additional plotting scripts from the user can be added to the <code>plotter</code> subdirectory.
+It is recommended to have the filename start with <code>plot_</code> for consistency and to facilitate integrating the new plotter into the framework.</p>
+<p>At the beginning it will be easiest to run the new plotters manually after the default outputs were 
+successfully  generated.</p>
+<p>For instance: <br />
+<code>python plotter/plot_custom1.py  --models EMOD malariasimulation OpenMalaria</code> </p>
+<h2 id="repository-experiments-and-simulation-output-directories">Repository, experiments, and simulation output directories</h2>
+<p><strong>Repository</strong>
+The repository is structured into back-end and front-end components. The back-end consists of subdirectories for each model, 
+containing model-specific functions to handle input and output processing. 
+The front-end includes user-facing scripts located in the root directory, namely manifest.py, setup_sim.py,
+and launch_sim.py, which manage simulation setup and execution.  </p>
+<p><strong>experiments folder</strong> 
+This directory contains all necessary files and dependencies for running simulation experiments for three distinct models. 
+It includes input files, dependencies, log outputs, and shell scripts to ensure reproducibility and ease of execution.  </p>
+<p><strong>simulation output  folder</strong>
+The simulation output folder stores the results of simulation runs in standardized CSV format.
+These files ensure consistency across different models, making it easy to analyze and compare outputs.
+Additionally, it includes a set of default plots generated from the simulations. </p>
+<p>Below is an overview of the folder structure and its contents.</p>
 <p><img alt="folder structure" src="../../img/folder_structure.png" /></p>
               
             </div>

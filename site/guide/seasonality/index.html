@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/outputs/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/seasonality/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Outputs - MultiMalModPy</title>
+    <title>Seasonality - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Outputs";
-        var mkdocs_page_input_path = "guide\\outputs.md";
-        var mkdocs_page_url = "/MultiMalModPy/guide/outputs/";
+        var mkdocs_page_name = "Seasonality";
+        var mkdocs_page_input_path = "guide\\seasonality.md";
+        var mkdocs_page_url = "/MultiMalModPy/guide/seasonality/";
       </script>
     
     <!--[if lt IE 9]>
@@ -74,22 +74,32 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">Input parameters and predefined options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/model_specificities/">Model specific options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">User Guide</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../_index/">Setup simulations</a>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../launch_and_run/">Launch simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../age_demography/">Age and population</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../postprocess/">Postprocess outputs</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Seasonality</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#generate-seasonal-profiles">Generate seasonal profiles</a>
+    </li>
+    </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../plots/">Visualize outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../transmission_calibration/">Transmission intensity</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Calibrate transmission targets</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../case_management/">Case management</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../development/">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../uncertainty/">Randomness and uncertainty</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../example_workflows.md">Example workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../development.md">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -171,8 +181,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/glossary/">Glossary</a>
-                  </li>
               </ul>
       </div>
     </div>
@@ -188,9 +196,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Outputs</li>
+          <li class="breadcrumb-item">Simulation Guide</li>
+      <li class="breadcrumb-item active">Seasonality</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/outputs.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/seasonality.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -198,37 +207,56 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="outputs">Outputs</h1>
-<p>standardized csv files for selected outcome metrics per age group and either aggregated over time (Benchmark.csv), or aggregated for specific time intervals  (daily, 5-day, monthly or annual time-series) ( PfPRAgebin_<timeseriesname>.csv). In addition, EIR-vector-transmission related metrics across all ages are generated for different time-intervals or aggregated over time written into csv files named “EIR” and specified time aggregation.  </p>
-<p><strong>Time-series:</strong></p>
-<ul>
-<li><code>All_Age_SamplePlot.csv</code>: <em>All age</em> per timestep and basic simulation outputs for checking simulations</li>
-<li><code>PfPR_ClinicalIncidence_mth.csv</code>: <em>Age-bin</em> specific key malaria outcomes* over time aggregated by month-year</li>
-<li><code>PfPR_ClinicalIncidence_yr.csv</code>: <em>Age-bin</em> specific key malaria outcomes* over time aggregated by year</li>
-</ul>
-<p><strong>Aggregated times for relationship and seasonality trends:</strong></p>
-<ul>
-<li><code>Benchmark.csv</code>: <em>Age-group</em> specific key malaria outcomes<em> and transmission outcomes</em>*, aggregated over whole
-  monitoring period</li>
-</ul>
-<p><strong>Additional output files:</strong></p>
-<ul>
-<li><code>EIR.csv</code>, <code>EIR_yr.csv</code> and <code>EIR_mth.csv</code>: All age simulated EIR (added to benchmark output csvs)</li>
-<li><code>Surveyoutput_base.csv</code>: Raw output for OpenMalaria from concatenating survey outputs, optional i.e. for testing.</li>
-<li><code>Event reporters ..</code> to be added</li>
-</ul>
-<h2 id="output-measures">Output measures</h2>
-<p>coming soon</p>
-<h2 id="customizing-outputs">Customizing outputs</h2>
-<p>To customize a simulation, any of the defined parameters listed
-in <a href="https://github.com/ahadi-analytics/model-characterization#simulation-experiment-configuration">Simulation experiment configuration</a>
-can be changed.
-Commonly modified parameters are <code>eir</code>, <code>seasonality</code>, <code>burnin</code> period, and sometimes <code>cm_clinical</code>, for base-case
-scenario runs.
-Additional interventions are in progress and instructions for simulating other interventions will come soon.</p>
+                <h1 id="seasonality">Seasonality</h1>
+<p>The seasonal profile process begins with EMOD because its seasonality and climate files are too complex to be simplified 
+into monthly values that describe the overall seasonal trend, as done for the other two models. 
+By running EMOD simulations first, we establish a seasonality baseline that the other models can then be aligned to, 
+ensuring consistency across simulations. </p>
+<p><img alt="seasonality.png" src="../../img/seasonality_calib.png" /></p>
+<h2 id="generate-seasonal-profiles">Generate seasonal profiles</h2>
+<p>Our current environmental profile is created artifically to show a simple set up for each model to align to.
+If you are interested in creating your own seasonal profile to feed in to the models. </p>
+<p>Follow the steps below.
+FYI, at NU we have access to calculon which gets us weather data, if you also have access to follow calculon you can follow this process along, otherwise you will need to get the csv of air temp, land temp, humidity and rainfall
+for your location through some other means.
+First you will want to go in to the correct directory in your terminal. </p>
+<div class="codehilite"><pre><span></span><code>cd model-characterizaiton
+cd EMOD/inputs
+</code></pre></div>
+
+<p>You will need to edit nodes.csv with the coordinates you are intersted in simulating, then you can run get_climate.py to generate EMOD's necessary .bin and .json files.</p>
+<div class="codehilite"><pre><span></span><code>python get_climate.py
+</code></pre></div>
+
+<p>This will generate a folder with EMOD's required .json and .bin files, as well as a .csv you can edit to create custom seasonal behavior (we wouldn't recommend this to beginner level modelers).
+IF you want to make custom changes to weather.csv and create custom .json and .bin files, then make those edits to the csv and run the following line of code
+    python create_weather.py -generate_climate -climate_profile <csv name></p>
+<p>Once this job is done, make sure the climate files all have the prefix 'seasonal', and exist in the folder 'climate'. By default the files will have the prefix of the name of the .csv you used to generate the climate files.
+If you prefer to keep the name of the .csv file you used (and not replace the seasonal files we provide) then please make sure that in setup_sim.py you change the seasonality from 'seasonal' to the .csv file name.</p>
+<p>Now you need to run the calibration set up for EMOD, seasonal simulations ONLY. We use CM 0 to feed in to EMOD to later use as input for the other two models.
+More detailed explanations for calib runs and production runs are included below, but for now we are just showing the simple command needed to run simulations.
+Make sure you decide whether importation is turned on or off for EMOD, that should stay consistent throughout all your simulations.</p>
+<div class="codehilite"><pre><span></span><code>python launch_sim.py -r calibrun --models EMOD
+</code></pre></div>
+
+<p>Once those simulations are done, you need to do a production run of EMOD, to get simulation outputs for an annual eir of 20.
+We chose simulated annual eir of 20 to align on because EMOD's peak simulated EIR changed depending on transmission intensity (the other two models don't),
+and we decided that simulated eir of 20 was a good middle ground to represent the average EMOD simulation.</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">python</span><span class="w"> </span><span class="nx">launch_sim</span><span class="p">.</span><span class="nx">py</span><span class="w"> </span><span class="o">-</span><span class="nx">r</span><span class="w"> </span><span class="nx">productionrun</span><span class="w"> </span><span class="o">--</span><span class="nx">models</span><span class="w"> </span><span class="nx">EMOD</span><span class="w"> </span><span class="o">--</span><span class="nx">output_type</span><span class="w"> </span><span class="nx">eir</span>
+</code></pre></div>
+
+<p>Once those simulations are done running, you should open up the mmmpy_mth.csv file. It will be found in the /simulation_outputs/<experiment name>/ folder.
+In that file, you should have at least 20 EMOD simulations with monthly eir values, I would recommend taking filtering out the 20 simulations by the 0-100 age group and by the last year of your monitoring period.
+Then, you should average the simulated EIR per month.
+After that, inside the file utility/helper_simulation.py, there is a variable called season_month, you should replace the 12 values of seasonal month with your new 12 monthly values.
+Once you have made that change you can now run calib run simulations for all three models.</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../age_demography/" class="btn btn-neutral float-left" title="Age and population"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../transmission_calibration/" class="btn btn-neutral float-right" title="Transmission intensity">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -255,6 +283,10 @@ Additional interventions are in progress and instructions for simulating other i
         </span>
     
     
+      <span><a href="../age_demography/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../transmission_calibration/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

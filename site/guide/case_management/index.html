@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/parameters/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/case_management/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Input parameters - MultiMalModPy</title>
+    <title>Case management - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Input parameters";
-        var mkdocs_page_input_path = "guide\\parameters.md";
-        var mkdocs_page_url = "/MultiMalModPy/guide/parameters/";
+        var mkdocs_page_name = "Case management";
+        var mkdocs_page_input_path = "guide\\case_management.md";
+        var mkdocs_page_url = "/MultiMalModPy/guide/case_management/";
       </script>
     
     <!--[if lt IE 9]>
@@ -74,22 +74,30 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">Input parameters and predefined options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/model_specificities/">Model specific options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">User Guide</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../_index/">Setup simulations</a>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../launch_and_run/">Launch simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../age_demography/">Age and population</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../postprocess/">Postprocess outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../plots/">Visualize outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../transmission_calibration/">Transmission intensity</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Calibrate transmission targets</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Case management</a>
+    <ul class="current">
+    </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../development/">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../uncertainty/">Randomness and uncertainty</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../example_workflows.md">Example workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../development.md">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -171,8 +179,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/glossary/">Glossary</a>
-                  </li>
               </ul>
       </div>
     </div>
@@ -188,9 +194,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Input parameters</li>
+          <li class="breadcrumb-item">Simulation Guide</li>
+      <li class="breadcrumb-item active">Case management</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/parameters.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/case_management.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -198,23 +205,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="input-parameters">Input parameters</h1>
-<hr />
-<h2 id="simulation-setup">Simulation setup</h2>
-<h3 id="simulation-time">Simulation time</h3>
-<h3 id="population-size">Population size</h3>
-<h3 id="age">Age</h3>
-<h3 id="demography">Demography</h3>
-<h3 id="output-monitoring">Output monitoring</h3>
-<hr />
-<h2 id="malaria-setup">Malaria setup</h2>
-<h3 id="seasonality">Seasonality</h3>
-<h3 id="case-management">Case management</h3>
-<h3 id="importation">Importation</h3>
-<h3 id="entomology-mode">Entomology mode</h3>
+                <h1 id="case-management">Case management</h1>
+<p>....</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../transmission_calibration/" class="btn btn-neutral float-left" title="Transmission intensity"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../uncertainty/" class="btn btn-neutral float-right" title="Randomness and uncertainty">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -241,6 +240,10 @@
         </span>
     
     
+      <span><a href="../transmission_calibration/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../uncertainty/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

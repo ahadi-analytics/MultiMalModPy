@@ -1,16 +1,25 @@
-# Parameters and model alignment
+<link rel="stylesheet" href="extra.css" />
 
+# Parameter Categories of MultiMalModPy
 
-MultiMalModPy includes three types of setup parameters for the user to specify:  
+MultiMalModPy requires users to specify three key types of parameters:
 
 _Malaria_  
-Define and align malaria-related input parameters across all models to ensure that the simulations are comparable. It involves setting up the key parameters that influence how the malaria environment is represented in the simulations.  
+Define and align malaria-related inputs across all models to ensure comparability.  
+This includes key factors influencing malaria transmission dynamics, such as seasonality, case management, and
+importation.
 
 _Simulation_  
-Define the specifics of each new "experiment," including the scenarios to be tested. The simulation/experiment parameters include the population, number of seeds, simulation duration and ‘burnin’ duration, age groups to monitor, and reporting interval for writing out outcome metrics. Scenario-defining parameters are those that can take in multiple values and determine transmission, seasonality, case management and potentially other interventions or parameter explorations.     
+Specify details for each simulation experiment, including population size, number of seeds, simulation duration, and
+burn-in period.  
+Additionally, define scenario-specific parameters that impact transmission, seasonality, case management, and other
+interventions.
 
 _Framework_     
-Configure overarching parameters, such as selecting which models to run and specifying the outputs to be generated. The setup includes the installation and definition of directories to be used for the simulations to store input and output files. Additionally, cluster specific parameters are required to ensure a smooth processing of the simulations throughout the implemented pipeline.  
+Configure overarching settings, such as model selection, output specifications, and directory structures for storing
+inputs and results.   
+Cluster-specific parameters are also required to optimize simulation execution across computing environments.
+
 
 
 <div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
@@ -20,45 +29,66 @@ Configure overarching parameters, such as selecting which models to run and spec
 </div>  
 
 
-
-
 -------------------------------- 
 
+## Malaria Parameters
 
-## Simulation parameters
+These parameters are primarily defined in the `SimulationConfig` class within the `setup_sim.py` script.
 
+| **Parameter**                                   | **Description**                                                                                                                                                                                                                                              |
+|-------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [seasonality](.../guide/seasonality.md)         | Seasonal variation in malaria transmission due to climatic  factors.                                                                                                                                                                                         |
+| [case_management](.../guide/case_management.md) | Diagnosis and treatment for uncomplicated and severe malaria cases.                                                                                                                                                                                          |
+| [intervention_list](.../guide/importation.md)   | Introduction of malaria cases from external sources (e.g., travel, migration).                                                                                                                                                                               |
+| [importation_rate](.../guide/importation.md)    | Introduction of malaria cases from external sources (e.g., travel, migration).                                                                                                                                                                               |
+| [entomology_mode](.../guide/entomology_mode.md) | Mosquito population dynamics, biting behavior, and vector control strategies.                                                                                                                                                                                |
+| [sweep_list](.../guide/sweep_list.md)           | Creates a full factorial design of the selected <span title="The sweep defines all combinations of parameter values to simulate every possible scenario." style="color: #007BFF; text-decoration: underline; cursor: pointer;">sweep</span> parameter values |
+| ...                                             | ...                                                                                                                                                                                                                                                          |
 
-#### Simulation time
+_Parameter names with an asteriks (*) denote model-specific parameters_
 
-### Burnin
+## Simulation Parameters
 
-### Seeds
+These parameters are primarily defined in the `SimulationConfig` class within the `setup_sim.py` script.
 
-#### Population size
+| **Parameter**                                                | **Description**                                                                                                                                                                                                                                                                                                          |
+|--------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [start_year, end_year](.../guide/time.md)                    | Start year of the <span title="Simulation period during which outcomes are recorded" style="color: #007BFF; text-decoration: underline; cursor: pointer;">monitoring period</span>                                                                                                                                       |
+| [burnin*](.../guide/time.md)                                 | Initial period for reaching an  <span title="Transmission reaches a stable state and immunity in the population has been established" style="color: #007BFF; text-decoration: underline; cursor: pointer;">equilibrium</span>.                                                                                           |
+| [seed](.../guide/uncertainty.md)                             | Random seed(s) for stochastic replications.                                                                                                                                                                                                                                                                              |
+| [pop_size*](.../guide/age_demography.md)                     | Simulated number of individuals.                                                                                                                                                                                                                                                                                         |
+| [agebins](.../guide/age_demography.md)                       | <span title="Age limits at which simulation outputs are recorded" style="color: #007BFF; text-decoration: underline; cursor: pointer;">Age bins</span> to simulate.                                                                                                                                                      |
+| [age_groups_aggregates](.../guide/age_demography.md)         | <span title="One or more overlapping age bins for output aggregation" style="color: #007BFF; text-decoration: underline; cursor: pointer;">Age groups</span> for output aggregation.                                                                                                                                     |
+| [run_mode](.../guide/run_mode.md)                            | Simulation execution mode, supporting testing and production configurations.                                                                                                                                                                                                                                             |
+| [emodstep*](.../guide/parse_launch_args.md)                  | EMOD: use <span title="Saves the population state at a specific time, allowing simulations to start from that point instead of re-running the burn-in period" style="color: #007BFF; text-decoration: underline; cursor: pointer;">serialization</span>  to separate burn-in and pickup simulation, or run all together. |
+| [emod_calib_params*](.../guide/parse_launch_args.md)         | EMOD: run simulations with alternative within-host calibration.                                                                                                                                                                                                                                                          |
+| [mpv*](.../guide/parse_launch_args.md)                       | malariasimulation parameter variation.                                                                                                                                                                                                                                                                                   |
+| [output_type, output_target](.../guide/parse_launch_args.md) | Output type and target location for CM 0 and 15% simulations using EMOD (pop: 1,000), OpenMalaria (pop: 50,000), and malariaSimulation (pop: 50,000) under seasonal and perennial profiles.                                                                                                                              |
+| [test](.../guide/parse_launch_args.md)                       | Reduces the computational demand by lowering pop_size, burn-in and seeds                                                                                                                                                                                                                                                 |
+| ...                                                          | ...                                                                                                                                                                                                                                                                                                                      |
 
-#### Age 
+_Parameter names with an asteriks (*) denote model-specific parameters_
 
-#### Demography 
+## Framework Parameters
 
-#### Output monitoring 
+These parameters are primarily defined through the arguments provided when launching simulations
+via `python launch_sim.py <args>`.
+They are specified in the `parse_launch_args` function within the `utility/helper.py` script.
 
+| **Parameter**                                           | **Description**                                                                                                                    |
+|---------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| [directory](.../guide/parse_launch_args.md)             | Specifies the directory for storing simulation inputs, config, and model outputs.                                                  |
+| [suite](.../guide/parse_launch_args.md)                 | Suite (collection of) of simulation experiments.                                                                                   |
+| [expname, exp_name](.../guide/parse_launch_args.md)     | Name of the simulation experiment.                                                                                                 |
+| [models, models_to_run](.../guide/parse_launch_args.md) | Specifies which models to run (one or multiple).                                                                                   |
+| [user](.../guide/parse_launch_args.md)                  | Creates a user-specific directory for storing experiments and simulation outputs.                                                  |
+| [rownum](.../guide/parse_launch_args.md)                | If running from CSV, defines row of the simulation scenario to run.                                                                |
+| [memory_per_sim*](.../guide/hpc.md)                     | Memory allocation per simulation, ensuring appropriate resources.                                                                  |
+| [time_per_sim*](.../guide/hpc.md)                       | Max time for each simulation to manage computational time and resources                                                            |
+| [analyzer_list](.../guide/outputs.md)                   | Type of standardized outputs to generate (i.e. select default or custom ones)                                                      |
+| [analyzer_script](.../guide/outputs.md)                 | Name of the analyzer script (default, optional for advanced users)                                                                 |
+| [plots_to_run](.../guide/outputs.md)                    | Plots to generate (allows custom plots for advanced users)                                                                         |
+| [sim_params_list](.../guide/framework.md)               | Lists the simulation parameters to be used across the models, allowing for consistent configuration of the simulation environment. |
+| ...                                                     | ...                                                                                                                                |
 
-
-
--------------------------------- 
-
-## Malaria parameters
-
-### Seasonality 
-
-### Case management  
-
-### Importation 
-
-### Entomology mode 
-
-
--------------------------------- 
-
-
-## Framework parameters
+_Parameter names with an asteriks (*) denote model-specific parameters_  

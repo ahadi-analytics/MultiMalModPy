@@ -1,13 +1,13 @@
 # Installation and requirements  
 
 
-# Table of Contents
-1. [Software requirements](#software_requirements)  
-2. [Install and setup EMOD ](#install-and-setup-emod)  
-3. [Install and setup OpenMalaria ](#install-and-setup-openmalaria)
-4. [Install and setup malariasimulation](#install-and-setup-malariasimulation)  
-5. [Setup when using the container ](#setup-when-using-the-container)  
-6. [Activate virtual envionment ](#activate-virtual-environment)  
+**In this section:**
+- [Software requirements](#software_requirements)  
+- [Install and setup EMOD ](#install-and-setup-emod)  
+- [Install and setup OpenMalaria ](#install-and-setup-openmalaria)
+- [Install and setup malariasimulation](#install-and-setup-malariasimulation)  
+- [Setup when using the container ](#setup-when-using-the-container)  
+- [Activate virtual envionment ](#activate-virtual-environment)  
 
 
 ## Software requirements   
@@ -40,7 +40,7 @@
 <br>
 
 
-## Install and setup EMOD  
+## EMOD
 
 - **EMOD**  
      - [EMODpy](https://docs.idmod.org/projects/emodpy/en/v1.19.0/installation.html)     
@@ -52,7 +52,7 @@
 -  [Faculty Enrichment Program Installation guide](https://numalariamodeling.github.io/FE-2023-quarto-website/guides/install_guide.html)
    
 
-## Install and setup OpenMalaria  
+## OpenMalaria
 
 User guide to install OpenMalaria: [OpenMalaria v46](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria)   
 
@@ -193,7 +193,7 @@ In addition, the recommended use of running simulations locally is for testing a
 
    
 
-## Install and setup malariasimulation   
+## malariasimulation 
 
 - **malariasimulation R packages**     
 

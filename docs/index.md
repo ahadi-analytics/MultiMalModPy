@@ -8,7 +8,7 @@
 
 ## About MultiMalModPy
 
-A new HPC-oriented framework in Python and R that enables users to interact with  [EMOD](https://docs.idmod.org/projects/emod-malaria/en/2.20_a/), [malariasimulation](https://mrc-ide.github.io/malariasimulation/index.html), and [OpenMalaria](https://github.com/SwissTPH/openmalaria/wiki).
+A new HPC-oriented framework in [Python](https://www.python.org/) and [R](https://www.r-project.org/) that enables users to interact with  [EMOD](https://docs.idmod.org/projects/emod-malaria/en/2.20_a/), [malariasimulation](https://mrc-ide.github.io/malariasimulation/index.html), and [OpenMalaria](https://github.com/SwissTPH/openmalaria/wiki).
 This framework is designed for modelers already familiar with one of these models, 
 as well as for those who wish to learn more about all three models in a unified and accessible approach.
 
@@ -37,10 +37,10 @@ This documentation includes:
 &nbsp;&nbsp;&nbsp;&nbsp;  General information for each of, and compared across, the malaria models.    
 
 <font color="#53A5D1"><strong>GETTING STARTED</strong></font>    
-&nbsp;&nbsp;&nbsp;&nbsp;  General information about the framework. 
+&nbsp;&nbsp;&nbsp;&nbsp;  General instructions and information on how to use MultiMalModPy. 
 
-<font color="#53A5D1"><strong>USER GUIDE</strong></font>    
-&nbsp;&nbsp;&nbsp;&nbsp;  Instructions and information on how to use the framework and methods used.    
+<font color="#53A5D1"><strong>SIMULATION GUIDE</strong></font>    
+&nbsp;&nbsp;&nbsp;&nbsp;  Information and documentation on the parameters available to define simulations using MultiMalModPy.    
 
 <font color="#53A5D1"><strong>API</strong></font>   
 &nbsp;&nbsp;&nbsp;&nbsp;  List of framework-specific functions and scripts.   

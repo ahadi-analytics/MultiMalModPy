@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/getting_started/model_specificities/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/transmission_calibration/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Model specific options - MultiMalModPy</title>
+    <title>Transmission intensity - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Model specific options";
-        var mkdocs_page_input_path = "getting_started\\model_specificities.md";
-        var mkdocs_page_url = "/MultiMalModPy/getting_started/model_specificities/";
+        var mkdocs_page_name = "Transmission intensity";
+        var mkdocs_page_input_path = "guide\\transmission_calibration.md";
+        var mkdocs_page_url = "/MultiMalModPy/guide/transmission_calibration/";
       </script>
     
     <!--[if lt IE 9]>
@@ -65,53 +65,43 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview/">Overview of MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation and requirements</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configure MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">Input parameters and predefined options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview of MultiMalModPy</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation and requirements</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../age_demography/">Age and population</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../configuration/">Configure MultiMalModPy</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters and predefined options</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Model specific options</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Transmission intensity</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#emod">EMOD</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#serialization">Serialization</a>
+    <li class="toctree-l2"><a class="reference internal" href="#transmission-output-targets">Transmission output targets</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#using-alternative-base-calibration">Using alternative base calibration</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#malariasimulation">malariasimulation</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#parameter-sampling">Parameter sampling</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#openmalaria">OpenMalaria</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#model-variants">Model variants</a>
-    </li>
-        </ul>
+    <li class="toctree-l2"><a class="reference internal" href="#defining-your-own-transmission-target">Defining your own transmission target</a>
     </li>
     </ul>
                   </li>
-              </ul>
-              <p class="caption"><span class="caption-text">User Guide</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/_index/">Setup simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../case_management/">Case management</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/launch_and_run/">Launch simulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../uncertainty/">Randomness and uncertainty</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/postprocess/">Postprocess outputs</a>
+                  <li class="toctree-l1"><a class="" href="../example_workflows.md">Example workflows</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/plots/">Visualize outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/calibration/">Calibrate transmission targets</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/development/">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="" href="../development.md">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -193,8 +183,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/glossary/">Glossary</a>
-                  </li>
               </ul>
       </div>
     </div>
@@ -210,10 +198,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Getting started</li>
-      <li class="breadcrumb-item active">Model specific options</li>
+          <li class="breadcrumb-item">Simulation Guide</li>
+      <li class="breadcrumb-item active">Transmission intensity</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/getting_started/model_specificities.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/transmission_calibration.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -221,91 +209,191 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="model-specific-configurations">Model specific configurations</h1>
-<p>This page is under construction...   </p>
-<h2 id="emod">EMOD</h2>
-<p>EMOD allows serialization and to use an alternative base calibration.    </p>
-<h3 id="serialization">Serialization</h3>
-<p>Serialization allows the user to run a simulation, save their status and results at a specified point in time, and
-start another simulation (i.e. with modified campaigns) that continues from the point saved.<br />
-In EMOD, this is often applied to first run the  <code>burnin</code> the long initial simulation run, during which population 
-immunity is established, followed by the <code>pickup</code> which defines the often typical scenario explorations.  </p>
-<p>The following parameters need editing when running <code>launch_sim.py</code>:  </p>
+                <h1 id="matching-defined-transmission-output-targets">Matching defined transmission output targets</h1>
+<h2 id="transmission-output-targets">Transmission output targets</h2>
+<p>The <code>target_calibration</code>  directory includes <code>interpolation_data.csv</code> for each of the models included in the framework.
+The <code>interpolation_data.csv</code> data is generated via the transmission calibration, when running via <code>calib_run</code> .</p>
+<p>The table below summarizes the results from an epidemiological simulation model,
+detailing various metrics related to malaria incidence and prevalence on the example for EMOD.</p>
+<table>
+<thead>
+<tr>
+<th>input_target</th>
+<th>seasonality</th>
+<th>cm_clinical</th>
+<th>simulatedEIR</th>
+<th>prevalence_2to10</th>
+<th>prevalence</th>
+<th>severe_incidence</th>
+<th>n_total_mos_pop</th>
+<th>clinical_incidence</th>
+<th>clinical_incidence_U5</th>
+<th>modelname</th>
+<th>pop_size</th>
+<th>importation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8.44553654</td>
+<td>perennial</td>
+<td>0.45</td>
+<td>0.343540425</td>
+<td>0.020460788</td>
+<td>0.044149221</td>
+<td>0.000403342</td>
+<td>56526.55781</td>
+<td>0.265060585</td>
+<td>0.088925115</td>
+<td>EMOD</td>
+<td>50000</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>10.9762974</td>
+<td>perennial</td>
+<td>0.45</td>
+<td>0.932994042</td>
+<td>0.05381089</td>
+<td>0.106625617</td>
+<td>0.000708954</td>
+<td>73407.88671</td>
+<td>0.636199389</td>
+<td>0.235184127</td>
+<td>EMOD</td>
+<td>50000</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>14.2654175</td>
+<td>perennial</td>
+<td>0.45</td>
+<td>1.710211503</td>
+<td>0.095421294</td>
+<td>0.173174509</td>
+<td>0.000903154</td>
+<td>95345.36855</td>
+<td>0.956651654</td>
+<td>0.423187833</td>
+<td>EMOD</td>
+<td>50000</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>18.5401442</td>
+<td>perennial</td>
+<td>0.45</td>
+<td>2.573332919</td>
+<td>0.138401713</td>
+<td>0.224445658</td>
+<td>0.001041937</td>
+<td>123878.2838</td>
+<td>1.113905394</td>
+<td>0.624657857</td>
+<td>EMOD</td>
+<td>50000</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>24.095821</td>
+<td>perennial</td>
+<td>0.45</td>
+<td>3.623527973</td>
+<td>0.185692034</td>
+<td>0.266564637</td>
+<td>0001239512</td>
+<td>160984.3319</td>
+<td>1.22631187</td>
+<td>0.853578362</td>
+<td>EMOD</td>
+<td>50000</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>31.316293</td>
+<td>perennial</td>
+<td>0.45</td>
+<td>5.016965242</td>
+<td>0.242720614</td>
+<td>0.307751194</td>
+<td>0.001423436</td>
+<td>209179.4093</td>
+<td>1.326620187</td>
+<td>1.145714057</td>
+<td>EMOD</td>
+<td>50000</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>40.7004273</td>
+<td>perennial</td>
+<td>0.45</td>
+<td>6.53350783</td>
+<td>0.295704873</td>
+<td>0.338061961</td>
+<td>0.001647561</td>
+<td>271863.5711</td>
+<td>1.387121162</td>
+<td>1.429262657</td>
+<td>EMOD</td>
+<td>50000</td>
+<td>FALSE</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Column Descriptions</strong></p>
 <ul>
-<li>
-<p>To run a burnin simulation :  </p>
-<ul>
-<li>Set <code>emod_step = ‘burnin’</code> .  </li>
-<li>The experiment ID for this burnin simulation will be needed when running the pickup simulation (and is saved
-  automatically in <exp_name> folder, and also printed to console).  </li>
+<li><strong>input_target</strong>: The transmission target input value for the simulation.</li>
+<li><strong>seasonality</strong>: The seasonality type, indicating the transmission pattern (e.g., perennial).</li>
+<li><strong>cm_clinical</strong>: The clinical case management rate.</li>
+<li><strong>simulatedEIR</strong>: The estimated entomological inoculation rate based on the simulation.</li>
+<li><strong>prevalence_2to10</strong>: Prevalence of malaria in children aged 2 to 10 years.</li>
+<li><strong>prevalence</strong>: Overall prevalence of malaria in the population.</li>
+<li><strong>severe_incidence</strong>: The incidence rate of severe malaria cases.</li>
+<li><strong>n_total_mos_pop</strong>: Total number of mosquitoes in the population.</li>
+<li><strong>clinical_incidence</strong>: Overall clinical incidence rate of malaria.</li>
+<li><strong>clinical_incidence_U5</strong>: Clinical incidence rate of malaria in children under 5 years old.</li>
+<li><strong>modelname</strong>: The name of the model used in the simulation (e.g., EMOD).</li>
+<li><strong>pop_size</strong>: The size of the population used in the simulation.</li>
+<li><strong>importation</strong>: Indicates whether importation of cases is considered (TRUE or FALSE).</li>
 </ul>
-</li>
-<li>
-<p>To run a pickup simulation(s):  </p>
-<ul>
-<li>In latest version of the framework, submitting a burnin simulation will automatically create and run a<br />
-  corresponding pickup simulation via  <code>launch_pickup.sh</code>  </li>
-<li>In the files, <code>emod_step</code> is set to <code>pickup</code> and <code>emod_serialized_id</code> automatically to <code>&lt;burnin experiment id&gt;</code></li>
-<li>Note, pickup simulations cannot run without an attached experiment id (for EMOD).  </li>
-<li>The <code>launch_pickup.sh</code> includes the following lines after the required SBATCH specifications:  </li>
-</ul>
-<p>```
-     ml singularity/3.8.1<br />
-     ml python/3.8.4
-     source /projects/b1139/environments/mmmpy_venv/bin/activate</p>
-<div class="codehilite"><pre><span></span><code> cd /projects/b1139/emod-om/model-characterization
- python launch_sim.py -d &lt;job_directory&gt;/&lt;exp_name&gt;_burnin80 --suite &lt;SUITE_Name&gt; --expname &lt;exp_name&gt; --emodstep pickup --serializedid &lt;emod_serialized_id&gt; --models EMOD MalSim OpenMalaria
+<h2 id="defining-your-own-transmission-target">Defining your own transmission target</h2>
+<p>MultiMalModPy offers pre-exisiting datasets as shown above.
+If you are interested in running simulations outside of those limited datasets, this is the process.</p>
+<div class="codehilite"><pre><span></span><code>python launch_sim.py -r calibrun
 </code></pre></div>
 
-<p>```</p>
-</li>
-<li>
-<p>To run a customized (new) pickup simulation(s):  </p>
-<ul>
-<li>Use the generated <code>launch_pickup.sh</code> as a template:</li>
-<li>Modify the <code>expname</code> to specify a new folder to store the simulation files and change <code>emodstep</code> to <code>new_pickup</code></li>
-<li>Edit the <code>launch_sim.py</code> as required, or alternatively use <code>launch_simulations.py</code> with the corresponding csv</li>
-<li>
-<p>Use launch_sim.py 
-     <code>python launch_sim.py -d &lt;job_directory&gt;/&lt;exp_name&gt;_burnin80 --suite &lt;SUITE_Name&gt; --expname &lt;exp_name_new&gt; --emodstep new_pickup --serializedid &lt;emod_serialized_id&gt; --models EMOD MalSim OpenMalaria</code></p>
-</li>
-<li>
-<p>In the current version of the framework the new simulation experiments has to remain within the same directory (Suite) as the simulation experiment 'picked up from'.  </p>
-</li>
-</ul>
-</li>
-<li>
-<p>To run a burnin and pickup simulation (without serializing, as selected as default for testing):  </p>
-<ul>
-<li>Set <code>emod_step = None</code>, or if running from terminal, do not specify <code>emod_step</code>, which will default to <code>None</code>  </li>
-</ul>
-</li>
-</ul>
-<h3 id="using-alternative-base-calibration">Using alternative base calibration</h3>
-<p>This section is under construction... </p>
-<h2 id="malariasimulation">malariasimulation</h2>
-<p>malariasimulation allows paramter sampling.  </p>
-<h3 id="parameter-sampling">Parameter sampling</h3>
-<p>In malariasimulation, accounting for parameter uncertainty to better reflect potential variability in the simulation results has been integrated by drawing parameter values
-from posterior distributions around defined parameter sets.   </p>
-<p>Via the set_parameter_draw function up to 1000 different parameter sets for 32 simulation parameters can be selected.
-These 32 parameters correspond to: fixed state transitions, immunity boost grace periods, immunity decay rates, immunity reducing probability of detection, infectivity towards mosquitoes,
-mortality, probability of clinical infection, probability of pre-erythrocytic infection, and probability of severe infection.</p>
-<p>In <code>MultiMalModPy</code>, seed values are paired with the parameter_draw value.  </p>
-<p>For a single seed, varying parameter sets from in total 1000 sets are drawn and a new draw is made each time new simulations run.
-A breakdown of each parameter that is affected in the parameter draw, with parameter type, description, default value, 
-maximum and minimum is shown in the core parameter table for malariasimulation.</p>
-<p><br>  </p>
-<h2 id="openmalaria">OpenMalaria</h2>
-<h3 id="model-variants">Model variants</h3>
-<p>OpenMalaria allows to take into account model and parameter uncertainty through varying  <a href="https://github.com/SwissTPH/openmalaria/wiki/ModelWithinHost#specification-of-model-variants">model variants</a>). 
-However, for simplicity in MultiMalModPy, only the base model is included. </p>
+<p>By default, this process runs all three models using the simulation setup you specified. <br />
+Key parameters to configure include pop_size, burn-in duration, seasonal profiles, and case management levels.<br />
+Once the simulations and analyzers have completed, new .csv files will be generated inside the model-characterization/target_calibration 
+folder for each model used. 
+These files are named after your most recent calibration run. You will need to review these .csv files and decide
+whether to integrate them into your <code>interpolation_data.csv</code> files.</p>
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>📝 OpenMalaria Consideration:</em></strong> 
+  It is recommended to discard OpenMalaria simulation outputs where the annual *Pf*PR (_Plasmodium falciparum_ prevalence in ages 2-10) exceeds 0.7, 
+  as these can not be reliably simulated using OpenMalaria.
+</div>
+
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>📝 EMOD Consideration 1:</em></strong> 
+If your calibration simulations for EMOD did not include importation, check whether any lower xtemp simulations resulted in malaria elimination.
+To do this, open the relevant simulation_outputs/EMOD/mmmpy_yr.csv file and look for cases where simulatedEIR equals 0, indicating elimination.
+</div>
+
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>📝 EMOD Consideration 2:</em></strong>
+If even one of the simulations you ran resulted in elimination, remove that xtemp value from interpolation_data.csv, as it cannot reliably sustain malaria transmission. 
+If the lowest level of malaria EMOD can sustain does not meet your expectations, consider adjusting the max_larval_capacity values in the habitat_setup function (EMOD/functions/EMOD_functions.py).
+</div>
+
+<p>Once you have finalized your interpolation_data.csv files, you can proceed with running production simulations.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../parameters/" class="btn btn-neutral float-left" title="Input parameters and predefined options"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../../guide/_index/" class="btn btn-neutral float-right" title="Setup simulations">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../seasonality/" class="btn btn-neutral float-left" title="Seasonality"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../case_management/" class="btn btn-neutral float-right" title="Case management">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -333,10 +421,10 @@ However, for simplicity in MultiMalModPy, only the base model is included. </p>
         </span>
     
     
-      <span><a href="../parameters/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../seasonality/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../../guide/_index/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../case_management/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

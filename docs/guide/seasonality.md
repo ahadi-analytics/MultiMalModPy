@@ -1,13 +1,24 @@
+# Seasonality
 
-# Setup simulations
+
+The seasonal profile process begins with EMOD because its seasonality and climate files are too complex to be simplified 
+into monthly values that describe the overall seasonal trend, as done for the other two models. 
+By running EMOD simulations first, we establish a seasonality baseline that the other models can then be aligned to, 
+ensuring consistency across simulations. 
+
+![seasonality.png](../img/seasonality_calib.png)
+
 
 ## Generate seasonal profiles  
 
 Our current environmental profile is created artifically to show a simple set up for each model to align to.
-If you are interested in creating your own seasonal profile to feed in to the models. Follow the steps below.
+If you are interested in creating your own seasonal profile to feed in to the models. 
+
+
+Follow the steps below.
 FYI, at NU we have access to calculon which gets us weather data, if you also have access to follow calculon you can follow this process along, otherwise you will need to get the csv of air temp, land temp, humidity and rainfall
 for your location through some other means.
-First you will want to go in to the correct directory in your terminal. The seasonal profile process starts in EMOD, because we run some EMOD simulations first, to then align the other two models on EMOD's seasonality.
+First you will want to go in to the correct directory in your terminal. 
 
 ```
 cd model-characterizaiton
@@ -48,38 +59,4 @@ After that, inside the file utility/helper_simulation.py, there is a variable ca
 Once you have made that change you can now run calib run simulations for all three models.
 
 
-## Changing age demography  
-... 
 
-## Adding interventions  
-... 
-
-# Define target outputs
-... 
-
-
-## Generate range of eir/xtemp simulations  
-
-MultiMalModPy offers pre-exisiting datasets (see [calibation-run](docs/getting_started/index.md#calibation-run)).
-If you are interested in running simulations outside of those limited datasets, this is the process.
-
-```
-python launch_sim.py -r calibrun
-```
-
-By default this will run all three models, with the simulation set up you specified.
-Useful things to set up would include: pop_size, burnin durations, seasonal profiles, case management levels
-Once those simulations are done, and those analyzers have run, inside the model-characterization/target_calibration folder, for each model ran, there are new .csv files named after your most recent  calibration run.
-You will need to review those csvs and decide whether you want to integrate them in to your interpolation_data.csv's.
-
-OpenMalaria Considerations: You may want to get rid of openmalaria simulation outputs that have an annual pfpr 2-10 greater than 0.7, as it is suggested OpenMalaria cannot reliably simulate simulations with higher
-than _Pf_PR 2-10 70%.
-
-EMOD Considerations: if you didn't include importation in your calibrun simulations for EMOD, I would check to see if any of your lower xtemp simulations eliminated or not. You can do this by opening up the
-relevant simulation_outputs/EMOD folder's mmmpy_yr.csv file to see if any of the simulations eliminated (simulatedEIR would equal 0).
-
-If even one of the 20 simulations you ran eliminated, I would remove that xtemp value from the interpolation_data.csv, as it cannot reliably sustain malaria.
-If you are unhappy with what the lowest level of malaria EMOD can sustain, I would suggest either modifiying the initial max_larval_capacity values (in EMOD/functions/EMOD_functions.py habitat_setup function),
-or you can include interpolation in to your datasets. If you include interpolation, make sure that any production run simulations also include interpolation.
-
-When you have finalized your interpolation_data.csv files, you can begin to run production run simulations.

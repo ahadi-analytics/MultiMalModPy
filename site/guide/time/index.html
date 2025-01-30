@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/launch_and_run/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/time/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Launch simulations - MultiMalModPy</title>
+    <title>Time - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Launch simulations";
-        var mkdocs_page_input_path = "guide\\launch_and_run.md";
-        var mkdocs_page_url = "/MultiMalModPy/guide/launch_and_run/";
+        var mkdocs_page_name = "Time";
+        var mkdocs_page_input_path = "guide\\time.md";
+        var mkdocs_page_url = "/MultiMalModPy/guide/time/";
       </script>
     
     <!--[if lt IE 9]>
@@ -74,26 +74,30 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">Input parameters and predefined options</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/model_specificities/">Model specific options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../_index/">Setup simulations</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Launch simulations</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Time</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#framework-options">Framework options</a>
-    </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../postprocess/">Postprocess outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../age_demography/">Age and population</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../plots/">Visualize outputs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../calibration/">Calibrate transmission targets</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../transmission_calibration/">Transmission intensity</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../development/">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../uncertainty/">Randomness and uncertainty</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../example_workflows.md">Example workflows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../development.md">Advanced use and developer guide</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -175,8 +179,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/glossary/">Glossary</a>
-                  </li>
               </ul>
       </div>
     </div>
@@ -192,10 +194,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">User Guide</li>
-      <li class="breadcrumb-item active">Launch simulations</li>
+          <li class="breadcrumb-item">Simulation Guide</li>
+      <li class="breadcrumb-item active">Time</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/launch_and_run.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/time.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -203,40 +205,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="launch-simulations">Launch simulations</h1>
-<p>This page is under construction...  </p>
-<p>The <code>launch_sim.py</code> script launches simulation runs, with the possibility to change and
-edit parameters directly in the python script or to read in parameter values from a csv file.</p>
-<p>The configuration had been moved to the <code>helper.py</code> script, allowing the launch python script to overwrite parameters as
-needed.</p>
-<h2 id="framework-options">Framework options</h2>
-<ul>
-<li>In terminal navigate to repository  <code>cd ~/model-characterization</code></li>
-<li>Run python script that defines the simulation i.e. <code>python launch_sim.py</code> for a test run using defaults specified in
-  the script and <code>parse_launch_args</code> (see helper.py)</li>
-<li>Check simulations via <code>squeue -u &lt;username&gt;</code> (if on slurm)</li>
-<li>Wait for simulations to finish after which analyzer scripts and default plots will automatically start running</li>
-</ul>
-<p><strong>Submission examples</strong>
-- Options to launch as simulation experimenr
-  - via python script
-  - via shell script (check which submission lines are uncommented)
-    - <code>run_launch_simulations.sh</code>
-  - via terminal </p>
-<p>Testrun 
-  - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria --test</code></p>
-<p>Baseline run (accepting defaults, or changed defaults in python file) 
-  - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria</code>
-  - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM</code>  </p>
-<p>Custom simulation experiments (i.e. cc_step)
-  - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria --intervention cc_step --test --emodstep burnin</code>
-  - <code>python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test</code>  </p>
+                <h1 id="time-in-the-simulations">Time in the simulations</h1>
+<p>....</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../_index/" class="btn btn-neutral float-left" title="Setup simulations"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../postprocess/" class="btn btn-neutral float-right" title="Postprocess outputs">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../getting_started/glossary/" class="btn btn-neutral float-left" title="Glossary"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../age_demography/" class="btn btn-neutral float-right" title="Age and population">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -264,10 +240,10 @@ needed.</p>
         </span>
     
     
-      <span><a href="../_index/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../../getting_started/glossary/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../postprocess/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../age_demography/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

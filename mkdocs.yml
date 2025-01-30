@@ -28,19 +28,20 @@ nav:
     - Core parameters: malaria_models/core_parameters.md
   - Getting started:
     - Overview of MultiMalModPy: getting_started/overview.md
-    - Installation and requirements: getting_started/installation.md
-    - Configure MultiMalModPy: getting_started/configuration.md
-    - Input parameters and predefined options: getting_started/parameters.md
-    - Model specific options: getting_started/model_specificities.md
+    - How to use MultiMalModPy: getting_started/usage.md
+    - User-modifiable parameters and defaults: getting_started/parameters.md
     - Glossary: getting_started/glossary.md
-  - User Guide:
-    - Overview of simulation steps: guide/_index.md
-    - Setup simulations: guide/setup_sim.md
-    - Launch simulations: guide/launch_and_run.md
-    - Postprocess outputs: guide/postprocess.md
-    - Visualize outputs: guide/plots.md
-    - Calibrate transmission targets: guide/calibration.md
+    - Installation and requirements: getting_started/installation.md
+    - First time configurations (manifest.py): getting_started/configuration.md
+  - Simulation Guide:
+    - Time: guide/time.md
+    - Age and population: guide/age_demography.md
+    - Seasonality: guide/seasonality.md
+    - Transmission intensity: guide/transmission_calibration.md
+    - Case management: guide/case_management.md
+    - Randomness and uncertainty: guide/uncertainty.md
     - Example workflows: guide/example_workflows.md
+    - Model specific options: guide/model_specificities.md
     - Advanced use and developer guide: guide/development.md
   - API:
     - manifest.py: api/manifest.md
