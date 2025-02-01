@@ -1,36 +1,38 @@
-# Installation and requirements  
+# Installation
+
+Simulations are designed to run on a Linux-based high-performance cluster (HPC).   
+However, installation instructions also include sections for local setup and container-based environments.  
+
+**In this section:**  
+
+- [Get MultiMalModPy](#get-multimalmodpy)  
+- [**HPC Setup**](#hpc)  
+    - [Create a Virtual Environment](#create-a-virtual-environment)  
+    - [Install EMOD](#install-emod)  
+    - [Install OpenMalaria](#install-openmalaria)  
+    - [Install malariasimulation](#install-malariasimulation)  
+- [**Local Setup**](#local-setup)  
+    - [Install OpenMalaria](#install-openmalaria)  
+    - [Install malariasimulation](#install-malariasimulation)
+- [**Container Setup**](#container-setup)  
+    - [HPC](#hpc)  
+    - [Local machine](#local-machine)  
+
+<div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>📝 NOTE:</em></strong>  
+   Functionality for local runs is  limited and intended only for test purposes using 
+    <strong>malariasimulation</strong> and <strong>OpenMalaria</strong>. 
+</div> 
 
 
-**In this section:**
-- [Software requirements](#software_requirements)  
-- [Install and setup EMOD ](#install-and-setup-emod)  
-- [Install and setup OpenMalaria ](#install-and-setup-openmalaria)
-- [Install and setup malariasimulation](#install-and-setup-malariasimulation)  
-- [Setup when using the container ](#setup-when-using-the-container)  
-- [Activate virtual envionment ](#activate-virtual-environment)  
 
+**Software requirements**
 
-## Software requirements   
-
-- MultiMalModPy 
-- Python >= 4.0.0  
-- R >= 4.0.0  
-  - malariasimulation
-  - malariaEquilibrium
-  - lubridate
-  - dplyr 
-  - tibble 
-  - readr 
-  - umbrella
-- EMOD
-- OpenMalaria
-
-
-<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
-  <strong><em>📝 NOTE:</em></strong> 
-   Simulations are assumed to run on a linux based high performance cluster (HPC).
-   Functionality to run locally is restricted for test runs using malariasimulation and OpenMalaria.
-</div>  
+- MultiMalModPy
+- Python 3.8.4
+- R >= 4.0.0
+- malariasimulation 2.0.0
+- emodpy-malaria 2.0.0
+- OpenMalaria v46+
 
 <div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
   <strong><em>💡 TIP:</em></strong>
@@ -39,30 +41,130 @@
 
 <br>
 
+## Get MultiMalModPy
 
-## EMOD
+To get started with MultiMalModPy, the recommended approach is
+to [fork](https://github.com/ahadi-analytics/MultiMalModPy/fork)  the repository and clone it to your local machine or
+cluster.
+This allows you to easily update the code and contribute to the project.
 
-- **EMOD**  
-     - [EMODpy](https://docs.idmod.org/projects/emodpy/en/v1.19.0/installation.html)     
-     - idmtools
-     - emodpy-malaria    
+Alternatively, you can download the latest release directly from the GitHub releases
+page [here](https://github.com/numalariamodeling/model-characterization/releases). if you just need to use the software
+without modifications.
 
 
-**Helpful additional installation guides for the Northwestern University cluster:**   
--  [Faculty Enrichment Program Installation guide](https://numalariamodeling.github.io/FE-2023-quarto-website/guides/install_guide.html)
-   
+## HPC 
 
-## OpenMalaria
+Before running MultiMalModPy on an HPC cluster, ensure that the necessary modules are loaded.
+Use the following commands to load the required dependencies: 
 
-User guide to install OpenMalaria: [OpenMalaria v46](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria)   
+``` 
+module load singularity/3.8.1 #singularity/3.7.0
+module load git/2.8.2
+module load python/3.8.4
+module load R/4.4.0
+```
 
-Custom installation and setup for MultiMalModPy:  
-- [Install on HPC](#install-on-hpc)  
-- [Installation when running locally](#installation-when-running-locally)
+### Create a virtual environment
 
-### Install on HPC   
+MultiMalModPy works best when used within a virtual environment, as it helps manage dependencies and keep your project
+isolated from other Python projects.
 
-<details><summary><span>Helpful additional installation guides for the Northwestern University cluster:</span></summary>   
+Follow the steps below to set up a virtual environment:
+
+**Step 1: Install Python (if necessary)**
+Make sure you have Python 3.8+ installed on your system. You can verify this by running in your terminal:
+
+```
+python --version
+```
+
+If you're working on an HPC cluster, you can load the Python module available on the system
+via `module load python/3.8.4` (to check existing python versions run `module spider python`)
+Alternatively, if running locally, and Python isn't installed, you can download and install the latest version from
+python.org.
+
+**Step 2: Install virtualenv**
+If you don't have virtualenv installed, you can install it via pip:
+
+```
+pip install virtualenv
+```
+
+**Step 3: Create the Virtual Environment**
+Navigate to the directory where you want to store your project, and then run the following command to create a virtual
+environment:
+
+```
+virtualenv my_venv
+```
+
+This will create a folder named `my_venv` in your project directory that will contain the virtual environment.
+
+**Step 4: Activate the Virtual Environment**  
+On Windows:  `.\my_venv\Scripts\activate`
+
+On macOS/Linux: `source my_venv/bin/activate`
+
+Once activated, your terminal prompt will change to show the name of the virtual environment (e.g., (my_venv)).
+
+![my_venv](../img/2025-02-02 15_24_31-terminal.png)
+
+**Step 5: Install Dependencies**
+Now that the virtual environment is activated, install MultiMalModPy's dependencies by running:
+`pip install -r requirements.txt`
+
+This will ensure that all required packages are installed within the virtual environment.
+
+### Install EMOD
+
+[Prerequisites](https://docs.idmod.org/projects/idmtools/en/latest/platforms/slurm/index.html#prerequisites):
+
+- Linux client
+- SLURM cluster access and general understanding
+- Python 3.8/3.9/3.10/3.11/3.12 x64-bit (https://www.python.org/downloads/release)
+- Python virtual environments
+
+**Step 1: Activate venv (if not already active)**
+On macOS/Linux: `source my_venv/bin/activate`
+
+Optional: clean previous installed packages, only needed when a new idmtools Singularity image is
+available : `rm –fr ~/.local/lib/python* `
+
+**Step 2: Pull Singularity image containing Python and MPI**   
+
+```
+curl https://packages.idmod.org:443/artifactory/idm-docker-public/idmtools/rocky_mpi/dtk_run_rocky_py39.sif -o dtk_run_rocky_py39.sif
+```
+
+**Step 3:Install emodpy-malaria and idmtools_platform_slurm**
+
+Run the following command to install `emodpy-malaria`:
+
+```
+pip install emodpy-malaria --ignore-installed --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple 
+```
+
+Install the `idmtools_platform_slurm` package with this command:
+
+```
+pip install idmtools_platform_slurm --ignore-installed --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple  
+```
+
+**Step 4: Install other python packages (if needed)**
+If there are any other Python packages required, install them using pip as necessary.
+
+**Step 5: Update `manifest.py`**  
+Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  [first time configurations](../getting_started/configuration/)   
+
+### Install OpenMalaria
+
+**Step 1: Install OpenMalaria by following developer's site instructions**  
+
+Installation instructions can be found on the [OpenMalaria wiki](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria) . 
+
+
+<details><summary><span>Installation instructions for the Northwestern University cluster:</span></summary>   
 <p>
 
 NU IT research built a container and sent instructions which have been edited for completeness and are
@@ -81,7 +183,7 @@ And copy into the new folder the latest schema files (not source code), availabl
 from https://github.com/SwissTPH/openmalaria/releases.
 
 Copy the OpenMalaria.def and modules from the prevvious release to the new one.
-Note these files were created by Scott Coughlin to facilitate installation on Quest, without having to use cmake.
+Note these files were created by [Scott Coughlin](https://www.it.northwestern.edu/departments/it-services-support/research/staff/coughlin.html) to facilitate installation on Quest, without having to use cmake.
 
 ```
 cp /projects/b1139/OpenMalaria/om_v43/OpenMalaria.def  /projects/b1139/OpenMalaria/om_v46/OpenMalaria.def
@@ -170,75 +272,113 @@ openMalaria -s example_scenario.xml
 
 <br>
 
-### Installation when running locally  
 
-Local run is currently only supported for 2 of the 3 models (malariasimulation and OpenMalaria).
-In addition, the recommended use of running simulations locally is for testing and other `run_mode`s are disabled.
+** Update `manifest.py`** 
+Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  [first time configurations](../getting_started/configuration/)   
 
-1. For each model, follow the installation guidelines under the links provided at the top of the page.
-   Once installed, create a folder `dependencies` under this repository, with subfolders for each model.
+Define `OPENMALARIA_PATH` to point to the location of the required OpenMalaria files:
+```
+OPENMALARIA_PATH = "/projects/b1139/OpenMalaria/om_v43/"
+```
 
-2. For **OpenMalaria**, additional subfolders by version are needed i.e. `v46`, under which the downloaded files are
-   located.  
-   The OpenMalaria dependencies include:
-    - `autoRegressionParameters.csv`
-    - `densities.csv`
-    - `openMalaria.exe`
-    - `scenario_46.xsd`
+No edits needed for `openmalaria_input_path` which defines the location of OpenMalaria
 
-3. Once all files are in place, update the `manifest.py` file to make the necessary path update configurations.
-4. It is also recommended to add R (`Rscript`), Python (`python`) and OpenMalaria (`openMalaria`) to the environment
-   variables (optional).
+``` 
+openmalaria_input_path = os.path.join(os.path.expanduser('~'), 'MultiMalModPy/OpenMalaria/')
+```
 
+If using the OpenMalaria module, configure `OPENMALARIA_venv` to load the necessary environment modules
+```
+OPENMALARIA_venv = f'\n\nmodule use {OPENMALARIA_PATH}/modules/ \nmodule load openmalaria\n'
+```
 
-   
+### Install malariasimulation
 
-## malariasimulation 
+**Step 1: Install R or load R module**
+On HPC: `module load R/>=4.4.0` (required >=4.4.0).
 
-- **malariasimulation R packages**     
+**Step 2: Install R packages**
 
-- [malariasimulation](https://github.com/mrc-ide/malariasimulation/)
-   ```
-     # install.packages("remotes")
-     # library('remotes')
-    install_github('mrc-ide/malariasimulation')
-   ```
-
-- [umbrella](https://github.com/mrc-ide/umbrella)
-   ```
-     # install.packages("devtools")
-     # library('devtools')
-     devtools::install_github("mrc-ide/umbrella")
-   ```
-
-- Other R packages:
-  - lubridate
-  - dplyr 
-  - tibble 
-  - readr 
-  - umbrella
+Open a R console and run `source(file.path('dependencies/install_packages.R'))` 
+Select a CRAN mirror, and packages will be installed thereafter:  
+`--- Please select a CRAN mirror for use in this session ---`
 
 
+**Step 3: Update `manifest.py`**
+No edits needed for malariasimulation when running on HPC.
 
-<br>
+
+## Local Setup 
 
 
-## Setup when using the container  
+### Install OpenMalaria
+**Step 1: Create additional subfolders for OpenMalaria version i.e. `v46` under `dependencies`**
+
+**Step 2: Download or copy OpenMalaria files**
+Visit the OpenMalaria release page and download the requred version.
+Alternatively, copy the files over from the installation on HPC for the respective version.
+
+The OpenMalaria dependencies include:  
+- `autoRegressionParameters.csv`  
+- `densities.csv`  
+- `openMalaria.exe`  
+- `scenario_46.xsd`  
+
+**Step 3: Update `manifest.py`**
+Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  [first time configurations](../getting_started/configuration/)   
+
+Define `OPENMALARIA_PATH` to point to the location of the required OpenMalaria files:
+```
+OPENMALARIA_PATH = os.path.join(ROOT_DIR, 'dependencies/OpenMalaria/om_v46')
+```
+
+No edits needed for `openmalaria_input_path` which defines the location of OpenMalaria
+
+``` 
+openmalaria_input_path = os.path.join(os.path.expanduser('~'), 'MultiMalModPy/OpenMalaria/')
+```
+
+`OPENMALARIA_venv` is not used when running on local machine.
+```
+OPENMALARIA_venv = ''
+```
+
+
+### Install malariasimulation 
+
+**Step 1: Install R or load R module**
+
+Download and install the latest version of [R](https://www.r-project.org/) from CRAN.
+For Windows users, also install [Rtools](https://cran.r-project.org/bin/windows/Rtools/)  from CRAN Rtools  to ensure compatibility with package compilation.
+
+**Step 2: Install R packages**
+
+Open an R console and run `source(file.path('dependencies/install_packages.R'))` 
+Select a CRAN mirror, and packages will be installed thereafter:  
+`--- Please select a CRAN mirror for use in this session ---`
+
+Install any additional R packages you may want to use for your project.
+
+**Step 3: Update `manifest.py`**
+Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  [first time configurations](../getting_started/configuration/)   
+
+
+Define the path to your local R installation: 
+``` 
+r_local = "C:/Program Files/R/R-4.2.3/bin"
+``` 
+
+No edits needed for `malariasimulation_input_path` which defines the location of OpenMalaria
+
+``` 
+ malariasimulation_input_path = os.path.join(os.path.expanduser('~'), 'MultiMalModPy/malariasimulation/')
+```
+
+
+## Container Setup
 
 This section is under construction...  
 A singularity container will be made available to allow running MultiMalModPy instantly, without the need for
-installations. 
+installations.
 
-
-## Activate virtual environment 
-
-### On Slurm, example for NU cluster
-```
-module purge all
-module load python/3.8.4
-module load singularity/3.8.1
-module load git/2.8.2
-module load R/4.2.3
-source '/projects/b1139/environments/emodpy_bin/activate'
-```
 

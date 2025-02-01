@@ -8,6 +8,25 @@ pre- and post-processing.
 
 ![MultiMalModPy framework](../img/MultiMalModPy_framework_for_web.png)  
 
+The simulation process begins with user input of simulation parameters, specified in `setup_sim.py`. 
+Once configured, simulations are submitted using launch_sim.py, and all defining parameters are stored in a serialized Python object (`exp.obj`).
+This object ensures consistency throughout the simulation process.
+Additionally, <span title="A shell script (.sh file) on an HPC is a text file containing a sequence of shell commands used 
+to automate tasks like loading modules, running simulations, or managing jobs. It is typically executed using a job scheduler like SLURM" 
+style="color: #007BFF; text-decoration: underline; cursor: pointer;">shell</span> job submission scripts are generated to automate subsequent script execution,
+streamlining the workflow. 
+
+
+Standardized CSV output files for each model are used to generate a set of predefined figures, including relationships between outcomes,
+time-series plots, and age-specific trends. 
+These figures provide an initial visual analysis of the results and can be modified or extended by the user to 
+accommodate specific research needs.  
+
+The framework comes with three standardized plotting scripts:    
+-  [plot_timeseries.py](../../_scratch/api/plotter/plot_timeseries.md) the timeseries for selected outcome measures,   
+-  [plot_agecurves.py](../../_scratch/api/plotter/plot_agecurves.md) the relation of outcome measures by age groups,  
+-  [plot_relationship.py](../../_scratch/api/plotter/plot_relationship.md) relationship between disease transmission and disease outcomes.  
+
 
 # Repository Layout and Directory Structure
 

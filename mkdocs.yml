@@ -18,6 +18,7 @@ plugins:
 markdown_extensions:
   - admonition
   - codehilite
+  - smarty
 nav:
   - Home: index.md
   - Malaria models:
@@ -28,21 +29,20 @@ nav:
     - Core parameters: malaria_models/core_parameters.md
   - Getting started:
     - Overview of MultiMalModPy: getting_started/overview.md
+    - Installation: getting_started/installation.md
+    - First time configurations (manifest.py): getting_started/configuration.md
     - How to use MultiMalModPy: getting_started/usage.md
     - User-modifiable parameters and defaults: getting_started/parameters.md
+    - Example run (demo): getting_started/example_run.md
     - Glossary: getting_started/glossary.md
-    - Installation and requirements: getting_started/installation.md
-    - First time configurations (manifest.py): getting_started/configuration.md
   - Simulation Guide:
     - Time: guide/time.md
-    - Age and population: guide/age_demography.md
+    - Population and age structure: guide/age_demography.md
     - Seasonality: guide/seasonality.md
-    - Transmission intensity: guide/transmission_calibration.md
+    - Transmission and calibration: guide/transmission_calibration.md
     - Case management: guide/case_management.md
-    - Randomness and uncertainty: guide/uncertainty.md
-    - Example workflows: guide/example_workflows.md
     - Model specific options: guide/model_specificities.md
-    - Advanced use and developer guide: guide/development.md
+    - Randomness and uncertainty: guide/uncertainty.md
   - API:
     - manifest.py: api/manifest.md
     - launch_sim.py: api/launch_sim.md
@@ -56,11 +56,10 @@ nav:
     - EMOD:
       - api/EMOD/utils.md
       - api/EMOD/analyze_sim.md
-      #- api/EMOD/functions/forcedEIR.py
+      - api/EMOD/functions/forcedEIR.md
       - api/EMOD/functions/interventions.md
       - api/EMOD/functions/EMOD_functions.md
-      #- api/EMOD/functions/forcedEIR.py
-      #- api/EMOD/functions/reporters.py
+      - api/EMOD/functions/reporters.md
     - OpenMalaria:
       - api/OpenMalaria/utils.md
       - api/OpenMalaria/analyze_sim.md
@@ -69,6 +68,9 @@ nav:
     - malariasimulation:
       - api/malariasimulation/utils.md
       - api/malariasimulation/analyze_sim.md
+      - api/malariasimulation/functions/get_seasonality_parameters.md
+      - api/malariasimulation/functions/interventions.md
+      - api/malariasimulation/functions/run_simulations.md
     - plotter:
       - api/plotter/plot_helper.md
       - api/plotter/plot_agecurves.md

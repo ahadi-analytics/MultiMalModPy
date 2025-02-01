@@ -16,38 +16,38 @@ _**Multi** **Mal**aria **Mod**eling **Py**thon Framework_
 
 A novel programmatic framework for running three individual-based malaria transmission models.
 
-Malaria models included:  
-- [`EMOD`](https://docs.idmod.org/projects/emod-malaria/en/2.20_a/)
-- [`OpenMalaria`](https://github.com/SwissTPH/openmalaria)
-- [`malariasimulation`](https://github.com/mrc-ide/malariasimulation/)
+--------------------------------
+
+### Malaria models included:   
+
+- **EMOD** (Epidemiological MODeling software) has been developed and is maintained by
+the [Institute for Disease Modeling (IDM)](https://www.idmod.org/), and also used by
+the [Malaria Modeling Group at Northwestern University](https://www.numalariamodeling.org/).  
+
+-  **OpenMalaria** has been developed and is maintained by
+the [Swiss Tropical and Public Health Institute (Swiss TPH)](https://www.swisstph.ch/en/about/eph/disease-modelling/).  
+
+-  **malariasimulation** has been developed and is maintained by
+the [Imperial College London](https://www.imperial.ac.uk/malaria-modelling/).  
 
 
+For more information about MultiMalModPy, please see the [documentation](https://ahadi-analytics.github.io/MultiMalModPy/).
 
-<details>
-  <summary>Expand to see how to edit and update the documentation.</summary> 
+### Motivation for using MultiMalModPy: 
+To characterize and compare the simulated transmission and disease dynamics of malaria in **EMOD**, **OpenMalaria**
+and *malariasimulation** using a customized python framework that facilitates alignment and comparison of inputs and
+outputs. Specifically:
 
-Using [mkdocs](https://www.mkdocs.org/getting-started/)
-To view and edit documentation:
+1) To align models for comparability of model outcomes
+    - Explore and describe basic transmission and disease dynamics
+2) To understand model behaviour at baseline
+3) To understand model response to perturbation of the system, for instance:
+    - Change in carrying capacity (`CC step`)
+    - Infection clearance and short term prevention (`SMC`)
+    - Treatment of cases and contribution of cases to onward transmission
+    - Vector control effects on mosquito life and feeding cycle
 
-```
-cd MultiMalModPy
-mkdocs serve
-```
+--------------------------------
 
-"_Open up http://127.0.0.1:8000/ in your browser, and you'll see the default home page being displayed:_"
-
-and
-```
-mkdocs build
-```
-
-
-To update branch gh-pages and update GitHub pages site run:
-
-```
-mkdocs gh-deploy
-```
-
-
-
-</details>
+_Disclaimer: This repository is under active development, if something is not working, please contact us - or simply
+create an issue on GitHub that we can follow up on._
