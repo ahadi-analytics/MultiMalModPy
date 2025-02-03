@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/getting_started/installation/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Installation and requirements - MultiMalModPy</title>
+    <title>Installation - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Installation and requirements";
+        var mkdocs_page_name = "Installation";
         var mkdocs_page_input_path = "getting_started\\installation.md";
         var mkdocs_page_url = "/MultiMalModPy/getting_started/installation/";
       </script>
@@ -68,13 +68,41 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Installation and requirements</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Installation</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#get-multimalmodpy">Get MultiMalModPy</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#hpc">HPC</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#create-a-virtual-environment">Create a virtual environment</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#install-emod">Install EMOD</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#install-openmalaria">Install OpenMalaria</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#install-malariasimulation">Install malariasimulation</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#local-setup">Local Setup</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#install-openmalaria_1">Install OpenMalaria</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#install-malariasimulation_1">Install malariasimulation</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#container-setup">Container Setup</a>
+    </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../configuration/">Configure MultiMalModPy</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration/">First time configurations (manifest.py)</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters and predefined options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../usage/">How to use MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../example_run/">Example run (demo)</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a>
                   </li>
@@ -83,21 +111,17 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Age and population</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Population and age structure</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission intensity</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission and calibration</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness and uncertainty</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="../../guide/example_workflows.md">Example workflows</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="../../guide/development.md">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness and uncertainty</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -128,9 +152,13 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
                 </li>
     </ul>
                   </li>
@@ -151,6 +179,12 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">API Documentation: interventions</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations</a>
                 </li>
     </ul>
                   </li>
@@ -195,7 +229,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Getting started</li>
-      <li class="breadcrumb-item active">Installation and requirements</li>
+      <li class="breadcrumb-item active">Installation</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/getting_started/installation.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -205,61 +239,134 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="installation-and-requirements">Installation and requirements</h1>
-<h1 id="table-of-contents">Table of Contents</h1>
-<ol>
-<li><a href="#software_requirements">Software requirements</a>  </li>
-<li><a href="#install-and-setup-emod">Install and setup EMOD </a>  </li>
-<li><a href="#install-and-setup-openmalaria">Install and setup OpenMalaria </a></li>
-<li><a href="#install-and-setup-malariasimulation">Install and setup malariasimulation</a>  </li>
-<li><a href="#setup-when-using-the-container">Setup when using the container </a>  </li>
-<li><a href="#activate-virtual-environment">Activate virtual envionment </a>  </li>
-</ol>
-<h2 id="software-requirements">Software requirements</h2>
+                <h1 id="installation">Installation</h1>
+<p>Simulations are designed to run on a Linux-based high-performance cluster (HPC). <br />
+However, installation instructions also include sections for local setup and container-based environments.  </p>
+<p><strong>In this section:</strong>  </p>
 <ul>
-<li>MultiMalModPy </li>
-<li>Python &gt;= 4.0.0  </li>
-<li>R &gt;= 4.0.0  </li>
-<li>malariasimulation</li>
-<li>malariaEquilibrium</li>
-<li>lubridate</li>
-<li>dplyr </li>
-<li>tibble </li>
-<li>readr </li>
-<li>umbrella</li>
-<li>EMOD</li>
-<li>OpenMalaria</li>
+<li><a href="#get-multimalmodpy">Get MultiMalModPy</a>  </li>
+<li><a href="#hpc"><strong>HPC Setup</strong></a>  <ul>
+<li><a href="#create-a-virtual-environment">Create a Virtual Environment</a>  </li>
+<li><a href="#install-emod">Install EMOD</a>  </li>
+<li><a href="#install-openmalaria">Install OpenMalaria</a>  </li>
+<li><a href="#install-malariasimulation">Install malariasimulation</a>  </li>
 </ul>
-<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
-  <strong><em>📝 NOTE:</em></strong> 
-   Simulations are assumed to run on a linux based high performance cluster (HPC).
-   Functionality to run locally is restricted for test runs using malariasimulation and OpenMalaria.
+</li>
+<li><a href="#local-setup"><strong>Local Setup</strong></a>  <ul>
+<li><a href="#install-openmalaria">Install OpenMalaria</a>  </li>
+<li><a href="#install-malariasimulation">Install malariasimulation</a></li>
+</ul>
+</li>
+<li><a href="#container-setup"><strong>Container Setup</strong></a>  <ul>
+<li><a href="#hpc">HPC</a>  </li>
+<li><a href="#local-machine">Local machine</a>  </li>
+</ul>
+</li>
+</ul>
+<div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>📝 NOTE:</em></strong>  
+   Functionality for local runs is  limited and intended only for test purposes using 
+    <strong>malariasimulation</strong> and <strong>OpenMalaria</strong>. 
 </div>
 
+<p><strong>Software requirements</strong></p>
+<ul>
+<li>MultiMalModPy</li>
+<li>Python 3.8.4</li>
+<li>R &gt;= 4.0.0</li>
+<li>malariasimulation 2.0.0</li>
+<li>emodpy-malaria 2.0.0</li>
+<li>OpenMalaria v46+</li>
+</ul>
 <div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
   <strong><em>💡 TIP:</em></strong>
    Knowledge of shell, powershell, xml, json can be helpful when using MultiMalModPy.   
 </div>
 
 <p><br></p>
-<h2 id="install-and-setup-emod">Install and setup EMOD</h2>
+<h2 id="get-multimalmodpy">Get MultiMalModPy</h2>
+<p>To get started with MultiMalModPy, the recommended approach is
+to <a href="https://github.com/ahadi-analytics/MultiMalModPy/fork">fork</a>  the repository and clone it to your local machine or
+cluster.
+This allows you to easily update the code and contribute to the project.</p>
+<p>Alternatively, you can download the latest release directly from the GitHub releases
+page <a href="https://github.com/numalariamodeling/model-characterization/releases">here</a>. if you just need to use the software
+without modifications.</p>
+<h2 id="hpc">HPC</h2>
+<p>Before running MultiMalModPy on an HPC cluster, ensure that the necessary modules are loaded.
+Use the following commands to load the required dependencies: </p>
+<div class="codehilite"><pre><span></span><code><span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">singularity</span><span class="o">/</span><span class="mf">3.8</span><span class="o">.</span><span class="mi">1</span><span class="w"> </span><span class="c1">#singularity/3.7.0</span>
+<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">git</span><span class="o">/</span><span class="mf">2.8</span><span class="o">.</span><span class="mi">2</span>
+<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">python</span><span class="o">/</span><span class="mf">3.8</span><span class="o">.</span><span class="mi">4</span>
+<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">R</span><span class="o">/</span><span class="mf">4.4</span><span class="o">.</span><span class="mi">0</span>
+</code></pre></div>
+
+<h3 id="create-a-virtual-environment">Create a virtual environment</h3>
+<p>MultiMalModPy works best when used within a virtual environment, as it helps manage dependencies and keep your project
+isolated from other Python projects.</p>
+<p>Follow the steps below to set up a virtual environment:</p>
+<p><strong>Step 1: Install Python (if necessary)</strong>
+Make sure you have Python 3.8+ installed on your system. You can verify this by running in your terminal:</p>
+<div class="codehilite"><pre><span></span><code>python --version
+</code></pre></div>
+
+<p>If you&rsquo;re working on an HPC cluster, you can load the Python module available on the system
+via <code>module load python/3.8.4</code> (to check existing python versions run <code>module spider python</code>)
+Alternatively, if running locally, and Python isn&rsquo;t installed, you can download and install the latest version from
+python.org.</p>
+<p><strong>Step 2: Install virtualenv</strong>
+If you don&rsquo;t have virtualenv installed, you can install it via pip:</p>
+<div class="codehilite"><pre><span></span><code>pip install virtualenv
+</code></pre></div>
+
+<p><strong>Step 3: Create the Virtual Environment</strong>
+Navigate to the directory where you want to store your project, and then run the following command to create a virtual
+environment:</p>
+<div class="codehilite"><pre><span></span><code>virtualenv my_venv
+</code></pre></div>
+
+<p>This will create a folder named <code>my_venv</code> in your project directory that will contain the virtual environment.</p>
+<p><strong>Step 4: Activate the Virtual Environment</strong><br />
+On Windows:  <code>.\my_venv\Scripts\activate</code></p>
+<p>On macOS/Linux: <code>source my_venv/bin/activate</code></p>
+<p>Once activated, your terminal prompt will change to show the name of the virtual environment (e.g., (my_venv)).</p>
+<p><img alt="my_venv" src="../../img/2025-02-02%2015_24_31-terminal.png" /></p>
+<p><strong>Step 5: Install Dependencies</strong>
+Now that the virtual environment is activated, install MultiMalModPy&rsquo;s dependencies by running:
+<code>pip install -r requirements.txt</code></p>
+<p>This will ensure that all required packages are installed within the virtual environment.</p>
+<h3 id="install-emod">Install EMOD</h3>
+<p><a href="https://docs.idmod.org/projects/idmtools/en/latest/platforms/slurm/index.html#prerequisites">Prerequisites</a>:</p>
 <ul>
-<li><strong>EMOD</strong>  <ul>
-<li><a href="https://docs.idmod.org/projects/emodpy/en/v1.19.0/installation.html">EMODpy</a>     </li>
-<li>idmtools</li>
-<li>emodpy-malaria    </li>
+<li>Linux client</li>
+<li>SLURM cluster access and general understanding</li>
+<li>Python 3.8/3.9/3.10/3.11/3.12 x64-bit (https://www.python.org/downloads/release)</li>
+<li>Python virtual environments</li>
 </ul>
-</li>
-</ul>
-<p><strong>Helpful additional installation guides for the Northwestern University cluster:</strong> <br />
--  <a href="https://numalariamodeling.github.io/FE-2023-quarto-website/guides/install_guide.html">Faculty Enrichment Program Installation guide</a></p>
-<h2 id="install-and-setup-openmalaria">Install and setup OpenMalaria</h2>
-<p>User guide to install OpenMalaria: <a href="https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria">OpenMalaria v46</a>   </p>
-<p>Custom installation and setup for MultiMalModPy:<br />
-- <a href="#install-on-hpc">Install on HPC</a><br />
-- <a href="#installation-when-running-locally">Installation when running locally</a></p>
-<h3 id="install-on-hpc">Install on HPC</h3>
-<details><summary><span>Helpful additional installation guides for the Northwestern University cluster:</span></summary>   
+<p><strong>Step 1: Activate venv (if not already active)</strong>
+On macOS/Linux: <code>source my_venv/bin/activate</code></p>
+<p>Optional: clean previous installed packages, only needed when a new idmtools Singularity image is
+available : <code>rm –fr ~/.local/lib/python*</code></p>
+<p><strong>Step 2: Pull Singularity image containing Python and MPI</strong>   </p>
+<div class="codehilite"><pre><span></span><code><span class="n">curl</span><span class="w"> </span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="o">.</span><span class="n">idmod</span><span class="o">.</span><span class="n">org</span><span class="p">:</span><span class="mi">443</span><span class="o">/</span><span class="n">artifactory</span><span class="o">/</span><span class="n">idm</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">public</span><span class="o">/</span><span class="n">idmtools</span><span class="o">/</span><span class="n">rocky_mpi</span><span class="o">/</span><span class="n">dtk_run_rocky_py39</span><span class="o">.</span><span class="n">sif</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">dtk_run_rocky_py39</span><span class="o">.</span><span class="n">sif</span>
+</code></pre></div>
+
+<p><strong>Step 3:Install emodpy-malaria and idmtools_platform_slurm</strong></p>
+<p>Run the following command to install <code>emodpy-malaria</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">pip</span><span class="w"> </span><span class="nx">install</span><span class="w"> </span><span class="nx">emodpy</span><span class="o">-</span><span class="nx">malaria</span><span class="w"> </span><span class="o">--</span><span class="nx">ignore</span><span class="o">-</span><span class="nx">installed</span><span class="w"> </span><span class="o">--</span><span class="nx">index</span><span class="o">-</span><span class="nx">url</span><span class="p">=</span><span class="nx">https</span><span class="p">:</span><span class="c1">//packages.idmod.org/api/pypi/pypi-production/simple </span>
+</code></pre></div>
+
+<p>Install the <code>idmtools_platform_slurm</code> package with this command:</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">pip</span><span class="w"> </span><span class="nx">install</span><span class="w"> </span><span class="nx">idmtools_platform_slurm</span><span class="w"> </span><span class="o">--</span><span class="nx">ignore</span><span class="o">-</span><span class="nx">installed</span><span class="w"> </span><span class="o">--</span><span class="nx">index</span><span class="o">-</span><span class="nx">url</span><span class="p">=</span><span class="nx">https</span><span class="p">:</span><span class="c1">//packages.idmod.org/api/pypi/pypi-production/simple  </span>
+</code></pre></div>
+
+<p><strong>Step 4: Install other python packages (if needed)</strong>
+If there are any other Python packages required, install them using pip as necessary.</p>
+<p><strong>Step 5: Update <code>manifest.py</code></strong><br />
+Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  <a href="../getting_started/configuration/">first time configurations</a>   </p>
+<h3 id="install-openmalaria">Install OpenMalaria</h3>
+<p><strong>Step 1: Install OpenMalaria by following developer&rsquo;s site instructions</strong>  </p>
+<p>Installation instructions can be found on the <a href="https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria">OpenMalaria wiki</a> . </p>
+<details><summary><span>Installation instructions for the Northwestern University cluster:</span></summary>   
 <p>
 
 NU IT research built a container and sent instructions which have been edited for completeness and are
@@ -280,7 +387,7 @@ And copy into the new folder the latest schema files (not source code), availabl
 from https://github.com/SwissTPH/openmalaria/releases.
 
 Copy the OpenMalaria.def and modules from the prevvious release to the new one.
-Note these files were created by Scott Coughlin to facilitate installation on Quest, without having to use cmake.
+Note these files were created by [Scott Coughlin](https://www.it.northwestern.edu/departments/it-services-support/research/staff/coughlin.html) to facilitate installation on Quest, without having to use cmake.
 
 
 <div class="codehilite"><pre><span></span><code>cp /projects/b1139/OpenMalaria/om_v43/OpenMalaria.def  /projects/b1139/OpenMalaria/om_v46/OpenMalaria.def
@@ -382,77 +489,83 @@ Test to run new version
 </details>
 
 <p><br></p>
-<h3 id="installation-when-running-locally">Installation when running locally</h3>
-<p>Local run is currently only supported for 2 of the 3 models (malariasimulation and OpenMalaria).
-In addition, the recommended use of running simulations locally is for testing and other <code>run_mode</code>s are disabled.</p>
-<ol>
-<li>
-<p>For each model, follow the installation guidelines under the links provided at the top of the page.
-   Once installed, create a folder <code>dependencies</code> under this repository, with subfolders for each model.</p>
-</li>
-<li>
-<p>For <strong>OpenMalaria</strong>, additional subfolders by version are needed i.e. <code>v46</code>, under which the downloaded files are
-   located.<br />
-   The OpenMalaria dependencies include:</p>
-<ul>
-<li><code>autoRegressionParameters.csv</code></li>
-<li><code>densities.csv</code></li>
-<li><code>openMalaria.exe</code></li>
-<li><code>scenario_46.xsd</code></li>
-</ul>
-</li>
-<li>
-<p>Once all files are in place, update the <code>manifest.py</code> file to make the necessary path update configurations.</p>
-</li>
-<li>It is also recommended to add R (<code>Rscript</code>), Python (<code>python</code>) and OpenMalaria (<code>openMalaria</code>) to the environment
-   variables (optional).</li>
-</ol>
-<h2 id="install-and-setup-malariasimulation">Install and setup malariasimulation</h2>
-<ul>
-<li>
-<p><strong>malariasimulation R packages</strong>     </p>
-</li>
-<li>
-<p><a href="https://github.com/mrc-ide/malariasimulation/">malariasimulation</a>
-   <code># install.packages("remotes")
-     # library('remotes')
-    install_github('mrc-ide/malariasimulation')</code></p>
-</li>
-<li>
-<p><a href="https://github.com/mrc-ide/umbrella">umbrella</a>
-   <code># install.packages("devtools")
-     # library('devtools')
-     devtools::install_github("mrc-ide/umbrella")</code></p>
-</li>
-<li>
-<p>Other R packages:</p>
-</li>
-<li>lubridate</li>
-<li>dplyr </li>
-<li>tibble </li>
-<li>readr </li>
-<li>umbrella</li>
-</ul>
-<p><br></p>
-<h2 id="setup-when-using-the-container">Setup when using the container</h2>
-<p>This section is under construction...<br />
-A singularity container will be made available to allow running MultiMalModPy instantly, without the need for
-installations. </p>
-<h2 id="activate-virtual-environment">Activate virtual environment</h2>
-<h3 id="on-slurm-example-for-nu-cluster">On Slurm, example for NU cluster</h3>
-<div class="codehilite"><pre><span></span><code><span class="n">module</span><span class="w"> </span><span class="n">purge</span><span class="w"> </span><span class="n">all</span>
-<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">python</span><span class="o">/</span><span class="mf">3.8</span><span class="o">.</span><span class="mi">4</span>
-<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">singularity</span><span class="o">/</span><span class="mf">3.8</span><span class="o">.</span><span class="mi">1</span>
-<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">git</span><span class="o">/</span><span class="mf">2.8</span><span class="o">.</span><span class="mi">2</span>
-<span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">R</span><span class="o">/</span><span class="mf">4.2</span><span class="o">.</span><span class="mi">3</span>
-<span class="n">source</span><span class="w"> </span><span class="s1">&#39;/projects/b1139/environments/emodpy_bin/activate&#39;</span>
+<p>** Update <code>manifest.py</code>** 
+Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  <a href="../getting_started/configuration/">first time configurations</a>   </p>
+<p>Define <code>OPENMALARIA_PATH</code> to point to the location of the required OpenMalaria files:</p>
+<div class="codehilite"><pre><span></span><code>OPENMALARIA_PATH = &quot;/projects/b1139/OpenMalaria/om_v43/&quot;
 </code></pre></div>
+
+<p>No edits needed for <code>openmalaria_input_path</code> which defines the location of OpenMalaria</p>
+<div class="codehilite"><pre><span></span><code>openmalaria_input_path = os.path.join(os.path.expanduser(&#39;~&#39;), &#39;MultiMalModPy/OpenMalaria/&#39;)
+</code></pre></div>
+
+<p>If using the OpenMalaria module, configure <code>OPENMALARIA_venv</code> to load the necessary environment modules</p>
+<div class="codehilite"><pre><span></span><code><span class="n">OPENMALARIA_venv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">module use {OPENMALARIA_PATH}/modules/ </span><span class="se">\n</span><span class="s1">module load openmalaria</span><span class="se">\n</span><span class="s1">&#39;</span>
+</code></pre></div>
+
+<h3 id="install-malariasimulation">Install malariasimulation</h3>
+<p><strong>Step 1: Install R or load R module</strong>
+On HPC: <code>module load R/&gt;=4.4.0</code> (required &gt;=4.4.0).</p>
+<p><strong>Step 2: Install R packages</strong></p>
+<p>Open a R console and run <code>source(file.path('dependencies/install_packages.R'))</code> 
+Select a CRAN mirror, and packages will be installed thereafter:<br />
+<code>--- Please select a CRAN mirror for use in this session ---</code></p>
+<p><strong>Step 3: Update <code>manifest.py</code></strong>
+No edits needed for malariasimulation when running on HPC.</p>
+<h2 id="local-setup">Local Setup</h2>
+<h3 id="install-openmalaria_1">Install OpenMalaria</h3>
+<p><strong>Step 1: Create additional subfolders for OpenMalaria version i.e. <code>v46</code> under <code>dependencies</code></strong></p>
+<p><strong>Step 2: Download or copy OpenMalaria files</strong>
+Visit the OpenMalaria release page and download the requred version.
+Alternatively, copy the files over from the installation on HPC for the respective version.</p>
+<p>The OpenMalaria dependencies include:<br />
+- <code>autoRegressionParameters.csv</code><br />
+- <code>densities.csv</code><br />
+- <code>openMalaria.exe</code><br />
+- <code>scenario_46.xsd</code>  </p>
+<p><strong>Step 3: Update <code>manifest.py</code></strong>
+Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  <a href="../getting_started/configuration/">first time configurations</a>   </p>
+<p>Define <code>OPENMALARIA_PATH</code> to point to the location of the required OpenMalaria files:</p>
+<div class="codehilite"><pre><span></span><code>OPENMALARIA_PATH = os.path.join(ROOT_DIR, &#39;dependencies/OpenMalaria/om_v46&#39;)
+</code></pre></div>
+
+<p>No edits needed for <code>openmalaria_input_path</code> which defines the location of OpenMalaria</p>
+<div class="codehilite"><pre><span></span><code>openmalaria_input_path = os.path.join(os.path.expanduser(&#39;~&#39;), &#39;MultiMalModPy/OpenMalaria/&#39;)
+</code></pre></div>
+
+<p><code>OPENMALARIA_venv</code> is not used when running on local machine.</p>
+<div class="codehilite"><pre><span></span><code>OPENMALARIA_venv = &#39;&#39;
+</code></pre></div>
+
+<h3 id="install-malariasimulation_1">Install malariasimulation</h3>
+<p><strong>Step 1: Install R or load R module</strong></p>
+<p>Download and install the latest version of <a href="https://www.r-project.org/">R</a> from CRAN.
+For Windows users, also install <a href="https://cran.r-project.org/bin/windows/Rtools/">Rtools</a>  from CRAN Rtools  to ensure compatibility with package compilation.</p>
+<p><strong>Step 2: Install R packages</strong></p>
+<p>Open an R console and run <code>source(file.path('dependencies/install_packages.R'))</code> 
+Select a CRAN mirror, and packages will be installed thereafter:<br />
+<code>--- Please select a CRAN mirror for use in this session ---</code></p>
+<p>Install any additional R packages you may want to use for your project.</p>
+<p><strong>Step 3: Update <code>manifest.py</code></strong>
+Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  <a href="../getting_started/configuration/">first time configurations</a>   </p>
+<p>Define the path to your local R installation: </p>
+<div class="codehilite"><pre><span></span><code>r_local = &quot;C:/Program Files/R/R-4.2.3/bin&quot;
+</code></pre></div>
+
+<p>No edits needed for <code>malariasimulation_input_path</code> which defines the location of OpenMalaria</p>
+<div class="codehilite"><pre><span></span><code> malariasimulation_input_path = os.path.join(os.path.expanduser(&#39;~&#39;), &#39;MultiMalModPy/malariasimulation/&#39;)
+</code></pre></div>
+
+<h2 id="container-setup">Container Setup</h2>
+<p>This section is under construction&hellip;<br />
+A singularity container will be made available to allow running MultiMalModPy instantly, without the need for
+installations.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../overview/" class="btn btn-neutral float-left" title="Overview of MultiMalModPy"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../configuration/" class="btn btn-neutral float-right" title="Configure MultiMalModPy">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../configuration/" class="btn btn-neutral float-right" title="First time configurations (manifest.py)">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>

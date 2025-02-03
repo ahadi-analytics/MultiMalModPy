@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/getting_started/parameters/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Input parameters and predefined options - MultiMalModPy</title>
+    <title>User-modifiable parameters and defaults - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Input parameters and predefined options";
+        var mkdocs_page_name = "User-modifiable parameters and defaults";
         var mkdocs_page_input_path = "getting_started\\parameters.md";
         var mkdocs_page_url = "/MultiMalModPy/getting_started/parameters/";
       </script>
@@ -68,61 +68,23 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation and requirements</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../configuration/">Configure MultiMalModPy</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration/">First time configurations (manifest.py)</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Input parameters and predefined options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../usage/">How to use MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">User-modifiable parameters and defaults</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#simulation-parameters">Simulation parameters</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulation-time">Simulation time</a>
+    <li class="toctree-l2"><a class="reference internal" href="#malaria-parameters">Malaria Parameters</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#burnin">Burnin</a>
+    <li class="toctree-l2"><a class="reference internal" href="#simulation-parameters">Simulation Parameters</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#seeds">Seeds</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#population-size">Population size</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#age">Age</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#demography">Demography</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#output-monitoring">Output monitoring</a>
-    </li>
-        </ul>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#malaria-parameters">Malaria parameters</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#seasonality">Seasonality</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#case-management">Case management</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#importation">Importation</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#entomology-mode">Entomology mode</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#framework-parameters">Framework parameters</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#run_mode">run_mode</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#calibation-run">Calibation run</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#production-run">Production run</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#test-run">Test run</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#custom-run">Custom run</a>
-    </li>
-        </ul>
-    </li>
-        </ul>
+    <li class="toctree-l2"><a class="reference internal" href="#framework-parameters">Framework Parameters</a>
     </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../example_run/">Example run (demo)</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a>
                   </li>
@@ -131,21 +93,17 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Age and population</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Population and age structure</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission intensity</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission and calibration</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness and uncertainty</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="../../guide/example_workflows.md">Example workflows</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="../../guide/development.md">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness and uncertainty</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -176,9 +134,13 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
                 </li>
     </ul>
                   </li>
@@ -199,6 +161,12 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">API Documentation: interventions</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations</a>
                 </li>
     </ul>
                   </li>
@@ -243,7 +211,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Getting started</li>
-      <li class="breadcrumb-item active">Input parameters and predefined options</li>
+      <li class="breadcrumb-item active">User-modifiable parameters and defaults</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/getting_started/parameters.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -253,21 +221,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="parameters-and-model-alignment">Parameters and model alignment</h1>
-<p>MultiMalModPy includes three types of setup parameters for the user to specify:  </p>
+                <p><link rel="stylesheet" href="extra.css" /></p>
+<h1 id="parameter-categories-of-multimalmodpy">Parameter Categories of MultiMalModPy</h1>
+<p>MultiMalModPy requires users to specify three key types of parameters:</p>
 <p><em>Malaria</em><br />
-Define and align malaria-related input parameters across all models to ensure that the simulations are comparable.
-It involves setting up the key parameters that influence how the malaria environment is represented in the simulations.  </p>
+Define and align malaria-related inputs across all models to ensure comparability.<br />
+This includes key factors influencing malaria transmission dynamics, such as seasonality, case management, and
+importation.</p>
 <p><em>Simulation</em><br />
-Define the specifics of each new "experiment," including the scenarios to be tested.
-The simulation/experiment parameters include the population, number of seeds, simulation duration and ‘burnin’ duration,
-age groups to monitor, and reporting interval for writing out outcome metrics. 
-Scenario-defining parameters are those that can take in multiple values and determine transmission, 
-seasonality, case management and potentially other interventions or parameter explorations.     </p>
+Specify details for each simulation experiment, including population size, number of seeds, simulation duration, and
+burn-in period.<br />
+Additionally, define scenario-specific parameters that impact transmission, seasonality, case management, and other
+interventions.</p>
 <p><em>Framework</em>   <br />
-Configure overarching parameters, such as selecting which models to run and specifying the outputs to be generated.
-The setup includes the installation and definition of directories to be used for the simulations to store input and output files. 
-Additionally, cluster specific parameters are required to ensure a smooth processing of the simulations throughout the implemented pipeline.  </p>
+Configure overarching settings, such as model selection, output specifications, and directory structures for storing
+inputs and results. <br />
+Cluster-specific parameters are also required to optimize simulation execution across computing environments.</p>
 <div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
   <strong><em>NOTE:</em></strong> 
    Not all parameters can be aligned, even though those parameters shared are likely aligned.
@@ -275,35 +244,185 @@ Additionally, cluster specific parameters are required to ensure a smooth proces
 </div>
 
 <hr />
-<h2 id="simulation-parameters">Simulation parameters</h2>
-<h4 id="simulation-time">Simulation time</h4>
-<h3 id="burnin">Burnin</h3>
-<h3 id="seeds">Seeds</h3>
-<h4 id="population-size">Population size</h4>
-<h4 id="age">Age</h4>
-<h4 id="demography">Demography</h4>
-<h4 id="output-monitoring">Output monitoring</h4>
-<hr />
-<h2 id="malaria-parameters">Malaria parameters</h2>
-<h3 id="seasonality">Seasonality</h3>
-<h3 id="case-management">Case management</h3>
-<h3 id="importation">Importation</h3>
-<h3 id="entomology-mode">Entomology mode</h3>
-<hr />
-<h2 id="framework-parameters">Framework parameters</h2>
-<h3 id="run_mode">run_mode</h3>
-<p>MultiMalModPy allows to run simulations with different <code>run_modes</code> as well as test.</p>
-<h4 id="calibation-run">Calibation run</h4>
-<p>for CM 0 and 15% for EMOD (pop 1000), OpenMalaria (pop 50000), and malariasimulaiton (50000), at seasonal and perennial seasonal profiles</p>
-<h4 id="production-run">Production run</h4>
-<h4 id="test-run">Test run</h4>
-<h4 id="custom-run">Custom run</h4>
+<h2 id="malaria-parameters">Malaria Parameters</h2>
+<p>These parameters are primarily defined in the <code>SimulationConfig</code> class within the <code>setup_sim.py</code> script.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Parameter</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href=".../guide/seasonality.md">seasonality</a></td>
+<td>Seasonal variation in malaria transmission due to climatic  factors.</td>
+</tr>
+<tr>
+<td><a href=".../guide/case_management.md">case_management</a></td>
+<td>Diagnosis and treatment for uncomplicated and severe malaria cases.</td>
+</tr>
+<tr>
+<td><a href=".../guide/importation.md">intervention_list</a></td>
+<td>Introduction of malaria cases from external sources (e.g., travel, migration).</td>
+</tr>
+<tr>
+<td><a href=".../guide/importation.md">importation_rate</a></td>
+<td>Introduction of malaria cases from external sources (e.g., travel, migration).</td>
+</tr>
+<tr>
+<td><a href=".../guide/entomology_mode.md">entomology_mode</a></td>
+<td>Mosquito population dynamics, biting behavior, and vector control strategies.</td>
+</tr>
+<tr>
+<td><a href=".../guide/sweep_list.md">sweep_list</a></td>
+<td>Creates a full factorial design of the selected <span title="The sweep defines all combinations of parameter values to simulate every possible scenario." style="color: #007BFF; text-decoration: underline; cursor: pointer;">sweep</span> parameter values</td>
+</tr>
+<tr>
+<td>&hellip;</td>
+<td>&hellip;</td>
+</tr>
+</tbody>
+</table>
+<p><em>Parameter names with an asteriks (*) denote model-specific parameters</em></p>
+<h2 id="simulation-parameters">Simulation Parameters</h2>
+<p>These parameters are primarily defined in the <code>SimulationConfig</code> class within the <code>setup_sim.py</code> script.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Parameter</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href=".../guide/time.md">start_year, end_year</a></td>
+<td>Start year of the <span title="Simulation period during which outcomes are recorded" style="color: #007BFF; text-decoration: underline; cursor: pointer;">monitoring period</span></td>
+</tr>
+<tr>
+<td><a href=".../guide/time.md">burnin*</a></td>
+<td>Initial period for reaching an  <span title="Transmission reaches a stable state and immunity in the population has been established" style="color: #007BFF; text-decoration: underline; cursor: pointer;">equilibrium</span>.</td>
+</tr>
+<tr>
+<td><a href=".../guide/uncertainty.md">seed</a></td>
+<td>Random seed(s) for stochastic replications.</td>
+</tr>
+<tr>
+<td><a href=".../guide/age_demography.md">pop_size*</a></td>
+<td>Simulated number of individuals.</td>
+</tr>
+<tr>
+<td><a href=".../guide/age_demography.md">agebins</a></td>
+<td><span title="Age limits at which simulation outputs are recorded" style="color: #007BFF; text-decoration: underline; cursor: pointer;">Age bins</span> to simulate.</td>
+</tr>
+<tr>
+<td><a href=".../guide/age_demography.md">age_groups_aggregates</a></td>
+<td><span title="One or more overlapping age bins for output aggregation" style="color: #007BFF; text-decoration: underline; cursor: pointer;">Age groups</span> for output aggregation.</td>
+</tr>
+<tr>
+<td><a href=".../guide/run_mode.md">run_mode</a></td>
+<td>Simulation execution mode, supporting testing and production configurations.</td>
+</tr>
+<tr>
+<td><a href=".../guide/parse_launch_args.md">emodstep*</a></td>
+<td>EMOD: use <span title="Saves the population state at a specific time, allowing simulations to start from that point instead of re-running the burn-in period" style="color: #007BFF; text-decoration: underline; cursor: pointer;">serialization</span>  to separate burn-in and pickup simulation, or run all together.</td>
+</tr>
+<tr>
+<td><a href=".../guide/parse_launch_args.md">emod_calib_params*</a></td>
+<td>EMOD: run simulations with alternative within-host calibration.</td>
+</tr>
+<tr>
+<td><a href=".../guide/parse_launch_args.md">mpv*</a></td>
+<td>malariasimulation parameter variation.</td>
+</tr>
+<tr>
+<td><a href=".../guide/parse_launch_args.md">target_output_name, target_output_values</a></td>
+<td>Output type and target location for CM 0 and 15% simulations using EMOD (pop: 1,000), OpenMalaria (pop: 50,000), and malariaSimulation (pop: 50,000) under seasonal and perennial profiles.</td>
+</tr>
+<tr>
+<td><a href=".../guide/parse_launch_args.md">test</a></td>
+<td>Reduces the computational demand by lowering pop_size, burn-in and seeds</td>
+</tr>
+<tr>
+<td>&hellip;</td>
+<td>&hellip;</td>
+</tr>
+</tbody>
+</table>
+<p><em>Parameter names with an asteriks (*) denote model-specific parameters</em></p>
+<h2 id="framework-parameters">Framework Parameters</h2>
+<p>These parameters are primarily defined through the arguments provided when launching simulations
+via <code>python launch_sim.py &lt;args&gt;</code>.
+They are specified in the <code>parse_launch_args</code> function within the <code>utility/helper.py</code> script.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Parameter</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href=".../guide/parse_launch_args.md">directory</a></td>
+<td>Specifies the directory for storing simulation inputs, config, and model outputs.</td>
+</tr>
+<tr>
+<td><a href=".../guide/parse_launch_args.md">suite</a></td>
+<td>Suite (collection of) of simulation experiments.</td>
+</tr>
+<tr>
+<td><a href=".../guide/parse_launch_args.md">expname, exp_name</a></td>
+<td>Name of the simulation experiment.</td>
+</tr>
+<tr>
+<td><a href=".../guide/parse_launch_args.md">models, models_to_run</a></td>
+<td>Specifies which models to run (one or multiple).</td>
+</tr>
+<tr>
+<td><a href=".../guide/parse_launch_args.md">user</a></td>
+<td>Creates a user-specific directory for storing experiments and simulation outputs.</td>
+</tr>
+<tr>
+<td><a href=".../guide/parse_launch_args.md">rownum</a></td>
+<td>If running from CSV, defines row of the simulation scenario to run.</td>
+</tr>
+<tr>
+<td><a href=".../guide/hpc.md">memory_per_sim*</a></td>
+<td>Memory allocation per simulation, ensuring appropriate resources.</td>
+</tr>
+<tr>
+<td><a href=".../guide/hpc.md">time_per_sim*</a></td>
+<td>Max time for each simulation to manage computational time and resources</td>
+</tr>
+<tr>
+<td><a href=".../guide/outputs.md">analyzer_list</a></td>
+<td>Type of standardized outputs to generate (i.e. select default or custom ones)</td>
+</tr>
+<tr>
+<td><a href=".../guide/outputs.md">analyzer_script</a></td>
+<td>Name of the analyzer script (default, optional for advanced users)</td>
+</tr>
+<tr>
+<td><a href=".../guide/outputs.md">plots_to_run</a></td>
+<td>Plots to generate (allows custom plots for advanced users)</td>
+</tr>
+<tr>
+<td><a href=".../guide/framework.md">sim_params_list</a></td>
+<td>Lists the simulation parameters to be used across the models, allowing for consistent configuration of the simulation environment.</td>
+</tr>
+<tr>
+<td>&hellip;</td>
+<td>&hellip;</td>
+</tr>
+</tbody>
+</table>
+<p><em>Parameter names with an asteriks (*) denote model-specific parameters</em>  </p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../configuration/" class="btn btn-neutral float-left" title="Configure MultiMalModPy"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../glossary/" class="btn btn-neutral float-right" title="Glossary">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../usage/" class="btn btn-neutral float-left" title="How to use MultiMalModPy"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../example_run/" class="btn btn-neutral float-right" title="Example run (demo)">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -331,10 +450,10 @@ Additionally, cluster specific parameters are required to ensure a smooth proces
         </span>
     
     
-      <span><a href="../configuration/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../usage/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../glossary/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../example_run/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

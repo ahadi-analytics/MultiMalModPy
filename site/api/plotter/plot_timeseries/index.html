@@ -68,11 +68,15 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation and requirements</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/installation/">Installation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">Configure MultiMalModPy</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/configuration/">First time configurations (manifest.py)</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/parameters/">Input parameters and predefined options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/usage/">How to use MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/example_run/">Example run (demo)</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../getting_started/glossary/">Glossary</a>
                   </li>
@@ -81,21 +85,17 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/age_demography/">Age and population</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/age_demography/">Population and age structure</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/transmission_calibration/">Transmission intensity</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/transmission_calibration/">Transmission and calibration</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/case_management/">Case management</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/uncertainty/">Randomness and uncertainty</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="../../../guide/example_workflows.md">Example workflows</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../../guide/model_specificities/">Model specific options</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="../../../guide/development.md">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../guide/uncertainty/">Randomness and uncertainty</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -126,9 +126,13 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../EMOD/analyze_sim/">analyze_sim.py</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../EMOD/functions/interventions/">interventions.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../EMOD/functions/reporters/">reporters.py</a>
                 </li>
     </ul>
                   </li>
@@ -149,6 +153,12 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../malariasimulation/utils/">utils.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../malariasimulation/functions/interventions/">API Documentation: interventions</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../malariasimulation/functions/run_simulations/">run_simulations</a>
                 </li>
     </ul>
                   </li>
@@ -311,7 +321,7 @@
 )
               –
               <div class="doc-md-description">
-                <p>Variable to group the data and create multiple lines on the plot. Default is 'modelname'.</p>
+                <p>Variable to group the data and create multiple lines on the plot. Default is &lsquo;modelname&rsquo;.</p>
               </div>
             </li>
             <li>
@@ -321,7 +331,7 @@
 )
               –
               <div class="doc-md-description">
-                <p>Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)</p>
+                <p>Variable used to create subplots based on its unique values. Default is &lsquo;ageGroup&rsquo;. (The default should change)</p>
               </div>
             </li>
             <li>
@@ -331,7 +341,7 @@
 )
               –
               <div class="doc-md-description">
-                <p>Age group filter for the data. Default is '0-5'.</p>
+                <p>Age group filter for the data. Default is &lsquo;0-5&rsquo;.</p>
               </div>
             </li>
         </ul>
@@ -511,9 +521,9 @@ otherwise, the input index is returned.</p>
               –
               <div class="doc-md-description">
                 <p>The name of the model. Possible values include:
-- 'EMOD'
-- 'malariasimulation'
-- 'OpenMalaria'</p>
+- &lsquo;EMOD&rsquo;
+- &lsquo;malariasimulation&rsquo;
+- &lsquo;OpenMalaria&rsquo;</p>
               </div>
             </li>
         </ul>
@@ -717,7 +727,7 @@ since January 1, 2005, and returns the corresponding date.</p>
 
         <p>Custom sort key function for sorting age groups.</p>
 <p>This function extracts the lower bound of an age group represented as
-a string in the format 'X-Y' and returns it as an integer. It is
+a string in the format &lsquo;X-Y&rsquo; and returns it as an integer. It is
 primarily used for sorting age groups in ascending order based on
 their lower bounds.</p>
 
@@ -737,7 +747,7 @@ their lower bounds.</p>
                   (<code>str</code>)
               –
               <div class="doc-md-description">
-                <p>The age group string in the format 'X-Y',
+                <p>The age group string in the format &lsquo;X-Y&rsquo;,
              where X is the lower bound and Y is the upper bound.</p>
               </div>
             </li>
@@ -1366,11 +1376,11 @@ epidemiological measures.</p>
               <div class="doc-md-description">
                 <p>The name of the channel for which to retrieve the label.
 Possible values include:
-- 'prevalence_2to10'
-- 'prevalence'
-- 'clinical_incidence'
-- 'severe_incidence'
-- 'simulatedEIR'</p>
+- &lsquo;prevalence_2to10&rsquo;
+- &lsquo;prevalence&rsquo;
+- &lsquo;clinical_incidence&rsquo;
+- &lsquo;severe_incidence&rsquo;
+- &lsquo;simulatedEIR&rsquo;</p>
               </div>
             </li>
         </ul>
@@ -1527,7 +1537,7 @@ Possible values include:
 )
               –
               <div class="doc-md-description">
-                <p>Variable to group the data and create multiple lines on the plot. Default is 'modelname'.</p>
+                <p>Variable to group the data and create multiple lines on the plot. Default is &lsquo;modelname&rsquo;.</p>
               </div>
             </li>
             <li>
@@ -1537,7 +1547,7 @@ Possible values include:
 )
               –
               <div class="doc-md-description">
-                <p>Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)</p>
+                <p>Variable used to create subplots based on its unique values. Default is &lsquo;ageGroup&rsquo;. (The default should change)</p>
               </div>
             </li>
             <li>
@@ -1547,7 +1557,7 @@ Possible values include:
 )
               –
               <div class="doc-md-description">
-                <p>Age group filter for the data. Default is '0-5'.</p>
+                <p>Age group filter for the data. Default is &lsquo;0-5&rsquo;.</p>
               </div>
             </li>
         </ul>
@@ -1701,8 +1711,8 @@ Parameters:
     fdir (str): Directory where the plot will be saved.
     df (pandas dataframe): Dataframe that includes combined model results.
     channel (str): Variable representing the y-axis data to be plotted.
-    sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'output_target'.
-    agegrp (str, optional): Age group filter for the data. Default is '0-5'.
+    sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is &lsquo;output_target&rsquo;.
+    agegrp (str, optional): Age group filter for the data. Default is &lsquo;0-5&rsquo;.
 Returns:
     None (plots are saved to disk).
 Raises:
@@ -1884,9 +1894,9 @@ arguments, including the job directory and model names.</p>
 
 <details class="command-line-arguments" open>
   <summary>Command Line Arguments</summary>
-  <p>-d/--directory (str): The job directory where the exp.obj file is located. This argument is required.
--m/--modelname (str): One or more model names to compare. This argument is optional
-                      and defaults to ['EMOD', 'OpenMalaria', 'malariasimulation'].</p>
+  <p>-d/&ndash;directory (str): The job directory where the exp.obj file is located. This argument is required.
+-m/&ndash;modelname (str): One or more model names to compare. This argument is optional
+                      and defaults to [&lsquo;EMOD&rsquo;, &lsquo;OpenMalaria&rsquo;, &lsquo;malariasimulation&rsquo;].</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>plotter\plot_helper.py</code></summary>
@@ -2083,7 +2093,7 @@ present in <code>figure_vars</code>. Defaults to True.</p>
                   <code>ValueError</code>
               –
               <div class="doc-md-description">
-                <p>If 'modelname' is not included in <code>figure_vars</code> and there</p>
+                <p>If &lsquo;modelname&rsquo; is not included in <code>figure_vars</code> and there</p>
               </div>
             </li>
         </ul>

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/getting_started/configuration/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Configure MultiMalModPy - MultiMalModPy</title>
+    <title>First time configurations (manifest.py) - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Configure MultiMalModPy";
+        var mkdocs_page_name = "First time configurations (manifest.py)";
         var mkdocs_page_input_path = "getting_started\\configuration.md";
         var mkdocs_page_url = "/MultiMalModPy/getting_started/configuration/";
       </script>
@@ -68,17 +68,33 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation and requirements</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Configure MultiMalModPy</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">First time configurations (manifest.py)</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#configuration-parameters">Configuration parameters</a>
+    <li class="toctree-l2"><a class="reference internal" href="#directories-and-dependencies">Directories and dependencies</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+    <li class="toctree-l2"><a class="reference internal" href="#configuration-parameters">Configuration parameters</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#multimalmodpy-universel-configurations">MultiMalModPy universel configurations</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#emod-specific-configurations">EMOD-specific configurations</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#openmalaria-specific-configurations">OpenMalaria-specific configurations</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#malariasimulation-specific-configurations">malariasimulation-specific configurations</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#example-hpc">Example HPC</a>
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">Input parameters and predefined options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../usage/">How to use MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../example_run/">Example run (demo)</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a>
                   </li>
@@ -87,21 +103,17 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Age and population</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Population and age structure</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission intensity</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission and calibration</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness and uncertainty</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="../../guide/example_workflows.md">Example workflows</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="../../guide/development.md">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness and uncertainty</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -132,9 +144,13 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
                 </li>
     </ul>
                   </li>
@@ -155,6 +171,12 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">API Documentation: interventions</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations</a>
                 </li>
     </ul>
                   </li>
@@ -199,7 +221,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Getting started</li>
-      <li class="breadcrumb-item active">Configure MultiMalModPy</li>
+      <li class="breadcrumb-item active">First time configurations (manifest.py)</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/getting_started/configuration.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -209,136 +231,187 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="first-time-user-configurations">First time user configurations</h1>
-<p>Simulations are assumed to run on a Linux based high performance cluster (HPC), the framework is not designed for  running simulations locally</p>
-<p>When running for the first time, open and edit <code>manifest.py</code> to enter HPC specification and default directories</p>
-<p>This Python script is designed for configuring input file and directory settings for running EMOD (Epidemiological Modeling Software). Users can modify settings to tailor the environment to their specific computational platform and requirements.</p>
+                <h1 id="first-time-user-configurations-manifestpy">First time user configurations (manifest.py)</h1>
+<p>MultiMalModPy is designed to run simulations on a Linux-based high-performance computing (HPC) cluster and is not
+optimized for local execution (test runs only).
+Before running your first simulation, open and edit the <code>manifest.py</code> file to configure HPC specifications and default
+directories.
+This script defines input file locations and computational settings for running all of the models included in
+MultiMalModPy.
+Modify these parameters to match your HPC environment and simulation requirements.</p>
+<h2 id="directories-and-dependencies">Directories and dependencies</h2>
+<p>The <code>manifest.py</code> facilitates the setup for running epidemiological simulations by allowing users to customize file
+paths and configurations, making it adaptable to different computing environments.</p>
+<ol>
+<li>Adjust parameter values to fit your system configuration and workflow preferences.</li>
+<li>Ensure that necessary directories (i.e. <code>experiments</code>, and <code>simulation_output</code>) are created if they do not exist.</li>
+</ol>
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>📝 NOTE:</em></strong> 
+ Modify HPC settings and file paths to align with your specific computational resources..
+</div>
+
 <h2 id="configuration-parameters">Configuration parameters</h2>
+<h3 id="multimalmodpy-universel-configurations">MultiMalModPy universel configurations</h3>
 <table>
 <thead>
 <tr>
 <th>Parameter</th>
 <th>Description</th>
-<th>Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hpc</code></td>
+<td>Selected cluster name (e.g., NUCLUSTER or SCICORE).</td>
+</tr>
+<tr>
+<td><code>selected_platform</code></td>
+<td>Selected computing platform for job scheduling.</td>
+</tr>
+<tr>
+<td><code>ROOT_DIR</code></td>
+<td>Root directory of the current script&rsquo;s location.</td>
+</tr>
+<tr>
+<td><code>input_dir</code></td>
+<td>Directory where input files are located.</td>
+</tr>
+<tr>
+<td><code>job_directory</code></td>
+<td>Storage location for simulations and outputs.</td>
+</tr>
+<tr>
+<td><code>interp_path</code></td>
+<td>Path for target calibration data.</td>
+</tr>
+<tr>
+<td><code>interp_csv</code></td>
+<td>Filename for the interpolation data CSV file.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="emod-specific-configurations">EMOD-specific configurations</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>emod_build</code></td>
+<td>EMOD build version.</td>
+</tr>
+<tr>
+<td><code>sif_id</code></td>
+<td>Location of the file containing AssetCollection id for the dtk sif (use defaults).</td>
+</tr>
+<tr>
+<td><code>schema_file</code></td>
+<td>Location to store the downloaded schema file.</td>
+</tr>
+<tr>
+<td><code>eradication_path</code></td>
+<td>Location to store the downloaded Eradication binary.</td>
+</tr>
+<tr>
+<td><code>assets_input_dir</code></td>
+<td>Directory for input assets (uploaded via idmtools).</td>
+</tr>
+<tr>
+<td><code>plugins_folder</code></td>
+<td>Path to the directory for reporter plugins (use defaults).</td>
+</tr>
+<tr>
+<td><code>SIF_PATH</code></td>
+<td>Path to the Singularity Image (SIF) used for EMOD.</td>
+</tr>
+<tr>
+<td><code>EMOD_venv</code></td>
+<td>Name of the Python virtual environment including EMOD to activate.</td>
+</tr>
+<tr>
+<td><code>emod_input_path</code></td>
+<td>Path to EMOD-specific input files (fixed, relative to repository root).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="openmalaria-specific-configurations">OpenMalaria-specific configurations</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>openmalaria_version</code></td>
 <td>Version of OpenMalaria to be used.</td>
-<td>46</td>
-</tr>
-<tr>
-<td><code>emod_build</code></td>
-<td>Build version of EMOD.</td>
-<td>220405</td>
-</tr>
-<tr>
-<td><code>hpc</code></td>
-<td>Selected cluster name (e.g., NUCLUSTER or SCICORE).</td>
-<td><code>NUCLUSTER</code></td>
-</tr>
-<tr>
-<td><code>selected_platform</code></td>
-<td>Selected computing platform for job scheduling.</td>
-<td><code>SLURM_LOCAL</code></td>
-</tr>
-<tr>
-<td><code>ROOT_DIR</code></td>
-<td>Root directory of the current script's location.</td>
-<td>(automatically determined)</td>
-</tr>
-<tr>
-<td><code>sif_id</code></td>
-<td>Path to the file containing the AssetCollection id for the DTK SIF (Singularity Image).</td>
-<td><code>../dtk_sif.id</code></td>
-</tr>
-<tr>
-<td><code>schema_file</code></td>
-<td>Location to store the downloaded schema file.</td>
-<td><code>~/download/schema.json</code></td>
-</tr>
-<tr>
-<td><code>eradication_path</code></td>
-<td>Location to store the downloaded Eradication binary.</td>
-<td><code>~/download/Eradication</code></td>
-</tr>
-<tr>
-<td><code>assets_input_dir</code></td>
-<td>Directory for input assets (uploads via idmtools).</td>
-<td><code>Assets</code></td>
-</tr>
-<tr>
-<td><code>plugins_folder</code></td>
-<td>Path to the directory for reporter plugins.</td>
-<td><code>download/reporter_plugins</code></td>
-</tr>
-<tr>
-<td><code>input_dir</code></td>
-<td>Directory where input files are located.</td>
-<td><code>EMOD/inputs</code></td>
-</tr>
-<tr>
-<td><code>job_directory</code></td>
-<td>Directory for storing simulations and outputs.</td>
-<td><code>/projects/b1139/emod-om/experiments</code> (NUCLUSTER) or <code>/scicore/home/scicore/cavelan/git/model-characterization/experiments</code> (SCICORE)</td>
-</tr>
-<tr>
-<td><code>SIF_PATH</code></td>
-<td>Path to the SIF image used to run EMOD.</td>
-<td>Varies by HPC selection</td>
 </tr>
 <tr>
 <td><code>OPENMALARIA_PATH</code></td>
-<td>Path to OpenMalaria dependencies based on the selected version.</td>
-<td>Varies by version and HPC selection</td>
-</tr>
-<tr>
-<td><code>EMOD_venv</code></td>
-<td>Commands for activating the EMOD virtual environment.</td>
-<td>Varies by HPC selection</td>
-</tr>
-<tr>
-<td><code>emod_input_path</code></td>
-<td>Path to EMOD input files specific to the project.</td>
-<td>Varies by HPC selection</td>
+<td>Path to OpenMalaria dependencies.</td>
 </tr>
 <tr>
 <td><code>openmalaria_input_path</code></td>
-<td>Path to OpenMalaria input files.</td>
-<td>Varies by HPC selection</td>
-</tr>
-<tr>
-<td><code>malariasimulation_input_path</code></td>
-<td>Path to Malaria Simulation input files.</td>
-<td>Varies by HPC selection</td>
-</tr>
-<tr>
-<td><code>interp_path</code></td>
-<td>Path for target calibration data.</td>
-<td>Varies by HPC selection</td>
-</tr>
-<tr>
-<td><code>interp_csv</code></td>
-<td>Filename for the interpolation data CSV file.</td>
-<td><code>interpolation_data.csv</code></td>
+<td>Path to OpenMalaria input files (fixed, relative to repository root).</td>
 </tr>
 </tbody>
 </table>
-<h2 id="usage">Usage</h2>
-<ol>
-<li>Modify the values of the parameters to match your system configuration and preferences.</li>
-<li>Ensure that necessary directories are created if they do not exist; the script automatically creates the <code>job_directory</code>.</li>
-<li>The script will raise a <code>ValueError</code> if an unsupported OpenMalaria version is specified or if the current framework does not allow local runs.</li>
-<li>Make sure to adjust the HPC settings and paths based on your specific computational resources.</li>
-</ol>
-<p>This script facilitates the setup for running epidemiological simulations by allowing users to customize file paths and configurations, making it adaptable to different computing environments.</p>
+<h3 id="malariasimulation-specific-configurations">malariasimulation-specific configurations</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>malariasimulation_input_path</code></td>
+<td>Path to Malaria Simulation input files (fixed, relative to repository root).</td>
+</tr>
+<tr>
+<td><code>r_local</code></td>
+<td>Path to R binary, only for local run.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="example-hpc">Example HPC</h2>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="n">hpc</span> <span class="o">==</span> <span class="s1">&#39;NUCLUSTER&#39;</span><span class="p">:</span>
+    <span class="n">sh_hpc_config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="s1">&#39;b1139&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;b1139&#39;</span><span class="p">,</span> <span class="s1">&#39;em_modules&#39;</span><span class="p">:</span> <span class="s1">&#39;singularity&#39;</span><span class="p">,</span> <span class="s1">&#39;buyin&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+    <span class="n">projdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;/projects/b1139/emod-om/&#39;</span><span class="p">)</span>
+    <span class="n">job_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">projdir</span><span class="p">,</span> <span class="s1">&#39;experiments&#39;</span><span class="p">)</span>
+    <span class="n">output_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">projdir</span><span class="p">,</span> <span class="s1">&#39;simulation_outputs&#39;</span><span class="p">)</span>
+
+    <span class="n">SIF_PATH</span> <span class="o">=</span> <span class="s2">&quot;--bind /projects /projects/b1139/images/dtk_run_rocky_py39.sif&quot;</span>
+    <span class="k">if</span> <span class="n">openmalaria_version</span> <span class="o">==</span> <span class="mi">43</span><span class="p">:</span>
+        <span class="n">OPENMALARIA_PATH</span> <span class="o">=</span> <span class="s2">&quot;/projects/b1139/OpenMalaria/om_v43/&quot;</span>
+    <span class="k">elif</span> <span class="n">openmalaria_version</span> <span class="o">==</span> <span class="mi">46</span><span class="p">:</span>
+        <span class="n">OPENMALARIA_PATH</span> <span class="o">=</span> <span class="s2">&quot;/projects/b1139/OpenMalaria/om_v46/&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">openmalaria_version</span><span class="si">}</span><span class="s1"> not a valid OpenMalaria version, available versions: 43, 46&#39;</span><span class="p">)</span>
+    <span class="n">OPENMALARIA_venv</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">module use </span><span class="si">{</span><span class="n">OPENMALARIA_PATH</span><span class="si">}</span><span class="s1">/modules/ </span><span class="se">\n</span><span class="s1">module load openmalaria</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+    <span class="n">EMOD_venv_modules</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">ml singularity/3.8.1 </span><span class="se">\n</span><span class="s1">ml python/3.8.4&#39;</span><span class="p">)</span>
+    <span class="n">EMOD_venv_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">source /projects/b1139/environments/emodpy_om/bin/activate</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">EMOD_venv</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">EMOD_venv_modules</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">EMOD_venv_path</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="n">emod_input_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">),</span> <span class="s1">&#39;model-characterization/EMOD/inputs&#39;</span><span class="p">)</span>
+    <span class="n">openmalaria_input_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">),</span> <span class="s1">&#39;model-characterization/OpenMalaria/&#39;</span><span class="p">)</span>
+    <span class="n">malariasimulation_input_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">),</span> <span class="s1">&#39;model-characterization/malariasimulation/&#39;</span><span class="p">)</span>
+    <span class="n">interp_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">),</span> <span class="s1">&#39;model-characterization/target_calibration/&#39;</span><span class="p">)</span>
+    <span class="n">interp_csv</span> <span class="o">=</span> <span class="s1">&#39;interpolation_data.csv&#39;</span>
+</code></pre></div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../installation/" class="btn btn-neutral float-left" title="Installation and requirements"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../parameters/" class="btn btn-neutral float-right" title="Input parameters and predefined options">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../installation/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../usage/" class="btn btn-neutral float-right" title="How to use MultiMalModPy">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -369,7 +442,7 @@
       <span><a href="../installation/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../parameters/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../usage/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

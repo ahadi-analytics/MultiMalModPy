@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/age_demography/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Age and population - MultiMalModPy</title>
+    <title>Population and age structure - MultiMalModPy</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Age and population";
+        var mkdocs_page_name = "Population and age structure";
         var mkdocs_page_input_path = "guide\\age_demography.md";
         var mkdocs_page_url = "/MultiMalModPy/guide/age_demography/";
       </script>
@@ -68,11 +68,15 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation and requirements</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configure MultiMalModPy</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">First time configurations (manifest.py)</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">Input parameters and predefined options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/usage/">How to use MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_run/">Example run (demo)</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
                   </li>
@@ -81,7 +85,7 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../time/">Time</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Age and population</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Population and age structure</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#population-size">Population size</a>
     </li>
@@ -95,17 +99,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../transmission_calibration/">Transmission intensity</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../transmission_calibration/">Transmission and calibration</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../case_management/">Case management</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../uncertainty/">Randomness and uncertainty</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="../example_workflows.md">Example workflows</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="../development.md">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../uncertainty/">Randomness and uncertainty</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -136,9 +136,13 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
                 </li>
     </ul>
                   </li>
@@ -159,6 +163,12 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">API Documentation: interventions</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations</a>
                 </li>
     </ul>
                   </li>
@@ -203,7 +213,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Simulation Guide</li>
-      <li class="breadcrumb-item active">Age and population</li>
+      <li class="breadcrumb-item active">Population and age structure</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/age_demography.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -217,7 +227,7 @@
 <h2 id="population-size">Population size</h2>
 <h2 id="age-demography">Age demography</h2>
 <h3 id="changing-age">Changing age</h3>
-<p>... </p>
+<p>&hellip; </p>
 <p>=</p>
               
             </div>

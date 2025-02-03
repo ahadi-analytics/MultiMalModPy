@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/getting_started/example_run/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Example run (demo) - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Example run (demo)";
+        var mkdocs_page_input_path = "getting_started\\example_run.md";
+        var mkdocs_page_url = "/MultiMalModPy/getting_started/example_run/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/software/">Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview of MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration/">First time configurations (manifest.py)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../usage/">How to use MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Example run (demo)</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#hpc">HPC</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#local">Local</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#simulation-directories">Simulation directories</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Population and age structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission and calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness and uncertainty</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">API Documentation: interventions</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Getting started</li>
+      <li class="breadcrumb-item active">Example run (demo)</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/getting_started/example_run.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="example-run">Example run</h1>
+<h2 id="hpc">HPC</h2>
+<p>Coming soon&hellip;</p>
+<h2 id="local">Local</h2>
+<p>Run in terminal: </p>
+<div class="codehilite"><pre><span></span><code>python .\launch_sim.py --models malariasimulation OpenMalaria --test 
+</code></pre></div>
+
+<p><img alt="launch_sim.py" src="../../img/2025-02-02%2019_34_10-run_simulations.R.png" />  </p>
+<p>OpenMalaria 
+<img alt="OpenMalaria PSI" src="../../img/2025-02-02%2019_36_09.png" />  </p>
+<p>malariasimulation
+<img alt="malariasimulation PSI" src="../../img/2025-02-02%2020_49_05.png" /></p>
+<h2 id="simulation-directories">Simulation directories</h2>
+<p><strong>Experiments</strong>  </p>
+<p><code>simulations_local/experiments/20250202_TEST/sims_dynamic_perennial__19_33_36</code></p>
+<p><strong>Simulation outputs</strong>
+<code>simulations_local/simulation_outputs/20250202_TEST/sims_dynamic_perennial__19_33_36</code></p>
+<h1 id="example-outputs">Example outputs</h1>
+<p><img alt="Example outputs" src="../../img/2025-02-02%2020_59_42-OpenMalaria.png" /></p>
+<p>mmmpy_timeavrg.csv </p>
+<table>
+<thead>
+<tr>
+<th>index</th>
+<th>nHost</th>
+<th>prevalence_2to10</th>
+<th>prevalence</th>
+<th>clinical_incidence</th>
+<th>severe_incidence</th>
+<th>mortality</th>
+<th>ageGroup</th>
+<th>scen_id</th>
+<th>output_target</th>
+<th>seasonality</th>
+<th>entomology_mode</th>
+<th>num_seeds</th>
+<th>cm_clinical</th>
+<th>cm_severe</th>
+<th>cm_start</th>
+<th>model_input_malariasimulation</th>
+<th>model_input_OpenMalaria</th>
+<th>seed</th>
+<th>malariasimulation_pv</th>
+<th>inputEIR</th>
+<th>simulatedEIR</th>
+<th>n_total_mos_pop</th>
+<th>n_infectious_mos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>29.22192</td>
+<td>0.229265</td>
+<td>0.039565</td>
+<td>0.266923</td>
+<td>0.000136</td>
+<td>0.003592</td>
+<td>0-0.5</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>1</td>
+<td>389</td>
+<td>1.624338</td>
+<td>1.866924</td>
+<td>107933.7</td>
+<td>1823.24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>29.56986</td>
+<td>0.213848</td>
+<td>0.029741</td>
+<td>0.257018</td>
+<td>0.000229</td>
+<td>0.003646</td>
+<td>0-0.5</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>2</td>
+<td>119</td>
+<td>1.624338</td>
+<td>1.776915</td>
+<td>110223.8</td>
+<td>1790.495</td>
+</tr>
+<tr>
+<td>3</td>
+<td>29.23562</td>
+<td>0.201827</td>
+<td>0.023522</td>
+<td>0.287321</td>
+<td>0.000188</td>
+<td>0.002093</td>
+<td>0-0.5</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>3</td>
+<td>521</td>
+<td>1.624338</td>
+<td>1.455988</td>
+<td>105702.3</td>
+<td>1450.148</td>
+</tr>
+<tr>
+<td>1</td>
+<td>17.1726</td>
+<td>0.229265</td>
+<td>0.123644</td>
+<td>0.815252</td>
+<td>0.004088</td>
+<td>0.010307</td>
+<td>0.5-1</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>1</td>
+<td>389</td>
+<td>1.624338</td>
+<td>1.866924</td>
+<td>107933.7</td>
+<td>1823.24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>17.07397</td>
+<td>0.213848</td>
+<td>0.098363</td>
+<td>0.773107</td>
+<td>0.008504</td>
+<td>0.015926</td>
+<td>0.5-1</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>2</td>
+<td>119</td>
+<td>1.624338</td>
+<td>1.776915</td>
+<td>110223.8</td>
+<td>1790.495</td>
+</tr>
+<tr>
+<td>3</td>
+<td>17.31781</td>
+<td>0.201827</td>
+<td>0.112324</td>
+<td>0.785319</td>
+<td>0.005046</td>
+<td>0.009301</td>
+<td>0.5-1</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>3</td>
+<td>521</td>
+<td>1.624338</td>
+<td>1.455988</td>
+<td>105702.3</td>
+<td>1450.148</td>
+</tr>
+<tr>
+<td>1</td>
+<td>30.47123</td>
+<td>0.229265</td>
+<td>0.13307</td>
+<td>1.082989</td>
+<td>0.012506</td>
+<td>0.009547</td>
+<td>2-Jan</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>1</td>
+<td>389</td>
+<td>1.624338</td>
+<td>1.866924</td>
+<td>107933.7</td>
+<td>1823.24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>29.74247</td>
+<td>0.213848</td>
+<td>0.119197</td>
+<td>0.8271</td>
+<td>0.013502</td>
+<td>0.010006</td>
+<td>2-Jan</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>2</td>
+<td>119</td>
+<td>1.624338</td>
+<td>1.776915</td>
+<td>110223.8</td>
+<td>1790.495</td>
+</tr>
+<tr>
+<td>3</td>
+<td>31.24384</td>
+<td>0.201827</td>
+<td>0.121887</td>
+<td>0.940986</td>
+<td>0.009814</td>
+<td>0.005112</td>
+<td>2-Jan</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>3</td>
+<td>521</td>
+<td>1.624338</td>
+<td>1.455988</td>
+<td>105702.3</td>
+<td>1450.148</td>
+</tr>
+<tr>
+<td>1</td>
+<td>81.92055</td>
+<td>0.229265</td>
+<td>0.191933</td>
+<td>1.259757</td>
+<td>0.017883</td>
+<td>0.004393</td>
+<td>5-Feb</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>1</td>
+<td>389</td>
+<td>1.624338</td>
+<td>1.866924</td>
+<td>107933.7</td>
+<td>1823.24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>81.75068</td>
+<td>0.213848</td>
+<td>0.171353</td>
+<td>1.294179</td>
+<td>0.020479</td>
+<td>0.006474</td>
+<td>5-Feb</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>2</td>
+<td>119</td>
+<td>1.624338</td>
+<td>1.776915</td>
+<td>110223.8</td>
+<td>1790.495</td>
+</tr>
+<tr>
+<td>3</td>
+<td>81.81096</td>
+<td>0.201827</td>
+<td>0.157028</td>
+<td>1.156324</td>
+<td>0.015488</td>
+<td>0.004428</td>
+<td>5-Feb</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>3</td>
+<td>521</td>
+<td>1.624338</td>
+<td>1.455988</td>
+<td>105702.3</td>
+<td>1450.148</td>
+</tr>
+<tr>
+<td>1</td>
+<td>126.4521</td>
+<td>0.229265</td>
+<td>0.25345</td>
+<td>1.505709</td>
+<td>0.01387</td>
+<td>0.002468</td>
+<td>10-May</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>1</td>
+<td>389</td>
+<td>1.624338</td>
+<td>1.866924</td>
+<td>107933.7</td>
+<td>1823.24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>129.063</td>
+<td>0.213848</td>
+<td>0.240766</td>
+<td>1.543432</td>
+<td>0.015919</td>
+<td>0.004453</td>
+<td>10-May</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>2</td>
+<td>119</td>
+<td>1.624338</td>
+<td>1.776915</td>
+<td>110223.8</td>
+<td>1790.495</td>
+</tr>
+<tr>
+<td>3</td>
+<td>127.1973</td>
+<td>0.201827</td>
+<td>0.230642</td>
+<td>1.270468</td>
+<td>0.012767</td>
+<td>0.004603</td>
+<td>10-May</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>3</td>
+<td>521</td>
+<td>1.624338</td>
+<td>1.455988</td>
+<td>105702.3</td>
+<td>1450.148</td>
+</tr>
+<tr>
+<td>1</td>
+<td>117.3123</td>
+<td>0.229265</td>
+<td>0.326584</td>
+<td>1.559938</td>
+<td>0.007902</td>
+<td>0.003537</td>
+<td>15-Oct</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>1</td>
+<td>389</td>
+<td>1.624338</td>
+<td>1.866924</td>
+<td>107933.7</td>
+<td>1823.24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>115.4849</td>
+<td>0.213848</td>
+<td>0.304588</td>
+<td>1.56384</td>
+<td>0.010591</td>
+<td>0.005669</td>
+<td>15-Oct</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>2</td>
+<td>119</td>
+<td>1.624338</td>
+<td>1.776915</td>
+<td>110223.8</td>
+<td>1790.495</td>
+</tr>
+<tr>
+<td>3</td>
+<td>116.789</td>
+<td>0.201827</td>
+<td>0.307216</td>
+<td>1.428216</td>
+<td>0.008369</td>
+<td>0.002761</td>
+<td>15-Oct</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>3</td>
+<td>521</td>
+<td>1.624338</td>
+<td>1.455988</td>
+<td>105702.3</td>
+<td>1450.148</td>
+</tr>
+<tr>
+<td>1</td>
+<td>101.9562</td>
+<td>0.229265</td>
+<td>0.367066</td>
+<td>1.692884</td>
+<td>0.004996</td>
+<td>0.001818</td>
+<td>15-20</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>1</td>
+<td>389</td>
+<td>1.624338</td>
+<td>1.866924</td>
+<td>107933.7</td>
+<td>1823.24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>100.4932</td>
+<td>0.213848</td>
+<td>0.36325</td>
+<td>1.590158</td>
+<td>0.006466</td>
+<td>0.00278</td>
+<td>15-20</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>2</td>
+<td>119</td>
+<td>1.624338</td>
+<td>1.776915</td>
+<td>110223.8</td>
+<td>1790.495</td>
+</tr>
+<tr>
+<td>3</td>
+<td>100.2027</td>
+<td>0.201827</td>
+<td>0.296741</td>
+<td>1.467026</td>
+<td>0.005106</td>
+<td>0.003178</td>
+<td>15-20</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>3</td>
+<td>521</td>
+<td>1.624338</td>
+<td>1.455988</td>
+<td>105702.3</td>
+<td>1450.148</td>
+</tr>
+<tr>
+<td>1</td>
+<td>495.4932</td>
+<td>0.229265</td>
+<td>0.357386</td>
+<td>1.089016</td>
+<td>0.001195</td>
+<td>0.000621</td>
+<td>20-100</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>1</td>
+<td>389</td>
+<td>1.624338</td>
+<td>1.866924</td>
+<td>107933.7</td>
+<td>1823.24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>496.8219</td>
+<td>0.213848</td>
+<td>0.351285</td>
+<td>1.125957</td>
+<td>0.001531</td>
+<td>0.000627</td>
+<td>20-100</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>2</td>
+<td>119</td>
+<td>1.624338</td>
+<td>1.776915</td>
+<td>110223.8</td>
+<td>1790.495</td>
+</tr>
+<tr>
+<td>3</td>
+<td>496.2027</td>
+<td>0.201827</td>
+<td>0.291838</td>
+<td>0.987903</td>
+<td>0.001359</td>
+<td>0.000608</td>
+<td>20-100</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>3</td>
+<td>521</td>
+<td>1.624338</td>
+<td>1.455988</td>
+<td>105702.3</td>
+<td>1450.148</td>
+</tr>
+<tr>
+<td>1</td>
+<td>158.7863</td>
+<td>0.229265</td>
+<td>0.145211</td>
+<td>0.995048</td>
+<td>0.012093</td>
+<td>0.005874</td>
+<td>0-5</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>1</td>
+<td>389</td>
+<td>1.624338</td>
+<td>1.866924</td>
+<td>107933.7</td>
+<td>1823.24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>158.137</td>
+<td>0.213848</td>
+<td>0.127183</td>
+<td>0.956133</td>
+<td>0.014088</td>
+<td>0.00763</td>
+<td>0-5</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>2</td>
+<td>119</td>
+<td>1.624338</td>
+<td>1.776915</td>
+<td>110223.8</td>
+<td>1790.495</td>
+</tr>
+<tr>
+<td>3</td>
+<td>159.6082</td>
+<td>0.201827</td>
+<td>0.120844</td>
+<td>0.91474</td>
+<td>0.010442</td>
+<td>0.004663</td>
+<td>0-5</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>3</td>
+<td>521</td>
+<td>1.624338</td>
+<td>1.455988</td>
+<td>105702.3</td>
+<td>1450.148</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1000</td>
+<td>0.229265</td>
+<td>0.307926</td>
+<td>1.2436</td>
+<td>0.005703</td>
+<td>0.002153</td>
+<td>0-100</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>1</td>
+<td>389</td>
+<td>1.624338</td>
+<td>1.866924</td>
+<td>107933.7</td>
+<td>1823.24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1000</td>
+<td>0.213848</td>
+<td>0.297392</td>
+<td>1.2502</td>
+<td>0.006916</td>
+<td>0.003027</td>
+<td>0-100</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>2</td>
+<td>119</td>
+<td>1.624338</td>
+<td>1.776915</td>
+<td>110223.8</td>
+<td>1790.495</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1000</td>
+<td>0.201827</td>
+<td>0.259049</td>
+<td>1.1116</td>
+<td>0.005454</td>
+<td>0.002272</td>
+<td>0-100</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>3</td>
+<td>521</td>
+<td>1.624338</td>
+<td>1.455988</td>
+<td>105702.3</td>
+<td>1450.148</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../parameters/" class="btn btn-neutral float-left" title="User-modifiable parameters and defaults"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../glossary/" class="btn btn-neutral float-right" title="Glossary">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../parameters/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../glossary/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

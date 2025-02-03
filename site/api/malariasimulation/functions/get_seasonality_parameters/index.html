@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/api/malariasimulation/functions/get_seasonality_parameters/" />
+      <link rel="shortcut icon" href="../../../../img/favicon.ico" />
+    <title>get_seasonality_parameters - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "get_seasonality_parameters";
+        var mkdocs_page_input_path = "api\\malariasimulation\\functions\\get_seasonality_parameters.md";
+        var mkdocs_page_url = "/MultiMalModPy/api/malariasimulation/functions/get_seasonality_parameters/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../../..">
+          <img src="../../../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/software/">Software</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/overview/">Overview of MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/configuration/">First time configurations (manifest.py)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/usage/">How to use MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/example_run/">Example run (demo)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/glossary/">Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/time/">Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/age_demography/">Population and age structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/seasonality/">Seasonality</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/transmission_calibration/">Transmission and calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/uncertainty/">Randomness and uncertainty</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../../manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../EMOD/functions/reporters/">reporters.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >malariasimulation</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../../utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">get_seasonality_parameters</a>
+    <ul class="current">
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../interventions/">API Documentation: interventions</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../run_simulations/">run_simulations</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/contributors/">Contact</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/changelog/">Changelog</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/getting_help/">Getting help</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API</li>
+          <li class="breadcrumb-item">malariasimulation</li>
+      <li class="breadcrumb-item active">get_seasonality_parameters</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/api/malariasimulation/functions/get_seasonality_parameters.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="get_seasonality_parameters">get_seasonality_parameters</h1>
+<p><code>get_seasonality_parameters</code> computes Fourier coefficients to model <strong>seasonality</strong> based on <strong>Entomological Inoculation Rate (EIR) data</strong>.<br />
+The function supports <strong>both daily and monthly timeframes</strong> and allows customization of <strong>midpoint calculations</strong> for monthly data.  </p>
+<div class="codehilite"><pre><span></span><code><span class="err">@</span><span class="n">param</span><span class="w"> </span><span class="n">eirs</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="n">numeric</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="n">representing</span><span class="w"> </span><span class="n">EIR</span><span class="w"> </span><span class="n">values</span><span class="o">.</span><span class="w">  </span>
+<span class="w">             </span><span class="n">If</span><span class="w"> </span>\<span class="n">code</span><span class="p">{</span><span class="n">timeframe</span><span class="p">}</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="s2">&quot;monthly&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">contain</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">month</span><span class="o">.</span><span class="w">  </span>
+<span class="w">             </span><span class="n">If</span><span class="w"> </span>\<span class="n">code</span><span class="p">{</span><span class="n">timeframe</span><span class="p">}</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="s2">&quot;daily&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">contain</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">day</span><span class="o">.</span><span class="w">  </span>
+<span class="err">@</span><span class="n">param</span><span class="w"> </span><span class="n">timeframe</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="n">indicating</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">timeframe</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span>\<span class="n">code</span><span class="p">{</span><span class="n">eirs</span><span class="p">}</span><span class="w"> </span><span class="n">data</span><span class="o">.</span><span class="w"> </span><span class="n">Accepted</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="n">are</span><span class="p">:</span><span class="w">  </span>
+<span class="w">        </span>\<span class="n">itemize</span><span class="p">{</span><span class="w">  </span>
+<span class="w">          </span>\<span class="n">item</span><span class="w"> </span>\<span class="n">code</span><span class="p">{</span><span class="s2">&quot;daily&quot;</span><span class="p">}:</span><span class="w"> </span><span class="n">EIR</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">provided</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">year</span><span class="o">.</span><span class="w">  </span>
+<span class="w">          </span>\<span class="n">item</span><span class="w"> </span>\<span class="n">code</span><span class="p">{</span><span class="s2">&quot;monthly&quot;</span><span class="p">}:</span><span class="w"> </span><span class="n">EIR</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">provided</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">month</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">year</span><span class="o">.</span><span class="w">  </span>
+<span class="w">        </span><span class="p">}</span><span class="w">  </span>
+<span class="err">@</span><span class="n">param</span><span class="w"> </span><span class="n">midpoint_setting</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="n">specifying</span><span class="w"> </span><span class="n">how</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">calculate</span><span class="w"> </span><span class="n">midpoints</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">monthly</span><span class="w"> </span><span class="n">timeframe</span><span class="o">.</span><span class="w">  </span>
+<span class="w">        </span><span class="n">Accepted</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="n">are</span><span class="p">:</span><span class="w">  </span>
+<span class="w">        </span>\<span class="n">itemize</span><span class="p">{</span><span class="w">  </span>
+<span class="w">         </span>\<span class="n">item</span><span class="w"> </span>\<span class="n">code</span><span class="p">{</span><span class="s2">&quot;default&quot;</span><span class="p">}:</span><span class="w"> </span><span class="n">Midpoints</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="mi">15</span><span class="n">th</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">month</span><span class="o">.</span><span class="w">  </span>
+<span class="w">         </span>\<span class="n">item</span><span class="w"> </span>\<span class="n">code</span><span class="p">{</span><span class="s2">&quot;calendar&quot;</span><span class="p">}:</span><span class="w"> </span><span class="n">Midpoints</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">calculated</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">exact</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="n">distribution</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">each</span><span class="w"> </span><span class="n">month</span><span class="o">.</span><span class="w">  </span>
+<span class="w">        </span><span class="p">}</span><span class="w">  </span>
+<span class="err">@</span><span class="k">return</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">Fourier</span><span class="w"> </span><span class="n">coefficients</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">seasonality</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">provided</span><span class="w"> </span><span class="n">EIR</span><span class="w"> </span><span class="n">data</span><span class="o">.</span><span class="w">  </span>
+<span class="err">@</span><span class="k">export</span><span class="w">  </span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">get_seasonality_parameters</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">eirs</span><span class="p">,</span><span class="w"> </span><span class="n">timeframe</span><span class="p">,</span><span class="w"> </span><span class="n">midpoint_setting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;default&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">if</span><span class="p">(</span><span class="o">!</span><span class="n">timeframe</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;daily&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;monthly&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">stop</span><span class="p">(</span><span class="s">&quot;EIR timeframe not from accepted values (daily or monthly&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nf">if</span><span class="p">(</span><span class="o">!</span><span class="n">midpoint_setting</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;default&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;calendar&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">stop</span><span class="p">(</span><span class="s">&quot;EIR timeframe not from accepted values (default or calendar&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1"># If the EIRs provided are on a monthly timeframe:</span>
+<span class="w">  </span><span class="nf">if</span><span class="p">(</span><span class="n">timeframe</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;monthly&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1"># If the default midpoint setting has been selected:</span>
+<span class="w">    </span><span class="nf">if </span><span class="p">(</span><span class="n">midpoint_setting</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;default&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1"># Generate the monthly midpoints:</span>
+<span class="w">      </span><span class="n">monthly_midpoints</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="m">0</span><span class="o">:</span><span class="m">11</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">30</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">15</span>
+<span class="w">      </span><span class="c1"># Generate the Fourier coefficients:</span>
+<span class="w">      </span><span class="n">seasonality_parameters</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">umbrella</span><span class="o">::</span><span class="nf">fit_fourier</span><span class="p">(</span><span class="n">rainfall</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eirs</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">monthly_midpoints</span><span class="p">)</span>
+<span class="w">      </span><span class="c1"># Return the Fourier coefficients:</span>
+<span class="w">      </span><span class="nf">return</span><span class="p">(</span><span class="n">seasonality_parameters</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="n">else</span><span class="w"> </span><span class="nf">if </span><span class="p">(</span><span class="n">midpoint_setting</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;calendar&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1"># Generate a vector of the days per calendar month in a non-leap year:</span>
+<span class="w">      </span><span class="n">days_per_month</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="nf">days_in_month</span><span class="p">(</span><span class="nf">seq</span><span class="p">(</span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">dmy</span><span class="p">(</span><span class="s">&quot;01-01-2023&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">length.out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;months&quot;</span><span class="p">)))</span>
+<span class="w">      </span><span class="c1"># Get the midpoint of each month by subtracting half the number of days from the cumulative sum of days:</span>
+<span class="w">      </span><span class="n">monthly_midpoints</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cumsum</span><span class="p">(</span><span class="n">days_per_month</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">ceiling</span><span class="p">(</span><span class="n">days_per_month</span><span class="o">/</span><span class="m">2</span><span class="p">)</span>
+<span class="w">      </span><span class="c1"># Generate the Fourier coefficients:</span>
+<span class="w">      </span><span class="n">seasonality_parameters</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">umbrella</span><span class="o">::</span><span class="nf">fit_fourier</span><span class="p">(</span><span class="n">rainfall</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eirs</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">monthly_midpoints</span><span class="p">)</span>
+<span class="w">      </span><span class="c1"># Return the Fourier coefficients:</span>
+<span class="w">      </span><span class="nf">return</span><span class="p">(</span><span class="n">seasonality_parameters</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1"># If the EIRs are provided on the daily timeframe:</span>
+<span class="w">  </span><span class="nf">if</span><span class="p">(</span><span class="n">timeframe</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;daily&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1"># Generate the Fourier coefficients:</span>
+<span class="w">    </span><span class="n">seasonality_parameters</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">umbrella</span><span class="o">::</span><span class="nf">fit_fourier</span><span class="p">(</span><span class="n">rainfall</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eirs</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="m">365</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Return the Fourier coefficients</span>
+<span class="w">    </span><span class="nf">return</span><span class="p">(</span><span class="n">seasonality_parameters</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../analyze_sim/" class="btn btn-neutral float-left" title="analyze_sim.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../interventions/" class="btn btn-neutral float-right" title="API Documentation: interventions">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../../analyze_sim/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../interventions/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

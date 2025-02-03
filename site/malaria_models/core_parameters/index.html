@@ -76,11 +76,15 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview/">Overview of MultiMalModPy</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation and requirements</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">Configure MultiMalModPy</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">First time configurations (manifest.py)</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">Input parameters and predefined options</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/usage/">How to use MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_run/">Example run (demo)</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
                   </li>
@@ -89,21 +93,17 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Age and population</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Population and age structure</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission intensity</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission and calibration</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness and uncertainty</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="../../guide/example_workflows.md">Example workflows</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="../../guide/development.md">Advanced use and developer guide</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness and uncertainty</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">API</span></p>
@@ -134,9 +134,13 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
                 </li>
     </ul>
                   </li>
@@ -157,6 +161,12 @@
                 <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">API Documentation: interventions</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations</a>
                 </li>
     </ul>
                   </li>
@@ -358,7 +368,7 @@
 </tr>
 <tr>
 <td>Custom_Individual_Events</td>
-<td>['Received_Treatment', 'Received_Severe_Treatment']</td>
+<td>[&lsquo;Received_Treatment&rsquo;, &lsquo;Received_Severe_Treatment&rsquo;]</td>
 </tr>
 <tr>
 <td>Custom_Node_Events</td>
@@ -378,7 +388,7 @@
 </tr>
 <tr>
 <td>Demographics_Filenames</td>
-<td>['demographics.json']</td>
+<td>[&lsquo;demographics.json&rsquo;]</td>
 </tr>
 <tr>
 <td>Egg_Hatch_Delay_Distribution</td>
@@ -1120,7 +1130,7 @@ Default values were determined by using the median across 50 random sets of para
 <tr>
 <td>pcm</td>
 <td>mortality parameters</td>
-<td>new-born  clinical immunity relative to mother's</td>
+<td>new-born  clinical immunity relative to mother&rsquo;s</td>
 <td>0.774368</td>
 <td>0.420769</td>
 <td>0.998944</td>
@@ -1128,7 +1138,7 @@ Default values were determined by using the median across 50 random sets of para
 <tr>
 <td>pvm</td>
 <td>mortality parameters</td>
-<td>new-born  severe immunity relative to mother's</td>
+<td>new-born  severe immunity relative to mother&rsquo;s</td>
 <td>0.195768</td>
 <td>0.0925639</td>
 <td>0.855581</td>
@@ -1261,7 +1271,7 @@ from <a href="https://www.nature.com/articles/s41467-021-27486-z">Reiker et al 2
 </thead>
 <tbody>
 <tr>
-<td>'-ln(1-Sinf)'</td>
+<td>&lsquo;-ln(1-Sinf)&rsquo;</td>
 <td>Lower limit of success probability of inoculations</td>
 <td>Proportion</td>
 <td>0.050736</td>
@@ -1309,7 +1319,7 @@ from <a href="https://www.nature.com/articles/s41467-021-27486-z">Reiker et al 2
 <td>79.63425</td>
 </tr>
 <tr>
-<td>'-ln(1-alpha_m)'</td>
+<td>&lsquo;-ln(1-alpha_m)&rsquo;</td>
 <td>Maternal protection at birth</td>
 <td>Dimensionless</td>
 <td>5.459868</td>
