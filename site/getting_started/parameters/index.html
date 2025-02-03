@@ -134,6 +134,8 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/calib_params/">calib_params.py</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
@@ -221,8 +223,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <p><link rel="stylesheet" href="extra.css" /></p>
-<h1 id="parameter-categories-of-multimalmodpy">Parameter Categories of MultiMalModPy</h1>
+                <h1 id="parameter-categories-of-multimalmodpy">Parameter Categories of MultiMalModPy</h1>
 <p>MultiMalModPy requires users to specify three key types of parameters:</p>
 <p><em>Malaria</em><br />
 Define and align malaria-related inputs across all models to ensure comparability.<br />
@@ -255,27 +256,27 @@ Cluster-specific parameters are also required to optimize simulation execution a
 </thead>
 <tbody>
 <tr>
-<td><a href=".../guide/seasonality.md">seasonality</a></td>
+<td><a href="guide/seasonality.md">seasonality</a></td>
 <td>Seasonal variation in malaria transmission due to climatic  factors.</td>
 </tr>
 <tr>
-<td><a href=".../guide/case_management.md">case_management</a></td>
+<td><a href="guide/case_management.md">case_management</a></td>
 <td>Diagnosis and treatment for uncomplicated and severe malaria cases.</td>
 </tr>
 <tr>
-<td><a href=".../guide/importation.md">intervention_list</a></td>
+<td><a href="guide/importation.md">intervention_list</a></td>
 <td>Introduction of malaria cases from external sources (e.g., travel, migration).</td>
 </tr>
 <tr>
-<td><a href=".../guide/importation.md">importation_rate</a></td>
+<td><a href="guide/importation.md">importation_rate</a></td>
 <td>Introduction of malaria cases from external sources (e.g., travel, migration).</td>
 </tr>
 <tr>
-<td><a href=".../guide/entomology_mode.md">entomology_mode</a></td>
+<td><a href="guide/entomology_mode.md">entomology_mode</a></td>
 <td>Mosquito population dynamics, biting behavior, and vector control strategies.</td>
 </tr>
 <tr>
-<td><a href=".../guide/sweep_list.md">sweep_list</a></td>
+<td><a href="guide/sweep_list.md">sweep_list</a></td>
 <td>Creates a full factorial design of the selected <span title="The sweep defines all combinations of parameter values to simulate every possible scenario." style="color: #007BFF; text-decoration: underline; cursor: pointer;">sweep</span> parameter values</td>
 </tr>
 <tr>
@@ -296,51 +297,51 @@ Cluster-specific parameters are also required to optimize simulation execution a
 </thead>
 <tbody>
 <tr>
-<td><a href=".../guide/time.md">start_year, end_year</a></td>
+<td><a href="guide/time.md">start_year, end_year</a></td>
 <td>Start year of the <span title="Simulation period during which outcomes are recorded" style="color: #007BFF; text-decoration: underline; cursor: pointer;">monitoring period</span></td>
 </tr>
 <tr>
-<td><a href=".../guide/time.md">burnin*</a></td>
+<td><a href="guide/time.md">burnin*</a></td>
 <td>Initial period for reaching an  <span title="Transmission reaches a stable state and immunity in the population has been established" style="color: #007BFF; text-decoration: underline; cursor: pointer;">equilibrium</span>.</td>
 </tr>
 <tr>
-<td><a href=".../guide/uncertainty.md">seed</a></td>
+<td><a href="guide/uncertainty.md">seed</a></td>
 <td>Random seed(s) for stochastic replications.</td>
 </tr>
 <tr>
-<td><a href=".../guide/age_demography.md">pop_size*</a></td>
+<td><a href="guide/age_demography.md">pop_size*</a></td>
 <td>Simulated number of individuals.</td>
 </tr>
 <tr>
-<td><a href=".../guide/age_demography.md">agebins</a></td>
+<td><a href="guide/age_demography.md">agebins</a></td>
 <td><span title="Age limits at which simulation outputs are recorded" style="color: #007BFF; text-decoration: underline; cursor: pointer;">Age bins</span> to simulate.</td>
 </tr>
 <tr>
-<td><a href=".../guide/age_demography.md">age_groups_aggregates</a></td>
+<td><a href="guide/age_demography.md">age_groups_aggregates</a></td>
 <td><span title="One or more overlapping age bins for output aggregation" style="color: #007BFF; text-decoration: underline; cursor: pointer;">Age groups</span> for output aggregation.</td>
 </tr>
 <tr>
-<td><a href=".../guide/run_mode.md">run_mode</a></td>
+<td><a href="guide/run_mode.md">run_mode</a></td>
 <td>Simulation execution mode, supporting testing and production configurations.</td>
 </tr>
 <tr>
-<td><a href=".../guide/parse_launch_args.md">emodstep*</a></td>
+<td><a href="guide/parse_launch_args.md">emodstep*</a></td>
 <td>EMOD: use <span title="Saves the population state at a specific time, allowing simulations to start from that point instead of re-running the burn-in period" style="color: #007BFF; text-decoration: underline; cursor: pointer;">serialization</span>  to separate burn-in and pickup simulation, or run all together.</td>
 </tr>
 <tr>
-<td><a href=".../guide/parse_launch_args.md">emod_calib_params*</a></td>
+<td><a href="guide/parse_launch_args.md">emod_calib_params*</a></td>
 <td>EMOD: run simulations with alternative within-host calibration.</td>
 </tr>
 <tr>
-<td><a href=".../guide/parse_launch_args.md">mpv*</a></td>
+<td><a href="guide/parse_launch_args.md">mpv*</a></td>
 <td>malariasimulation parameter variation.</td>
 </tr>
 <tr>
-<td><a href=".../guide/parse_launch_args.md">target_output_name, target_output_values</a></td>
+<td><a href="guide/parse_launch_args.md">target_output_name, target_output_values</a></td>
 <td>Output type and target location for CM 0 and 15% simulations using EMOD (pop: 1,000), OpenMalaria (pop: 50,000), and malariaSimulation (pop: 50,000) under seasonal and perennial profiles.</td>
 </tr>
 <tr>
-<td><a href=".../guide/parse_launch_args.md">test</a></td>
+<td><a href="guide/parse_launch_args.md">test</a></td>
 <td>Reduces the computational demand by lowering pop_size, burn-in and seeds</td>
 </tr>
 <tr>
@@ -363,51 +364,51 @@ They are specified in the <code>parse_launch_args</code> function within the <co
 </thead>
 <tbody>
 <tr>
-<td><a href=".../guide/parse_launch_args.md">directory</a></td>
+<td><a href="guide/parse_launch_args.md">directory</a></td>
 <td>Specifies the directory for storing simulation inputs, config, and model outputs.</td>
 </tr>
 <tr>
-<td><a href=".../guide/parse_launch_args.md">suite</a></td>
+<td><a href="guide/parse_launch_args.md">suite</a></td>
 <td>Suite (collection of) of simulation experiments.</td>
 </tr>
 <tr>
-<td><a href=".../guide/parse_launch_args.md">expname, exp_name</a></td>
+<td><a href="guide/parse_launch_args.md">expname, exp_name</a></td>
 <td>Name of the simulation experiment.</td>
 </tr>
 <tr>
-<td><a href=".../guide/parse_launch_args.md">models, models_to_run</a></td>
+<td><a href="guide/parse_launch_args.md">models, models_to_run</a></td>
 <td>Specifies which models to run (one or multiple).</td>
 </tr>
 <tr>
-<td><a href=".../guide/parse_launch_args.md">user</a></td>
+<td><a href="guide/parse_launch_args.md">user</a></td>
 <td>Creates a user-specific directory for storing experiments and simulation outputs.</td>
 </tr>
 <tr>
-<td><a href=".../guide/parse_launch_args.md">rownum</a></td>
+<td><a href="guide/parse_launch_args.md">rownum</a></td>
 <td>If running from CSV, defines row of the simulation scenario to run.</td>
 </tr>
 <tr>
-<td><a href=".../guide/hpc.md">memory_per_sim*</a></td>
+<td><a href="guide/hpc.md">memory_per_sim*</a></td>
 <td>Memory allocation per simulation, ensuring appropriate resources.</td>
 </tr>
 <tr>
-<td><a href=".../guide/hpc.md">time_per_sim*</a></td>
+<td><a href="guide/hpc.md">time_per_sim*</a></td>
 <td>Max time for each simulation to manage computational time and resources</td>
 </tr>
 <tr>
-<td><a href=".../guide/outputs.md">analyzer_list</a></td>
+<td><a href="guide/outputs.md">analyzer_list</a></td>
 <td>Type of standardized outputs to generate (i.e. select default or custom ones)</td>
 </tr>
 <tr>
-<td><a href=".../guide/outputs.md">analyzer_script</a></td>
+<td><a href="guide/outputs.md">analyzer_script</a></td>
 <td>Name of the analyzer script (default, optional for advanced users)</td>
 </tr>
 <tr>
-<td><a href=".../guide/outputs.md">plots_to_run</a></td>
+<td><a href="guide/outputs.md">plots_to_run</a></td>
 <td>Plots to generate (allows custom plots for advanced users)</td>
 </tr>
 <tr>
-<td><a href=".../guide/framework.md">sim_params_list</a></td>
+<td><a href="guide/framework.md">sim_params_list</a></td>
 <td>Lists the simulation parameters to be used across the models, allowing for consistent configuration of the simulation environment.</td>
 </tr>
 <tr>

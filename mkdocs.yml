@@ -56,6 +56,7 @@ nav:
     - EMOD:
       - api/EMOD/utils.md
       - api/EMOD/analyze_sim.md
+      - api/EMOD/functions/calib_params.md
       - api/EMOD/functions/forcedEIR.md
       - api/EMOD/functions/interventions.md
       - api/EMOD/functions/EMOD_functions.md

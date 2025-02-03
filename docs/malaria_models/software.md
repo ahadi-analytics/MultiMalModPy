@@ -1,14 +1,14 @@
 # Software
 
 
-**EMOD** (Epidemiological MODeling software) development is lead by
+**EMOD** (Epidemiological MODeling software) development is led by
 the [Institute for Disease Modeling (IDM)](https://www.idmod.org/), with contributions for the malaria model from the [Malaria Modeling Group at Northwestern University](https://www.numalariamodeling.org/).
 
-**OpenMalaria** development is lead by the [Intervention and Infectious Disease Modelling Team](https://www.thekids.org.au/our-research/early-environment/infection-and-vaccines/intervention-and-infectious-disease-modelling/)
+**OpenMalaria** development is led by the [Intervention and Infectious Disease Modelling Team](https://www.thekids.org.au/our-research/early-environment/infection-and-vaccines/intervention-and-infectious-disease-modelling/)
 at The Kids Research Institute Australia/University of Western Australia, 
 and  [The Disease Modelling Unit](https://www.swisstph.ch/en/about/eph/disease-modelling/) of the Swiss Tropical and Public Health Institute (Swiss TPH).
 
-**malariasimulation** development is lead by [Imperial College London](https://www.imperial.ac.uk/malaria-modelling/).
+**malariasimulation** development is led by [Imperial College London](https://www.imperial.ac.uk/malaria-modelling/).
 
 Table: Overview of model software and infrastructure
 
