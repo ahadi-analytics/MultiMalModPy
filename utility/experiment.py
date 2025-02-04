@@ -64,7 +64,7 @@ class RunModeManager:
 
     def _configure_calibration(self):
         self.experiment.SUITEname = f'{self.experiment.SUITEname}_calibration'
-        self.experiment.importation_rate = 0  # need to be 0 for OpenMalaria and 5 for EMOD, we need to figure out a better way to do this.
+        self.mem_increase_factor = 5.0 #Currently the memory increase factor only effects the analyzers
         self.experiment.num_seeds = 20
         self.experiment.start_year = 2000
         self.experiment.end_year = 2005
@@ -103,6 +103,7 @@ class RunModeManager:
         Keeps appropriate values for popsize and burnin to ensure accurary of results.
         """
         self.experiment.SUITEname = f'{self.experiment.SUITEname}_simple'
+        self.mem_increase_factor = 1.0 #Currently the memory increase factor only effects the analyzers
         self.experiment.num_seeds = 3
         self.experiment.emod_burnin = 100
         self.experiment.openmalaria_burnin = 100
@@ -123,6 +124,7 @@ class RunModeManager:
         Using appropriate number of seeds and large ranges for output targets.
         """
         self.experiment.SUITEname = f'{self.experiment.SUITEname}_production'
+        self.mem_increase_factor = 1.0 #Currently the memory increase factor only effects the analyzers
         self.experiment.num_seeds = 20
         self.experiment.emod_burnin = 100
         self.experiment.openmalaria_burnin = 100
@@ -132,7 +134,7 @@ class RunModeManager:
         if self.experiment.output_type == 'eir':
             self.experiment.output_target = [20]
         if self.experiment.output_type == 'prevalence_2to10':
-            self.experiment.output_target = [0.05, 0.1, 0.25, 0.5]
+            self.experiment.output_target = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
         if self.experiment.output_type == 'clinical_incidence_U5':
             raise ValueError('output_type clinical_incidence_U5 not defined for production run')
 
@@ -158,6 +160,7 @@ class RunModeManager:
         Overwrites popsize, burnin periods and seeds to allow a faster run of simulations (i.e. for testing, debugging).
         """
         self.experiment.SUITEname = f'{self.experiment.SUITEname}_TEST'
+        self.mem_increase_factor = 1.0 #Currently the memory increase factor only effects the analyzers
         self.experiment.num_seeds = 3
         self.experiment.emod_burnin = 10
         self.experiment.openmalaria_burnin = 10
@@ -202,8 +205,6 @@ class ArgsConfig:
         self.test = args.test
         self.csv = args.csv
         self.rownum = args.rownum
-        ## Allow to overwrite interventions or output_type if specified when running launch_sim.py
-        self.intervention_list = args.interventions
         self.output_type = args.output_type
         # User and directory settings
         self.directory = args.directory

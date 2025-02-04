@@ -32,7 +32,7 @@ def add_daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
         desc = prefix + '%d' % (sim_year + sim_start_year)
         add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365, age_bins=age_bins,
                                    max_number_reports = 366, reporting_interval=1, filename_suffix=desc, pretty_format=False,
-                                   add_true_density_vs_threshold=True, detection_threshold_true_parasite_density = detection_threshold)
+                                   add_true_density=True, parasite_detection_threshold = detection_threshold)
 
 
 def add_5daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
@@ -69,7 +69,7 @@ def add_5daily_reports(task, manifest, sim_start_year, num_year, tot_year=None,
         desc = prefix + '%d' % (sim_year + sim_start_year)
         add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365 - 1, age_bins=age_bins,
                                    max_number_reports = 366, reporting_interval=5, filename_suffix=desc, pretty_format=False,
-                                   add_true_density_vs_threshold=True, detection_threshold_true_parasite_density = detection_threshold)
+                                   add_true_density=True, parasite_detection_threshold = detection_threshold)
 
 
 def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
@@ -106,7 +106,7 @@ def add_monthly_reports(task, manifest, sim_start_year, num_year, tot_year=None,
         desc = prefix + '%d' % (sim_year + sim_start_year)
         add_malaria_summary_report(task, manifest, start_day=start, end_day=start + 365 - 1, age_bins=age_bins,
                                    reporting_interval=30, filename_suffix=desc, pretty_format=False,
-                                   add_true_density_vs_threshold=True, detection_threshold_true_parasite_density = detection_threshold)
+                                   add_true_density=True, parasite_detection_threshold = detection_threshold)
 
 
 def add_annual_reports(task, manifest, sim_start_year, num_year, tot_year=None,
@@ -143,4 +143,4 @@ def add_annual_reports(task, manifest, sim_start_year, num_year, tot_year=None,
     add_malaria_summary_report(task, manifest, start_day=start, end_day=start + (num_year * 365) - 1,
                                age_bins=age_bins, reporting_interval=365, max_number_reports = (tot_year + sim_start_year) - (sim_year + sim_start_year),
                                filename_suffix=desc, pretty_format=False,
-                               add_true_density_vs_threshold=True, detection_threshold_true_parasite_density = detection_threshold)
+                               add_true_density=True, parasite_detection_threshold = detection_threshold)

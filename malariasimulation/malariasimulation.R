@@ -56,7 +56,7 @@ max_ages <- exp$max_ages
 
 if( length(exp$intervention_list)>0){
   print("Adding interventions to simulations...")
-  source(file.path('define_interventions.R'))
+  source(file.path('functions/interventions.R'))
   if ('smc' %in% exp$intervention_list){
     exp <- define_smc_param(exp, scenario_to_run)
   }

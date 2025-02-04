@@ -47,7 +47,7 @@ class SimulationConfig:
         """
         1. Malaria Config
         """
-        self.entomology_mode = 'dynamic'
+        self.entomology_mode = 'dynamic' # could be forced or dynamic (vector model for EMOD)
         self.seasonality = ['perennial']
         self.cm_start = 1
         self.case_management = [(0, 0)]  # format: [(cm_clinical, cm_severe), (...)]
@@ -61,7 +61,9 @@ class SimulationConfig:
         # Note: These will be overwritten if a specific run mode is specified, as run modes may have their own defaults.
         self.output_type = 'prevalence_2to10'
         self.output_target = [0.2]
-        self.intervention_list = []
+
+        # Interventions to include (intervention specific configurations in interventions/ folder
+        self.intervention_list = [] #can be empty or 'cc_step'
 
         # Parameters to vary
         self.sweep_list = ['output_target', 'case_management', 'seasonality']
@@ -79,33 +81,40 @@ class SimulationConfig:
         #                            [75,80], [80,85], [85,90], [90,95], [95,100], [0, 5], [0, 100]]
 
         self.num_seeds_burnin = 1
-        self.num_seeds = 25
+        self.num_seeds = 20
         self.start_year = 2000
         self.end_year = 2005
+        self.mem_increase_factor = 1.0 #Currently the memory increase factor only effects the analyzers
 
         # EMOD Settings
         self.emod_burnin = 100
         self.emod_pop_size = 1000
         self.emod_calib_type = 'emod_severe' #could be 'emod_severe' or 'emod_best'
-        self.emod_pop_size = 1000
+        self.emod_memory_per_sim = 5 #memory is represented in gigabytes allocated for each SLURM job, i.e. 5GB
+        self.emod_time_per_sim = '3:00:00' #time is represented in hours:minutes:seconds
 
         # malariasimulation Settings
-        self.malariasimulation_burnin = 80
+        self.malariasimulation_burnin = 100
         self.malariasimulation_pop_size = 50000
+        self.malariasimulation_memory_per_sim = 3
+        self.malariasimulation_time_per_sim = '3:00:00'
+
 
         # OpenMalaria Settings
-        self.openmalaria_burnin = 80
+        self.openmalaria_burnin = 100
         self.openmalaria_pop_size = 50000
         self.openmalaria_scaffold = "R0000GA"
         self.openmalaria_survey_step = '5d'
+        self.openmalaria_memory_per_sim = 3
+        self.openmalaria_time_per_sim = '2:00:00'
 
         """
         3. Framework Config
         """
-        self.mem_increase_factor = 1.0
         self.analyzer_script = ['analyze_sim.py']
         self.analyzer_list = ['timeavrg', 'annual', 'monthly', '5day']  # openmalaria_base, surveyallage
         self.plots_to_run = ['relationship', 'timeseries', 'agecurves']  # 'ccstep'
         self.burnin_directory = None
         self.sim_params_list = ['seasonality', 'sweep_list', 'case_management', 'eir', 'intervention_list', 'agebins',
                                 'output_target', 'plots_to_run']
+

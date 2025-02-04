@@ -98,7 +98,7 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
 
     ## If forced EIR, treated as campaign in EMOD
     if row.entomology_mode == 'forced':
-        set_inputEIR_seasonality(camp, float(row.model_input_em), row.seasonality)
+        set_inputEIR_seasonality(camp, float(row.model_input_EMOD), row.seasonality)
 
     # Case management
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
@@ -106,9 +106,9 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     ## Carrying capacity step change
     if 'cc_step' in intervention_list and (
             exp.emod_step == 'pickup' or exp.emod_step is None):  # Make sure to include the cc_step change only at pickup simulations.
-        eir_df = pd.DataFrame({'CONSTANT': [row.cc_factor_emod]})
+        eir_df = pd.DataFrame({'CONSTANT': [row.cc_factor_EMOD]})
         add_scale_larval_habitats(camp, df=eir_df,
-                                  start_day=row.cc_timestep_emod,
+                                  start_day=row.cc_timestep_EMOD,
                                   repetitions=1)
     if exp.emod_importation_rate != 0:
         ncases_per_year_per1000pop = (exp.emod_importation_rate * exp.emod_pop_size) / 1000
@@ -160,7 +160,7 @@ def habitat_setup(config, exp, row):
     else:
         habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat1.parameters.Habitat_Type = "TEMPORARY_RAINFALL"
-        habitat1.parameters.Max_Larval_Capacity = 100000000 * max_capacity_multiplier
+        habitat1.parameters.Max_Larval_Capacity = 90000000 * max_capacity_multiplier
         habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type,
                          "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
         malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list, overwrite=True)
@@ -184,6 +184,7 @@ def climate_setup(task, seasonality=None):
     Returns:
         None
     """
+    task.config.parameters.Climate_Model = "CLIMATE_BY_DATA"
     task.config.parameters.Air_Temperature_Filename = os.path.join('climate',
                                                                    f'{seasonality}_air_temperature_daily.bin')
     task.config.parameters.Land_Temperature_Filename = os.path.join('climate',

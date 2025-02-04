@@ -14,9 +14,8 @@ log = logging.getLogger(__name__)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
 # emod_step expects a string, either None, 'burnin' or 'pickup'. Default None will run 'burnin' and 'pickup' time in one simulation.
 
-
-# Retrieve parsed arguments
-if "launch_sim.py" in sys.argv:
+# Retrieve parsed arguments 
+if __name__ == "__main__" and any(arg.endswith("launch_sim.py") for arg in sys.argv):
     args = parse_launch_args()
 else:
     from utility.helper_local import LoadLaunchArgs
@@ -76,7 +75,7 @@ else:
     exp.emod_serialized_id = ''
     if exp.emod_step == 'burnin':
         print('Message: Running burnin for EMOD')
-        exp.exp_name = f'{exp.exp_name}_burnin{exp.burnin}'
+        exp.exp_name = f'{exp.exp_name}_burnin{exp.emod_burnin}'
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.plots_to_run = []
 
@@ -115,30 +114,30 @@ if __name__ == '__main__':
     if 'EMOD' in exp.models_to_run:
         from idmtools.core.platform_factory import Platform
         from idmtools.entities.experiment import Experiment
-        #import emod_malaria.bootstrap as dtk
-        #import pathlib
+        import emod_malaria.bootstrap as dtk
+        import pathlib
 
         # Set platform and associated values, such as the maximum number of jobs to run at one time
         platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
-                            mem_per_cpu=int(3500*exp.mem_increase_factor), partition=manifest.sh_hpc_config['p'],
-                            time='06:30:00', account=manifest.sh_hpc_config['A'],
+                            mem_per_cpu=f'{exp.emod_memory_per_sim}G', partition=manifest.sh_hpc_config['p'],
+                            time=exp.emod_time_per_sim, account=manifest.sh_hpc_config['A'],
                             modules=[manifest.sh_hpc_config['em_modules']],
                             max_running_jobs=exp.max_running_jobs)  # mem_per_cpu default: 2048
         exp.platform = platform
 
         # For the time being, until emodpy-malaria updates we do not want to grab eradication from EMOD-malaria
-        #dtk.setup(pathlib.Path(manifest.eradication_path).parent)
+        dtk.setup(pathlib.Path(manifest.eradication_path).parent)
         from EMOD.utils import submit_run_EMOD
         emod_exp = submit_run_EMOD(exp, scen_df)
         exp.emod_id = emod_exp.id
 
         if exp.emod_step == 'burnin':
-            exp.exp_name_pickup = exp.exp_name.replace(f'_burnin{exp.burnin}', '')
+            exp.exp_name_pickup = exp.exp_name.replace(f'_burnin{exp.emod_burnin}', '')
             submit_run_pyscript(exp, pyscript='launch_sim.py', shname='launch_pickup.sh',
                                 custom_args=f"--suite {exp.SUITEname} --expname {exp.exp_name_pickup} "
                                             f"--emodstep pickup --serializedid {emod_exp.id} "
                                             f"--models {' '.join([m for m in exp.models_to_run_pickup])} ",
-                                job_id_EMOD='job_id_EMODanalyze',memG=5, job='pickup_launch')
+                                job_id_EMOD='job_id_EMODanalyze',memG=exp.mem_increase_factor*5, job='pickup_launch')
 
     # Submit malariasimulation as SLURM job, including scheduled analyzer
     if 'malariasimulation' in exp.models_to_run:

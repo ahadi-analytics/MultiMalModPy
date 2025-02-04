@@ -1,3 +1,6 @@
+import os
+import pandas as pd
+import numpy as np
 # Carrying Capacity step change (cc_step)
 
 def cc_step_params(exp):
@@ -13,23 +16,31 @@ def cc_step_params(exp):
     """
 
     # Required fixed parameters for cc_step
+    exp.cc_decreasing = True  # this is important to note because decreasing sims are organized differently.
     exp.step_in_years = 5
     exp.openmalaria_scaffold = "R0000GA_CC_STEP"
     exp.openmalaria_survey_step = '5d'
+
+    if exp.cc_decreasing:
+        print('Warning: Running cc_step decreasing simulations requires emod and openmalaria importation rates to be true')
+        exp.emod_importation_rate = 5
+        exp.openmalaria_importation_rate = 5
 
     # Flexible parameters depending on type of run and user-specifications
     if exp.run_mode == 'production':
         print('Warning: Running cc_step in production mode with pre-defined not user-defined parameters')
         exp.mem_increase_factor = 6.0  # scaling factor on default memory requested
-        exp.pop_size = 50000
-        exp.num_seeds_burnin = 1
-        exp.num_seeds = 20
         exp.start_year = 1995
         exp.end_year = 2050
-        exp.burnin = 80
         exp.output_type = 'prevalence_2to10'
         exp.output_target = [0.1, 0.25, 0.5]
         exp.cc_change = exp.output_target
+        exp.emod_memory_per_sim = 6
+        exp.emod_time_per_sim = '6:00:00'
+        exp.malariasimulation_memory_per_sim = 6
+        exp.malariasimulation_time_per_sim = '10:00:00'
+        exp.openmalaria_memory_per_sim = 6
+        exp.openmalaria_time_per_sim = '5:00:00'
     else:
         ## Keep parameters as defined by user in helper.py
         exp.cc_change = exp.output_target
@@ -38,15 +49,15 @@ def cc_step_params(exp):
     exp.sweep_list = exp.sweep_list + ['cc_change']
 
     # 5 Years in to the pickup time OpenMalaria
-    exp.cc_timestep_openmalaria = int((73 * (exp.burnin + exp.step_in_years)))
+    exp.cc_timestep_OpenMalaria = int((73 * (exp.openmalaria_burnin + exp.step_in_years)))
 
     if exp.emod_step is None:
         ## if None, no serialization done, hence burnin period is added to the step_in_years
-        exp.cc_timestep_emod = int((exp.burnin + exp.step_in_years) * 365)
+        exp.cc_timestep_EMOD = int((exp.emod_burnin + exp.step_in_years) * 365)
     else:
         # 5 years in to the pickup time EMOD and malariasimulation, this parameter can already be defined in burnin for the respective pickup run
-        exp.cc_timestep_emod = int(exp.step_in_years * 365)
-    exp.cc_timestep_malariasimulation = int((exp.burnin + exp.step_in_years) * 365)
+        exp.cc_timestep_EMOD = int(exp.step_in_years * 365)
+    exp.cc_timestep_malariasimulation = int((exp.malariasimulation_burnin + exp.step_in_years) * 365)
 
     # Fixed parameters for cc_step
     exp.openmalaria_scaffold = "R0000GA_CC_STEP"  # defining which OpenMalaria XML scaffold to use
@@ -101,11 +112,25 @@ def cc_step_factor_calculator(exp, df, model):
         raise ValueError(f'interp_file not found: {interp_path}')
     data = pd.read_csv(interp_path)
     output = []
+
+    if model == 'EMOD':
+        popsize = exp.emod_pop_size
+    elif model == 'malariasimulation':
+        popsize = exp.malariasimulation_pop_size
+    elif model == 'OpenMalaria':
+        popsize = exp.openmalaria_pop_size
+    else:
+        raise ValueError(f'Specified model is not valid {model}')
+
+    # FIXME allow this hack, or is there a better one? For testrun, or introduce 'debug run' to allow running lower  populations
+    if exp.test and popsize not in data.loc[data['modelname'] == model, 'pop_size'].unique():
+        popsize = data.loc[data['modelname'] == model, 'pop_size'].min()
+            
     for i, row in df.iterrows():
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
                       & (data['seasonality'] == row['seasonality'])
                       & (data['modelname'] == model)
-                      & (data['pop_size'] == exp.pop_size))]
+                      & (data['pop_size'] == popsize))]
         if model == 'EMOD':
             xt = idata['prevalence_2to10']
             yp = idata['input_target']
@@ -119,13 +144,6 @@ def cc_step_factor_calculator(exp, df, model):
             xnew = row['cc_change']
             interpolated_old = np.interp(xold, xt, yp)
         interpolated_new = np.interp(xnew, xt, yp)
-
-        if exp.pop_size == 10000 or exp.pop_size == 50000:
-            pop_fitting_was_run = exp.pop_size
-        else:
-            pop_fitting_was_run = 50000
-        interpolated_old = interpolated_old / (pop_fitting_was_run / exp.pop_size)
-        interpolated_new = interpolated_new / (pop_fitting_was_run / exp.pop_size)
 
         if model == 'OpenMalaria':
             interpolated_value = 1 - (interpolated_new / interpolated_old)
@@ -177,8 +195,8 @@ def cc_step_columns(exp, df):
 
     for model in ['EMOD', 'malariasimulation', 'OpenMalaria']:
         if model in exp.models_to_run or model in exp.models_to_run_pickup:
-            df[f'cc_factor_{model.lower()}'] = cc_step_factor_calculator(df, exp, model=model)
-            df[f'cc_timestep_{model.lower()}'] = getattr(exp, f'cc_timestep_{model.lower()}')
+            df[f'cc_factor_{model}'] = cc_step_factor_calculator(exp, df, model=model)
+            df[f'cc_timestep_{model}'] = getattr(exp, f'cc_timestep_{model}')
     df['cc_title'] = cc_title_function(df)
     return df  # FIXME can be moved to postprocessing
 

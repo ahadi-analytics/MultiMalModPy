@@ -25,13 +25,13 @@ def treatment_camp_simple(camp, cm_start, cm_clinical, cm_severe):
     add_treatment_seeking(camp, start_day=cm_start, drug=['Artemether', 'Lumefantrine'],
                              targets=[
                                  {'trigger': 'NewClinicalCase', 'coverage': cm_clinical, 'agemin': 0, 'agemax': 115,
-                                  'seek': 1, 'rate': 0.3}],
+                                  'rate': 0.3}],
                              broadcast_event_name="Received_Treatment")
 
     add_treatment_seeking(camp, start_day=cm_start, drug=['Artemether', 'Lumefantrine'],
                              targets=[
                                  {'trigger': 'NewSevereCase', 'coverage': cm_severe, 'agemin': 0, 'agemax': 115,
-                                  'seek': 1, 'rate': 0.5}],
+                                  'rate': 0.5}],
                              broadcast_event_name="Received_Severe_Treatment")
                              
     return {'cm_start': cm_start,'cm_clinical': cm_clinical, 'cm_severe': cm_severe}

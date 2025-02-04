@@ -36,7 +36,7 @@ def submit_analyze_outputs(exp, t='01:00:00', memG=4):
     write_txt(slurm_job_id, exp.job_directory, 'job_id_malariasimulation_analyze.txt')
 
 
-def submit_run_malariasimulation(exp, t='10:00:00', memG=3):
+def submit_run_malariasimulation(exp):
     """
     Submits a malariasimulation job for execution on different platforms.
 
@@ -47,8 +47,6 @@ def submit_run_malariasimulation(exp, t='10:00:00', memG=3):
     Args:
         exp (object): An experiment object containing attributes like 'job_directory', 'hpc', 'analyzer_script',
                       and 'malariasimulation_jobs' needed for job configuration and submission.
-        t (str): The wall time for the SLURM job, default is '10:00:00'.
-        memG (int): The memory in gigabytes allocated for each SLURM job, default is 3GB.
 
     Raises:
         ValueError: If an unsupported HPC configuration is provided.
@@ -70,9 +68,9 @@ def submit_run_malariasimulation(exp, t='10:00:00', memG=3):
         pass
     else:
         # Default, run via SLURM on HPC
-        submit_run_malariasimulation_slurm(exp, t, memG)
+        submit_run_malariasimulation_slurm(exp)
 
-def submit_run_malariasimulation_slurm(exp, t='10:00:00', memG=3):
+def submit_run_malariasimulation_slurm(exp):
     """
     Submits a SLURM array job to run malaria simulations using an R script.
 
@@ -82,15 +80,13 @@ def submit_run_malariasimulation_slurm(exp, t='10:00:00', memG=3):
 
     Args:
         exp (Experiment): An instance of the Experiment class containing job configuration and directories.
-        t (str, optional): Time limit for the job in HH:MM:SS format. Defaults to '10:00:00'.
-        memG (int, optional): Memory allocation in GB for the job. Defaults to 3.
 
     Returns:
         None: This function does not return any value. It submits the job and prints the job ID.
     """
 
     array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='run_malariasimulation', arrayJob=array)
+    header_post = shell_header_quest(exp.sh_hpc_config, exp.malariasimulation_time_per_sim, exp.malariasimulation_memory_per_sim, job_name='run_malariasimulation', arrayJob=array)
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
     r_file_path = os.path.join(ROOT_DIR, 'malariasimulation.R')

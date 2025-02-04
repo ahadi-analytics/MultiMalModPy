@@ -141,7 +141,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
       # Parameterise the changes in mosquito population carrying capacity (for EIR step change):
       simparams[[i]] <- set_carrying_capacity(parameters = simparams[[i]], 
                                               timesteps = parameter_table[i,]$cc_timestep_malariasimulation, 
-                                              carrying_capacity = matrix(mosquito_carrying_capacity * parameter_table[i,]$cc_factor_malariasimulation, ncol = 1))}
+                                              carrying_capacity = matrix(parameter_table[i,]$cc_factor_malariasimulation, ncol = 1))}
     else{
       # Calibrate to the initial EIR (same across models):
       simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],

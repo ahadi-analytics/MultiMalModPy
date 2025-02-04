@@ -148,7 +148,7 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
     write_txt(slurm_job_id, exp.job_directory, 'job_id_OManalyze.txt')
 
 
-def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
+def submit_run_OpenMalaria(exp, scen_df):
     """
     Submits OpenMalaria simulations to a high-performance computing (HPC) cluster using SLURM.
 
@@ -161,8 +161,6 @@ def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
                            simulation settings, and HPC-specific configurations.
         scen_df (pandas.DataFrame): A DataFrame containing scenario parameters such as seeds, clinical model parameters,
                                      and other model-specific inputs that will be used to generate simulation scenarios.
-        t (str, optional): Wall time for the SLURM job in the format 'HH:MM:SS'. Default is '04:00:00'.
-        memG (int, optional): The amount of memory (in GB) to allocate for the job. Default is 3 GB.
 
     Returns:
         None
@@ -190,10 +188,10 @@ def submit_run_OpenMalaria(exp, scen_df, t='04:00:00', memG=3):
         # TODO coming soon
         pass
     else:
-        submit_run_OpenMalaria_slurm(exp, t, memG)
+        submit_run_OpenMalaria_slurm(exp)
 
 
-def submit_run_OpenMalaria_slurm(exp, t='04:00:00', memG=3):
+def submit_run_OpenMalaria_slurm(exp):
     """
     Submits OpenMalaria simulations as a SLURM array job for parallel execution.
 
@@ -205,14 +203,12 @@ def submit_run_OpenMalaria_slurm(exp, t='04:00:00', memG=3):
     Args:
         exp (object): An experiment object containing attributes like 'nexps', 'max_running_jobs',
                       'sh_hpc_config', 'job_directory', and 'OPENMALARIA_venv' needed for job configuration and submission.
-        t (str): The wall time for the SLURM job, default is '04:00:00'.
-        memG (int): The memory in gigabytes allocated for each SLURM job, default is 3GB.
 
     Raises:
         subprocess.CalledProcessError: If there is an issue with running the SLURM job submission command.
     """
     array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='run_openmalaria', arrayJob=array)
+    header_post = shell_header_quest(exp.sh_hpc_config, exp.openmalaria_time_per_sim, exp.openmalaria_memory_per_sim, job_name='run_openmalaria', arrayJob=array)
     openmalaria = exp.OPENMALARIA_venv
     path = f'export PATH=$PATH:{exp.job_directory}'
     slurmID = '${SLURM_ARRAY_TASK_ID}'

@@ -140,10 +140,9 @@ def get_seasonal_eir(exp=None):
     season_month = [0.233157871,0.341117068,0.362055343,0.874307602,1.753063415,4.191822901,
                     6.503111076,3.762619433,0.845941712,0.30071158,0.196174256,0.215097924]
 
-    season_daily = monthly_to_daily_EIR(season_month)
-
     eir_sum = sum(season_month)
     seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
+    season_daily = monthly_to_daily_EIR(seasonal)
     perennial = [x / 12 for x in [1] * 12]
     perennial_daily = [x/365 for x in [1]*365]
 

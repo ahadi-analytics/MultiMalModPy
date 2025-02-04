@@ -832,7 +832,6 @@ if __name__ == "__main__":
 
     # Python Post-Processing
     post_processing(exp, job_directory)
-    daily_path = os.path.join(wdir, 'daily.csv')
 
     # Run analyzers
     InputEIRAnalyzer(job_directory, wdir)

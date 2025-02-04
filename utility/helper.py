@@ -67,7 +67,7 @@ def parse_launch_args():
                         type=str,
                         default='',
                         help='Description of emod_serialized_id')
-    parser.add_argument('--models',
+    parser.add_argument('-m','--models',
                         nargs='+',
                         default=['EMOD', 'malariasimulation', 'OpenMalaria'],
                         choices=['EMOD', 'malariasimulation', 'OpenMalaria'],
@@ -80,11 +80,6 @@ def parse_launch_args():
                         type=str,
                         required=False,
                         help='Name of scenario csv')
-    parser.add_argument('-i', '--interventions',
-                        nargs='+',
-                        default=[],
-                        choices=['cc_step'], # 'smc'
-                        help='Specify which interventions to run apart from case management (per default included)')
     parser.add_argument('--rownum',
                         type=int,
                         default=0,
@@ -101,7 +96,7 @@ def parse_launch_args():
                         default=True,
                         type=bool,
                         help='Specify whether to run malariasimulation with parameter variation, default is to run parameter variation')
-    parser.add_argument('--output_type',
+    parser.add_argument('-o','--output_type',
                         type=str,
                         default='prevalence_2to10',
                         choices=['prevalence_2to10', 'eir','clinical_incidence_U5'],
@@ -111,14 +106,6 @@ def parse_launch_args():
                         help='If true runs simulation with lower population and burnin, and fewer seeds.')
 
     args = parser.parse_args()
-
-
-    # Check eligibility of parsed args
-    if args.run_mode == "calibration" and args.interventions is not []:
-        raise ValueError(
-            "Interventions are not allowed in calibration mode. "
-            "Please ensure 'exp.interventions' is an empty list when using the 'calibration' run mode."
-        )
 
     if args.csv:
         if not args.rownum:
@@ -209,7 +196,6 @@ def make_dirs(exp, overwrite=False):
         exp_suite_path = os.path.join(exp.custom_subdir, exp.SUITEname)
     else:
         exp_suite_path = os.path.join(exp.SUITEname)
-
     # Define the job directory path and simulation output directory path
     exp.suite_directory = os.path.join(exp.job_directory_manifest,
                                        exp_suite_path)  # Grouping folder for simulation exps
@@ -324,6 +310,13 @@ def check_exp_inputs(exp, attribute_check=False):
         list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
         if list_attr_notsweep:
             raise ValueError( f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
+
+    # Check eligibility of parsed args
+    if exp.run_mode == "calibration" and exp.intervention_list != []:
+        raise ValueError(
+            "Interventions are not allowed in calibration mode. "
+            "Please ensure 'exp.interventions' is an empty list when using the 'calibration' run mode."
+        )
 
 
 def save_scen(scen_df, fname, save_dirs=None):

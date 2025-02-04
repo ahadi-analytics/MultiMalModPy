@@ -84,7 +84,7 @@ def submit_run_EMOD(exp, scen_df):
                                detection_threshold=exp.detectionLimit)
 
     # Create experiment from builder and run
-    experiment = Experiment.from_builder(builder, task, name=exp_name)
+    experiment = Experiment.from_builder(builder, task, name="")
     experiment.run(wait_until_done=False, platform=platform)
 
     # Additional step to schedule analyzer
@@ -319,7 +319,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   CfgFn(habitat_setup, exp, seasonality = row.seasonality),
+                   CfgFn(habitat_setup, exp, row=row),
                    SwpFn(climate_setup,  seasonality = row.seasonality),
                    partial(set_param, param='Serialized_Population_Path',
                            value=os.path.join(row["serialized_file_path"], "output")),
