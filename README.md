@@ -35,7 +35,7 @@ the [Institute for Disease Modeling (IDM)](https://www.idmod.org/), and also use
 the [Malaria Modeling Group at Northwestern University](https://www.numalariamodeling.org/).
 
 **OpenMalaria** has been developed and is maintained by
-the [Global Disease Modelling team](https://www.thekids.org.au/our-research/early-environment/infection-and-vaccines/global-disease-modelling/) of [The Kids Reseach Institute Australia](https://www.thekids.org.au/), the Disease Modelling Unit of the [Swiss Tropical and Public Health Institute (Swiss TPH)](https://www.swisstph.ch/en/about/eph/disease-modelling/) and [sciCORE](https://scicore.unibas.ch/) if the University of Basel.
+the [Global Disease Modelling team](https://www.thekids.org.au/our-research/early-environment/infection-and-vaccines/global-disease-modelling/) of [The Kids Reseach Institute Australia](https://www.thekids.org.au/), the Disease Modelling Unit of the [Swiss Tropical and Public Health Institute (Swiss TPH)](https://www.swisstph.ch/en/about/eph/disease-modelling/) and [sciCORE](https://scicore.unibas.ch/) of the University of Basel.
 
 **malariasimulation** has been developed and is maintained by
 the [Imperial College London](https://www.imperial.ac.uk/malaria-modelling/).
