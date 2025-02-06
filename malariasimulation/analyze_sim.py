@@ -397,13 +397,15 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
         u5 = u5.rename(columns={'clinical_incidence': 'clinical_incidence_U5'})
         all_ages = cdf[cdf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         cdf = cdf[cdf['ageGroup'] == '0-100']
-        cdf = cdf.groupby(['scen_id', 'model_input_malariasimulation', 'seasonality', 'cm_clinical'])[
+        cdf = cdf.groupby(['scen_id', 'model_input_malariasimulation', 'seasonality', 'cm_clinical', 'cm_severe'])[
             ['simulatedEIR', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
             'mean').reset_index()
         cdf = cdf.merge(all_ages, on='scen_id')
         cdf = cdf.merge(u5, on='scen_id')
         cdf = cdf.drop(['scen_id'], axis=1)
         cdf['modelname'] = 'malariasimulation'
+        cdf['pop_size'] = exp.malariasimulation_pop_size
+        cdf['importaion'] = False
         cdf = cdf.rename(columns={'model_input_malariasimulation': 'input_target'})
         cdf.to_csv((os.path.join(wdir, 'interpolation_data.csv')), index=False)
         cdf.to_csv((os.path.join(exp.interp_path, 'malariasimulation', f'{exp.exp_name}_interpolation_data.csv')),

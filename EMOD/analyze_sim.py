@@ -464,13 +464,18 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
             all_ages = cdf[cdf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg(
                 'mean').reset_index()
             cdf = cdf[cdf['ageGroup'] == '0-100']
-            cdf = cdf.groupby(['scen_id', 'model_input_EMOD', 'seasonality', 'cm_clinical'])[
+            cdf = cdf.groupby(['scen_id', 'model_input_EMOD', 'seasonality', 'cm_clinical','cm_severe'])[
                 ['simulatedEIR', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
                 'mean').reset_index()
             cdf = cdf.merge(all_ages, on='scen_id')
             cdf = cdf.merge(u5, on='scen_id')
             cdf = cdf.drop(['scen_id'], axis=1)
             cdf['modelname'] = 'EMOD'
+            cdf['pop_size'] = exp.emod_pop_size
+            if exp.emod_importation_rate > 0:
+                cdf['importation'] = True
+            else:
+                cdf['importaion'] = False
             cdf = cdf.rename(columns={'model_input_EMOD': 'input_target'})
             cdf.to_csv((os.path.join(wdir, 'EMOD', 'interpolation_data.csv')), index=False)
             cdf.to_csv((os.path.join(exp.interp_path, 'EMOD', f'{exp.exp_name}_interpolation_data.csv')), index=False)
