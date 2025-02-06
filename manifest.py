@@ -52,7 +52,7 @@ if hpc == 'NUCLUSTER':
     OPENMALARIA_venv = f'\n\nmodule use {OPENMALARIA_PATH}/modules/ \nmodule load openmalaria\n'
 
     EMOD_venv_modules = os.path.join('\n\nml singularity/3.8.1 \nml python/3.9.16')
-    EMOD_venv_path = os.path.join('\nsource /projects/b1139/environments/emodpy_om/bin/activate\n')
+    EMOD_venv_path = os.path.join('\nsource /projects/b1139/environments/mmmpy_dev/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
 
     emod_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/EMOD/inputs')
