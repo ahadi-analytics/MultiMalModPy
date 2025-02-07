@@ -59,7 +59,7 @@ else:
     exp = LoadExperiment(args, manifest)
 
     if exp.emod_calib_params:
-        calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, f'{exp.emod_calib_type}.csv'))
+        calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, 'emod_calibration_parameters', exp.emod_calib_type)+'.csv')
         exp.calib_config_pointer = range(0, len(calib_config_df))  # define rows from calib_params df to run
         del calib_config_df
 
@@ -82,8 +82,13 @@ else:
     # Update exp_name - FIXME
     exp.exp_name = exp.exp_name.replace('seasonality', '_'.join(exp.seasonality))
     exp.exp_name = exp.exp_name.replace('entomologymode', exp.entomology_mode)
-    exp.exp_name = exp.exp_name.replace('intervention',
-                                        '_'.join(exp.intervention_list))  # if empty, the 'intervention' gets removed
+    if exp.intervention_list != []:
+        exp.exp_name = exp.exp_name.replace('intervention',
+                                        '_'.join(exp.intervention_list))  
+    else:
+        exp.exp_name = exp.exp_name.replace('_intervention','')
+    if exp.exp_name_note != '':
+        exp.exp_name = f'{exp.exp_name}_{exp.exp_name_note}'
 
 ## Arguments that chage for pickup
 exp = make_dirs(exp)

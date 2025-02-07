@@ -11,8 +11,6 @@ from scipy.interpolate import interp1d
 #from idmtools.entities.experiment import Experiment
 
 
-
-
 def get_intervention_params(exp):
     """
     Retrieve intervention parameters for a specific experiment.
@@ -133,12 +131,9 @@ def get_seasonal_eir(exp=None):
     """
 
     # Define the seasonal setting
-    # Seasonal Profile is based off of EMOD CM = 0, seasonal setting, EIR = 20
-    #season_month = [2.969670822, 1.841811729, 1.327101791, 0.857686237, 0.611351676, 0.48901135,
-    #                0.480399615, 0.725799099, 1.140032967, 2.215493305, 3.229497298, 3.844139468]
-    # Current seasonal profile
-    season_month = [0.233157871,0.341117068,0.362055343,0.874307602,1.753063415,4.191822901,
-                    6.503111076,3.762619433,0.845941712,0.30071158,0.196174256,0.215097924]
+    # Seasonal Profile is based off of EMOD CM = 0, seasonal setting, EIR = 20.41
+    season_month = [0.2735404,0.3801569,0.4191383,0.9249148,1.8162342,4.3130573,
+                    6.6010215,3.9742332,0.9172151,0.3320062,0.2252846,0.2369832]
 
     eir_sum = sum(season_month)
     seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
@@ -147,14 +142,13 @@ def get_seasonal_eir(exp=None):
     perennial_daily = [x/365 for x in [1]*365]
 
     if exp is not None:
-        exp.season_daily = season_daily
-        exp.season_month = season_month
         exp.seasonal = seasonal
+        exp.season_daily = season_daily
         exp.perennial = perennial
         exp.perennial_daily = perennial_daily
         return exp
     else:
-        return season_daily, season_month, seasonal, perennial
+        return season_daily
 
 
 def monthly_to_daily_EIR(monthly_EIR):

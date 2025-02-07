@@ -6,7 +6,7 @@ from functools import partial
 from EMOD.functions.reporters import add_annual_reports, add_daily_reports, add_monthly_reports, add_5daily_reports
 from EMOD.functions.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup
 from EMOD.functions.forcedEIR import mAb_vs_EIR
-
+from emodpy_malaria.reporters.builtin import *
 import emodpy_malaria.malaria_config as malaria_config
 from emodpy.emod_task import EMODTask
 from idmtools.builders import SimulationBuilder
@@ -43,7 +43,6 @@ def submit_run_EMOD(exp, scen_df):
         ValueError: If the experiment configuration or scenario data is incomplete or invalid.
 
     """
-    exp_name = exp.exp_name
     emod_serialized_id = exp.emod_serialized_id
     sim_dur_years = exp.sim_dur_years
     entomology_mode = exp.entomology_mode
@@ -59,7 +58,7 @@ def submit_run_EMOD(exp, scen_df):
     task = build_demog(task,exp)
 
     if entomology_mode == 'dynamic':
-        task.common_assets.add_directory(os.path.join(manifest.input_dir, "weather"), relative_path="climate")
+        task.common_assets.add_directory(os.path.join(manifest.input_dir, "climate"), relative_path="climate")
 
     if emod_step == 'pickup':
         serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
@@ -70,6 +69,7 @@ def submit_run_EMOD(exp, scen_df):
     else:
         builder = config_sweep_builder(exp, scen_df)
 
+    add_report_vector_stats(task, manifest, species_list=["gambiae"], stratify_by_species =True)
     add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, 
                        num_year=sim_dur_years, detection_threshold=exp.detectionLimit)
 
@@ -333,7 +333,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
         raise ValueError(f'{exp.entomology_mode} not valid')
 
     if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.
-        from EMOD.scaffolds.calib_params import get_emod_calib_params
+        from EMOD.functions.calib_params import get_emod_calib_params
         calib_params = get_emod_calib_params(exp,scen_df_pickup)
         for i in range(0, len(calib_params)):
             sweeps[i] = sweeps[i] + calib_params[i]

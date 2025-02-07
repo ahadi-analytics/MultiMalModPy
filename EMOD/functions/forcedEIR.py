@@ -38,7 +38,7 @@ def set_inputEIR_seasonality(camp, EIR_scale_factor=1, seasonality='perennial'):
     A dictionary containing the EIR scale factor and the specified seasonality.
     """
     
-    season_daily, season_month, seasonal, perennial = get_seasonal_eir() 
+    season_daily = get_seasonal_eir() 
     if seasonality == 'perennial':
         daily_EIR = [x / 365 for x in [1] * 365]
     elif seasonality == 'seasonal':
