@@ -1,3 +1,0 @@
-# Demography
-
-coming soon

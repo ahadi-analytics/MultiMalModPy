@@ -1,3 +1,0 @@
-# Monitoring outputs
-
-coming soon

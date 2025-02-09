@@ -43,6 +43,7 @@ nav:
     - Case management: guide/case_management.md
     - Model specific options: guide/model_specificities.md
     - Randomness and uncertainty: guide/uncertainty.md
+  - Developer/Advanced User Guide:
   - API:
     - manifest.py: api/manifest.md
     - launch_sim.py: api/launch_sim.md
@@ -78,7 +79,7 @@ nav:
       - api/plotter/plot_timeseries.md
       - api/plotter/plot_relationship.md
   - About:
-    - Contact:  about/contributors.md
+    - Contact and how to contribute:  about/contributors.md
     - References: about/citation.md
     - License: about/license.md
     - Changelog: about/changelog.md

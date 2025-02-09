@@ -28,7 +28,7 @@ However, installation instructions also include sections for local setup and con
 **Software requirements**
 
 - MultiMalModPy
-- Python 3.8.4
+- Python 3.9.4
 - R >= 4.0.0
 - malariasimulation 2.0.0
 - emodpy-malaria 2.0.0
@@ -51,6 +51,12 @@ This allows you to easily update the code and contribute to the project.
 Alternatively, you can download the latest release directly from the GitHub releases
 page [here](https://github.com/numalariamodeling/model-characterization/releases). if you just need to use the software
 without modifications.
+
+
+``` 
+cd <target_directory>  
+git clone https://github.com/ahadi-analytics/MultiMalModPy.git  
+```
 
 
 ## HPC 
@@ -108,7 +114,13 @@ On macOS/Linux: `source my_venv/bin/activate`
 
 Once activated, your terminal prompt will change to show the name of the virtual environment (e.g., (my_venv)).
 
-![my_venv](../img/2025-02-02 15_24_31-terminal.png)
+<details> 
+  <summary>Expand to view the screenshot</summary>  
+
+  ![my_venv](../img/2025-02-02 15_24_31-terminal.png)  
+
+</details> 
+
 
 **Step 5: Install Dependencies**
 Now that the virtual environment is activated, install MultiMalModPy's dependencies by running:
@@ -145,17 +157,82 @@ Run the following command to install `emodpy-malaria`:
 pip install emodpy-malaria --ignore-installed --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple 
 ```
 
+You may encounter the following error message or warning, those can be ignored.  
+
+<span style="color:#ff3232">ERROR: Could not find a version that satisfies the requirement pyCOMPS==2.11.0 (from versions: 0.3.0, 0.3.1, 0.3.2)
+ERROR: No matching distribution found for pyCOMPS==2.11.0</span>  
+
+<span style="color:#FFAA33">WARNING: You are using pip version 22.0.4; however, version 25.0 is available.
+You should consider upgrading via the '~/my_venv/bin/python -m pip install --upgrade pip' command.</span>
+
+
 Install the `idmtools_platform_slurm` package with this command:
 
 ```
 pip install idmtools_platform_slurm --ignore-installed --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple  
 ```
 
-**Step 4: Install other python packages (if needed)**
-If there are any other Python packages required, install them using pip as necessary.
+This may take a few minutes to build. 
+Again, if the 'pip install' warning appears, you can ignore it.
+The outcome should look as below:  
 
-**Step 5: Update `manifest.py`**  
+<details>
+  <summary>Click here to view the screenshot</summary>
+  ![my_venv](../img/2025-02-09 18_35_08-terminal.png)
+</details>
+
+
+Verify installation via:
+```
+idmtools --help
+```
+
+**Step 6: Verify installation and test run**    
+You can check whether the installation was successfull by typing: 
+
+```
+cd <custom_dir/MultiMalModPy>
+python launch_sim.py --models EMOD --test
+```
+
+If you encounter an error and the test run does was not successful, you may need to rerun some installation commands.
+
+<details>
+  <summary>Expand to start troubleshooting EMOD installation errors</summary>
+
+  - Issue with idmtools slurm: 
+  ![idmtools_slurm](../img/2025-02-09 18_55_06-terminal.png)
+
+  Try again using  
+  ```  
+  pip install idmtools[slurm] --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
+  ```  
+
+  - Python package version error:  
+
+    <span style="color:#ff3232"> ERROR: pip's dependency resolver does not currently take into account all the packages that are installed.
+    This behaviour is the source of the following dependency conflicts. emodpy 1.22.1 requires click~=7.1, 
+    but you have click 8.1.8 which is incompatible. </span> 
+    - Run required package installation i.e.  
+    
+          pip install click==8.1.7 
+        
+    If a dependency conflict remains, let us know and try again to verify installation.
+
+  - EMOD ValueError: If it seems that EMOD is running, but you get a ValueError, this indicates that a wrong version of 'emodpy-malaria' has been installed.
+    Please let us know and we will update the online documentation.  
+    An example of a successful installation but incorrect version is shown in the screenshot below:  
+
+
+
+
+</details>
+
+
+
+**Step 8: Update `manifest.py`**  
 Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  [first time configurations](../getting_started/configuration/)   
+
 
 ### Install OpenMalaria
 
@@ -171,7 +248,7 @@ NU IT research built a container and sent instructions which have been edited fo
 shown below:
 One can build the container on Quest using the remote Sylabs build environment.
 
-Updating to the latest OpenMalaria version:
+Updating to the latest OpenMalaria version:  
 
 1) Create a new folder for the version to install
 

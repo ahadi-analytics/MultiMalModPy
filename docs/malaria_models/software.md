@@ -1,14 +1,14 @@
 # Software
 
+- **EMOD** (Epidemiological MODeling software) has been developed and is maintained by
+the [Institute for Disease Modeling (IDM)](https://www.idmod.org/), and also used by
+the [Malaria Modeling Group at Northwestern University](https://www.numalariamodeling.org/).  
 
-**EMOD** (Epidemiological MODeling software) development is led by
-the [Institute for Disease Modeling (IDM)](https://www.idmod.org/), with contributions for the malaria model from the [Malaria Modeling Group at Northwestern University](https://www.numalariamodeling.org/).
+-  **OpenMalaria** has been developed and is maintained by
+the [Global Disease Modelling team](https://www.thekids.org.au/our-research/early-environment/infection-and-vaccines/global-disease-modelling/) of [The Kids Reseach Institute Australia](https://www.thekids.org.au/), the Disease Modelling Unit of the [Swiss Tropical and Public Health Institute (Swiss TPH)](https://www.swisstph.ch/en/about/eph/disease-modelling/) and [sciCORE](https://scicore.unibas.ch/) of the University of Basel.
 
-**OpenMalaria** development is led by the [Intervention and Infectious Disease Modelling Team](https://www.thekids.org.au/our-research/early-environment/infection-and-vaccines/intervention-and-infectious-disease-modelling/)
-at The Kids Research Institute Australia/University of Western Australia, 
-and  [The Disease Modelling Unit](https://www.swisstph.ch/en/about/eph/disease-modelling/) of the Swiss Tropical and Public Health Institute (Swiss TPH).
-
-**malariasimulation** development is led by [Imperial College London](https://www.imperial.ac.uk/malaria-modelling/).
+-  **malariasimulation** has been developed and is maintained by
+the [Imperial College London](https://www.imperial.ac.uk/malaria-modelling/).  
 
 Table: Overview of model software and infrastructure
 
