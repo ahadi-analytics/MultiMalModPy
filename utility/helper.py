@@ -104,7 +104,10 @@ def parse_launch_args():
     parser.add_argument('-t','--test',
                         action='store_true',
                         help='If true runs simulation with lower population and burnin, and fewer seeds.')
-
+    parser.add_argument('-n','--note',
+                        type=str,
+                        default='',
+                        help='an additional name tag the user can provide to distinguish runs')
     args = parser.parse_args()
 
     if args.csv:

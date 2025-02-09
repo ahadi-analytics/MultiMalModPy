@@ -60,7 +60,7 @@ class SimulationConfig:
         # These settings define the type of output metric and its target values.
         # Note: These will be overwritten if a specific run mode is specified, as run modes may have their own defaults.
         self.output_type = 'prevalence_2to10'
-        self.output_target = [0.2]
+        self.output_target = [0.25]
 
         # Interventions to include (intervention specific configurations in interventions/ folder
         self.intervention_list = [] #can be empty or 'cc_step'
@@ -87,11 +87,11 @@ class SimulationConfig:
         self.mem_increase_factor = 1.0 #Currently the memory increase factor only effects the analyzers
 
         # EMOD Settings
-        self.emod_burnin = 100
-        self.emod_pop_size = 1000
+        self.emod_burnin = 110
+        self.emod_pop_size = 5000
         self.emod_calib_type = 'emod_severe' #could be 'emod_severe' or 'emod_best'
-        self.emod_memory_per_sim = 5 #memory is represented in gigabytes allocated for each SLURM job, i.e. 5GB
-        self.emod_time_per_sim = '3:00:00' #time is represented in hours:minutes:seconds
+        self.emod_memory_per_sim = 6 #memory is represented in gigabytes allocated for each SLURM job, i.e. 5GB
+        self.emod_time_per_sim = '6:00:00' #time is represented in hours:minutes:seconds
 
         # malariasimulation Settings
         self.malariasimulation_burnin = 100

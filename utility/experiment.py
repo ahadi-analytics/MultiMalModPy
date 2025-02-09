@@ -68,12 +68,13 @@ class RunModeManager:
         self.experiment.num_seeds = 20
         self.experiment.start_year = 2000
         self.experiment.end_year = 2005
-        self.experiment.emod_burnin = 100
+        self.experiment.emod_burnin = 110
         self.experiment.openmalaria_burnin = 100
         self.experiment.malariasimulation_burnin = 100
+        self.experiment.emod_pop_size = 5000
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
-        self.experiment.emod_pop_size = 1000
+
         if self.experiment.output_type != 'eir':
             warnings.warn(
                 f"Warning: output_type changed to 'eir' as required for calibration (not {self.experiment.output_type})")
@@ -81,10 +82,6 @@ class RunModeManager:
         self.experiment.analyzer_list = ['timeavrg']
         self.experiment.plots_to_run = ['relationship']
         self.output_target = np.arange(1, 31)
-        #self.experiment.output_target = [0.25, 0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2,
-        #                                 2.5, 2.75, 3, 3.25, 4, 5, 6, 7, 8, 9,
-        #                                 10, 12, 14, 16, 18, 20, 25, 30, 35, 40,
-        #                                 45, 50, 100, 200, 500, 1000]
 
         ## Configure calib run
         eir_range, x_temp_range = get_calib_range()
@@ -105,12 +102,12 @@ class RunModeManager:
         self.experiment.SUITEname = f'{self.experiment.SUITEname}_simple'
         self.mem_increase_factor = 1.0 #Currently the memory increase factor only effects the analyzers
         self.experiment.num_seeds = 3
-        self.experiment.emod_burnin = 100
+        self.experiment.emod_burnin = 110
         self.experiment.openmalaria_burnin = 100
         self.experiment.malariasimulation_burnin = 100
+        self.experiment.emod_pop_size = 5000
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
-        self.experiment.emod_pop_size = 1000
         if self.experiment.output_type == 'eir':
             self.experiment.output_target = np.arange(1, 4)
         if self.experiment.output_type == 'prevalence_2to10':
@@ -126,9 +123,10 @@ class RunModeManager:
         self.experiment.SUITEname = f'{self.experiment.SUITEname}_production'
         self.mem_increase_factor = 1.0 #Currently the memory increase factor only effects the analyzers
         self.experiment.num_seeds = 20
-        self.experiment.emod_burnin = 100
+        self.experiment.emod_burnin = 110
         self.experiment.openmalaria_burnin = 100
         self.experiment.malariasimulation_burnin = 100
+        self.experiment.emod_pop_size = 5000
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
         if self.experiment.output_type == 'eir':
@@ -209,7 +207,8 @@ class ArgsConfig:
         # User and directory settings
         self.directory = args.directory
         self.user = args.user
-        self.custom_subdir = self.user
+        self.custom_subdir = args.user
+        self.exp_name_note = args.note
         # Model specific args
         self.emod_step = args.emodstep
         self.serializedid = args.serializedid

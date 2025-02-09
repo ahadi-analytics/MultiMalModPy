@@ -6,7 +6,7 @@ from EMOD.utils import set_param
 
 
 def get_emod_calib_params(exp, scen_df):
-    calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, exp.emod_calib_type)+'.csv')
+    calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, 'emod_calibration_parameters',exp.emod_calib_type)+'.csv')
     if exp.emod_step == 'burnin':
         seeds = exp.num_seeds_burnin
     else:

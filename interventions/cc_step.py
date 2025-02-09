@@ -35,10 +35,10 @@ def cc_step_params(exp):
         exp.output_type = 'prevalence_2to10'
         exp.output_target = [0.1, 0.25, 0.5]
         exp.cc_change = exp.output_target
-        exp.emod_memory_per_sim = 6
-        exp.emod_time_per_sim = '6:00:00'
+        exp.emod_memory_per_sim = 7
+        exp.emod_time_per_sim = '8:00:00'
         exp.malariasimulation_memory_per_sim = 6
-        exp.malariasimulation_time_per_sim = '10:00:00'
+        exp.malariasimulation_time_per_sim = '7:00:00'
         exp.openmalaria_memory_per_sim = 6
         exp.openmalaria_time_per_sim = '5:00:00'
     else:
@@ -67,6 +67,9 @@ def cc_step_params(exp):
     # Required for flagging list items when running from CSV
     exp.sim_params_list += ['eir_scalar_malariasimulation', 'eir_malariasimulation', 'eir_scalar_openmalaria',
                      'eir_scalar_emod',  'eir_openmalaria', 'eir_scalar_openmalaria', 'carrying_capacity_step']
+    
+    if len(exp.output_target) < 2:
+        raise ValueError(f'Please specify at least 2 output targets, for cc step to increase/decrease to.')
 
     return exp
 
