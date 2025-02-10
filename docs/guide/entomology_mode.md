@@ -1,7 +1,0 @@
-# Entomology mode
-
-
-
-....
-
-
