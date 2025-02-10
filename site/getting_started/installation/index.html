@@ -396,15 +396,15 @@ The outcome should look as below:  </p>
 <div class="codehilite"><pre><span></span><code><span class="n">idmtools</span><span class="w"> </span><span class="o">--</span><span class="n">help</span>
 </code></pre></div>
 
-<p><strong>Step 6: Verify installation and test run</strong>  <br />
-You can check whether the installation was successfull by typing: </p>
+<p><strong>Step 6: Verify installation and test run</strong>   <br />
+You can check whether the installation was successfull by typing:   </p>
 <div class="codehilite"><pre><span></span><code>cd &lt;custom_dir/MultiMalModPy&gt;
 python launch_sim.py --models EMOD --test
 </code></pre></div>
 
-<p>If you encounter an error and the test run does was not successful, you may need to rerun some installation commands.</p>
-<details>
-  <summary>Expand to start troubleshooting EMOD installation errors</summary>
+<p>If you encounter an error and the test run does was not successful, you may need to rerun some installation commands.  </p>
+<details> 
+  <summary>Expand to start troubleshooting EMOD installation errors</summary> 
 
   - Issue with idmtools slurm: 
   ![idmtools_slurm](../img/2025-02-09 18_55_06-terminal.png)
@@ -414,26 +414,27 @@ python launch_sim.py --models EMOD --test
   pip install idmtools[slurm] --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
   ```  
 
-  - Python package version error:  
+  - Python package version error:   
 
     <span style="color:#ff3232"> ERROR: pip's dependency resolver does not currently take into account all the packages that are installed.
     This behaviour is the source of the following dependency conflicts. emodpy 1.22.1 requires click~=7.1, 
     but you have click 8.1.8 which is incompatible. </span> 
     - Run required package installation i.e.  
 
-          pip install click==8.1.7 
+          pip install click==8.1.7    
 
-    If a dependency conflict remains, let us know and try again to verify installation.
+    If a dependency conflict remains, let us know and try again to verify installation. 
+
 
   - EMOD ValueError: If it seems that EMOD is running, but you get a ValueError, this indicates that a wrong version of 'emodpy-malaria' has been installed.
-    Please let us know and we will update the online documentation.  
-    An example of a successful installation but incorrect version is shown in the screenshot below:  
+    Please let us know and we will update the online documentation.    
+    An example  is shown in the screenshot below:    
 
-
-
+  ![emodpy-malaria-valueerror](../img/2025-02-09 19_11_12-terminal.png)
 
 </details>
 
+<p><br></p>
 <p><strong>Step 8: Update <code>manifest.py</code></strong><br />
 Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  <a href="../getting_started/configuration/">first time configurations</a>   </p>
 <h3 id="install-openmalaria">Install OpenMalaria</h3>
@@ -562,8 +563,8 @@ Test to run new version
 </details>
 
 <p><br></p>
-<p>** Update <code>manifest.py</code>** 
-Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  <a href="../getting_started/configuration/">first time configurations</a>   </p>
+<p><strong>Update <code>manifest.py</code></strong>   </p>
+<p>Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  <a href="../getting_started/configuration/">first time configurations</a>   </p>
 <p>Define <code>OPENMALARIA_PATH</code> to point to the location of the required OpenMalaria files:</p>
 <div class="codehilite"><pre><span></span><code>OPENMALARIA_PATH = &quot;/projects/b1139/OpenMalaria/om_v43/&quot;
 </code></pre></div>

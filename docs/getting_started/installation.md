@@ -187,18 +187,18 @@ Verify installation via:
 idmtools --help
 ```
 
-**Step 6: Verify installation and test run**    
-You can check whether the installation was successfull by typing: 
+**Step 6: Verify installation and test run**     
+You can check whether the installation was successfull by typing:   
 
 ```
 cd <custom_dir/MultiMalModPy>
 python launch_sim.py --models EMOD --test
-```
+``` 
 
-If you encounter an error and the test run does was not successful, you may need to rerun some installation commands.
+If you encounter an error and the test run does was not successful, you may need to rerun some installation commands.  
 
-<details>
-  <summary>Expand to start troubleshooting EMOD installation errors</summary>
+<details> 
+  <summary>Expand to start troubleshooting EMOD installation errors</summary> 
 
   - Issue with idmtools slurm: 
   ![idmtools_slurm](../img/2025-02-09 18_55_06-terminal.png)
@@ -208,27 +208,28 @@ If you encounter an error and the test run does was not successful, you may need
   pip install idmtools[slurm] --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
   ```  
 
-  - Python package version error:  
+  - Python package version error:   
 
     <span style="color:#ff3232"> ERROR: pip's dependency resolver does not currently take into account all the packages that are installed.
     This behaviour is the source of the following dependency conflicts. emodpy 1.22.1 requires click~=7.1, 
     but you have click 8.1.8 which is incompatible. </span> 
     - Run required package installation i.e.  
     
-          pip install click==8.1.7 
+          pip install click==8.1.7    
         
-    If a dependency conflict remains, let us know and try again to verify installation.
+    If a dependency conflict remains, let us know and try again to verify installation. 
+
 
   - EMOD ValueError: If it seems that EMOD is running, but you get a ValueError, this indicates that a wrong version of 'emodpy-malaria' has been installed.
-    Please let us know and we will update the online documentation.  
-    An example of a successful installation but incorrect version is shown in the screenshot below:  
+    Please let us know and we will update the online documentation.    
+    An example  is shown in the screenshot below:    
+
+  ![emodpy-malaria-valueerror](../img/2025-02-09 19_11_12-terminal.png)
+    
+</details>   
 
 
-
-
-</details>
-
-
+<br>
 
 **Step 8: Update `manifest.py`**  
 Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  [first time configurations](../getting_started/configuration/)   
@@ -350,7 +351,8 @@ openMalaria -s example_scenario.xml
 <br>
 
 
-** Update `manifest.py`** 
+**Update `manifest.py`**   
+
 Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  [first time configurations](../getting_started/configuration/)   
 
 Define `OPENMALARIA_PATH` to point to the location of the required OpenMalaria files:
