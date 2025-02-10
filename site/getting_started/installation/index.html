@@ -63,6 +63,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/input_output/">Input and output files</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul class="current">
@@ -93,6 +95,10 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#container-setup">Container Setup</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#re-build-container-developer">Re-build container (developer)</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -118,6 +124,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission and calibration</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/scenarios/">Scenarios</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
                   </li>
@@ -205,7 +213,7 @@
               </ul>
               <p class="caption"><span class="caption-text">About</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact and contributing</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
                   </li>
@@ -273,7 +281,7 @@ However, installation instructions also include sections for local setup and con
 <p><strong>Software requirements</strong></p>
 <ul>
 <li>MultiMalModPy</li>
-<li>Python 3.8.4</li>
+<li>Python 3.9.4</li>
 <li>R &gt;= 4.0.0</li>
 <li>malariasimulation 2.0.0</li>
 <li>emodpy-malaria 2.0.0</li>
@@ -293,6 +301,10 @@ This allows you to easily update the code and contribute to the project.</p>
 <p>Alternatively, you can download the latest release directly from the GitHub releases
 page <a href="https://github.com/numalariamodeling/model-characterization/releases">here</a>. if you just need to use the software
 without modifications.</p>
+<div class="codehilite"><pre><span></span><code>cd &lt;target_directory&gt;  
+git clone https://github.com/ahadi-analytics/MultiMalModPy.git  
+</code></pre></div>
+
 <h2 id="hpc">HPC</h2>
 <p>Before running MultiMalModPy on an HPC cluster, ensure that the necessary modules are loaded.
 Use the following commands to load the required dependencies: </p>
@@ -331,7 +343,13 @@ environment:</p>
 On Windows:  <code>.\my_venv\Scripts\activate</code></p>
 <p>On macOS/Linux: <code>source my_venv/bin/activate</code></p>
 <p>Once activated, your terminal prompt will change to show the name of the virtual environment (e.g., (my_venv)).</p>
-<p><img alt="my_venv" src="../../img/2025-02-02%2015_24_31-terminal.png" /></p>
+<details> 
+  <summary>Expand to view the screenshot</summary>  
+
+  ![my_venv](../img/2025-02-02 15_24_31-terminal.png)  
+
+</details>
+
 <p><strong>Step 5: Install Dependencies</strong>
 Now that the virtual environment is activated, install MultiMalModPy&rsquo;s dependencies by running:
 <code>pip install -r requirements.txt</code></p>
@@ -357,13 +375,66 @@ available : <code>rm –fr ~/.local/lib/python*</code></p>
 <div class="codehilite"><pre><span></span><code><span class="nx">pip</span><span class="w"> </span><span class="nx">install</span><span class="w"> </span><span class="nx">emodpy</span><span class="o">-</span><span class="nx">malaria</span><span class="w"> </span><span class="o">--</span><span class="nx">ignore</span><span class="o">-</span><span class="nx">installed</span><span class="w"> </span><span class="o">--</span><span class="nx">index</span><span class="o">-</span><span class="nx">url</span><span class="p">=</span><span class="nx">https</span><span class="p">:</span><span class="c1">//packages.idmod.org/api/pypi/pypi-production/simple </span>
 </code></pre></div>
 
+<p>You may encounter the following error message or warning, those can be ignored.  </p>
+<p><span style="color:#ff3232">ERROR: Could not find a version that satisfies the requirement pyCOMPS==2.11.0 (from versions: 0.3.0, 0.3.1, 0.3.2)
+ERROR: No matching distribution found for pyCOMPS==2.11.0</span>  </p>
+<p><span style="color:#FFAA33">WARNING: You are using pip version 22.0.4; however, version 25.0 is available.
+You should consider upgrading via the &lsquo;~/my_venv/bin/python -m pip install &ndash;upgrade pip&rsquo; command.</span></p>
 <p>Install the <code>idmtools_platform_slurm</code> package with this command:</p>
 <div class="codehilite"><pre><span></span><code><span class="nx">pip</span><span class="w"> </span><span class="nx">install</span><span class="w"> </span><span class="nx">idmtools_platform_slurm</span><span class="w"> </span><span class="o">--</span><span class="nx">ignore</span><span class="o">-</span><span class="nx">installed</span><span class="w"> </span><span class="o">--</span><span class="nx">index</span><span class="o">-</span><span class="nx">url</span><span class="p">=</span><span class="nx">https</span><span class="p">:</span><span class="c1">//packages.idmod.org/api/pypi/pypi-production/simple  </span>
 </code></pre></div>
 
-<p><strong>Step 4: Install other python packages (if needed)</strong>
-If there are any other Python packages required, install them using pip as necessary.</p>
-<p><strong>Step 5: Update <code>manifest.py</code></strong><br />
+<p>This may take a few minutes to build. 
+Again, if the &lsquo;pip install&rsquo; warning appears, you can ignore it.
+The outcome should look as below:  </p>
+<details>
+  <summary>Click here to view the screenshot</summary>
+  ![my_venv](../img/2025-02-09 18_35_08-terminal.png)
+</details>
+
+<p>Verify installation via:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">idmtools</span><span class="w"> </span><span class="o">--</span><span class="n">help</span>
+</code></pre></div>
+
+<p><strong>Step 6: Verify installation and test run</strong>  <br />
+You can check whether the installation was successfull by typing: </p>
+<div class="codehilite"><pre><span></span><code>cd &lt;custom_dir/MultiMalModPy&gt;
+python launch_sim.py --models EMOD --test
+</code></pre></div>
+
+<p>If you encounter an error and the test run does was not successful, you may need to rerun some installation commands.</p>
+<details>
+  <summary>Expand to start troubleshooting EMOD installation errors</summary>
+
+  - Issue with idmtools slurm: 
+  ![idmtools_slurm](../img/2025-02-09 18_55_06-terminal.png)
+
+  Try again using  
+  ```  
+  pip install idmtools[slurm] --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
+  ```  
+
+  - Python package version error:  
+
+    <span style="color:#ff3232"> ERROR: pip's dependency resolver does not currently take into account all the packages that are installed.
+    This behaviour is the source of the following dependency conflicts. emodpy 1.22.1 requires click~=7.1, 
+    but you have click 8.1.8 which is incompatible. </span> 
+    - Run required package installation i.e.  
+
+          pip install click==8.1.7 
+
+    If a dependency conflict remains, let us know and try again to verify installation.
+
+  - EMOD ValueError: If it seems that EMOD is running, but you get a ValueError, this indicates that a wrong version of 'emodpy-malaria' has been installed.
+    Please let us know and we will update the online documentation.  
+    An example of a successful installation but incorrect version is shown in the screenshot below:  
+
+
+
+
+</details>
+
+<p><strong>Step 8: Update <code>manifest.py</code></strong><br />
 Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to the  <a href="../getting_started/configuration/">first time configurations</a>   </p>
 <h3 id="install-openmalaria">Install OpenMalaria</h3>
 <p><strong>Step 1: Install OpenMalaria by following developer&rsquo;s site instructions</strong>  </p>
@@ -375,7 +446,7 @@ NU IT research built a container and sent instructions which have been edited fo
 shown below:
 One can build the container on Quest using the remote Sylabs build environment.
 
-Updating to the latest OpenMalaria version:
+Updating to the latest OpenMalaria version:  
 
 1) Create a new folder for the version to install
 
@@ -562,6 +633,105 @@ Make sure to update the manifest.py file with the necessary configurations. For 
 <p>This section is under construction&hellip;<br />
 A singularity container will be made available to allow running MultiMalModPy instantly, without the need for
 installations.</p>
+<h3 id="re-build-container-developer">Re-build container (developer)</h3>
+<details>
+  <summary>Expand to view how to re-build a container</summary>
+
+**NOTE THIS SECTION IS WORK IN PROGRESS**
+
+In case of new versions for one of the three models, the container will need to be updated.
+
+#### Update Docker 
+
+Steps: 
+- Modify the `Dockerfile.rocky8` as needed, i.e. by updating the version to install
+- Download and install Docker from https://app.docker.com/  (requires to create an account)
+- Navigate to `MultiMalModPy/dependencies`, assuming you are already at the repository root:
+    ```
+    cd dependencies
+    ```
+- In terminal run (including the dot):
+    ```
+    docker build -f Dockerfile.rocky8 -t emod:rocky8 .
+    ```
+  This takes around 60 minutes.
+- View all docker images to veriy its completion
+    ```
+    docker images
+    ```
+- **Optional**, save docker file to specific location (note it is already existing on your local machine)
+  This is only required when the container should be moved to another machine.
+  Also this step takes quite long for an image of size ~3.7GB.
+    ```
+    docker save -o emod_rocky8.tar emod:rocky8
+    ```
+
+#### HPC (singularity)   
+
+Steps:  
+- Modify the `Singularity.recipe` as needed, i.e. by updating the version to install
+- Log into Quest and load the singularity modules
+    ```
+    module load singularity
+    ```
+- Authenticate against the remote builder. Will request that you create a token and copy the token in order to authenticate.
+  - Create an account and generate access token under  https://cloud.sylabs.io/auth/tokens   
+  - Then run in terminal:
+      ```
+      singularity remote login
+      ```
+
+- Build the container using the remote builder
+    ```
+    singularity build --remote emod-with-om-46-R-4.4.1.sif Singularity.recipe
+    ```
+
+### Understanding where things are in the container  
+
+
+- **OpenMalaria**: The container currently only has v46.0 and it lives in the container here:
+    ```
+    /openmalaria-schema-46.0/build
+    ```
+
+  - Any future Open Malaria XX.X would live in the container here:  
+
+      ```
+      /openmalaria-schema-XX.X/build
+      ```
+
+- **EMOD**: The `emodpy_om` virtual environment lives here:  
+    ```
+    /opt/envs/emodpy_om
+    ```
+
+- **malariasimulation**: The R executable, required for malariasimulation, can be found here  
+    ```
+    /opt/R/4.4.1/bin/R
+    ```
+
+### Invoking the container (developer mode)
+
+
+- Set things in manifest.py  
+    ```
+    OPENMALARIA_venv = f'\n\nexport PATH=/openmalaria-schema-46.0/build/:$PATH\n'
+    EMOD_venv = f'source /opt/envs/emodpy_om/bin/activate'
+    ```
+
+-  Run `launch_sim_test.py` with the container
+    Note the `<YOUR DIRECTORY>` at the end of the line. Replace this with the location of the image.
+    ```
+    module purge
+    module load singularity
+    singularity exec -B /etc/passwd -B /etc/slurm -B `which sbatch ` -B `which srun ` -B `which sacct ` -B `which scontrol ` -B `which salloc ` -B `which scancel ` -B `which squeue ` -B /usr/lib64/slurm/ -B /usr/lib64/liblua-5.1.so -B /usr/lib64/liblua-5.1.so:/usr/lib64/liblua.so -B /usr/lib64/libjson-c.so.2 -B /usr/lib64/libjson-c.so.2.0.1 -B /usr/lib64/libmunge.so.2 -B /usr/lib64/libmunge.so.2.0.0 -B /usr/lib64/libpmi2.so -B /usr/lib64/libpmi2.so.0 -B /usr/lib64/libpmi2.so.0.0.0 -B /usr/lib64/libpmi.so -B /usr/lib64/libpmi.so.0 -B /usr/lib64/libpmi.so.0.0.0 -B /usr/local/pmix -B /usr/local/hwloc -B /usr/local/ucx-1.13.0 -B /usr/local/ucx-1.10.0 -B /usr/local/ucx-1.8.1 -B /usr/local/spack -B /usr/local/spack_v20d1 -B /usr/local/libevent/ -B /run -B /projects -B /scratch --writable-tmpfs /<YOUR DIRECTORY>/emod-with-om-46-R-4.4.1.sif /opt/envs/emodpy_om/bin/python3 launch_sim.py --models EMOD -- test
+    ```
+
+_These instructions were provided by Northwestern Research IT and the format adapted for the online documentation._
+
+</details>
+
+<p><br></p>
               
             </div>
           </div><footer>
@@ -606,6 +776,9 @@ installations.</p>
     <script>var base_url = "../..";</script>
     <script src="../../js/theme_extra.js"></script>
     <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      <script src="../../javascripts/tablesort.js"></script>
+      <script src="../../javascripts/freeze-table.js"></script>
       <script src="../../search/main.js"></script>
     <script>
         jQuery(function () {

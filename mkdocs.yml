@@ -85,7 +85,7 @@ nav:
       - api/plotter/plot_timeseries.md
       - api/plotter/plot_relationship.md
   - About:
-    - Contact and how to contribute:  about/contributors.md
+    - Contact and contributing:  about/contributors.md
     - References: about/citation.md
     - License: about/license.md
     - Changelog: about/changelog.md

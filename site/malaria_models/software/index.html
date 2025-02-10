@@ -65,6 +65,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../core_parameters/">Core parameters</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../input_output/">Input and output files</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting started</span></p>
               <ul>
@@ -94,6 +96,8 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission and calibration</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/scenarios/">Scenarios</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
                   </li>
@@ -181,7 +185,7 @@
               </ul>
               <p class="caption"><span class="caption-text">About</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact and contributing</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
                   </li>
@@ -218,12 +222,21 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="software">Software</h1>
-<p><strong>EMOD</strong> (Epidemiological MODeling software) development is led by
-the <a href="https://www.idmod.org/">Institute for Disease Modeling (IDM)</a>, with contributions for the malaria model from the <a href="https://www.numalariamodeling.org/">Malaria Modeling Group at Northwestern University</a>.</p>
-<p><strong>OpenMalaria</strong> development is led by the <a href="https://www.thekids.org.au/our-research/early-environment/infection-and-vaccines/intervention-and-infectious-disease-modelling/">Intervention and Infectious Disease Modelling Team</a>
-at The Kids Research Institute Australia/University of Western Australia, 
-and  <a href="https://www.swisstph.ch/en/about/eph/disease-modelling/">The Disease Modelling Unit</a> of the Swiss Tropical and Public Health Institute (Swiss TPH).</p>
-<p><strong>malariasimulation</strong> development is led by <a href="https://www.imperial.ac.uk/malaria-modelling/">Imperial College London</a>.</p>
+<ul>
+<li>
+<p><strong>EMOD</strong> (Epidemiological MODeling software) has been developed and is maintained by
+the <a href="https://www.idmod.org/">Institute for Disease Modeling (IDM)</a>, and also used by
+the <a href="https://www.numalariamodeling.org/">Malaria Modeling Group at Northwestern University</a>.  </p>
+</li>
+<li>
+<p><strong>OpenMalaria</strong> has been developed and is maintained by
+the <a href="https://www.thekids.org.au/our-research/early-environment/infection-and-vaccines/global-disease-modelling/">Global Disease Modelling team</a> of <a href="https://www.thekids.org.au/">The Kids Reseach Institute Australia</a>, the Disease Modelling Unit of the <a href="https://www.swisstph.ch/en/about/eph/disease-modelling/">Swiss Tropical and Public Health Institute (Swiss TPH)</a> and <a href="https://scicore.unibas.ch/">sciCORE</a> of the University of Basel.</p>
+</li>
+<li>
+<p><strong>malariasimulation</strong> has been developed and is maintained by
+the <a href="https://www.imperial.ac.uk/malaria-modelling/">Imperial College London</a>.  </p>
+</li>
+</ul>
 <p>Table: Overview of model software and infrastructure</p>
 <table>
 <thead>
@@ -359,6 +372,9 @@ and  <a href="https://www.swisstph.ch/en/about/eph/disease-modelling/">The Disea
     <script>var base_url = "../..";</script>
     <script src="../../js/theme_extra.js"></script>
     <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      <script src="../../javascripts/tablesort.js"></script>
+      <script src="../../javascripts/freeze-table.js"></script>
       <script src="../../search/main.js"></script>
     <script>
         jQuery(function () {
