@@ -51,7 +51,7 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
       fname <- 'mmmpy_5day.csv'
       cols_to_keep <- c('seed', 'year', 'day', 'prevalence', 'clinical_incidence',
                         'severe_incidence', 'ageGroup', 'prevalence_2to10', 'index',
-                        'output_target','cm_clinical', 'seasonality', 'simulatedEIR', 'n_total_mos_pop')
+                        'output_target','cm_clinical', 'cm_severe', 'seasonality', 'simulatedEIR', 'n_total_mos_pop')
     }
   }
   if (ccstep) {

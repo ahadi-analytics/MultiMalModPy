@@ -131,9 +131,10 @@ def get_seasonal_eir(exp=None):
     """
 
     # Define the seasonal setting
-    # Seasonal Profile is based off of EMOD CM = 0, seasonal setting, EIR = 20.41
-    season_month = [0.2735404,0.3801569,0.4191383,0.9249148,1.8162342,4.3130573,
-                    6.6010215,3.9742332,0.9172151,0.3320062,0.2252846,0.2369832]
+    # Seasonal Profile is based off of EMOD CM = 0, seasonal setting, EIR normalized to = 20
+    season_month = [0.3039381,0.232238,0.2536101,0.2751093,0.4975551,1.0859837,
+                    3.4243388,6.5730017,4.6096526,1.6953359,0.653903,0.3953337]
+
 
     eir_sum = sum(season_month)
     seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1

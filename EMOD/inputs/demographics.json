@@ -51,7 +51,7 @@
          "AgeDistribution1": 0,
          "AgeDistribution2": 18250,
          "AgeDistributionFlag": 1,
-         "InitialPrevalence": 0,
+         "InitialPrevalence": 0.2,
          "MortalityDistribution": {
             "AxisNames": [
                "gender",

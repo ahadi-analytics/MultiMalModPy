@@ -887,6 +887,7 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     # Iterate over day, month, and year
     for ii, group in enumerate(sdf.groupby(['survey'])):
         t, grouped = group
+        (t,) = t
         g = sdf.loc[(sdf['survey'] == t)]
 
         # Filter and aggregate data for age groups 2 to 10

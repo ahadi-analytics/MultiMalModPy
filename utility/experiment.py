@@ -132,7 +132,7 @@ class RunModeManager:
         if self.experiment.output_type == 'eir':
             self.experiment.output_target = [20]
         if self.experiment.output_type == 'prevalence_2to10':
-            self.experiment.output_target = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
+            self.experiment.output_target = [0.05, 0.1, 0.25, 0.5] #self.experiment.output_target = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
         if self.experiment.output_type == 'clinical_incidence_U5':
             raise ValueError('output_type clinical_incidence_U5 not defined for production run')
 

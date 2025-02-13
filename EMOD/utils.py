@@ -69,7 +69,7 @@ def submit_run_EMOD(exp, scen_df):
     else:
         builder = config_sweep_builder(exp, scen_df)
 
-    add_report_vector_stats(task, manifest, species_list=["gambiae"], stratify_by_species =True)
+    #add_report_vector_stats(task, manifest, species_list=["gambiae"], stratify_by_species =True)
     add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, 
                        num_year=sim_dur_years, detection_threshold=exp.detectionLimit)
 

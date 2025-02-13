@@ -36,7 +36,7 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
     indir = args.indir
-    df, wa = weather_to_csv(weather_dir = os.path.join(indir, 'weather'), weather_file_prefix='seasonal')
+    df, wa = weather_to_csv(weather_dir = os.path.join(indir, 'climate'), weather_file_prefix='seasonal')
     
     # Create Climate CSV, which can be modified to create different .json and .bin files.
     if args.generate_csv:
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     #Create EMOD-readable weather files to be used in simulations from modified CSVs if needed
     if args.generate_climate:
         new_season_pattern = args.climate_profile
-        df1 = pd.read_csv(os.path.join(indir, f"{new_season_pattern}.csv"))
+        df1 = pd.read_csv(os.path.join(indir, 'generate_climate_files',f"{new_season_pattern}.csv"))
 
         weather_columns = {
             WeatherVariable.AIR_TEMPERATURE: "airtemp",

@@ -36,13 +36,13 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
     indir = args.indir
-    df, wa = weather_to_csv(weather_dir = os.path.join(indir, 'weather'), weather_file_prefix='seasonal')
+    df, wa = weather_to_csv(weather_dir = os.path.join(indir, 'climate'), weather_file_prefix='seasonal')
     
     # Create Climate CSV, which can be modified to create different .json and .bin files.
-    if args.generate_csv:
-        df1 = df.copy()
-        df1['nodes'] = 1
-        df1.to_csv(os.path.join(indir, f"{args.climate_profile}.csv"), index=False) 
+
+    df1 = df.copy()
+    df1['nodes'] = 1
+    df1.to_csv(os.path.join(indir, f"{args.climate_profile}.csv"), index=False) 
 
     #Create EMOD-readable weather files to be used in simulations from modified CSVs if needed
     if args.generate_climate:

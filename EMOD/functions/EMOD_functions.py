@@ -7,6 +7,7 @@ from COMPS import AuthManager
 from EMOD.functions.forcedEIR import *
 from EMOD.functions.interventions import *
 from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
+from emodpy_malaria.interventions.larvicide import add_larvicide
 from emodpy_malaria.interventions.outbreak import add_outbreak_individual
 from emodpy_malaria.reporters.builtin import *
 import emodpy_malaria.malaria_config as malaria_config
@@ -110,6 +111,13 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
         add_scale_larval_habitats(camp, df=eir_df,
                                   start_day=row.cc_timestep_EMOD,
                                   repetitions=1)
+        if exp.cc_decreasing:
+           add_larvicide(camp, start_day = row.cc_timestep_EMOD,
+                        num_repetitions=1,
+                        box_duration = 1, 
+                        killing_effect = 1,
+                        decay_time_constant = 0)
+        
     if exp.emod_importation_rate != 0:
         ncases_per_year_per1000pop = (exp.emod_importation_rate * exp.emod_pop_size) / 1000
         add_outbreak_individual(camp, start_day=1, target_num_individuals=ncases_per_year_per1000pop,
