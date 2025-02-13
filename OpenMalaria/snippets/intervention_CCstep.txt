@@ -1,0 +1,23 @@
+        <vectorPop>
+            <intervention name="larviciding">
+                <!-- Example larviciding (made up values) -->
+                <description>
+                    <anopheles mosquito="gambiae_indoor">
+                        <emergenceReduction initial="@EIR_reduction@">
+                        <!--  "old rate" × (1 - factor); factor of 1 implies no emergence, 0 implies no effect, -1 implies double the original emergence rate -->
+                            <decay function="constant"/>
+                        </emergenceReduction>
+                    </anopheles>
+                    <anopheles mosquito="gambiae_outdoor">
+                        <emergenceReduction initial="@EIR_reduction@">
+                        <!--  "old rate" × (1 - factor); factor of 1 implies no emergence, 0 implies no effect, -1 implies double the original emergence rate -->
+                            <decay function="constant"/>
+                        </emergenceReduction>
+                    </anopheles>
+                </description>
+                <timed>
+                    <!-- Varied times of deployment with two-year breaks -->
+                    <deploy time="@step_change_time@"/>
+                </timed>
+            </intervention>
+        </vectorPop>

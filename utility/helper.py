@@ -36,12 +36,11 @@ def parse_launch_args():
         --models (list): List of models to run, default includes 'EMOD', 'malariasimulation', and 'OpenMalaria'.
         --user (str): Subdirectory for simulations, based on the current user or 'b1139' for NUCLUSTER.
         --csv (str): Name of the scenario CSV file.
-        -i, --interventions (list): Interventions to run; options include 'cc_step'.
         --rownum (int): Row number from the specified scenario CSV.
         -r, --run_mode (str): Type of run (e.g., None, 'calibration', 'simple', 'production').
         --emod_calib_params (bool): Flag indicating whether to include calibration parameters for EMOD.
         --mpv (bool): Flag for running malariasimulation with parameter variation (default is True).
-        --output_type (str): Specifies whether to align transmission by EIR or by prevalence_2to10.
+        --target_output_name (str): Specifies whether to align transmission by EIR or by prevalence_2to10.
     """
     parser = argparse.ArgumentParser(description="Description of your script.")
 
@@ -96,7 +95,7 @@ def parse_launch_args():
                         default=True,
                         type=bool,
                         help='Specify whether to run malariasimulation with parameter variation, default is to run parameter variation')
-    parser.add_argument('-o','--output_type',
+    parser.add_argument('-o','--target_output_name',
                         type=str,
                         default='prevalence_2to10',
                         choices=['prevalence_2to10', 'eir','clinical_incidence_U5'],
@@ -415,8 +414,8 @@ def create_simsetup_csv(exp):
                  'sim_start_year_emod': exp.sim_start_year_emod,
                  'sim_start_year_malariasimulation': exp.sim_start_year_malariasimulation,
                  'intervention_list': exp.intervention_list,
-                 'output_type': exp.output_type,
-                 'output_target':  ';'.join(map(str, exp.output_target))
+                 'target_output_name': exp.target_output_name,
+                 'target_output_values':  ';'.join(map(str, exp.target_output_values))
                  }
 
     setup_df = pd.DataFrame.from_dict(setup_dic, orient='index', columns=['Value'])
@@ -463,17 +462,17 @@ def map_model_calib_inputs(exp, df):
     if exp.run_mode == 'calibration':
         for model in models_to_run:
             for i, row in df.iterrows():
-                value = exp.eir_range[int(row['output_target']) - 1] if model != 'EMOD' else exp.x_temp_range[int(row['output_target']) - 1]
-                df.loc[i, f'model_input_{model}'] = value
+                value = exp.eir_range[int(row['target_output_values']) - 1] if model != 'EMOD' else exp.x_temp_range[int(row['target_output_values']) - 1]
+                df.loc[i, f'transmission_intensity_{model}'] = value
     else:
         for model in models_to_run:
             if model in ['malariasimulation', 'OpenMalaria']:
-                df[f'model_input_{model}'] = output_target_to_eir(df, exp, model=model)
+                df[f'transmission_intensity_{model}'] = output_target_to_eir(df, exp, model=model)
             if model == 'EMOD':
                 if exp.entomology_mode == 'dynamic':
-                    df['model_input_EMOD'] = output_target_to_xTemp(df, exp, model='EMOD')
+                    df['transmission_intensity_EMOD'] = output_target_to_xTemp(df, exp, model='EMOD')
                 elif exp.entomology_mode == 'forced':
-                    df['model_input_EMOD'] = output_target_to_eir(df, exp, model='EMOD')
+                    df['transmission_intensity_EMOD'] = output_target_to_eir(df, exp, model='EMOD')
 
     return df
 
@@ -489,7 +488,7 @@ def create_scenarios_csv(exp, col_list):
     Args:
         exp (Experiment): The experiment object containing attributes and settings for scenarios.
         col_list (list, optional): List of attribute names to include in the scenarios DataFrame.
-            Defaults to ['output_target', 'case_management', 'seasonality'].
+            Defaults to ['target_output_values', 'case_management', 'seasonality'].
 
     Returns:
         pandas.DataFrame: A DataFrame representing all generated scenarios, including metadata
@@ -497,7 +496,7 @@ def create_scenarios_csv(exp, col_list):
     """
 
     if col_list is None:
-        col_list = ['output_target', 'case_management','seasonality']
+        col_list = ['target_output_values', 'case_management','seasonality']
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]

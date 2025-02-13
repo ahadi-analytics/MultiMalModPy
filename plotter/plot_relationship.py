@@ -81,10 +81,10 @@ def prevalence2to10_to_outcome(fdir, df, sweepvar='modelname', facet_var='season
                 color_key = color_selector(mi, grp)
                 if not pd.isnull(pdf['prevalence_2to10']).all():
                     # plot mean, min and max of seeds
-                    xmean, ymean = get_x_y(pdf, 'output_target', 'prevalence_2to10', channel)
-                    merge_df = pd.merge(left=xmean, right=ymean, on='output_target')
+                    xmean, ymean = get_x_y(pdf, 'target_output_values', 'prevalence_2to10', channel)
+                    merge_df = pd.merge(left=xmean, right=ymean, on='target_output_values')
                     if channel == 'simulatedEIR':
-                        merge_df.sort_values(by='output_target', inplace=True)
+                        merge_df.sort_values(by='target_output_values', inplace=True)
                     else:
                         merge_df.sort_values(by='prevalence_2to10', inplace=True)
                     ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=grp,
@@ -195,15 +195,15 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
 
             f += 1
             mdf = adf[adf['modelname'] == grp]
-            # mdf = mdf.groupby(['seed', 'output_target'])[mean_vars].agg(np.mean).reset_index()
-            # Population weighted mean for each output_target (relevant for incidence)
-            mdf = mdf.groupby(['seed', 'output_target'])[mean_vars + ['nHost']].apply(
+            # mdf = mdf.groupby(['seed', 'target_output_values'])[mean_vars].agg(np.mean).reset_index()
+            # Population weighted mean for each target_output_values (relevant for incidence)
+            mdf = mdf.groupby(['seed', 'target_output_values'])[mean_vars + ['nHost']].apply(
                 lambda x: pd.Series({col: np.average(x[col], weights=x['nHost']) for col in mean_vars})).reset_index()
 
             if not pd.isnull(mdf['prevalence_2to10']).all():
                 # plot mean, min and max of seeds
-                xmean, ymean = get_x_y(mdf, 'output_target', 'prevalence_2to10', channel)
-                merge_df = pd.merge(left=xmean, right=ymean, on='output_target')
+                xmean, ymean = get_x_y(mdf, 'target_output_values', 'prevalence_2to10', channel)
+                merge_df = pd.merge(left=xmean, right=ymean, on='target_output_values')
                 merge_df.sort_values(by='prevalence_2to10', inplace=True)
                 ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=grp,
                         color=color_palette[color_key])
@@ -276,8 +276,8 @@ def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', ei
         for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
             s = s[0]
             color_key = color_selector(i, s)
-            xmean, ymean = get_x_y(sdf, 'output_target', eir_val, channel)
-            merge_df = pd.merge(left=xmean, right=ymean, on='output_target')
+            xmean, ymean = get_x_y(sdf, 'target_output_values', eir_val, channel)
+            merge_df = pd.merge(left=xmean, right=ymean, on='target_output_values')
             merge_df.sort_values(by=eir_val, inplace=True)
             ax.plot(merge_df[eir_val], merge_df[channel], '-', linewidth=0.8, label=f"{s}",
                     color=color_palette[color_key])
@@ -324,7 +324,7 @@ def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonal
         print('Either sweepvar or facet_var should be modelname')
         return
 
-    xyvars = ['simulatedEIR', 'output_target']
+    xyvars = ['simulatedEIR', 'target_output_values']
     figure_vars = xyvars + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars)
     unique_facets = sorted_list(df[facet_var])
@@ -348,12 +348,12 @@ def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonal
             # plot mean, min and max of seeds and age groups
             color_key = color_selector(i, s)
             if sweepvar == 'modelname':
-                xchannel = f'model_input_{s}'
+                xchannel = f'transmission_intensity_{s}'
             else:
-                xchannel = f'model_input_{fi}'
+                xchannel = f'transmission_intensity_{fi}'
 
-            xmean, ymean = get_x_y(sdf, 'output_target', xchannel, 'simulatedEIR')
-            merge_df = pd.merge(left=xmean, right=ymean, on='output_target')
+            xmean, ymean = get_x_y(sdf, 'target_output_values', xchannel, 'simulatedEIR')
+            merge_df = pd.merge(left=xmean, right=ymean, on='target_output_values')
             merge_df.sort_values(by=xchannel, inplace=True)
             ax.plot(merge_df[xchannel], merge_df['simulatedEIR'], '-', linewidth=0.8, label=f"{s}",
                     color=color_palette[color_key])
@@ -392,7 +392,7 @@ if __name__ == "__main__":
     out_dir = os.path.join(out_dir, 'plots')
     os.makedirs(out_dir, exist_ok=True)
 
-    if len(exp.output_target) >= 3:
+    if len(exp.target_output_values) >= 3:
         sweepvar = 'modelname'
         print('#----- Plotting input to simulated EIR -----#')
         input_to_simulated_eir(out_dir, df, sweepvar=sweepvar)

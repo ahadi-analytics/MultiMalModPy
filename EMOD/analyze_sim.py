@@ -446,8 +446,8 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
             # cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
         else:
-            cdf['simulatedEIR'] = cdf['model_input_EMOD']
-            cdf['inputEIR'] = cdf['model_input_EMOD']
+            cdf['simulatedEIR'] = cdf['transmission_intensity_EMOD']
+            cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
@@ -464,7 +464,7 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
             all_ages = cdf[cdf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg(
                 'mean').reset_index()
             cdf = cdf[cdf['ageGroup'] == '0-100']
-            cdf = cdf.groupby(['scen_id', 'model_input_EMOD', 'seasonality', 'cm_clinical','cm_severe'])[
+            cdf = cdf.groupby(['scen_id', 'transmission_intensity_EMOD', 'seasonality', 'cm_clinical','cm_severe'])[
                 ['simulatedEIR', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
                 'mean').reset_index()
             cdf = cdf.merge(all_ages, on='scen_id')
@@ -476,7 +476,7 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
                 cdf['importation'] = True
             else:
                 cdf['importaion'] = False
-            cdf = cdf.rename(columns={'model_input_EMOD': 'input_target'})
+            cdf = cdf.rename(columns={'transmission_intensity_EMOD': 'input_target'})
             cdf.to_csv((os.path.join(wdir, 'EMOD', 'interpolation_data.csv')), index=False)
             cdf.to_csv((os.path.join(exp.interp_path, 'EMOD', f'{exp.exp_name}_interpolation_data.csv')), index=False)
 
@@ -622,8 +622,8 @@ class AnnualAgebinAnalyzer(IAnalyzer):
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
 
         else:
-            cdf['simulatedEIR'] = cdf['model_input_EMOD']
-            cdf['inputEIR'] = cdf['model_input_EMOD']
+            cdf['simulatedEIR'] = cdf['transmission_intensity_EMOD']
+            cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
@@ -790,8 +790,8 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
 
             cdf = cdf.rename(columns={"Monthly EIR": "simulatedEIR"})
         else:
-            cdf['simulatedEIR'] = cdf['model_input_EMOD']
-            cdf['inputEIR'] = cdf['model_input_EMOD']
+            cdf['simulatedEIR'] = cdf['transmission_intensity_EMOD']
+            cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
@@ -967,8 +967,8 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
             eirdf_5day = eirdf_5day.rename(columns={'5day': 'day'})
             cdf = pd.merge(left=cdf, right=eirdf_5day, on=self.sweep_variables + ['year', 'day'])
         else:
-            cdf['simulatedEIR'] = cdf['model_input_EMOD']
-            cdf['inputEIR'] = cdf['model_input_EMOD']
+            cdf['simulatedEIR'] = cdf['transmission_intensity_EMOD']
+            cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
 
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         # Rename columns for alignment with OpenMalaria results
@@ -979,7 +979,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
         # Save the processed DataFrame to a CSV file
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD')
-        cols_to_keep = ['scen_id', 'index', 'seed', 'output_target', 'model_input_EMOD', 'timestep',
+        cols_to_keep = ['scen_id', 'index', 'seed', 'target_output_values', 'transmission_intensity_EMOD', 'timestep',
                         'day', 'year', 'ageGroup', 'seasonality', 'cm_clinical', 'entomology_mode',
                         'simulatedEIR', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence',
                         'n_total_mos_pop', 'n_infectious_mos']

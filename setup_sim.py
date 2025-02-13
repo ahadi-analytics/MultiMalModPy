@@ -17,8 +17,8 @@ class SimulationConfig:
             - case_management (list[tuple]): List of tuples defining case management intervention configurations.
             - detectionLimit (int): Detection threshold for cases.
             - importation_rate (float): Importation rate of malaria cases.
-            - output_type (str): Type of output metric ('prevalence_2to10' by default).
-            - output_target (list[float]): List of target output values.
+            - target_output_name (str): Type of output metric ('prevalence_2to10' by default).
+            - target_output_values (list[float]): List of target output values.
             - sweep_list (list[str]): List of parameters to vary in the simulation.
 
         - **2. Simulation Config**:
@@ -59,14 +59,14 @@ class SimulationConfig:
         # Transmission intensity calibration settings.
         # These settings define the type of output metric and its target values.
         # Note: These will be overwritten if a specific run mode is specified, as run modes may have their own defaults.
-        self.output_type = 'prevalence_2to10'
-        self.output_target = [0.25]
+        self.target_output_name = 'prevalence_2to10'
+        self.target_output_values = [0.25]
 
         # Interventions to include (intervention specific configurations in interventions/ folder
         self.intervention_list = [] #can be empty or 'cc_step'
 
         # Parameters to vary
-        self.sweep_list = ['output_target', 'case_management', 'seasonality']
+        self.sweep_list = ['target_output_values', 'case_management', 'seasonality']
 
         """
         2. Simulation Config
@@ -104,6 +104,8 @@ class SimulationConfig:
         self.openmalaria_burnin = 100
         self.openmalaria_pop_size = 50000
         self.openmalaria_scaffold = "R0000GA"
+        self.openmalaria_modeloptions = "R0000GA_model_options.txt"
+        self.openmalaria_parameter = "R0000GA_parameter.txt"
         self.openmalaria_survey_step = '5d'
         self.openmalaria_memory_per_sim = 3
         self.openmalaria_time_per_sim = '2:00:00'
@@ -116,5 +118,5 @@ class SimulationConfig:
         self.plots_to_run = ['relationship', 'timeseries', 'agecurves']  # 'ccstep'
         self.burnin_directory = None
         self.sim_params_list = ['seasonality', 'sweep_list', 'case_management', 'eir', 'intervention_list', 'agebins',
-                                'output_target', 'plots_to_run']
+                                'target_output_values', 'plots_to_run']
 

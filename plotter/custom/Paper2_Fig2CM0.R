@@ -28,7 +28,7 @@ dat_total <- rbind(dat_om_0, dat_ms_0, dat_em_0, fill=TRUE)
 rm(dat_ms_0, dat_em_0, dat_om_0)
 
 dat_total <- dat_total %>%
-  group_by(output_target, cm_clinical, ageGroup, seasonality, modelname) %>%
+  group_by(target_output_values, cm_clinical, ageGroup, seasonality, modelname) %>%
   summarise(simulatedEIR__mean = mean(simulatedEIR),
             simulatedEIR__min = quantile(simulatedEIR, 0.05),
             simulatedEIR__up = quantile(simulatedEIR, 0.95),
@@ -59,7 +59,7 @@ rm(i_om, i_em)
 
 
 for (ii in unique(dat_total$cm_clinical)){
-  dat_p <- filter(dat_total, cm_clinical == ii, seasonality == 'perennial', output_target <= 0.8)
+  dat_p <- filter(dat_total, cm_clinical == ii, seasonality == 'perennial', target_output_values <= 0.8)
   i_p <- filter(i_full, cm_clinical == ii, seasonality == 'perennial', pop_size == 50000, importation == FALSE)
   i_p <- filter(i_p, simulatedEIR >= 0.01)
   # ------------------------------ Figure 2A and B ------------------------------
@@ -168,24 +168,24 @@ for (ii in unique(dat_total$cm_clinical)){
   
   dat_p <- dat_p %>%
     mutate(pfpr_grp = case_when(
-      modelname == 'EMOD' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
-      modelname == 'EMOD' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
-      modelname == 'EMOD' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
-      modelname == 'EMOD' & output_target %in% pfpr_values[4] ~ pfpr_labels[4],
+      modelname == 'EMOD' & target_output_values %in% pfpr_values[1] ~ pfpr_labels[1],
+      modelname == 'EMOD' & target_output_values %in% pfpr_values[2] ~ pfpr_labels[2],
+      modelname == 'EMOD' & target_output_values %in% pfpr_values[3] ~ pfpr_labels[3],
+      modelname == 'EMOD' & target_output_values %in% pfpr_values[4] ~ pfpr_labels[4],
       ## OM
-      modelname == 'OpenMalaria' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
-      modelname == 'OpenMalaria' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
-      modelname == 'OpenMalaria' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
-      modelname == 'OpenMalaria' & output_target %in% pfpr_values[4] ~ pfpr_labels[4],
-      modelname == 'Original' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
-      modelname == 'Original' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
-      modelname == 'Original' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
-      modelname == 'Original' & output_target %in% pfpr_values[4] ~ pfpr_labels[4],
+      modelname == 'OpenMalaria' & target_output_values %in% pfpr_values[1] ~ pfpr_labels[1],
+      modelname == 'OpenMalaria' & target_output_values %in% pfpr_values[2] ~ pfpr_labels[2],
+      modelname == 'OpenMalaria' & target_output_values %in% pfpr_values[3] ~ pfpr_labels[3],
+      modelname == 'OpenMalaria' & target_output_values %in% pfpr_values[4] ~ pfpr_labels[4],
+      modelname == 'Original' & target_output_values %in% pfpr_values[1] ~ pfpr_labels[1],
+      modelname == 'Original' & target_output_values %in% pfpr_values[2] ~ pfpr_labels[2],
+      modelname == 'Original' & target_output_values %in% pfpr_values[3] ~ pfpr_labels[3],
+      modelname == 'Original' & target_output_values %in% pfpr_values[4] ~ pfpr_labels[4],
       ## malariasimulation
-      modelname == 'malariasimulation' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
-      modelname == 'malariasimulation' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
-      modelname == 'malariasimulation' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
-      modelname == 'malariasimulation' & output_target %in% pfpr_values[4] ~ pfpr_labels[4]),
+      modelname == 'malariasimulation' & target_output_values %in% pfpr_values[1] ~ pfpr_labels[1],
+      modelname == 'malariasimulation' & target_output_values %in% pfpr_values[2] ~ pfpr_labels[2],
+      modelname == 'malariasimulation' & target_output_values %in% pfpr_values[3] ~ pfpr_labels[3],
+      modelname == 'malariasimulation' & target_output_values %in% pfpr_values[4] ~ pfpr_labels[4]),
            pfpr_grp = factor(pfpr_grp, levels = pfpr_labels, labels = pfpr_labels))
   
   
@@ -193,11 +193,11 @@ for (ii in unique(dat_total$cm_clinical)){
     ungroup() %>%
     filter(ageGroup %in% agegrps) %>%
     filter(!is.na(pfpr_grp)) %>%
-    dplyr::select(output_target, ageGroup, pfpr_grp, modelname,
+    dplyr::select(target_output_values, ageGroup, pfpr_grp, modelname,
                   prevalence__mean, prevalence__min, prevalence__up,
                   clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                   severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-    pivot_longer(cols = -c(output_target, ageGroup, modelname, pfpr_grp)) %>%
+    pivot_longer(cols = -c(target_output_values, ageGroup, modelname, pfpr_grp)) %>%
     separate(name, into = c('name', 'stat'), sep = '__') %>%
     mutate(name = factor(name, levels = c('prevalence', 'clinical_incidence', 'severe_incidence'),
                          labels = c('Prevalence', 'Clinical Incidence (ppa)', 'Severe Incidence (ppa)'))) %>%
@@ -224,11 +224,11 @@ for (ii in unique(dat_total$cm_clinical)){
     ungroup() %>%
     filter(ageGroup %in% agegrps) %>%
     filter(!is.na(pfpr_grp)) %>%
-    dplyr::select(output_target, ageGroup, pfpr_grp, modelname,
+    dplyr::select(target_output_values, ageGroup, pfpr_grp, modelname,
                   prevalence__mean, prevalence__min, prevalence__up,
                   clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                   severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-    pivot_longer(cols = -c(output_target, ageGroup, modelname, pfpr_grp)) %>%
+    pivot_longer(cols = -c(target_output_values, ageGroup, modelname, pfpr_grp)) %>%
     separate(name, into = c('name', 'stat'), sep = '__') %>%
     mutate(name = factor(name, levels = c('prevalence', 'clinical_incidence', 'severe_incidence'),
                          labels = c('Prevalence', 'Clinical Incidence (ppa)', 'Severe Incidence (ppa)'))) %>%
@@ -255,11 +255,11 @@ for (ii in unique(dat_total$cm_clinical)){
     ungroup() %>%
     filter(ageGroup %in% agegrps) %>%
     filter(!is.na(pfpr_grp)) %>%
-    dplyr::select(output_target, ageGroup, pfpr_grp, modelname,
+    dplyr::select(target_output_values, ageGroup, pfpr_grp, modelname,
                   prevalence__mean, prevalence__min, prevalence__up,
                   clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                   severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-    pivot_longer(cols = -c(output_target, ageGroup, modelname, pfpr_grp)) %>%
+    pivot_longer(cols = -c(target_output_values, ageGroup, modelname, pfpr_grp)) %>%
     separate(name, into = c('name', 'stat'), sep = '__') %>%
     mutate(name = factor(name, levels = c('prevalence', 'clinical_incidence', 'severe_incidence'),
                          labels = c('Prevalence', 'Clinical Incidence (ppa)', 'Severe Incidence (ppa)'))) %>%
@@ -291,10 +291,10 @@ for (ii in unique(dat_total$cm_clinical)){
  pD1 <- dat_p %>%
    ungroup() %>%
    filter(ageGroup %in% agegrps) %>%
-   dplyr::select(output_target, ageGroup, prevalence_2to10__mean, modelname,
+   dplyr::select(target_output_values, ageGroup, prevalence_2to10__mean, modelname,
                  clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                  severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-   pivot_longer(cols = -c(output_target, ageGroup, modelname, prevalence_2to10__mean)) %>%
+   pivot_longer(cols = -c(target_output_values, ageGroup, modelname, prevalence_2to10__mean)) %>%
    separate(name, into = c('name', 'stat'), sep = '__') %>%
    filter(name =='clinical_incidence') %>%
    mutate(name = case_when(name == 'clinical_incidence' ~ 'Clinical Incidence\n(ppa)')) %>%
@@ -319,10 +319,10 @@ pD1
  pD2 <- dat_p %>%
    ungroup() %>%
    filter(ageGroup %in% agegrps) %>%
-   dplyr::select(output_target, ageGroup, prevalence_2to10__mean, modelname,
+   dplyr::select(target_output_values, ageGroup, prevalence_2to10__mean, modelname,
                  clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                  severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-   pivot_longer(cols = -c(output_target, ageGroup, modelname, prevalence_2to10__mean)) %>%
+   pivot_longer(cols = -c(target_output_values, ageGroup, modelname, prevalence_2to10__mean)) %>%
    separate(name, into = c('name', 'stat'), sep = '__') %>%
    filter(name =='severe_incidence') %>%
    mutate(name = case_when(name == 'severe_incidence' ~ 'Severe Incidence\n(ppa)')) %>%

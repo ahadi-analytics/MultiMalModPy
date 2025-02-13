@@ -21,13 +21,12 @@ class LoadLaunchArgs:
         models (list of str): A list of models to be used in the experiment, default includes 'OpenMalaria' and 'malariasimulation'.
         user (str): The username of the person running the experiment, fetched from the environment.
         csv (str or None): CSV file for input data, if applicable.
-        interventions (list): A list of interventions to be applied during the simulation.
         rownum (int or None): Row number in the CSV, if applicable.
         run_mode (str or None): The mode in which to run the simulation.
         emod_calib_params (bool): Whether to enable EMOD calibration parameters, default is False.
         overwrite (bool): Whether to overwrite existing files, default is False.
         mpv (bool): Whether to use MPV (most probable value), default is True.
-        output_type (str): The type of output expected, default is 'prevalence_2to10'.
+        target_output_name (str): The type of output expected, default is 'prevalence_2to10'.
 
     Methods:
         __init__(**kwargs): Initializes the Args object with default values, which can be overridden by user-provided values.
@@ -50,16 +49,17 @@ class LoadLaunchArgs:
         self.expname = f'sims_entomologymode_seasonality_intervention_{dt.now().strftime("%H_%M_%S")}'
         self.emodstep = None
         self.serializedid = ''
-        self.models = ['OpenMalaria', 'malariasimualtion']  # 'EMOD'
+        self.models = ['OpenMalaria', 'malariasimulation']  # 'EMOD'
         self.user = os.environ.get('USER')
         self.csv = None
-        self.interventions = []
         self.rownum = None
-        self.run_mode = None
+        self.run_mode = 'custom'
         self.emod_calib_params = False
         self.overwrite = False
         self.mpv = True
-        self.output_type = 'prevalence_2to10'
+        self.test = True
+        self.note = ''
+        self.target_output_name = 'prevalence_2to10'
 
         # Update with any user-provided values
         for key, value in kwargs.items():
@@ -80,9 +80,9 @@ class LoadLaunchArgs:
         """
         return (f"Args(directory={self.directory}, suite={self.suite}, expname={self.expname}, "
                 f"emodstep={self.emodstep}, serializedid={self.serializedid}, models={self.models}, "
-                f"user={self.user}, csv={self.csv}, interventions={self.interventions}, rownum={self.rownum}, "
+                f"user={self.user}, csv={self.csv},  rownum={self.rownum}, "
                 f"run_mode={self.run_mode}, emod_calib_params={self.emod_calib_params}, "
-                f"overwrite={self.overwrite}, mpv={self.mpv}, output_type={self.output_type})")
+                f"overwrite={self.overwrite}, mpv={self.mpv}, test={self.test}, note={self.note}, target_output_name={self.target_output_name})")
 
 
 def write_ps1_runmodel(exp, filename, modelname):

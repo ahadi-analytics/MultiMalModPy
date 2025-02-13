@@ -13,7 +13,7 @@
 #'          \item \code{seed}: Random seed for reproducibility.
 #'          \item \code{seasonality}: Seasonality type (e.g., perennial, seasonal).
 #'          \item \code{cm_clinical}: Clinical coverage values.
-#'          \item \code{model_input_malariasimulation}: EIR input values for simulations.
+#'          \item \code{transmission_intensity_malariasimulation}: EIR input values for simulations.
 #'          \item Additional columns depending on the interventions.
 #'        }
 #' @param write_raw_output Logical. If \code{TRUE}, writes raw output CSV files for each simulation
@@ -134,7 +134,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     if ("cc_step" %in% intervention_list){ 
       # Calibrate to the initial EIR (eirs unique to each model, based on which eir creates the high, medium and low prevalences required):
       simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                      init_EIR = parameter_table[i,]$model_input_malariasimulation)
+                                      init_EIR = parameter_table[i,]$transmission_intensity_malariasimulation)
       # Get the mosquito carrying capacity:
       mosquito_carrying_capacity <- get_init_carrying_capacity(parameters = simparams[[i]])
       
@@ -145,7 +145,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     else{
       # Calibrate to the initial EIR (same across models):
       simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                      init_EIR = parameter_table[i,]$model_input_malariasimulation)}
+                                      init_EIR = parameter_table[i,]$transmission_intensity_malariasimulation)}
 
     #-------------------------
     # 2. Run simulations:
@@ -164,7 +164,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     }
     
     if ("cc_step" %in% intervention_list) {
-      simulation_outputs_list[[i]]$model_input_malariasimulation <- parameter_table[i,]$model_input_malariasimulation
+      simulation_outputs_list[[i]]$transmission_intensity_malariasimulation <- parameter_table[i,]$transmission_intensity_malariasimulation
       simulation_outputs_list[[i]]$cc_factor_malariasimulation <- parameter_table[i,]$cc_factor_malariasimulation
       simulation_outputs_list[[i]]$cc_timestep_malariasimulation <- parameter_table[i,]$cc_timestep_malariasimulation
       simulation_outputs_list[[i]]$cc_title <- parameter_table[i,]$cc_title}

@@ -119,6 +119,6 @@ if __name__ == "__main__":
         df['date'] = pd.to_datetime(df['date'])
         df['simday'] = (df['date'] - df['date'].min()).dt.days
         scen_df = pd.read_csv(os.path.join(wdir, 'scenarios.csv'))
-        scen_df = scen_df[['index','output_target']]
+        scen_df = scen_df[['index','target_output_values']]
         df = df.merge(scen_df, on='index', how='inner')
         all_age_sample_plot(wdir, df, 'malariasimulation', timestep_var='simday', sweep_variables=exp_tags, sample_channels=sample_channels)

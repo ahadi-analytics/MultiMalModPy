@@ -20,7 +20,7 @@ from plotter.plot_helper import *
 
 
 # Plots trends over available months, requires PfPR_ClinicalIncidence_mth.csv
-def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='output_target', agegrps=['0-100'], new_index=None):
+def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', agegrps=['0-100'], new_index=None):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
     Note, assumed single occurence per month, i.e. aggregated across years (reads in mmmpy_mth.csv)
@@ -28,7 +28,7 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='output_ta
         fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'output_target'.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'target_output_values'.
         agegrp (str, optional): Age group filter for the data. Default is '0-5'.
     Returns:
         None (plots are saved to disk).
@@ -57,8 +57,8 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='output_ta
         ax.set_title(f'{facet_var} = {fi}')
         if facet_var == 'modelname':
             ax.set_title(fi)
-        if facet_var == 'output_target':
-            ax.set_title(f"{get_label(exp.output_type)} = {fi}")
+        if facet_var == 'target_output_values':
+            ax.set_title(f"{get_label(exp.target_output_name)} = {fi}")
 
         f += 1
         max_ylim = []
@@ -136,8 +136,8 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
         ax.set_title(f"{facet_var} = {fi}")
         if facet_var == 'modelname':
             ax.set_title(fi)
-        if facet_var == 'output_target':
-            ax.set_title(f"{get_label(exp.output_type)} = {fi}")
+        if facet_var == 'target_output_values':
+            ax.set_title(f"{get_label(exp.target_output_name)} = {fi}")
 
         f += 1
         max_ylim = []
@@ -220,8 +220,8 @@ def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='season
         ax.set_title(f"{facet_var} = {fi}")
         if facet_var == 'modelname':
             ax.set_title(fi)
-        if facet_var == 'output_target':
-            ax.set_title(f"{get_label(exp.output_type)} = {fi}")
+        if facet_var == 'target_output_values':
+            ax.set_title(f"{get_label(exp.target_output_name)} = {fi}")
 
         f += 1
         max_ylim = []
@@ -283,7 +283,7 @@ if __name__ == "__main__":
 
     if not df_mth.empty:
         facet_var = 'modelname'
-        sweepvar = 'output_target'
+        sweepvar = 'target_output_values'
         for channel in channel_list:
             try:
                 print(f'#----- Plotting the monthly trends for {channel} -----#')
@@ -298,8 +298,8 @@ if __name__ == "__main__":
     sweepvar = 'modelname'
     facet_var = 'ageGroup'
 
-    if len(exp.output_target) > 1 & len(exp.output_target) <= 3:
-        facet_var = 'output_target'
+    if len(exp.target_output_values) > 1 & len(exp.target_output_values) <= 3:
+        facet_var = 'target_output_values'
     if facet_var == 'ageGroup' and len(exp.cm_clinical) > 1:
         facet_var = 'cm_clinical'
     if facet_var == 'ageGroup' and len(exp.seasonality) > 1:

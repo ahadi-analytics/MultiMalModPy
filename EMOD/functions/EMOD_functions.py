@@ -99,7 +99,7 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
 
     ## If forced EIR, treated as campaign in EMOD
     if row.entomology_mode == 'forced':
-        set_inputEIR_seasonality(camp, float(row.model_input_EMOD), row.seasonality)
+        set_inputEIR_seasonality(camp, float(row.transmission_intensity_EMOD), row.seasonality)
 
     # Case management
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
@@ -127,9 +127,9 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     # SMC using PKPD model
     #if 'smc' in intervention_list and exp.emod_step == 'pickup':
     #    print(row.smc_coverage)
-    #    if row.model_input_emod == 4:
+    #    if row.transmission_intensity_EMOD == 4:
     #        start_array = [366, 731, 1096, 1461, 1826]
-    #    elif row.model_input_emod == 8:
+    #    elif row.transmission_intensity_EMOD == 8:
     #        start_array = [366, 731, 1096, 1461, 1826]
     #    else:
     #        start_array = [335, 700, 1065, 1430, 1795]

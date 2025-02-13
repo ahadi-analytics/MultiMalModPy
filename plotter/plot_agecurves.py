@@ -19,7 +19,7 @@ from plotter.plot_helper import *
 
 
 # Plots over age - requires PfPR_ClinicalIncidence_yr.csv
-def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target', age_groups_aggregates=None):
+def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', age_groups_aggregates=None):
     """
     Plots age curves based on model results and saves the figure to the specified directory.
 
@@ -30,7 +30,7 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot.
                                    Defaults to 'modelname'.
         facet_var (str, optional): Variable used to create subplots based on its unique values.
-                                   Defaults to 'output_target'.
+                                   Defaults to 'target_output_values'.
         age_groups_aggregates (list, optional): List of age group labels to use for aggregation.
                                                  If None, default age groups will be used.
 
@@ -72,8 +72,8 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='output_target
         ax.set_title(f"{facet_var} = {fi}")
         if facet_var == 'modelname':
             ax.set_title(fi)
-        if facet_var == 'output_target':
-            ax.set_title(f"{exp.output_type} = {fi}")
+        if facet_var == 'target_output_values':
+            ax.set_title(f"{exp.target_output_name} = {fi}")
 
         f += 1
         max_ylim = []
@@ -123,10 +123,10 @@ if __name__ == "__main__":
 
     channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
     sweepvar = 'modelname'
-    facet_var = 'output_target'
+    facet_var = 'target_output_values'
 
-    if len(exp.output_target) > 1 & len(exp.output_target) <= 3:
-        facet_var = 'output_target'
+    if len(exp.target_output_values) > 1 & len(exp.target_output_values) <= 3:
+        facet_var = 'target_output_values'
     if facet_var == 'ageGroup' and len(exp.cm_clinical) > 1:
         facet_var = 'cm_clinical'
     if facet_var == 'ageGroup' and len(exp.seasonality) > 1:
@@ -140,7 +140,7 @@ if __name__ == "__main__":
         print(f'#----- Plotting Age Curves for {channel}-----#')
         age_curves(out_dir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,  age_groups_aggregates=age_groups_aggregates_sub)
 
-    sweepvar =  'output_target'
+    sweepvar =  'target_output_values'
     facet_var =  'modelname'
     for channel in channel_list:
         print(f'#----- Plotting Age Curves for {channel}-----#')

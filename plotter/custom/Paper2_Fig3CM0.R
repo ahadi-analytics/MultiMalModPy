@@ -38,16 +38,16 @@ rm(dat_s_pfpr_em, dat_s_pfpr_ms, dat_s_pfpr_om,wdir_pfpr)
 
 
 dat_s_eir <- dat_s_eir %>%
-  filter(output_target==20, seasonality == 'seasonal', cm_clinical == 0.0)
+  filter(target_output_values==20, seasonality == 'seasonal', cm_clinical == 0.0)
 dat_s_pfpr <- dat_s_pfpr %>%
-  filter(output_target %in% c(0.05,0.1,0.25,0.5),seasonality == 'seasonal', cm_clinical == 0.0)
-dat_s_pfpr$output_type <- 'pfpr'
-dat_s_eir$output_type <-'eir'
+  filter(target_output_values %in% c(0.05,0.1,0.25,0.5),seasonality == 'seasonal', cm_clinical == 0.0)
+dat_s_pfpr$target_output_name <- 'pfpr'
+dat_s_eir$target_output_name <-'eir'
 dat_s <- rbind(dat_s_eir, dat_s_pfpr, fill=TRUE)
 rm(dat_s_eir, dat_s_pfpr)
 
 dat_s <- dat_s %>%
-  group_by(day, year, output_type, output_target, cm_clinical, ageGroup, seasonality, modelname) %>%
+  group_by(day, year, target_output_name, target_output_values, cm_clinical, ageGroup, seasonality, modelname) %>%
   summarise(simulatedEIR__mean = mean(simulatedEIR),
             simulatedEIR__min = quantile(simulatedEIR, 0.05),
             simulatedEIR__up = quantile(simulatedEIR, 0.95),
@@ -86,7 +86,7 @@ pfpr_labels <- c(0.05,0.1,0.25,0.5)
 pA <- dat_s %>%
   filter(year == max(year)) %>%
   filter(ageGroup %in% '0-100') %>%
-  filter(output_target == 20) %>%
+  filter(target_output_values == 20) %>%
   ggplot() +
   geom_ribbon(aes(x = day, ymin = simulatedEIR__min, ymax = simulatedEIR__up, fill = modelname), alpha = 0.1) +
   geom_line(aes(x = day, y = simulatedEIR__mean, col = modelname), linewidth = 1) +
@@ -108,13 +108,13 @@ pA
 pB <- dat_s %>%
   filter(year == max(year)) %>% 
   filter(ageGroup %in% '0-100') %>%
-  filter(output_target %in% c(20)) %>%
-  dplyr::select(year, day, output_target, ageGroup, modelname,
+  filter(target_output_values %in% c(20)) %>%
+  dplyr::select(year, day, target_output_values, ageGroup, modelname,
                 simulatedEIR__mean, simulatedEIR__min, simulatedEIR__up,
                 prevalence__mean, prevalence__min, prevalence__up,
                 clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                 n_total_mos_pop__mean, n_total_mos_pop__min, n_total_mos_pop__up) %>%
-  pivot_longer(cols = -c(day, year, output_target, ageGroup, modelname)) %>%
+  pivot_longer(cols = -c(day, year, target_output_values, ageGroup, modelname)) %>%
   separate(name, into = c('name', 'stat'), sep = '__') %>%
   mutate(name = factor(name,
                        levels = c('n_total_mos_pop','simulatedEIR', 'prevalence', 'clinical_incidence'),
@@ -122,7 +122,7 @@ pB <- dat_s %>%
   group_by(modelname, name) %>%
   mutate(value = rescale(value, to = c(0, 1))) %>%
   pivot_wider(names_from = stat, values_from = value) %>%
-  group_by(output_target, ageGroup, modelname, name) %>%
+  group_by(target_output_values, ageGroup, modelname, name) %>%
   mutate(max_y = max(mean),
          ismax = mean==max_y) %>%
   ggplot() +
@@ -153,32 +153,32 @@ line_cols <- c('#1bd9e9', '#2c7bb6','#cfae61','#d7191c')
 pC_pfpr <- dat_s %>%
   ungroup() %>%
   filter(ageGroup %in% '0-100', times>=730) %>%
-  filter(output_target %in% pfpr_labels) %>%
-  select(times, output_target, ageGroup, modelname,
+  filter(target_output_values %in% pfpr_labels) %>%
+  select(times, target_output_values, ageGroup, modelname,
          simulatedEIR__mean, simulatedEIR__min, simulatedEIR__up,
          prevalence__mean, prevalence__min, prevalence__up,
          clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up) %>%
-  pivot_longer(cols = -c(times, output_target, ageGroup, modelname)) %>%
+  pivot_longer(cols = -c(times, target_output_values, ageGroup, modelname)) %>%
   separate(name, into = c('name', 'stat'), sep = '__') %>%
   mutate(custom_col = case_when(
-    name == 'simulatedEIR' & output_target == pfpr_labels[1] ~ line_cols[1],
-    name == 'simulatedEIR' & output_target == pfpr_labels[2] ~ line_cols[2],
-    name == 'simulatedEIR' & output_target == pfpr_labels[3] ~ line_cols[3],
-    name == 'simulatedEIR' & output_target == pfpr_labels[4] ~ line_cols[4],
+    name == 'simulatedEIR' & target_output_values == pfpr_labels[1] ~ line_cols[1],
+    name == 'simulatedEIR' & target_output_values == pfpr_labels[2] ~ line_cols[2],
+    name == 'simulatedEIR' & target_output_values == pfpr_labels[3] ~ line_cols[3],
+    name == 'simulatedEIR' & target_output_values == pfpr_labels[4] ~ line_cols[4],
     # prev
-    name == 'prevalence' & output_target == pfpr_labels[1] ~ line_cols[1],
-    name == 'prevalence' & output_target == pfpr_labels[2] ~ line_cols[2],
-    name == 'prevalence' & output_target == pfpr_labels[3] ~ line_cols[3],
-    name == 'prevalence' & output_target == pfpr_labels[4] ~ line_cols[4],
+    name == 'prevalence' & target_output_values == pfpr_labels[1] ~ line_cols[1],
+    name == 'prevalence' & target_output_values == pfpr_labels[2] ~ line_cols[2],
+    name == 'prevalence' & target_output_values == pfpr_labels[3] ~ line_cols[3],
+    name == 'prevalence' & target_output_values == pfpr_labels[4] ~ line_cols[4],
     # inc
-    name == 'clinical_incidence' & output_target == pfpr_labels[1] ~ line_cols[1],
-    name == 'clinical_incidence' & output_target == pfpr_labels[2] ~ line_cols[2],
-    name == 'clinical_incidence' & output_target == pfpr_labels[3] ~ line_cols[3],
-    name == 'clinical_incidence' & output_target == pfpr_labels[4] ~ line_cols[4])) %>%
+    name == 'clinical_incidence' & target_output_values == pfpr_labels[1] ~ line_cols[1],
+    name == 'clinical_incidence' & target_output_values == pfpr_labels[2] ~ line_cols[2],
+    name == 'clinical_incidence' & target_output_values == pfpr_labels[3] ~ line_cols[3],
+    name == 'clinical_incidence' & target_output_values == pfpr_labels[4] ~ line_cols[4])) %>%
   mutate(name = factor(name,
                        levels = c('simulatedEIR', 'prevalence', 'clinical_incidence'),
                        labels = c('Simulated EIR\n(5 day)', 'Prevalence\n (all ages)', 'Clinical\nIncidence\n(per person\nper year,\nannualized)'))) %>%
-  group_by(modelname, name, output_target) %>%
+  group_by(modelname, name, target_output_values) %>%
   pivot_wider(names_from = stat, values_from = value) %>%
   ggplot() +
   geom_vline(xintercept = c(1095,1460), color='#696969',linetype='dotted')+

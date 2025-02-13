@@ -41,10 +41,40 @@ def create_scenarios(exp, scen_df):
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
     xml = xml.replace('@importation_rate@', f"{exp.openmalaria_importation_rate}")
     xml = xml.replace('@healthSystemMemory@', f"{str(int(exp.days_between_clinical_cases_5days))}")
+
+    # Load from snippets
+    # Age Groups to monitor
     xmlageGroups = '\t\t<ageGroup lowerbound="0">'
     for item in exp.agebins:
         xmlageGroups += f'\n\t\t\t<group upperbound="{item}"/>'
     xml = xml.replace('<@age_groups@>', xmlageGroups)
+
+    # Age demography
+    snippet_file = 'age_demography.txt'
+    with open(os.path.join(exp.openmalaria_input_path, 'snippets', snippet_file), 'r', encoding='utf-8') as file:
+        snippet = file.read()
+    xml = xml.replace('@age_demography@', snippet)
+
+    # Interventions
+    if "cc_step" in exp.intervention_list:
+        snippet_file = 'intervention_CCstep.txt'
+        with open(os.path.join(exp.openmalaria_input_path, 'snippets', snippet_file), 'r', encoding='utf-8') as file:
+            snippet = file.read()
+        xml = xml.replace('@intervention_ccstep@', snippet)
+    else:
+        xml = xml.replace('@intervention_ccstep@', '')
+
+    # Model options
+    snippet_file = exp.openmalaria_modeloptions
+    with open(os.path.join(exp.openmalaria_input_path, 'snippets', snippet_file), 'r', encoding='utf-8') as file:
+        snippet = file.read()
+    xml = xml.replace('@model_options@', snippet)
+
+    # Model core parameters
+    snippet_file = exp.openmalaria_parameter
+    with open(os.path.join(exp.openmalaria_input_path, 'snippets', snippet_file), 'r', encoding='utf-8') as file:
+        snippet = file.read()
+    xml = xml.replace('@model_parameters@', snippet)
 
     # Scenario sweeps and runs
     df = rep_scen_df(scen_df)
@@ -64,7 +94,7 @@ def create_scenarios(exp, scen_df):
         scenario = xml.replace('@seed@', str(row['seed']))
         scenario = scenario.replace('@cm_clinical@', str(cm_clinical_5daily))
         scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
-        scenario = scenario.replace('@eir@', str(row['model_input_OpenMalaria']))
+        scenario = scenario.replace('@eir@', str(row['transmission_intensity_OpenMalaria']))
 
         if 'cc_step' in exp.intervention_list:
             scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_OpenMalaria']))

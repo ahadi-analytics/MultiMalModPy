@@ -75,13 +75,13 @@ class RunModeManager:
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
 
-        if self.experiment.output_type != 'eir':
+        if self.experiment.target_output_name != 'eir':
             warnings.warn(
-                f"Warning: output_type changed to 'eir' as required for calibration (not {self.experiment.output_type})")
-        self.experiment.output_type = 'eir'
+                f"Warning: target_output_name changed to 'eir' as required for calibration (not {self.experiment.target_output_name})")
+        self.experiment.target_output_name = 'eir'
         self.experiment.analyzer_list = ['timeavrg']
         self.experiment.plots_to_run = ['relationship']
-        self.output_target = np.arange(1, 31)
+        self.target_output_values = np.arange(1, 31)
 
         ## Configure calib run
         eir_range, x_temp_range = get_calib_range()
@@ -108,12 +108,12 @@ class RunModeManager:
         self.experiment.emod_pop_size = 5000
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
-        if self.experiment.output_type == 'eir':
-            self.experiment.output_target = np.arange(1, 4)
-        if self.experiment.output_type == 'prevalence_2to10':
-            self.experiment.output_target = [0.1, 0.25, 0.5]
-        if self.experiment.output_type == 'clinical_incidence_U5':
-            self.experiment.output_target = [0.5, 1.2, 2.0]
+        if self.experiment.target_output_name == 'eir':
+            self.experiment.target_output_values = np.arange(1, 4)
+        if self.experiment.target_output_name == 'prevalence_2to10':
+            self.experiment.target_output_values = [0.1, 0.25, 0.5]
+        if self.experiment.target_output_name == 'clinical_incidence_U5':
+            self.experiment.target_output_values = [0.5, 1.2, 2.0]
 
     def _configure_production(self):
         """
@@ -129,12 +129,13 @@ class RunModeManager:
         self.experiment.emod_pop_size = 5000
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
-        if self.experiment.output_type == 'eir':
-            self.experiment.output_target = [20]
-        if self.experiment.output_type == 'prevalence_2to10':
+        if self.experiment.target_output_name == 'eir':
+            self.experiment.target_output_values = [20]
+        if self.experiment.target_output_name == 'prevalence_2to10':
             self.experiment.output_target = [0.05, 0.1, 0.25, 0.5] #self.experiment.output_target = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
-        if self.experiment.output_type == 'clinical_incidence_U5':
-            raise ValueError('output_type clinical_incidence_U5 not defined for production run')
+        if self.experiment.target_output_name == 'clinical_incidence_U5':
+            raise ValueError('target_output_name clinical_incidence_U5 not defined for production run')
+
 
     def _configure_csv(self):
         """
@@ -180,8 +181,7 @@ class ArgsConfig:
         test (bool): Indicates if the simulation should run in test mode with reduced resources.
         csv (str): Path to a CSV file specifying scenario parameters.
         rownum (int): Row number in the CSV file to be used for the current simulation.
-        intervention_list (list): List of interventions to include in the simulation.
-        output_type (str): Specifies the output alignment for the simulation (e.g., 'prevalence_2to10', 'eir').
+        target_output_name (str): Specifies the output alignment for the simulation (e.g., 'prevalence_2to10', 'eir').
         directory (str): Directory for storing or accessing simulation-related files.
         user (str): Name of the user launching the simulation; also used for organizing directories.
         custom_subdir (str): Subdirectory for simulations, often derived from the `user` attribute.
@@ -203,7 +203,7 @@ class ArgsConfig:
         self.test = args.test
         self.csv = args.csv
         self.rownum = args.rownum
-        self.output_type = args.output_type
+        self.target_output_name = args.target_output_name
         # User and directory settings
         self.directory = args.directory
         self.user = args.user

@@ -557,7 +557,7 @@ def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days, grp_channels=['ageGroup',
         u5 = u5.rename(columns={'clinical_incidence': 'clinical_incidence_U5'})
         all_ages = adf[adf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         adf = adf[adf['ageGroup'] == '0-100']
-        adf = adf.groupby(['scen_id', 'model_input_OpenMalaria', 'seasonality', 'cm_clinical','cm_severe'])[
+        adf = adf.groupby(['scen_id', 'transmission_intensity_OpenMalaria', 'seasonality', 'cm_clinical','cm_severe'])[
             ['simulatedEIR', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
             'mean').reset_index()
         adf = adf.merge(all_ages, on='scen_id')
@@ -569,7 +569,7 @@ def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days, grp_channels=['ageGroup',
             adf['importation'] = True
         else:
             adf['importaion'] = False
-        adf = adf.rename(columns={'model_input_OpenMalaria': 'input_target'})
+        adf = adf.rename(columns={'transmission_intensity_OpenMalaria': 'input_target'})
         adf.to_csv((os.path.join(wdir, 'interpolation_data.csv')), index=False)
         adf.to_csv((os.path.join(exp.interp_path, 'OpenMalaria', f'{exp.exp_name}_interpolation_data.csv')), index=False)
 
@@ -1051,7 +1051,7 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     df3 = df3.merge(eir_df, on=['index', 'survey', 'year'], how='inner')
     df3 = df3[['scen_id', 'index', 'seed', 'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey', 'days',
                'month', 'year', 'agebin', 'ageGroup', 'Vector_Nv', 'Vector_Sv',
-               'nHost', 'output_target', 'inputEIR', 'simulatedEIR', 'prevalence', 'clinical_incidence',
+               'nHost', 'target_output_values', 'inputEIR', 'simulatedEIR', 'prevalence', 'clinical_incidence',
                'severe_incidence',
                'nPatent', 'cc_factor_OpenMalaria', 'cc_change', 'cc_title']]
 
@@ -1074,7 +1074,7 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     df3 = df3.merge(v, on=grp_channels, how='inner')
     # Save the processed DataFrame to a CSV file
     print(f'\nSaving outputs to: {wdir}')
-    cols_to_keep = ['scen_id', 'seed', 'cm_clinical', 'cm_severe', 'seasonality', 'output_target', 'cc_change',
+    cols_to_keep = ['scen_id', 'seed', 'cm_clinical', 'cm_severe', 'seasonality', 'target_output_values', 'cc_change',
                     'cc_title', 'ageGroup', 'timestep', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
                     'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']
     df3 = df3[cols_to_keep]

@@ -32,9 +32,9 @@ def cc_step_params(exp):
         exp.mem_increase_factor = 6.0  # scaling factor on default memory requested
         exp.start_year = 1995
         exp.end_year = 2050
-        exp.output_type = 'prevalence_2to10'
-        exp.output_target = [0.1, 0.25, 0.5]
-        exp.cc_change = exp.output_target
+        exp.target_output_name = 'prevalence_2to10'
+        exp.target_output_values = [0.1, 0.25, 0.5]
+        exp.cc_change = exp.target_output_values
         exp.emod_memory_per_sim = 7
         exp.emod_time_per_sim = '8:00:00'
         exp.malariasimulation_memory_per_sim = 6
@@ -43,7 +43,7 @@ def cc_step_params(exp):
         exp.openmalaria_time_per_sim = '5:00:00'
     else:
         ## Keep parameters as defined by user in helper.py
-        exp.cc_change = exp.output_target
+        exp.cc_change = exp.target_output_values
 
     # Add cc_change to the list of sweep parameters
     exp.sweep_list = exp.sweep_list + ['cc_change']
@@ -68,7 +68,7 @@ def cc_step_params(exp):
     exp.sim_params_list += ['eir_scalar_malariasimulation', 'eir_malariasimulation', 'eir_scalar_openmalaria',
                      'eir_scalar_emod',  'eir_openmalaria', 'eir_scalar_openmalaria', 'carrying_capacity_step']
     
-    if len(exp.output_target) < 2:
+    if len(exp.target_output_values) < 2:
         raise ValueError(f'Please specify at least 2 output targets, for cc step to increase/decrease to.')
 
     return exp
@@ -87,7 +87,7 @@ def cc_step_factor_calculator(exp, df, model):
         df (pd.DataFrame): A DataFrame containing data for calculations, with columns including:
             - `cm_clinical`
             - `seasonality`
-            - `output_target`
+            - `target_output_values`
             - `cc_change`
         exp (object): An object representing the experiment, which should include:
             - `interp_path` (str): Path to the folder containing interpolation data.
@@ -137,13 +137,13 @@ def cc_step_factor_calculator(exp, df, model):
         if model == 'EMOD':
             xt = idata['prevalence_2to10']
             yp = idata['input_target']
-            xold = row['output_target']
+            xold = row['target_output_values']
             xnew = row['cc_change']
             interpolated_old = np.interp(xold, xt, yp)
         else:
             xt = idata['prevalence_2to10']
             yp = idata['n_total_mos_pop']
-            xold = row['output_target']
+            xold = row['target_output_values']
             xnew = row['cc_change']
             interpolated_old = np.interp(xold, xt, yp)
         interpolated_new = np.interp(xnew, xt, yp)
@@ -162,13 +162,13 @@ def cc_title_function(df):
     based on the values in the provided DataFrame.
 
     Each row in the DataFrame contributes one title, formatted as:
-    "<output_target>% - <cc_change>%", where:
-    - `output_target` and `cc_change` are multiplied by 100 and converted to integers
+    "<target_output_values>% - <cc_change>%", where:
+    - `target_output_values` and `cc_change` are multiplied by 100 and converted to integers
       to represent percentage values.
 
     Args:
         df (pandas.DataFrame): A DataFrame containing the following columns:
-            - `output_target` (float): The starting value for the percentage change.
+            - `target_output_values` (float): The starting value for the percentage change.
             - `cc_change` (float): The change value for the percentage change.
 
     Returns:
@@ -177,7 +177,7 @@ def cc_title_function(df):
     """
     output = []
     for i, row in df.iterrows():
-        first_percent = int(float(row['output_target']) * 100)
+        first_percent = int(float(row['target_output_values']) * 100)
         to_percent = int(float(row['cc_change']) * 100)
         title = f'{first_percent}%-{to_percent}%'
         output.append(title)
@@ -210,8 +210,8 @@ def cc_step_input_check(exp):
     if exp.entomology_mode != "dynamic":
         raise ValueError(f'Invalid entomology_mode for cc_step {exp.entomology_mode} specified, "dynamic" required')
 
-    if exp.output_type != 'prevalence_2to10':
-        raise ValueError("cc_step requires the output_type to be prevalence_2to10")
+    if exp.target_output_name != 'prevalence_2to10':
+        raise ValueError("cc_step requires the target_output_name to be prevalence_2to10")
 
     if exp.end_year - exp.start_year < exp.step_in_years:
         raise ValueError(f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and {exp.end_year}")

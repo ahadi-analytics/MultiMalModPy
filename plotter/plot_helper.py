@@ -420,10 +420,10 @@ def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True)
         txt += f'seasonality {selected_season}, '
 
     if filter_target:
-      if not any(var in figure_vars for var in ['simulatedEIR', 'prevalence_2to10', 'output_target']) :
-          selected_output = df['output_target'].max()
-          df = df[df['output_target'] == selected_output]
-          txt += f'output_target {selected_output}, '
+      if not any(var in figure_vars for var in ['simulatedEIR', 'prevalence_2to10', 'target_output_values']) :
+          selected_output = df['target_output_values'].max()
+          df = df[df['target_output_values'] == selected_output]
+          txt += f'target_output_values {selected_output}, '
 
     if 'modelname' not in figure_vars and df['modelname'].nunique() > 1:
         raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
