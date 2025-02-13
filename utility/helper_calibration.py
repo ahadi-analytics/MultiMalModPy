@@ -66,11 +66,12 @@ def output_target_to_xTemp(df, exp, model):
 
     # FIXME allow this hack, or is there a better one? For testrun, or introduce 'debug run' to allow running lower  populations
     popsize = exp.emod_pop_size
-    if exp.test and popsize is not data.loc[data['modelname'] == model, 'pop_size'].unique():
-        popsize = data.loc[data['modelname'] == model, 'pop_size'].min()
+    if exp.test and popsize not in data.loc[data['modelname'] == model, 'pop_size'].unique():
+        popsize = int(data.loc[data['modelname'] == model, 'pop_size'].min())
 
     for i, row in df.iterrows():
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
+                      & (data['cm_severe'] == row['cm_severe'])
                       & (data['seasonality'] == row['seasonality'])
                       & (data['modelname'] == model)
                       & (data['pop_size'] == popsize))]
@@ -142,11 +143,12 @@ def output_target_to_eir(df, exp, model):
         raise ValueError(f'Specified model is not valid {model}')
 
     # FIXME allow this hack, or is there a better one? For testrun, or introduce 'debug run' to allow running lower  populations
-    if exp.test and popsize is not data.loc[data['modelname'] == model, 'pop_size'].unique():
+    if exp.test and popsize not in data.loc[data['modelname'] == model, 'pop_size'].unique():
         popsize = data.loc[data['modelname'] == model, 'pop_size'].min()
 
     for i, row in df.iterrows():
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
+                      & (data['cm_severe'] == row['cm_severe'])
                       & (data['seasonality'] == row['seasonality'])
                       & (data['modelname'] == model)
                       & (data['pop_size'] == popsize))]

@@ -18,8 +18,9 @@ def cc_step_params(exp):
     # Required fixed parameters for cc_step
     exp.cc_decreasing = True  # this is important to note because decreasing sims are organized differently.
     exp.step_in_years = 5
-    exp.openmalaria_scaffold = "R0000GA_CC_STEP"
     exp.openmalaria_survey_step = '5d'
+    exp.plots_to_run = ['ccstep']
+    exp.analyzer_list = ['surveyallage', 'cc_step']
 
     if exp.cc_decreasing:
         print('Warning: Running cc_step decreasing simulations requires emod and openmalaria importation rates to be true')
@@ -59,10 +60,6 @@ def cc_step_params(exp):
         exp.cc_timestep_EMOD = int(exp.step_in_years * 365)
     exp.cc_timestep_malariasimulation = int((exp.malariasimulation_burnin + exp.step_in_years) * 365)
 
-    # Fixed parameters for cc_step
-    exp.openmalaria_scaffold = "R0000GA_CC_STEP"  # defining which OpenMalaria XML scaffold to use
-    exp.plots_to_run = ['ccstep']
-    exp.analyzer_list = ['surveyallage', 'cc_step']
 
     # Required for flagging list items when running from CSV
     exp.sim_params_list += ['eir_scalar_malariasimulation', 'eir_malariasimulation', 'eir_scalar_openmalaria',
@@ -131,6 +128,7 @@ def cc_step_factor_calculator(exp, df, model):
             
     for i, row in df.iterrows():
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
+                      & (data['cm_severe'] == row['cm_severe'])
                       & (data['seasonality'] == row['seasonality'])
                       & (data['modelname'] == model)
                       & (data['pop_size'] == popsize))]
