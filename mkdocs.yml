@@ -92,6 +92,8 @@ nav:
     - Getting help: about/getting_help.md
 theme:
   name: readthedocs
+  navigation_depth: 4
+  sticky_navigation: false
   features:
     - navigation.tabs
     - navigation.sections

@@ -1,27 +1,103 @@
 # Example run 
 
 
+This example guides you through running simulations, assuming all requirements are met — meaning the 
+necessary software is installed and user settings are properly configured in manifest.py.  
+You can visit the [installation ](../getting_started/installation.md) or the [first-time-configuration](../getting_started/configuration.md) pages if you need to modify your setup.
+
 ## HPC  
 
-Coming soon...
+**Step 1: Navigate to the Repository and Activate the Virtual Environment**
 
-## Local
-
-Run in terminal: 
+**1a) Navigate to the Repository**
+Open a terminal on your cluster and move into the MultiMalModPy repository using:
 ``` 
-python .\launch_sim.py --models malariasimulation OpenMalaria --test 
+cd <your_path>/MultiMalModPy  
 ```
+Replace <your_path> with the actual path where the repository is located.
 
-![launch_sim.py](../img/2025-02-02 19_34_10-run_simulations.R.png)  
+**1b) Activate the Virtual Environment**  
+To ensure dependencies are properly managed, activate the virtual environment:
+``` 
+source <your_path>/my_venv//bin/activate  
+```  
+If you haven’t set up the virtual environment yet, follow the installation instructions [here](../getting_started/installation.md).  
 
+**Step 2: Configure Simulation to run (Optional for First Test Run)**
+If you want to customize your simulation settings, the easiest way is to modify the `setup_sim.py` file and adjust the parameters as needed.
+However, if this is your first test run, you can skip this step and proceed with the default settings.
+Later, you’ll also learn how to run multiple simulations simultaneously using configurations from a CSV file. 
+
+**Step 3: Launch simulations**
+ 3a) To launch a simulation, use the following command:  
+``` 
+python launch_sim.py --models EMOD malariasimulation OpenMalaria --test
+```  
+You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly.  
+Check you simulations via `squeue -u <username>`. 
+
+While simulations are running, check the `experiments` and the `simulation_outputs` folder of your current simulation running.
+In the `experiments` folder, you will find log files for each step and model, as well as the input files used for the simulationper model.
+In the `simulation_outputs` folder, you can review the scenarios that were submitted in `scen_df.csv`, and  the outputs appear in the folder once the simulation finishes.    
+
+
+3b) Postprocessing (optional if manual re-run is required)
+Since the postprocessing runs automatically once the simulation job finishes, there is  no extra step required to process simulation outputs.  
+In case of futher content-debugging or custmization needs, you can go to `Customize and troubleshoot analyzer` section.  
+
+**Step 4: View output**  
+The figures will appear under  `simulation_outputs` .
+
+<div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>DONE!</em></strong>  
+  If you see the CSV files and generated figures, congratulations—you've successfully run your first MultiMalModPy test simulation! 🎉  
+ </div> 
+
+<div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>📝 NOTE!</em></strong>  
+  If the files are missing, check the log files for error messages and verify whether any raw simulation outputs were generated.  
+  To debug or rerun specific steps, use the saved .sh files to execute each step separately and identify the issue.      <strong>malariasimulation</strong> and <strong>OpenMalaria</strong>. 
+</div> 
+
+---------------------- 
+
+
+## Local  
+
+### From batch  
+
+Open a CLI terminal (i.e. CMD, Pycharm, or RStudio terminal). In the example shown, a Pycharm terminal is used.  
+And type in terminal the following command for a local test run.  
+
+```   
+python .\launch_sim.py --models malariasimulation OpenMalaria --test   
+```  
+
+**Pycharm**  
+![launch_sim.py](../img/run_from_pycharm.png)      
+
+
+The resulting terminal output looks as below, after which two pop up windows appear:
+
+
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/launch_sim.py" target="_blank">   
+![launch_sim.py](../img/launch_sim.py)  
+</a>  
 
 OpenMalaria 
-![OpenMalaria PSI](../img/2025-02-02 19_36_09.png)  
 
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/run_OpenMalaria_local.png" target="_blank"> 
+![OpenMalaria PSI](../img/run_OpenMalaria_local.png)  
+</a>
 
 
 malariasimulation
-![malariasimulation PSI](../img/2025-02-02 20_49_05.png)
+
+
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/run_malariasimulation_local.png" target="_blank">  
+![malariasimulation PSI](../img/run_malariasimulation_local.png)  
+</a>
+
+### Local, interactive run 
+
 
 
 ## Simulation directories
@@ -35,42 +111,8 @@ malariasimulation
 
 
 
-# Example outputs
+# Example outputs  
 
-![Example outputs](../img/2025-02-02 20_59_42-OpenMalaria.png)
+![Example outputs](../img/example_output_csv.png)  
 
-mmmpy_timeavrg.csv 
-
-| index | nHost    | prevalence_2to10 | prevalence | clinical_incidence | severe_incidence | mortality | ageGroup | scen_id | output_target | seasonality | entomology_mode | num_seeds | cm_clinical | cm_severe | cm_start | model_input_malariasimulation | model_input_OpenMalaria | seed | malariasimulation_pv | inputEIR | simulatedEIR | n_total_mos_pop | n_infectious_mos |
-|-------|----------|------------------|------------|--------------------|------------------|-----------|----------|---------|---------------|-------------|-----------------|-----------|-------------|-----------|----------|-------------------------------|-------------------------|------|----------------------|----------|--------------|-----------------|------------------|
-| 1     | 29.22192 | 0.229265         | 0.039565   | 0.266923           | 0.000136         | 0.003592  | 0-0.5    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 1    | 389                  | 1.624338 | 1.866924     | 107933.7        | 1823.24          |
-| 2     | 29.56986 | 0.213848         | 0.029741   | 0.257018           | 0.000229         | 0.003646  | 0-0.5    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 2    | 119                  | 1.624338 | 1.776915     | 110223.8        | 1790.495         |
-| 3     | 29.23562 | 0.201827         | 0.023522   | 0.287321           | 0.000188         | 0.002093  | 0-0.5    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
-| 1     | 17.1726  | 0.229265         | 0.123644   | 0.815252           | 0.004088         | 0.010307  | 0.5-1    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 1    | 389                  | 1.624338 | 1.866924     | 107933.7        | 1823.24          |
-| 2     | 17.07397 | 0.213848         | 0.098363   | 0.773107           | 0.008504         | 0.015926  | 0.5-1    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 2    | 119                  | 1.624338 | 1.776915     | 110223.8        | 1790.495         |
-| 3     | 17.31781 | 0.201827         | 0.112324   | 0.785319           | 0.005046         | 0.009301  | 0.5-1    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
-| 1     | 30.47123 | 0.229265         | 0.13307    | 1.082989           | 0.012506         | 0.009547  | 2-Jan    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 1    | 389                  | 1.624338 | 1.866924     | 107933.7        | 1823.24          |
-| 2     | 29.74247 | 0.213848         | 0.119197   | 0.8271             | 0.013502         | 0.010006  | 2-Jan    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 2    | 119                  | 1.624338 | 1.776915     | 110223.8        | 1790.495         |
-| 3     | 31.24384 | 0.201827         | 0.121887   | 0.940986           | 0.009814         | 0.005112  | 2-Jan    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
-| 1     | 81.92055 | 0.229265         | 0.191933   | 1.259757           | 0.017883         | 0.004393  | 5-Feb    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 1    | 389                  | 1.624338 | 1.866924     | 107933.7        | 1823.24          |
-| 2     | 81.75068 | 0.213848         | 0.171353   | 1.294179           | 0.020479         | 0.006474  | 5-Feb    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 2    | 119                  | 1.624338 | 1.776915     | 110223.8        | 1790.495         |
-| 3     | 81.81096 | 0.201827         | 0.157028   | 1.156324           | 0.015488         | 0.004428  | 5-Feb    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
-| 1     | 126.4521 | 0.229265         | 0.25345    | 1.505709           | 0.01387          | 0.002468  | 10-May   | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 1    | 389                  | 1.624338 | 1.866924     | 107933.7        | 1823.24          |
-| 2     | 129.063  | 0.213848         | 0.240766   | 1.543432           | 0.015919         | 0.004453  | 10-May   | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 2    | 119                  | 1.624338 | 1.776915     | 110223.8        | 1790.495         |
-| 3     | 127.1973 | 0.201827         | 0.230642   | 1.270468           | 0.012767         | 0.004603  | 10-May   | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
-| 1     | 117.3123 | 0.229265         | 0.326584   | 1.559938           | 0.007902         | 0.003537  | 15-Oct   | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 1    | 389                  | 1.624338 | 1.866924     | 107933.7        | 1823.24          |
-| 2     | 115.4849 | 0.213848         | 0.304588   | 1.56384            | 0.010591         | 0.005669  | 15-Oct   | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 2    | 119                  | 1.624338 | 1.776915     | 110223.8        | 1790.495         |
-| 3     | 116.789  | 0.201827         | 0.307216   | 1.428216           | 0.008369         | 0.002761  | 15-Oct   | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
-| 1     | 101.9562 | 0.229265         | 0.367066   | 1.692884           | 0.004996         | 0.001818  | 15-20    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 1    | 389                  | 1.624338 | 1.866924     | 107933.7        | 1823.24          |
-| 2     | 100.4932 | 0.213848         | 0.36325    | 1.590158           | 0.006466         | 0.00278   | 15-20    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 2    | 119                  | 1.624338 | 1.776915     | 110223.8        | 1790.495         |
-| 3     | 100.2027 | 0.201827         | 0.296741   | 1.467026           | 0.005106         | 0.003178  | 15-20    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
-| 1     | 495.4932 | 0.229265         | 0.357386   | 1.089016           | 0.001195         | 0.000621  | 20-100   | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 1    | 389                  | 1.624338 | 1.866924     | 107933.7        | 1823.24          |
-| 2     | 496.8219 | 0.213848         | 0.351285   | 1.125957           | 0.001531         | 0.000627  | 20-100   | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 2    | 119                  | 1.624338 | 1.776915     | 110223.8        | 1790.495         |
-| 3     | 496.2027 | 0.201827         | 0.291838   | 0.987903           | 0.001359         | 0.000608  | 20-100   | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
-| 1     | 158.7863 | 0.229265         | 0.145211   | 0.995048           | 0.012093         | 0.005874  | 0-5      | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 1    | 389                  | 1.624338 | 1.866924     | 107933.7        | 1823.24          |
-| 2     | 158.137  | 0.213848         | 0.127183   | 0.956133           | 0.014088         | 0.00763   | 0-5      | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 2    | 119                  | 1.624338 | 1.776915     | 110223.8        | 1790.495         |
-| 3     | 159.6082 | 0.201827         | 0.120844   | 0.91474            | 0.010442         | 0.004663  | 0-5      | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
-| 1     | 1000     | 0.229265         | 0.307926   | 1.2436             | 0.005703         | 0.002153  | 0-100    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 1    | 389                  | 1.624338 | 1.866924     | 107933.7        | 1823.24          |
-| 2     | 1000     | 0.213848         | 0.297392   | 1.2502             | 0.006916         | 0.003027  | 0-100    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 2    | 119                  | 1.624338 | 1.776915     | 110223.8        | 1790.495         |
-| 3     | 1000     | 0.201827         | 0.259049   | 1.1116             | 0.005454         | 0.002272  | 0-100    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                      | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
-
+For details, see [Input and output files](../malaria_models/input_output.md)

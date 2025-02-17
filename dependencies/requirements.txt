@@ -57,7 +57,7 @@ parse==1.20.2
 pillow==11.1.0
 pluggy==1.5.0
 prodict==0.8.20
-pyCOMPS==2.11.0
+#pyCOMPS==2.11.0
 pycparser==2.22
 pyparsing==3.2.1
 pyproj==3.6.1

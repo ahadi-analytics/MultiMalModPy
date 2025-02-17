@@ -36,6 +36,9 @@ Once the simulations complete, analyzer scripts and default plots will automatic
 
 ## View Outputs 
 
+
+![Example outputs](../img/example_output_csv.png)
+
 **Time-series:**
 
 - `mmmpy_yr.csv`: _Age-bin_ specific key malaria outcomes* over time aggregated by year
@@ -70,11 +73,18 @@ Once the simulations complete, analyzer scripts and default plots will automatic
 | n_infectious_mos   | Number of infectious mosquitoes                                                                                    |                                                                                                                                                      |                                                                                                                                       |                                                                                                                                                                          |   |
 | n_total_mos_pop    | Number of host-seeking mosquitoes                                                                                  |                                                                                                                                                      |                                                                                                                                       |                                                                                                                                                                          |   |
 
+For details of raw model outputs, see [Input and output files](../malaria_models/input_output.md)
+
+Example `mmmpy_timeavrg.csv` 
+
+| index | nHost    | prevalence_2to10 | prevalence | clinical_incidence | severe_incidence | mortality | ageGroup | scen_id | output_target | seasonality | entomology_mode | num_seeds | cm_clinical | cm_severe | cm_start | transmission_intensity_malariasimulation | transmission_intensity_OpenMalaria | seed | malariasimulation_pv | inputEIR | simulatedEIR | n_total_mos_pop | n_infectious_mos |
+|-------|----------|------------------|------------|--------------------|------------------|-----------|----------|---------|---------------|-------------|-----------------|-----------|-------------|-----------|----------|------------------------------------------|-------------------------|------|----------------------|----------|--------------|-----------------|------------------|
+| 1     | 29.22192 | 0.229265         | 0.039565   | 0.266923           | 0.000136         | 0.003592  | 0-0.5    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                                 | 1.62434                 | 1    | 389                  | 1.624338 | 1.866924     | 107933.7        | 1823.24          |
+| 2     | 29.56986 | 0.213848         | 0.029741   | 0.257018           | 0.000229         | 0.003646  | 0-0.5    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                                 | 1.62434                 | 2    | 119                  | 1.624338 | 1.776915     | 110223.8        | 1790.495         |
+| 3     | 29.23562 | 0.201827         | 0.023522   | 0.287321           | 0.000188         | 0.002093  | 0-0.5    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                                 | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
 
 
-#### Customizing figures 
-
-
+#### Customizing figures
 Each of the existing plotting scripts allow for the user to define what outcomes should be displayed in the
 color, the columns, axis and so on. Edits can be directly made in the respective scripts.
 
