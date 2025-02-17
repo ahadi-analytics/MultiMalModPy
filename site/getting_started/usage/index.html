@@ -280,6 +280,7 @@ Once the simulations complete, analyzer scripts and default plots will automatic
 <li><code>python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test</code>  </li>
 </ul>
 <h2 id="view-outputs">View Outputs</h2>
+<p><img alt="Example outputs" src="../../img/example_output_csv.png" /></p>
 <p><strong>Time-series:</strong></p>
 <ul>
 <li><code>mmmpy_yr.csv</code>: <em>Age-bin</em> specific key malaria outcomes* over time aggregated by year</li>
@@ -414,6 +415,118 @@ Once the simulations complete, analyzer scripts and default plots will automatic
 </tr>
 </tbody>
 </table>
+<p>For details of raw model outputs, see <a href="../../malaria_models/input_output/">Input and output files</a></p>
+<p>Example <code>mmmpy_timeavrg.csv</code> </p>
+<table>
+<thead>
+<tr>
+<th>index</th>
+<th>nHost</th>
+<th>prevalence_2to10</th>
+<th>prevalence</th>
+<th>clinical_incidence</th>
+<th>severe_incidence</th>
+<th>mortality</th>
+<th>ageGroup</th>
+<th>scen_id</th>
+<th>output_target</th>
+<th>seasonality</th>
+<th>entomology_mode</th>
+<th>num_seeds</th>
+<th>cm_clinical</th>
+<th>cm_severe</th>
+<th>cm_start</th>
+<th>transmission_intensity_malariasimulation</th>
+<th>transmission_intensity_OpenMalaria</th>
+<th>seed</th>
+<th>malariasimulation_pv</th>
+<th>inputEIR</th>
+<th>simulatedEIR</th>
+<th>n_total_mos_pop</th>
+<th>n_infectious_mos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>29.22192</td>
+<td>0.229265</td>
+<td>0.039565</td>
+<td>0.266923</td>
+<td>0.000136</td>
+<td>0.003592</td>
+<td>0-0.5</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>1</td>
+<td>389</td>
+<td>1.624338</td>
+<td>1.866924</td>
+<td>107933.7</td>
+<td>1823.24</td>
+</tr>
+<tr>
+<td>2</td>
+<td>29.56986</td>
+<td>0.213848</td>
+<td>0.029741</td>
+<td>0.257018</td>
+<td>0.000229</td>
+<td>0.003646</td>
+<td>0-0.5</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>2</td>
+<td>119</td>
+<td>1.624338</td>
+<td>1.776915</td>
+<td>110223.8</td>
+<td>1790.495</td>
+</tr>
+<tr>
+<td>3</td>
+<td>29.23562</td>
+<td>0.201827</td>
+<td>0.023522</td>
+<td>0.287321</td>
+<td>0.000188</td>
+<td>0.002093</td>
+<td>0-0.5</td>
+<td>1</td>
+<td>0.2</td>
+<td>perennial</td>
+<td>dynamic</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2.262334</td>
+<td>1.62434</td>
+<td>3</td>
+<td>521</td>
+<td>1.624338</td>
+<td>1.455988</td>
+<td>105702.3</td>
+<td>1450.148</td>
+</tr>
+</tbody>
+</table>
 <h4 id="customizing-figures">Customizing figures</h4>
 <p>Each of the existing plotting scripts allow for the user to define what outcomes should be displayed in the
 color, the columns, axis and so on. Edits can be directly made in the respective scripts.</p>
@@ -474,7 +587,7 @@ successfully  generated.</p>
       <script src="../../search/main.js"></script>
     <script>
         jQuery(function () {
-            SphinxRtdTheme.Navigation.enable(true);
+            SphinxRtdTheme.Navigation.enable(false);
         });
     </script>
 
