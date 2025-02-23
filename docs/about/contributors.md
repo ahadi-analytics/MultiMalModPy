@@ -33,7 +33,7 @@ For any enquiries, please contact  NAME EMAIL.
 &nbsp;&nbsp;&nbsp;&nbsp; Aurelien Cavelan  
 - **University of Western Australia, Crawley, WA, Australia
    Telethon Kids Institute, Nedlands, WA, Australia Center for Child Health Research**  
-&nbsp;&nbsp;&nbsp;&nbsp;  Melissa Penny  
+&nbsp;&nbsp;&nbsp;&nbsp;  Melissa Penny
 - **Imperial College, London, UK**    
 &nbsp;&nbsp;&nbsp;&nbsp; Tom Brewer, Peter Winskill   
 
@@ -42,6 +42,9 @@ For any enquiries, please contact  NAME EMAIL.
 &nbsp;&nbsp;&nbsp;&nbsp; Tobias Holden  
 - **Swiss Tropical and Public Health Institute**    
 &nbsp;&nbsp;&nbsp;&nbsp; Josephine Malinga, Narimane Nekkab
+- **University of Western Australia, Crawley, WA, Australia
+   Telethon Kids Institute, Nedlands, WA, Australia Center for Child Health Research**  
+&nbsp;&nbsp;&nbsp;&nbsp; Andrew Shattock   
 - **Institute of Disease Modelling, Bill & Melinda Gates Foundation, Seattle, USA**    
 &nbsp;&nbsp;&nbsp;&nbsp;  Caitlin Bever
 - **Northwestern University IT Research Computing**   
@@ -49,7 +52,7 @@ For any enquiries, please contact  NAME EMAIL.
 
 <br>
 
----------------------------------------- 
+----------------------------------------   
 _This research was supported in part through the computational resources and staff contributions provided for the Quest high performance computing 
 facility at Northwestern University which is jointly supported by the Office of the Provost,the Office for Research,
 and Northwestern University Information Technology._

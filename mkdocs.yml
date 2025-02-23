@@ -28,8 +28,8 @@ nav:
   - Home: index.md
   - Malaria models:
     - Software: malaria_models/software.md
-    - Model structure: malaria_models/structure.md
     - Documentation & Source Code: malaria_models/documentation-and-sourcecode.md
+    - Model structure: malaria_models/structure.md
     - Interventions: malaria_models/interventions.md
     - Core parameters: malaria_models/core_parameters.md
     - Input and output files: malaria_models/input_output.md
@@ -84,8 +84,10 @@ nav:
       - api/plotter/plot_agecurves.md
       - api/plotter/plot_timeseries.md
       - api/plotter/plot_relationship.md
+      - api/plotter/plot_ccstep.md
+      - api/plotter/plot_custom.md
   - About:
-    - Contact and contributing:  about/contributors.md
+    - Contact and Contributions:  about/contributors.md
     - References: about/citation.md
     - License: about/license.md
     - Changelog: about/changelog.md

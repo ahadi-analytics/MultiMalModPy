@@ -50,7 +50,7 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var
                 if agegrp is None:
                     print('Warning: agegrp is set to None, it will combine all ages, please check your age aggregation')
                     # df = dfc.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
-                    df = dfc.groupby(['day_date', sweepvar, facet_var, 'output_target','cc_change'])[channel].agg(np.mean).reset_index()
+                    df = dfc.groupby(['day_date', sweepvar, facet_var, 'target_output_values','cc_change'])[channel].agg(np.mean).reset_index()
 
                 if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
                     raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
@@ -89,8 +89,8 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var
                             ylim_up = 1
                         max_ylim.append(ylim_up)
                     if channel == 'prevalence_2to10':
-                        print(facet_df['output_target'].iloc[0])
-                        ax.axhline(facet_df['output_target'].iloc[0], linestyle='--')
+                        print(facet_df['target_output_values'].iloc[0])
+                        ax.axhline(facet_df['target_output_values'].iloc[0], linestyle='--')
                         ax.axhline(facet_df['cc_change'].iloc[0], linestyle='--')
                     if firstPlot:
                         lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.4))
@@ -273,7 +273,7 @@ def daily_eradication(fdir, df_all, channel, sweepvar='modelname', facet_var='ag
 
     #reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
     #df_all = df_all[df_all['cc_title'].isin(reductions)]
-    df_all = df_all[df_all['cc_change'] < df_all['output_target']]
+    df_all = df_all[df_all['cc_change'] < df_all['target_output_values']]
    
 
     if facet_var != 'ageGroup' and agegrp is not None:
@@ -320,8 +320,8 @@ if __name__ == "__main__":
     #modelname = ['OpenMalaria']
     if isinstance(modelname, str):
         modelname = [modelname]
-    file = open(os.path.join(wdir, "exp.obj"), "rb")
-    exp = pickle.load(file)
+
+    exp = load_exp(wdir)
 
     df_cc, out_dir = get_output_df(wdir, modelname, custom_name='mmmpy_ccstep_daily')
     out_dir = os.path.join(out_dir, 'plots')

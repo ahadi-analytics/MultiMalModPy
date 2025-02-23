@@ -55,9 +55,9 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/software/">Software</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/structure/">Model structure</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/documentation-and-sourcecode/">Documentation & Source Code</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/structure/">Model structure</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/interventions/">Interventions</a>
                   </li>
@@ -180,12 +180,16 @@
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_ccstep/">plot_ccstep.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_custom/">plot_custom.py</a>
+                </li>
     </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">About</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact and contributing</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact and Contributions</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
                   </li>
@@ -221,36 +225,148 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="glossary">Glossary</h1>
-<p><strong>Burnin-in</strong><br />
-&nbsp;&nbsp;&nbsp;&nbsp;  A time period used to warm up the model, reaching equilibrium or initializing population immunity or the vector model. 
-Outputs are typically not monitored during this phase, and handling varies across models.</p>
-<p><strong>experiment ID</strong><br />
-&nbsp;&nbsp;&nbsp;&nbsp;  A unique identifier assigned to each simulation in EMOD.</p>
-<p><strong>Entomological mode</strong><br />
-&nbsp;&nbsp;&nbsp;&nbsp; Specifies the vector model to use, determining whether the simulation employs forced or dynamic 
+                <h1 id="glossary-and-abbreviations">Glossary and abbreviations</h1>
+<p>Terms marked with &lsquo;📌&rsquo; are newly introduced terms specific to <strong>MultiMalModPy</strong> or one of the models included.    </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">A</span>  </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">B</span>  </p>
+<ul>
+<li>📌 <strong>Burn-in</strong>: A time period used to warm up the model, reaching equilibrium or initializing population immunity or the vector model. 
+Outputs are typically not monitored during this phase, and handling varies across models.</li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">C</span>  </p>
+<ul>
+<li>
+<p>📌 <strong>CC-step - Carrying capacity step change</strong>:  <br />
+a theoretical &ldquo;Carrying capacity step change&rdquo;  </p>
+</li>
+<li>
+<p><strong>CM - Case management</strong>: Generally defines the effective treatment of uncomplicated (sometimes also referred to clinical) and severe malaria cases. 
+The specific definition of how cases and clearance of parasites following treatment varies across models. 
+CM is part of the pre-aligned options in MultiMalModPy and details can be found under <a href="../../malaria_models/interventions/#case-management">interventions/CM</a>.   </p>
+</li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">D</span>  </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">E</span>  </p>
+<ul>
+<li>
+<p>📌 <strong>EMOD</strong>: Epidemiological Modeling Software. One of the three individual based malaria models included in MultiMalModPy.    </p>
+</li>
+<li>
+<p>📌  <strong>Entomological mode</strong>: Specifies the vector model to use, determining whether the simulation employs forced or dynamic 
 <span title="A measure of the number of infectious mosquito bites received by an individual in a specific area over a given period" style="color: #007BFF; text-decoration: underline; cursor: pointer;">EIR (Entomological Inoculation Rate)</span>.</p>
-<p><strong>manifest</strong><br />
-&nbsp;&nbsp;&nbsp;&nbsp;  The Python script where user-specific configurations, such as paths and installed software versions, are defined (term adopted from IDMTools).</p>
-<p><strong>Monitoring period</strong><br />
-&nbsp;&nbsp;&nbsp;&nbsp;  Period of the simulation during which transmission dynamics and disease states are tracked and recorded in the output.</p>
-<p><strong>MultiMalModPy</strong><br />
- Multi-Malaria-Modeling Framework</p>
-<p><strong>Pickup</strong> 
-&nbsp;&nbsp;&nbsp;&nbsp;  A phase where the simulation &ldquo;picks up&rdquo; from a previously saved state, referred to as serialization,
+</li>
+<li>
+<p>📌 <strong>exp</strong>: A serializable Python object that can be saved and loaded using the <a href="https://docs.python.org/3/library/pickle.html">pickle</a> module.
+It functions similarly to a YAML or config file but encapsulates all simulation and framework configurations necessary for running the process.</p>
+</li>
+<li>
+<p>📌 <strong>experiment ID</strong>:  A unique identifier assigned to each simulation in EMOD.</p>
+</li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">F</span>  </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">G</span>  </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">H</span>  </p>
+<ul>
+<li><strong>HPC - High-performance-computing</strong>.</li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">I</span>  </p>
+<ul>
+<li>
+<p>📌  <strong>interpolation_data.csv</strong>: A CSV file that contains simulation outputs for each model across various transmission levels,
+used to align transmission intensity between the three models. 
+The model-specific CSV files are stored in the <code>target_calibration</code> folder within the MultiMalModPy repository.</p>
+</li>
+<li>
+<p><strong>ITN - Insecticide treated nets</strong>: A vector control intervention that aims to protect the human host from the bites of female <em>Anopheles</em> that are seeking a blood meal during the night.
+The insecticide inside the net fabric also affects the mosquitoes in several ways. This intervention is not yet part of the pre-aligned options in MultiMalModPy.</p>
+</li>
+<li>
+<p><strong>IRS - Indoor residual spraying</strong>:  A vector control intervention that targets female <em>Anopheles</em> while resting on indoor walls of houses or huts. 
+This intervention is not yet part of the pre-aligned options in MultiMalModPy.  </p>
+</li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">J</span>  </p>
+<ul>
+<li>📌 <strong>job_directory</strong>: The directory where raw simulation input/output files are stored, along with shell scripts that can be used to re-run any step of the simulation process.<br />
+The <code>job_directory</code> is defined by the user in the <code>manifest.py</code>.</li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">K</span>  </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">L</span>  </p>
+<ul>
+<li><strong>LSM - Larval source management, including larviciding</strong>:  This intervention is not yet part of the pre-aligned options in MultiMalModPy, but available for the individual models. 
+However, a variant of the larviciding parameterization to control vectorial capacity was used to define a theoretical &ldquo;Carrying capacity step change&rdquo; (see CC-step).  </li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">M</span>  </p>
+<ul>
+<li>
+<p>📌 <strong>malariasimulation</strong>: One of the three individual based malaria models included in MultiMalModPy.  </p>
+</li>
+<li>
+<p>📌  <strong>manifest</strong>: The Python script where user-specific configurations, such as paths and installed software versions, are defined (term adopted from IDMTools).</p>
+</li>
+<li>
+<p><strong>MDA - Mass drug administration</strong>: This intervention is not part of the pre-aligned options in MultiMalModPy, but available for the individual models.    </p>
+</li>
+<li>
+<p>📌 <strong>Monitoring period</strong>: Time period of the simulation during which transmission dynamics and disease states are tracked and recorded in the output.</p>
+</li>
+<li>
+<p>📌 <strong>MultiMalModPy</strong>: Multi-Malaria-Modeling Framework  </p>
+</li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">N</span>  </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">O</span>  </p>
+<ul>
+<li>
+<p>📌 <strong>output_directory</strong>: The directory where standardized simulation output files are stored, as well as result figures (plots).<br />
+The <code>output_directory</code> is defined by the user in the <code>manifest.py</code>.</p>
+</li>
+<li>
+<p>📌 <strong>OpenMalaria</strong>: One of the three individual based malaria models included in MultiMalModPy.  </p>
+</li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">P</span>  </p>
+<ul>
+<li><strong>Pickup</strong>: The simulation &ldquo;picks up&rdquo; from a previously saved state, referred to as serialization,
 which captures the system&rsquo;s state after the burn-in period. This allows the simulation to continue from that point without 
 needing to repeat the burn-in. The state is saved in the form of serialized files that can be used in subsequent runs.
-Simulation outcomes are typically monitored from this phase onward.</p>
-<p><strong>scen_df / scenario csv</strong><br />
-&nbsp;&nbsp;&nbsp;&nbsp;  A CSV file containing all unique parameter combinations for a simulation scenario. Generated in <code>launch_sim.py</code>.</p>
-<p><strong>serialization</strong><br />
-&nbsp;&nbsp;&nbsp;&nbsp;  Saves the population state at a specific time, allowing simulations to start from that point instead of re-running the burn-in period.</p>
-<p><strong>Sweeps</strong><br />
-&nbsp;&nbsp;&nbsp;&nbsp;  The sweep defines all combinations of parameter values to simulate every possible scenario.</p>
-<p><strong>Target output</strong><br />
-&nbsp;&nbsp;&nbsp;&nbsp; Target output name and values refer to the outcome metrics used to adjust and set the transmission intensity in the simulation.</p>
-<p><strong>Transmission intensity</strong><br />
-&nbsp;&nbsp;&nbsp;&nbsp; Malaria transmission intensity can be expressed by entomological inoculation rate or a temporal larval habitat multiplier (EMOD only).</p>
+Simulation outcomes are typically monitored from this phase onward.</li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">Q</span>  </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">R</span>  </p>
+<ul>
+<li><strong>RCD - Reactive case detection</strong>:  This intervention is not part of the pre-aligned options in MultiMalModPy, but available for the individual models.  </li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">S</span>  </p>
+<ul>
+<li>
+<p>📌 <strong>scen_df / scenario csv</strong>:  A CSV file containing all unique parameter combinations for a simulation scenario. Generated in <code>launch_sim.py</code>.</p>
+</li>
+<li>
+<p>📌  <strong>serialization</strong>: Saves the population state at a specific time, allowing simulations to start from that point instead of re-running the burn-in period.</p>
+</li>
+<li>
+<p><strong>Slurm</strong>: formerly known as Simple Linux Utility for Resource Management is an open-source job scheduler for HPCs.  </p>
+</li>
+<li>
+<p>📌 <strong>Sweeps</strong>: The sweep defines all combinations of parameter values to simulate every possible scenario.</p>
+</li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">T</span>  </p>
+<ul>
+<li>
+<p>📌 <strong>Target output name</strong> and <strong>Target output value</strong>: Refer to the outcome metrics used to adjust and set the transmission intensity in the simulation.</p>
+</li>
+<li>
+<p><strong>Transmission intensity</strong>: Malaria transmission intensity can be expressed by entomological inoculation rate or a temporal larval habitat multiplier (EMOD only).</p>
+</li>
+</ul>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">U</span>  </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">V</span>  </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">W</span>  </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">X</span>  </p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">Y</span></p>
+<p><span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">Z</span>  </p>
               
             </div>
           </div><footer>

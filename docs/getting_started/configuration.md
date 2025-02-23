@@ -23,7 +23,7 @@ paths and configurations, making it adaptable to different computing environment
 
 ## Configuration parameters
 
-### MultiMalModPy universel configurations
+### MultiMalModPy universal configurations
 
 | Parameter           | Description                                         |
 |---------------------|-----------------------------------------------------|
