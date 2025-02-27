@@ -437,10 +437,11 @@ No edits needed for `malariasimulation_input_path` which defines the location of
 
 ## Container Setup
 
-This section is under construction...  
+
 A singularity container will be made available to allow running MultiMalModPy instantly, without the need for
 installations.
 
+Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-singularity-container-)
 
 
 <br>
