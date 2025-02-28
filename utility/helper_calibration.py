@@ -191,12 +191,21 @@ def check_transmission_targets_input(exp):
                 raise ValueError(f"Selected popsize {popsize} not availabe, options for {model} are  {', '.join([str(x) for x in popsize_options])}")
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
-    if any(value[0] not in [0, 0.15] for value in exp.case_management) and (exp.entomology_mode == 'dynamic') and ('EMOD' in exp.models_to_run):
-        raise ValueError( 'EMOD is not set up to run dynamic EIR is not set up to run for CM values other than 0 and 0.15 - requires new calibrun')
+    if any(value not in data['cm_clinical'].unique().tolist() for value in exp.cm_clinical):
+        raise ValueError(  f"Invalid cm_clinical values. Only allowed values are {data['cm_clinical'].unique().tolist()}. - requires new calibrun")
 
-    if any(value[0] not in [0, 0.15] for value in exp.case_management) and exp.target_output_name.isin(['prevalence_2to10','clinical_incidence_U5']) :
-        raise ValueError('target_output_name prevalence_2to10 and clinical_incidence_U5 are not set up to run for CM values other than 0, 0.15 - requires new calibrun')
+    if any(value not in data['cm_severe'].unique().tolist() for value in exp.cm_severe):
+        raise ValueError( f"Invalid cm_severe values. Only allowed values are {data['cm_severe'].unique().tolist()}. - requires new calibrun")
 
-    if exp.target_output_name not in ['eir', 'prevalence_2to10','clinical_incidence_U5']:
+    if any(value not in data['seasonality'].unique().tolist() for value in exp.seasonality):
+        raise ValueError(  f"Invalid seasonality values. Only allowed values are {data['seasonality'].unique().tolist()}. - requires new calibrun")
+
+    valid_cm_combinations = set(zip(data['cm_clinical'], data['cm_severe']))
+    invalid_cm_values = set(exp.case_management) - valid_cm_combinations
+    if invalid_cm_values:
+        raise ValueError(
+            f"Invalid cm_case_management values found: {invalid_cm_values}. "
+            f"Only allowed values are {valid_cm_combinations}. Requires new calibrun.")
+
+    if exp.target_output_name not in ['eir', 'prevalence_2to10', 'clinical_incidence_U5']:
         raise ValueError(f"Invalid output type: {exp.target_output_name}")
-

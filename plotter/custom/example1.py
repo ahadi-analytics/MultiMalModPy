@@ -17,7 +17,7 @@ def generate_plots_example1(out_dir, exp, df, df_mth):
         df_mth_sub = df_mth  # Fallback to the original dataframe
 
     monthly_timeseries(out_dir, df_mth_sub, channel='prevalence_2to10', sweepvar='modelname', facet_var='target_output_values',
-                       agegrp='0-100')
+                       agegrp='0-100', facet_name = exp.target_output_name)
 
     # Plot 2
     age_groups_aggregates_sub = [x for x in exp.age_groups_aggregates if x not in ([[0, 5], [0, 100]])]

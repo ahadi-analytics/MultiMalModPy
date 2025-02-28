@@ -19,7 +19,7 @@ from plotter.plot_helper import *
 
 
 # Plots over age - requires PfPR_ClinicalIncidence_yr.csv
-def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', age_groups_aggregates=None):
+def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', age_groups_aggregates=None,facet_name=None):
     """
     Plots age curves based on model results and saves the figure to the specified directory.
 
@@ -47,6 +47,9 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output
           filled areas representing the confidence interval.
     """
 
+    if facet_name is None:
+        facet_name = facet_var
+
     if facet_var == 'ageGroup':
         raise ValueError('Age curves designed to have age on the x-axis, ageGroup facets are not supported')
 
@@ -73,7 +76,7 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output
         if facet_var == 'modelname':
             ax.set_title(fi)
         if facet_var == 'target_output_values':
-            ax.set_title(f"{exp.target_output_name} = {fi}")
+            ax.set_title(f"{get_label(facet_name)} = {fi}")
 
         f += 1
         max_ylim = []

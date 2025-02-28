@@ -20,7 +20,7 @@ from plotter.plot_helper import *
 
 
 # Plots trends over available months, requires PfPR_ClinicalIncidence_mth.csv
-def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', agegrps=['0-100'], new_index=None):
+def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', agegrps=['0-100'], new_index=None, facet_name = None):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
     Note, assumed single occurence per month, i.e. aggregated across years (reads in mmmpy_mth.csv)
@@ -36,6 +36,8 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_ou
         ValueError: If no seasonal transmission pattern is specified in the data.
     """
 
+    if facet_name is None:
+        facet_name = facet_var
     figure_vars = [channel] + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars, agegrps)
 
@@ -58,7 +60,7 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_ou
         if facet_var == 'modelname':
             ax.set_title(fi)
         if facet_var == 'target_output_values':
-            ax.set_title(f"{get_label(exp.target_output_name)} = {fi}")
+            ax.set_title(f"{get_label(facet_name)} = {fi}")
 
         f += 1
         max_ylim = []
@@ -103,7 +105,7 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_ou
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_mth.csv
-def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGroup', agegrps=['0-100'], calendar_year=False):
+def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGroup', agegrps=['0-100'], calendar_year=False, facet_name = None):
     """
     Parameters:
         fdir (str): Directory where the plot will be saved.
@@ -116,6 +118,8 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
         None (plots are saved to disk).
     """
 
+    if facet_name is None:
+        facet_name = facet_var
     figure_vars = [channel] + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars, agegrps)
     df['date'] = pd.to_datetime(df['date'])
@@ -137,7 +141,7 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
         if facet_var == 'modelname':
             ax.set_title(fi)
         if facet_var == 'target_output_values':
-            ax.set_title(f"{get_label(exp.target_output_name)} = {fi}")
+            ax.set_title(f"{get_label(facet_name)} = {fi}")
 
         f += 1
         max_ylim = []
@@ -183,7 +187,7 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
 
 
 # Plots over time - requires PfPR_ClinicalIncidence_yr.csv
-def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='seasonality', agegrps=['0-100'],  calendar_year=False):
+def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='seasonality', agegrps=['0-100'],  calendar_year=False, facet_name = None):
     """
     Parameters:
         fdir (str): Directory where the plot will be saved.
@@ -196,6 +200,8 @@ def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='season
         None (plots are saved to disk).
     """
 
+    if facet_name is None:
+        facet_name = facet_var
     figure_vars = [channel] + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars, agegrps)
 
@@ -221,7 +227,7 @@ def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='season
         if facet_var == 'modelname':
             ax.set_title(fi)
         if facet_var == 'target_output_values':
-            ax.set_title(f"{get_label(exp.target_output_name)} = {fi}")
+            ax.set_title(f"{get_label(facet_name)} = {fi}")
 
         f += 1
         max_ylim = []

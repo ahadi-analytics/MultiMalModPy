@@ -167,11 +167,12 @@ def get_param_from_dataframe(df, name, sim_params_list):
     if name == "case_management":
         import ast
         out = ast.literal_eval(f'[{value}]')
+        out = [float(i) if isinstance(i, str) and i.replace('.', '', 1).isdigit() else i for i in out]
     else:
         if name in sim_params_list:
             try:
                 out = value.replace(' ', '').split(',')
-                out = [float(i) if i.isdigit() else i for i in out]  # some might require int?
+                out = [float(i) if i.replace('.', '', 1).isdigit() else i for i in out]
             except:
                 out = [value]
         else:
