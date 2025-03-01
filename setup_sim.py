@@ -50,7 +50,7 @@ class SimulationConfig:
         self.entomology_mode = 'dynamic' # could be forced or dynamic (vector model for EMOD)
         self.seasonality = ['perennial']
         self.cm_start = 1
-        self.case_management = [(0, 0)]  # format: [(cm_clinical, cm_severe), (...)]
+        self.case_management = [(0, 0),(0.15,0.5)]  # format: [(cm_clinical, cm_severe), (...)]
         self.detectionLimit = 40
         self.emod_importation_rate = 5
         self.openmalaria_importation_rate = 0

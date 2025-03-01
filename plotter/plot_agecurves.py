@@ -19,7 +19,8 @@ from plotter.plot_helper import *
 
 
 # Plots over age - requires PfPR_ClinicalIncidence_yr.csv
-def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', age_groups_aggregates=None,facet_name=None):
+def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', age_groups_aggregates=None, facet_name=None):
+
     """
     Plots age curves based on model results and saves the figure to the specified directory.
 

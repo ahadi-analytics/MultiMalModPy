@@ -10,44 +10,46 @@ source('utility/functions.R')
 theme_set(theme_bw())
 
 customTheme <- f_getCustomTheme() +
-  theme(legend.position = "None",
-        panel.grid.minor = element_blank())
+  theme(panel.grid.minor = element_blank())
 
 modelname <- c("EMOD", "malariasimulation", "OpenMalaria")
 
-wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250211_production/sims_dynamic_seasonal_11_42_21')
+
+#Useful code to generate the EMOD seasonal profile to then use for the other two models
+#wdir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250220_production/sims_dynamic_seasonal_10_58_01/')
+#calculate_monthlyEIRs_seasonal(wdir, "current_2_25_25")
+
+wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250220_production/sims_dynamic_seasonal_10_58_01')
 dat_s_eir_em <- get_output_df(wdir_eir, modelname = "EMOD", timeseries = TRUE, fiveday=TRUE)
-wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250212_production/sims_dynamic_seasonal_10_51_55')
+
+wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250225_production/sims_dynamic_seasonal_17_05_51')
 dat_s_eir_ms <- get_output_df(wdir_eir, modelname = "malariasimulation", timeseries = TRUE, fiveday=TRUE)
-wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250212_production/sims_dynamic_seasonal_10_51_55')
+
+wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250225_production/sims_dynamic_seasonal_17_05_51')
 dat_s_eir_om <- get_output_df(wdir_eir, modelname = "OpenMalaria", timeseries = TRUE, fiveday=TRUE)
+
 dat_s_eir <- rbind(dat_s_eir_em, dat_s_eir_ms, dat_s_eir_om, fill=TRUE)
 dat_s_eir$output_type <-'eir'
+
 dat_s_eir <- dat_s_eir%>%
-  filter(year == 2004, cm_clinical == 0.15, ageGroup == '0-100', seasonality == 'seasonal', output_target == 20) %>%
-  group_by(output_target, cm_clinical, seasonality, modelname, seed) %>%
+  filter(year == 2004, cm_clinical == 0.15, ageGroup == '0-100', seasonality == 'seasonal', target_output_values == 20) %>%
+  group_by(target_output_values, cm_clinical, seasonality, modelname, seed) %>%
   mutate(sumEIR = sum(simulatedEIR),
          simulatedEIR = (simulatedEIR/sumEIR)*20)
-rm(dat_s_eir_em, dat_s_eir_ms, dat_s_eir_om,wdir_eir)
+rm(dat_s_eir_em, dat_s_eir_ms, dat_s_eir_om, wdir_eir)
 
-
-wdir_pfpr <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250211_production/sims_dynamic_seasonal_12_18_05')
-dat_s_pfpr_em <- get_output_df(wdir_pfpr, modelname = "EMOD", timeseries = TRUE, fiveday=TRUE)
-wdir_pfpr <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250212_production/sims_dynamic_seasonal_10_53_25')
-dat_s_pfpr_ms <- get_output_df(wdir_pfpr, modelname = "malariasimulation", timeseries = TRUE, fiveday=TRUE)
-wdir_pfpr <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250212_production/sims_dynamic_seasonal_10_53_25')
-dat_s_pfpr_om <- get_output_df(wdir_pfpr, modelname = "OpenMalaria", timeseries = TRUE, fiveday=TRUE)
-dat_s_pfpr <- rbind(dat_s_pfpr_em, dat_s_pfpr_ms, dat_s_pfpr_om, fill=TRUE)
+wdir_pfpr <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250225_production/sims_dynamic_seasonal_16_53_27')
+dat_s_pfpr <- get_output_df(wdir_pfpr, modelname = c("EMOD", "malariasimulation", "OpenMalaria"), timeseries = TRUE, fiveday=TRUE)
 dat_s_pfpr$output_type <- 'pfpr'
+
 dat_s_pfpr <- dat_s_pfpr %>%
-  filter(cm_clinical == 0.15, ageGroup == '0-100', seasonality == 'seasonal', output_target %in% c(0.05, 0.1, 0.25, 0.5))
-rm(dat_s_pfpr_em, dat_s_pfpr_ms, dat_s_pfpr_om,wdir_pfpr)
+  filter(cm_clinical == 0.15, ageGroup == '0-100', seasonality == 'seasonal', target_output_values %in% c(0.05, 0.1, 0.25, 0.5))
 
 dat_s <- rbind(dat_s_eir, dat_s_pfpr)
 rm(dat_s_eir, dat_s_pfpr)
 
 dat_s <- dat_s %>%
-  group_by(day, year, output_type, output_target, cm_clinical, cm_severe, seasonality, modelname) %>%
+  group_by(day, year, output_type, target_output_values, cm_clinical, cm_severe, seasonality, modelname) %>%
   summarise(simulatedEIR__mean = mean(simulatedEIR),
             simulatedEIR__min = quantile(simulatedEIR, 0.05),
             simulatedEIR__up = quantile(simulatedEIR, 0.95),
@@ -79,7 +81,7 @@ pfpr_labels <- c(0.05,0.1,0.25,0.5)
 
 pA <- dat_s %>%
   filter(year == max(year)) %>%
-  filter(output_target == 20) %>%
+  filter(target_output_values == 20) %>%
   ggplot() +
   geom_ribbon(aes(x = day, ymin = simulatedEIR__min, ymax = simulatedEIR__up, fill = modelname), alpha = 0.1) +
   geom_line(aes(x = day, y = simulatedEIR__mean, col = modelname), linewidth = 1) +
@@ -95,19 +97,20 @@ pA <- dat_s %>%
        title = 'A) EIR = 20, CM = 15%',
        caption = 'All Ages') +
   customTheme +
-  theme(legend.position = c(.1, .8),
+  theme(legend.position = "inside",
+        legend.position.inside = c(.12, .8),
         plot.margin = margin(0, 0, 0,0, "pt"))
 pA
 
 pB <- dat_s %>%
   filter(year == max(year)) %>% 
-  filter(output_target == 20) %>%
-  dplyr::select(day, year, output_target, modelname,
+  filter(target_output_values == 20) %>%
+  dplyr::select(day, year, target_output_values, modelname,
                 simulatedEIR__mean, simulatedEIR__min, simulatedEIR__up,
                 prevalence__mean, prevalence__min, prevalence__up,
                 clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                 n_total_mos_pop__mean, n_total_mos_pop__min, n_total_mos_pop__up) %>%
-  pivot_longer(cols = -c(day, year, output_target, modelname)) %>%
+  pivot_longer(cols = -c(day, year, target_output_values, modelname)) %>%
   separate(name, into = c('name', 'stat'), sep = '__') %>%
   mutate(name = factor(name,
                        levels = c('n_total_mos_pop','simulatedEIR', 'prevalence', 'clinical_incidence'),
@@ -115,7 +118,7 @@ pB <- dat_s %>%
   group_by(modelname, name) %>%
   mutate(value = rescale(value, to = c(0, 1))) %>%
   pivot_wider(names_from = stat, values_from = value) %>%
-  group_by(output_target, modelname, name) %>%
+  group_by(target_output_values, modelname, name) %>%
   mutate(max_y = max(mean),
          ismax = mean==max_y) %>%
   ggplot() +
@@ -146,32 +149,32 @@ line_cols <- c('#1bd9e9', '#2c7bb6','#cfae61','#d7191c')
 pC_pfpr <- dat_s %>%
   ungroup() %>%
   filter(times>=730) %>%
-  filter(output_target %in% pfpr_labels) %>%
-  select(times, output_target, modelname,
+  filter(target_output_values %in% pfpr_labels) %>%
+  select(times, target_output_values, modelname,
          simulatedEIR__mean, simulatedEIR__min, simulatedEIR__up,
          prevalence__mean, prevalence__min, prevalence__up,
          clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up) %>%
-  pivot_longer(cols = -c(times, output_target, modelname)) %>%
+  pivot_longer(cols = -c(times, target_output_values, modelname)) %>%
   separate(name, into = c('name', 'stat'), sep = '__') %>%
   mutate(custom_col = case_when(
-    name == 'simulatedEIR' & output_target == pfpr_labels[1] ~ line_cols[1],
-    name == 'simulatedEIR' & output_target == pfpr_labels[2] ~ line_cols[2],
-    name == 'simulatedEIR' & output_target == pfpr_labels[3] ~ line_cols[3],
-    name == 'simulatedEIR' & output_target == pfpr_labels[4] ~ line_cols[4],
+    name == 'simulatedEIR' & target_output_values == pfpr_labels[1] ~ line_cols[1],
+    name == 'simulatedEIR' & target_output_values == pfpr_labels[2] ~ line_cols[2],
+    name == 'simulatedEIR' & target_output_values == pfpr_labels[3] ~ line_cols[3],
+    name == 'simulatedEIR' & target_output_values == pfpr_labels[4] ~ line_cols[4],
     # prev
-    name == 'prevalence' & output_target == pfpr_labels[1] ~ line_cols[1],
-    name == 'prevalence' & output_target == pfpr_labels[2] ~ line_cols[2],
-    name == 'prevalence' & output_target == pfpr_labels[3] ~ line_cols[3],
-    name == 'prevalence' & output_target == pfpr_labels[4] ~ line_cols[4],
+    name == 'prevalence' & target_output_values == pfpr_labels[1] ~ line_cols[1],
+    name == 'prevalence' & target_output_values == pfpr_labels[2] ~ line_cols[2],
+    name == 'prevalence' & target_output_values == pfpr_labels[3] ~ line_cols[3],
+    name == 'prevalence' & target_output_values == pfpr_labels[4] ~ line_cols[4],
     # inc
-    name == 'clinical_incidence' & output_target == pfpr_labels[1] ~ line_cols[1],
-    name == 'clinical_incidence' & output_target == pfpr_labels[2] ~ line_cols[2],
-    name == 'clinical_incidence' & output_target == pfpr_labels[3] ~ line_cols[3],
-    name == 'clinical_incidence' & output_target == pfpr_labels[4] ~ line_cols[4])) %>%
+    name == 'clinical_incidence' & target_output_values == pfpr_labels[1] ~ line_cols[1],
+    name == 'clinical_incidence' & target_output_values == pfpr_labels[2] ~ line_cols[2],
+    name == 'clinical_incidence' & target_output_values == pfpr_labels[3] ~ line_cols[3],
+    name == 'clinical_incidence' & target_output_values == pfpr_labels[4] ~ line_cols[4])) %>%
   mutate(name = factor(name,
                        levels = c('simulatedEIR', 'prevalence', 'clinical_incidence'),
                        labels = c('Simulated EIR\n(5 day)', 'Prevalence\n (all ages)', 'Clinical\nIncidence\n(per person\nper year,\nannualized)'))) %>%
-  group_by(modelname, name, output_target) %>%
+  group_by(modelname, name, target_output_values) %>%
   pivot_wider(names_from = stat, values_from = value) %>%
   ggplot() +
   geom_vline(xintercept = c(1095,1460), color='#696969',linetype='dotted')+
@@ -202,5 +205,5 @@ mylayout <- "AB
 
 pABC_pfpr <- (pA+pB+pC_pfpr)+plot_layout(design=mylayout)
 pABC_pfpr
-ggsave(plot = pABC_pfpr,filename = file.path(getwd(), 'Figure3_CM15_FEB25.pdf'), height = 15, width = 22)
-ggsave(plot = pABC_pfpr, filename = file.path(getwd(), 'Figure3_CM15_FEB25.png'), height = 15, width = 22)
+ggsave(plot = pABC_pfpr,filename = file.path(getwd(), 'Figure3_CM15.pdf'), height = 15, width = 22)
+ggsave(plot = pABC_pfpr, filename = file.path(getwd(), 'Figure3_CM15.png'), height = 15, width = 22)

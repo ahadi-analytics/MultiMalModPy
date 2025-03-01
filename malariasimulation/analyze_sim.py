@@ -289,8 +289,8 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables):
     # Sum the values of the age groups
     # Aggregate data per date and sweep_variables using sum and mean specific to outcome channel
 
-    sdf = df.groupby(['date'] + sweep_variables)[sum_channels].agg(np.sum).reset_index()
-    mdf = df.groupby(['date'] + sweep_variables)[mean_channels].agg(np.mean).reset_index()
+    sdf = df.groupby(['date'] + sweep_variables)[sum_channels].agg('sum').reset_index()
+    mdf = df.groupby(['date'] + sweep_variables)[mean_channels].agg('mean').reset_index()
     adf = pd.merge(left=sdf, right=mdf, on=(sweep_variables + ['date']))
 
     # Merge with the scenario data
@@ -340,14 +340,14 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
     df['agebin'] = round(df['age_upper'] / 365, 1)
     df['n_prev'] = df['prev'] * df['n_age']
 
-    df_pfpr2to10 = df.groupby(sweep_variables)[['prevalence_2to10']].agg(np.mean).reset_index()
+    df_pfpr2to10 = df.groupby(sweep_variables)[['prevalence_2to10']].agg('mean').reset_index()
 
     ## Aggregate years
     n_surveys_per_year = 365
     n_surveys = round(len(df['timestep'].unique()), 0)
     n_years = round(n_surveys / 365, 0)
     df = df.groupby(sweep_variables + ['agebin'])[
-        ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg(np.sum).reset_index()
+        ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg('sum').reset_index()
     df['n_age'] = df['n_age'] / n_surveys_per_year
     df['n_prev'] = df['n_prev'] / n_surveys_per_year
 
@@ -361,8 +361,7 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
         if adf.empty:
             pass
         else:
-            adf = adf.groupby(sweep_variables)[['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg(
-                np.sum).reset_index()
+            adf = adf.groupby(sweep_variables)[['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg('sum').reset_index()
             adf['prevalence'] = adf['n_prev'] / (adf['n_age'])
 
             # (events per person per annum)
@@ -451,12 +450,12 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
     df['agebin'] = round(df['age_upper'] / 365, 1)
     df['n_prev'] = df['prev'] * df['n_age']
 
-    df_pfpr2to10 = df.groupby(sweep_variables + ['year'])[['prevalence_2to10']].agg(np.mean).reset_index()
+    df_pfpr2to10 = df.groupby(sweep_variables + ['year'])[['prevalence_2to10']].agg('mean').reset_index()
 
     ## Aggregate to years
     n_surveys_per_year = int(round(len(df['timestep'].unique()) / len(df['year'].unique()), 0))
     df = df.groupby(sweep_variables + ['agebin', 'year'])[
-        ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg(np.sum).reset_index()
+        ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg('sum').reset_index()
     df['n_age'] = df['n_age'] / n_surveys_per_year
     df['n_prev'] = df['n_prev'] / n_surveys_per_year
 
@@ -471,7 +470,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
             pass
         else:
             adf = adf.groupby(sweep_variables + ['year'])[
-                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg(np.sum).reset_index()
+                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg('sum').reset_index()
 
             adf['prevalence'] = adf['n_prev'] / (adf['n_age'])
             # (events per person per annum)
@@ -529,8 +528,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
     eir_df = eir_df.groupby(sweep_variables + ['month', 'year'])[
-        ['simulatedEIR', 'target_output_values', 'n_total_mos_pop']].agg(
-        np.mean).reset_index()  # mean across runs per month and year
+        ['simulatedEIR', 'target_output_values', 'n_total_mos_pop']].agg('mean').reset_index()  # mean across runs per month and year
     eir_df = eir_df[['index', 'month', 'year', 'target_output_values', 'simulatedEIR', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
@@ -542,13 +540,13 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     df['agebin'] = round(df['age_upper'] / 365, 1)
     df['n_prev'] = df['prev'] * df['n_age']
 
-    df_pfpr2to10 = df.groupby(sweep_variables + ['month', 'year'])[['prevalence_2to10']].agg(np.mean).reset_index()
+    df_pfpr2to10 = df.groupby(sweep_variables + ['month', 'year'])[['prevalence_2to10']].agg('mean').reset_index()
 
     ## Aggregate days to month and years
     n_surveys_per_year = int(round(len(df['timestep'].unique()) / len(df['year'].unique()), 0))
 
     df = df.groupby(sweep_variables + ['agebin', 'month', 'year'])[
-        ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg(np.sum).reset_index()
+        ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg('sum').reset_index()
 
     df['n_age'] = df['n_age'] / (365 / 12)
     df['n_prev'] = df['n_prev'] / (365 / 12)
@@ -565,7 +563,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
         else:
             ## Aggregate by age group
             adf = adf.groupby(sweep_variables + ['month', 'year'])[
-                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg(np.sum).reset_index()
+                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg('sum').reset_index()
 
             adf['prevalence'] = adf['n_prev'] / (adf['n_age'])
             # events per person per annum (annualized)
@@ -632,8 +630,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
     eir_df = eir_df.groupby(sweep_variables + ['year', 'timestep'])[
-        ['simulatedEIR', 'target_output_values', 'n_infectious_mos', 'n_total_mos_pop']].agg(
-        np.mean).reset_index()  # mean across runs per  timestep , month and year
+        ['simulatedEIR', 'target_output_values', 'n_infectious_mos', 'n_total_mos_pop']].agg('mean').reset_index()  # mean across runs per  timestep , month and year
     eir_df = eir_df[['index', 'timestep', 'year', 'simulatedEIR', 'n_infectious_mos', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
@@ -666,8 +663,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
          'n_total_mos_pop': ['mean'], 'timestep': ['max']}).reset_index()
     eir_df.columns = eir_df.columns.get_level_values(0)
     eir_df = eir_df.rename(columns={'5day': 'day'})
-    df_pfpr2to10 = df.groupby(sweep_variables + ['day', 'year'])[['prevalence_2to10']].agg(
-        np.mean).reset_index()
+    df_pfpr2to10 = df.groupby(sweep_variables + ['day', 'year'])[['prevalence_2to10']].agg('mean').reset_index()
     df = df[sweep_variables + ['agebin', 'day', 'year', 'n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']]
 
     df['n_age'] = df['n_age'] / (365 / 73)
@@ -685,7 +681,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
         else:
             ## Aggregate by age group
             adf = adf.groupby(sweep_variables + ['day', 'year'])[
-                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg(np.sum).reset_index()
+                ['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']].agg('sum').reset_index()
 
             adf['prevalence'] = adf['n_prev'] / (adf['n_age'])
             # events per person per annum (annualized)

@@ -3,6 +3,7 @@ import shutil
 
 # from OpenMalaria.functions.interventions import * # Currently not supported
 from OpenMalaria.functions.convert_access import convert_access_lookup
+from OpenMalaria.functions.interventions import carrying_capacity
 
 
 
@@ -57,10 +58,7 @@ def create_scenarios(exp, scen_df):
 
     # Interventions
     if "cc_step" in exp.intervention_list:
-        snippet_file = 'intervention_CCstep.txt'
-        with open(os.path.join(exp.openmalaria_input_path, 'snippets', snippet_file), 'r', encoding='utf-8') as file:
-            snippet = file.read()
-        xml = xml.replace('@intervention_ccstep@', snippet)
+        xml = carrying_capacity(exp, xml)
     else:
         xml = xml.replace('@intervention_ccstep@', '')
 
@@ -243,7 +241,7 @@ def submit_run_OpenMalaria_slurm(exp):
     path = f'export PATH=$PATH:{exp.job_directory}'
     slurmID = '${SLURM_ARRAY_TASK_ID}'
     command = f'\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
-    script_path = os.path.join(exp.job_directory, 'run_sim_OpenMalaria.sh')
+    script_path = os.path.join(exp.job_directory, 'run_OpenMalaria.sh')
 
     # Write the bash script for submitting OpenMalaria simulations
     file = open(script_path, 'w')
@@ -251,7 +249,7 @@ def submit_run_OpenMalaria_slurm(exp):
     file.close()
 
     # Submit the OpenMalaria simulations as a SLURM job
-    p = subprocess.run(['sbatch', '--parsable', 'run_sim_OpenMalaria.sh'], stdout=subprocess.PIPE,
+    p = subprocess.run(['sbatch', '--parsable', 'run_OpenMalaria.sh'], stdout=subprocess.PIPE,
                        cwd=str(exp.job_directory))
 
     # Save the SLURM job ID to a file

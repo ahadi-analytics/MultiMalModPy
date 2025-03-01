@@ -141,8 +141,8 @@ class SurveyAllAgeAnalyzer(IAnalyzer):
                          'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence',
                          'PfHRP2 Prevalence']
 
-        sdf = adf.groupby(['date'] + self.sweep_variables)[sum_channels].agg(np.sum).reset_index()
-        mdf = adf.groupby(['date'] + self.sweep_variables)[mean_channels].agg(np.mean).reset_index()
+        sdf = adf.groupby(['date'] + self.sweep_variables)[sum_channels].agg('sum').reset_index()
+        mdf = adf.groupby(['date'] + self.sweep_variables)[mean_channels].agg('mean').reset_index()
         adf = pd.merge(left=sdf, right=mdf, on=(self.sweep_variables + ['date']))
 
         adf = adf.rename(columns={'Run_Number': 'seed'})
@@ -251,8 +251,7 @@ class InputEIRAnalyzer(IAnalyzer):
 
         # Aggregate data and save for specified time intervals (daily, monthly, annually)
         grp_channels = self.sweep_variables  # [x for x in self.sweep_variables if x != "Run_Number"] ## Keep runs
-        adf = adf.groupby(['time', 'date', 'day', 'month', 'year'] + grp_channels)[self.channels].agg(
-            np.mean).reset_index()
+        adf = adf.groupby(['time', 'date', 'day', 'month', 'year'] + grp_channels)[self.channels].agg('mean').reset_index()
 
         # Add Larval Habitat Multipliers and sweep variables to EIR dataframe
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
@@ -276,23 +275,23 @@ class InputEIRAnalyzer(IAnalyzer):
 
             # Monthly aggregation - keep months and years
             if self.monthly_report:
-                df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
+                df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg('sum').reset_index()
                 df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
-                vdf = adf.groupby(['year', 'month'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
+                vdf = adf.groupby(['year', 'month'] + grp_channels)[mean_channels].agg('mean').reset_index()
                 df = df.merge(vdf, on=(['year', 'month'] + grp_channels), how='inner')
                 df.to_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_mth.csv'), index=False)
 
             # Yearly aggregation - keep years
-            df = adf.groupby(['year'] + grp_channels)[sum_channels].agg(np.sum).reset_index()
-            vdf = adf.groupby(['year'] + grp_channels)[mean_channels].agg(np.mean).reset_index()
+            df = adf.groupby(['year'] + grp_channels)[sum_channels].agg('sum').reset_index()
+            vdf = adf.groupby(['year'] + grp_channels)[mean_channels].agg('mean').reset_index()
             df = df.merge(vdf, on=(['year'] + grp_channels), how='inner')
             df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
             df.to_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'), index=False)
 
             # Mean over monitoring period
             nyears = len(adf['year'].unique())
-            df = adf.groupby(grp_channels)[sum_channels].agg(np.sum).reset_index()
-            vdf = adf.groupby(grp_channels)[mean_channels].agg(np.mean).reset_index()
+            df = adf.groupby(grp_channels)[sum_channels].agg('sum').reset_index()
+            vdf = adf.groupby(grp_channels)[mean_channels].agg('mean').reset_index()
             df = df.merge(vdf, on=grp_channels, how='inner')
             df['Daily EIR'] = df['Daily EIR'] / nyears
             df['Daily Bites per Human'] = df['Daily Bites per Human'] / nyears
@@ -407,12 +406,11 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
         df = pd.concat(selected).reset_index(drop=True)
         if self.emod_burnin is not None:
             df = df[df['year'] >= self.start_year + self.emod_burnin]
-        df_pfpr2to10 = df.groupby(self.sweep_variables)[['prevalence_2to10']].agg(np.mean).reset_index()
+        df_pfpr2to10 = df.groupby(self.sweep_variables)[['prevalence_2to10']].agg('mean').reset_index()
 
         ## Aggregate years
         df = df.groupby(self.sweep_variables + ['agebin'])[
-            ['prevalence', 'clinical_incidence', 'severe_incidence', 'nHost']].agg(
-            np.mean).reset_index()
+            ['prevalence', 'clinical_incidence', 'severe_incidence', 'nHost']].agg('mean').reset_index()
         df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
         df['nUncomp'] = df['clinical_incidence'] * df['nHost']  ## total cases per annum
         df['nSevere'] = df['severe_incidence'] * df['nHost']  ## total cases per annum
@@ -427,8 +425,7 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables)[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg(
-                    np.sum).reset_index()
+                adf = adf.groupby(self.sweep_variables)[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg('sum').reset_index()
                 adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
                 adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
                 adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
@@ -440,8 +437,7 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR', 'n_total_mos_pop', 'n_infectious_mos']].agg(
-                np.mean).reset_index()  # mean across monitoring years and runs
+            eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR', 'n_total_mos_pop', 'n_infectious_mos']].agg('mean').reset_index()  # mean across monitoring years and runs
             eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
             # cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
@@ -583,11 +579,11 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         df = pd.concat(selected).reset_index(drop=True)
         if self.emod_burnin is not None:
             df = df[df['year'] >= self.start_year + self.emod_burnin]
-        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year'])[['prevalence_2to10']].agg(np.mean).reset_index()
+        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year'])[['prevalence_2to10']].agg('mean').reset_index()
 
         # Aggregate months to years
         df = df.groupby(self.sweep_variables + ['agebin', 'year'])[
-            ['prevalence', 'clinical_incidence', 'severe_incidence', 'nHost']].agg(np.mean).reset_index()
+            ['prevalence', 'clinical_incidence', 'severe_incidence', 'nHost']].agg('mean').reset_index()
 
         df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
         df['nUncomp'] = df['clinical_incidence'] * df['nHost']  ## total cases per annum
@@ -603,8 +599,7 @@ class AnnualAgebinAnalyzer(IAnalyzer):
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables + ['year'])[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg(
-                    np.sum).reset_index()
+                adf = adf.groupby(self.sweep_variables + ['year'])[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg('sum').reset_index()
                 adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
                 adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per year)
                 adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per year)
@@ -616,8 +611,7 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR', 'n_total_mos_pop']].agg(
-                np.mean).reset_index()
+            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR', 'n_total_mos_pop']].agg('mean').reset_index()
             eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
 
@@ -748,8 +742,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         if self.emod_burnin is not None:
             df = df[df['year'] >= self.start_year + self.emod_burnin]
 
-        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'month'])[['prevalence_2to10']].agg(
-            np.mean).reset_index()
+        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'month'])[['prevalence_2to10']].agg('mean').reset_index()
 
         df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
         df['nUncomp'] = df['clinical_incidence'] * (df['nHost'] / 12)  ## total cases per annum
@@ -766,8 +759,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
                 pass
             else:
                 adf = adf.groupby(self.sweep_variables + ['year', 'month'])[
-                    ['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg(
-                    np.sum).reset_index()
+                    ['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg('sum').reset_index()
                 adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
                 adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'] / 12)  # (events per person per year)
                 adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'] / 12)  # (events per person per year)
@@ -779,13 +771,12 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
+            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg('mean').reset_index()
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
 
             eirdf_mth = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_mth.csv'))
             eirdf_mth = eirdf_mth.groupby(self.sweep_variables + ['year', 'month'])[
-                ['Monthly EIR', 'n_total_mos_pop']].agg(
-                np.mean).reset_index()
+                ['Monthly EIR', 'n_total_mos_pop']].agg('mean').reset_index()
             cdf = pd.merge(left=cdf, right=eirdf_mth, on=self.sweep_variables + ['year', 'month'])
 
             cdf = cdf.rename(columns={"Monthly EIR": "simulatedEIR"})
@@ -919,8 +910,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         if self.emod_burnin is not None:
             df = df[df['year'] >= self.start_year + self.emod_burnin]
 
-        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'day'])[['prevalence_2to10']].agg(
-            np.mean).reset_index()
+        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'day'])[['prevalence_2to10']].agg('mean').reset_index()
 
         df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
         df['nUncomp'] = df['clinical_incidence'] * (df['nHost'] / (365 / 5))  ## total cases per annum
@@ -937,8 +927,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
                 pass
             else:
                 adf = adf.groupby(self.sweep_variables + ['year', 'day'])[
-                    ['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg(
-                    np.sum).reset_index()
+                    ['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg('sum').reset_index()
                 adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
                 adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'] / (365 / 5))  # (events per person per year)
                 adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'] / (365 / 5))  # (events per person per year)
@@ -950,7 +939,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg(np.mean).reset_index()
+            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg('mean').reset_index()
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
 
             eirdf_daily = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_daily.csv'))
@@ -1251,7 +1240,8 @@ if __name__ == "__main__":
             analyzer = analyzer + monthly_analyzers
         # 5 day timeseries per age groups
         if '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:
-            ccstep = 'cc_step' in exp.intervention_list
+            if exp.emod_step != 'burnin':
+                ccstep = 'cc_step' in exp.intervention_list
             analyzer = analyzer + [FiveDayAgebinAnalyzer(expt_name=exp_name,
                                                          start_year=start_year,
                                                          end_year=end_year,

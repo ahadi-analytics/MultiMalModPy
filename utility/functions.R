@@ -142,3 +142,18 @@ f_getCustomTheme <- function(fontscl = 1) {
   )
   return(customTheme)
 }
+
+calculate_monthlyEIRs_seasonal <- function(wdir,note){
+  dat_s <- get_output_df(wdir, modelname = "EMOD", timeseries = TRUE, mth=TRUE)
+  #dat_s$target_output_values <- dat_s$output_target
+  dat_s <- dat_s %>%
+    filter(year == max(year), cm_clinical == 0.0, ageGroup == '0-100', seasonality == 'seasonal', target_output_values == 20) %>%
+    group_by(target_output_values, cm_clinical, seasonality, modelname, seed) %>%
+    mutate(sumEIR = sum(simulatedEIR),
+           simulatedEIR = (simulatedEIR/sumEIR)*20)
+  dat_s <- dat_s %>%
+    group_by(month, year, target_output_values, cm_clinical, cm_severe, seasonality, modelname) %>%
+    summarise(simulatedEIR = mean(simulatedEIR)) %>%
+    ungroup()
+  write.csv(dat_s, paste0("seasonal_EIR_values_",note,".csv"), row.names=FALSE)
+}

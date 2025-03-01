@@ -38,12 +38,12 @@ def exp_params_to_update(exp):
         if 'cc_step' in exp.intervention_list:
             print('Adding parameters for cc_step')
             exp = cc_step_params(exp)
-        # if 'smc' in exp.intervention_list:
-        #    print('Adding parameters for smc')
-        #    exp = smc_params(exp)
         else:
             raise ValueError('Invalid intervention specified. Note that case management is automatically included.')
-
+    
+    # if 'smc' in exp.intervention_list:	
+        #    print('Adding parameters for smc')	
+        #    exp = smc_params(exp)
     return exp
 
 

@@ -132,9 +132,8 @@ def get_seasonal_eir(exp=None):
 
     # Define the seasonal setting
     # Seasonal Profile is based off of EMOD CM = 0, seasonal setting, EIR normalized to = 20
-    season_month = [0.3039381,0.232238,0.2536101,0.2751093,0.4975551,1.0859837,
-                    3.4243388,6.5730017,4.6096526,1.6953359,0.653903,0.3953337]
-
+    season_month = [0.607137,0.5238911,0.5817383,0.6275442,0.8990297,1.5398529,
+                    3.4620514,5.1668769,3.3351646,1.658007,0.9030859,0.6956209]    
 
     eir_sum = sum(season_month)
     seasonal = [(x / eir_sum) for x in season_month] # rescale to sum =1
@@ -169,7 +168,7 @@ def monthly_to_daily_EIR(monthly_EIR):
         raise Exception('Monthly EIR should have 12 or 13 values')
     x_monthly = np.linspace(0, 364, num=13, endpoint=True)
     x_daily = np.linspace(0, 364, num=365, endpoint=True)
-    EIR = interp1d(x_monthly, monthly_EIR, kind='cubic')
+    EIR = interp1d(x_monthly, monthly_EIR, kind='linear')
     daily_EIR = EIR(x_daily)
     daily_EIR /= 30
     daily_EIR = daily_EIR.tolist()
@@ -232,6 +231,13 @@ def check_exp_input_parameters(exp):
             f"Only two seasonality patterns are allowed, but {len(exp.seasonality)} were specified. "
             "Please limit the number of seasonality patterns to two."
         )
+    
+    for seasonal_name in exp.seasonality:
+        if seasonal_name not in ['seasonal','perennial']:
+            raise ValueError(
+                f"Seasonality {seasonal_name} not in interpolation datasets."
+                "Please indicate either seasonal or perennial instead."
+            )
     
 def check_exp_inputs_emod(exp):
     """

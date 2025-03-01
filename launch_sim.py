@@ -43,14 +43,7 @@ if args.emodstep in ['pickup', 'new_pickup']:
     exp = get_intervention_params(exp)
     exp.plots_to_run = ['relationship', 'timeseries', 'agecurves'] # For pickup, this needs to be defined again, as for burnin set to empty
 
-    ## Add intervention params back - FIXME not all parameters should be overwritten per default?
-    # exp = get_intervention_params(exp)
-
-    if 'cc_step' in exp.intervention_list:
-        exp.plots_to_run = ['ccstep']
-        exp.analyzer_list = ['daily']
-
-    ##  Note: to simply run a new pickup in same folder and suite, simply change expname
+    ##  Note: to run a new pickup in same folder and suite, simply change expname
     exp.SUITEname = args.suite
     exp.exp_name = args.expname
 

@@ -50,8 +50,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     exp$seasonality <- parameter_table[i,]$seasonality
     if (exp$seasonality != 'perennial'){
       exp$model_seasonality = TRUE
-    }
-    else {
+    } else {
       exp$model_seasonality = FALSE
     }
     exp$monthly_or_daily_eirs <- 'daily' # This will change so we can toggle between daily and monthly later
@@ -132,20 +131,13 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
 
     # Calibrate to the initial EIR:
     if ("cc_step" %in% intervention_list){ 
-      # Calibrate to the initial EIR (eirs unique to each model, based on which eir creates the high, medium and low prevalences required):
-      simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                      init_EIR = parameter_table[i,]$transmission_intensity_malariasimulation)
-      # Get the mosquito carrying capacity:
-      mosquito_carrying_capacity <- get_init_carrying_capacity(parameters = simparams[[i]])
-      
-      # Parameterise the changes in mosquito population carrying capacity (for EIR step change):
-      simparams[[i]] <- set_carrying_capacity(parameters = simparams[[i]], 
-                                              timesteps = parameter_table[i,]$cc_timestep_malariasimulation, 
-                                              carrying_capacity = matrix(parameter_table[i,]$cc_factor_malariasimulation, ncol = 1))}
-    else{
+      simparams[[i]] <- carrying_capacity(parameters = simparams[[i]],
+                                          parameter_table = parameter_table)
+      } else{
       # Calibrate to the initial EIR (same across models):
       simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
-                                      init_EIR = parameter_table[i,]$transmission_intensity_malariasimulation)}
+                                      init_EIR = parameter_table[i,]$transmission_intensity_malariasimulation)
+      }
 
     #-------------------------
     # 2. Run simulations:
@@ -170,7 +162,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
       simulation_outputs_list[[i]]$cc_title <- parameter_table[i,]$cc_title}
     else{
       simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
-    }
+      }
 
     # When running simulation scenarios in parallel as on HPC, those always need to be saved, part of the framework
     # If run as a standalone and all simulations scenarios as part of the for loop, this would not be needed.

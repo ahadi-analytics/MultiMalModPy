@@ -16,38 +16,38 @@ def cc_step_params(exp):
     """
 
     # Required fixed parameters for cc_step
-    exp.cc_decreasing = True  # this is important to note because decreasing sims are organized differently.
-    exp.step_in_years = 5
-    exp.openmalaria_survey_step = '5d'
-    exp.plots_to_run = ['ccstep']
-    exp.analyzer_list = ['surveyallage', 'cc_step']
+    if exp.emod_step != 'pickup':
+        exp.cc_decreasing = False  # this is important to note because decreasing sims are organized differently.
+        exp.step_in_years = 5
+        exp.openmalaria_survey_step = '5d'
+        exp.plots_to_run = exp.plots_to_run + ['ccstep']
+        exp.analyzer_list = exp.plots_to_run + ['cc_step']
 
-    if exp.cc_decreasing:
-        print('Warning: Running cc_step decreasing simulations requires emod and openmalaria importation rates to be true')
-        exp.emod_importation_rate = 5
-        exp.openmalaria_importation_rate = 5
 
     # Flexible parameters depending on type of run and user-specifications
     if exp.run_mode == 'production':
         print('Warning: Running cc_step in production mode with pre-defined not user-defined parameters')
+        if exp.emod_importatation_rate == 0 and exp.cc_decreasing:
+            print('Warning: You are running EMOD simulations with a decreasing carrying capacity.\nWithout importation, elimination can occur.')
         exp.mem_increase_factor = 6.0  # scaling factor on default memory requested
         exp.start_year = 1995
         exp.end_year = 2050
         exp.target_output_name = 'prevalence_2to10'
         exp.target_output_values = [0.1, 0.25, 0.5]
         exp.cc_change = exp.target_output_values
-        exp.emod_memory_per_sim = 7
-        exp.emod_time_per_sim = '8:00:00'
+        exp.emod_memory_per_sim = 6
+        exp.emod_time_per_sim = '6:00:00'
         exp.malariasimulation_memory_per_sim = 6
-        exp.malariasimulation_time_per_sim = '7:00:00'
+        exp.malariasimulation_time_per_sim = '2:00:00'
         exp.openmalaria_memory_per_sim = 6
-        exp.openmalaria_time_per_sim = '5:00:00'
+        exp.openmalaria_time_per_sim = '2:00:00'
     else:
         ## Keep parameters as defined by user in helper.py
         exp.cc_change = exp.target_output_values
 
     # Add cc_change to the list of sweep parameters
-    exp.sweep_list = exp.sweep_list + ['cc_change']
+    if 'cc_change' not in exp.sweep_list:
+        exp.sweep_list = exp.sweep_list + ['cc_change']
 
     # 5 Years in to the pickup time OpenMalaria
     exp.cc_timestep_OpenMalaria = int((73 * (exp.openmalaria_burnin + exp.step_in_years)))

@@ -219,7 +219,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
     df_all = df[df['measure'].isin([7, 35, 36])]
     df_all.drop(columns='ageGroup', inplace=True)
 
-    df_vector = df_vector.groupby(['index', 'survey', 'measure'])[['value']].agg(np.sum).reset_index()
+    df_vector = df_vector.groupby(['index', 'survey', 'measure'])[['value']].agg('sum').reset_index()
     df = pd.concat([df_vector, df_all], ignore_index=True)
 
     df = survey_to_date(df, survey_step_days=survey_step_days, start_year=start_year)
@@ -1062,14 +1062,14 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     grp_channels = ['index', 'timestep']
     age_groups_2to10 = [5, 10]
     g = df3[df3['agebin'].isin(age_groups_2to10)]
-    nHost2to10 = g.groupby(grp_channels)['nHost'].agg(np.sum).reset_index()
-    nPatent2to10 = g.groupby(grp_channels)['nPatent'].agg(np.sum).reset_index()
+    nHost2to10 = g.groupby(grp_channels)['nHost'].agg('sum').reset_index()
+    nPatent2to10 = g.groupby(grp_channels)['nPatent'].agg('sum').reset_index()
     pfpr2to10 = nPatent2to10.merge(nHost2to10, on=grp_channels, how='inner')
     pfpr2to10['prevalence_2to10'] = pfpr2to10['nPatent'] / pfpr2to10['nHost']
     pfpr2to10 = pfpr2to10[['prevalence_2to10', 'timestep', 'index']]
     df3 = df3.merge(pfpr2to10, on=['timestep', 'index'], how='inner')
     vector_channels = ['n_total_mos_pop', 'n_infectious_mos']
-    v = df3.groupby(grp_channels)[vector_channels].agg(np.sum).reset_index()
+    v = df3.groupby(grp_channels)[vector_channels].agg('sum').reset_index()
     df3 = df3.drop(columns=vector_channels)
     df3 = df3.merge(v, on=grp_channels, how='inner')
     # Save the processed DataFrame to a CSV file

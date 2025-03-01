@@ -96,7 +96,7 @@ def submit_run_EMOD(exp, scen_df):
     experiment.job_directory = exp.job_directory
     experiment.emod_step = exp.emod_step
     experiment.start_end = [sim_start_year_emod, sim_start_year_emod + sim_dur_years - 1]
-
+    generate_run_EMOD_file(experiment, platform, suite_directory = exp.suite_directory)
     submit_analyze_EMOD(experiment, platform)
     print(f"Experiment submission {experiment.uid} succeeded.")
     return experiment
@@ -340,6 +340,32 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
     builder.add_sweep_definition(sweep_functions, sweeps)
     return [builder]
 
+
+def generate_run_EMOD_file(experiment, platform, suite_directory, t = '00:30:00', memG=5):
+    """
+    Generates a SBATCH file to re-run EMOD simulations, in case the user wants to re-run simulation
+    This function creates a SLURM shell script for re-submitting EMOD simulations.
+    
+    Args:
+        experiment (Experiment): The experiment object containing relevant parameters such as emod suite and emod experiment id.
+        platform (Platform): The platform object representing the HPC system where the job will be submitted.
+        suite_directory (str): The parent directory of job directory, so the sbatch can cd into the correct directory.
+        t (str, optional): The time limit for the job in HH:MM:SS format. Defaults to '04:00:00'.
+        memG (int, optional): The amount of memory (in GB) allocated for the job. Defaults to 20 GB.
+
+    Returns:
+        None
+    """
+    header_post = shell_header_quest(experiment.sh_hpc_config, t, memG, job_name='run_EMOD',
+                                     mem_scl=experiment.mem_increase_factor)
+    emodpy_venv = experiment.EMOD_venv
+    pycommand = '\nbash batch.sh'
+    suite = f"{experiment.parent.name}_{experiment.parent.id}"
+    emod_directory = os.path.join(suite_directory, suite, experiment.id)
+    script_path = os.path.join(experiment.job_directory, 'run_EMOD.sh')
+    file = open(script_path, 'w')
+    file.write(header_post + emodpy_venv+ f'\ncd {emod_directory}'+ pycommand)
+    file.close()
 
 def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=20):
     """
