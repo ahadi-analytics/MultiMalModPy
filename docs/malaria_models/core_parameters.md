@@ -240,8 +240,7 @@ Default values were determined by using the median across 50 random sets of para
 
 ## OpenMalaria
 
-Table layout adapted from supplementary file
-from [Reiker et al 2021](https://www.nature.com/articles/s41467-021-27486-z)
+Table layout adapted from supplementary file from [Reiker et al 2021](https://www.nature.com/articles/s41467-021-27486-z)
 
 | Parameter                    | Meaning                                                                              | Unit/ dimension           | Estimate |
 |------------------------------|--------------------------------------------------------------------------------------|---------------------------|----------|
