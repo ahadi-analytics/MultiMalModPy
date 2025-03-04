@@ -89,13 +89,7 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Population and age structure</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#population-size">Population size</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#age-demography">Age demography</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#changing-age">Changing age</a>
-    </li>
-        </ul>
+    <li class="toctree-l2"><a class="reference internal" href="#change-age-demography">Change age demography</a>
     </li>
     </ul>
                   </li>
@@ -234,11 +228,25 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="age-and-demography">Age and demography</h1>
-<h2 id="population-size">Population size</h2>
-<h2 id="age-demography">Age demography</h2>
-<h3 id="changing-age">Changing age</h3>
-<p>&hellip; </p>
-<p>=</p>
+<p><em>Implementation in MultiMalModPy</em></p>
+<div style="background-color: #f4f4f4; padding: 12px; border-left: 5px solid #FF6B8B; border-radius: 5px; margin: 10px 0;">
+    <strong>🔍</strong> For a detailed overview of how each model handles population and age demography, refer to the 
+    <a href="../malaria_models/structure.md#population-age-demography" style="color: #0073e6; text-decoration: none;">
+        Population and age demography
+    </a> description under malaria models.
+</div>
+
+<p>In MultiMalModPy, the user can specify the following time related parameters:
+- <code>agebins</code> -  individual age categories used for detailed analysis in the simulation. 
+- <code>age_groups_aggregates</code> -  custom groupings of the agebins for aggregated analysis.<br />
+- <code>emod_pop_size</code> , <code>malariasimulation_pop_size</code> , <code>openmalaria_pop_size</code> - population sizes (model specific)</p>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">agebins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mh">1</span><span class="p">,</span><span class="w"> </span><span class="mh">2</span><span class="p">,</span><span class="w"> </span><span class="mh">5</span><span class="p">,</span><span class="w"> </span><span class="mh">10</span><span class="p">,</span><span class="w"> </span><span class="mh">15</span><span class="p">,</span><span class="w"> </span><span class="mh">20</span><span class="p">,</span><span class="w"> </span><span class="mh">100</span><span class="p">]</span>
+<span class="n">age_groups_aggregates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[[</span><span class="mh">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mh">1</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mh">1</span><span class="p">,</span><span class="w"> </span><span class="mh">2</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mh">2</span><span class="p">,</span><span class="w"> </span><span class="mh">5</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mh">5</span><span class="p">,</span><span class="w"> </span><span class="mh">10</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mh">10</span><span class="p">,</span><span class="w"> </span><span class="mh">15</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mh">15</span><span class="p">,</span><span class="w"> </span><span class="mh">20</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mh">20</span><span class="p">,</span><span class="w"> </span><span class="mh">100</span><span class="p">],</span><span class="w">  </span><span class="p">[</span><span class="mh">0</span><span class="p">,</span><span class="w"> </span><span class="mh">5</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mh">0</span><span class="p">,</span><span class="w"> </span><span class="mh">100</span><span class="p">]]</span>
+</code></pre></div>
+
+<h2 id="change-age-demography">Change age demography</h2>
+<p>Changing the age stucture across the three models is currently not supported. </p>
               
             </div>
           </div><footer>

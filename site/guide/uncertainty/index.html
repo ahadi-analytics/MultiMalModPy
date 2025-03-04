@@ -101,6 +101,10 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Randomness and uncertainty</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#randomness">Randomness</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#model-and-parameter-uncertainty">Model and parameter uncertainty</a>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -226,7 +230,27 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="accounting-for-sources-of-uncertainty">Accounting for sources of uncertainty</h1>
-<p>....</p>
+<h2 id="randomness">Randomness</h2>
+<p><strong>EMOD</strong>, <strong>OpenMalaria</strong>, and <strong>malariasimulation</strong> are each stochastic models that use a ‘seed’ (or the equivalent term ‘run number’ used in EMOD) 
+to determine starting position of their respective (pseudo-) random number generators.
+Thus seed selection can alter simulation outcomes that rely on stochastic decisions. 
+For consistency the same set of seeds across all three models is run, for instance, selecting 20 seeds in the experiment set-up, will result in running 20 seeds across each model. </p>
+<h2 id="model-and-parameter-uncertainty">Model and parameter uncertainty</h2>
+<ul>
+<li>
+<p><strong>OpenMalaria</strong> allows to take into account model and parameter uncertainty through varying ‘model variants’ <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3260300/">Smith et al 2012</a>. 
+In the initial framework release, only the <a href="">base model</a> is included.  </p>
+</li>
+<li>
+<p><strong>EMOD’s</strong> functionality to account for parameter uncertainty is not yet available in the framework. 
+An <a href="../getting_started/model_specificities.md#using-alternative-base-calibration#emod">alternative base calibration</a> will soon become available.   </p>
+</li>
+<li>
+<p>In <strong>malariasimulation</strong>, accounting for parameter uncertainty to better reflect potential variability in the simulation 
+results has been integrated by drawing parameter values from posterior distributions around defined parameter sets.
+Details are described under model-specific features <a href="../getting_started/model_specificities.md#parameter-sampling">Paramerer sampling</a>. </p>
+</li>
+</ul>
               
             </div>
           </div><footer>

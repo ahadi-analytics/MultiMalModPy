@@ -87,8 +87,6 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Time</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#monitoring-time">Monitoring time</a>
-    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../age_demography/">Population and age structure</a>
@@ -228,12 +226,36 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="time-in-the-simulations">Time in the simulations</h1>
-<p>&hellip;</p>
-<h3 id="monitoring-time">Monitoring time</h3>
-<p>&hellip;</p>
-<p>In <strong>OpenMalaria:</strong> surveys track events since the last survey and capture the current state at the survey’s start, such as the number of patent hosts.<br />
-- The minimum interval is 5 days<br />
-- Only one survey interval can be specified per scenario  </p>
+<p><em>Implementation in MultiMalModPy</em></p>
+<div style="background-color: #f4f4f4; padding: 12px; border-left: 5px solid #FF6B8B; border-radius: 5px; margin: 10px 0;">
+    <strong>🔍</strong> For a detailed overview of how each model handles time, refer to the 
+    <a href="../malaria_models/structure.md#time" style="color: #0073e6; text-decoration: none;">
+        Time 
+    </a> description under malaria models.
+</div>
+
+<p>In MultiMalModPy, the user can specify the following time related parameters:
+- <code>start_year</code> 
+- <code>end_year</code> 
+- <code>emod_burnin</code>  <code>malariasimulation_burnin</code>  , <code>openmalaria_burnin</code>
+- <code>openmalaria_survey_step</code> </p>
+<p>Example from <a href="https://github.com/ahadi-analytics/model-characterization/blob/main/setup_sim.py#L53C14-L53C96">setup_sim.py</a>: </p>
+<div class="codehilite"><pre><span></span><code>start_year = 2000
+end_year = 2005
+emod_burnin = 110
+malariasimulation_burnin = 100
+openmalaria_survey_step = &#39;5d&#39;
+</code></pre></div>
+
+<p>From those values, the burnin period is calculated automatically.<br />
+<strong>EMOD</strong> allows to serialize simulations after the burnin period and before the monitoring period, as described in <a href="../model_specificities/#serialization">model_specificities</a>.</p>
+<div style="background-color: #E9F2F9; padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>NOTE:</em></strong>  
+  In OpenMalaria, surveys track events since the last survey and capture the current state at the survey’s start (e.g., the number of patent hosts).  
+
+  - The minimum survey interval is <strong>5 days</strong>.  
+  - Only <strong>one</strong> survey interval can be specified per scenario.  
+</div>
               
             </div>
           </div><footer>

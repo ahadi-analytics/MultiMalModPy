@@ -1,13 +1,38 @@
-# Matching defined transmission output targets
+# Defining transmission intensity 
+_Implementation in MultiMalModPy_
+
+<div style="background-color: #f4f4f4; padding: 12px; border-left: 5px solid #FF6B8B; border-radius: 5px; margin: 10px 0;">
+    <strong>🔍</strong> For a detailed overview of how each model handles transmission intensity, refer to the 
+    <a href="../malaria_models/structure.md#transmission-intensity" style="color: #0073e6; text-decoration: none;">
+        Transmission Intensity 
+    </a> description under malaria models.
+</div>
 
 
-## Transmission output targets
+In MultiMalModPy, the user can specify the level of transmission via the following two parameters in [setup_sim.py](https://github.com/ahadi-analytics/model-characterization/blob/main/setup_sim.py#L62): 
+- `target_output_name`    – Defines the epidemiological metric used for calibration.  
+- `target_output_values`    – Specifies the target values for the selected metric.  
+
+
+Example: 
+``` 
+target_output_name = 'prevalence_2to10'
+target_output_values = [0.25]
+```
+In this example, the simulation is calibrated to achieve a 2-to-10-year-old malaria prevalence of 25% (0.25).  
+
+
+### Matching defined transmission output targets 
+
 
 The `target_calibration`  directory includes `interpolation_data.csv` for each of the models included in the framework.
-The `interpolation_data.csv` data is generated via the transmission calibration, when running via `calib_run` .
+This file is generated during the transmission calibration process when running: 
 
-The table below summarizes the results from an epidemiological simulation model,
-detailing various metrics related to malaria incidence and prevalence on the example for EMOD.
+```
+python launch_sim.py -r calibrun  
+```
+
+The table below provides an example of calibration results for EMOD, showing key epidemiological metrics related to malaria transmission.  
 
 | input_target | seasonality | cm_clinical | simulatedEIR | prevalence_2to10 | prevalence | severe_incidence | n_total_mos_pop | clinical_incidence | clinical_incidence_U5 | modelname | pop_size | importation |
 |--------------|-------------|--------------|--------------|-------------------|------------|-------------------|------------------|---------------------|-----------------------|-----------|----------|-------------|
@@ -37,20 +62,27 @@ detailing various metrics related to malaria incidence and prevalence on the exa
 
 
 
-## Defining your own transmission target
+### Defining your own transmission target
 
-MultiMalModPy offers pre-exisiting datasets as shown above.
-If you are interested in running simulations outside of those limited datasets, this is the process.
+If you need to run simulations beyond the predefined datasets, follow this process:  
 
 ```
 python launch_sim.py -r calibrun
 ```
-By default, this process runs all three models using the simulation setup you specified.   
-Key parameters to configure include pop_size, burn-in duration, seasonal profiles, and case management levels.  
-Once the simulations and analyzers have completed, new .csv files will be generated inside the model-characterization/target_calibration 
-folder for each model used. 
-These files are named after your most recent calibration run. You will need to review these .csv files and decide
-whether to integrate them into your `interpolation_data.csv` files.
+
+By default, this runs all three models with the settings specified in setup_sim.py.  
+Key parameters to configure include:  
+- Population size (pop_size)  
+-  Burn-in duration 
+-  Seasonal profiles 
+-  Case management levels 
+
+Once the simulations complete, new `.csv` files will be generated in the `target_calibration` folder for each model.
+These files are named after your most recent calibration run. 
+
+You should review and decide whether to integrate them into your `interpolation_data.csv` files.    
+
+#### Special Considerations for OpenMala
 
 <div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
   <strong><em>📝 OpenMalaria Consideration:</em></strong> 
@@ -72,8 +104,8 @@ If the lowest level of malaria EMOD can sustain does not meet your expectations,
 </div>  
 
 
-
-Once you have finalized your interpolation_data.csv files, you can proceed with running production simulations.
+### Finalizing and Running Production Simulations
+Once you have finalized your `interpolation_data.csv` files, you can proceed with running production simulations.
 
 
 

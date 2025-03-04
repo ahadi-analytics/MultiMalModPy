@@ -95,6 +95,10 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Case management</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#model-specific-structure">Model-specific structure</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#implementation-in-multimalmodpy">Implementation in MultiMalModPy</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../scenarios/">Scenarios</a>
@@ -226,6 +230,16 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="case-management">Case management</h1>
+<h2 id="model-specific-structure">Model-specific structure</h2>
+<p>Model-specific structure of case management is described  <a href="../../malaria_models/interventions/#case-management-">here</a>.</p>
+<h2 id="implementation-in-multimalmodpy">Implementation in MultiMalModPy</h2>
+<p>In MultiMalModPy, the user can specify single constant coverage levels for clinical and for severe case management.  </p>
+<p>In <a href="https://github.com/ahadi-analytics/model-characterization/blob/main/setup_sim.py#L53C14-L53C96">setup_sim.py</a> , 
+the user species case_management as a   List of tuples defining case management intervention configurations.  </p>
+<div class="codehilite"><pre><span></span><code>case_management = [(0, 0),(0.15,0.5)]  # format: [(cm_clinical, cm_severe), (...)]
+</code></pre></div>
+
+<p>When running simulations via CSV, the tuples are included in a single cell as shown in the <a href="https://github.com/ahadi-analytics/model-characterization/blob/main/scenario_csv/example1.csv">example1.csv</a>.</p>
               
             </div>
           </div><footer>

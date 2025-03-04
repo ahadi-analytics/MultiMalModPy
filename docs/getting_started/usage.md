@@ -1,10 +1,11 @@
-# How to use MultiMalModPy
+# How to use MultiMalModPy  
 
+_This page provides an overview of the process steps_  
 
-## Define simulation
-1. Open  `setup_sim.py` and modify parameters as needed.
+## Define a simulation
+1. Open  `setup_sim.py` and modify parameters as needed (visit [building scenarios](../guide/scenarios.md) for details).
 
-##  Running a Simulation
+##  Running a simulation
 
 1. Open a terminal and navigate to the repository: 
 ```bash
@@ -34,7 +35,7 @@ Once the simulations complete, analyzer scripts and default plots will automatic
   - `python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test`  
 
 
-## View Outputs 
+## View standardized simulation outputs 
 
 
 ![Example outputs](../img/example_output_csv.png)
@@ -55,7 +56,7 @@ Once the simulations complete, analyzer scripts and default plots will automatic
 
 - `EIR.csv`, `EIR_yr.csv`,  `EIR_mth.csv` and `EIR_daily.csv`: All age simulated EIR (added to benchmark output csvs)
 
-### Output measures
+### Standardized output measures
 
 | Column             | Description                                                                                                        | EMOD                                                                                                                                                 | malariasimulation                                                                                                                     | OpenMalaria                                                                                                                                                              |   |
 |:-------------------|:-------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---|
@@ -73,9 +74,9 @@ Once the simulations complete, analyzer scripts and default plots will automatic
 | n_infectious_mos   | Number of infectious mosquitoes                                                                                    |                                                                                                                                                      |                                                                                                                                       |                                                                                                                                                                          |   |
 | n_total_mos_pop    | Number of host-seeking mosquitoes                                                                                  |                                                                                                                                                      |                                                                                                                                       |                                                                                                                                                                          |   |
 
-For details of raw model outputs, see [Input and output files](../malaria_models/input_output.md)
+For details of raw model outputs, see [Input and output files](../malaria_models/input_output.md)  
 
-Example `mmmpy_timeavrg.csv` 
+Example `mmmpy_timeavrg.csv`   
 
 | index | nHost    | prevalence_2to10 | prevalence | clinical_incidence | severe_incidence | mortality | ageGroup | scen_id | output_target | seasonality | entomology_mode | num_seeds | cm_clinical | cm_severe | cm_start | transmission_intensity_malariasimulation | transmission_intensity_OpenMalaria | seed | malariasimulation_pv | inputEIR | simulatedEIR | n_total_mos_pop | n_infectious_mos |
 |-------|----------|------------------|------------|--------------------|------------------|-----------|----------|---------|---------------|-------------|-----------------|-----------|-------------|-----------|----------|------------------------------------------|-------------------------|------|----------------------|----------|--------------|-----------------|------------------|
@@ -84,19 +85,26 @@ Example `mmmpy_timeavrg.csv`
 | 3     | 29.23562 | 0.201827         | 0.023522   | 0.287321           | 0.000188         | 0.002093  | 0-0.5    | 1       | 0.2           | perennial   | dynamic         | 3         | 0           | 0         | 1        | 2.262334                                 | 1.62434                 | 3    | 521                  | 1.624338 | 1.455988     | 105702.3        | 1450.148         |
 
 
-#### Customizing figures
-Each of the existing plotting scripts allow for the user to define what outcomes should be displayed in the
-color, the columns, axis and so on. Edits can be directly made in the respective scripts.
+#### Customize figures  
 
-#### Adding new figures 
-Additional plotting scripts from the user can be added to the `plotter` subdirectory.
-It is recommended to have the filename start with `plot_` for consistency and to facilitate integrating the new plotter into the framework.
+Each existing plotting script allows users to define how outcomes are displayed, including colors, columns, and axes.  
+To customize figures, modify the respective plotting scripts directly.  
 
-At the beginning it will be easiest to run the new plotters manually after the default outputs were 
-successfully  generated.
+#### Adding new figures   
 
-For instance:   
-`python plotter/plot_custom1.py  --models EMOD malariasimulation OpenMalaria` 
+Users can add custom plotting scripts to the `plotter` subdirectory.  
+
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>⚠️NOTE:</em></strong> 
+  Use filenames that start with `plot_` for consistency and easier integration into the framework.
+</div>  
+
+
+Example usage:
+
+``` 
+python plotter/plot_custom1.py  --models EMOD malariasimulation OpenMalaria
+```  
 
 
 

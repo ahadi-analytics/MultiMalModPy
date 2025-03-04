@@ -118,7 +118,7 @@ Simulation outcomes are typically monitored from this phase onward.
 -  **Slurm**: formerly known as Simple Linux Utility for Resource Management is an open-source job scheduler for HPCs.  
 
 
-- 📌 **Sweeps**: The sweep defines all combinations of parameter values to simulate every possible scenario.
+- 📌 **Sweeps**: The sweep defines all combinations of parameter values to simulate every possible scenario. I.e. `sweep_list` is a list of parameters to vary in the simulation.
 
 <span style="color:#1E5D7B; font-size: 1.1em; font-weight: bold;">T</span>  
 

@@ -94,6 +94,8 @@
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#launch-in-batch-mode">Launch in Batch Mode</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#using-docker-container">Using Docker Container</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#launch-in-interactive-mode">Launch in Interactive Mode</a>
     </li>
         </ul>
@@ -250,10 +252,9 @@
                 <h1 id="example-run">Example run</h1>
 <p>This example guides you through running simulations, assuming all requirements are met: the 
 necessary software is installed and user settings are properly configured in <code>manifest.py</code>.<br />
-You can visit the <a href="../installation/">installation </a> or the <a href="../configuration/">first-time-configuration</a> pages if you need to modify your setup.</p>
-<p>Note, you can also run MultiMalModPy from within a container, without any prior installation. Just download the image file from here and follow
-the example run for running from within a container below. </p>
-<p><strong>In this section:</strong></p>
+You can visit the <a href="../installation/">installation </a> or the <a href="../configuration/">first-time-configuration</a> pages if you need to modify your setup.  </p>
+<p>Note, you can also run MultiMalModPy from within a container, without any prior installation (see Using Singularity or Docker container below.</p>
+<p><strong>In this section:</strong>  </p>
 <ul>
 <li><a href="#hpc">HPC</a></li>
 <li><a href="#using-python-virtual-environment-on-hpc">Using Python Virtual Environment</a></li>
@@ -261,44 +262,45 @@ the example run for running from within a container below. </p>
 <li><a href="#local">Local</a></li>
 <li><a href="#using-python-virtual-environment-on-local">Using Python Virtual Environment</a><ul>
 <li><a href="#launch-in-batch-mode">Launch in Batch Mode</a></li>
+<li><a href="#using-docker-container">Using Docker Container</a></li>
 <li><a href="#launch-in-interactive-mode">Launch in Interactive Mode</a></li>
 </ul>
 </li>
 </ul>
 <h2 id="hpc">HPC</h2>
 <h3 id="using-python-virtual-environment-on-hpc">Using python virtual environment on HPC</h3>
-<p><strong>Step 1: Navigate to the Repository and Activate the Virtual Environment</strong>  </p>
+<p><strong>Step 1: Navigate to the Repository and Activate the Virtual Environment</strong>    </p>
 <p><strong>1a) Navigate to the Repository</strong><br />
 Open a terminal on your cluster and move into the MultiMalModPy repository using:  </p>
 <div class="codehilite"><pre><span></span><code>cd &lt;your_path&gt;/MultiMalModPy  
 </code></pre></div>
 
-<p>Replace <your_path> with the actual path where the repository is located.</p>
+<p>Replace <your_path> with the actual path where the repository is located.  </p>
 <p><strong>1b) Activate the Virtual Environment</strong>  <br />
-To ensure dependencies are properly managed, activate the virtual environment:</p>
-<div class="codehilite"><pre><span></span><code>source &lt;your_path&gt;/my_venv//bin/activate  
+To ensure dependencies are properly managed, activate the virtual environment:  </p>
+<div class="codehilite"><pre><span></span><code>source &lt;your_path&gt;/my_venv//bin/activate    
 </code></pre></div>
 
-<p>If you haven’t set up the virtual environment yet, follow the installation instructions <a href="../installation/">here</a>.    </p>
-<p><strong>Step 2: Configure Simulation to run (Optional for First Test Run)</strong><br />
-If you want to customize your simulation settings, the easiest way is to modify the <code>setup_sim.py</code> file and adjust the parameters as needed.
-However, if this is your first test run, you can skip this step and proceed with the default settings.
-Later, you’ll also learn how to run multiple simulations simultaneously using configurations from a CSV file.   </p>
-<p><strong>Step 3: Launch simulations</strong><br />
+<p>If you haven’t set up the virtual environment yet, follow the installation instructions <a href="../installation/">here</a>.      </p>
+<p><strong>Step 2: Configure Simulation to run (Optional for First Test Run)</strong> <br />
+If you want to customize your simulation settings, the easiest way is to modify the <code>setup_sim.py</code> file and adjust the parameters as needed.<br />
+However, if this is your first test run, you can skip this step and proceed with the default settings.<br />
+Later, you’ll also learn how to run multiple simulations simultaneously using configurations from a CSV file.     </p>
+<p><strong>Step 3: Launch simulations</strong>  <br />
  3a) To launch a simulation, use the following command:    </p>
 <div class="codehilite"><pre><span></span><code>python launch_sim.py --models EMOD malariasimulation OpenMalaria --test
 </code></pre></div>
 
-<p>You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly.<br />
+<p>You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly. <br />
 Check you simulations via <code>squeue -u &lt;username&gt;</code>. </p>
-<p>While simulations are running, check the <code>experiments</code> and the <code>simulation_outputs</code> folder of your current simulation running.
-In the <code>experiments</code> folder, you will find log files for each step and model, as well as the input files used for the simulationper model.
-In the <code>simulation_outputs</code> folder, you can review the scenarios that were submitted in <code>scen_df.csv</code>, and  the outputs appear in the folder once the simulation finishes.    </p>
-<p>3b) Postprocessing (optional if manual re-run is required)
-Since the postprocessing runs automatically once the simulation job finishes, there is  no extra step required to process simulation outputs.<br />
-In case of further content-debugging or customization needs, you can go to <code>Customize and troubleshoot analyzer</code> section.  </p>
-<p><strong>Step 4: View output</strong>  <br />
-The figures will appear under  <code>simulation_outputs</code> .  </p>
+<p>While simulations are running, check the <code>experiments</code> and the <code>simulation_outputs</code> folder of your current simulation running.<br />
+In the <code>experiments</code> folder, you will find log files for each step and model, as well as the input files used for the simulationper model.<br />
+In the <code>simulation_outputs</code> folder, you can review the scenarios that were submitted in <code>scen_df.csv</code>, and  the outputs appear in the folder once the simulation finishes.     </p>
+<p>3b) Postprocessing (optional if manual re-run is required)<br />
+Since the postprocessing runs automatically once the simulation job finishes, there is  no extra step required to process simulation outputs. <br />
+In case of further content-debugging or customization needs, you can go to <code>Customize and troubleshoot analyzer</code> section.   </p>
+<p><strong>Step 4: View output</strong>     </p>
+<p>The figures will appear under  <code>simulation_outputs</code>.  </p>
 <div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>DONE!</em></strong>  
   If you see the CSV files and generated figures, congratulations—you've successfully run your first MultiMalModPy test simulation! 🎉  
  </div>
@@ -309,44 +311,44 @@ The figures will appear under  <code>simulation_outputs</code> .  </p>
 </div>
 
 <h3 id="using-singularity-container">Using singularity container</h3>
-<p><strong>Step 1: Navigate to the Repository and Activate the Virtual Environment</strong>  </p>
-<p><strong>1a) Navigate to the Repository</strong><br />
-Open a terminal on your cluster and move into the MultiMalModPy repository using:  </p>
-<div class="codehilite"><pre><span></span><code>cd &lt;your_path&gt;/MultiMalModPy  
+<p><strong>Step 1: Navigate to the Repository and Activate the Virtual Environment</strong>    </p>
+<p><strong>1a) Navigate to the Repository</strong> <br />
+Open a terminal on your cluster and move into the MultiMalModPy repository using:   </p>
+<div class="codehilite"><pre><span></span><code>cd &lt;your_path&gt;/MultiMalModPy    
 </code></pre></div>
 
-<p>Replace <your_path> with the actual path where the repository is located.</p>
-<p><strong>1b) Load singularity and ensure image file exists</strong>    </p>
+<p>Replace <your_path> with the actual path where the repository is located.  </p>
+<p><strong>1b) Load singularity and ensure image file exists</strong>      </p>
 <div class="codehilite"><pre><span></span><code><span class="n">module</span><span class="w"> </span><span class="nb">load</span><span class="w"> </span><span class="n">singularity</span>
 </code></pre></div>
 
-<p>If you haven’t downloaded the image file yet, follow the download it from <a href="../installation/">here</a> and save it under any directory on your HPC.    </p>
-<p>You can look inside the container via:  </p>
-<div class="codehilite"><pre><span></span><code>singularity shell /path/to/emodpy4.1-OM46-R4.4.1.sif
+<p>If you haven’t downloaded the image file yet, follow the download it from <a href="../installation/">here</a> and save it under any directory on your HPC.     </p>
+<p>You can look inside the container via:    </p>
+<div class="codehilite"><pre><span></span><code>singularity shell /path/to/emodpy4.1-OM46-R4.4.1.sif  
 </code></pre></div>
 
-<p><strong>Step 2: Configure Simulation to run (Optional for First Test Run)</strong><br />
-If you want to customize your simulation settings, the easiest way is to modify the <code>setup_sim.py</code> file and adjust the parameters as needed.
-However, if this is your first test run, you can skip this step and proceed with the default settings.
-Later, you’ll also learn how to run multiple simulations simultaneously using configurations from a CSV file.   </p>
+<p><strong>Step 2: Configure Simulation to run (Optional for First Test Run)</strong>  <br />
+If you want to customize your simulation settings, the easiest way is to modify the <code>setup_sim.py</code> file and adjust the parameters as needed.<br />
+However, if this is your first test run, you can skip this step and proceed with the default settings.<br />
+Later, you’ll also learn how to run multiple simulations simultaneously using configurations from a CSV file.     </p>
 <p><strong>Step 3: Launch simulations</strong><br />
- 3a) To launch a simulation, use the following command:    </p>
+ 3a) To launch a simulation, use the following command:   </p>
 <div class="codehilite"><pre><span></span><code>singularity exec -B /etc/passwd -B /etc/slurm -B <span class="sb">`which sbatch `</span> -B <span class="sb">`which srun `</span> -B <span class="sb">`which sacct `</span> -B <span class="sb">`which scontrol `</span> -B <span class="sb">`which salloc `</span> -B <span class="sb">`which scancel `</span> -B <span class="sb">`which squeue `</span> -B /usr/lib64/slurm/ -B /usr/lib64/liblua-5.1.so -B /usr/lib64/liblua-5.1.so:/usr/lib64/liblua.so -B /usr/lib64/libjson-c.so.2 -B /usr/lib64/libjson-c.so.2.0.1 -B /usr/lib64/libmunge.so.2 -B /usr/lib64/libmunge.so.2.0.0 -B /usr/lib64/libpmi2.so -B /usr/lib64/libpmi2.so.0 -B /usr/lib64/libpmi2.so.0.0.0 -B /usr/lib64/libpmi.so -B /usr/lib64/libpmi.so.0 -B /usr/lib64/libpmi.so.0.0.0 -B /usr/local/pmix -B /usr/local/hwloc -B /usr/local/ucx-1.13.0 -B /usr/local/ucx-1.10.0 -B /usr/local/ucx-1.8.1 -B /usr/local/spack -B /usr/local/spack_v20d1 -B /usr/local/libevent/ -B /run -B /projects -B /scratch --writable-tmpfs /home/mrm9534/rcs-support/emod-mrm/emodpy4.1-OM46-R4.4.1.sif /opt/envs/emodpy39/bin/python3 launch_sim.py --models EMOD -- test
 </code></pre></div>
 
-<p>Note, the command includes at the very end the 
- - location of the image file <code>/home/mrm9534/rcs-support/emod-mrm/emodpy4.1-OM46-R4.4.1.sif</code>
- - location of the python virtual environment within the container <code>/opt/envs/emodpy39/bin/python3 launch_sim.py</code>
- - MultiMalModPy submission command <code>launch_sim.py --models EMOD -- test</code></p>
-<p>You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly.<br />
+<p>Note, the command includes at the very end the <br />
+ - location of the image file <code>/home/mrm9534/rcs-support/emod-mrm/emodpy4.1-OM46-R4.4.1.sif</code><br />
+ - location of the python virtual environment within the container <code>/opt/envs/emodpy39/bin/python3 launch_sim.py</code><br />
+ - MultiMalModPy submission command <code>launch_sim.py --models EMOD -- test</code>  </p>
+<p>You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly.  <br />
 Check you simulations via <code>squeue -u &lt;username&gt;</code>. </p>
-<p>While simulations are running, check the <code>experiments</code> and the <code>simulation_outputs</code> folder of your current simulation running.
-In the <code>experiments</code> folder, you will find log files for each step and model, as well as the input files used for the simulationper model.
-In the <code>simulation_outputs</code> folder, you can review the scenarios that were submitted in <code>scen_df.csv</code>, and  the outputs appear in the folder once the simulation finishes.    </p>
-<p>3b) Postprocessing (optional if manual re-run is required)
-Since the postprocessing runs automatically once the simulation job finishes, there is  no extra step required to process simulation outputs.<br />
-In case of further content-debugging or customization needs, you can go to <code>Customize and troubleshoot analyzer</code> section.  </p>
-<p><strong>Step 4: View output</strong>  <br />
+<p>While simulations are running, check the <code>experiments</code> and the <code>simulation_outputs</code> folder of your current simulation running.<br />
+In the <code>experiments</code> folder, you will find log files for each step and model, as well as the input files used for the simulationper model.<br />
+In the <code>simulation_outputs</code> folder, you can review the scenarios that were submitted in <code>scen_df.csv</code>, and  the outputs appear in the folder once the simulation finishes.     </p>
+<p>3b) Postprocessing (optional if manual re-run is required)<br />
+Since the postprocessing runs automatically once the simulation job finishes, there is  no extra step required to process simulation outputs. <br />
+In case of further content-debugging or customization needs, you can go to <code>Customize and troubleshoot analyzer</code> section.   </p>
+<p><strong>Step 4: View output</strong>    <br />
 The figures will appear under  <code>simulation_outputs</code> .  </p>
 <div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>DONE!</em></strong>  
   If you see the CSV files and generated figures, congratulations—you've successfully run your first MultiMalModPy test simulation! 🎉  
@@ -361,25 +363,32 @@ The figures will appear under  <code>simulation_outputs</code> .  </p>
 <h2 id="local">Local</h2>
 <h3 id="using-python-virtual-environment-on-local">Using python virtual environment on local</h3>
 <h4 id="launch-in-batch-mode">Launch in Batch Mode</h4>
-<p>Open a CLI terminal (i.e. CMD, Pycharm, or RStudio terminal). In the example shown, a Pycharm terminal is used.<br />
-And type in terminal the following command for a local test run.  </p>
-<div class="codehilite"><pre><span></span><code>python .\launch_sim.py --models malariasimulation OpenMalaria --test   
+<p>Open a CLI terminal (i.e. CMD, Pycharm, or RStudio terminal). In the example shown, a Pycharm terminal is used. <br />
+And type in terminal the following command for a local test run.   </p>
+<div class="codehilite"><pre><span></span><code>python .\launch_sim.py --models malariasimulation OpenMalaria --test    
 </code></pre></div>
 
-<p><strong>Pycharm</strong><br />
-<img alt="launch_sim.py" src="../../img/run_from_pycharm.png" />      </p>
+<p><strong>Pycharm</strong>  <br />
+<img alt="launch_sim.py" src="../../img/run_from_pycharm.png" />        </p>
 <p>The resulting terminal output looks as below, after which two pop up windows appear:</p>
 <p><a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/launch_sim.py" target="_blank"> <br />
 <img alt="launch_sim.py" src="../img/launch_sim.py" /><br />
 </a>  </p>
-<p>OpenMalaria </p>
+<p>OpenMalaria    </p>
 <p><a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/run_OpenMalaria_local.png" target="_blank"> 
 <img alt="OpenMalaria PSI" src="../../img/run_OpenMalaria_local.png" /><br />
 </a></p>
-<p>malariasimulation</p>
+<p>malariasimulation  </p>
 <p><a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/run_malariasimulation_local.png" target="_blank"><br />
 <img alt="malariasimulation PSI" src="../../img/run_malariasimulation_local.png" /><br />
 </a></p>
+<h4 id="using-docker-container">Using Docker Container</h4>
+<p><strong>NOTE: Running from within docker is currently being implemented.</strong> </p>
+<p>Replace all <code>PATH_TO_REPO</code> with your directory to the MultiMalModPy on your computer, excluding &lsquo;MultiMalModPy&rsquo;.
+Example, if MultiMalModPy is in <code>C:/Users/&lt;user&gt;/Documents/MultiMalModPy</code>, then type  <code>C:/Users/&lt;user&gt;/Documents/</code></p>
+<div class="codehilite"><pre><span></span><code>docker run -it -v PATH_TO_REPO:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c &quot;source /opt/envs/mmmpy_local/bin/activate &amp;&amp; cd /mnt/c/projects/model-characterization &amp;&amp; python launch_sim.py --models malariasimulation OpenMalaria --test&quot;                         
+</code></pre></div>
+
 <h4 id="launch-in-interactive-mode">Launch in Interactive Mode</h4>
 <p>Sometimes it is useful or required to run line by line to understand and debug some lines of code.
 You can open the MultiMalModPy project, for instance in PyCharm, and open the <code>launch_sim.py</code> file.
@@ -389,18 +398,18 @@ Also the analyzer and plotting scripts can be openned and run in an interactive 
 <code>args</code> argument and to specify the <code>job_directory</code> and <code>models_to_run</code> directly in the script. </p>
 <h2 id="experiment-and-simulation-output-directories">Experiment and simulation output directories</h2>
 <p><strong>Experiments</strong>  </p>
-<p>HPC:
-<code>&lt;User-defined job directory&gt;/experiments/20250202_TEST/sims_dynamic_perennial__19_33_36</code><br />
-Local: <br />
-<code>simulations_local/experiments/20250202_TEST/sims_dynamic_perennial__19_33_36</code></p>
-<p><strong>Simulation outputs</strong></p>
-<p>HPC:
-<code>&lt;User-defined job directory&gt;/simulation_outputs/20250202_TEST/sims_dynamic_perennial__19_33_36</code><br />
-Local: <br />
-<code>simulations_local/simulation_outputs/20250202_TEST/sims_dynamic_perennial__19_33_36</code></p>
+<p>HPC:   </p>
+<p><code>&lt;User-defined job directory&gt;/experiments/20250202_TEST/sims_dynamic_perennial__19_33_36</code>    </p>
+<p>Local:    <br />
+<code>simulations_local/experiments/20250202_TEST/sims_dynamic_perennial__19_33_36</code>  </p>
+<p><strong>Simulation outputs</strong>  </p>
+<p>HPC:<br />
+<code>&lt;User-defined job directory&gt;/simulation_outputs/20250202_TEST/sims_dynamic_perennial__19_33_36</code>    </p>
+<p>Local:   <br />
+<code>simulations_local/simulation_outputs/20250202_TEST/sims_dynamic_perennial__19_33_36</code>  </p>
 <h1 id="example-outputs">Example outputs</h1>
-<p><img alt="Example outputs" src="../../img/example_output_csv.png" />  </p>
-<p>For details, see <a href="../../malaria_models/input_output/">Input and output files</a></p>
+<p><img alt="Example outputs" src="../../img/example_output_csv.png" />   </p>
+<p>For details, see <a href="../../malaria_models/input_output/">Input and output files</a> </p>
               
             </div>
           </div><footer>

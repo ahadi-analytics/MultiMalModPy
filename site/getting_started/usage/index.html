@@ -76,15 +76,15 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">How to use MultiMalModPy</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#define-simulation">Define simulation</a>
+    <li class="toctree-l2"><a class="reference internal" href="#define-a-simulation">Define a simulation</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#running-a-simulation">Running a Simulation</a>
+    <li class="toctree-l2"><a class="reference internal" href="#running-a-simulation">Running a simulation</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#view-outputs">View Outputs</a>
+    <li class="toctree-l2"><a class="reference internal" href="#view-standardized-simulation-outputs">View standardized simulation outputs</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#output-measures">Output measures</a>
+    <li class="toctree-l3"><a class="reference internal" href="#standardized-output-measures">Standardized output measures</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#customizing-figures">Customizing figures</a>
+    <li class="toctree-l4"><a class="reference internal" href="#customize-figures">Customize figures</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#adding-new-figures">Adding new figures</a>
     </li>
@@ -242,11 +242,12 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="how-to-use-multimalmodpy">How to use MultiMalModPy</h1>
-<h2 id="define-simulation">Define simulation</h2>
+<p><em>This page provides an overview of the process steps</em>  </p>
+<h2 id="define-a-simulation">Define a simulation</h2>
 <ol>
-<li>Open  <code>setup_sim.py</code> and modify parameters as needed.</li>
+<li>Open  <code>setup_sim.py</code> and modify parameters as needed (visit <a href="../../guide/scenarios/">building scenarios</a> for details).</li>
 </ol>
-<h2 id="running-a-simulation">Running a Simulation</h2>
+<h2 id="running-a-simulation">Running a simulation</h2>
 <ol>
 <li>Open a terminal and navigate to the repository: </li>
 </ol>
@@ -283,7 +284,7 @@ Once the simulations complete, analyzer scripts and default plots will automatic
 <li><code>python launch_sim.py  --models EMOD MalSim OpenMalaria --intervention cc_step --test --emodstep burnin</code></li>
 <li><code>python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test</code>  </li>
 </ul>
-<h2 id="view-outputs">View Outputs</h2>
+<h2 id="view-standardized-simulation-outputs">View standardized simulation outputs</h2>
 <p><img alt="Example outputs" src="../../img/example_output_csv.png" /></p>
 <p><strong>Time-series:</strong></p>
 <ul>
@@ -300,7 +301,7 @@ Once the simulations complete, analyzer scripts and default plots will automatic
 <ul>
 <li><code>EIR.csv</code>, <code>EIR_yr.csv</code>,  <code>EIR_mth.csv</code> and <code>EIR_daily.csv</code>: All age simulated EIR (added to benchmark output csvs)</li>
 </ul>
-<h3 id="output-measures">Output measures</h3>
+<h3 id="standardized-output-measures">Standardized output measures</h3>
 <table>
 <thead>
 <tr>
@@ -419,8 +420,8 @@ Once the simulations complete, analyzer scripts and default plots will automatic
 </tr>
 </tbody>
 </table>
-<p>For details of raw model outputs, see <a href="../../malaria_models/input_output/">Input and output files</a></p>
-<p>Example <code>mmmpy_timeavrg.csv</code> </p>
+<p>For details of raw model outputs, see <a href="../../malaria_models/input_output/">Input and output files</a>  </p>
+<p>Example <code>mmmpy_timeavrg.csv</code>   </p>
 <table>
 <thead>
 <tr>
@@ -531,16 +532,19 @@ Once the simulations complete, analyzer scripts and default plots will automatic
 </tr>
 </tbody>
 </table>
-<h4 id="customizing-figures">Customizing figures</h4>
-<p>Each of the existing plotting scripts allow for the user to define what outcomes should be displayed in the
-color, the columns, axis and so on. Edits can be directly made in the respective scripts.</p>
+<h4 id="customize-figures">Customize figures</h4>
+<p>Each existing plotting script allows users to define how outcomes are displayed, including colors, columns, and axes.<br />
+To customize figures, modify the respective plotting scripts directly.  </p>
 <h4 id="adding-new-figures">Adding new figures</h4>
-<p>Additional plotting scripts from the user can be added to the <code>plotter</code> subdirectory.
-It is recommended to have the filename start with <code>plot_</code> for consistency and to facilitate integrating the new plotter into the framework.</p>
-<p>At the beginning it will be easiest to run the new plotters manually after the default outputs were 
-successfully  generated.</p>
-<p>For instance: <br />
-<code>python plotter/plot_custom1.py  --models EMOD malariasimulation OpenMalaria</code> </p>
+<p>Users can add custom plotting scripts to the <code>plotter</code> subdirectory.  </p>
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>⚠️NOTE:</em></strong> 
+  Use filenames that start with `plot_` for consistency and easier integration into the framework.
+</div>
+
+<p>Example usage:</p>
+<div class="codehilite"><pre><span></span><code>python plotter/plot_custom1.py  --models EMOD malariasimulation OpenMalaria
+</code></pre></div>
               
             </div>
           </div><footer>

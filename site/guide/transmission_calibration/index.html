@@ -93,9 +93,15 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Transmission and calibration</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#transmission-output-targets">Transmission output targets</a>
+    <li class="toctree-l2"><a class="reference internal" href="#matching-defined-transmission-output-targets">Matching defined transmission output targets</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#defining-your-own-transmission-target">Defining your own transmission target</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#special-considerations-for-openmala">Special Considerations for OpenMala</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#finalizing-and-running-production-simulations">Finalizing and Running Production Simulations</a>
     </li>
     </ul>
                   </li>
@@ -229,12 +235,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="matching-defined-transmission-output-targets">Matching defined transmission output targets</h1>
-<h2 id="transmission-output-targets">Transmission output targets</h2>
+                <h1 id="defining-transmission-intensity">Defining transmission intensity</h1>
+<p><em>Implementation in MultiMalModPy</em></p>
+<div style="background-color: #f4f4f4; padding: 12px; border-left: 5px solid #FF6B8B; border-radius: 5px; margin: 10px 0;">
+    <strong>🔍</strong> For a detailed overview of how each model handles transmission intensity, refer to the 
+    <a href="../malaria_models/structure.md#transmission-intensity" style="color: #0073e6; text-decoration: none;">
+        Transmission Intensity 
+    </a> description under malaria models.
+</div>
+
+<p>In MultiMalModPy, the user can specify the level of transmission via the following two parameters in <a href="https://github.com/ahadi-analytics/model-characterization/blob/main/setup_sim.py#L62">setup_sim.py</a>: 
+- <code>target_output_name</code>    – Defines the epidemiological metric used for calibration.<br />
+- <code>target_output_values</code>    – Specifies the target values for the selected metric.  </p>
+<p>Example: </p>
+<div class="codehilite"><pre><span></span><code>target_output_name = &#39;prevalence_2to10&#39;
+target_output_values = [0.25]
+</code></pre></div>
+
+<p>In this example, the simulation is calibrated to achieve a 2-to-10-year-old malaria prevalence of 25% (0.25).  </p>
+<h3 id="matching-defined-transmission-output-targets">Matching defined transmission output targets</h3>
 <p>The <code>target_calibration</code>  directory includes <code>interpolation_data.csv</code> for each of the models included in the framework.
-The <code>interpolation_data.csv</code> data is generated via the transmission calibration, when running via <code>calib_run</code> .</p>
-<p>The table below summarizes the results from an epidemiological simulation model,
-detailing various metrics related to malaria incidence and prevalence on the example for EMOD.</p>
+This file is generated during the transmission calibration process when running: </p>
+<div class="codehilite"><pre><span></span><code>python launch_sim.py -r calibrun  
+</code></pre></div>
+
+<p>The table below provides an example of calibration results for EMOD, showing key epidemiological metrics related to malaria transmission.  </p>
 <table>
 <thead>
 <tr>
@@ -377,18 +402,21 @@ detailing various metrics related to malaria incidence and prevalence on the exa
 <li><strong>pop_size</strong>: The size of the population used in the simulation.</li>
 <li><strong>importation</strong>: Indicates whether importation of cases is considered (TRUE or FALSE).</li>
 </ul>
-<h2 id="defining-your-own-transmission-target">Defining your own transmission target</h2>
-<p>MultiMalModPy offers pre-exisiting datasets as shown above.
-If you are interested in running simulations outside of those limited datasets, this is the process.</p>
+<h3 id="defining-your-own-transmission-target">Defining your own transmission target</h3>
+<p>If you need to run simulations beyond the predefined datasets, follow this process:  </p>
 <div class="codehilite"><pre><span></span><code>python launch_sim.py -r calibrun
 </code></pre></div>
 
-<p>By default, this process runs all three models using the simulation setup you specified. <br />
-Key parameters to configure include pop_size, burn-in duration, seasonal profiles, and case management levels.<br />
-Once the simulations and analyzers have completed, new .csv files will be generated inside the model-characterization/target_calibration 
-folder for each model used. 
-These files are named after your most recent calibration run. You will need to review these .csv files and decide
-whether to integrate them into your <code>interpolation_data.csv</code> files.</p>
+<p>By default, this runs all three models with the settings specified in setup_sim.py.<br />
+Key parameters to configure include:<br />
+- Population size (pop_size)<br />
+-  Burn-in duration 
+-  Seasonal profiles 
+-  Case management levels </p>
+<p>Once the simulations complete, new <code>.csv</code> files will be generated in the <code>target_calibration</code> folder for each model.
+These files are named after your most recent calibration run. </p>
+<p>You should review and decide whether to integrate them into your <code>interpolation_data.csv</code> files.    </p>
+<h4 id="special-considerations-for-openmala">Special Considerations for OpenMala</h4>
 <div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
   <strong><em>📝 OpenMalaria Consideration:</em></strong> 
   It is recommended to discard OpenMalaria simulation outputs where the annual *Pf*PR (_Plasmodium falciparum_ prevalence in ages 2-10) exceeds 0.7, 
@@ -407,7 +435,8 @@ If even one of the simulations you ran resulted in elimination, remove that xtem
 If the lowest level of malaria EMOD can sustain does not meet your expectations, consider adjusting the max_larval_capacity values in the habitat_setup function (EMOD/functions/EMOD_functions.py).
 </div>
 
-<p>Once you have finalized your interpolation_data.csv files, you can proceed with running production simulations.</p>
+<h3 id="finalizing-and-running-production-simulations">Finalizing and Running Production Simulations</h3>
+<p>Once you have finalized your <code>interpolation_data.csv</code> files, you can proceed with running production simulations.</p>
               
             </div>
           </div><footer>

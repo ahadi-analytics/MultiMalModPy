@@ -13,9 +13,9 @@ script for each model.
 
 **Other interventions than case management are not part of the initial release and will be added in near future.**
 
-## Case management
+## Case management 
 
-Each model simulates case management differently and has a different definition of a malaria case.
+Each model simulates case management differently and has a different definition of a malaria case. 
 
 🚩 **Model alignment and implementation in MultiMalModPy:**   
 _Box is checked if aligned_  
@@ -29,13 +29,13 @@ _Box is checked if aligned_
  ✔ **Deployment time and duration**   _Intervention starts from the beginning of the simulation and stays constant throughout._  
 
 
-### EMOD
+### EMOD 
 
-- Documentation main
-  page:[malaria-model-antimalarial-drugs](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/malaria-model-antimalarial-drugs.html)  
-- Function: [treatment_seeking.py](https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/interventions/treatment_seeking.py)  
-- Related publications: [Gerardin et al 2015](https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-015-0887-y) 
-- Additional: [malaria_drug_params.csv](https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/malaria_drug_params.csv)  
+- Documentation main 
+  page:[malaria-model-antimalarial-drugs](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/malaria-model-antimalarial-drugs.html)   
+- Function: [treatment_seeking.py](https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/interventions/treatment_seeking.py)   
+- Related publications: [Gerardin et al 2015](https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-015-0887-y)  
+- Additional: [malaria_drug_params.csv](https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/malaria_drug_params.csv)   
 
 <details><summary><span>treatment_seeking</span></summary>   
 <p>
@@ -72,10 +72,10 @@ def add_treatment_seeking(campaign,
 ```
 
 </p>
-</details>   
+</details>    
 
-
-<details><summary><span>json snippet (example)</span></summary>   
+ 
+<details><summary><span>json snippet (example)</span></summary>    
 <p>
 
 ```json
@@ -220,14 +220,13 @@ set_clinical_treatment <- function(parameters, drug, timesteps, coverages) {
 
 <br>
 
-### OpenMalaria
+### OpenMalaria  
 
-- Documentation main page:
-    - [ScenarioHealthSystem](https://github.com/SwissTPH/openmalaria/wiki/ScenarioHealthSystem)
-    - [ScenarioPharmacology](https://github.com/SwissTPH/openmalaria/wiki/ScenarioPharmacology#antimalarial-drug-modelling)
-- Function: [set_clinical_treatment](https://github.com/mrc-ide/malariasimulation/blob/master/R/drug_parameters.R#L49)
-- Related
-  publications:  [Galactionova et al (2015).](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0127818)
+- Documentation main page:  
+    - [ScenarioHealthSystem](https://github.com/SwissTPH/openmalaria/wiki/ScenarioHealthSystem)  
+    - [ScenarioPharmacology](https://github.com/SwissTPH/openmalaria/wiki/ScenarioPharmacology#antimalarial-drug-modelling)  
+- Function: [set_clinical_treatment](https://github.com/mrc-ide/malariasimulation/blob/master/R/drug_parameters.R#L49)  
+- Related publications:  [Galactionova et al (2015).](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0127818) 
 
 <details><summary><span>ImmediateOutcomes</span></summary>   
 <p>

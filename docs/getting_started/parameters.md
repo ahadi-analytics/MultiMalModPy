@@ -91,3 +91,5 @@ They are specified in the `parse_launch_args` function within the `utility/helpe
 | ...                                            | ...                                                                                                                                |
 
 _Parameter names with an asteriks (*) denote model-specific parameters_  
+
+**Next up** : Go to [building scenarios](../guide/scenarios.md) to learn how to specify parameters.

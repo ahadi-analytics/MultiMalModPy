@@ -59,6 +59,18 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Model structure</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#model-components-configured-in-multimalmodpy">Model components configured in MultiMalModPy</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#time">Time</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#population-and-age-demography">Population and age demography</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#transmission-intensity">Transmission intensity</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../interventions/">Interventions</a>
@@ -235,6 +247,37 @@
 The malaria model structure for EMOD is detailed in the <a href="https://docs.idmod.org/projects/emod-malaria/en/2.20_a/malaria-model-overview.html">malaria-model-overview</a> and related publications.    </p>
 <p><strong>malariasimulation</strong>: The model structure for malariasimulation is outlined in the <a href="https://mrc-ide.github.io/malariasimulation/articles/Model.html">model structure</a> and related publications.    </p>
 <p><strong>OpenMalaria</strong>: The model structure for OpenMalaria can be found in the <a href="https://github.com/SwissTPH/openmalaria/wiki">openmalaria/wiki</a> and related publications.  </p>
+<h2 id="model-components-configured-in-multimalmodpy">Model components configured in MultiMalModPy</h2>
+<p>The sections below outline key components of the simulation framework. 
+They provide relevant details to guide users but are not presented in a strict order or consistent level of detail.  </p>
+<h3 id="time">Time</h3>
+<p><strong>Model-specific timesteps</strong>  <br />
+- <strong>EMOD</strong>:
+  - 1 day timestep
+- <strong>malariasimulation</strong>: 
+   -  1 day timestep
+- <strong>OpenMalaria</strong>: 
+   - 5 day timestep  </p>
+<h2 id="population-and-age-demography">Population and age demography</h2>
+<ul>
+<li><strong>EMOD</strong>:  <a href="https://docs.idmod.org/projects/emod-malaria/en/latest/parameter-configuration-population.html?highlight=birth">Population dynamics</a></li>
+<li><strong>malariasimulation</strong>: <a href="">ModelDemography</a> </li>
+<li><strong>OpenMalaria</strong>:  <a href="https://github.com/SwissTPH/openmalaria/wiki/ModelDemography">Demography</a></li>
+</ul>
+<h3 id="transmission-intensity">Transmission intensity</h3>
+<p>The models handle transmission intensity primarily in two ways:<br />
+- Forced EIR: The EIR is explicitly set and remains constant.<br />
+- Dynamic EIR: The EIR emerges from mosquito population dynamics and host-vector interactions.  </p>
+<ul>
+<li><strong>EMOD</strong>:</li>
+<li>forced transmission model, using EIR as input</li>
+<li>dynamic transmission model, using Larval Habitat Availability as input </li>
+<li><strong>malariasimulation</strong>: </li>
+<li>dynamic transmission model, using EIR together with monthly rainfall (see <a href="../../guide/seasonality/">seasonality</a>) as input  </li>
+<li><strong>OpenMalaria</strong>: </li>
+<li>forced transmission model, using EIR as input</li>
+<li>dynamic transmission model, using EIR as input</li>
+</ul>
               
             </div>
           </div><footer>

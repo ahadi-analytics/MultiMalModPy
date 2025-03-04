@@ -95,6 +95,12 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#container-setup">Container Setup</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#hpc-singularity-image">HPC singularity image</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#local-docker-image">Local Docker image</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a>
         <ul>
@@ -274,8 +280,8 @@ However, installation instructions also include sections for local setup and con
 </ul>
 </li>
 <li><a href="#container-setup"><strong>Container Setup</strong></a><ul>
-<li><a href="#hpc">HPC</a></li>
-<li><a href="#local-machine">Local machine</a></li>
+<li><a href="#hpc-singularity-image">HPC singularity image</a></li>
+<li><a href="#local-docker-image">Local docker image</a></li>
 </ul>
 </li>
 </ul>
@@ -619,9 +625,20 @@ the  <a href="../getting_started/configuration/">first time configurations</a></
 </code></pre></div>
 
 <h2 id="container-setup">Container Setup</h2>
-<p>A singularity container will be made available to allow running MultiMalModPy instantly, without the need for
-installations.</p>
+<h3 id="hpc-singularity-image">HPC singularity image</h3>
+<p>A singularity container allows running MultiMalModPy instantly, without the need for
+installations. You can download it from https://cloud.sylabs.io/library/rungma/multimalmodpy/mmmpy_hpc:rocky8.</p>
+<p>To pull the container run: </p>
+<div class="codehilite"><pre><span></span><code><span class="nx">singularity</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="o">--</span><span class="nx">arch</span><span class="w"> </span><span class="nx">amd64</span><span class="w"> </span><span class="kn">library</span><span class="p">:</span><span class="c1">//rungma/multimalmodpy/mmmpy_hpc:rocky8</span>
+</code></pre></div>
+
 <p>Details on how to run simulations from within a container are described in the <a href="../example_run/#using-singularity-container-">Example run</a></p>
+<h3 id="local-docker-image">Local Docker image</h3>
+<p>A docker container can be pulled from DockeHub https://hub.docker.com/r/mrm9534/mmmpy_local via   </p>
+<div class="codehilite"><pre><span></span><code>docker pull mrm9534/mmmpy_local
+</code></pre></div>
+
+<p>Details on how to run simulations from within a container are described in the <a href="../example_run/#using-docker-container-">Example run</a></p>
 <p><br></p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h3 id="emod-examples">EMOD examples</h3>

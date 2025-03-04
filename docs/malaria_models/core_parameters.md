@@ -1,6 +1,5 @@
 # Default parameters
 
-This page is under construction.
 
 _Depending on latest stable calibration used._
 
