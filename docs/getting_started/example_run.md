@@ -16,7 +16,10 @@ the example run for running from within a container below.
 - [Local](#local)
   - [Using Python Virtual Environment](#using-python-virtual-environment-on-local)
     - [Launch in Batch Mode](#launch-in-batch-mode)
+    - [Using Docker Container](#using-docker-container)
     - [Launch in Interactive Mode](#launch-in-interactive-mode)
+
+
 
 
 ## HPC  
@@ -178,6 +181,18 @@ malariasimulation
 <a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/run_malariasimulation_local.png" target="_blank">  
 ![malariasimulation PSI](../img/run_malariasimulation_local.png)  
 </a>
+
+
+#### Using Docker Container
+
+**NOTE: Running from within docker is currently being implemented.** 
+
+Replace all `PATH_TO_REPO` with your directory to the MultiMalModPy on your computer, excluding 'MultiMalModPy'.
+Example, if MultiMalModPy is in `C:/Users/<user>/Documents/MultiMalModPy`, then type  `C:/Users/<user>/Documents/`
+
+```
+docker run -it -v PATH_TO_REPO:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate && cd /mnt/c/projects/model-characterization && python launch_sim.py --models malariasimulation OpenMalaria --test"                         
+```
 
 #### Launch in Interactive Mode  
 

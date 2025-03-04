@@ -15,8 +15,8 @@ However, installation instructions also include sections for local setup and con
     - [Install OpenMalaria](#install-openmalaria)
     - [Install malariasimulation](#install-malariasimulation)
 - [**Container Setup**](#container-setup)
-    - [HPC](#hpc)
-    - [Local machine](#local-machine)
+    - [HPC singularity image](#hpc-singularity-image)
+    - [Local docker image](#local-docker-image)
 
 <div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>📝 NOTE:</em></strong>  
    Functionality for local runs is  limited and intended only for test purposes using 
@@ -437,11 +437,22 @@ No edits needed for `malariasimulation_input_path` which defines the location of
 
 ## Container Setup
 
-
-A singularity container will be made available to allow running MultiMalModPy instantly, without the need for
-installations.
+### HPC singularity image
+A singularity container allows running MultiMalModPy instantly, without the need for
+installations. You can download it from https://cloud.sylabs.io/library/rungma/multimalmodpy/mmmpy_hpc:rocky8 .
 
 Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-singularity-container-)
+
+### Local Docker image
+
+A docker container can be pulled from DockeHub https://hub.docker.com/r/mrm9534/mmmpy_local via   
+
+```
+docker pull mrm9534/mmmpy_local
+```
+
+Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-docker-container-)
+
 
 
 <br>
