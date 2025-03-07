@@ -144,16 +144,29 @@ f_getCustomTheme <- function(fontscl = 1) {
 }
 
 calculate_monthlyEIRs_seasonal <- function(wdir,note){
-  dat_s <- get_output_df(wdir, modelname = "EMOD", timeseries = TRUE, mth=TRUE)
-  #dat_s$target_output_values <- dat_s$output_target
-  dat_s <- dat_s %>%
-    filter(year == max(year), cm_clinical == 0.0, ageGroup == '0-100', seasonality == 'seasonal', target_output_values == 20) %>%
-    group_by(target_output_values, cm_clinical, seasonality, modelname, seed) %>%
-    mutate(sumEIR = sum(simulatedEIR),
-           simulatedEIR = (simulatedEIR/sumEIR)*20)
-  dat_s <- dat_s %>%
-    group_by(month, year, target_output_values, cm_clinical, cm_severe, seasonality, modelname) %>%
+  df <- fread(file.path(wdir, 'EMOD', 'EIR_mth.csv'), stringsAsFactors = FALSE)
+  df <- df %>%
+    filter(year == max(year), cm_clinical == 0.0, seasonality == 'seasonal', target_output_values == 20) %>%
+    group_by(target_output_values, cm_clinical, seasonality, Run_Number) %>%
+    mutate(sumEIR = sum(`Monthly EIR`),
+           simulatedEIR = (`Monthly EIR`/sumEIR))
+  df <- df %>%
+    group_by(month) %>%
     summarise(simulatedEIR = mean(simulatedEIR)) %>%
     ungroup()
-  write.csv(dat_s, paste0("seasonal_EIR_values_",note,".csv"), row.names=FALSE)
+  write.csv(df, paste0("monthly_seasonal_EIR_values_",note,".csv"), row.names=FALSE)
+}
+
+calculate_dailyEIRs_seasonal <- function(wdir,note){
+  df <- fread(file.path(wdir, 'EMOD', 'EIR_daily.csv'), stringsAsFactors = FALSE)
+  #dat_s$target_output_values <- dat_s$output_target
+  df <- df %>%
+    filter(scen_id == 1, year == max(year)) %>%
+    group_by(scen_id, Run_Number) %>%
+    mutate(sumEIR = sum(simulatedEIR),
+           simulatedEIR = (simulatedEIR/sumEIR))
+  df <- df %>%
+    group_by(scen_id, day) %>%
+    summarise(simulatedEIR = mean(simulatedEIR))
+  write.csv(df, paste0("daily_seasonal_EIR_values_",note,".csv"), row.names=FALSE)
 }

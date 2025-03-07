@@ -18,11 +18,12 @@ modelname <- c("EMOD", "malariasimulation", "OpenMalaria")
 #Useful code to generate the EMOD seasonal profile to then use for the other two models
 #wdir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250220_production/sims_dynamic_seasonal_10_58_01/')
 #calculate_monthlyEIRs_seasonal(wdir, "current_2_25_25")
+#calculate_dailyEIRs_seasonal(wdir, "current_3_7_25")
 
 wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250220_production/sims_dynamic_seasonal_10_58_01')
 dat_s_eir_em <- get_output_df(wdir_eir, modelname = "EMOD", timeseries = TRUE, fiveday=TRUE)
 
-wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250225_production/sims_dynamic_seasonal_17_05_51')
+wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250307_production/sims_dynamic_seasonal_12_39_01/')
 dat_s_eir_ms <- get_output_df(wdir_eir, modelname = "malariasimulation", timeseries = TRUE, fiveday=TRUE)
 
 wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250225_production/sims_dynamic_seasonal_17_05_51')
@@ -39,14 +40,17 @@ dat_s_eir <- dat_s_eir%>%
 rm(dat_s_eir_em, dat_s_eir_ms, dat_s_eir_om, wdir_eir)
 
 wdir_pfpr <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250225_production/sims_dynamic_seasonal_16_53_27')
-dat_s_pfpr <- get_output_df(wdir_pfpr, modelname = c("EMOD", "malariasimulation", "OpenMalaria"), timeseries = TRUE, fiveday=TRUE)
+dat_s_pfpr <- get_output_df(wdir_pfpr, modelname = c("EMOD", "OpenMalaria"), timeseries = TRUE, fiveday=TRUE)
+wdir_pfpr <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250304_production/sims_dynamic_seasonal_14_34_59/')
+dat_s_pfpr_ms <- get_output_df(wdir_pfpr, modelname = c("malariasimulation"), timeseries = TRUE, fiveday=TRUE)
+dat_s_pfpr <- rbind(dat_s_pfpr, dat_s_pfpr_ms, fill=TRUE)
 dat_s_pfpr$output_type <- 'pfpr'
 
 dat_s_pfpr <- dat_s_pfpr %>%
   filter(cm_clinical == 0.15, ageGroup == '0-100', seasonality == 'seasonal', target_output_values %in% c(0.05, 0.1, 0.25, 0.5))
 
 dat_s <- rbind(dat_s_eir, dat_s_pfpr)
-rm(dat_s_eir, dat_s_pfpr)
+rm(dat_s_eir, dat_s_pfpr, dat_s_pfpr_ms)
 
 dat_s <- dat_s %>%
   group_by(day, year, output_type, target_output_values, cm_clinical, cm_severe, seasonality, modelname) %>%

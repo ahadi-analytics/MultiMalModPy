@@ -53,7 +53,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     } else {
       exp$model_seasonality = FALSE
     }
-    exp$monthly_or_daily_eirs <- 'daily' # This will change so we can toggle between daily and monthly later
+
     if (exp$monthly_or_daily_eirs == "monthly"){
       exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality,'_monthly',sep=""), 'Value']
       exp$eirs <- as.numeric(strsplit(exp$eirs, ';')[[1]])
@@ -65,7 +65,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
       exp$eirs <- c(exp$eirs[-(1:45)], exp$eirs[1:45])
     }
     # Generate the approximate seasonal parameters required to generate similar seasonal rainfall profile
-    seasonal_coefficients <- get_seasonality_parameters(eirs = exp$eirs, timeframe = 'daily')
+    seasonal_coefficients <- get_seasonality_parameters(eirs = exp$eirs, timeframe = exp$monthly_or_daily_eirs)
     # Store the seasonality coefficients in the malariasimulation experimental setup parameters list:
     exp$g0 <- as.numeric(seasonal_coefficients$coefficients[1])
     exp$g <- as.numeric(seasonal_coefficients$coefficients[2:4])

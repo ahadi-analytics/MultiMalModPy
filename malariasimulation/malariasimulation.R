@@ -49,7 +49,7 @@ exp$max_ages <- (round(exp$agebins * 365))
 exp$intervention_list <- exp_setup_df[exp_setup_df$parameter =='intervention_list','Value']
 exp$intervention_list <- data.frame(interventions = unlist(strsplit(gsub("\\[|\\]|\\'",'',exp$intervention_list),','))) #This helps make the python list readable in R
 exp$intervention_list <- exp$intervention_list$interventions
-
+exp$monthly_or_daily_eirs <- 'daily' # This will change so we can toggle between daily and monthly later
 # Store the min/max ages (days):
 min_ages <- exp$min_ages
 max_ages <- exp$max_ages
