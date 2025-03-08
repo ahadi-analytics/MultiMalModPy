@@ -55,15 +55,15 @@ if hpc == 'NUCLUSTER':
     EMOD_venv_path = os.path.join('\nsource /projects/b1139/environments/mmmpy_dev/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
 
-    emod_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/EMOD/inputs')
-    openmalaria_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/OpenMalaria/')
-    malariasimulation_input_path = os.path.join(os.path.expanduser('~'), 'model-characterization/malariasimulation/')
-    interp_path = os.path.join(os.path.expanduser('~'), 'model-characterization/target_calibration/')
+    emod_input_path = os.path.join(os.path.expanduser('~'), 'MultiMalModPy/EMOD/inputs')
+    openmalaria_input_path = os.path.join(os.path.expanduser('~'), 'MultiMalModPy/OpenMalaria/')
+    malariasimulation_input_path = os.path.join(os.path.expanduser('~'), 'MultiMalModPy/malariasimulation/')
+    interp_path = os.path.join(os.path.expanduser('~'), 'MultiMalModPy/target_calibration/')
     interp_csv = 'interpolation_data.csv'
 
 elif hpc == 'SCICORE':
     sh_hpc_config = {'A': 'penny', 'p': 'scicore', 'em_modules': '', 'buyin': True}
-    projdir = os.path.join('/scicore/home/scicore/cavelan/git/model-characterization')
+    projdir = os.path.join('/scicore/home/scicore/cavelan/git/MultiMalModPy')
     job_directory = os.path.join(projdir, 'experiments')
     output_directory = os.path.join(projdir, 'simulation_outputs')
 
@@ -78,14 +78,14 @@ elif hpc == 'SCICORE':
         raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
 
     EMOD_venv_modules = os.path.join('\n\nml Python/3.9.6-GCCcore-11.2.0-bare')
-    EMOD_venv_path = os.path.join('\nsource /scicore/home/scicore/cavelan/git/model-characterization/emodenv/bin/activate\n')
+    EMOD_venv_path = os.path.join('\nsource /scicore/home/scicore/cavelan/git/MultiMalModPy/emodenv/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
 
-    emod_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/EMOD/inputs/'
-    openmalaria_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria/'
-    malariasimulation_input_path = '/scicore/home/scicore/cavelan/git/model-characterization/malariasimulation/'
+    emod_input_path = '/scicore/home/scicore/cavelan/git/MultiMalModPy/EMOD/inputs/'
+    openmalaria_input_path = '/scicore/home/scicore/cavelan/git/MultiMalModPy/OpenMalaria/'
+    malariasimulation_input_path = '/scicore/home/scicore/cavelan/git/MultiMalModPy/malariasimulation/'
 
-    interp_path = os.path.join('/scicore/home/scicore/cavelan/git/model-characterization/target_calibration/')
+    interp_path = os.path.join('/scicore/home/scicore/cavelan/git/MultiMalModPy/target_calibration/')
     interp_csv = 'interpolation_data.csv'
 
 elif hpc == 'LOCAL':

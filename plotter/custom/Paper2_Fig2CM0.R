@@ -1,5 +1,5 @@
 ### 'Baseline' figure
-setwd("~/model-characterization")
+setwd("~/MultiMalModPy")
 library(ggplot2)
 library(dplyr)
 library(data.table)
@@ -50,9 +50,9 @@ dat_total$ageGroup <- factor(dat_total$ageGroup,
 
 
 # Load Interpolation (time avrg) Data
-i_ms <- fread(file.path('/home/rer4177/model-characterization/target_calibration/malariasimulation/interpolation_data.csv'))
-i_em <- fread(file.path('/home/rer4177/model-characterization/target_calibration/EMOD/interpolation_data.csv'))
-i_om <- fread(file.path('/home/rer4177/model-characterization/target_calibration/OpenMalaria/interpolation_data.csv'))
+i_ms <- fread(file.path('/home/rer4177/MultiMalModPy/target_calibration/malariasimulation/interpolation_data.csv'))
+i_em <- fread(file.path('/home/rer4177/MultiMalModPy/target_calibration/EMOD/interpolation_data.csv'))
+i_om <- fread(file.path('/home/rer4177/MultiMalModPy/target_calibration/OpenMalaria/interpolation_data.csv'))
 i_full <- rbind(i_om, i_em, i_ms, fill=TRUE)
 rm(i_om, i_em)
 

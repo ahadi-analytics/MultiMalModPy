@@ -56,8 +56,6 @@ if hpc == 'NUCLUSTER':
 
 elif hpc == 'SCICORE':
     sh_hpc_config = {'A': 'penny', 'p': 'scicore', 'em_modules': '', 'buyin': True}
-    projdir = os.path.join('/scicore/home/scicore/cavelan/git/model-characterization')
-
     SIF_PATH = "/scicore/home/scicore/cavelan/git/emodpy/dtk_run_rocky_py39.sif"
     OPENMALARIA_PATH = "/scicore/home/penny/GROUP/OpenMalaria/OM_schema46/"
 
@@ -69,7 +67,7 @@ elif hpc == 'SCICORE':
         raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
 
     EMOD_venv_modules = os.path.join('\n\nml Python/3.9.6-GCCcore-11.2.0-bare')
-    EMOD_venv_path = os.path.join('\nsource /scicore/home/scicore/cavelan/git/model-characterization/emodenv/bin/activate\n')
+    EMOD_venv_path = os.path.join(f'\nsource {ROOT_DIR}/emodenv/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
 
 elif hpc == 'LOCAL':

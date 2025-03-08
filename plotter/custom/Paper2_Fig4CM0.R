@@ -1,5 +1,5 @@
 ### Carrying Capacity Figure
-setwd("~/model-characterization")
+setwd("~/MultiMalModPy")
 library(ggplot2)
 library(dplyr)
 library(data.table)
