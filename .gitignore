@@ -8,3 +8,6 @@ simulations_local/
 site/
 .cache/
 *.rej
+.Rhistory
+experiments/
+simulation_outputs/

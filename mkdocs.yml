@@ -1,0 +1,126 @@
+site_name: MultiMalModPy
+site_description: Documentation and user guide of the Multi-Malaria-Modeling Python framework.
+docs_dir: 'docs'
+site_url: https://ahadi-analytics.github.io/MultiMalModPy/
+repo_url: https://github.com/ahadi-analytics/MultiMalModPy
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a>
+
+plugins:
+  - search
+  - autorefs
+  - include-markdown:
+      preserve_includer_indent: true
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: date
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            show_source: true
+markdown_extensions:
+  - admonition
+  - codehilite
+  - smarty
+  - tables
+extra_javascript:
+  - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
+  - javascripts/tablesort.js
+  - javascripts/freeze-table.js
+nav:
+  - Home: index.md
+  - Malaria models:
+    - Software: malaria_models/software.md
+    - Documentation & Source Code: malaria_models/documentation-and-sourcecode.md
+    - Model structure: malaria_models/structure.md
+    - Interventions: malaria_models/interventions.md
+    - Core parameters: malaria_models/core_parameters.md
+    - Input and output files: malaria_models/input_output.md
+  - Getting started:
+    - Overview of MultiMalModPy: getting_started/overview.md
+    - Installation: getting_started/installation.md
+    - First time configurations (manifest.py): getting_started/configuration.md
+    - How to use MultiMalModPy: getting_started/usage.md
+    - User-modifiable parameters and defaults: getting_started/parameters.md
+    - Example run (demo): getting_started/example_run.md
+    - Glossary: getting_started/glossary.md
+  - Simulation Guide:
+    - Time: guide/time.md
+    - Population and age structure: guide/age_demography.md
+    - Seasonality: guide/seasonality.md
+    - Transmission and calibration: guide/transmission_calibration.md
+    - Case management: guide/case_management.md
+    - Scenarios: guide/scenarios.md
+    - Model specific options: guide/model_specificities.md
+    - Randomness and uncertainty: guide/uncertainty.md
+  - API:
+    - manifest.py: api/manifest.md
+    - launch_sim.py: api/launch_sim.md
+    - utility:
+      - api/utility/experiment.md
+      - api/utility/helper.md
+      - api/utility/helper_calibration.md
+      - api/utility/helper_interventions.md
+      - api/utility/helper_simulation.md
+      - api/utility/helper_slurm.md
+    - EMOD:
+      - api/EMOD/utils.md
+      - api/EMOD/analyze_sim.md
+      - api/EMOD/functions/calib_params.md
+      - api/EMOD/functions/forcedEIR.md
+      - api/EMOD/functions/interventions.md
+      - api/EMOD/functions/EMOD_functions.md
+      - api/EMOD/functions/reporters.md
+    - OpenMalaria:
+      - api/OpenMalaria/utils.md
+      - api/OpenMalaria/analyze_sim.md
+      - api/OpenMalaria/functions/measures.md
+      - api/OpenMalaria/functions/interventions.md
+    - malariasimulation:
+      - api/malariasimulation/utils.md
+      - api/malariasimulation/analyze_sim.md
+      - api/malariasimulation/functions/get_seasonality_parameters.md
+      - api/malariasimulation/functions/interventions.md
+      - api/malariasimulation/functions/run_simulations.md
+    - plotter:
+      - api/plotter/plot_helper.md
+      - api/plotter/plot_agecurves.md
+      - api/plotter/plot_timeseries.md
+      - api/plotter/plot_relationship.md
+      - api/plotter/plot_ccstep.md
+      - api/plotter/plot_custom.md
+  - About:
+    - Contact and Contributions:  about/contributors.md
+    - References: about/citation.md
+    - License: about/license.md
+    - Changelog: about/changelog.md
+    - Getting help: about/getting_help.md
+theme:
+  name: readthedocs
+  navigation_depth: 4
+  sticky_navigation: false
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.action.edit
+    - content.code.copy
+  highlightjs: true
+  hljs_languages:
+    - json
+    - python
+    - r
+    - shell
+    - bash
+    - xml
+  icon:
+    edit: material/pencil
+    view: material/eye
+  locale: en
+  favicon: favicon.ico
+  logo: assets/images/logo.png
+
