@@ -77,7 +77,7 @@ Use the following commands to load the required dependencies:
 ``` 
 module load singularity/3.8.1 #singularity/3.7.0
 module load git/2.8.2
-module load python/3.8.4
+module load python/3.9.16
 module load R/4.4.0
 ```
 
@@ -96,7 +96,7 @@ python --version
 ```
 
 If you're working on an HPC cluster, you can load the Python module available on the system
-via `module load python/3.8.4` (to check existing python versions run `module spider python`)
+via `module load python/3.9.16` (to check existing python versions run `module spider python`)
 Alternatively, if running locally, and Python isn't installed, you can download and install the latest version from
 python.org.
 

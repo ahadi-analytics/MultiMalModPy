@@ -28,7 +28,7 @@ The following parameters need editing when running `launch_sim.py`:
   
        ```
          ml singularity/3.8.1  
-         ml python/3.8.4
+         ml python/3.9.16
          source /projects/b1139/environments/mmmpy_venv/bin/activate
     
          cd /projects/b1139/emod-om/MultiMalModPy
