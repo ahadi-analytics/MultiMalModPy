@@ -63,9 +63,6 @@ def submit_run_malariasimulation(exp):
         from utility.helper_local import submit_runmodel_local
         submit_runmodel_local(exp, model_to_run='malariasimulation')
         pass
-    elif exp.hpc == 'CONTAINER':
-        # TODO coming soon
-        pass
     else:
         # Default, run via SLURM on HPC
         submit_run_malariasimulation_slurm(exp)

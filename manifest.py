@@ -9,6 +9,7 @@ hpc = 'NUCLUSTER'
 #hpc = 'SCICORE'
 selected_platform = 'SLURM_LOCAL'
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
+use_container = True
 
 # ----------------------------- EMOD generic settings start -----------------------------
 # Location of the file containing AssetCollection id for the dtk sif (singularity image)
@@ -53,9 +54,18 @@ if hpc == 'NUCLUSTER':
     EMOD_venv_modules = os.path.join('\n\nml singularity/3.8.1 \nml python/3.9.16')
     EMOD_venv_path = os.path.join('\nsource /projects/b1139/environments/mmmpy_dev/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
+    
+    ## When running inside a container
+    image_path = "/projects/b1139/emod-om/emodpy4.1-OM46-R4.4.1.sif"
+    image_venv_name = "emodpy39"
+    OPENMALARIA_venv_container = f'/openmalaria-schema-46.0/build/'
+    EMOD_venv_container = f'source /opt/envs/{image_venv_name}/bin/activate'
+    bind_path = '/projects:/projects'
 
 elif hpc == 'SCICORE':
     sh_hpc_config = {'A': 'penny', 'p': 'scicore', 'em_modules': '', 'buyin': True}
+    projdir = os.path.join('/scicore/home/scicore/cavelan/git/model-characterization')
+
     SIF_PATH = "/scicore/home/scicore/cavelan/git/emodpy/dtk_run_rocky_py39.sif"
     OPENMALARIA_PATH = "/scicore/home/penny/GROUP/OpenMalaria/OM_schema46/"
 
@@ -69,6 +79,13 @@ elif hpc == 'SCICORE':
     EMOD_venv_modules = os.path.join('\n\nml Python/3.9.6-GCCcore-11.2.0-bare')
     EMOD_venv_path = os.path.join(f'\nsource {ROOT_DIR}/emodenv/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
+    
+    ## When running inside a container
+    image_path = ''
+    image_venv_name = ''
+    OPENMALARIA_venv_container = ''
+    EMOD_venv_container =''
+    bind_path = ''
 
 elif hpc == 'LOCAL':
     sh_hpc_config = {'A': 'Local', 'p': None, 'em_modules': None, 'buyin': None}
@@ -89,6 +106,12 @@ elif hpc == 'LOCAL':
     EMOD_venv_modules = os.path.join('')
     EMOD_venv_path = os.path.join(f'\nsource {ROOT_DIR}/dependencies/mmmpy_venv/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
+    
+    image_path = 'mmmpy_local:rocky8'
+    image_venv_name = ''
+    OPENMALARIA_venv_container = '/openmalaria-schema-46.0/build/'
+    EMOD_venv_container ='source /opt/envs/mmmpy_local/bin/activate'
+    bind_path = 'C:/Users/mrung/gitrepos/model-characterization/'
 
 else:
     raise ValueError('Specify valid hpc')
@@ -104,4 +127,9 @@ job_directory = os.path.normpath(os.path.join(projdir, 'experiments'))
 output_directory = os.path.normpath(os.path.join(projdir, 'simulation_outputs'))
 interp_csv = 'interpolation_data.csv'
 os.makedirs(job_directory, exist_ok=True)
+
+if use_container:
+    OPENMALARIA_venv = OPENMALARIA_venv_container
+    EMOD_venv = EMOD_venv_container
+    
 # ----------------------------- Framework and cluster specific settings end -----------------------------

@@ -144,12 +144,20 @@ def submit_run_pyscript(exp, pyscript='plotter/plot_relationship.py', shname='ru
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=job, mem_scl=1)
 
     # Generate the Python command to run the script
-    pycommand = f'\npython {pyscript} -d {exp.sim_out_dir} {custom_args}'
-
+    # Generate the Python command to run the script
+    if exp.use_container:
+        pycommand = f'\n{exp.EMOD_venv} && python {pyscript} -d {exp.sim_out_dir} {custom_args}'
+        pycommand = (f'module load singularity '
+                f'\nsingularity exec --bind {exp.bind_path} --pwd {exp.ROOT_DIR}  {exp.image_path} bash -c "{pycommand}"')
+    else:
+        pycommand = f'\npython {pyscript} -d {exp.sim_out_dir} {custom_args}'
+        pycommand = exp.EMOD_venv + f'\ncd {wdir}' + pycommand
+        
+        
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, shname)
     file = open(script_path, 'w')
-    file.write(header_post + exp.EMOD_venv + f'\ncd {wdir}' + pycommand)
+    file.write(header_post + pycommand)
     file.close()
     dependencies = '--dependency=afterany:'
     prior_dependency = False

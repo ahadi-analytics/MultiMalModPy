@@ -142,22 +142,20 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
                                      mem_scl=exp.mem_increase_factor)
 
     # Create the Python command to run the analyzer
-    if exp.hpc == 'NUCLUSTER':
-        pycommand = f'\ncd /home/{exp.user}/model-characterization/OpenMalaria' \
-                    f'\npython analyze_sim.py --dir "{exp.job_directory}"'
-    elif exp.hpc == 'SCICORE':
-        pycommand = f'\ncd /scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria' \
-                    f'\n\nml Python/3.9.6-GCCcore-11.2.0-bare' \
-                    f'\nsource /scicore/home/scicore/cavelan/git/model-characterization/emodenv/bin/activate' \
-                    f'\npython analyze_sim.py --dir "{exp.job_directory}"'
-    else:
-        raise ValueError('HPC specification not available, must be NUCLUSTER or SCICORE')
+    # Create the Python command to run the analyzer
+    pycommand = f'{exp.EMOD_venv}' \
+                f'\ncd {exp.ROOT_DIR}/OpenMalaria' \
+                f'\npython analyze_sim.py --dir "{exp.job_directory}"'
+
+    if exp.use_container:
+        pycommand = f"{exp.EMOD_venv} && python analyze_sim.py --dir '{exp.job_directory}'"
+        pycommand = (f'module load singularity '
+                     f'\nsingularity exec --bind {exp.bind_path} --pwd {exp.ROOT_DIR}/OpenMalaria  {exp.image_path}  bash -c "{pycommand}"')
 
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, 'run_analyzer_OpenMalaria.sh')
     file = open(script_path, 'w')
-    file.write(
-        header_post + exp.EMOD_venv + pycommand)  # Also load EMOD's Python virtual environment - needed for handling exp object from idmtools
+    file.write(header_post + pycommand)  # Also load EMOD's Python virtual environment - needed for handling exp object from idmtools
     file.close()
 
     # Read the job ID from the 'job_id.txt' file
@@ -238,10 +236,20 @@ def submit_run_OpenMalaria_slurm(exp):
     array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
     header_post = shell_header_quest(exp.sh_hpc_config, exp.openmalaria_time_per_sim, exp.openmalaria_memory_per_sim, job_name='run_openmalaria', arrayJob=array)
     openmalaria = exp.OPENMALARIA_venv
-    path = f'export PATH=$PATH:{exp.job_directory}'
     slurmID = '${SLURM_ARRAY_TASK_ID}'
-    command = f'\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
-    script_path = os.path.join(exp.job_directory, 'run_OpenMalaria.sh')
+
+    if exp.use_container:
+        openmalaria=''
+        command = f'{exp.OPENMALARIA_venv}openMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
+        path = (f'module load singularity '
+                f'\nsingularity exec --bind {exp.bind_path} --pwd {exp.job_directory}  {exp.image_path}  {command}')
+        command =''
+    else:
+        path = f'export PATH=$PATH:{exp.job_directory}'
+        command = f'\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
+
+    script_path = os.path.join(exp.job_directory, 'run_sim_OpenMalaria.sh')
+
 
     # Write the bash script for submitting OpenMalaria simulations
     file = open(script_path, 'w')
