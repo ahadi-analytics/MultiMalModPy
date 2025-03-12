@@ -111,6 +111,10 @@ def write_ps1_runmodel(exp, filename, modelname):
         raise ValueError(f"Invalid job directory: {exp.job_directory}")
 
     ps1_content = f"""
+    # Start logging to a file
+    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory,'log'))}\\run_{modelname}.out }}
+    Start-Transcript -Path $LogFile
+    
     # Start the first job
     $job1 = Start-Job -ScriptBlock {{
         try {{
@@ -130,8 +134,13 @@ def write_ps1_runmodel(exp, filename, modelname):
         Write-Error "Job 1 did not complete successfully."
     }}
     $job1 | Remove-Job
+    Stop-Transcript
+    
 
     # Start the second job (only after the first job completes)
+    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory,'log'))}\\run_analyzer_{modelname}.out }}
+    Start-Transcript -Path $LogFile
+    
     $job2 = Start-Job -ScriptBlock {{
         try {{
             # Run the second script with -ExecutionPolicy Bypass and explicit -File parameter
@@ -152,6 +161,8 @@ def write_ps1_runmodel(exp, filename, modelname):
     $job2 | Remove-Job
 
     Write-Host "All jobs completed."
+    Stop-Transcript
+        
     Read-Host "Press Enter to close the terminal"
     """
 
