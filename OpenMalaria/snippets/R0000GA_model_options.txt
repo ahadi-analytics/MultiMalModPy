@@ -1,2 +1,3 @@
             <option name="INNATE_MAX_DENS" value="false"/>
             <option name="INDIRECT_MORTALITY_FIX" value="false"/>
+            <option name="MAX_DENS_CORRECTION" value="false"/>
