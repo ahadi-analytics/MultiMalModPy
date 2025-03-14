@@ -26,7 +26,7 @@ dat_s_eir_em <- get_output_df(wdir_eir, modelname = "EMOD", timeseries = TRUE, f
 wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250307_production/sims_dynamic_seasonal_12_39_01/')
 dat_s_eir_ms <- get_output_df(wdir_eir, modelname = "malariasimulation", timeseries = TRUE, fiveday=TRUE)
 
-wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250225_production/sims_dynamic_seasonal_17_05_51')
+wdir_eir <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250313_production/sims_dynamic_seasonal_16_08_05_eir/')
 dat_s_eir_om <- get_output_df(wdir_eir, modelname = "OpenMalaria", timeseries = TRUE, fiveday=TRUE)
 
 dat_s_eir <- rbind(dat_s_eir_em, dat_s_eir_ms, dat_s_eir_om, fill=TRUE)
@@ -40,10 +40,15 @@ dat_s_eir <- dat_s_eir%>%
 rm(dat_s_eir_em, dat_s_eir_ms, dat_s_eir_om, wdir_eir)
 
 wdir_pfpr <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250225_production/sims_dynamic_seasonal_16_53_27')
-dat_s_pfpr <- get_output_df(wdir_pfpr, modelname = c("EMOD", "OpenMalaria"), timeseries = TRUE, fiveday=TRUE)
+dat_s_pfpr_em <- get_output_df(wdir_pfpr, modelname = c("EMOD"), timeseries = TRUE, fiveday=TRUE)
+
+wdir_pfpr <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250313_production/sims_dynamic_seasonal_16_10_12_prevalence_2to10/')
+dat_s_pfpr_om <- get_output_df(wdir_pfpr, modelname = c("OpenMalaria"), timeseries = TRUE, fiveday=TRUE)
+
 wdir_pfpr <- file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250304_production/sims_dynamic_seasonal_14_34_59/')
 dat_s_pfpr_ms <- get_output_df(wdir_pfpr, modelname = c("malariasimulation"), timeseries = TRUE, fiveday=TRUE)
-dat_s_pfpr <- rbind(dat_s_pfpr, dat_s_pfpr_ms, fill=TRUE)
+
+dat_s_pfpr <- rbind(dat_s_pfpr_em, dat_s_pfpr_om, dat_s_pfpr_ms, fill=TRUE)
 dat_s_pfpr$output_type <- 'pfpr'
 
 dat_s_pfpr <- dat_s_pfpr %>%

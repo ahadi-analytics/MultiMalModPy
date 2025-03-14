@@ -55,8 +55,8 @@ def prevalence2to10_to_outcome(fdir, df, sweepvar='modelname', facet_var='season
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('colorblind', max(num_colors, 4))
 
-    nx = max(1,len(df['ageGroup'].unique()))
-    ny = 1
+    nx = max(1, len(df['ageGroup'].unique()))
+    ny = max(1, len(unique_facets))
     f = 1
     firstPlot = True
     fig = plt.figure(figsize=(10 * nx, 10 * ny))
@@ -333,7 +333,7 @@ def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonal
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('colorblind', max(num_colors, 4))
     firstPlot = True
-    nx = 1
+    nx = max(1, len(unique_groups))
     ny = max(1, len(unique_facets))
     f = 1
     fig = plt.figure(figsize=(10 * nx, 6 * ny))

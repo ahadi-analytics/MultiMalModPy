@@ -15,11 +15,13 @@ customTheme <- f_getCustomTheme() +
 mmmpy_models <- c("EMOD", "malariasimulation", "OpenMalaria")
 
 # Load simulation outputs  CCStep_daily.csv-------------------------------
-dat_inc <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250219_production/sims_dynamic_perennial_cc_step_09_56_28_increasing/'),
-                                    modelname = c('EMOD','OpenMalaria'), ccstep=TRUE)
+dat_inc_em <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250219_production/sims_dynamic_perennial_cc_step_09_56_28_increasing/'),
+                                    modelname = c('EMOD'), ccstep=TRUE)
+dat_inc_om <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250313_production/sims_dynamic_perennial_cc_step_15_17_23_increasing/'),
+                         modelname = c('OpenMalaria'), ccstep=TRUE)
 dat_inc_ms <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250227_production/sims_dynamic_perennial_cc_step_09_15_52'),
                             modelname = c('malariasimulation'), ccstep=TRUE)
-dat_inc <- rbind(dat_inc, dat_inc_ms, fill=TRUE)
+dat_inc <- rbind(dat_inc_em, dat_inc_om, dat_inc_ms, fill=TRUE)
 dat_inc <- dat_inc %>%
   filter(cm_clinical == 0.15) %>%
   group_by(timestep,cm_clinical,seasonality, modelname, cc_title, cc_change, target_output_values) %>%
@@ -52,12 +54,14 @@ pA <- dat_inc %>%
 pA
 
 
-dat_dec <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250219_production/sims_dynamic_perennial_cc_step_09_52_27_decreasing_and_OM_noImportation'),
-                                  modelname = c('EMOD','OpenMalaria'), ccstep=TRUE)
+dat_dec_em <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250219_production/sims_dynamic_perennial_cc_step_09_52_27_decreasing_and_OM_noImportation'),
+                                  modelname = c('EMOD'), ccstep=TRUE)
+dat_dec_om <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250313_production/sims_dynamic_perennial_cc_step_15_17_52_decreasing'),
+                         modelname = c('OpenMalaria'), ccstep=TRUE)
 
 dat_dec_ms <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250227_production/sims_dynamic_perennial_cc_step_09_12_53'),
                            modelname = c('malariasimulation'), ccstep=TRUE)
-dat_dec <- rbind(dat_dec, dat_dec_ms, fill=TRUE)
+dat_dec <- rbind(dat_dec_em, dat_dec_om, dat_dec_ms, fill=TRUE)
 dat_dec <- dat_dec %>%
   filter(cm_clinical == 0.15) %>%
   group_by(timestep,cm_clinical,seasonality, modelname, cc_title, cc_change, target_output_values) %>%

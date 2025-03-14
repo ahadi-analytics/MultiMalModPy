@@ -118,7 +118,7 @@ def create_scenarios(exp, scen_df):
     shutil.copy(os.path.join(exp.openmalaria_path, schema), exp.job_directory)
 
 
-def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
+def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=10):
     """
     Submits a job to analyze OpenMalaria simulation results on an HPC cluster.
 
@@ -143,12 +143,12 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
 
     # Create the Python command to run the analyzer
     if exp.hpc == 'NUCLUSTER':
-        pycommand = f'\ncd /home/{exp.user}/model-characterization/OpenMalaria' \
+        pycommand = f'\ncd /home/{exp.user}/MultiMalModPy/OpenMalaria' \
                     f'\npython analyze_sim.py --dir "{exp.job_directory}"'
     elif exp.hpc == 'SCICORE':
-        pycommand = f'\ncd /scicore/home/scicore/cavelan/git/model-characterization/OpenMalaria' \
+        pycommand = f'\ncd /scicore/home/scicore/cavelan/git/MultiMalModPy/OpenMalaria' \
                     f'\n\nml Python/3.9.6-GCCcore-11.2.0-bare' \
-                    f'\nsource /scicore/home/scicore/cavelan/git/model-characterization/emodenv/bin/activate' \
+                    f'\nsource /scicore/home/scicore/cavelan/git/MultiMalModPy/emodenv/bin/activate' \
                     f'\npython analyze_sim.py --dir "{exp.job_directory}"'
     else:
         raise ValueError('HPC specification not available, must be NUCLUSTER or SCICORE')
