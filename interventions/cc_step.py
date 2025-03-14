@@ -27,7 +27,7 @@ def cc_step_params(exp):
     # Flexible parameters depending on type of run and user-specifications
     if exp.run_mode == 'production':
         print('Warning: Running cc_step in production mode with pre-defined not user-defined parameters')
-        if exp.emod_importatation_rate == 0 and exp.cc_decreasing:
+        if exp.emod_importation_rate == 0 and exp.cc_decreasing:
             print('Warning: You are running EMOD simulations with a decreasing carrying capacity.\nWithout importation, elimination can occur.')
         exp.mem_increase_factor = 6.0  # scaling factor on default memory requested
         exp.start_year = 1995
