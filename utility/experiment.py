@@ -132,7 +132,7 @@ class RunModeManager:
         if self.experiment.target_output_name == 'eir':
             self.experiment.target_output_values = [20]
         if self.experiment.target_output_name == 'prevalence_2to10':
-            if self.experiment.seasonality == 'seasonal':
+            if 'perennial' not in self.experiment.seasonality:
                 self.experiment.target_output_values = [0.05, 0.1, 0.25, 0.5]
             else:
                 self.experiment.target_output_values = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
