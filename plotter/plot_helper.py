@@ -246,8 +246,8 @@ def get_x_y(df, grpvar, x_channel, y_channel):
                                  including the 95% confidence interval (min and max).
     """
 
-    xmean = df.groupby(grpvar)[x_channel].agg(np.mean).reset_index()
-    ymean = df.groupby(grpvar)[y_channel].agg(np.mean).reset_index()
+    xmean = df.groupby(grpvar, observed=False)[x_channel].agg("mean").reset_index()
+    ymean = df.groupby(grpvar, observed=False)[y_channel].agg("mean").reset_index()
     p_df = pd.DataFrame(columns=[grpvar, f'{y_channel}_min', f'{y_channel}_max'])
     for i, row in ymean.iterrows():
         p = df[df[grpvar] == row[grpvar]]

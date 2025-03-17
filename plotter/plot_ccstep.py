@@ -17,7 +17,7 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plotter.plot_helper import *
 
 
-# Plots daily_timeseries - requires PfPR_ClinicalIncidence_daily.csv
+# Plots daily_timeseries - requires mmmpy_ccstep_daily.csv
 def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='5-10'):
     """
     Parameters:
@@ -108,7 +108,7 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var
                 plt.close()
 
 
-# Plots daily_timeseries_by_seed - requires PfPR_ClinicalIncidence_daily.csv
+# Plots daily_timeseries_by_seed - requires mmmpy_ccstep_daily.csv
 def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:

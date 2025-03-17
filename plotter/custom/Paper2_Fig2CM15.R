@@ -176,8 +176,8 @@ for (ii in unique(dat_total$cm_clinical)){
   
   pAB <- (pA+pBeir)+plot_layout(design=mylayout)
   pAB
-  #ggsave(plot = pAB, filename = file.path(getwd(), paste('Figure2_CM', ii, '_ABeir.pdf',sep="")), height = 17.89, width = 34.13)
-  #ggsave(plot = pAB, filename = file.path(getwd(), paste('Figure2_CM', ii, '_ABeir.png',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pAB, filename = file.path(getwd(), paste('Figure2_CM', ii, '_ABeir.pdf',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pAB, filename = file.path(getwd(), paste('Figure2_CM', ii, '_ABeir.png',sep="")), height = 17.89, width = 34.13)
   
   # ------------------------------ Figure 2C ------------------------------
   pfpr_labels <- c('PfPR2-10 5%', 'PfPR2-10 10%', 'PfPR2-10 25%', 'PfPR2-10 50%')
@@ -371,7 +371,7 @@ for (ii in unique(dat_total$cm_clinical)){
   
   pABCD <- (pA+pB+pC+pD)+plot_layout(design=mylayout)
   pABCD
-  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, 'MAR25_noComorbidities.pdf',sep="")), height = 17.89, width = 34.13)
-  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, 'MAR25_noComorbidities.png',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, '.pdf',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, '.png',sep="")), height = 17.89, width = 34.13)
 }
 pABCD

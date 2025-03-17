@@ -15,7 +15,7 @@ customTheme <- f_getCustomTheme() +
 mmmpy_models <- c("EMOD", "malariasimulation", "OpenMalaria")
 
 # Load simulation outputs  CCStep_daily.csv-------------------------------
-dat_inc_em <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250219_production/sims_dynamic_perennial_cc_step_09_56_28_increasing/'),
+dat_inc_em <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250314_production/sims_dynamic_perennial_cc_step_14_54_09'),
                                     modelname = c('EMOD'), ccstep=TRUE)
 dat_inc_om <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250313_production/sims_dynamic_perennial_cc_step_15_17_23_increasing/'),
                          modelname = c('OpenMalaria'), ccstep=TRUE)
@@ -24,7 +24,7 @@ dat_inc_ms <- get_output_df(file.path('/projects/b1139/emod-om/simulation_output
 dat_inc <- rbind(dat_inc_em, dat_inc_om, dat_inc_ms, fill=TRUE)
 dat_inc <- dat_inc %>%
   filter(cm_clinical == 0.15) %>%
-  group_by(timestep,cm_clinical,seasonality, modelname, cc_title, cc_change, target_output_values) %>%
+  group_by(timestep,cm_clinical,seasonality, modelname, cc_title, ccstep, target_output_values) %>%
   summarise(prevalence_2to10__mean = mean(prevalence_2to10),
             prevalence_2to10__min = quantile(prevalence_2to10, 0.05),
             prevalence_2to10__up = quantile(prevalence_2to10, 0.95)) %>%
@@ -40,7 +40,7 @@ pA <- dat_inc %>%
   ggplot() + 
   geom_ribbon(aes(x = timestep, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = modelname), alpha = 0.1) +
   geom_line(aes(x = timestep, y = prevalence_2to10__mean, color = modelname)) +  
-  geom_hline(yintercept = c(dat_inc$cc_change, dat_inc$target_output_values), color='#696969',linetype='dotted')+
+  geom_hline(yintercept = c(dat_inc$ccstep, dat_inc$target_output_values), color='#696969',linetype='dotted')+
   facet_wrap(~ cc_title, nrow=1) +   
   scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
   scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
@@ -64,7 +64,7 @@ dat_dec_ms <- get_output_df(file.path('/projects/b1139/emod-om/simulation_output
 dat_dec <- rbind(dat_dec_em, dat_dec_om, dat_dec_ms, fill=TRUE)
 dat_dec <- dat_dec %>%
   filter(cm_clinical == 0.15) %>%
-  group_by(timestep,cm_clinical,seasonality, modelname, cc_title, cc_change, target_output_values) %>%
+  group_by(timestep,cm_clinical,seasonality, modelname, cc_title, ccstep, target_output_values) %>%
   summarise(prevalence_2to10__mean = mean(prevalence_2to10),
             prevalence_2to10__min = quantile(prevalence_2to10, 0.05),
             prevalence_2to10__up = quantile(prevalence_2to10, 0.95)) %>%
@@ -81,7 +81,7 @@ pB<- dat_dec %>%
   ggplot() + 
   geom_ribbon(aes(x = timestep, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = modelname), alpha = 0.1) +
   geom_line(aes(x = timestep, y = prevalence_2to10__mean, color = modelname)) +  
-  geom_hline(yintercept = c(dat_dec$cc_change, dat_dec$target_output_values), color='#696969',linetype='dotted')+
+  geom_hline(yintercept = c(dat_dec$ccstep, dat_dec$target_output_values), color='#696969',linetype='dotted')+
   facet_wrap(~ cc_title, nrow=1) +   
   scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +
   scale_fill_manual(values = c('#1b9e77ff','#7570b3ff','#d95f02ff')) +

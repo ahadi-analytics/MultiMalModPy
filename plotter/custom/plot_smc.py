@@ -18,7 +18,7 @@ from plotter.plot_helper import *
 
 
 
-# Plots over time - requires PfPR_ClinicalIncidence_mth.csv
+# Plots over time - requires mmmpy_mth.csv
 def monthly_smc(wdir, df, channel, sweepvar='modelname', facet_var='ageGroup',age_groups_aggregates=None, one_year=False):
     """
     Parameters:

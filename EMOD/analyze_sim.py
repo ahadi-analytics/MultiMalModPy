@@ -790,7 +790,7 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         cdf['mortality'] = ''
         cdf['date'] = cdf.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
 
-        # Save the processed DataFrame to a CSV file named 'PfPR_ClinicalIncidence_mth.csv'
+        # Save the processed DataFrame to a CSV file named 'mmmpy_mth.csv'
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD')
         cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_mth.csv')), index=False)
 
