@@ -56,7 +56,7 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
   }
   if (ccstep) {
     fname <- 'mmmpy_ccstep_daily.csv'
-    cols_to_keep <- c('scen_id', 'target_output_values', 'cc_change', 'seed', 'timestep',
+    cols_to_keep <- c('scen_id', 'target_output_values', 'ccstep', 'seed', 'timestep',
                       'cm_clinical', 'seasonality', 'ageGroup', 'prevalence', 'prevalence_2to10', 'clinical_incidence',
                       'severe_incidence', 'simulatedEIR', 'n_total_mos_pop', 'n_infectious_mos', 'cc_title')
   }

@@ -130,7 +130,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
                                             coverages = parameter_table[i,]$cm_clinical)
 
     # Calibrate to the initial EIR:
-    if ("cc_step" %in% intervention_list){ 
+    if ("ccstep" %in% intervention_list){ 
       simparams[[i]] <- carrying_capacity(parameters = simparams[[i]],
                                           parameter_table = parameter_table)
       } else{
@@ -155,7 +155,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
       simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
     }
     
-    if ("cc_step" %in% intervention_list) {
+    if ("ccstep" %in% intervention_list) {
       simulation_outputs_list[[i]]$transmission_intensity_malariasimulation <- parameter_table[i,]$transmission_intensity_malariasimulation
       simulation_outputs_list[[i]]$cc_factor_malariasimulation <- parameter_table[i,]$cc_factor_malariasimulation
       simulation_outputs_list[[i]]$cc_timestep_malariasimulation <- parameter_table[i,]$cc_timestep_malariasimulation

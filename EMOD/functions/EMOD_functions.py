@@ -104,8 +104,8 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
 
     ## Carrying capacity step change
-    if 'cc_step' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):  
-    # Make sure to include the cc_step change only at pickup simulations.
+    # Make sure to include the ccstep change only at pickup simulations.
+    if 'ccstep' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):  
         camp = carrying_capacity(camp, row)
         
     if exp.emod_importation_rate != 0:

@@ -18,11 +18,33 @@ def cc_step_params(exp):
     # Required fixed parameters for cc_step
     if exp.emod_step != 'pickup':
         exp.cc_decreasing = False  # this is important to note because decreasing sims are organized differently.
-        exp.step_in_years = 5
-        exp.openmalaria_survey_step = '5d'
-        exp.plots_to_run = exp.plots_to_run + ['ccstep']
-        exp.analyzer_list = exp.plots_to_run + ['cc_step']
 
+    exp.step_in_years = 5 # determines after x amount of years, when the carrying capacity change occurs
+
+    if exp.emod_step is None:
+        ## if None, no serialization done, hence burnin period is added to the step_in_years
+        exp.cc_timestep_EMOD = int((exp.emod_burnin + exp.step_in_years) * 365)
+    else:
+        # 5 years in to the pickup time EMOD and malariasimulation, this parameter can already be defined in burnin for the respective pickup run
+        exp.cc_timestep_EMOD = int(exp.step_in_years * 365)
+    
+    exp.cc_timestep_malariasimulation = int((exp.malariasimulation_burnin + exp.step_in_years) * 365)
+
+    # 5 Years in to the pickup time OpenMalaria
+    exp.openmalaria_survey_step = '5d'
+    exp.cc_timestep_OpenMalaria = int((73 * (exp.openmalaria_burnin + exp.step_in_years)))
+
+    # Required for flagging list items when running from CSV
+    exp.sim_params_list += ['eir_scalar_malariasimulation', 'eir_malariasimulation', 'eir_scalar_openmalaria',
+                     'eir_scalar_emod',  'eir_openmalaria', 'eir_scalar_openmalaria', 'carrying_capacity_step']
+    
+    if 'ccstep' not in exp.plots_to_run:
+        exp.plots_to_run = exp.plots_to_run + ['ccstep']
+    if 'ccstep' not in exp.analyzer_list:
+        exp.analyzer_list = exp.plots_to_run + ['ccstep']
+    # Add ccstep to the list of sweep parameters
+    if 'ccstep' not in exp.sweep_list:
+        exp.sweep_list = exp.sweep_list + ['ccstep']
 
     # Flexible parameters depending on type of run and user-specifications
     if exp.run_mode == 'production':
@@ -34,36 +56,16 @@ def cc_step_params(exp):
         exp.end_year = 2050
         exp.target_output_name = 'prevalence_2to10'
         exp.target_output_values = [0.1, 0.25, 0.5]
-        exp.cc_change = exp.target_output_values
         exp.emod_memory_per_sim = 6
         exp.emod_time_per_sim = '6:00:00'
         exp.malariasimulation_memory_per_sim = 6
         exp.malariasimulation_time_per_sim = '2:00:00'
         exp.openmalaria_memory_per_sim = 6
         exp.openmalaria_time_per_sim = '2:00:00'
+        exp.ccstep = exp.target_output_values
     else:
         ## Keep parameters as defined by user in helper.py
-        exp.cc_change = exp.target_output_values
-
-    # Add cc_change to the list of sweep parameters
-    if 'cc_change' not in exp.sweep_list:
-        exp.sweep_list = exp.sweep_list + ['cc_change']
-
-    # 5 Years in to the pickup time OpenMalaria
-    exp.cc_timestep_OpenMalaria = int((73 * (exp.openmalaria_burnin + exp.step_in_years)))
-
-    if exp.emod_step is None:
-        ## if None, no serialization done, hence burnin period is added to the step_in_years
-        exp.cc_timestep_EMOD = int((exp.emod_burnin + exp.step_in_years) * 365)
-    else:
-        # 5 years in to the pickup time EMOD and malariasimulation, this parameter can already be defined in burnin for the respective pickup run
-        exp.cc_timestep_EMOD = int(exp.step_in_years * 365)
-    exp.cc_timestep_malariasimulation = int((exp.malariasimulation_burnin + exp.step_in_years) * 365)
-
-
-    # Required for flagging list items when running from CSV
-    exp.sim_params_list += ['eir_scalar_malariasimulation', 'eir_malariasimulation', 'eir_scalar_openmalaria',
-                     'eir_scalar_emod',  'eir_openmalaria', 'eir_scalar_openmalaria', 'carrying_capacity_step']
+        exp.ccstep = exp.target_output_values
     
     if len(exp.target_output_values) < 2:
         raise ValueError(f'Please specify at least 2 output targets, for cc step to increase/decrease to.')
@@ -85,7 +87,7 @@ def cc_step_factor_calculator(exp, df, model):
             - `cm_clinical`
             - `seasonality`
             - `target_output_values`
-            - `cc_change`
+            - `ccstep`
         exp (object): An object representing the experiment, which should include:
             - `interp_path` (str): Path to the folder containing interpolation data.
             - `interp_csv` (str): Name of the CSV file for interpolation.
@@ -136,13 +138,13 @@ def cc_step_factor_calculator(exp, df, model):
             xt = idata['prevalence_2to10']
             yp = idata['input_target']
             xold = row['target_output_values']
-            xnew = row['cc_change']
+            xnew = row['ccstep']
             interpolated_old = np.interp(xold, xt, yp)
         else:
             xt = idata['prevalence_2to10']
             yp = idata['n_total_mos_pop']
             xold = row['target_output_values']
-            xnew = row['cc_change']
+            xnew = row['ccstep']
             interpolated_old = np.interp(xold, xt, yp)
         interpolated_new = np.interp(xnew, xt, yp)
 
@@ -160,14 +162,14 @@ def cc_title_function(df):
     based on the values in the provided DataFrame.
 
     Each row in the DataFrame contributes one title, formatted as:
-    "<target_output_values>% - <cc_change>%", where:
-    - `target_output_values` and `cc_change` are multiplied by 100 and converted to integers
+    "<target_output_values>% - <ccstep>%", where:
+    - `target_output_values` and `ccstep` are multiplied by 100 and converted to integers
       to represent percentage values.
 
     Args:
         df (pandas.DataFrame): A DataFrame containing the following columns:
             - `target_output_values` (float): The starting value for the percentage change.
-            - `cc_change` (float): The change value for the percentage change.
+            - `ccstep` (float): The change value for the percentage change.
 
     Returns:
         list[str]: A list of strings, where each string is a formatted title
@@ -176,7 +178,7 @@ def cc_title_function(df):
     output = []
     for i, row in df.iterrows():
         first_percent = int(float(row['target_output_values']) * 100)
-        to_percent = int(float(row['cc_change']) * 100)
+        to_percent = int(float(row['ccstep']) * 100)
         title = f'{first_percent}%-{to_percent}%'
         output.append(title)
     return output
@@ -207,10 +209,9 @@ def cc_step_input_check(exp):
 
     if exp.entomology_mode != "dynamic":
         raise ValueError(f'Invalid entomology_mode for cc_step {exp.entomology_mode} specified, "dynamic" required')
-
+    print(exp.target_output_name)
     if exp.target_output_name != 'prevalence_2to10':
         raise ValueError("cc_step requires the target_output_name to be prevalence_2to10")
 
     if exp.end_year - exp.start_year < exp.step_in_years:
         raise ValueError(f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and {exp.end_year}")
-

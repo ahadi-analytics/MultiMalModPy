@@ -973,7 +973,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
                         'simulatedEIR', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence',
                         'n_total_mos_pop', 'n_infectious_mos']
         if self.cc:
-            cols_to_keep = cols_to_keep + ['cc_change', 'cc_factor', 'cc_timestep', 'cc_title']
+            cols_to_keep = cols_to_keep + ['ccstep', 'cc_factor', 'cc_timestep', 'cc_title']
             cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_ccstep_daily.csv')), index=False)
         else:
             cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_5day.csv')), index=False)

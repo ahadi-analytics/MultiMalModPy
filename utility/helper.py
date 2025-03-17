@@ -484,7 +484,7 @@ def create_scenarios_csv(exp, col_list):
     This function constructs a DataFrame of all possible combinations of attributes specified
     in `col_list` and maps additional experiment-specific parameters, including entomology mode,
     number of seeds, and calibration target inputs. It also processes specific interventions
-    such as `cc_step` if present.
+    such as `ccstep` if present.
 
     Args:
         exp (Experiment): The experiment object containing attributes and settings for scenarios.
