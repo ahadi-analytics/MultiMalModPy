@@ -41,7 +41,7 @@ def cc_step_params(exp):
     if 'ccstep' not in exp.plots_to_run:
         exp.plots_to_run = exp.plots_to_run + ['ccstep']
     if 'ccstep' not in exp.analyzer_list:
-        exp.analyzer_list = exp.plots_to_run + ['ccstep']
+        exp.analyzer_list = exp.analyzer_list + ['ccstep']
     # Add ccstep to the list of sweep parameters
     if 'ccstep' not in exp.sweep_list:
         exp.sweep_list = exp.sweep_list + ['ccstep']
@@ -209,7 +209,6 @@ def cc_step_input_check(exp):
 
     if exp.entomology_mode != "dynamic":
         raise ValueError(f'Invalid entomology_mode for cc_step {exp.entomology_mode} specified, "dynamic" required')
-    print(exp.target_output_name)
     if exp.target_output_name != 'prevalence_2to10':
         raise ValueError("cc_step requires the target_output_name to be prevalence_2to10")
 

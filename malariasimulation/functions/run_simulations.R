@@ -131,8 +131,9 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
 
     # Calibrate to the initial EIR:
     if ("ccstep" %in% intervention_list){ 
-      simparams[[i]] <- carrying_capacity(parameters = simparams[[i]],
-                                          parameter_table = parameter_table)
+      simparams[[i]] <- carrying_capacity(parameters = simparams,
+                                          parameter_table = parameter_table,
+                                          index = i)
       } else{
       # Calibrate to the initial EIR (same across models):
       simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
@@ -159,9 +160,9 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
       simulation_outputs_list[[i]]$transmission_intensity_malariasimulation <- parameter_table[i,]$transmission_intensity_malariasimulation
       simulation_outputs_list[[i]]$cc_factor_malariasimulation <- parameter_table[i,]$cc_factor_malariasimulation
       simulation_outputs_list[[i]]$cc_timestep_malariasimulation <- parameter_table[i,]$cc_timestep_malariasimulation
-      simulation_outputs_list[[i]]$cc_title <- parameter_table[i,]$cc_title}
-    else{
-      simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
+      simulation_outputs_list[[i]]$cc_title <- parameter_table[i,]$cc_title
+      } else{
+        simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
       }
 
     # When running simulation scenarios in parallel as on HPC, those always need to be saved, part of the framework
