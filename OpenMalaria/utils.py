@@ -143,10 +143,10 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=10):
 
     # Create the Python command to run the analyzer
     if exp.hpc == 'NUCLUSTER':
-        pycommand = f'\ncd /home/{exp.user}/MultiMalModPy/OpenMalaria' \
+        pycommand = f'\ncd {exp.root_directory}/OpenMalaria' \
                     f'\npython analyze_sim.py --dir "{exp.job_directory}"'
     elif exp.hpc == 'SCICORE':
-        pycommand = f'\ncd /scicore/home/scicore/cavelan/git/MultiMalModPy/OpenMalaria' \
+        pycommand = f'\ncd {exp.root_directory}/OpenMalaria' \
                     f'\n\nml Python/3.9.6-GCCcore-11.2.0-bare' \
                     f'\nsource /scicore/home/scicore/cavelan/git/MultiMalModPy/emodenv/bin/activate' \
                     f'\npython analyze_sim.py --dir "{exp.job_directory}"'

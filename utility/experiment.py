@@ -245,6 +245,7 @@ class ManifestConfig:
     """
 
     def __init__(self, manifest):
+        self.root_directory = manifest.ROOT_DIR
         self.hpc = manifest.hpc
         self.sh_hpc_config = manifest.sh_hpc_config
         self.selected_platform = manifest.selected_platform
