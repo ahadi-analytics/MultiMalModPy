@@ -196,7 +196,6 @@ trap 'echo "Error occurred in script at line $LINENO. Check logs for details." >
 
 # Job settings
 job_name="run_malariasimulation"
-exe_path="{os.path.normpath(os.path.join(exp.r_local))}"
 work_dir="{os.path.normpath(os.path.join(os.getcwd(),'malariasimulation'))}"
 jobdir="{os.path.normpath(exp.job_directory)}"
 log_dir="$jobdir/log"
@@ -212,7 +211,7 @@ fi
 # Run the OpenMalaria simulation for each experiment
 for ((i = 1; i <= {exp.nexps}; i++)); do
 
-    "$exe_path/Rscript.exe" "$work_dir/malariasimulation.R" "$work_dir" "$jobdir" $i >> "$log_dir/run_malariasimulation.log" 2>> "$log_dir/run_malariasimulation.err"  &
+    Rscript "$work_dir/malariasimulation.R" "$work_dir" "$jobdir" $i >> "$log_dir/run_malariasimulation.log" 2>> "$log_dir/run_malariasimulation.err"  &
 
     echo "Simulation $i completed successfully" >> "$log_dir/run_malariasimulation.log"
 done

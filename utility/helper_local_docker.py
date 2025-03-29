@@ -155,7 +155,7 @@ def write_sh_plotters(exp, model_to_run):
 
 
     # Set custom arguments and run the Python command
-    py_args = f'--directory "{exp.job_directory}" --modelname {model_to_run} '  # Custom directory argument for your script
+    py_args = f'--directory "{exp.sim_out_dir}" --modelname {model_to_run} '  # Custom directory argument for your script
 
     # Determine which plots to run
     plots_to_run = [p for p in exp.plots_to_run if not p == 'sampleplots']
@@ -166,7 +166,7 @@ def write_sh_plotters(exp, model_to_run):
     for plot_name in plots_to_run:
         pyscript_name = f'plot_{plot_name}.py'
         pycommand = f'python {pyscript_name} {py_args}\n'  # Command to run the Python script
-        sh_content += f'\n# Run {plot_name}.py'
+        sh_content += f'\n# Run {plot_name}.py\n'
         sh_content += pycommand + f'>> "$log_dir/run_{plot_name}_openmalaria.log" 2>> "$log_dir/run_{plot_name}_openmalaria.err" & \n'
 
     # Write the shell script to a file
