@@ -328,9 +328,6 @@ Write-Host "OpenMalaria simulation complete."
     print(f"PowerShell script written successfully at {file_path}")
 
 
-import os
-
-
 def write_sh_OpenMalaria(exp):
     """
     Creates a shell script to run OpenMalaria simulations (sequentially) locally.
@@ -358,6 +355,9 @@ def write_sh_OpenMalaria(exp):
     # Construct the content of the shell script
     sh_content = f"""#!/bin/bash
 
+set -e  # Exit immediately if a command exits with a non-zero status
+trap 'echo "Error occurred in script at line $LINENO. Check logs for details." >> "$log_dir/run_openmalaria.err"; exit 1' ERR
+
 # Job settings
 job_name="run_openmalaria"
 exe_path="{exp.OPENMALARIA_PATH}"
@@ -370,23 +370,38 @@ if [ ! -d "$log_dir" ]; then
 fi
 
 # Navigate to the job directory
-cd "$exe_path" || exit 1
+cd "$exe_path" || {{ echo "Failed to change directory to $exe_path" >> "$log_dir/run_openmalaria.err"; exit 1; }}
 
 # Run the OpenMalaria simulation for each experiment
 for ((i = 1; i <= {exp.nexps}; i++)); do
-    # Run the OpenMalaria command and log output and errors
-    "{exp.OPENMALARIA_venv}/openMalaria" -s "$jobdir/xml/$i.xml" --output "txt/$i.txt" >> "$log_dir/run_openmalaria.log" 2>> "$log_dir/run_openmalaria.err" || true
+    xml_file="$jobdir/xml/$i.xml"
+    output_file="$jobdir/txt/$i.txt"
+    
+    if [ ! -f "$xml_file" ]; then
+        echo "Error: Missing XML file: $xml_file" >> "$log_dir/run_openmalaria.err"
+        continue
+    fi
+
+    # Run OpenMalaria and capture errors
+    "{exp.OPENMALARIA_venv}/openMalaria" -s "$xml_file" --output "$output_file" --no-deprecation-warnings \
+        >> "$log_dir/run_openmalaria.log" 2>> "$log_dir/run_openmalaria.err" || {{
+        echo "OpenMalaria failed for $xml_file" >> "$log_dir/run_openmalaria.err"
+        continue
+    }}
+
+    echo "Simulation $i completed successfully" >> "$log_dir/run_openmalaria.log"
 done
 
-echo "OpenMalaria simulation complete."
-pause
--e CONTAINER_NAME=$(hostname)
+
 
 """
 
     # Write the shell content to a .sh file
     with open(file_path, 'w') as file:
         file.write(sh_content)
+
+    # Make script executable
+    os.chmod(file_path, os.stat(file_path).st_mode | 0o111)
 
     print(f"Shell script written successfully at {file_path}")
 

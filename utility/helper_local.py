@@ -237,6 +237,7 @@ Read-Host "Press Enter to continue"
     # Write the PowerShell script
     with open(file_path, 'w') as file:
         file.write(powershell_content)
+
     print(f"PowerShell script written successfully at {file_path}")
 
 

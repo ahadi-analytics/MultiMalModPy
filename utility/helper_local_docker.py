@@ -1,22 +1,23 @@
 import os
 import subprocess
+import stat
 from datetime import datetime as dt
 
 
 #### Running locally from inside docker
-def exec(command,wdir=None):
-
+def exec(command, wdir=None):
     if wdir is None:
         wdir = os.getcwd()
 
     env = os.environ.copy()
     env["PYTHONPATH"] = "/mnt/c/projects/MultiMalModPy:" + env.get("PYTHONPATH", "")
 
-    return subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE, universal_newlines=True,  text=True, cwd=wdir, env=env)
+    return subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
+                            universal_newlines=True, text=True, cwd=wdir, env=env)
 
 
 def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname='run_relationship_plots.sh',
-                               custom_args='--modelname EMOD malariasimulation OpenMalaria', wdir=None):
+                           custom_args='--modelname EMOD malariasimulation OpenMalaria', wdir=None):
     """
     Generate a shell script and execute it inside the Docker container
 
@@ -51,6 +52,7 @@ def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname=
 
     # Execute the script directly using subprocess
     print(f"Running: {shname}")
+
     subprocess.Popen(
         f"bash {script_path}",
         shell=True,
@@ -59,7 +61,6 @@ def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname=
         text=True,
         cwd=exp.job_directory
     )
-
 
 
 def submit_run_plotters_sh(exp):
@@ -95,12 +96,12 @@ def submit_run_plotters_sh(exp):
 
     # Create shell scripts for each plot
     for plot_name in plots_to_run:
-        #pyscript_name = f'-m plotter.plot_{plot_name}'
+        # pyscript_name = f'-m plotter.plot_{plot_name}'
         pyscript_name = f'plotter/plot_{plot_name}.py'
 
         # Generate the shell script
-        submit_run_pyscript_sh(exp,  pyscript=pyscript_name,    shname=f'run_{plot_name}_plots.sh',
-            custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",    wdir=parent_dir   )
+        submit_run_pyscript_sh(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
+                               custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}", wdir=parent_dir)
 
 
 def write_sh_analyzer(exp, pyscript, model_to_run):
@@ -119,15 +120,16 @@ def write_sh_analyzer(exp, pyscript, model_to_run):
     job_name = f"analyzer_{model_to_run}"
     subdir = model_to_run
     py_command = f'python {pyscript} --directory "{exp.job_directory}"'
-    fname = f'run_analyze_{model_to_run}.ps1'
+    fname = f'run_analyze_{model_to_run}.sh'
+
     submit_run_pyscript_sh(exp, fname, subdir, job_name, py_command)
 
 
 def write_sh_runmodel(exp, filename, modelname):
     """
     Writes a PowerShell script that manages the execution of two jobs:
-    1. Runs the first script (e.g., run_{modelname}.ps1)
-    2. Runs the second script (e.g., analyze_sim_{modelname}.ps1) after the first completes
+    1. Runs the first script (e.g., run_{modelname}.sh)
+    2. Runs the second script (e.g., analyze_sim_{modelname}.sh) after the first completes
 
     Args:
         exp (Experiment): The experiment object that contains job directories and other parameters.
@@ -180,12 +182,12 @@ def write_sh_runmodel(exp, filename, modelname):
     """
 
     # Write the shell script to a file
-    with open(filename, 'w') as file:
+    with open(filename, 'w', encoding='utf-8') as file:
         file.write(shell_content)
 
-    f'chmod +x {filename}'
-    f"chmod +x {os.path.normpath(os.path.join(exp.job_directory, 'run_' + modelname + '.sh'))}"
-    f"chmod +x {os.path.normpath(os.path.join(exp.job_directory, 'run_analyze_' + modelname + '.sh'))}"
+    # Make script executable
+    os.chmod(filename, os.stat(filename).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+
     print(f"Shell script has been written to {filename}")
 
 
@@ -211,7 +213,31 @@ def submit_runmodel_sh(exp, model_to_run):
 
     # Execute the generated shell script using subprocess
     cmd_command = f'bash "{file_path}"'
-    subprocess.Popen(cmd_command, shell=True)
+    process = subprocess.Popen(
+        f"bash {file_path}",
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True
+    )
+
+    # Capture the output and errors
+    stdout, stderr = process.communicate()
+
+    # Print output and errors (if any)
+    print("=== STDOUT ===")
+    print(stdout)
+
+    print("=== STDERR ===")
+    if stderr:
+        print(stderr)  # Print errors in red (if available)
+
+    # Check if the process was successful
+    if process.returncode != 0:
+        print(f" Script failed with exit code {process.returncode}")
+    else:
+        print("️ Script completed successfully.")
+
 
 
 def write_bat_submission_plots(exp):
@@ -258,4 +284,3 @@ def write_bat_submission_plots(exp):
         file.write(bat_content)
 
     print(f"Batch script written to {os.path.join(exp.job_directory, filename)}")
-
