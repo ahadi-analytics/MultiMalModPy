@@ -6,6 +6,7 @@
 [![EMOD](https://img.shields.io/badge/EMOD-v2.24-1A9E77?style=flat-square)](https://github.com/EMOD-Hub/EMOD)
 [![OpenMalaria](https://img.shields.io/badge/OpenMalaria-v46-D76227?style=flat-square)](https://github.com/SwissTPH/openmalaria/releases/tag/schema-46.0)
 [![malariasimulation](https://img.shields.io/badge/malariasimulation-v2.2.0-7672B2?style=flat-square)](https://github.com/mrc-ide/malariasimulation/releases/tag/v2.0.0)
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
 _**Multi** **Mal**aria **Mod**eling **Py**thon Framework_  
 
