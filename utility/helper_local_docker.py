@@ -6,10 +6,24 @@ from datetime import datetime as dt
 
 #### Running locally from inside docker
 def exec(exp, command):
+    """
+    Executes a shell command in a subprocess, capturing its output and errors.
+    This function runs the specified command within the given experiment's job directory,
+    capturing both standard output and error streams. It also ensures the process runs in a
+    separate session, preventing it from being terminated if the parent process exits.
+
+    Args:
+        exp (object): An object containing experiment-related attributes, including
+            `job_directory`, which specifies the working directory for the command.
+        command (str): The shell command to execute.
+
+    Returns:
+        None
+    """
 
     process = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
-                            universal_newlines=True, text=True, cwd=exp.job_directory,
-                            start_new_session=True)
+                               universal_newlines=True, text=True, cwd=exp.job_directory,
+                               start_new_session=True)
 
     # Capture the output and errors
     stdout, stderr = process.communicate()
@@ -29,43 +43,93 @@ def exec(exp, command):
         print("️ Script completed successfully.")
 
 
+def write_and_execute_sh_script(script_path: str, content: str, exp=None, execute: bool = False):
+    """
+    Writes a shell script to a file, makes it executable, and optionally executes it.
+
+    Args:
+        script_path (str): The full path where the shell script should be saved.
+        content (str): The shell script content to write.
+        exp (object, optional): Experiment configuration object, required if executing the script.
+        execute (bool, optional): If True, executes the script after writing it. Default is False.
+    """
+    try:
+        with open(script_path, "w", encoding="utf-8") as file:
+            file.write(content)
+        print(f"Shell script written to {script_path}")
+    except OSError as e:
+        raise OSError(f"Error writing shell script: {e}")
+
+    # Make the script executable
+    os.chmod(script_path, os.stat(script_path).st_mode | 0o111)
+
+    # Optionally execute the script
+    if execute:
+        if exp is None:
+            raise ValueError("Experiment object (exp) is required for script execution.")
+        try:
+            exec(exp, command=f"bash {script_path}")
+        except Exception as e:
+            raise RuntimeError(f"Error executing shell script: {e}")
+
+
 def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname='run_relationship_plots.sh',
                            custom_args='--modelname EMOD malariasimulation OpenMalaria', wdir=None):
     """
-    Generate a shell script and execute it inside the Docker container
+    Generates a shell script to execute a Python script inside a Docker container
+    and runs the shell script.
+
+    This function:
+    - Creates a Bash script that activates the virtual environment.
+    - Changes to the correct working directory.
+    - Runs the specified Python script with custom arguments.
+    - Grants execution permissions to the script.
+    - Executes the script inside the container using subprocess.
 
     Args:
-        exp: Experiment configuration object
-        pyscript: Python script to run
-        shname: Shell script name
-        custom_args: Custom command line arguments
-        wdir: Working directory
+        exp (object): Experiment configuration object, must have:
+            - `EMOD_venv` (str): Virtual environment activation command.
+            - `sim_out_dir` (str): Simulation output directory.
+            - `job_directory` (str): Directory where the shell script will be created.
+        pyscript (str, optional): Path to the Python script to execute.
+            Defaults to `"plotter/plot_relationship.py"`.
+        shname (str, optional): Name of the generated shell script.
+            Defaults to `"run_relationship_plots.sh"`.
+        custom_args (str, optional): Custom command-line arguments for the Python script.
+            Defaults to `"--modelname EMOD malariasimulation OpenMalaria"`.
+        wdir (str, optional): Working directory for executing the script.
+            If `None`, it defaults to the parent directory of the current file.
+
+    Returns:
+        None
     """
-    # Get the current working directory
+
+    # Validate experiment directory
+    if not os.path.isdir(exp.job_directory):
+        raise ValueError(f"Invalid job directory: {exp.job_directory}")
+
+    # Determine working directory
     if wdir is None:
         wdir = os.path.abspath(os.path.dirname(__file__))
         wdir = os.path.abspath(os.path.join(wdir, os.pardir))
 
-    # Generate the shell script header
-    header_post = "#!/bin/bash\n"
+    # Shell script content
+    sh_content = f"""#!/bin/bash
 
-    # Activate virtual environment within container
-    venv_activation = f"{exp.EMOD_venv}\n"
+# Activate virtual environment
+{exp.EMOD_venv}
 
-    # Generate the Python command to run the script
-    pycommand = f'\npython {pyscript} -d {exp.sim_out_dir} {custom_args}'
+# Change to the working directory
+cd "{wdir}"
 
-    # Write the shell script to a file
+# Run the Python script with arguments
+python "{pyscript}" -d "{exp.sim_out_dir}" {custom_args}
+"""
+
+    # Define the shell script path
     script_path = os.path.join(exp.job_directory, shname)
-    print(f"Script written to {script_path}")
+    write_and_execute_sh_script(script_path=script_path, content=sh_content, exp=exp, execute=True)
 
-    with open(script_path, 'w') as file:
-        file.write(header_post + venv_activation + f'\ncd {wdir}' + pycommand)
-
-    # Make script executable
-    os.chmod(script_path, os.stat(script_path).st_mode | 0o111)
-    # Execute the generated shell script using subprocess
-    exec(exp, command=f"bash {script_path}")
 
 def submit_run_plotters_sh(exp):
     """
@@ -106,7 +170,7 @@ def submit_run_plotters_sh(exp):
         # Generate the shell script
         submit_run_pyscript_sh(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                                custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
-                               wdir=os.path.join(parent_dir,'plotter'))
+                               wdir=os.path.join(parent_dir, 'plotter'))
 
 
 def write_sh_plotters(exp, model_to_run):
@@ -171,12 +235,7 @@ def write_sh_plotters(exp, model_to_run):
         sh_content += pycommand + f'>> "$log_dir/run_{plot_name}_openmalaria.log" 2>> "$log_dir/run_{plot_name}_openmalaria.err" & \n'
 
     # Write the shell script to a file
-    with open(script_path, 'w', encoding='utf-8') as file:
-        file.write(sh_content)
-
-    # Make the shell script executable
-    os.chmod(script_path, os.stat(script_path).st_mode | 0o111)
-    print(f"Shell script written to {script_path}")
+    write_and_execute_sh_script(script_path=script_path, content=sh_content, exp=exp, execute=False)
 
 
 def write_sh_analyzer(exp, pyscript, model_to_run):
@@ -233,13 +292,7 @@ def write_sh_analyzer(exp, pyscript, model_to_run):
     sh_content += pycommand + '>> "$log_dir/run_analyzer_openmalaria.log" 2>> "$log_dir/run_analyzer_openmalaria.err"\n'
 
     # Write the shell script to a file
-    with open(script_path, 'w', encoding='utf-8') as file:
-        file.write(sh_content)
-
-    # Make the shell script executable
-    os.chmod(script_path, os.stat(script_path).st_mode | 0o111)
-
-    print(f"Shell script written to {script_path}")
+    write_and_execute_sh_script(script_path=script_path, content=sh_content, exp=exp, execute=False)
 
 
 def write_sh_runmodel(exp, filename, modelname):
@@ -268,7 +321,7 @@ def write_sh_runmodel(exp, filename, modelname):
         raise ValueError(f"Invalid job directory: {exp.job_directory}")
 
     # Define the shell script content
-    shell_content = f"""#!/bin/bash
+    sh_content = f"""#!/bin/bash
 
     # Start the first job
     echo "Running job 1: run_{modelname}.sh"
@@ -311,12 +364,7 @@ def write_sh_runmodel(exp, filename, modelname):
     """
 
     # Write the shell script to a file
-    print(f"Shell script written to {filename}")
-    with open(filename, 'w', encoding='utf-8') as file:
-        file.write(shell_content)
-
-    # Make script executable
-    os.chmod(filename, os.stat(filename).st_mode | 0o111)
+    write_and_execute_sh_script(script_path=filename, content=sh_content, exp=exp, execute=True)
 
 
 def submit_runmodel_sh(exp, model_to_run):
