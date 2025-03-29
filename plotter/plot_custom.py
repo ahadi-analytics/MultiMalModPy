@@ -31,6 +31,8 @@ if __name__ == "__main__":
     df_mth, _ = get_output_df(wdir, modelname, mth=True)
 
     out_dir = os.path.join(out_dir, 'plots')
+    if len(modelname) == 1 and len(exp.models_to_run) > 1:
+        out_dir = os.path.join(out_dir, modelname[0])
     os.makedirs(out_dir, exist_ok=True)
 
     generate_plots_example1(out_dir, exp, df, df_mth)  ### Add or modify for plots to run from imported script

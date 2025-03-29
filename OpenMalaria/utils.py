@@ -208,12 +208,11 @@ def submit_run_OpenMalaria(exp, scen_df):
             write_ps1_OpenMalaria(exp)
             write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='OpenMalaria')
             submit_runmodel_local(exp, model_to_run='OpenMalaria')
-        else  :
+        else:
             from utility.helper_local_docker import write_sh_analyzer, write_sh_plotters, submit_runmodel_sh
-            # Write local submission script
             write_sh_OpenMalaria(exp)
             write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='OpenMalaria')
-            write_sh_plotters(exp, model_to_run='OpenMalaria')
+            #write_sh_plotters(exp, model_to_run='OpenMalaria')
             submit_runmodel_sh(exp, model_to_run='OpenMalaria')
     else:
         submit_run_OpenMalaria_slurm(exp)

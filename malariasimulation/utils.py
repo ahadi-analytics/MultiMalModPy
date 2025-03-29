@@ -66,7 +66,7 @@ def submit_run_malariasimulation(exp):
             from utility.helper_local_docker import write_sh_analyzer, write_sh_plotters, submit_runmodel_sh
             write_sh_malariasimulation(exp)
             write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='malariasimulation')
-            write_sh_plotters(exp, model_to_run='malariasimulation')
+            #write_sh_plotters(exp, model_to_run='malariasimulation')
             submit_runmodel_sh(exp, model_to_run='malariasimulation')
     else:
         # Default, run via SLURM on HPC
@@ -228,5 +228,4 @@ echo "All simulations completed successfully."
 
     # Make script executable
     os.chmod(file_path, os.stat(file_path).st_mode | 0o111)
-
     print(f"Shell script written at {file_path}")

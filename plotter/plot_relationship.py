@@ -390,6 +390,8 @@ if __name__ == "__main__":
 
     df, out_dir = get_output_df(wdir, modelname)
     out_dir = os.path.join(out_dir, 'plots')
+    if len(modelname) == 1 and len(exp.models_to_run) > 1:
+        out_dir = os.path.join(out_dir, modelname[0])
     os.makedirs(out_dir, exist_ok=True)
 
     if len(exp.target_output_values) >= 3:

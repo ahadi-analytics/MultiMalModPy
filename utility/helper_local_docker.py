@@ -8,7 +8,8 @@ from datetime import datetime as dt
 def exec(exp, command):
 
     process = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
-                            universal_newlines=True, text=True, cwd=exp.job_directory)
+                            universal_newlines=True, text=True, cwd=exp.job_directory,
+                            start_new_session=True)
 
     # Capture the output and errors
     stdout, stderr = process.communicate()
@@ -63,8 +64,8 @@ def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname=
 
     # Make script executable
     os.chmod(script_path, os.stat(script_path).st_mode | 0o111)
-
-
+    # Execute the generated shell script using subprocess
+    exec(exp, command=f"bash {script_path}")
 
 def submit_run_plotters_sh(exp):
     """
@@ -100,11 +101,13 @@ def submit_run_plotters_sh(exp):
     # Create shell scripts for each plot
     for plot_name in plots_to_run:
         # pyscript_name = f'-m plotter.plot_{plot_name}'
-        pyscript_name = f'plotter/plot_{plot_name}.py'
+        pyscript_name = f'plot_{plot_name}.py'
 
         # Generate the shell script
         submit_run_pyscript_sh(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
-                               custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}", wdir=parent_dir)
+                               custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
+                               wdir=os.path.join(parent_dir,'plotter'))
+
 
 def write_sh_plotters(exp, model_to_run):
     """
@@ -150,9 +153,7 @@ def write_sh_plotters(exp, model_to_run):
     # Activate virtual environment (make sure it's available)
     venv_activation = f"{exp.EMOD_venv}\n"
     sh_content += f"# Activate virtual environment\n{venv_activation}\n"
-
     sh_content += f"# Set working directory\ncd {exp.ROOT_DIR}/plotter\n"
-
 
     # Set custom arguments and run the Python command
     py_args = f'--directory "{exp.sim_out_dir}" --modelname {model_to_run} '  # Custom directory argument for your script
@@ -160,7 +161,7 @@ def write_sh_plotters(exp, model_to_run):
     # Determine which plots to run
     plots_to_run = [p for p in exp.plots_to_run if not p == 'sampleplots']
     if exp.plots_to_run[0] == 'all':
-        plots_to_run =  ['relationship', 'timeseries', 'agecurves']
+        plots_to_run = ['relationship', 'timeseries', 'agecurves']
 
     # Create shell scripts for each plot
     for plot_name in plots_to_run:
@@ -294,16 +295,16 @@ def write_sh_runmodel(exp, filename, modelname):
     echo "Job 2 completed successfully."
 
     # Start the third job (only after the second job completes)
-    echo "Running job 3: plot_{modelname}.sh"
-    {{
-        # Run the third script: plot_{modelname}.sh
-        bash "{os.path.normpath(os.path.join(exp.job_directory, 'run_plotters_' + modelname + '.sh'))}"
-    }} || {{
-        echo "Job 3 failed"
-        exit 1
-    }}
-
-    echo "Job 3 completed successfully."
+    #echo "Running job 3: plot_{modelname}.sh"
+    #{{
+    #    # Run the third script: plot_{modelname}.sh
+    #    bash "{os.path.normpath(os.path.join(exp.job_directory, 'run_plotters_' + modelname + '.sh'))}"
+    #}} || {{
+    #    echo "Job 3 failed"
+    #    exit 1
+    #}}
+    #
+    #echo "Job 3 completed successfully."
     
     echo "All jobs completed."
     read -p "Press Enter to close the terminal"
