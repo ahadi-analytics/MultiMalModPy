@@ -439,7 +439,7 @@ No edits needed for `malariasimulation_input_path` which defines the location of
 
 ### HPC singularity image
 A singularity container allows running MultiMalModPy instantly, without the need for
-installations. You can download it from https://cloud.sylabs.io/library/rungma/multimalmodpy/mmmpy_hpc:rocky8.
+installations. You can download it from [https://cloud.sylabs.io/library/rungma/multimalmodpy/mmmpy_hpc:rocky8](https://cloud.sylabs.io/library/rungma/multimalmodpy/mmmpy_hpc:rocky8) .
 
 To pull the container run: 
 ```
@@ -450,7 +450,7 @@ Details on how to run simulations from within a container are described in the [
 
 ### Local Docker image
 
-A docker container can be pulled from DockeHub https://hub.docker.com/r/mrm9534/mmmpy_local via   
+A docker container can be pulled from DockeHub [https://hub.docker.com/r/mrm9534/mmmpy_local](https://hub.docker.com/r/mrm9534/mmmpy_local) via   
 
 ```
 docker pull mrm9534/mmmpy_local
