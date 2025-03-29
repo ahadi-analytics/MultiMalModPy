@@ -9,5 +9,4 @@ site/
 .cache/
 *.rej
 .Rhistory
-experiments/
-simulation_outputs/
+
