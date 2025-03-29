@@ -9,15 +9,14 @@ Note, you can also run MultiMalModPy from within a container, without any prior 
 
 **In this section:**  
 
-- [HPC](#hpc)
-  - [Using Python Virtual Environment](#using-python-virtual-environment-on-hpc)
-  - [Using Singularity Container](#using-singularity-container)
-- [Local](#local)
-  - [Using Python Virtual Environment](#using-python-virtual-environment-on-local)
-    - [Launch in Batch Mode](#launch-in-batch-mode)
-    - [Using Docker Container](#using-docker-container)
-    - [Launch in Interactive Mode](#launch-in-interactive-mode)
-
+- [HPC](#hpc)  
+  - [Using Python Virtual Environment](#using-python-virtual-environment-on-hpc)  
+  - [Using Singularity Container](#using-singularity-container)  
+- [Local](#local)  
+     - [Using Python Virtual Environment](#using-python-virtual-environment-on-local)  
+        - [Launch in Batch Mode](#launch-in-batch-mode)
+        - [Launch in Interactive Mode](#launch-in-interactive-mode)  
+     - [Using Docker Container](#using-docker-container)  
     
 ## HPC  
 
@@ -188,16 +187,6 @@ malariasimulation
 </a>
 
 
-#### Using Docker Container
-
-**NOTE: Running from within docker is currently being implemented.** 
-
-Replace all `PATH_TO_REPO` with your directory to the MultiMalModPy on your computer, excluding 'MultiMalModPy'.
-Example, if MultiMalModPy is in `C:/Users/<user>/Documents/MultiMalModPy`, then type  `C:/Users/<user>/Documents/`
-
-```
-docker run -it -v PATH_TO_REPO:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"                         
-```
 
 #### Launch in Interactive Mode  
 
@@ -232,7 +221,39 @@ Local:
 `simulations_local/simulation_outputs/20250202_TEST/sims_dynamic_perennial__19_33_36`  
 
 
+### Using Docker Container
 
+Ensure the Docker image is available on your computer. If you haven't already, revisit the [installation page](../getting_started/installation.md#local-docker-image) to download and set up the Docker image.  
+In the example command below, replace `PATH_TO_REPO` with the directory path to your _MultiMalModPy_ folder on your computer, excluding the _MultiMalModPy_ directory itself. 
+Example, if MultiMalModPy is in `C:/Users/<user>/Documents/MultiMalModPy`, then type  `C:/Users/<user>/Documents/`
+
+Modify manifest.py to add 
+```
+container_run = True             
+```
+
+Command to Run the Docker Container: 
+```
+docker run -it -v PATH_TO_REPO:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"                         
+```
+
+This command will:  
+- Mount the local directory in which MultiMalModPy is located to /mnt/c/projects in the Docker container.  
+- Activate the Python virtual environment inside the container.  
+- Navigate to the MultiMalModPy directory inside the container and run the simulation script (launch_sim.py) with the specified models and test flag.  
+
+Example terminal: 
+```
+PS C:\Users\mrung\Documents\MultiMalModPy> docker run -it -v C:/Users/mrung/Documents/:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"
+
+No interventions specified
+Warning: the popsize specified for malariasimulation (1000) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize (50000)
+Warning: the popsize specified for OpenMalaria (1000) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize (50000)
+Warning: A burn-in period of at least 80 years is recommended for OpenMalaria. Currently, a shorter burn-in of 10 years has been configured, which may lead to inaccurate results.
+Warning: A population of at least 10000 is recommended for OpenMalaria. Current pop_size 1000  may lead to inaccurate results.
+Warning: A burn-in period of at least 80 years is recommended for malariasimulation. Currently, a shorter burn-in of 10 years has been configured, which may lead to inaccurate results.
+ --------| Running sims_dynamic_perennial_10_28_39 for malariasimulation, OpenMalaria: 3 varying parameters: target_output_values, case_management, seasonality. Run mode:  custom |--------
+```
 
 # Example outputs   
 

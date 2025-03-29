@@ -448,15 +448,70 @@ singularity pull --arch amd64 library://rungma/multimalmodpy/mmmpy_hpc:rocky8
 
 Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-singularity-container-)
 
-### Local Docker image
+### Local Docker image  
+_For Windows Users_  
 
-A docker container can be pulled from DockeHub [https://hub.docker.com/r/mrm9534/mmmpy_local](https://hub.docker.com/r/mrm9534/mmmpy_local) via   
+1️⃣ Install Docker Desktop from  🔗[Docker Desktop Download](https://www.docker.com/products/docker-desktop/). 
+This will make it easier to download and use the docker image.  
+Ensure Docker Daemon is Running
+  ```
+  docker info 
+  ```
+If Docker is not running, start it with opening Docker Desktop (Windows).
+  
+
+2️⃣ Pull the docker file from [DockerHub](https://hub.docker.com/r/mrm9534/mmmpy_local) via   
 
 ```
-docker pull mrm9534/mmmpy_local
+docker pull mrm9534/mmmpy_local:rocky8
 ```
 
-Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-docker-container-)
+3️⃣ Verify the Downloaded Image 
+Before running the container, check if the image exists locally:  
+  ```
+  docker images
+  ```
+  Look for `mrm9534/mmmpy_local` and verify it has the `rocky8` tag.
+
+4️⃣ Run the Docker Container  
+Start the container in interactive mode:  
+  ```
+  docker run -it --name mmmpy_container mrm9534/mmmpy_local:rocky8 /bin/bash 
+  ```
+If you previously created the container but stopped it, restart instead of creating a new one:
+List existing containers to check:  
+
+  ```
+  docker ps -a  # List all containers  
+  docker start -ai mmmpy_container  # Restart existing container  
+  ```
+  
+Your terminal should look something like: `[root@74350592befb /]#    `   
+🚪 To exit the container, type exit at any time.  
+
+
+5️⃣ Check if the Python virtual environment exists
+Check if the virtual environment exists inside the container 
+  ```
+  ls /opt/envs/
+  ```
+The name is `mmmpy_container` or `mmmpy_local`, check which one applies and update subsequent code accordingly.  
+
+- Activate the virtual environment
+  ```
+  source /opt/envs/mmmpy_container/bin/activate
+  ```
+  
+Your terminal should look something like: `(mmmpy_container) [root@74350592befb envs]#   `  
+
+- Verify Python version and installed packages
+  ```
+  python --version
+  pip list
+  ```
+
+If everything works correctly, you now have a running Docker container with the expected Python environment! 
+Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-docker-container-).
 
 
 <br>
