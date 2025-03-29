@@ -209,10 +209,11 @@ def submit_run_OpenMalaria(exp, scen_df):
             write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='OpenMalaria')
             submit_runmodel_local(exp, model_to_run='OpenMalaria')
         else  :
-            from utility.helper_local_docker import write_sh_analyzer, submit_runmodel_sh
+            from utility.helper_local_docker import write_sh_analyzer, write_sh_plotters, submit_runmodel_sh
             # Write local submission script
             write_sh_OpenMalaria(exp)
             write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='OpenMalaria')
+            write_sh_plotters(exp, model_to_run='OpenMalaria')
             submit_runmodel_sh(exp, model_to_run='OpenMalaria')
     else:
         submit_run_OpenMalaria_slurm(exp)
@@ -325,7 +326,7 @@ Write-Host "OpenMalaria simulation complete."
     # Write the PowerShell content to a .ps1 file
     with open(file_path, 'w') as file:
         file.write(ps_content)
-    print(f"PowerShell script written successfully at {file_path}")
+    print(f"PowerShell script written at {file_path}")
 
 
 def write_sh_OpenMalaria(exp):
@@ -403,7 +404,7 @@ done
     # Make script executable
     os.chmod(file_path, os.stat(file_path).st_mode | 0o111)
 
-    print(f"Shell script written successfully at {file_path}")
+    print(f"Shell script written at {file_path}")
 
 
 if __name__ == "__main__":

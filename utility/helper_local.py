@@ -238,7 +238,7 @@ Read-Host "Press Enter to continue"
     with open(file_path, 'w') as file:
         file.write(powershell_content)
 
-    print(f"PowerShell script written successfully at {file_path}")
+    print(f"PowerShell script written to {file_path}")
 
 
 def write_ps1_analyzer(exp, pyscript, model_to_run):
@@ -329,22 +329,20 @@ def submit_run_plotters_local(exp):
           `exp.plots_to_run`.
         - If `exp.plots_to_run` is set to `'all'`, all available plots will be processed.
     """
+    if not exp.use_container:
+        ## Write  submission script for all, even if not running
+        for plot_name in exp.plots_to_run:
+            pyscript = f"plot_{plot_name}.py"
+            job_name = f"run_plot_{plot_name}"
+            subdir = "plotter"
+            model_args = ' '.join(exp.models_to_run)
+            py_command = f"python {pyscript} --directory {exp.sim_out_dir} --modelname {model_args}"
 
-    ## Write  submission script for all, even if not running
-    for plot_name in exp.plots_to_run:
-        pyscript = f"plot_{plot_name}.py"
-        fname = pyscript.replace('.py', '.ps1')
+            fname = pyscript.replace('.py', '.ps1')
+            create_ps1_script(exp, fname, subdir, job_name, py_command)
 
-        job_name = f"run_plot_{plot_name}"
-        subdir = "plotter"
-        model_args = ' '.join(exp.models_to_run)
-        py_command = f"python {pyscript} --directory {exp.sim_out_dir} --modelname {model_args}"
-
-        create_ps1_script(exp, fname, subdir, job_name, py_command)
-
-    if exp.use_container:
         from utility.helper_local  import write_bat_submission_plots
         write_bat_submission_plots(exp)
     else:
-        from utility.helper_local_docker import write_bat_submission_plots
-        write_bat_submission_plots(exp)
+        from utility.helper_local_docker  import submit_run_plotters_sh
+        submit_run_plotters_sh(exp)
