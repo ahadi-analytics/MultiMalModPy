@@ -1,4 +1,3 @@
-
 import os
 import subprocess
 from datetime import datetime as dt
@@ -37,6 +36,7 @@ class LoadLaunchArgs:
         kwargs (dict): Optional keyword arguments to override default argument values during initialization.
 
     """
+
     def __init__(self, **kwargs):
         """
         Initialize the Args object with default values.
@@ -112,7 +112,7 @@ def write_ps1_runmodel(exp, filename, modelname):
 
     ps1_content = f"""
     # Start logging to a file
-    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory,'log'))}\\run_{modelname}.out }}
+    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory, 'log'))}\\run_{modelname}.out }}
     Start-Transcript -Path $LogFile
     
     # Start the first job
@@ -138,7 +138,7 @@ def write_ps1_runmodel(exp, filename, modelname):
     
 
     # Start the second job (only after the first job completes)
-    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory,'log'))}\\run_analyzer_{modelname}.out }}
+    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory, 'log'))}\\run_analyzer_{modelname}.out }}
     Start-Transcript -Path $LogFile
     
     $job2 = Start-Job -ScriptBlock {{
@@ -186,12 +186,12 @@ def submit_runmodel_local(exp, model_to_run):
         OSError: If there is an issue with executing the command or running the script.
     """
 
-
     file_name = f'jobs_{model_to_run}_simplerun.ps1'
     file_path = os.path.join(exp.job_directory, file_name)
-    write_ps1_runmodel(exp,filename=file_path, modelname=model_to_run)
+    write_ps1_runmodel(exp, filename=file_path, modelname=model_to_run)
     cmd_command = f'cmd.exe /c start powershell -ExecutionPolicy Bypass -File "{file_path}"'
     subprocess.Popen(cmd_command, shell=True)
+
 
 def create_ps1_script(exp, fname, subdir, job_name, py_command):
     """
@@ -240,7 +240,7 @@ Read-Host "Press Enter to continue"
     print(f"PowerShell script written successfully at {file_path}")
 
 
-def write_ps1_analyzer(exp,  pyscript, model_to_run):
+def write_ps1_analyzer(exp, pyscript, model_to_run):
     """
     This function generates a batch file that runs the specified analyzer script for the given model.
     It calls the `create_ps1_script` function to generate the PowerShell script file.
@@ -259,6 +259,52 @@ def write_ps1_analyzer(exp,  pyscript, model_to_run):
     fname = f'run_analyze_{model_to_run}.ps1'
     create_ps1_script(exp, fname, subdir, job_name, py_command)
 
+
+def write_bat_submission_plots(exp):
+    """
+    Writes a .bat submission script to execute Python plotting commands for an experiment.
+
+    Args:
+        exp (Experiment): The experiment object containing the necessary directories and model names.
+        filename (str): The file path where the batch script will be saved.
+
+    Returns:
+        None
+    """
+    # Extract relevant data from the experiment object
+    wdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+    filename = 'submit_run_plots.bat'
+    work_dir = wdir
+    jobdir = exp.job_directory
+    log_dir = f"{jobdir}\\log"
+    models = ' '.join(exp.models_to_run)
+
+    # List of plot scripts to run
+    plot_scripts = [f'plot_{x}.py' for x in exp.plots_to_run]
+
+    # Start creating the batch script content
+    bat_content = f"@echo on\n"
+    bat_content += f"set job_name=run_plot_all\n"
+    bat_content += f"set work_dir={work_dir}\n"
+    bat_content += f"set jobdir={jobdir}\n"
+    bat_content += f"set log_dir=%jobdir%\\log\n\n"
+    bat_content += f'cd /d "%work_dir%\\plotter"\n\n'
+
+    # Add commands to run the plotting scripts
+
+    for script in plot_scripts:
+        plot_name = script.replace('.py', '')
+        bat_content += f'python {script} --directory {exp.sim_out_dir} --modelname {models} >> "%log_dir%\\run_{plot_name}.log" 2>> "%log_dir%\\run_{plot_name}.err"\n'
+
+    # Add pause at the end to keep the terminal open
+    bat_content += "\nPause to keep the console open\n"
+    bat_content += "pause\n"
+
+    # Write the content to the batch file
+    with open(os.path.join(exp.job_directory, filename), 'w') as file:
+        file.write(bat_content)
+
+    print(f"Batch script written to {os.path.join(exp.job_directory, filename)}")
 
 
 def submit_run_plotters_local(exp):
@@ -283,7 +329,6 @@ def submit_run_plotters_local(exp):
         - If `exp.plots_to_run` is set to `'all'`, all available plots will be processed.
     """
 
-
     ## Write  submission script for all, even if not running
     for plot_name in exp.plots_to_run:
         pyscript = f"plot_{plot_name}.py"
@@ -296,49 +341,9 @@ def submit_run_plotters_local(exp):
 
         create_ps1_script(exp, fname, subdir, job_name, py_command)
 
-    write_bat_submission_plots(exp)
-
-
-def write_bat_submission_plots(exp):
-    """
-    Writes a .bat submission script to execute Python plotting commands for an experiment.
-
-    Args:
-        exp (Experiment): The experiment object containing the necessary directories and model names.
-        filename (str): The file path where the batch script will be saved.
-
-    Returns:
-        None
-    """
-    # Extract relevant data from the experiment object
-    wdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-    work_dir = wdir
-    jobdir = exp.job_directory
-    filename = 'submit_run_plots.bat'
-    log_dir = f"{jobdir}\\log"
-
-    # List of plot scripts to run
-    plot_scripts = [f'plot_{x}.py' for x in exp.plots_to_run]
-
-    # Start creating the batch script content
-    bat_content = f"@echo on\n"
-    bat_content += f"set job_name=run_plot_all\n"
-    bat_content += f"set work_dir={work_dir}\n"
-    bat_content += f"set jobdir={jobdir}\n"
-    bat_content += f"set log_dir=%jobdir%\\log\n\n"
-    bat_content += f'cd /d "%work_dir%\\plotter"\n\n'
-
-    # Add commands to run the plotting scripts
-    for script in plot_scripts:
-        plot_name = script.replace('.py', '')
-        bat_content += f'python {script} --directory {exp.sim_out_dir} --modelname malariasimulation OpenMalaria >> "%log_dir%\\run_{plot_name}.log" 2>> "%log_dir%\\run_{plot_name}.err"\n'
-
-    # Add pause at the end to keep the terminal open
-    bat_content += "\nPause to keep the console open\n"
-    bat_content += "pause\n"
-
-    # Write the content to the batch file
-    with open(os.path.join(jobdir, filename), 'w') as file:
-        file.write(bat_content)
-
-    print(f"Batch script written to {os.path.join(jobdir, filename)}")
+    if exp.use_container:
+        from utility.helper_local  import write_bat_submission_plots
+        write_bat_submission_plots(exp)
+    else:
+        from utility.helper_local_docker import write_bat_submission_plots
+        write_bat_submission_plots(exp)

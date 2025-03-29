@@ -9,7 +9,11 @@ hpc = 'NUCLUSTER'
 #hpc = 'SCICORE'
 selected_platform = 'SLURM_LOCAL'
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
-use_container = True
+
+use_container = False
+if os.path.exists("/.dockerenv"):
+    hpc = 'LOCAL'
+    use_container = True
 
 # ----------------------------- EMOD generic settings start -----------------------------
 # Location of the file containing AssetCollection id for the dtk sif (singularity image)
@@ -96,10 +100,9 @@ elif hpc == 'LOCAL':
     OPENMALARIA_venv = ''
     r_local = "C:/Program Files/R/R-4.2.3/bin"
 
-    if openmalaria_version == 43:
-        OPENMALARIA_PATH = os.path.join(ROOT_DIR, 'dependencies/OpenMalaria/om_v43')
-    elif openmalaria_version == 46:
-        OPENMALARIA_PATH = os.path.join(ROOT_DIR, 'dependencies/OpenMalaria/om_v46')
+    if openmalaria_version in [43, 46]:
+        OPENMALARIA_PATH = os.path.join(ROOT_DIR, f'dependencies/OpenMalaria/om_v{openmalaria_version}')
+        OPENMALARIA_venv_container = f'/openmalaria-schema-{openmalaria_version}.0/build/'
     else:
         raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
 
@@ -109,8 +112,7 @@ elif hpc == 'LOCAL':
     
     image_path = 'mmmpy_local:rocky8'
     image_venv_name = ''
-    OPENMALARIA_venv_container = '/openmalaria-schema-46.0/build/'
-    EMOD_venv_container ='source /opt/envs/mmmpy_local/bin/activate'
+    EMOD_venv_container ='source /opt/envs/mmmpy_container/bin/activate'
     bind_path = 'C:/Users/mrung/gitrepos/model-characterization/'
 
 else:
@@ -129,6 +131,8 @@ interp_csv = 'interpolation_data.csv'
 os.makedirs(job_directory, exist_ok=True)
 
 if use_container:
+    ROOT_DIR_local = os.path.join('C:/Users/mrung/Documents/')
+    # Required only when running inside docker, locally
     OPENMALARIA_venv = OPENMALARIA_venv_container
     EMOD_venv = EMOD_venv_container
     
