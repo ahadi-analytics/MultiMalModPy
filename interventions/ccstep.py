@@ -124,7 +124,7 @@ def cc_step_factor_calculator(exp, df, model):
     else:
         raise ValueError(f'Specified model is not valid {model}')
 
-    # FIXME allow this hack, or is there a better one? For testrun, or introduce 'debug run' to allow running lower  populations
+    # NOTE: Workaround to allow smaller populations for test runs
     if exp.test and popsize not in data.loc[data['modelname'] == model, 'pop_size'].unique():
         popsize = data.loc[data['modelname'] == model, 'pop_size'].min()
             
@@ -201,7 +201,7 @@ def cc_step_columns(exp, df):
             df[f'cc_factor_{model}'] = cc_step_factor_calculator(exp, df, model=model)
             df[f'cc_timestep_{model}'] = getattr(exp, f'cc_timestep_{model}')
     df['cc_title'] = cc_title_function(df)
-    return df  # FIXME can be moved to postprocessing
+    return df  # TODO can be moved to postprocessing
 
 
 

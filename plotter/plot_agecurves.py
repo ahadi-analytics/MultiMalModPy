@@ -91,7 +91,7 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output
             xmean, ymean = get_x_y(sdf, 'ageGroup', channel, channel)
             xmean = xmean['ageGroup']
             merge_df = pd.merge(left=xmean, right=ymean, on='ageGroup')
-            merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], age_groups_aggregates)  # FIXME returns NA for 0-5 and 0-100, perhaps wanted
+            merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], age_groups_aggregates)  # NOTE: returns NA for 0-5 and 0-100 to be excluded
             merge_df = merge_df.dropna()
             merge_df.sort_values('ageGroup', inplace=True)
             ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=0.8, label=f"{s}",
