@@ -67,6 +67,7 @@ elif hpc == 'SCICORE':
         raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
 
     EMOD_venv_modules = os.path.join('\n\nml Python/3.9.6-GCCcore-11.2.0-bare')
+    #source /scicore/home/scicore/cavelan/git/MultiMalModPy/emodenv/bin/activate
     EMOD_venv_path = os.path.join(f'\nsource {ROOT_DIR}/emodenv/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
 
@@ -91,7 +92,7 @@ elif hpc == 'LOCAL':
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
 
 else:
-    raise ValueError('Specify valid hpc')
+    raise ValueError('HPC specification not available')
 
 ## ----------------------------- User-defind input end -----------------------------
 

@@ -18,18 +18,11 @@ def submit_analyze_outputs(exp, t='01:00:00', memG=10):
 
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_malariasimulation',
                                      mem_scl=exp.mem_increase_factor)
-    
-    if exp.hpc == 'NUCLUSTER':
-        pycommand = f'\ncd {exp.root_directory}/malariasimulation' \
-                    f'\npython analyze_sim.py --directory "{exp.job_directory}"'
-    elif exp.hpc == 'SCICORE':
-        pycommand = f'\ncd {exp.root_directory}/malariasimulation' \
-                    f'\n\nml Python/3.9.6-GCCcore-11.2.0-bare' \
-                    f'\nsource /scicore/home/scicore/cavelan/git/MultiMalModPy/emodenv/bin/activate' \
-                    f'\npython analyze_sim.py --dir "{exp.job_directory}"'
-    else:
-        raise ValueError('HPC specification not available, must be NUCLUSTER or SCICORE')
-    
+
+    pycommand = f'\ncd {exp.root_directory}/malariasimulation' \
+                f'\n{exp.EMOD_venv_modules}\n{exp.EMOD_venv_path}' \
+                f'\npython analyze_sim.py --dir "{exp.job_directory}"'
+
     script_path = os.path.join(exp.job_directory, 'run_analyzer_malariasimulation.sh')
     file = open(script_path, 'w')
     file.write(header_post + pycommand)

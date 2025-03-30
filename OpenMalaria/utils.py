@@ -138,20 +138,12 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=10):
 
     """
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OMsim',
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OpenMalaria',
                                      mem_scl=exp.mem_increase_factor)
 
-    # Create the Python command to run the analyzer
-    if exp.hpc == 'NUCLUSTER':
-        pycommand = f'\ncd {exp.root_directory}/OpenMalaria' \
-                    f'\npython analyze_sim.py --dir "{exp.job_directory}"'
-    elif exp.hpc == 'SCICORE':
-        pycommand = f'\ncd {exp.root_directory}/OpenMalaria' \
-                    f'\n\nml Python/3.9.6-GCCcore-11.2.0-bare' \
-                    f'\nsource /scicore/home/scicore/cavelan/git/MultiMalModPy/emodenv/bin/activate' \
-                    f'\npython analyze_sim.py --dir "{exp.job_directory}"'
-    else:
-        raise ValueError('HPC specification not available, must be NUCLUSTER or SCICORE')
+    pycommand = f'\ncd {exp.root_directory}/OpenMalaria' \
+                f'\n{exp.EMOD_venv_modules}\n{exp.EMOD_venv_path}' \
+                f'\npython analyze_sim.py --dir "{exp.job_directory}"'
 
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, 'run_analyzer_OpenMalaria.sh')
