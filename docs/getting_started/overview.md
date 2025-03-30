@@ -23,9 +23,9 @@ These figures provide an initial visual analysis of the results and can be modif
 accommodate specific research needs.  
 
 The framework comes with three standardized plotting scripts:    
--  [plot_timeseries.py](../../_scratch/api/plotter/plot_timeseries.md) the timeseries for selected outcome measures,   
--  [plot_agecurves.py](../../_scratch/api/plotter/plot_agecurves.md) the relation of outcome measures by age groups,  
--  [plot_relationship.py](../../_scratch/api/plotter/plot_relationship.md) relationship between disease transmission and disease outcomes.  
+-  [plot_timeseries.py](../api/plotter/plot_timeseries.md) the timeseries for selected outcome measures,   
+-  [plot_agecurves.py](../api/plotter/plot_agecurves.md) the relation of outcome measures by age groups,  
+-  [plot_relationship.py](../api/plotter/plot_relationship.md) relationship between disease transmission and disease outcomes.  
 
 
 # Repository Layout and Directory Structure
@@ -56,6 +56,11 @@ This directory contains all necessary files for running simulations across three
 - Log outputs for tracking execution.  
 - Shell scripts for automation and reproducibility.  
 
+**Example:**  
+- HPC:  `<User-defined job directory>/experiments/20250202_TEST/sims_dynamic_perennial__19_33_36`
+- Local: `simulations_local/experiments/20250202_TEST/sims_dynamic_perennial__19_33_36`  
+
+
 ## Simulation output folder  
 Stores simulation results in a standardized CSV format to ensure consistency across models. It also includes:  
 - Structured data for easy comparison and interpretation:  
@@ -64,14 +69,18 @@ Stores simulation results in a standardized CSV format to ensure consistency acr
     – OpenMalaria outputs    
 - Pre-generated plots for quick analysis.    
 
+**Example:**   
+- HPC: `<User-defined job directory>/simulation_outputs/20250202_TEST/sims_dynamic_perennial__19_33_36`    
+- Local:`simulations_local/simulation_outputs/20250202_TEST/sims_dynamic_perennial__19_33_36`  
+
 
 **Next up:**  
   
-- [How to use MultiMalModPy](.../getting_started/usage.md)  
-- [Input parameters and predefined options](.../getting_started/parameters.md)  
-- [Glossary](.../getting_started/glossary.md)  
-- [Installation and requirements](.../getting_started/installation.md)  
-- [First time configurations (manifest.py)](.../getting_started/configuration.md)  
+- [How to use MultiMalModPy](../getting_started/usage.md)  
+- [Input parameters and predefined options](../getting_started/parameters.md)  
+- [Glossary](../getting_started/glossary.md)  
+- [Installation and requirements](../getting_started/installation.md)  
+- [First time configurations (manifest.py)](../getting_started/configuration.md)  
 
 
 

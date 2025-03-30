@@ -34,7 +34,7 @@ They provide relevant details to guide users but are not presented in a strict o
    - 5 day timestep  
 
 
-## Population and age demography       
+### Population and age demography       
 
 - **EMOD**:  [Population dynamics](https://docs.idmod.org/projects/emod-malaria/en/latest/parameter-configuration-population.html?highlight=birth)
 - **malariasimulation**: [ModelDemography]() 

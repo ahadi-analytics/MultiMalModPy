@@ -13,7 +13,7 @@ script for each model.
 
 **Other interventions than case management are not part of the initial release and will be added in near future.**
 
-## Case management 
+## Case management
 
 Each model simulates case management differently and has a different definition of a malaria case. 
 
@@ -29,7 +29,7 @@ _Box is checked if aligned_
  ✔ **Deployment time and duration**   _Intervention starts from the beginning of the simulation and stays constant throughout._  
 
 
-### EMOD 
+### EMOD
 
 - Documentation main 
   page:[malaria-model-antimalarial-drugs](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/malaria-model-antimalarial-drugs.html)   

@@ -18,11 +18,12 @@ It is designed to allow running either one or all three of the models to enable 
 
 ## About this Guide  
 
-This online documentation is designed to assist both new and existing users of MultiMalModPy while complementing, but not replacing, the original documentation for each model.  
+This documentation is designed to support both new and experienced users of MultiMalModPy,
+providing structured guidance while supplementing—rather than replacing—the original documentation for each model. 
 
-This documentation includes:  
-  1) **Comparative Model Information**: Overview descriptions of each model, accompanied by links to their original source documentation.  
-  2) **User Guidance**: Resources and instructions tailored to both new and experienced users of MultiMalModPy.  
+**Scope of This Documentation**   
+1. **Comparative Model Information** – High-level descriptions of each model, including links to their original source documentation for further reference.  
+2. **User Guidance** – Detailed instructions, best practices, and resources tailored to facilitate both introductory learning and advanced usage of MultiMalModPy. 
 
 
 <div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">

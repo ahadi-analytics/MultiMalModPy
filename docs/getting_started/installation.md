@@ -206,7 +206,7 @@ python launch_sim.py --models EMOD --test
 
 **Step 8: Update `manifest.py`**  
 Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to
-the  [first time configurations](../getting_started/configuration/)
+the  [first time configurations](../getting_started/configuration.md)
 
 ### Install OpenMalaria
 
@@ -330,7 +330,7 @@ openMalaria -s example_scenario.xml
 **Update `manifest.py`**
 
 Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to
-the  [first time configurations](../getting_started/configuration/)
+the  [first time configurations](../getting_started/configuration.md)
 
 Define `OPENMALARIA_PATH` to point to the location of the required OpenMalaria files:
 
@@ -383,7 +383,7 @@ The OpenMalaria dependencies include:
 
 **Step 3: Update `manifest.py`**
 Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to
-the  [first time configurations](../getting_started/configuration/)
+the  [first time configurations](../getting_started/configuration.md)
 
 Define `OPENMALARIA_PATH` to point to the location of the required OpenMalaria files:
 
@@ -421,7 +421,7 @@ Install any additional R packages you may want to use for your project.
 
 **Step 3: Update `manifest.py`**
 Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to
-the  [first time configurations](../getting_started/configuration/)
+the  [first time configurations](../getting_started/configuration.md)
 
 Define the path to your local R installation:
 
@@ -446,7 +446,7 @@ To pull the container run:
 singularity pull --arch amd64 library://rungma/multimalmodpy/mmmpy_hpc:rocky8
 ```
 
-Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-singularity-container-)
+Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-singularity-container)
 
 ### Local Docker image  
 _For Windows Users_  
@@ -511,7 +511,7 @@ Your terminal should look something like: `(mmmpy_container) [root@74350592befb 
   ```
 
 If everything works correctly, you now have a running Docker container with the expected Python environment! 
-Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-docker-container-).
+Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-docker-container).
 
 
 <br>
