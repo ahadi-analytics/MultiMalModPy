@@ -9,6 +9,6 @@
 #SBATCH --error=log/run_MMMPy_%A_%a.err
 #SBATCH --output=log/run_MMMPy_%A_%a.out
 
-cd /home/rer4177/MultiMalModPy/malariasimulation
-python launch_sim.py --models EMOD malariasimulation OpenMalaria --emodstep burnin --csv example1 --rownum 0 --runmode csv
-python launch_sim.py --models EMOD malariasimulation OpenMalaria --emodstep burnin --csv example1 --rownum 1 --runmode csv
+cd /home/rer4177/MultiMalModPy
+python launch_sim.py --models EMOD malariasimulation OpenMalaria --emodstep burnin --csv example1 --rownum 0
+python launch_sim.py --models EMOD malariasimulation OpenMalaria --emodstep burnin --csv example1 --rownum 1
