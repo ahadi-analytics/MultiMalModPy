@@ -19,7 +19,7 @@ from plotter.plot_helper import *
 
 
 # Plots over age - requires mmmpy_yr.csv
-def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', age_groups_aggregates=None, facet_name=None):
+def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', age_groups_aggregates=None, facet_name=None, exp=None):
 
     """
     Plots age curves based on model results and saves the figure to the specified directory.
@@ -82,7 +82,6 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output
         f += 1
         max_ylim = []
         for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
-            s = s[0]
             color_key = color_selector(i, s)
             ylim_up = np.max(sdf[channel]) * 1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
@@ -99,7 +98,8 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output
             ax.fill_between(merge_df['ageGroup'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
                             color=color_palette[color_key])
         if firstPlot:
-            lg = ax.legend(loc='upper left', bbox_to_anchor=(0,1))
+            lg_title = get_legend_title(sweepvar, exp)
+            lg = ax.legend(title=lg_title, loc='upper left', bbox_to_anchor=(0, 1))
             firstPlot = False
         ax.set_ylim(0, max(max_ylim))
         ax.tick_params(axis='x', labelrotation=45)
@@ -142,10 +142,12 @@ if __name__ == "__main__":
 
     for channel in channel_list:
         print(f'#----- Plotting Age Curves for {channel}-----#')
-        age_curves(out_dir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,  age_groups_aggregates=age_groups_aggregates_sub)
+        age_curves(out_dir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
+                   age_groups_aggregates=age_groups_aggregates_sub,exp=exp)
 
-    sweepvar =  'target_output_values'
-    facet_var =  'modelname'
+    sweepvar = 'target_output_values'
+    facet_var = 'modelname'
     for channel in channel_list:
         print(f'#----- Plotting Age Curves for {channel}-----#')
-        age_curves(out_dir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,  age_groups_aggregates=age_groups_aggregates_sub)
+        age_curves(out_dir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
+                   age_groups_aggregates=age_groups_aggregates_sub, exp=exp)
