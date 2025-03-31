@@ -132,7 +132,10 @@ class RunModeManager:
         if self.experiment.target_output_name == 'eir':
             self.experiment.target_output_values = [20]
         if self.experiment.target_output_name == 'prevalence_2to10':
-            self.experiment.output_target = [0.05, 0.1, 0.25, 0.5] #self.experiment.output_target = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
+            if 'perennial' not in self.experiment.seasonality:
+                self.experiment.target_output_values = [0.05, 0.1, 0.25, 0.5]
+            else:
+                self.experiment.target_output_values = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
         if self.experiment.target_output_name == 'clinical_incidence_U5':
             raise ValueError('target_output_name clinical_incidence_U5 not defined for production run')
 
@@ -242,6 +245,7 @@ class ManifestConfig:
     """
 
     def __init__(self, manifest):
+        self.root_directory = manifest.ROOT_DIR
         self.hpc = manifest.hpc
         self.sh_hpc_config = manifest.sh_hpc_config
         self.selected_platform = manifest.selected_platform

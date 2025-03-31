@@ -31,8 +31,8 @@ for (i in c(1:length(rfiles))) {
 days_per_month <- days_in_month(seq(from = dmy("01-01-2023"), length.out = 12, by = "months"))
 
 # Load the .csv of parameters as a data frame:
-scenario_to_run <- read.csv(file.path(job_directory, 'scenarios_wseeds.csv'))
-if(!is.null(scen_id))scenario_to_run <- scenario_to_run[scen_id,]
+parameter_table <- read.csv(file.path(job_directory, 'scenarios_wseeds.csv'))
+if(!is.null(scen_id))parameter_table <- parameter_table[scen_id,]
 exp_setup_df <- read.csv(file.path(job_directory, 'exp_setup_df.csv'))
 
 exp <- list()
@@ -56,14 +56,13 @@ max_ages <- exp$max_ages
 
 if( length(exp$intervention_list)>0){
   print("Adding interventions to simulations...")
-  source(file.path('functions/interventions.R'))
+  source(file.path(wdir,'functions','interventions.R'))
   if ('smc' %in% exp$intervention_list){
-    exp <- define_smc_param(exp, scenario_to_run)
+    exp <- define_smc_param(exp, parameter_table)
   }
   ## to be expanded with other interventions
 }
 
 # Run the simulations or load example:
 print("Running the simulations...")
-simulation_outputs_raw <- run_simulations(exp = exp, exp_setup_df = exp_setup_df, parameter_table = scenario_to_run)
-simulation_outputs_df <- simulation_outputs_raw[[2]][[1]]
+simulation_outputs_raw <- run_simulations(exp = exp, exp_setup_df = exp_setup_df, parameter_table = parameter_table)

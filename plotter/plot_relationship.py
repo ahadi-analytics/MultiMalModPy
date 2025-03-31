@@ -55,8 +55,8 @@ def prevalence2to10_to_outcome(fdir, df, sweepvar='modelname', facet_var='season
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('colorblind', max(num_colors, 4))
 
-    nx = max(1,len(df['ageGroup'].unique()))
-    ny = 1
+    nx = max(1, len(df['ageGroup'].unique()))
+    ny = max(1, len(unique_facets))
     f = 1
     firstPlot = True
     fig = plt.figure(figsize=(10 * nx, 10 * ny))
@@ -226,7 +226,7 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
 
 # Plots simulated eir vs output variable, requires mmmpy_timeavrg.csv
 def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', eir_val='simulatedEIR',
-                   channel='prevalence_2to10', agegrp='0-5'):
+                   channel='prevalence_2to10', agegrps='0-5'):
     """
     Generate line plots for EIR (Entomological Inoculation Rate) and a requested
     outcome variable, with models represented as colors and sweep variables as panels.
@@ -244,7 +244,7 @@ def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', ei
             be used for plotting. Default is 'simulatedEIR'.
         channel (str, optional): The outcome variable to compare to EIR. Default is
             'prevalence_2to10'.
-        agegrp (str, optional): Limits the resulting graphs to the selected age group.
+        agegrps (str, optional): Limits the resulting graphs to the selected age group.
             Default is '0-5'.
 
     Returns:
@@ -252,7 +252,7 @@ def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', ei
     """
 
     figure_vars = [eir_val, channel] + [sweepvar, facet_var]
-    df, caption_txt = subset_dataframe_for_plot(df, figure_vars, agegrp)
+    df, caption_txt = subset_dataframe_for_plot(df, figure_vars, agegrps)
     color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
 
     firstPlot = True
@@ -293,7 +293,7 @@ def eir_to_outcome(fdir, df, sweepvar='cm_clinical', facet_var='seasonality', ei
         ax.set_xlabel(f'{eir_val.replace("EIR", " annual EIR")}', fontsize=14)
         ax.set_ylabel(get_label(channel))
 
-    fname = f'{eir_val}_{channel}_{agegrp}_{sweepvar}_{facet_var}'
+    fname = f'{eir_val}_{channel}_{agegrps}_{sweepvar}_{facet_var}'
     fname = clean_fname(fname, sweepvar, unique_groups, facet_var, unique_facets)
     fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close()
@@ -333,7 +333,7 @@ def input_to_simulated_eir(fdir, df, sweepvar='cm_clinical', facet_var='seasonal
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('colorblind', max(num_colors, 4))
     firstPlot = True
-    nx = 1
+    nx = max(1, len(unique_groups))
     ny = max(1, len(unique_facets))
     f = 1
     fig = plt.figure(figsize=(10 * nx, 6 * ny))
@@ -385,9 +385,6 @@ if __name__ == "__main__":
         modelname = [modelname]
 
     exp = load_exp(wdir)
-
-
-
     df, out_dir = get_output_df(wdir, modelname)
     out_dir = os.path.join(out_dir, 'plots')
     os.makedirs(out_dir, exist_ok=True)

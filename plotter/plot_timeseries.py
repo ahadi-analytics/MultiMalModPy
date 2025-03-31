@@ -19,7 +19,7 @@ sys.path.append(parent_dir)
 from plotter.plot_helper import *
 
 
-# Plots trends over available months, requires PfPR_ClinicalIncidence_mth.csv
+# Plots trends over available months, requires mmmpy_mth.csv
 def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', agegrps=['0-100'], new_index=None, facet_name = None):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
@@ -104,7 +104,7 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_ou
     plt.close()
 
 
-# Plots over time - requires PfPR_ClinicalIncidence_mth.csv
+# Plots over time - requires mmmpy_mth.csv
 def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGroup', agegrps=['0-100'], calendar_year=False, facet_name = None):
     """
     Parameters:
@@ -186,7 +186,7 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
     plt.close()
 
 
-# Plots over time - requires PfPR_ClinicalIncidence_yr.csv
+# Plots over time - requires mmmpy_yr.csv
 def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='seasonality', agegrps=['0-100'],  calendar_year=False, facet_name = None):
     """
     Parameters:

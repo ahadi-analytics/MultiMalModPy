@@ -1,6 +1,6 @@
 from plotter.plot_timeseries import monthly_timeseries
 from plotter.plot_agecurves import age_curves
-from plotter.plot_relationship import eir_to_outcome
+from plotter.plot_relationship import eir_to_outcome, prevalence2to10_to_outcome
 
 
 def generate_plots_example1(out_dir, exp, df, df_mth):
@@ -17,7 +17,7 @@ def generate_plots_example1(out_dir, exp, df, df_mth):
         df_mth_sub = df_mth  # Fallback to the original dataframe
 
     monthly_timeseries(out_dir, df_mth_sub, channel='prevalence_2to10', sweepvar='modelname', facet_var='target_output_values',
-                       agegrp='0-100', facet_name = exp.target_output_name)
+                       agegrps='0-100', facet_name = exp.target_output_name)
 
     # Plot 2
     age_groups_aggregates_sub = [x for x in exp.age_groups_aggregates if x not in ([[0, 5], [0, 100]])]
@@ -36,6 +36,5 @@ def generate_plots_example1(out_dir, exp, df, df_mth):
                age_groups_aggregates=age_groups_aggregates_sub)
 
     # Plot 3
-    eir_to_outcome(out_dir, df, sweepvar='cm_clinical', facet_var='modelname', eir_val='simulatedEIR',
-                   channel='prevalence_2to10',
-                   agegrp='0-100')
+    eir_to_outcome(out_dir, df, sweepvar='modelname', facet_var='cm_clinical', eir_val='simulatedEIR',  channel='prevalence_2to10',  agegrps='0-100')
+    prevalence2to10_to_outcome(out_dir, df, sweepvar='cm_clinical', facet_var='modelname', channel='clinical_incidence', agegrps=['0-100'])

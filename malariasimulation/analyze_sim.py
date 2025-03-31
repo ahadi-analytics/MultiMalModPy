@@ -713,7 +713,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     # Save the processed DataFrame to a CSV file
     cdf.to_csv((os.path.join(wdir, 'mmmpy_5day.csv')), index=False)
     if cc:
-        cdf = cdf[['scen_id', 'seed', 'timestep', 'cm_clinical', 'seasonality', 'target_output_values', 'cc_change',
+        cdf = cdf[['scen_id', 'seed', 'timestep', 'cm_clinical', 'seasonality', 'target_output_values', 'ccstep',
                    'cc_title', 'ageGroup', 'timestep', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
                    'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']]
         cdf.to_csv((os.path.join(wdir, 'mmmpy_ccstep_daily.csv')), index=False)

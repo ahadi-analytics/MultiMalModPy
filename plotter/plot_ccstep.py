@@ -17,7 +17,7 @@ plt.rcParams.update({'font.sans-serif': "Arial"})
 from plotter.plot_helper import *
 
 
-# Plots daily_timeseries - requires PfPR_ClinicalIncidence_daily.csv
+# Plots daily_timeseries - requires mmmpy_ccstep_daily.csv
 def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='5-10'):
     """
     Parameters:
@@ -50,7 +50,7 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var
                 if agegrp is None:
                     print('Warning: agegrp is set to None, it will combine all ages, please check your age aggregation')
                     # df = dfc.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
-                    df = dfc.groupby(['day_date', sweepvar, facet_var, 'target_output_values','cc_change'])[channel].agg(np.mean).reset_index()
+                    df = dfc.groupby(['day_date', sweepvar, facet_var, 'target_output_values','ccstep'])[channel].agg(np.mean).reset_index()
 
                 if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
                     raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
@@ -91,7 +91,7 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var
                     if channel == 'prevalence_2to10':
                         print(facet_df['target_output_values'].iloc[0])
                         ax.axhline(facet_df['target_output_values'].iloc[0], linestyle='--')
-                        ax.axhline(facet_df['cc_change'].iloc[0], linestyle='--')
+                        ax.axhline(facet_df['ccstep'].iloc[0], linestyle='--')
                     if firstPlot:
                         lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.4))
                         # lg = ax.legend(loc='upper left', bbox_to_anchor=(1,0.7))
@@ -108,7 +108,7 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var
                 plt.close()
 
 
-# Plots daily_timeseries_by_seed - requires PfPR_ClinicalIncidence_daily.csv
+# Plots daily_timeseries_by_seed - requires mmmpy_ccstep_daily.csv
 def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
@@ -273,7 +273,7 @@ def daily_eradication(fdir, df_all, channel, sweepvar='modelname', facet_var='ag
 
     #reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
     #df_all = df_all[df_all['cc_title'].isin(reductions)]
-    df_all = df_all[df_all['cc_change'] < df_all['target_output_values']]
+    df_all = df_all[df_all['ccstep'] < df_all['target_output_values']]
    
 
     if facet_var != 'ageGroup' and agegrp is not None:
@@ -316,8 +316,6 @@ if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
     modelname = args.modelname   #  ['EMOD', 'malariasimulation', 'OpenMalaria']
-    #out_dir = '/projects/b1139/emod-om/simulation_outputs/rer4177/test_sims_20240730/sims_dynamic_perennial_cc_step_15_11_55'
-    #modelname = ['OpenMalaria']
     if isinstance(modelname, str):
         modelname = [modelname]
 
