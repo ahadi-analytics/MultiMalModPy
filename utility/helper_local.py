@@ -315,7 +315,7 @@ def write_bat_submission_plots(exp):
     bat_content += f"set work_dir={work_dir}\n"
     bat_content += f"set jobdir={jobdir}\n"
     bat_content += f"set log_dir=%jobdir%\\log\n\n"
-    bat_content += f'cd /d "%work_dir%\\plotter"\n\n'
+    bat_content += f'cd "%work_dir%\\plotter"\n\n'
 
     # Add commands to run the plotting scripts
     for script in plot_scripts:
@@ -323,7 +323,6 @@ def write_bat_submission_plots(exp):
         bat_content += f'python {script} --directory {exp.sim_out_dir} --modelname malariasimulation OpenMalaria >> "%log_dir%\\run_{plot_name}.log" 2>> "%log_dir%\\run_{plot_name}.err"\n'
 
     # Add pause at the end to keep the terminal open
-    bat_content += "\nPause to keep the console open\n"
     bat_content += "pause\n"
 
     # Write the content to the batch file

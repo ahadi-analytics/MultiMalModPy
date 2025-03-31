@@ -331,15 +331,51 @@ def get_label(channel):
     """
 
     channel_labels = {'ageGroup': 'Age group',
-                      'prevalence_2to10': '$\it{Pf}$PR$_{2-10}$',   # (%) if %, then pfpr outcomes need to be *100
-                      'prevalence': '$\it{Pf}$PR',    # (%)
+                      'prevalence_2to10': r'$\it{Pf}$PR$_{2-10}$', # (%) if %, then pfpr outcomes need to be *100
+                      'prevalence': r'$\it{Pf}$PR',
                       'clinical_incidence': 'Clinical incidence (pppy)',
                       'severe_incidence': 'Severe incidence (pppy)',
                       'simulatedEIR': 'simulated EIR',
                       'n_total_mos_pop': 'Total female mosquito population'
                       }
 
+    # If channel is not found in channel_labels, it defaults to returning the value of channel itself
     return channel_labels.get(channel, channel)
+
+
+def get_legend_title(sweepvar, exp = None):
+    """
+    Retrieves the corresponding legend title for a given sweep variable.
+
+    Args:
+        sweepvar (str): The sweep variable for which the legend title is required.
+        exp (optional): An experiment object, used to adjust the title for 'target_output_values' if provided.
+
+    Returns:
+        str: The legend title associated with the sweep variable, or the sweep variable name if not found.
+    """
+
+    if exp is not None and sweepvar == 'target_output_values':
+        sweepvar = exp.target_output_name
+
+    channel_title = {'ageGroup': 'Age group',
+                     'prevalence_2to10': r'$\it{Pf}$PR$_{2-10}$',  # (%) if %, then pfpr outcomes need to be *100
+                     'prevalence': r'$\it{Pf}$PR',
+                     'clinical_incidence': 'Clinical incidence (pppy)',
+                     'severe_incidence': 'Severe incidence (pppy)',
+                     'simulatedEIR': 'simulated EIR',
+                     'n_total_mos_pop': 'Total female mosquito population',
+                     # Input parameters to sweep over
+                     'modelname': '',
+                     'cm_clinical': 'Clinical case management',
+                     'seasonality': 'Seasonality',
+                     'entomology_mode': 'Entomology mode',
+                     'eir': 'EIR'
+                     }
+
+    # If channel is not found in channel_labels, it defaults to returning the value of channel itself
+    return channel_title.get(sweepvar, sweepvar)
+
 
 def clean_fname(fname, sweepvar= None,unique_groups=None, facet_var = None, unique_facets= None):
     """
