@@ -72,7 +72,7 @@ else:
         exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.plots_to_run = []
 
-    # Update exp_name - FIXME
+    # Update exp_name
     exp.exp_name = exp.exp_name.replace('seasonality', '_'.join(exp.seasonality))
     exp.exp_name = exp.exp_name.replace('entomologymode', exp.entomology_mode)
     if exp.intervention_list != []:
