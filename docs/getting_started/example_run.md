@@ -131,12 +131,11 @@ Later, you’ll also learn how to run multiple simulations simultaneously using 
 
 ```   
 
-singularity exec -B /etc/passwd -B /etc/slurm -B `which sbatch ` -B `which srun ` -B `which sacct ` -B `which scontrol ` -B `which salloc ` -B `which scancel ` -B `which squeue ` -B /usr/lib64/slurm/ -B /usr/lib64/liblua-5.1.so -B /usr/lib64/liblua-5.1.so:/usr/lib64/liblua.so -B /usr/lib64/libjson-c.so.2 -B /usr/lib64/libjson-c.so.2.0.1 -B /usr/lib64/libmunge.so.2 -B /usr/lib64/libmunge.so.2.0.0 -B /usr/lib64/libpmi2.so -B /usr/lib64/libpmi2.so.0 -B /usr/lib64/libpmi2.so.0.0.0 -B /usr/lib64/libpmi.so -B /usr/lib64/libpmi.so.0 -B /usr/lib64/libpmi.so.0.0.0 -B /usr/local/pmix -B /usr/local/hwloc -B /usr/local/ucx-1.13.0 -B /usr/local/ucx-1.10.0 -B /usr/local/ucx-1.8.1 -B /usr/local/spack -B /usr/local/spack_v20d1 -B /usr/local/libevent/ -B /run -B /projects -B /scratch --writable-tmpfs /home/mrm9534/rcs-support/emod-mrm/emodpy4.1-OM46-R4.4.1.sif /opt/envs/emodpy39/bin/python3 launch_sim.py --models EMOD -- test  
-
+c
 ```   
    
 Note, the command includes at the very end the   
-- location of the image file `/home/mrm9534/rcs-support/emod-mrm/emodpy4.1-OM46-R4.4.1.sif`  
+- location of the image file `/gpfs/projects/b1139/emod-om/emodpy4.1-OM46-R4.4.1.sif`  
 - location of the python virtual environment within the container `/opt/envs/emodpy39/bin/python3 launch_sim.py`  
 - MultiMalModPy submission command `launch_sim.py --models EMOD -- test`
 _You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly._    

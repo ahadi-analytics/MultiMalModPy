@@ -228,7 +228,7 @@ Updating to the latest OpenMalaria version:
 1) Create a new folder for the version to install
 
 ```
-mkdir /projects/b1139/OpenMalaria/om_v46/
+mkdir /gpfs/projects/b1139/OpenMalaria/om_v46/
 ```
 
 And copy into the new folder the latest schema files (not source code), available
@@ -240,8 +240,8 @@ by [Scott Coughlin](https://www.it.northwestern.edu/departments/it-services-supp
 facilitate installation on Quest, without having to use cmake.
 
 ```
-cp /projects/b1139/OpenMalaria/om_v43/OpenMalaria.def  /projects/b1139/OpenMalaria/om_v46/OpenMalaria.def
-cp -r /projects/b1139/OpenMalaria/om_v43/modules  /projects/b1139/OpenMalaria/om_v46/
+cp /gpfs/projects/b1139/OpenMalaria/om_v43/OpenMalaria.def  /gpfs/projects/b1139/OpenMalaria/om_v46/OpenMalaria.def
+cp -r /gpfs/projects/b1139/OpenMalaria/om_v43/modules  /gpfs/projects/b1139/OpenMalaria/om_v46/
 ```
 
 The def files includes the following lines and does not require change (for information shown below)
@@ -284,7 +284,7 @@ whatis("Version: " .. version)
 
 depends_on("singularity")
 
-local bashStr = 'singularity exec -B /projects:/projects /projects/b1139/OpenMalaria/om_v46/OpenMalaria.sif /openmalaria/openMalaria-46.0/openMalaria "$@"'
+local bashStr = 'singularity exec -B /projects:/projects /gpfs/projects/b1139/OpenMalaria/om_v46/OpenMalaria.sif /openmalaria/openMalaria-46.0/openMalaria "$@"'
 
 set_shell_function("openMalaria",bashStr)
 ```
@@ -315,8 +315,8 @@ earlier step (lua file)
 Test to run new version
 
 ```
-cd /projects/b1139/OpenMalaria/om_v46/
-module use /projects/b1139/OpenMalaria/om_v46/modules/
+cd /gpfs/projects/b1139/OpenMalaria/om_v46/
+module use /gpfs/projects/b1139/OpenMalaria/om_v46/modules/
 module load openmalaria
 openMalaria -s example_scenario.xml
 ```
@@ -335,7 +335,7 @@ the  [first time configurations](../getting_started/configuration.md)
 Define `OPENMALARIA_PATH` to point to the location of the required OpenMalaria files:
 
 ```
-OPENMALARIA_PATH = "/projects/b1139/OpenMalaria/om_v43/"
+OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria/om_v43/"
 ```
 
 No edits needed for `openmalaria_input_path` which defines the location of OpenMalaria
