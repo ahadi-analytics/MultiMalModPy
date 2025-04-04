@@ -19,8 +19,9 @@ sys.path.append(parent_dir)
 from plotter.plot_helper import *
 
 
-# Plots trends over available months, requires PfPR_ClinicalIncidence_mth.csv
-def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', agegrps=['0-100'], new_index=None, facet_name = None):
+# Plots trends over available months, requires mmmpy_mth.csv
+def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', agegrps=['0-100'],
+                   new_index=None, facet_name = None, exp=None):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
     Note, assumed single occurence per month, i.e. aggregated across years (reads in mmmpy_mth.csv)
@@ -83,7 +84,8 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_ou
                             alpha=0.1, color=color_palette[color_key])
 
         if firstPlot:
-            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1), title=f'{sweepvar}')
+            lg_title = get_legend_title(sweepvar, exp)
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1), title=lg_title)
             firstPlot = False
 
         ax.set_ylim(0, max(max_ylim))
@@ -104,8 +106,9 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_ou
     plt.close()
 
 
-# Plots over time - requires PfPR_ClinicalIncidence_mth.csv
-def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGroup', agegrps=['0-100'], calendar_year=False, facet_name = None):
+# Plots over time - requires mmmpy_mth.csv
+def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGroup', agegrps=['0-100'],
+                       calendar_year=False, facet_name = None, exp=None):
     """
     Parameters:
         fdir (str): Directory where the plot will be saved.
@@ -161,7 +164,8 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
             ax.fill_between(merge_df['date'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
                             color=color_palette[color_key])
         if firstPlot:
-            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1))
+            lg_title = get_legend_title(sweepvar, exp)
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1), title=lg_title)
             firstPlot = False
         ax.set_ylabel(get_label(channel))
         ax.set_ylim(0, max(max_ylim))
@@ -186,8 +190,9 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
     plt.close()
 
 
-# Plots over time - requires PfPR_ClinicalIncidence_yr.csv
-def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='seasonality', agegrps=['0-100'],  calendar_year=False, facet_name = None):
+# Plots over time - requires mmmpy_yr.csv
+def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='seasonality', agegrps=['0-100'],
+                      calendar_year=False, facet_name = None, exp=None):
     """
     Parameters:
         fdir (str): Directory where the plot will be saved.
@@ -249,7 +254,8 @@ def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='season
                             color=color_palette[color_key])
 
         if firstPlot:
-            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1))
+            lg_title = get_legend_title(sweepvar, exp)
+            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1), title=lg_title)
             firstPlot = False
 
         ax.set_ylabel(get_label(channel))
@@ -258,7 +264,7 @@ def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='season
         ax.locator_params(axis='x', nbins=len(df['year'].unique()))
 
     if 'ageGroup' not in figure_vars:
-        fname = f'timeseries_annual_{channel}_{agegrps[0]}_{sweepvar}_{facet_var}'
+        fname = f'timeseries_annual_{channel}_{agegrps[0]}_{sweepvar}_{facet_var}' # FIXME if multiple agegrps, wont be reflected in file name
     else:
         fname = f'timeseries_annual_{channel}_{sweepvar}_{facet_var}'
     fname = clean_fname(fname, sweepvar, unique_groups, facet_var, unique_facets)
@@ -299,7 +305,7 @@ if __name__ == "__main__":
                 # new_index = [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6]
                 new_index = None  # If none, use default 1-12
                 monthly_trends(out_dir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrps=agegrps,
-                               new_index=new_index)
+                               new_index=new_index, exp=exp)
             except:
                 print(f'{channel} not found in dataframe')
 

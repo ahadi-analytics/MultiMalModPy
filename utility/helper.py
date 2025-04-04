@@ -28,19 +28,21 @@ def parse_launch_args():
         argparse.Namespace: An object containing the parsed command-line arguments.
 
     Command-Line Arguments:
-        -d, --directory (str): Job directory for burnin; ignored if no EMOD burnin is provided.
-        --suite (str): Name of the suite; default is the current date followed by "_test".
-        --expname (str): Name of the experiment; default includes the current time.
-        --emodstep (str): The step for EMOD, such as 'burnin', 'pickup', or 'new_pickup'.
-        --serializedid (str): Serialized ID for EMOD, if applicable.
-        --models (list): List of models to run, default includes 'EMOD', 'malariasimulation', and 'OpenMalaria'.
-        --user (str): Subdirectory for simulations, based on the current user or 'b1139' for NUCLUSTER.
-        --csv (str): Name of the scenario CSV file.
-        --rownum (int): Row number from the specified scenario CSV.
-        -r, --run_mode (str): Type of run (e.g., None, 'calibration', 'simple', 'production').
-        --emod_calib_params (bool): Flag indicating whether to include calibration parameters for EMOD.
-        --mpv (bool): Flag for running malariasimulation with parameter variation (default is True).
-        --target_output_name (str): Specifies whether to align transmission by EIR or by prevalence_2to10.
+        -d, --directory (str)       : Job directory for burn-in; ignored if no EMOD burn-in is provided.
+        --suite (str)               : Name of the suite; defaults to the current date followed by "_test".
+        --expname (str)             : Name of the experiment; defaults to include the current time.
+        --emodstep (str)            : Specifies the EMOD step (e.g., 'burnin', 'pickup', 'new_pickup').
+        --serializedid (str)        : Serialized ID for EMOD, if applicable.
+        --models (list)             : List of models to run (default: ['EMOD', 'malariasimulation', 'OpenMalaria']).
+        --user (str)                : Subdirectory for simulations, based on the current user or 'b1139' for NUCLUSTER.
+        --csv (str)                 : Name of the scenario CSV file.
+        --rownum (int)              : Row number from the specified scenario CSV (default: 0).
+        -r, --run_mode (str)        : Type of run ('custom', 'calibration', 'simple', 'production', or 'csv').
+        --emod_calib_params (bool)  : Whether to include calibration parameters for EMOD.
+        --mpv (bool)                : Whether to run malariasimulation with parameter variation (default: True).
+        --target_output_name (str)  : Align transmission by EIR, prevalence_2to10, or clinical incidence U5.
+        -t, --test (bool)           : Runs the simulation with lower population, shorter burn-in, and fewer seeds.
+        -n, --note (str)            : An optional tag to distinguish different runs.
     """
     parser = argparse.ArgumentParser(description="Description of your script.")
 
@@ -48,67 +50,68 @@ def parse_launch_args():
     parser.add_argument("-d", "--directory",
                         type=str,
                         required=False,
-                        help="Jobdirectory of burnin, if no EMOD burnin, is ignored")
+                        help="Job directory for burn-in; ignored if no EMOD burn-in is used.")
     parser.add_argument('--suite',
                         type=str,
                         default=f'{dt.now().strftime("%Y%m%d")}',
-                        help='Description of SUITEname')
+                        help="Name of the suite (default: current date).")
     parser.add_argument('--expname',
                         type=str,
                         default=f'sims_entomologymode_seasonality_intervention_{dt.now().strftime("%H_%M_%S")}',
-                        help='Description of exp_name')
+                        help="Experiment name (default: includes timestamp).")
     parser.add_argument('--emodstep',
                         type=str,
                         default=None,
                         choices=[None, 'burnin', 'pickup', 'new_pickup'],
-                        help='Description of emod_step')
+                        help="Step for EMOD: 'burnin', 'pickup', or 'new_pickup'.")
     parser.add_argument('--serializedid',
                         type=str,
                         default='',
-                        help='Description of emod_serialized_id')
+                        help='Serialized ID for EMOD, if applicable.')
     parser.add_argument('-m','--models',
                         nargs='+',
                         default=['EMOD', 'malariasimulation', 'OpenMalaria'],
                         choices=['EMOD', 'malariasimulation', 'OpenMalaria'],
-                        help='Description of models_to_run')
+                        help="List of malaria models to run - any combination of ['EMOD', 'malariasimulation', 'OpenMalaria'].")
     parser.add_argument('--user',
                         type=str,
                         default=os.environ.get('USER'),
-                        help='Subdirectory for simulations by user (or b1139 on NUCLUSTER)')
+                        help='User subdirectory for simulations (default: system username).')
     parser.add_argument('--csv',
                         type=str,
                         required=False,
-                        help='Name of scenario csv')
+                        help='Name of the scenario CSV file.')
     parser.add_argument('--rownum',
                         type=int,
                         default=0,
-                        help='Row number of specified scenario csv')
+                        help='Row number in the scenario CSV file (default: 0).')
     parser.add_argument('-r', '--run_mode',
                         type=str,
                         default='custom',
                         choices=['custom','calibration', 'simple', 'production', 'csv'],
-                        help='Specify type of simulation to run, None (use user inputs), or one of the pre-defined calibration, simple or production run ')
+                        help="Simulation run type (default: 'custom').")
     parser.add_argument('--emod_calib_params',
                         action='store_true',
-                        help='Specify whether to run including calibration parameters as a sweep variable (EMOD only)')
+                        help='Include calibration parameters for EMOD (default: False).')
     parser.add_argument('--mpv',
                         default=True,
                         type=bool,
-                        help='Specify whether to run malariasimulation with parameter variation, default is to run parameter variation')
+                        help='Run malariasimulation with parameter variation (default: True).')
     parser.add_argument('-o','--target_output_name',
                         type=str,
                         default='prevalence_2to10',
-                        choices=['prevalence_2to10', 'eir','clinical_incidence_U5'],
-                        help='Specify whether to align transmission in each model by EIR, by prevalence_2to10 or by clinical incidence U5')
+                        choices=['eir', 'prevalence_2to10', 'clinical_incidence_U5'],
+                        help='Align transmission by EIR, prevalence_2to10, or clinical incidence U5.')
     parser.add_argument('-t','--test',
                         action='store_true',
-                        help='If true runs simulation with lower population and burnin, and fewer seeds.')
+                        help='Enable test mode with reduced population, burn-in, and seeds.')
     parser.add_argument('-n','--note',
                         type=str,
                         default='',
-                        help='an additional name tag the user can provide to distinguish runs')
+                        help='Optional tag for distinguishing runs.')
     args = parser.parse_args()
 
+    # Validate CSV and rownum combination
     if args.csv:
         if not args.rownum:
             print(f"The '--csv' argument was specified ({args.csv}) but no rownum"
@@ -116,6 +119,21 @@ def parse_launch_args():
         args.run_mode = "csv"
         print(f"The '--csv' argument was specified ({args.csv}). "
               "Setting 'run_mode' to 'csv'.")
+
+    # Validate Windows compatibility with EMOD
+    if os.name != 'posix' and 'EMOD' in args.models:
+        raise ValueError(
+            "EMOD is not available for local execution on Windows, but it was specified in the models argument. "
+            "Did you forget to exclude EMOD from the models list?")
+
+    # Ensure EMOD is specified if emodstep is set
+    if args.emodstep is not None and 'EMOD' not in args.models:
+        raise ValueError(f"EMOD is not specified in the models list, but emodstep is set to {args.emodstep}. "
+                         "Did you forget to include EMOD in models?")
+
+    # Warning for experimental feature
+    if args.emodstep == 'new_pickup':
+        print("Warning: 'new_pickup' is in development mode. Please review your simulation and results carefully.")
 
     return args
 
@@ -484,7 +502,7 @@ def create_scenarios_csv(exp, col_list):
     This function constructs a DataFrame of all possible combinations of attributes specified
     in `col_list` and maps additional experiment-specific parameters, including entomology mode,
     number of seeds, and calibration target inputs. It also processes specific interventions
-    such as `cc_step` if present.
+    such as `ccstep` if present.
 
     Args:
         exp (Experiment): The experiment object containing attributes and settings for scenarios.

@@ -19,17 +19,17 @@ customTheme <- f_getCustomTheme() +
 # Load simulation outputs  -------------------------------
 dat_em_15 <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/20250207_production/sims_dynamic_perennial_seasonal_17_20_45", modelname = "EMOD")
 dat_ms_15 <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/20250207_production/sims_dynamic_perennial_seasonal_17_20_45", modelname = "malariasimulation")
-dat_om_15_noCo <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/20250207_production/sims_dynamic_perennial_seasonal_17_20_45", modelname = "OpenMalaria")
+dat_om_15_noCo <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/20250314_production/sims_dynamic_perennial_09_55_25", modelname = "OpenMalaria")
 dat_om_15_noCo$modelname <- "OpenMalaria_noCo"
-dat_om_15 <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/20250207_production/sims_dynamic_perennial_seasonal_17_20_45", modelname = "OpenMalaria")
-dat_om_15$modelname <- "OpenMalaria_nSevere"
-dat_total <- rbind(dat_om_15_noCo, dat_om_15, dat_em_15, dat_ms_15, fill=TRUE)
+dat_om_15_nSevere <- get_output_df("/projects/b1139/emod-om/simulation_outputs/rer4177/20250314_production/sims_dynamic_perennial_09_55_25", modelname = "OpenMalaria")
+dat_om_15_nSevere$modelname <- "OpenMalaria_nSevere"
+dat_total <- rbind(dat_om_15_noCo, dat_om_15_nSevere, dat_em_15, dat_ms_15, fill=TRUE)
 dat_total <- dat_total %>%
   filter(cm_clinical == 0.15, seasonality == "perennial")
-rm(dat_ms_15, dat_em_15, dat_om_15)
+rm(dat_ms_15, dat_em_15, dat_om_15_nSevere, dat_om_15_noCo)
 
 dat_total <- dat_total %>%
-  group_by(output_target, cm_clinical, ageGroup, seasonality, modelname) %>%
+  group_by(target_output_values, cm_clinical, ageGroup, seasonality, modelname) %>%
   summarise(simulatedEIR__mean = mean(simulatedEIR),
             simulatedEIR__min = quantile(simulatedEIR, 0.05),
             simulatedEIR__up = quantile(simulatedEIR, 0.95),
@@ -51,26 +51,26 @@ dat_total$ageGroup <- factor(dat_total$ageGroup,
 
 
 # Load Interpolation (time avrg) Data
-i_ms <- fread(file.path('/home/rer4177/model-characterization/target_calibration/malariasimulation/interpolation_data.csv'))
+i_ms <- fread(file.path('/home/rer4177/MultiMalModPy/target_calibration/malariasimulation/interpolation_data.csv'))
 i_ms <- i_ms %>%
   filter(pop_size == 50000, seasonality == 'perennial', cm_clinical == 0.15)
-i_em <- fread(file.path('/home/rer4177/model-characterization/target_calibration/EMOD/interpolation_data.csv'))
+i_em <- fread(file.path('/home/rer4177/MultiMalModPy/target_calibration/EMOD/interpolation_data.csv'))
 i_em <- i_em %>%
-  filter(pop_size == 5000, seasonality == 'perennial', cm_clinical == 0.15, input_target <= 660)
-i_om <- fread(file.path('/home/rer4177/model-characterization/target_calibration/OpenMalaria/interpolation_data.csv'))
+  filter(pop_size == 5000, seasonality == 'perennial', cm_clinical == 0.15, input_target <= 380)
+i_om <- fread(file.path('/home/rer4177/MultiMalModPy/target_calibration/OpenMalaria/interpolation_data.csv'))
 i_om <- i_om %>%
   filter(pop_size == 50000, seasonality == 'perennial', cm_clinical == 0.15, input_target <= 290)
 i_om$modelname <- "OpenMalaria_noCo"
-i_om_nSevere <- fread(file.path('/home/rer4177/model-characterization/target_calibration/OpenMalaria/sims_dynamic_perennial_seasonal__11_53_26nSevere_interpolation_data.csv'))
+i_om_nSevere <- fread(file.path('/home/rer4177/MultiMalModPy/target_calibration/OpenMalaria/sims_dynamic_perennial_11_38_00_interpolation_data_nSevere.csv'))
 i_om_nSevere <- i_om_nSevere %>%
   filter(pop_size == 50000, seasonality == 'perennial', cm_clinical == 0.15, input_target <= 290)
 i_om_nSevere$modelname <- "OpenMalaria_nSevere"
 i_full <- rbind(i_om, i_em, i_ms, i_om_nSevere, fill=TRUE)
-rm(i_om, i_em, i_ms)
+rm(i_om, i_em, i_ms, i_om_nSevere)
 
 for (ii in unique(dat_total$cm_clinical)){
   ii = 0.15
-  dat_p <- filter(dat_total, cm_clinical == 0.15, seasonality == 'perennial', output_target <= 0.8)
+  dat_p <- filter(dat_total, cm_clinical == 0.15, seasonality == 'perennial', target_output_values <= 0.8)
   i_p <- filter(i_full, cm_clinical == 0.15, seasonality == 'perennial')
   i_p <- filter(i_p, simulatedEIR >= 0.01)
   # ------------------------------ Figure 2A and B ------------------------------
@@ -92,7 +92,8 @@ for (ii in unique(dat_total$cm_clinical)){
          subtitle = "",
          fill = 'Model',
          color = 'Model') +
-    theme(legend.position = c(.15, .65))
+    theme(legend.position = "inside",
+          legend.position.inside = c(.15, .65))
   pA
   
   pB1 <- i_p %>%
@@ -184,24 +185,24 @@ for (ii in unique(dat_total$cm_clinical)){
   
   dat_p <- dat_p %>%
     mutate(pfpr_grp = case_when(
-      modelname == 'EMOD' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
-      modelname == 'EMOD' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
-      modelname == 'EMOD' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
-      modelname == 'EMOD' & output_target %in% pfpr_values[4] ~ pfpr_labels[4],
+      modelname == 'EMOD' & target_output_values %in% pfpr_values[1] ~ pfpr_labels[1],
+      modelname == 'EMOD' & target_output_values %in% pfpr_values[2] ~ pfpr_labels[2],
+      modelname == 'EMOD' & target_output_values %in% pfpr_values[3] ~ pfpr_labels[3],
+      modelname == 'EMOD' & target_output_values %in% pfpr_values[4] ~ pfpr_labels[4],
       ## OM
-      modelname == 'OpenMalaria_nSevere' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
-      modelname == 'OpenMalaria_nSevere' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
-      modelname == 'OpenMalaria_nSevere' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
-      modelname == 'OpenMalaria_nSevere' & output_target %in% pfpr_values[4] ~ pfpr_labels[4],
-      modelname == 'OpenMalaria_noCo' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
-      modelname == 'OpenMalaria_noCo' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
-      modelname == 'OpenMalaria_noCo' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
-      modelname == 'OpenMalaria_noCo' & output_target %in% pfpr_values[4] ~ pfpr_labels[4],
+      modelname == 'OpenMalaria_nSevere' & target_output_values %in% pfpr_values[1] ~ pfpr_labels[1],
+      modelname == 'OpenMalaria_nSevere' & target_output_values %in% pfpr_values[2] ~ pfpr_labels[2],
+      modelname == 'OpenMalaria_nSevere' & target_output_values %in% pfpr_values[3] ~ pfpr_labels[3],
+      modelname == 'OpenMalaria_nSevere' & target_output_values %in% pfpr_values[4] ~ pfpr_labels[4],
+      modelname == 'OpenMalaria_noCo' & target_output_values %in% pfpr_values[1] ~ pfpr_labels[1],
+      modelname == 'OpenMalaria_noCo' & target_output_values %in% pfpr_values[2] ~ pfpr_labels[2],
+      modelname == 'OpenMalaria_noCo' & target_output_values %in% pfpr_values[3] ~ pfpr_labels[3],
+      modelname == 'OpenMalaria_noCo' & target_output_values %in% pfpr_values[4] ~ pfpr_labels[4],
       ## malariasimulation
-      modelname == 'malariasimulation' & output_target %in% pfpr_values[1] ~ pfpr_labels[1],
-      modelname == 'malariasimulation' & output_target %in% pfpr_values[2] ~ pfpr_labels[2],
-      modelname == 'malariasimulation' & output_target %in% pfpr_values[3] ~ pfpr_labels[3],
-      modelname == 'malariasimulation' & output_target %in% pfpr_values[4] ~ pfpr_labels[4]),
+      modelname == 'malariasimulation' & target_output_values %in% pfpr_values[1] ~ pfpr_labels[1],
+      modelname == 'malariasimulation' & target_output_values %in% pfpr_values[2] ~ pfpr_labels[2],
+      modelname == 'malariasimulation' & target_output_values %in% pfpr_values[3] ~ pfpr_labels[3],
+      modelname == 'malariasimulation' & target_output_values %in% pfpr_values[4] ~ pfpr_labels[4]),
       pfpr_grp = factor(pfpr_grp, levels = pfpr_labels, labels = pfpr_labels))
   
   
@@ -209,11 +210,11 @@ for (ii in unique(dat_total$cm_clinical)){
     ungroup() %>%
     filter(ageGroup %in% agegrps) %>%
     filter(!is.na(pfpr_grp)) %>%
-    dplyr::select(output_target, ageGroup, pfpr_grp, modelname,
+    dplyr::select(target_output_values, ageGroup, pfpr_grp, modelname,
                   prevalence__mean, prevalence__min, prevalence__up,
                   clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                   severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-    pivot_longer(cols = -c(output_target, ageGroup, modelname, pfpr_grp)) %>%
+    pivot_longer(cols = -c(target_output_values, ageGroup, modelname, pfpr_grp)) %>%
     separate(name, into = c('name', 'stat'), sep = '__') %>%
     mutate(name = factor(name, levels = c('prevalence', 'clinical_incidence', 'severe_incidence'),
                          labels = c('Prevalence', 'Clinical Incidence (ppa)', 'Severe Incidence (ppa)'))) %>%
@@ -240,11 +241,11 @@ for (ii in unique(dat_total$cm_clinical)){
     ungroup() %>%
     filter(ageGroup %in% agegrps) %>%
     filter(!is.na(pfpr_grp)) %>%
-    dplyr::select(output_target, ageGroup, pfpr_grp, modelname,
+    dplyr::select(target_output_values, ageGroup, pfpr_grp, modelname,
                   prevalence__mean, prevalence__min, prevalence__up,
                   clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                   severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-    pivot_longer(cols = -c(output_target, ageGroup, modelname, pfpr_grp)) %>%
+    pivot_longer(cols = -c(target_output_values, ageGroup, modelname, pfpr_grp)) %>%
     separate(name, into = c('name', 'stat'), sep = '__') %>%
     mutate(name = factor(name, levels = c('prevalence', 'clinical_incidence', 'severe_incidence'),
                          labels = c('Prevalence', 'Clinical Incidence (ppa)', 'Severe Incidence (ppa)'))) %>%
@@ -271,11 +272,11 @@ for (ii in unique(dat_total$cm_clinical)){
     ungroup() %>%
     filter(ageGroup %in% agegrps) %>%
     filter(!is.na(pfpr_grp)) %>%
-    dplyr::select(output_target, ageGroup, pfpr_grp, modelname,
+    dplyr::select(target_output_values, ageGroup, pfpr_grp, modelname,
                   prevalence__mean, prevalence__min, prevalence__up,
                   clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                   severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-    pivot_longer(cols = -c(output_target, ageGroup, modelname, pfpr_grp)) %>%
+    pivot_longer(cols = -c(target_output_values, ageGroup, modelname, pfpr_grp)) %>%
     separate(name, into = c('name', 'stat'), sep = '__') %>%
     mutate(name = factor(name, levels = c('prevalence', 'clinical_incidence', 'severe_incidence'),
                          labels = c('Prevalence', 'Clinical Incidence (ppa)', 'Severe Incidence (ppa)'))) %>%
@@ -308,10 +309,10 @@ for (ii in unique(dat_total$cm_clinical)){
   pD1 <- dat_p %>%
     ungroup() %>%
     filter(ageGroup %in% agegrps) %>%
-    dplyr::select(output_target, ageGroup, prevalence_2to10__mean, modelname,
+    dplyr::select(target_output_values, ageGroup, prevalence_2to10__mean, modelname,
                   clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                   severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-    pivot_longer(cols = -c(output_target, ageGroup, modelname, prevalence_2to10__mean)) %>%
+    pivot_longer(cols = -c(target_output_values, ageGroup, modelname, prevalence_2to10__mean)) %>%
     separate(name, into = c('name', 'stat'), sep = '__') %>%
     filter(name =='clinical_incidence') %>%
     mutate(name = case_when(name == 'clinical_incidence' ~ 'Clinical Incidence\n(ppa)')) %>%
@@ -335,10 +336,10 @@ for (ii in unique(dat_total$cm_clinical)){
   pD2 <- dat_p %>%
     ungroup() %>%
     filter(ageGroup %in% agegrps) %>%
-    dplyr::select(output_target, ageGroup, prevalence_2to10__mean, modelname,
+    dplyr::select(target_output_values, ageGroup, prevalence_2to10__mean, modelname,
                   clinical_incidence__mean, clinical_incidence__min, clinical_incidence__up,
                   severe_incidence__mean, severe_incidence__min, severe_incidence__up) %>%
-    pivot_longer(cols = -c(output_target, ageGroup, modelname, prevalence_2to10__mean)) %>%
+    pivot_longer(cols = -c(target_output_values, ageGroup, modelname, prevalence_2to10__mean)) %>%
     separate(name, into = c('name', 'stat'), sep = '__') %>%
     filter(name =='severe_incidence') %>%
     mutate(name = case_when(name == 'severe_incidence' ~ 'Severe Incidence\n(ppa)')) %>%
@@ -370,7 +371,7 @@ for (ii in unique(dat_total$cm_clinical)){
   
   pABCD <- (pA+pB+pC+pD)+plot_layout(design=mylayout)
   pABCD
-  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, 'FEB25_noComorbidities.pdf',sep="")), height = 17.89, width = 34.13)
-  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, 'FEB25_noComorbidities.png',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, '.pdf',sep="")), height = 17.89, width = 34.13)
+  ggsave(plot = pABCD, filename = file.path(getwd(), paste('Figure2_CM', ii, '.png',sep="")), height = 17.89, width = 34.13)
 }
 pABCD

@@ -229,7 +229,7 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
 
     scen_var = ['scen_id', 'num_seeds', 'seasonality', 'entomology_mode']
     outcome_var = ['InputEIR', 'SimulatedEIR', 'nTransmit', 'Vector_Nv', 'Vector_Sv']
-    cc_step_var = ['cc_factor_OpenMalaria', 'cc_timestep_OpenMalaria', 'cc_title']
+    ccstep_var = ['cc_factor_OpenMalaria', 'cc_timestep_OpenMalaria', 'cc_title']
     columns_to_keep = ['index', 'seed', 'survey', 'days', 'year'] + scen_var + outcome_var
 
     if survey_step_days == 5:
@@ -239,8 +239,8 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
 
         # If different EIRs for each simulation were created, those need to be parsed out here, so all the models can eventually be aligned
         # The only difference between these two dfs is if eir_openmalaria (om specific eir) or eir (general to all models) is used.
-        if 'cc_change' in df_day:
-            df_day = df_day[columns_to_keep + cc_step_var]
+        if 'ccstep' in df_day:
+            df_day = df_day[columns_to_keep + ccstep_var]
         else:
             df_day = df_day[columns_to_keep]
 
@@ -1053,7 +1053,7 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
                'month', 'year', 'agebin', 'ageGroup', 'Vector_Nv', 'Vector_Sv',
                'nHost', 'target_output_values', 'inputEIR', 'simulatedEIR', 'prevalence', 'clinical_incidence',
                'severe_incidence',
-               'nPatent', 'cc_factor_OpenMalaria', 'cc_change', 'cc_title']]
+               'nPatent', 'cc_factor_OpenMalaria', 'ccstep', 'cc_title']]
 
     df3 = df3.rename(
         columns={'days': 'timestep', 'Vector_Nv': 'n_total_mos_pop',
@@ -1074,7 +1074,7 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     df3 = df3.merge(v, on=grp_channels, how='inner')
     # Save the processed DataFrame to a CSV file
     print(f'\nSaving outputs to: {wdir}')
-    cols_to_keep = ['scen_id', 'seed', 'cm_clinical', 'cm_severe', 'seasonality', 'target_output_values', 'cc_change',
+    cols_to_keep = ['scen_id', 'seed', 'cm_clinical', 'cm_severe', 'seasonality', 'target_output_values', 'ccstep',
                     'cc_title', 'ageGroup', 'timestep', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
                     'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']
     df3 = df3[cols_to_keep]
@@ -1125,5 +1125,5 @@ if __name__ == "__main__":
         FiveDayAgebinAnalyzer(exp, mmi, start_year=start_year,
                               age_groups_aggregates=age_groups_aggregates)
     # Custom analyzers
-    if 'cc_step' in exp.analyzer_list and survey_steps == 5:
+    if 'ccstep' in exp.analyzer_list and survey_steps == 5:
         CCStepAnalyzer(exp, mm, start_year, compr='infer')

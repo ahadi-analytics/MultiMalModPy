@@ -64,7 +64,7 @@ def output_target_to_xTemp(df, exp, model):
     else:
         raise ValueError(f'Specified input_type is not valid {exp.target_output_name}')
 
-    # FIXME allow this hack, or is there a better one? For testrun, or introduce 'debug run' to allow running lower  populations
+    # NOTE: Workaround to allow smaller populations for test runs
     popsize = exp.emod_pop_size
     if exp.test and popsize not in data.loc[data['modelname'] == model, 'pop_size'].unique():
         popsize = int(data.loc[data['modelname'] == model, 'pop_size'].min())
@@ -142,7 +142,7 @@ def output_target_to_eir(df, exp, model):
     else:
         raise ValueError(f'Specified model is not valid {model}')
 
-    # FIXME allow this hack, or is there a better one? For testrun, or introduce 'debug run' to allow running lower  populations
+    # NOTE: Workaround to allow smaller populations for test runs
     if exp.test and popsize not in data.loc[data['modelname'] == model, 'pop_size'].unique():
         popsize = data.loc[data['modelname'] == model, 'pop_size'].min()
 

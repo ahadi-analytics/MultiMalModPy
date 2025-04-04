@@ -1,6 +1,7 @@
 import argparse
 import pickle
 import os
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
@@ -12,6 +13,8 @@ mpl.rcParams['pdf.fonttype'] = 3
 plt.rcParams.update({'font.size': 16})
 plt.rcParams.update({'font.sans-serif': "Arial"})
 
+parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+sys.path.append(parent_dir)
 from plotter.plot_helper import *
 from plotter.custom.example1 import *  ### Modify this import for any other custom plots to run, or add additional
 

@@ -118,7 +118,7 @@ def create_scenarios(exp, scen_df):
     shutil.copy(os.path.join(exp.openmalaria_path, schema), exp.job_directory)
 
 
-def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
+def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=10):
     """
     Submits a job to analyze OpenMalaria simulation results on an HPC cluster.
 
@@ -138,13 +138,12 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=4):
 
     """
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OMsim',
+    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OpenMalaria',
                                      mem_scl=exp.mem_increase_factor)
 
     # Create the Python command to run the analyzer
-    # Create the Python command to run the analyzer
-    pycommand = f'{exp.EMOD_venv}' \
-                f'\ncd {exp.ROOT_DIR}/OpenMalaria' \
+    pycommand = f'\ncd {exp.root_directory}/OpenMalaria' \
+                f'\n{exp.EMOD_venv_modules}\n{exp.EMOD_venv_path}' \
                 f'\npython analyze_sim.py --dir "{exp.job_directory}"'
 
     if exp.use_container:

@@ -72,16 +72,17 @@ define_smc_param <- function(exp, scenarios_to_run) {
 }
 
 
-carrying_capacity <- function(parameters, parameter_table){
+carrying_capacity <- function(parameters, parameter_table, index){
+      simparams <- list()
       # Calibrate to the initial EIR (eirs unique to each model, based on which eir creates the high, medium and low prevalences required):
-      simparams[[i]] <- set_equilibrium(parameters = parameters,
-                                      init_EIR = parameter_table[i,]$transmission_intensity_malariasimulation)
+      simparams[[i]] <- set_equilibrium(parameters = parameters[[index]],
+                                        init_EIR = parameter_table[index,]$transmission_intensity_malariasimulation)
       # Get the mosquito carrying capacity:
-      mosquito_carrying_capacity <- get_init_carrying_capacity(parameters = parameters)
+      mosquito_carrying_capacity <- get_init_carrying_capacity(parameters = simparams[[index]])
       
       # Parameterise the changes in mosquito population carrying capacity (for EIR step change):
-      simparams[[i]] <- set_carrying_capacity(parameters = parameters, 
-                                              timesteps = parameter_table[i,]$cc_timestep_malariasimulation, 
-                                              carrying_capacity = matrix(parameter_table[i,]$cc_factor_malariasimulation, ncol = 1))
+      simparams[[i]] <- set_carrying_capacity(parameters = simparams[[index]], 
+                                              timesteps = parameter_table[index,]$cc_timestep_malariasimulation, 
+                                              carrying_capacity = matrix(parameter_table[index,]$cc_factor_malariasimulation, ncol = 1))
   return(simparams[[i]])
   }
