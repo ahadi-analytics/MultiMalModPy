@@ -56,7 +56,7 @@ def output_target_to_xTemp(df, exp, model):
     output = []
 
     if exp.target_output_name == 'eir':
-        output_type_col = 'simulatedEIR'
+        output_type_col = 'eir'
     elif exp.target_output_name == 'prevalence_2to10':
         output_type_col = 'prevalence_2to10'
     elif exp.target_output_name == 'clinical_incidence_U5':
@@ -66,14 +66,14 @@ def output_target_to_xTemp(df, exp, model):
 
     # NOTE: Workaround to allow smaller populations for test runs
     popsize = exp.emod_pop_size
-    if exp.test and popsize not in data.loc[data['modelname'] == model, 'pop_size'].unique():
-        popsize = int(data.loc[data['modelname'] == model, 'pop_size'].min())
+    if exp.test and popsize not in data.loc[data['models'] == model, 'pop_size'].unique():
+        popsize = int(data.loc[data['models'] == model, 'pop_size'].min())
 
     for i, row in df.iterrows():
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
                       & (data['cm_severe'] == row['cm_severe'])
                       & (data['seasonality'] == row['seasonality'])
-                      & (data['modelname'] == model)
+                      & (data['models'] == model)
                       & (data['pop_size'] == popsize))]
         xt = idata[output_type_col]
         yp = idata['input_target']
@@ -126,7 +126,7 @@ def output_target_to_eir(df, exp, model):
     data = pd.read_csv(interp_path)
     output = []
     if exp.target_output_name == 'eir':
-        output_type_col = 'simulatedEIR'
+        output_type_col = 'eir'
     elif exp.target_output_name == 'prevalence_2to10':
         output_type_col = 'prevalence_2to10'
     elif exp.target_output_name == 'clinical_incidence_U5':
@@ -143,14 +143,14 @@ def output_target_to_eir(df, exp, model):
         raise ValueError(f'Specified model is not valid {model}')
 
     # NOTE: Workaround to allow smaller populations for test runs
-    if exp.test and popsize not in data.loc[data['modelname'] == model, 'pop_size'].unique():
-        popsize = data.loc[data['modelname'] == model, 'pop_size'].min()
+    if exp.test and popsize not in data.loc[data['models'] == model, 'pop_size'].unique():
+        popsize = data.loc[data['models'] == model, 'pop_size'].min()
 
     for i, row in df.iterrows():
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
                       & (data['cm_severe'] == row['cm_severe'])
                       & (data['seasonality'] == row['seasonality'])
-                      & (data['modelname'] == model)
+                      & (data['models'] == model)
                       & (data['pop_size'] == popsize))]
         xt = idata[output_type_col]
         yp = idata['input_target']
@@ -168,7 +168,7 @@ def output_target_to_eir(df, exp, model):
 
 def check_transmission_targets_input(exp):
 
-    for model in exp.models_to_run:
+    for model in exp.models:
         if model == 'EMOD':
             popsize = exp.emod_pop_size
         elif model == 'malariasimulation':
@@ -183,7 +183,7 @@ def check_transmission_targets_input(exp):
             raise ValueError(f'interp_file not found: {interp_path}')
         data = pd.read_csv(interp_path)
 
-        popsize_options = list( data.loc[data['modelname'] == model, 'pop_size'].unique())
+        popsize_options = list( data.loc[data['models'] == model, 'pop_size'].unique())
         if  popsize not in popsize_options:
             if exp.test:
                 print(f'Warning: the popsize specified for {model} ({popsize}) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize ({min(popsize_options)})') # see L140

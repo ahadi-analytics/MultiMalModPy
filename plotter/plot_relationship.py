@@ -17,7 +17,7 @@ from plotter.plot_helper import *
 
 
 # Plots prevalence 2 to 10 by output variable, requires mmmpy_timeavrg.csv
-def prevalence2to10_to_outcome(fdir, df, sweepvar='modelname', facet_var='ageGroup', channel='clinical_incidence',
+def prevalence2to10_to_outcome(fdir, df, sweepvar='models', facet_var='ageGroup', channel='clinical_incidence',
                                agegrps=None, exp=None):
     """
     Generate line plots for PfPR2to10 and either clinical or severe incidence,
@@ -32,7 +32,7 @@ def prevalence2to10_to_outcome(fdir, df, sweepvar='modelname', facet_var='ageGro
         fdir (str): Directory where the generated plot will be saved.
         df (pd.DataFrame): DataFrame containing the model results for plotting.
         sweepvar (str, optional): Variable to group the data and create multiple panels
-            on the plot. Default is 'modelname'.
+            on the plot. Default is 'models'.
         facet_var (str, optional): Variable used to create subplots based on its unique
             values. Default is 'seasonality'.
         channel (str): Variable representing the y-axis data to be plotted (e.g.,
@@ -78,7 +78,7 @@ def prevalence2to10_to_outcome(fdir, df, sweepvar='modelname', facet_var='ageGro
                 # plot mean, min and max of seeds
                 xmean, ymean = get_x_y(pdf, 'target_output_values', 'prevalence_2to10', channel)
                 merge_df = pd.merge(left=xmean, right=ymean, on='target_output_values')
-                if channel == 'simulatedEIR':
+                if channel == 'eir':
                     merge_df.sort_values(by='target_output_values', inplace=True)
                 else:
                     merge_df.sort_values(by='prevalence_2to10', inplace=True)
@@ -141,7 +141,7 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
           data aggregation (`get_x_y`).
     """
 
-    unique_groups = sorted_list(df['modelname'])
+    unique_groups = sorted_list(df['models'])
 
     num_colors = len(unique_groups)
     color_palette = sns.color_palette('colorblind', max(num_colors, 4))
@@ -171,7 +171,7 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
 
     mean_vars = [channel, 'prevalence_2to10']
 
-    nx = max(1, len(modelname))
+    nx = max(1, len(models))
     ny = max(1,len(ages_dict))
     f = 1
     fig = plt.figure(figsize=(10 * nx, 6 * ny))
@@ -190,7 +190,7 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
             ax.title.set_text(f'{grp}')
 
             f += 1
-            mdf = adf[adf['modelname'] == grp]
+            mdf = adf[adf['models'] == grp]
             # mdf = mdf.groupby(['seed', 'target_output_values'])[mean_vars].agg(np.mean).reset_index()
             # Population weighted mean for each target_output_values (relevant for incidence)
             mdf = mdf.groupby(['seed', 'target_output_values'])[mean_vars + ['nHost']].apply(
@@ -221,7 +221,7 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
 
 
 # Plots simulated eir vs output variable, requires mmmpy_timeavrg.csv
-def eir_to_outcome(fdir, df, sweepvar='modelname', facet_var='seasonality', eir_val='simulatedEIR',
+def eir_to_outcome(fdir, df, sweepvar='models', facet_var='seasonality', eir_val='eir',
                    channel='prevalence_2to10', agegrps=['0-5'], exp=None):
     """
     Generate line plots for EIR (Entomological Inoculation Rate) and a requested
@@ -237,7 +237,7 @@ def eir_to_outcome(fdir, df, sweepvar='modelname', facet_var='seasonality', eir_
         sweepvar (str, optional): Variable to group the data and create multiple
             panels on the plot. Default is 'cm_clinical'.
         eir_val (str, optional): The EIR (Entomological Inoculation Rate) value to
-            be used for plotting. Default is 'simulatedEIR'.
+            be used for plotting. Default is 'eir'.
         channel (str, optional): The outcome variable to compare to EIR. Default is
             'prevalence_2to10'.
         agegrps (str, optional): Limits the resulting graphs to the selected age group.
@@ -295,7 +295,7 @@ def eir_to_outcome(fdir, df, sweepvar='modelname', facet_var='seasonality', eir_
     plt.close()
 
 
-def input_to_simulated_eir(fdir, df, sweepvar='modelname', facet_var='seasonality', exp=None):
+def input_to_simulated_eir(fdir, df, sweepvar='models', facet_var='seasonality', exp=None):
     """
     Generate line plots comparing input EIR to simulated EIR.
 
@@ -316,11 +316,11 @@ def input_to_simulated_eir(fdir, df, sweepvar='modelname', facet_var='seasonalit
         None: The function saves the generated plots to disk.
     """
 
-    if sweepvar != 'modelname' and facet_var != 'modelname':
-        print('Either sweepvar or facet_var should be modelname')
+    if sweepvar != 'models' and facet_var != 'models':
+        print('Either sweepvar or facet_var should be models')
         return
 
-    xyvars = ['simulatedEIR', 'target_output_values']
+    xyvars = ['eir', 'target_output_values']
     figure_vars = xyvars + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars)
     unique_facets = sorted_list(df[facet_var])
@@ -342,23 +342,23 @@ def input_to_simulated_eir(fdir, df, sweepvar='modelname', facet_var='seasonalit
         for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
             # plot mean, min and max of seeds and age groups
             color_key = color_selector(i, s)
-            if sweepvar == 'modelname':
+            if sweepvar == 'models':
                 xchannel = f'transmission_intensity_{s}'
-            elif facet_var == 'modelname':
+            elif facet_var == 'models':
                 xchannel = f'transmission_intensity_{fi}'
             else:
-                if len(sorted_list(df['modelname'])) == 1:
-                    xchannel = f"transmission_intensity_{sorted_list(df['modelname'])[0]}"
+                if len(sorted_list(df['models'])) == 1:
+                    xchannel = f"transmission_intensity_{sorted_list(df['models'])[0]}"
                 else:
-                    raise ValueError('Either sweepvar or facet_var need to be modelname')
+                    raise ValueError('Either sweepvar or facet_var need to be models')
 
-            xmean, ymean = get_x_y(sdf, 'target_output_values', xchannel, 'simulatedEIR')
+            xmean, ymean = get_x_y(sdf, 'target_output_values', xchannel, 'eir')
             merge_df = pd.merge(left=xmean, right=ymean, on='target_output_values')
             merge_df.sort_values(by=xchannel, inplace=True)
-            ax.plot(merge_df[xchannel], merge_df['simulatedEIR'], '-', linewidth=0.8, label=f"{s}",
+            ax.plot(merge_df[xchannel], merge_df['eir'], '-', linewidth=0.8, label=f"{s}",
                     color=color_palette[color_key])
-            ax.fill_between(merge_df[xchannel], merge_df['simulatedEIR_min'],
-                            merge_df['simulatedEIR_max'], alpha=0.1, color=color_palette[color_key])
+            ax.fill_between(merge_df[xchannel], merge_df['eir_min'],
+                            merge_df['eir_max'], alpha=0.1, color=color_palette[color_key])
         if firstPlot:
             lg_title = get_legend_title(sweepvar, exp)
             lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1), title=lg_title)
@@ -381,32 +381,32 @@ def input_to_simulated_eir(fdir, df, sweepvar='modelname', facet_var='seasonalit
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    modelname = args.modelname
-    if isinstance(modelname, str):
-        modelname = [modelname]
+    models = args.models
+    if isinstance(models, str):
+        models = [models]
 
     exp = load_exp(wdir)
-    df, out_dir = get_output_df(wdir, modelname)
+    df, out_dir = get_output_df(wdir, models)
     out_dir = os.path.join(out_dir, 'plots')
     os.makedirs(out_dir, exist_ok=True)
 
     if len(exp.target_output_values) >= 3:
-        sweepvar = 'modelname'
+        sweepvar = 'models'
         print('#----- Plotting input to simulated EIR -----#')
         input_to_simulated_eir(out_dir, df, sweepvar=sweepvar)
-        # input_to_simulated_eir(out_dir, df, sweepvar='cm_clinical', facet_var='modelname') # for paper 1
+        # input_to_simulated_eir(out_dir, df, sweepvar='cm_clinical', facet_var='models') # for paper 1
 
         channel_list = ['prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence']
         for channel in channel_list:
             print(f'#----- Plotting simulated EIR to {channel} -----#')
-            eir_to_outcome(out_dir, df, sweepvar=sweepvar, facet_var='seasonality', eir_val='simulatedEIR',
+            eir_to_outcome(out_dir, df, sweepvar=sweepvar, facet_var='seasonality', eir_val='eir',
                            channel=channel, agegrps=['0-100'])
 
-        channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
+        channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'eir']
         for channel in channel_list:
             print(f'#----- Plotting prevalence_2_to_10 to {channel} -----#')
             agegrps = ['0-5', '0-100']
-            prevalence2to10_to_outcome(out_dir, df, channel=channel, sweepvar='modelname', facet_var='ageGroup', agegrps=agegrps)
+            prevalence2to10_to_outcome(out_dir, df, channel=channel, sweepvar='models', facet_var='ageGroup', agegrps=agegrps)
 
             # This figure reflects figure 1 in https://www.nature.com/articles/ncomms9170
             prevalence2to10_to_outcome_by_age_and_model(out_dir, df, channel=channel)

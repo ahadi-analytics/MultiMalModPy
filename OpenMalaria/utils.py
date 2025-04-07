@@ -29,7 +29,7 @@ def create_scenarios(exp, scen_df):
     with open(os.path.join(exp.openmalaria_input_path, 'scaffolds', f"{exp.openmalaria_scaffold}.xml"), "r") as fp:
         xml = fp.read()
 
-    exp.days_between_clinical_cases_5days = 5  # Aurelien communicated that as long as we use v46, we should have a days_between_clinical_cases of 25 days
+    exp.days_between_clinical_cases_5days = 6
 
     # Replace placeholders in the XML template with fixed parameters
     xml = xml.replace("@version@", f"{exp.openmalaria_version}")
@@ -57,7 +57,7 @@ def create_scenarios(exp, scen_df):
     xml = xml.replace('@age_demography@', snippet)
 
     # Interventions
-    if "cc_step" in exp.intervention_list:
+    if "ccstep" in exp.intervention_list:
         xml = carrying_capacity(exp, xml)
     else:
         xml = xml.replace('@intervention_ccstep@', '')
@@ -94,7 +94,7 @@ def create_scenarios(exp, scen_df):
         scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
         scenario = scenario.replace('@eir@', str(row['transmission_intensity_OpenMalaria']))
 
-        if 'cc_step' in exp.intervention_list:
+        if 'ccstep' in exp.intervention_list:
             scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_OpenMalaria']))
             scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_OpenMalaria']))
         
@@ -118,7 +118,7 @@ def create_scenarios(exp, scen_df):
     shutil.copy(os.path.join(exp.openmalaria_path, schema), exp.job_directory)
 
 
-def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=10):
+def submit_analyze_OpenMalaria(exp, t='03:59:00', memG=10):
     """
     Submits a job to analyze OpenMalaria simulation results on an HPC cluster.
 
@@ -138,18 +138,17 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=10):
 
     """
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OpenMalaria',
+    header_post = shell_header_quest(exp.sh_hpc_config, time_str = t, memG=memG, job_name='analyze_OpenMalaria',
                                      mem_scl=exp.mem_increase_factor)
 
     pycommand = f'\ncd {exp.root_directory}/OpenMalaria' \
-                f'\n{exp.EMOD_venv_modules}\n{exp.EMOD_venv_path}' \
+                f'\n{exp.EMOD_venv}' \
                 f'\npython analyze_sim.py --dir "{exp.job_directory}"'
 
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, 'run_analyzer_OpenMalaria.sh')
     file = open(script_path, 'w')
-    file.write(
-        header_post + exp.EMOD_venv + pycommand)  # Also load EMOD's Python virtual environment - needed for handling exp object from idmtools
+    file.write(header_post + pycommand)
     file.close()
 
     # Read the job ID from the 'job_id.txt' file

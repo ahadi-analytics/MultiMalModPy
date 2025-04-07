@@ -34,7 +34,7 @@ def exec(command):
                             universal_newlines=True, text=True)
 
 
-def shell_header_quest(sh_account, time_str='6:00:00', memG=3, job_name='myjob', arrayJob=None, mem_scl=1):
+def shell_header_quest(sh_account, time_str='03:59:00', memG=3, job_name='myjob', arrayJob=None, mem_scl=1):
     """
     Generates the SLURM shell script header for submitting jobs to a high-performance computing cluster.
 
@@ -99,7 +99,7 @@ def shell_header_quest(sh_account, time_str='6:00:00', memG=3, job_name='myjob',
 
 
 def submit_run_pyscript(exp, pyscript='plotter/plot_relationship.py', shname='run_relationship_plots.sh',
-                        custom_args='--modelname EMOD malariasimulation OpenMalaria', t='05:00:00', memG=20, job_id_EMOD=False,
+                        custom_args='--models EMOD malariasimulation OpenMalaria', t='05:00:00', memG=20, job_id_EMOD=False,
                         job_id_malariasimulation=False, job_id_OpenMalaria=False,
                         job='pyjob',  wdir=None, write_only=False):
     """
@@ -110,7 +110,7 @@ def submit_run_pyscript(exp, pyscript='plotter/plot_relationship.py', shname='ru
         pyscript (str, optional): The name of the Python script to run. Defaults to 'plotter/plot_relationship.py'.
         shname (str, optional): The name of the shell script to submit. Defaults to 'run_relationship_plots.sh'.
         custom_args (str, optional): Custom arguments to pass to the Python script.
-            Defaults to '--modelname EMOD malariasimulation OpenMalaria'.
+            Defaults to '--models EMOD malariasimulation OpenMalaria'.
         t (str, optional): Wall time for the job in the format 'HH:MM:SS'. Defaults to '05:00:00'.
         memG (int, optional): Memory required for the job in GB. Defaults to 20.
         job_id_EMOD (bool, optional): If True, sets the job ID as a dependency for EMOD. Defaults to False.
@@ -144,7 +144,7 @@ def submit_run_pyscript(exp, pyscript='plotter/plot_relationship.py', shname='ru
     header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name=job, mem_scl=1)
 
     # Generate the Python command to run the script
-    pycommand = f'\npython {pyscript} -d {exp.sim_out_dir} {custom_args}'
+    pycommand = f'\npython {pyscript} -d {exp.output_directory} {custom_args}'
 
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, shname)
@@ -196,7 +196,7 @@ def submit_run_plotters_slurm(exp):
 
     Args:
         exp (Experiment): The experiment object that contains attributes such as
-            `models_to_run` and `plots_to_run`, which determine which models and
+            `models` and `plots_to_run`, which determine which models and
             plots should be processed.
 
     Returns:
@@ -204,7 +204,7 @@ def submit_run_plotters_slurm(exp):
 
     Notes:
         - The function checks which models (EMOD, malariasimulation, OpenMalaria) are
-          specified in `exp.models_to_run` and sets corresponding job IDs.
+          specified in `exp.models` and sets corresponding job IDs.
         - It prepares a submission script for a set of default plots (`relationship`,
           `timeseries`, `agecurves`) and also handles custom plots if specified in
           `exp.plots_to_run`.
@@ -217,11 +217,11 @@ def submit_run_plotters_slurm(exp):
     job_id_EMOD = False
     job_id_malariasimulation = False
     job_id_OpenMalaria = False
-    if 'EMOD' in exp.models_to_run:
+    if 'EMOD' in exp.models:
         job_id_EMOD = True
-    if 'malariasimulation' in exp.models_to_run:
+    if 'malariasimulation' in exp.models:
         job_id_malariasimulation = True
-    if 'OpenMalaria' in exp.models_to_run:
+    if 'OpenMalaria' in exp.models:
         job_id_OpenMalaria = True
 
     plot_names_all = ['relationship', 'timeseries', 'agecurves']
@@ -236,7 +236,7 @@ def submit_run_plotters_slurm(exp):
 
         plot_memG = 20  # current default in submit_run_pyscript
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
-                            custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
+                            custom_args=f"--models {' '.join([x for x in exp.models])}",
                             job=f'{plot_name}_plots', memG=plot_memG,
                             wdir = parent_dir , write_only=True)
 
@@ -254,7 +254,7 @@ def submit_run_plotters_slurm(exp):
             plot_memG = 80  ## as specified in launch_ccstep.py, could reintroduce/use mem_scaling factor
 
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
-                            custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
+                            custom_args=f"--models {' '.join([x for x in exp.models])}",
                             job_id_EMOD=job_id_EMOD, job_id_malariasimulation=job_id_malariasimulation, job_id_OpenMalaria=job_id_OpenMalaria,
                             job=f'{plot_name}_plots', memG=plot_memG,   wdir = parent_dir)
 

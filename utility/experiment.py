@@ -129,13 +129,6 @@ class RunModeManager:
         self.experiment.emod_pop_size = 5000
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
-        if self.experiment.target_output_name == 'eir':
-            self.experiment.target_output_values = [20]
-        if self.experiment.target_output_name == 'prevalence_2to10':
-            if 'perennial' not in self.experiment.seasonality:
-                self.experiment.target_output_values = [0.05, 0.1, 0.25, 0.5]
-            else:
-                self.experiment.target_output_values = [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
         if self.experiment.target_output_name == 'clinical_incidence_U5':
             raise ValueError('target_output_name clinical_incidence_U5 not defined for production run')
 
@@ -179,7 +172,7 @@ class ArgsConfig:
     Attributes:
         SUITEname (str): Name of the simulation suite, typically used for grouping related experiments.
         exp_name (str): Name of the specific experiment being launched.
-        models_to_run (list): List of models to execute in the simulation (e.g., ['EMOD', 'OpenMalaria']).
+        models (list): List of models to execute in the simulation (e.g., ['EMOD', 'OpenMalaria']).
         run_mode (str): Specifies the type of simulation to run (e.g., 'custom', 'calibration', 'simple', 'production').
         test (bool): Indicates if the simulation should run in test mode with reduced resources.
         csv (str): Path to a CSV file specifying scenario parameters.
@@ -201,12 +194,11 @@ class ArgsConfig:
         self.SUITEname = args.suite
         self.exp_name = args.expname
         ## Parameter specifying setup and type of simulations to run and models to use
-        self.models_to_run = args.models
+        self.models = args.models
         self.run_mode = args.run_mode
         self.test = args.test
         self.csv = args.csv
         self.rownum = args.rownum
-        self.target_output_name = args.target_output_name
         # User and directory settings
         self.directory = args.directory
         self.user = args.user

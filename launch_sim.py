@@ -21,13 +21,12 @@ else:
     from utility.helper_local import LoadLaunchArgs
     args = LoadLaunchArgs()
 
-
 if args.emodstep in ['pickup', 'new_pickup']:
     file = open(os.path.join(args.directory, "exp.obj"), "rb")
     exp = pickle.load(file)
     exp.emod_step = 'pickup'
     exp.burnin_directory = args.directory
-    exp.models_to_run = args.models
+    exp.models = args.models
     exp.emod_serialized_id = args.serializedid
     if args.emodstep == 'new_pickup': ## Allows to run a independent pickup from burnin
         ## Optional parameters to update in new run
@@ -63,13 +62,13 @@ else:
     ## Add intervention params, note, for some interventions this might come only in  pickup, not yet setup
     exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
 
-    exp.models_to_run_pickup = exp.models_to_run  # Models to run in pickup
+    exp.models_pickup = exp.models  # Models to run in pickup
     # EMOD burn-in and pickup configuration
     exp.emod_serialized_id = ''
     if exp.emod_step == 'burnin':
         print('Message: Running burnin for EMOD')
         exp.exp_name = f'{exp.exp_name}_burnin{exp.emod_burnin}'
-        exp.models_to_run = ['EMOD']  # Run burnin only for EMOD, pickup for both models
+        exp.models = ['EMOD']  # Run burnin only for EMOD, pickup for both models
         exp.plots_to_run = []
 
     # Update exp_name
@@ -97,56 +96,40 @@ scen_df = create_scenarios_csv(exp, exp.sweep_list)
 exp.nexps = len(scen_df) * exp.num_seeds
 exp.max_running_jobs = min(exp.nexps,300)
 
-save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])
-save_scen(param_variation(rep_scen_df(scen_df), exp), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.sim_out_dir])
+save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.output_directory])
+save_scen(param_variation(rep_scen_df(scen_df), exp), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.output_directory])
 
 # Write out simulation setup (required for malariasimulation)
 create_simsetup_csv(exp)
 
 
 if __name__ == '__main__':
-    print(f' --------| Running {exp.exp_name} for {", ".join(exp.models_to_run)}: {len(exp.sweep_list)} '
+    print(f' --------| Running {exp.exp_name} for {", ".join(exp.models)}: {len(exp.sweep_list)} '
           f'varying parameters: {", ".join(exp.sweep_list)}. Run mode:  {exp.run_mode} |--------')
 
+    # Set platform and associated values, such as the maximum number of jobs to run at one time
+    from idmtools.core.platform_factory import Platform
+    exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
+                        mem_per_cpu=f'{exp.emod_memory_per_sim}G', partition=manifest.sh_hpc_config['p'],
+                        time=exp.emod_time_per_sim, account=manifest.sh_hpc_config['A'],
+                        modules=[manifest.sh_hpc_config['em_modules']],
+                        max_running_jobs=exp.max_running_jobs)
+
     # Submit EMOD simulation as SLURM job, including scheduled analyzer
-    if 'EMOD' in exp.models_to_run:
-        from idmtools.core.platform_factory import Platform
-        from idmtools.entities.experiment import Experiment
-        import emod_malaria.bootstrap as dtk
-        import pathlib
-
-        # Set platform and associated values, such as the maximum number of jobs to run at one time
-        platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
-                            mem_per_cpu=f'{exp.emod_memory_per_sim}G', partition=manifest.sh_hpc_config['p'],
-                            time=exp.emod_time_per_sim, account=manifest.sh_hpc_config['A'],
-                            modules=[manifest.sh_hpc_config['em_modules']],
-                            max_running_jobs=exp.max_running_jobs)  # mem_per_cpu default: 2048
-        exp.platform = platform
-
-        # For the time being, until emodpy-malaria updates we do not want to grab eradication from EMOD-malaria
-        dtk.setup(pathlib.Path(manifest.eradication_path).parent)
+    if 'EMOD' in exp.models:
         from EMOD.utils import submit_run_EMOD
-        emod_exp = submit_run_EMOD(exp, scen_df)
-        exp.emod_id = emod_exp.id
-
-        if exp.emod_step == 'burnin':
-            exp.exp_name_pickup = exp.exp_name.replace(f'_burnin{exp.emod_burnin}', '')
-            submit_run_pyscript(exp, pyscript='launch_sim.py', shname='launch_pickup.sh',
-                                custom_args=f"--suite {exp.SUITEname} --expname {exp.exp_name_pickup} "
-                                            f"--emodstep pickup --serializedid {emod_exp.id} "
-                                            f"--models {' '.join([m for m in exp.models_to_run_pickup])} ",
-                                job_id_EMOD='job_id_EMODanalyze',memG=exp.mem_increase_factor*5, job='pickup_launch')
+        submit_run_EMOD(exp,scen_df)
 
     # Submit malariasimulation as SLURM job, including scheduled analyzer
-    if 'malariasimulation' in exp.models_to_run:
+    if 'malariasimulation' in exp.models:
         from malariasimulation.utils import submit_run_malariasimulation
         submit_run_malariasimulation(exp)
 
     # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
-    if 'OpenMalaria' in exp.models_to_run:
+    if 'OpenMalaria' in exp.models:
         from OpenMalaria.utils import submit_run_OpenMalaria
         submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files
 
-    ## Submit plotters to run using wrapper function in utility.helper.py
+    ## Submit plotters to run using wrapper function in utils.helper.py
     if exp.emod_step != 'burnin':
         submit_run_plotters(exp)

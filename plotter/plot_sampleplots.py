@@ -91,14 +91,14 @@ def all_age_sample_plot(wdir, df, model, timestep_var, sweep_variables, sample_c
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    modelname = args.modelname
-    if isinstance(modelname, str):
-        modelname = [modelname]
+    models = args.models
+    if isinstance(models, str):
+        models = [models]
 
     exp = load_exp(wdir)
     exp_tags = [x.replace('case_management', 'cm_clinical') for x in exp.sweep_list]
 
-    if 'EMOD' in modelname:
+    if 'EMOD' in models:
         sample_channels = ['Statistical Population', 'Births', 'Disease Deaths',
                            'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
                            'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
@@ -109,14 +109,14 @@ if __name__ == "__main__":
         df['simday'] = (df['date'] - df['date'].min()).dt.days
         all_age_sample_plot(wdir, df,'EMOD', timestep_var='simday', sweep_variables=exp_tags, sample_channels=sample_channels)
 
-    if 'OpenMalaria' in modelname:
+    if 'OpenMalaria' in models:
         sample_channels = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
-                           'nSevere', 'nSeq', 'nIndDeaths', 'expectedSevere' 'nDirDeaths', 'inputEIR', 'simulatedEIR',
+                           'nSevere', 'nSeq', 'nIndDeaths', 'expectedSevere' 'nDirDeaths', 'inputEIR', 'eir',
                            'expectedDirectDeaths']
         df = pd.read_csv(os.path.join(wdir, 'OpenMalaria', 'All_Age_Outputs.csv'))
         all_age_sample_plot(wdir, df,'OpenMalaria', timestep_var='survey', sweep_variables=exp_tags, sample_channels=sample_channels)
 
-    if 'malariasimulation' in modelname:
+    if 'malariasimulation' in models:
         sample_channels = ['nPopulation', 'n', 'n_inc','n_inc_clinical','n_inc_severe', 'clinical_incidence',
                            'prevalence_2to10', 'prev', 'n_infectious_mos','n_total_mos_pop', 'EIR_gamb']
         df = pd.read_csv(os.path.join(wdir, 'malariasimulation', 'All_Age_Outputs.csv'))

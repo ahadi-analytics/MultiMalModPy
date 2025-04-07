@@ -39,19 +39,19 @@ if os.name != 'posix':
 # ----------------------------- User-defined input -----------------------------
 if hpc == 'NUCLUSTER':
     sh_hpc_config = {'A': 'b1139', 'p': 'b1139', 'em_modules': 'singularity', 'buyin': True}
-    projdir = os.path.join('/projects/b1139/emod-om/')
+    projdir = os.path.join('/gpfs/projects/b1139/emod-om/')
 
-    SIF_PATH = "--bind /projects /projects/b1139/images/dtk_run_rocky_py39.sif"
+    SIF_PATH = "--bind /gpfs/projects /gpfs/projects/b1139/images/dtk_run_rocky_py39.sif"
     if openmalaria_version == 43:
-        OPENMALARIA_PATH = "/projects/b1139/OpenMalaria/om_v43/"
+        OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria_Ricky/om_v43/"
     elif openmalaria_version == 46:
-        OPENMALARIA_PATH = "/projects/b1139/OpenMalaria/om_v46/"
+        OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria_Ricky/om_v46/"
     else:
         raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
-    OPENMALARIA_venv = f'\n\nmodule use {OPENMALARIA_PATH}/modules/ \nmodule load openmalaria\n'
+    OPENMALARIA_venv = f'\n\nmodule use {OPENMALARIA_PATH}modules/ \nmodule load openmalaria\n'
 
     EMOD_venv_modules = os.path.join('\n\nml singularity/3.8.1 \nml python/3.9.16')
-    EMOD_venv_path = os.path.join('\nsource /projects/b1139/environments/mmmpy_dev/bin/activate\n')
+    EMOD_venv_path = os.path.join('\nsource /gpfs/projects/b1139/environments/mmmpy_dev/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
 
 elif hpc == 'SCICORE':

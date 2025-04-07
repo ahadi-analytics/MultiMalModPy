@@ -19,7 +19,7 @@ from plotter.plot_helper import *
 
 
 # Plots over age - requires mmmpy_yr.csv
-def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', age_groups_aggregates=None, facet_name=None, exp=None):
+def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_values', age_groups_aggregates=None, facet_name=None, exp=None):
 
     """
     Plots age curves based on model results and saves the figure to the specified directory.
@@ -29,7 +29,7 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output
         df (pandas.DataFrame): DataFrame that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
         sweepvar (str, optional): Variable to group the data and create multiple lines on the plot.
-                                   Defaults to 'modelname'.
+                                   Defaults to 'models'.
         facet_var (str, optional): Variable used to create subplots based on its unique values.
                                    Defaults to 'target_output_values'.
         age_groups_aggregates (list, optional): List of age group labels to use for aggregation.
@@ -74,7 +74,7 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output
         fdf = fdf[fdf[channel].notnull()]
         ax = fig.add_subplot(ny, nx, f)
         ax.set_title(f"{facet_var} = {fi}")
-        if facet_var == 'modelname':
+        if facet_var == 'models':
             ax.set_title(fi)
         if facet_var == 'target_output_values':
             ax.set_title(f"{get_label(facet_name)} = {fi}")
@@ -115,9 +115,9 @@ def age_curves(fdir, df, channel, sweepvar='modelname', facet_var='target_output
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    modelname = args.modelname
-    if isinstance(modelname, str):
-        modelname = [modelname]
+    models = args.models
+    if isinstance(models, str):
+        models = [models]
 
     exp = load_exp(wdir)
 
@@ -125,8 +125,8 @@ if __name__ == "__main__":
     age_groups_aggregates_sub = [x for x in exp.age_groups_aggregates if x not in ([[0, 5], [0, 100]])]
     age_groups_aggregates_sub = ["{}-{}".format(sublist[0], sublist[1]) for sublist in age_groups_aggregates_sub]
 
-    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'simulatedEIR']
-    sweepvar = 'modelname'
+    channel_list = ['clinical_incidence', 'severe_incidence', 'prevalence', 'eir']
+    sweepvar = 'models'
     facet_var = 'target_output_values'
 
     if len(exp.target_output_values) > 1 & len(exp.target_output_values) <= 3:
@@ -136,7 +136,7 @@ if __name__ == "__main__":
     if facet_var == 'ageGroup' and len(exp.seasonality) > 1:
         facet_var = 'seasonality'
 
-    df, out_dir = get_output_df(wdir, modelname)
+    df, out_dir = get_output_df(wdir, models)
     out_dir = os.path.join(out_dir, 'plots')
     os.makedirs(out_dir, exist_ok=True)
 
@@ -146,7 +146,7 @@ if __name__ == "__main__":
                    age_groups_aggregates=age_groups_aggregates_sub,exp=exp)
 
     sweepvar = 'target_output_values'
-    facet_var = 'modelname'
+    facet_var = 'models'
     for channel in channel_list:
         print(f'#----- Plotting Age Curves for {channel}-----#')
         age_curves(out_dir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,

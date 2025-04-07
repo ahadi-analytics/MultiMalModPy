@@ -1,4 +1,4 @@
-input_target,seasonality,cm_clinical,cm_severe,simulatedEIR,prevalence_2to10,prevalence,severe_incidence,n_total_mos_pop,clinical_incidence,clinical_incidence_U5,modelname,pop_size,importation
+input_target,seasonality,cm_clinical,cm_severe,eir,prevalence_2to10,prevalence,severe_incidence,n_total_mos_pop,clinical_incidence,clinical_incidence_U5,models,pop_size,importation
 0.1,perennial,0,0,0.097525052,0.015618948,0.016429644,0.001469418,3499.575311,0.033482527,0.016226666,malariasimulation,50000,FALSE
 0.13738238,perennial,0,0,0.133870368,0.021155989,0.021485739,0.001777171,3936.953213,0.044477577,0.022556274,malariasimulation,50000,FALSE
 0.188739182,perennial,0,0,0.188616459,0.028601012,0.028769478,0.002144653,4491.608391,0.060207499,0.031586894,malariasimulation,50000,FALSE
