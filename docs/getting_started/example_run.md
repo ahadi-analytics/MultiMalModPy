@@ -131,7 +131,8 @@ Later, you’ll also learn how to run multiple simulations simultaneously using 
 
 ```   
 
-c
+singularity exec -B /etc/slurm -B `which sbatch ` -B `which srun ` -B `which sacct ` -B `which scontrol ` -B `which salloc ` -B `which scancel ` -B `which squeue ` -B /usr/lib64/slurm/ -B /usr/lib64/libmunge.so.2 -B /usr/lib64/libmunge.so.2.0.0 -B /usr/lib64/libpmi2.so -B /usr/lib64/libpmi2.so.0 -B /usr/lib64/libpmi2.so.0.0.0 -B /usr/lib64/libpmi.so -B /usr/lib64/libpmi.so.0 -B /usr/lib64/libpmi.so.0.0.0 -B /run -B /usr/lib64/libnvidia-ml.so.1 -B /run -B /projects -B /scratch --writable-tmpfs /gpfs/projects/b1139/emod-om/container/emod-with-om-46-R-4.4.1.sif /opt/envs/emodpy39/bin/python3 launch_sim.py --models EMOD --test
+
 ```   
    
 Note, the command includes at the very end the   
