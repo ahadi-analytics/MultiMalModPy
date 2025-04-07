@@ -1126,7 +1126,7 @@ if __name__ == "__main__":
     wdir = exp.output_directory
 
     exp_name = exp.exp_name
-    age_groups_aggregates = exp.age_groups_aggregates  # Defined in utils.helper.py
+    age_groups_aggregates = exp.age_groups_aggregates  # Defined in utility.helper.py
 
     # Define tags and simulation experiment configurations
     exp_tags = ['scen_id', 'Run_Number']
