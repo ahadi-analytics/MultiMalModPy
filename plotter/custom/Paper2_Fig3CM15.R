@@ -6,7 +6,7 @@ library(data.table)
 library(scales)
 library(tidyr)
 library(patchwork)
-source('utils/functions.R')
+source('utility/functions.R')
 theme_set(theme_bw())
 
 customTheme <- f_getCustomTheme() +
