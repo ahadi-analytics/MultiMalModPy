@@ -43,9 +43,9 @@ if hpc == 'NUCLUSTER':
 
     SIF_PATH = "--bind /gpfs/projects /gpfs/projects/b1139/images/dtk_run_rocky_py39.sif"
     if openmalaria_version == 43:
-        OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria_Ricky/om_v43/"
+        OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria/om_v43/"
     elif openmalaria_version == 46:
-        OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria_Ricky/om_v46/"
+        OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria/om_v46/"
     else:
         raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
     OPENMALARIA_venv = f'\n\nmodule use {OPENMALARIA_PATH}modules/ \nmodule load openmalaria\n'
