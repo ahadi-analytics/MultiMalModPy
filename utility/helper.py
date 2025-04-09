@@ -40,7 +40,6 @@ def parse_launch_args():
         -r, --run_mode (str)        : Type of run ('custom', 'calibration', 'simple', 'production', or 'csv').
         --emod_calib_params (bool)  : Whether to include calibration parameters for EMOD.
         --mpv (bool)                : Whether to run malariasimulation with parameter variation (default: True).
-        --target_output_name (str)  : Align transmission by EIR, prevalence_2to10, or clinical incidence U5.
         -t, --test (bool)           : Runs the simulation with lower population, shorter burn-in, and fewer seeds.
         -n, --note (str)            : An optional tag to distinguish different runs.
     """
@@ -94,14 +93,8 @@ def parse_launch_args():
                         action='store_true',
                         help='Include calibration parameters for EMOD (default: False).')
     parser.add_argument('--mpv',
-                        default=True,
-                        type=bool,
-                        help='Run malariasimulation with parameter variation (default: True).')
-    parser.add_argument('-o','--target_output_name',
-                        type=str,
-                        default='prevalence_2to10',
-                        choices=['eir', 'prevalence_2to10', 'clinical_incidence_U5'],
-                        help='Align transmission by EIR, prevalence_2to10, or clinical incidence U5.')
+                        action='store_true',
+                        help='Run malariasimulation with parameter variation (default: False).')
     parser.add_argument('-t','--test',
                         action='store_true',
                         help='Enable test mode with reduced population, burn-in, and seeds.')
@@ -222,23 +215,23 @@ def make_dirs(exp, overwrite=False):
                                        exp_suite_path)  # Grouping folder for simulation exps
     exp.job_directory = os.path.join(exp.job_directory_manifest, exp_suite_path,
                                      exp.exp_name)  # stores simulation files to run
-    exp.sim_out_dir = os.path.join(exp.output_directory_manifest, exp_suite_path,
+    exp.output_directory = os.path.join(exp.output_directory_manifest, exp_suite_path,
                                    exp.exp_name)  # stores results csvs and figures
 
     # Create directories
     os.makedirs(exp.job_directory, exist_ok=overwrite)
     os.makedirs(os.path.join(exp.job_directory, 'log'), exist_ok=overwrite)
-    os.makedirs(exp.sim_out_dir, exist_ok=overwrite)
+    os.makedirs(exp.output_directory, exist_ok=overwrite)
 
-    # Create subdirectories for specific simulation models included in exp.models_to_run
-    if 'EMOD' in exp.models_to_run:
-        os.makedirs(os.path.join(exp.sim_out_dir, 'EMOD'), exist_ok=overwrite)
+    # Create subdirectories for specific simulation models included in exp.models
+    if 'EMOD' in exp.models:
+        os.makedirs(os.path.join(exp.output_directory, 'EMOD'), exist_ok=overwrite)
 
     if exp.emod_step != 'burnin':
-        if 'OpenMalaria' in exp.models_to_run:
-            os.makedirs(os.path.join(exp.sim_out_dir, 'OpenMalaria'), exist_ok=overwrite)
-        if 'malariasimulation' in exp.models_to_run:
-            os.makedirs(os.path.join(exp.sim_out_dir, 'malariasimulation'), exist_ok=overwrite)
+        if 'OpenMalaria' in exp.models:
+            os.makedirs(os.path.join(exp.output_directory, 'OpenMalaria'), exist_ok=overwrite)
+        if 'malariasimulation' in exp.models:
+            os.makedirs(os.path.join(exp.output_directory, 'malariasimulation'), exist_ok=overwrite)
     return exp
 
 
@@ -300,13 +293,13 @@ def check_exp_inputs(exp, attribute_check=False):
         check_transmission_targets_input(exp)
 
     ## Model specific checks
-    if 'OpenMalaria'  in exp.models_to_run:
+    if 'OpenMalaria'  in exp.models:
         check_exp_inputs_openmalaria(exp)
 
-    if 'EMOD' in exp.models_to_run:
+    if 'EMOD' in exp.models:
         check_exp_inputs_emod(exp)
 
-    if 'malariasimulation' in exp.models_to_run:
+    if 'malariasimulation' in exp.models:
         check_exp_inputs_malariasimulation(exp)
 
     # Check for interventions added to the framework
@@ -320,12 +313,12 @@ def check_exp_inputs(exp, attribute_check=False):
         for key, value in attributes_dict.items():
             # Check if the attribute is a list
             if isinstance(value, list) and len(value) > 1:
-                if key not in ['models_to_run', 'eir_scalar_emod', 'eir_malariasimulation',
+                if key not in ['models', 'eir_scalar_emod', 'eir_malariasimulation',
                                'eir_scalar_malariasimulation', 'eir_openmalaria',
                                'eir_scalar_openmalaria', 'carrying_capacity_step', 'age_groups_aggregates',
                                'plots_to_run',
                                'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial',
-                               'analyzer_list', 'analyzer_script', 'calib_config_pointer', 'models_to_run_pickup']:
+                               'analyzer_list', 'analyzer_script', 'calib_config_pointer', 'models_pickup']:
                     list_attributes_nGT1.append(key)
 
         list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
@@ -396,10 +389,10 @@ def create_simsetup_csv(exp):
 
     This function collects various parameters from the `exp` (Experiment) object and writes them to a CSV file.
     The CSV contains the following fields:
-    - `run_mode`, `job_directory`, `sim_out_dir`, `emod_serialized_id`, and other simulation-specific parameters.
+    - `run_mode`, `job_directory`, `output_directory`, `emod_serialized_id`, and other simulation-specific parameters.
     - Additionally, various burnin, population size, age group settings, seasonal data, and intervention lists are included.
 
-    The resulting CSV is saved in the directories specified by `job_directory` and `sim_out_dir`.
+    The resulting CSV is saved in the directories specified by `job_directory` and `output_directory`.
 
     Args:
         exp (Experiment): An instance of the `Experiment` class that contains experiment settings, simulation configurations,
@@ -409,7 +402,7 @@ def create_simsetup_csv(exp):
     # If other parameters should be savedm these need to be added to setup_dic
     setup_dic = {'run_mode': exp.run_mode,
                  'job_directory': exp.job_directory,
-                 'sim_out_dir': exp.sim_out_dir,
+                 'output_directory': exp.output_directory,
                  'emod_serialized_id': exp.emod_serialized_id,
                  'burnin_directory': exp.burnin_directory,
                  'nexps': exp.nexps,
@@ -439,7 +432,7 @@ def create_simsetup_csv(exp):
 
     setup_df = pd.DataFrame.from_dict(setup_dic, orient='index', columns=['Value'])
     setup_df['parameter'] = setup_df.index
-    save_dirs = [exp.job_directory, exp.sim_out_dir]
+    save_dirs = [exp.job_directory, exp.output_directory]
     for sdir in save_dirs:
         setup_df.to_csv(os.path.join(sdir, 'exp_setup_df.csv'), index=False)
 
@@ -476,15 +469,15 @@ def map_model_calib_inputs(exp, df):
     Returns:
         pandas.DataFrame: Updated DataFrame.
     """
-    models_to_run = list(set(exp.models_to_run + exp.models_to_run_pickup))
+    models = list(set(exp.models + exp.models_pickup))
 
     if exp.run_mode == 'calibration':
-        for model in models_to_run:
+        for model in models:
             for i, row in df.iterrows():
                 value = exp.eir_range[int(row['target_output_values']) - 1] if model != 'EMOD' else exp.x_temp_range[int(row['target_output_values']) - 1]
                 df.loc[i, f'transmission_intensity_{model}'] = value
     else:
-        for model in models_to_run:
+        for model in models:
             if model in ['malariasimulation', 'OpenMalaria']:
                 df[f'transmission_intensity_{model}'] = output_target_to_eir(df, exp, model=model)
             if model == 'EMOD':

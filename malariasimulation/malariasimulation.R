@@ -37,7 +37,7 @@ exp_setup_df <- read.csv(file.path(job_directory, 'exp_setup_df.csv'))
 
 exp <- list()
 exp$job_directory <- exp_setup_df[exp_setup_df$parameter == 'job_directory', 'Value']
-exp$sim_out_dir <- exp_setup_df[exp_setup_df$parameter == 'sim_out_dir', 'Value']
+exp$output_directory <- exp_setup_df[exp_setup_df$parameter == 'output_directory', 'Value']
 exp$pop_size <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'pop_size_malariasimulation', 'Value'])
 exp$burnin <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'burnin_malariasimulation', 'Value'])
 exp$monitoring_years <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'monitoring_years', 'Value'])

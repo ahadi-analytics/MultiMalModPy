@@ -29,7 +29,7 @@ def parse_args():
 
     Command Line Arguments:
         -d/--directory (str): The job directory where the exp.obj file is located. This argument is required.
-        -m/--modelname (str): One or more model names to compare. This argument is optional
+        -m/--models (str): One or more model names to compare. This argument is optional
                               and defaults to ['EMOD', 'OpenMalaria', 'malariasimulation'].
     """
 
@@ -45,7 +45,7 @@ def parse_args():
     )
     parser.add_argument(
         "-m",
-        "--modelname",
+        "--models",
         nargs='+',
         type=str,
         required=False,
@@ -122,7 +122,7 @@ def custom_sort_key(age_group):
 
 
 # Creates the combined dataframes for all models simulated.
-def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name=None,
+def get_output_df(wdir, models, yr=False, mth=False, daily=False, custom_name=None,
                   save_combined=False):
     """
     Load and combine data from the model output files.
@@ -134,7 +134,7 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
 
     Args:
         wdir (str): Working directory where the data files are located.
-        modelname (str or list of str): Name of models for which result CSVs
+        models (str or list of str): Name of models for which result CSVs
                                          should be loaded (case sensitive).
         yr (bool, optional): Set to True if the data files have yearly data.
                              Defaults to False.
@@ -151,11 +151,11 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
     Returns:
         tuple: A tuple containing:
             - df (DataFrame): Combined DataFrame containing the combined data
-                              for the models listed in modelname.
+                              for the models listed in models.
             - wdir (str): Updated working directory (if applicable).
 
     Raises:
-        ValueError: If an invalid modelname value is specified.
+        ValueError: If an invalid models value is specified.
     """
 
     cols_to_keep = None  # default read all
@@ -166,14 +166,14 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
         fname = 'mmmpy_mth.csv'
     if daily:
         fname = 'mmmpy_daily.csv'
-        # cols_to_keep = ['index', 'timestep', 'ageGroup', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
+        # cols_to_keep = ['index', 'timestep', 'ageGroup', 'eir', 'prevalence_2to10', 'prevalence',
         #                'clinical_incidence', 'severe_incidence', 'seed']
     if custom_name:
         fname = f'{custom_name}.csv'
 
     file_paths = [os.path.join(wdir, fname)]
 
-    for model in modelname:
+    for model in models:
         file_paths.append(os.path.join(wdir, model, fname))
 
     existing_files = [path for path in file_paths if os.path.isfile(path)]
@@ -186,12 +186,12 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
     else:
 
         dfs = []
-        for model in modelname:
+        for model in models:
             model_path = os.path.join(wdir, model, fname)
             try:
                 if os.path.isfile(model_path):
                     df = pd.read_csv(model_path, usecols=cols_to_keep)
-                    df['modelname'] = model
+                    df['models'] = model
                     if model == 'EMOD':
                         df['seed'] = df['seed'] + 1
                     dfs.append(df)
@@ -213,11 +213,11 @@ def get_output_df(wdir, modelname, yr=False, mth=False, daily=False, custom_name
             df['ageGroup'] = df['ageGroup'].astype('category')
             df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
 
-        warning_df = df[df['simulatedEIR'] == 0]
+        warning_df = df[df['eir'] == 0]
         if len(warning_df) > 0 and daily is False:  # we don't want to include simulations were eir was 0 or less, because we won't get any outcome measures and that crashes the system
             print('Warning: some eirs had simulated EIRS of 0, and were removed')
-            df = df[df['simulatedEIR'] > 0]
-            df = df[df['simulatedEIR'].notnull()]
+            df = df[df['eir'] > 0]
+            df = df[df['eir'].notnull()]
 
         if not daily and save_combined:
             df.to_csv(os.path.join(wdir, f'{fname}'), index=False)
@@ -322,7 +322,7 @@ def get_label(channel):
             - 'prevalence': Represents $\it{Pf}$PR (%) prevalence.
             - 'clinical_incidence': Represents clinical incidence (per person per year).
             - 'severe_incidence': Represents severe incidence (per person per year).
-            - 'simulatedEIR': Represents simulated entomological inoculation rate (EIR).
+            - 'eir': Represents simulated entomological inoculation rate (EIR).
             - 'n_total_mos_pop': Represents the total female mosquito population.
 
     Returns:
@@ -335,7 +335,7 @@ def get_label(channel):
                       'prevalence': r'$\it{Pf}$PR',
                       'clinical_incidence': 'Clinical incidence (pppy)',
                       'severe_incidence': 'Severe incidence (pppy)',
-                      'simulatedEIR': 'simulated EIR',
+                      'eir': 'simulated EIR',
                       'n_total_mos_pop': 'Total female mosquito population'
                       }
 
@@ -363,10 +363,10 @@ def get_legend_title(sweepvar, exp = None):
                      'prevalence': r'$\it{Pf}$PR',
                      'clinical_incidence': 'Clinical incidence (pppy)',
                      'severe_incidence': 'Severe incidence (pppy)',
-                     'simulatedEIR': 'simulated EIR',
+                     'eir': 'simulated EIR',
                      'n_total_mos_pop': 'Total female mosquito population',
                      # Input parameters to sweep over
-                     'modelname': '',
+                     'models': '',
                      'cm_clinical': 'Clinical case management',
                      'seasonality': 'Seasonality',
                      'entomology_mode': 'Entomology mode',
@@ -382,7 +382,7 @@ def clean_fname(fname, sweepvar= None,unique_groups=None, facet_var = None, uniq
     Clean and modify a given filename by replacing placeholder variables with actual values.
     This function replaces placeholder values in the provided filename based on the provided
     parameters. Specifically, it replaces instances of the sweep variable and facet variable
-    with values from the unique groups and facets, if applicable, and changes 'modelname' to 'model'.
+    with values from the unique groups and facets, if applicable, and changes 'models' to 'model'.
 
     Args:
         fname (str): The filename to be cleaned and modified.
@@ -402,7 +402,7 @@ def clean_fname(fname, sweepvar= None,unique_groups=None, facet_var = None, uniq
     if sweepvar is not None :
         if len(unique_groups) == 1 and not isinstance(unique_groups[0], int):
             fname = fname.replace(sweepvar, str(unique_groups[0]))
-    fname = fname.replace('modelname', 'model')
+    fname = fname.replace('models', 'model')
     return fname
 
 def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True):
@@ -430,7 +430,7 @@ def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True)
             - str: A summary string describing the filtering that was applied.
 
     Raises:
-        ValueError: If 'modelname' is not included in `figure_vars` and there
+        ValueError: If 'models' is not included in `figure_vars` and there
         are multiple unique model names in the DataFrame.
     """
 
@@ -456,13 +456,13 @@ def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True)
         txt += f'seasonality {selected_season}, '
 
     if filter_target:
-      if not any(var in figure_vars for var in ['simulatedEIR', 'prevalence_2to10', 'target_output_values']) :
+      if not any(var in figure_vars for var in ['eir', 'prevalence_2to10', 'target_output_values']) :
           selected_output = df['target_output_values'].max()
           df = df[df['target_output_values'] == selected_output]
           txt += f'target_output_values {selected_output}, '
 
-    if 'modelname' not in figure_vars and df['modelname'].nunique() > 1:
-        raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
+    if 'models' not in figure_vars and df['models'].nunique() > 1:
+        raise ValueError('models needs to be specified in plot if results were combined for more than 1 model')
 
     # Remove trailing comma and space if any filtering has been done
     if txt.endswith(', '):

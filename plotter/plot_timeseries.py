@@ -20,7 +20,7 @@ from plotter.plot_helper import *
 
 
 # Plots trends over available months, requires mmmpy_mth.csv
-def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_output_values', agegrps=['0-100'],
+def monthly_trends(fdir, df, channel, sweepvar='models', facet_var='target_output_values', agegrps=['0-100'],
                    new_index=None, facet_name = None, exp=None):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
@@ -58,7 +58,7 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_ou
         fdf = df[df[facet_var] == fi]
         ax = fig.add_subplot(ny, nx, f)
         ax.set_title(f'{facet_var} = {fi}')
-        if facet_var == 'modelname':
+        if facet_var == 'models':
             ax.set_title(fi)
         if facet_var == 'target_output_values':
             ax.set_title(f"{get_label(facet_name)} = {fi}")
@@ -107,14 +107,14 @@ def monthly_trends(fdir, df, channel, sweepvar='modelname', facet_var='target_ou
 
 
 # Plots over time - requires mmmpy_mth.csv
-def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGroup', agegrps=['0-100'],
+def monthly_timeseries(fdir, df, channel, sweepvar='models', facet_var='ageGroup', agegrps=['0-100'],
                        calendar_year=False, facet_name = None, exp=None):
     """
     Parameters:
         fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'models'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
         agegrp (str, optional): Age group filter for the data. Default is '0-5'.
     Returns:
@@ -141,7 +141,7 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
         fdf = df[df[facet_var] == fi]
         ax = fig.add_subplot(ny, nx, f)
         ax.set_title(f"{facet_var} = {fi}")
-        if facet_var == 'modelname':
+        if facet_var == 'models':
             ax.set_title(fi)
         if facet_var == 'target_output_values':
             ax.set_title(f"{get_label(facet_name)} = {fi}")
@@ -191,14 +191,14 @@ def monthly_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='ageGr
 
 
 # Plots over time - requires mmmpy_yr.csv
-def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='seasonality', agegrps=['0-100'],
+def annual_timeseries(fdir, df, channel, sweepvar='models', facet_var='seasonality', agegrps=['0-100'],
                       calendar_year=False, facet_name = None, exp=None):
     """
     Parameters:
         fdir (str): Directory where the plot will be saved.
         df (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'models'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
         agegrp (str, optional): Age group filter for the data. Default is '0-5'.
     Returns:
@@ -229,7 +229,7 @@ def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='season
         fdf = df[df[facet_var] == fi]
         ax = fig.add_subplot(ny, nx, f)
         ax.set_title(f"{facet_var} = {fi}")
-        if facet_var == 'modelname':
+        if facet_var == 'models':
             ax.set_title(fi)
         if facet_var == 'target_output_values':
             ax.set_title(f"{get_label(facet_name)} = {fi}")
@@ -276,18 +276,18 @@ def annual_timeseries(fdir, df, channel, sweepvar='modelname', facet_var='season
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    modelname = args.modelname
-    if isinstance(modelname, str):
-        modelname = [modelname]
+    models = args.models
+    if isinstance(models, str):
+        models = [models]
 
     exp = load_exp(wdir)
 
     ento_channel_list = ['n_total_mos_pop']
-    epi_channel_list = ['simulatedEIR', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10']
+    epi_channel_list = ['eir', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10']
     channel_list = epi_channel_list + ento_channel_list
 
-    df_mth, out_dir = get_output_df(wdir, modelname, mth=True)
-    df_yr, _ = get_output_df(wdir, modelname, yr=True)
+    df_mth, out_dir = get_output_df(wdir, models, mth=True)
+    df_yr, _ = get_output_df(wdir, models, yr=True)
     agegrps = ['0-100']
 
     out_dir = os.path.join(out_dir, 'plots')
@@ -296,7 +296,7 @@ if __name__ == "__main__":
     os.makedirs(out_dir, exist_ok=True)
 
     if not df_mth.empty:
-        facet_var = 'modelname'
+        facet_var = 'models'
         sweepvar = 'target_output_values'
         for channel in channel_list:
             try:
@@ -309,7 +309,7 @@ if __name__ == "__main__":
             except:
                 print(f'{channel} not found in dataframe')
 
-    sweepvar = 'modelname'
+    sweepvar = 'models'
     facet_var = 'ageGroup'
 
     if len(exp.target_output_values) > 1 & len(exp.target_output_values) <= 3:

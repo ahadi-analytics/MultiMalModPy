@@ -13,7 +13,7 @@ def exp_params_to_update(exp):
     interventions are specified, a message is printed. If an invalid intervention is
     specified, a `ValueError` is raised.
 
-    Currently, the function supports the `cc_step` intervention and includes a placeholder
+    Currently, the function supports the `ccstep` intervention and includes a placeholder
     for other potential interventions (e.g., `smc`).
 
     Args:
@@ -37,7 +37,7 @@ def exp_params_to_update(exp):
     else:
         if 'ccstep' in exp.intervention_list:
             print('Adding parameters for ccstep')
-            exp = cc_step_params(exp)
+            exp = ccstep_params(exp)
         else:
             raise ValueError('Invalid intervention specified. Note that case management is automatically included.')
     
@@ -76,7 +76,7 @@ def scenario_df_to_update(exp, df):
         df = df.reset_index(drop=True)
 
         # Additional cc step specific columns
-        df = cc_step_columns(exp, df)
+        df = ccstep_columns(exp, df)
 
     return df
 
@@ -97,6 +97,5 @@ def intervention_params_to_check(exp):
     """
 
     if "ccstep" in exp.intervention_list:
-        from interventions.ccstep import cc_step_input_check
-        cc_step_input_check(exp)
-
+        from interventions.ccstep import ccstep_input_check
+        ccstep_input_check(exp)

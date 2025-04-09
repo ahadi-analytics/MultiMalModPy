@@ -17,7 +17,7 @@ class SimulationConfig:
             - case_management (list[tuple]): List of tuples defining case management intervention configurations.
             - detectionLimit (int): Detection threshold for cases.
             - importation_rate (float): Importation rate of malaria cases.
-            - target_output_name (str): Type of output metric ('prevalence_2to10' by default).
+            - target_output_name (str): Align transmission by EIR, prevalence_2to10, or clinical incidence U5.
             - target_output_values (list[float]): List of target output values.
             - sweep_list (list[str]): List of parameters to vary in the simulation.
 
@@ -52,7 +52,7 @@ class SimulationConfig:
         self.cm_start = 1
         self.case_management = [(0, 0),(0.15,0.5)]  # format: [(cm_clinical, cm_severe), (...)]
         self.detectionLimit = 40
-        self.emod_importation_rate = 5
+        self.emod_importation_rate = 0
         self.openmalaria_importation_rate = 0
         
         # Parameters also modifiable via args (if specified in args, those will get priority)
@@ -60,7 +60,9 @@ class SimulationConfig:
         # These settings define the type of output metric and its target values.
         # Note: These will be overwritten if a specific run mode is specified, as run modes may have their own defaults.
         self.target_output_name = 'prevalence_2to10'
-        self.target_output_values = [0.25]
+        self.target_output_values = [0.05, 0.1, 0.25, 0.5] # [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]
+        #self.target_output_name = 'eir'
+        #self.target_output_values = [20]
 
         # Interventions to include (intervention specific configurations in interventions/ folder
         self.intervention_list = [] #can be empty or 'ccstep'
@@ -91,7 +93,7 @@ class SimulationConfig:
         self.emod_pop_size = 5000
         self.emod_calib_type = 'emod_severe' #could be 'emod_severe' or 'emod_best'
         self.emod_memory_per_sim = 6 #memory is represented in gigabytes allocated for each SLURM job, i.e. 5GB
-        self.emod_time_per_sim = '6:00:00' #time is represented in hours:minutes:seconds
+        self.emod_time_per_sim = '3:59:00' #time is represented in hours:minutes:seconds
 
         # malariasimulation Settings
         self.malariasimulation_burnin = 100

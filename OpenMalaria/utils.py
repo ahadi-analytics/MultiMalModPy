@@ -29,7 +29,7 @@ def create_scenarios(exp, scen_df):
     with open(os.path.join(exp.openmalaria_input_path, 'scaffolds', f"{exp.openmalaria_scaffold}.xml"), "r") as fp:
         xml = fp.read()
 
-    exp.days_between_clinical_cases_5days = 5  # Aurelien communicated that as long as we use v46, we should have a days_between_clinical_cases of 25 days
+    exp.days_between_clinical_cases_5days = 6
 
     # Replace placeholders in the XML template with fixed parameters
     xml = xml.replace("@version@", f"{exp.openmalaria_version}")
@@ -57,7 +57,7 @@ def create_scenarios(exp, scen_df):
     xml = xml.replace('@age_demography@', snippet)
 
     # Interventions
-    if "cc_step" in exp.intervention_list:
+    if "ccstep" in exp.intervention_list:
         xml = carrying_capacity(exp, xml)
     else:
         xml = xml.replace('@intervention_ccstep@', '')
@@ -94,7 +94,7 @@ def create_scenarios(exp, scen_df):
         scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
         scenario = scenario.replace('@eir@', str(row['transmission_intensity_OpenMalaria']))
 
-        if 'cc_step' in exp.intervention_list:
+        if 'ccstep' in exp.intervention_list:
             scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_OpenMalaria']))
             scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_OpenMalaria']))
         
@@ -118,7 +118,7 @@ def create_scenarios(exp, scen_df):
     shutil.copy(os.path.join(exp.openmalaria_path, schema), exp.job_directory)
 
 
-def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=10):
+def submit_analyze_OpenMalaria(exp, t='03:59:00', memG=10):
     """
     Submits a job to analyze OpenMalaria simulation results on an HPC cluster.
 
@@ -138,23 +138,17 @@ def submit_analyze_OpenMalaria(exp, t='04:00:00', memG=10):
 
     """
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_OpenMalaria',
+    header_post = shell_header_quest(exp.sh_hpc_config, time_str = t, memG=memG, job_name='analyze_OpenMalaria',
                                      mem_scl=exp.mem_increase_factor)
 
-    # Create the Python command to run the analyzer
     pycommand = f'\ncd {exp.root_directory}/OpenMalaria' \
-                f'\n{exp.EMOD_venv_modules}\n{exp.EMOD_venv_path}' \
+                f'\n{exp.EMOD_venv}' \
                 f'\npython analyze_sim.py --dir "{exp.job_directory}"'
-
-    if exp.use_container:
-        pycommand = f"{exp.EMOD_venv} && python analyze_sim.py --dir '{exp.job_directory}'"
-        pycommand = (f'module load singularity '
-                     f'\nsingularity exec --bind {exp.bind_path} --pwd {exp.ROOT_DIR}/OpenMalaria  {exp.image_path}  bash -c "{pycommand}"')
 
     # Write the shell script to a file
     script_path = os.path.join(exp.job_directory, 'run_analyzer_OpenMalaria.sh')
     file = open(script_path, 'w')
-    file.write(header_post + pycommand)  # Also load EMOD's Python virtual environment - needed for handling exp object from idmtools
+    file.write(header_post + pycommand)
     file.close()
 
     # Read the job ID from the 'job_id.txt' file
@@ -202,17 +196,16 @@ def submit_run_OpenMalaria(exp, scen_df):
     create_scenarios(exp, scen_df)
 
     if exp.hpc == 'LOCAL':
-        if not exp.use_container:
-            from utility.helper_local import write_ps1_analyzer, submit_runmodel_local
-            write_ps1_OpenMalaria(exp)
-            write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='OpenMalaria')
-            submit_runmodel_local(exp, model_to_run='OpenMalaria')
-        else:
-            from utility.helper_local_docker import write_sh_analyzer, write_sh_plotters, submit_runmodel_sh
-            write_sh_OpenMalaria(exp)
-            write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='OpenMalaria')
-            #write_sh_plotters(exp, model_to_run='OpenMalaria')
-            submit_runmodel_sh(exp, model_to_run='OpenMalaria')
+        from utility.helper_local import write_ps1_analyzer
+        # Write local submission script
+        write_ps1_OpenMalaria(exp)
+        write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='OpenMalaria')
+        # Note handled via submit_run_all_local
+        from utility.helper_local import submit_runmodel_local
+        submit_runmodel_local(exp, model_to_run='OpenMalaria')
+    elif exp.hpc == 'CONTAINER':
+        # TODO coming soon
+        pass
     else:
         submit_run_OpenMalaria_slurm(exp)
 
@@ -236,20 +229,10 @@ def submit_run_OpenMalaria_slurm(exp):
     array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
     header_post = shell_header_quest(exp.sh_hpc_config, exp.openmalaria_time_per_sim, exp.openmalaria_memory_per_sim, job_name='run_openmalaria', arrayJob=array)
     openmalaria = exp.OPENMALARIA_venv
+    path = f'export PATH=$PATH:{exp.job_directory}'
     slurmID = '${SLURM_ARRAY_TASK_ID}'
-
-    if exp.use_container:
-        openmalaria=''
-        command = f'{exp.OPENMALARIA_venv}openMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
-        path = (f'module load singularity '
-                f'\nsingularity exec --bind {exp.bind_path} --pwd {exp.job_directory}  {exp.image_path}  {command}')
-        command =''
-    else:
-        path = f'export PATH=$PATH:{exp.job_directory}'
-        command = f'\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
-
-    script_path = os.path.join(exp.job_directory, 'run_sim_OpenMalaria.sh')
-
+    command = f'\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
+    script_path = os.path.join(exp.job_directory, 'run_OpenMalaria.sh')
 
     # Write the bash script for submitting OpenMalaria simulations
     file = open(script_path, 'w')
@@ -324,85 +307,9 @@ Write-Host "OpenMalaria simulation complete."
     # Write the PowerShell content to a .ps1 file
     with open(file_path, 'w') as file:
         file.write(ps_content)
-    print(f"PowerShell script written at {file_path}")
+    print(f"PowerShell script written successfully at {file_path}")
 
 
-def write_sh_OpenMalaria(exp):
-    """
-    Creates a shell script to run OpenMalaria simulations (sequentially) locally.
-
-    This function generates a shell script that:
-    1. Sets job parameters, including the path to the OpenMalaria executable and the job directory.
-    2. Ensures the log directory exists, creating it if necessary.
-    3. Iterates over all experiments, running the OpenMalaria simulation for each one.
-    4. Logs the output and errors to respective log files.
-
-    Args:
-        exp (object): An experiment object containing attributes such as 'job_directory', 'nexps', and paths
-                      necessary for setting up and running the simulation.
-
-    Raises:
-        IOError: If there is an issue with writing the shell script to the file.
-    """
-    # Define file path for shell script
-    file_path = os.path.join(exp.job_directory, 'run_OpenMalaria.sh')
-
-    # Get the absolute path of the working directory
-    wdir = os.path.abspath(os.path.dirname(__file__))
-    wdir = os.path.abspath(os.path.join(wdir, os.pardir))
-
-    # Construct the content of the shell script
-    sh_content = f"""#!/bin/bash
-
-set -e  # Exit immediately if a command exits with a non-zero status
-trap 'echo "Error occurred in script at line $LINENO. Check logs for details." >> "$log_dir/run_openmalaria.err"; exit 1' ERR
-
-# Job settings
-job_name="run_openmalaria"
-exe_path="{exp.OPENMALARIA_PATH}"
-jobdir="{exp.job_directory}"
-log_dir="$jobdir/log"
-
-# Create log directory if it doesn't exist
-if [ ! -d "$log_dir" ]; then
-    mkdir -p "$log_dir"
-fi
-
-# Navigate to the job directory
-cd "$exe_path" || {{ echo "Failed to change directory to $exe_path" >> "$log_dir/run_openmalaria.err"; exit 1; }}
-
-# Run the OpenMalaria simulation for each experiment
-for ((i = 1; i <= {exp.nexps}; i++)); do
-    xml_file="$jobdir/xml/$i.xml"
-    output_file="$jobdir/txt/$i.txt"
-    
-    if [ ! -f "$xml_file" ]; then
-        echo "Error: Missing XML file: $xml_file" >> "$log_dir/run_openmalaria.err"
-        continue
-    fi
-
-    # Run OpenMalaria and capture errors
-    "{exp.OPENMALARIA_venv}/openMalaria" -s "$xml_file" --output "$output_file" --no-deprecation-warnings \
-        >> "$log_dir/run_openmalaria.log" 2>> "$log_dir/run_openmalaria.err" || {{
-        echo "OpenMalaria failed for $xml_file" >> "$log_dir/run_openmalaria.err"
-        continue
-    }}
-
-    echo "Simulation $i completed successfully" >> "$log_dir/run_openmalaria.log"
-done
-
-
-
-"""
-
-    # Write the shell content to a .sh file
-    with open(file_path, 'w') as file:
-        file.write(sh_content)
-
-    # Make script executable
-    os.chmod(file_path, os.stat(file_path).st_mode | 0o111)
-
-    print(f"Shell script written at {file_path}")
 
 
 if __name__ == "__main__":

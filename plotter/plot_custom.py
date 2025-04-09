@@ -23,15 +23,15 @@ from plotter.custom.example1 import *  ### Modify this import for any other cust
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    modelname = args.modelname
-    if isinstance(modelname, str):
-        modelname = [modelname]
+    models = args.models
+    if isinstance(models, str):
+        models = [models]
     file = open(os.path.join(wdir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
     channel_list = ['prevalence_2to10']
-    df, out_dir = get_output_df(wdir, modelname)
-    df_mth, _ = get_output_df(wdir, modelname, mth=True)
+    df, out_dir = get_output_df(wdir, models)
+    df_mth, _ = get_output_df(wdir, models, mth=True)
 
     out_dir = os.path.join(out_dir, 'plots')
     if len(modelname) == 1 and len(exp.models_to_run) > 1:

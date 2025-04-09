@@ -21,13 +21,13 @@ from plotter.plot_helper import *
 
 
 # Plots daily_timeseries - requires mmmpy_ccstep_daily.csv
-def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='5-10'):
+def daily_timeseries(fdir, df_all, channel_list, sweepvar='models', facet_var='ageGroup', agegrp='5-10'):
     """
     Parameters:
         fdir (str): Directory where the plot will be saved.
         df_all (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'models'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
         agegrp (str, optional): Age group filter for the data. Default is '5-10'.
     Returns:
@@ -55,8 +55,8 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var
                     # df = dfc.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
                     df = dfc.groupby(['day_date', sweepvar, facet_var, 'target_output_values','ccstep'])[channel].agg(np.mean).reset_index()
 
-                if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
-                    raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
+                if 'models' not in [sweepvar, facet_var] and len(df['models'].unique()) > 1:
+                    raise ValueError('models needs to be specified in plot if results were combined for more than 1 model')
 
                 unique_facets = df[facet_var].unique()
                 unique_facets = np.sort(unique_facets)
@@ -112,13 +112,13 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='modelname', facet_var
 
 
 # Plots daily_timeseries_by_seed - requires mmmpy_ccstep_daily.csv
-def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
+def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='models', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
         fdir (str): Directory where the plot will be saved.
         df_all (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'models'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
         agegrp (str, optional): Age group filter for the data. Default is '5-10'.
     Returns:
@@ -144,8 +144,8 @@ def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='modelname', f
             # df = df_all.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
             df = df_all.groupby(['day_date', sweepvar, facet_var, 'seed'])[channel].agg(np.mean).reset_index()
 
-        if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
-            raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
+        if 'models' not in [sweepvar, facet_var] and len(df['models'].unique()) > 1:
+            raise ValueError('models needs to be specified in plot if results were combined for more than 1 model')
 
         unique_facets = df[facet_var].unique()
         unique_facets = np.sort(unique_facets)
@@ -165,7 +165,7 @@ def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='modelname', f
                 f = f + 1
                 for si, (seeds, sdf) in enumerate(facet_df.groupby(['seed'])):
                     xmean, ymean = get_x_y(sdf, 'day_date', channel, channel)
-                    if model == 'OpenMalaria' and channel == 'simulatedEIR':
+                    if model == 'OpenMalaria' and channel == 'eir':
                         ymean[channel] = ymean[channel] / 5
                         ymean[f'{channel}_min'] = ymean[f'{channel}_min'] / 5
                         ymean[f'{channel}_max'] = ymean[f'{channel}_max'] / 5
@@ -197,13 +197,13 @@ def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='modelname', f
 
 
 # Plots daily_vectors - requires PfPR_ClinicalIncidence_daily.csv
-def daily_vectors(fdir, df_all, channel, sweepvar='modelname', facet_var='ageGroup', agegrp='0-100'):
+def daily_vectors(fdir, df_all, channel, sweepvar='models', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
         fdir (str): Directory where the plot will be saved.
         df_all (pandas dataframe): Dataframe that includes combined model results.
         channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'modelname'.
+        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'models'.
         facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
         agegrp (str, optional): Age group filter for the data. Default is '5-10'.
     Returns:
@@ -222,8 +222,8 @@ def daily_vectors(fdir, df_all, channel, sweepvar='modelname', facet_var='ageGro
         print('Warning: agegrp is set to None, it will combine all ages, please check your age aggregation')
         df = df_all.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
 
-    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
-        raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
+    if 'models' not in [sweepvar, facet_var] and len(df['models'].unique()) > 1:
+        raise ValueError('models needs to be specified in plot if results were combined for more than 1 model')
 
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
@@ -272,7 +272,7 @@ def daily_vectors(fdir, df_all, channel, sweepvar='modelname', facet_var='ageGro
         fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
         plt.close()
 
-def daily_eradication(fdir, df_all, channel, sweepvar='modelname', facet_var='ageGroup', agegrp = '0-100', pop_size = None):
+def daily_eradication(fdir, df_all, channel, sweepvar='models', facet_var='ageGroup', agegrp = '0-100', pop_size = None):
 
     #reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
     #df_all = df_all[df_all['cc_title'].isin(reductions)]
@@ -293,21 +293,21 @@ def daily_eradication(fdir, df_all, channel, sweepvar='modelname', facet_var='ag
     if agegrp is None:
         df = df_all.groupby(['timestep', sweepvar, facet_var, 'seed'])[channel].agg(np.mean).reset_index()
     
-    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
-            raise ValueError('modelname needs to be specified.')
+    if 'models' not in [sweepvar, facet_var] and len(df['models'].unique()) > 1:
+            raise ValueError('models needs to be specified.')
 
-    edf = pd.DataFrame(columns=['modelname','cc_title','total_sims','sims_failed','elimination_ratio'])
+    edf = pd.DataFrame(columns=['models','cc_title','total_sims','sims_failed','elimination_ratio'])
     for m, model in enumerate(df[sweepvar].unique()):
         model_df = df[df[sweepvar] == model]
         for i, (facet, facet_df) in enumerate(model_df.groupby([facet_var])):
             failed_sims = 0
             total_sims = 0
             for si, (seeds, sdf) in enumerate(facet_df.groupby(['seed'])):
-                if sdf.iloc[-1]['simulatedEIR'] == 0:
+                if sdf.iloc[-1]['eir'] == 0:
                     failed_sims += 1
                 total_sims +=1
             elimination_ratio = failed_sims / total_sims
-            edf.loc[len(edf)] = {'modelname': model, 'cc_title': facet, 'num_sims': total_sims,
+            edf.loc[len(edf)] = {'models': model, 'cc_title': facet, 'num_sims': total_sims,
                                 'sims_failed': failed_sims, 'elimination_ratio': elimination_ratio} 
     edf['pop_size'] = pop_size
     edf.to_csv((os.path.join(fdir, 'elimination.csv')), index=False)
@@ -318,24 +318,24 @@ def daily_eradication(fdir, df_all, channel, sweepvar='modelname', facet_var='ag
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    modelname = args.modelname   #  ['EMOD', 'malariasimulation', 'OpenMalaria']
-    if isinstance(modelname, str):
-        modelname = [modelname]
+    models = args.models   #  ['EMOD', 'malariasimulation', 'OpenMalaria']
+    if isinstance(models, str):
+        models = [models]
 
     exp = load_exp(wdir)
 
-    df_cc, out_dir = get_output_df(wdir, modelname, custom_name='mmmpy_ccstep_daily')
+    df_cc, out_dir = get_output_df(wdir, models, custom_name='mmmpy_ccstep_daily')
     out_dir = os.path.join(out_dir, 'plots')
     os.makedirs(out_dir, exist_ok=True)
 
-    sweepvar = 'modelname'
+    sweepvar = 'models'
     facet_var = 'ageGroup'
-    daily_channel_list = ['prevalence_2to10', 'prevalence', 'simulatedEIR', 'clinical_incidence', 'severe_incidence', 'n_total_mos_pop']
+    daily_channel_list = ['prevalence_2to10', 'prevalence', 'eir', 'clinical_incidence', 'severe_incidence', 'n_total_mos_pop']
     facet_daily = 'cc_title'
 
     #daily_eradicaiton(wdir, df_cc, 'prevalence2to10', sweepvar=sweepvar, facet_var=facet_daily)
     #If you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
     daily_timeseries(out_dir, df_cc, channel_list=daily_channel_list, sweepvar=sweepvar, facet_var=facet_daily, agegrp=None)
-    daily_eradication(out_dir, df_cc, channel = 'simulatedEIR', sweepvar = sweepvar, facet_var=facet_daily, agegrp = None, pop_size=exp.pop_size)
+    #daily_eradication(out_dir, df_cc, channel = 'eir', sweepvar = sweepvar, facet_var=facet_daily, agegrp = None, pop_size=exp.pop_size)
     # daily_timeseries_by_seed(out_dir, df_cc, channel_list = daily_channel_list, sweepvar = sweepvar, facet_var = facet_daily, agegrp='0-100')
     # daily_vectors(out_dir, df_cc, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_daily)
