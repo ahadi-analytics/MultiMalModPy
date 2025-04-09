@@ -197,7 +197,7 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
 
             columns_to_keep = [col for col in columns_to_keep if col in df_daily.columns]
             df_daily = df_daily[columns_to_keep]
-            df_daily = df_daily.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
+            df_daily = df_daily.rename({'EIR_gamb': 'eir'}, axis=1)
             df_daily = df_daily.rename(
                 {'eir_scalar_timestep_daily': 'eir_scalar_timestep', 'eir_scalar_malariasimulation': 'eir_scalar'},
                 axis=1)
@@ -205,7 +205,7 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
             columns_to_keep = columns_to_keep + ['target_output_values']
             columns_to_keep = [col for col in columns_to_keep if col in df_daily.columns]
             df_daily = df_daily[columns_to_keep]
-            df_daily = df_daily.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
+            df_daily = df_daily.rename({'EIR_gamb': 'eir'}, axis=1)
 
         print(f'Saving EIR_daily.csv to {wdir}')
         df_daily.to_csv((os.path.join(wdir, 'EIR_daily.csv')), index=False)
@@ -216,7 +216,7 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
         vdf_mth = df.groupby(['index', 'month', 'year'], as_index=False)[mean_channels].mean()
         df_mth = df_mth.merge(vdf_mth, on=['index', 'month', 'year'], how='inner')
         df_mth = df_mth.merge(scen_df, on='index', how='inner')
-        df_mth = df_mth.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
+        df_mth = df_mth.rename({'EIR_gamb': 'eir'}, axis=1)
         print(f'Saving EIR_mth.csv to {wdir}')
         df_mth.to_csv((os.path.join(wdir, 'EIR_mth.csv')), index=False)
 
@@ -225,7 +225,7 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
         vdf_yr = df.groupby(['index', 'year'], as_index=False)[mean_channels].mean()
         df_yr = df_yr.merge(vdf_yr, on=['index', 'year'], how='inner')
         df_yr = df_yr.merge(scen_df, on='index', how='inner')
-        df_yr = df_yr.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
+        df_yr = df_yr.rename({'EIR_gamb': 'eir'}, axis=1)
         print(f'Saving EIR_yr.csv to {wdir}')
         df_yr.to_csv((os.path.join(wdir, 'EIR_yr.csv')), index=False)
 
@@ -238,7 +238,7 @@ def InputEIRAnalyzer(jdir, wdir, daily=False):
         df_yr['n_infectious_mos'] = df_yr['n_infectious_mos'] / nyears
         df_yr['n_total_mos_pop'] = df_yr['n_total_mos_pop'] / nyears
         df_yr = df_yr.merge(scen_df, on='index', how='inner')
-        df_yr = df_yr.rename({'EIR_gamb': 'simulatedEIR'}, axis=1)
+        df_yr = df_yr.rename({'EIR_gamb': 'eir'}, axis=1)
         print(f'Saving EIR.csv to {wdir}')
         df_yr.to_csv((os.path.join(wdir, 'EIR.csv')), index=False)
 
@@ -327,7 +327,7 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR.csv'))
-    eir_df = eir_df[['index', 'target_output_values', 'simulatedEIR', 'n_total_mos_pop']]
+    eir_df = eir_df[['index', 'target_output_values', 'eir', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']
@@ -397,12 +397,12 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
         all_ages = cdf[cdf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         cdf = cdf[cdf['ageGroup'] == '0-100']
         cdf = cdf.groupby(['scen_id', 'transmission_intensity_malariasimulation', 'seasonality', 'cm_clinical', 'cm_severe'])[
-            ['simulatedEIR', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
+            ['eir', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
             'mean').reset_index()
         cdf = cdf.merge(all_ages, on='scen_id')
         cdf = cdf.merge(u5, on='scen_id')
         cdf = cdf.drop(['scen_id'], axis=1)
-        cdf['modelname'] = 'malariasimulation'
+        cdf['models'] = 'malariasimulation'
         cdf['pop_size'] = exp.malariasimulation_pop_size
         cdf['importaion'] = False
         cdf = cdf.rename(columns={'transmission_intensity_malariasimulation': 'input_target'})
@@ -438,7 +438,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_yr.csv'))
-    eir_df = eir_df[['index', 'year', 'target_output_values', 'simulatedEIR', 'n_total_mos_pop']]
+    eir_df = eir_df[['index', 'year', 'target_output_values', 'eir', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup',
@@ -528,8 +528,8 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_mth.csv'))
     eir_df = eir_df.groupby(sweep_variables + ['month', 'year'])[
-        ['simulatedEIR', 'target_output_values', 'n_total_mos_pop']].agg('mean').reset_index()  # mean across runs per month and year
-    eir_df = eir_df[['index', 'month', 'year', 'target_output_values', 'simulatedEIR', 'n_total_mos_pop']]
+        ['eir', 'target_output_values', 'n_total_mos_pop']].agg('mean').reset_index()  # mean across runs per month and year
+    eir_df = eir_df[['index', 'month', 'year', 'target_output_values', 'eir', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup', 'age_upper',
@@ -630,8 +630,8 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
     eir_df = eir_df.groupby(sweep_variables + ['year', 'timestep'])[
-        ['simulatedEIR', 'target_output_values', 'n_infectious_mos', 'n_total_mos_pop']].agg('mean').reset_index()  # mean across runs per  timestep , month and year
-    eir_df = eir_df[['index', 'timestep', 'year', 'simulatedEIR', 'n_infectious_mos', 'n_total_mos_pop']]
+        ['eir', 'target_output_values', 'n_infectious_mos', 'n_total_mos_pop']].agg('mean').reset_index()  # mean across runs per  timestep , month and year
+    eir_df = eir_df[['index', 'timestep', 'year', 'eir', 'n_infectious_mos', 'n_total_mos_pop']]
 
     # Convert the experiment data to a DataFrame and format it
     channels_to_keep = ['index', 'timestep', 'year', 'ageGroup', 'age_upper',
@@ -659,7 +659,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     eir_df['day'] = (eir_df['timestep'] - 1) % 365 + 1
     eir_df['5day'] = eir_df['day'].apply(lambda x: 5 * math.ceil(x / 5))
     eir_df = eir_df.groupby(sweep_variables + ['5day', 'year']).agg(
-        {'simulatedEIR': ['sum'], 'n_infectious_mos': ['mean'],
+        {'eir': ['sum'], 'n_infectious_mos': ['mean'],
          'n_total_mos_pop': ['mean'], 'timestep': ['max']}).reset_index()
     eir_df.columns = eir_df.columns.get_level_values(0)
     eir_df = eir_df.rename(columns={'5day': 'day'})
@@ -714,7 +714,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf.to_csv((os.path.join(wdir, 'mmmpy_5day.csv')), index=False)
     if cc:
         cdf = cdf[['scen_id', 'seed', 'timestep', 'cm_clinical', 'seasonality', 'target_output_values', 'ccstep',
-                   'cc_title', 'ageGroup', 'timestep', 'simulatedEIR', 'prevalence_2to10', 'prevalence',
+                   'cc_title', 'ageGroup', 'timestep', 'eir', 'prevalence_2to10', 'prevalence',
                    'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']]
         cdf.to_csv((os.path.join(wdir, 'mmmpy_ccstep_daily.csv')), index=False)
 
@@ -795,14 +795,14 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None)
 
     df = cdf.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
-    eir_df = eir_df[['index', 'timestep', 'month', 'year', 'simulatedEIR', 'target_output_values']]
+    eir_df = eir_df[['index', 'timestep', 'month', 'year', 'eir', 'target_output_values']]
     df = df.merge(eir_df, on=['index', 'timestep', 'month', 'year'], how='inner')
 
     # Severe Incidence Recalculation
     df['severe_incidence'] = df['severe_incidence'] * (0.5 * df['cm_severe'] + (1 - df['cm_severe']))
 
     # Let's limit the output of daily, so its a little more reasonable for us to process.
-    columns_to_keep = ['index', 'scen_id', 'seed', 'ageGroup', 'timestep', 'simulatedEIR', 'n_infectious_mos',
+    columns_to_keep = ['index', 'scen_id', 'seed', 'ageGroup', 'timestep', 'eir', 'n_infectious_mos',
                        'n_total_mos_pop', 'nHost', 'clinical_incidence', 'severe_incidence', 'prevalence',
                        'prevalence_2to10']
 
@@ -822,7 +822,7 @@ if __name__ == "__main__":
     file = open(os.path.join(job_directory, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    wdir = os.path.join(exp.sim_out_dir, 'malariasimulation')
+    wdir = os.path.join(exp.output_directory, 'malariasimulation')
     sweep_variables = ['index']
     all_age_sp = False  # False
     seeds = exp.num_seeds
@@ -847,10 +847,10 @@ if __name__ == "__main__":
     if 'monthly' in exp.analyzer_list:
         MonthlyAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates)
     ## 5 day (or daily) timeseries per age groups
-    if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:
+    if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
         InputEIRAnalyzer(job_directory, wdir, daily=True)
         if 'daily' in exp.analyzer_list:
             DailyAgeBinAnalyzer(job_directory, wdir, sweep_variables)
-        if '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:
-            ccstep = 'cc_step' in exp.intervention_list
+        if '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
+            ccstep = 'ccstep' in exp.intervention_list
             FiveDayAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates, cc=ccstep)

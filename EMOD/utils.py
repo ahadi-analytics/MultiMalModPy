@@ -13,8 +13,7 @@ from idmtools.builders import SimulationBuilder
 from idmtools.entities.experiment import Experiment
 sys.path.append('../')
 import manifest
-from utility.helper_slurm import shell_header_quest, write_txt
-
+from utility.helper_slurm import shell_header_quest, write_txt, submit_run_pyscript
 
 def submit_run_EMOD(exp, scen_df):
     """
@@ -43,6 +42,9 @@ def submit_run_EMOD(exp, scen_df):
         ValueError: If the experiment configuration or scenario data is incomplete or invalid.
 
     """
+    import emod_malaria.bootstrap as dtk
+    import pathlib
+    dtk.setup(pathlib.Path(manifest.eradication_path).parent)
     emod_serialized_id = exp.emod_serialized_id
     sim_dur_years = exp.sim_dur_years
     entomology_mode = exp.entomology_mode
@@ -73,13 +75,13 @@ def submit_run_EMOD(exp, scen_df):
     add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, 
                        num_year=sim_dur_years, detection_threshold=exp.detectionLimit)
 
-    if emod_step != 'burnin':  # do not generate monthly reports for burnin
+    if emod_step != 'burnin':  # do not generate more granular reports for burnin
         if 'daily' in exp.analyzer_list:
             add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years,
-                              detection_threshold=exp.detectionLimit) #We shouldn't generate daily reports unless specified
+                              detection_threshold=exp.detectionLimit) 
         add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years,
                             detection_threshold=exp.detectionLimit)
-        if '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:  # Note, we will not want to always run 5 days using the analyzer_list as a flag to include this reporter  or not
+        if '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
             add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years,
                                detection_threshold=exp.detectionLimit)
 
@@ -99,6 +101,14 @@ def submit_run_EMOD(exp, scen_df):
     generate_run_EMOD_file(experiment, platform, suite_directory = exp.suite_directory)
     submit_analyze_EMOD(experiment, platform)
     print(f"Experiment submission {experiment.uid} succeeded.")
+    exp.emod_id = experiment.id
+    if exp.emod_step == 'burnin':
+        exp.exp_name_pickup = exp.exp_name.replace(f'_burnin{exp.emod_burnin}', '')
+        submit_run_pyscript(exp, pyscript='launch_sim.py', shname='launch_pickup.sh',
+                            custom_args=f"--suite {exp.SUITEname} --expname {exp.exp_name_pickup} "
+                                        f"--emodstep pickup --serializedid {exp.emod_id} "
+                                        f"--models {' '.join([m for m in exp.models_to_run_pickup])} ",
+                            job_id_EMOD='job_id_EMODanalyze',memG=exp.mem_increase_factor*5, job='pickup_launch')
     return experiment
 
 
@@ -366,6 +376,7 @@ def generate_run_EMOD_file(experiment, platform, suite_directory, t = '00:30:00'
     file = open(script_path, 'w')
     file.write(header_post + emodpy_venv+ f'\ncd {emod_directory}'+ pycommand)
     file.close()
+
 
 def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=20):
     """

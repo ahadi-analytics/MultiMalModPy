@@ -264,7 +264,7 @@ class InputEIRAnalyzer(IAnalyzer):
 
             columns_to_keep = [col for col in columns_to_keep if col in adf.columns]
             df = adf[columns_to_keep]
-            df = df.rename(columns={'Daily EIR': 'simulatedEIR', 'time': 'timestep'})
+            df = df.rename(columns={'Daily EIR': 'eir', 'time': 'timestep'})
 
             df['day'] = df['day'] + 1
             df['timestep'] = (df['timestep'] + 1) - (self.emod_burnin * 365)
@@ -438,11 +438,11 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
             eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR', 'n_total_mos_pop', 'n_infectious_mos']].agg('mean').reset_index()  # mean across monitoring years and runs
-            eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
+            eirdf = eirdf.rename(columns={"Annual EIR": "eir"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
             # cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
         else:
-            cdf['simulatedEIR'] = cdf['transmission_intensity_EMOD']
+            cdf['eir'] = cdf['transmission_intensity_EMOD']
             cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
 
         # Rename columns for alignment with OpenMalaria results
@@ -461,12 +461,12 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
                 'mean').reset_index()
             cdf = cdf[cdf['ageGroup'] == '0-100']
             cdf = cdf.groupby(['scen_id', 'transmission_intensity_EMOD', 'seasonality', 'cm_clinical','cm_severe'])[
-                ['simulatedEIR', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
+                ['eir', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
                 'mean').reset_index()
             cdf = cdf.merge(all_ages, on='scen_id')
             cdf = cdf.merge(u5, on='scen_id')
             cdf = cdf.drop(['scen_id'], axis=1)
-            cdf['modelname'] = 'EMOD'
+            cdf['models'] = 'EMOD'
             cdf['pop_size'] = exp.emod_pop_size
             if exp.emod_importation_rate > 0:
                 cdf['importation'] = True
@@ -612,11 +612,11 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR', 'n_total_mos_pop']].agg('mean').reset_index()
-            eirdf = eirdf.rename(columns={"Annual EIR": "simulatedEIR"})
+            eirdf = eirdf.rename(columns={"Annual EIR": "eir"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
 
         else:
-            cdf['simulatedEIR'] = cdf['transmission_intensity_EMOD']
+            cdf['eir'] = cdf['transmission_intensity_EMOD']
             cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
 
         # Rename columns for alignment with OpenMalaria results
@@ -779,9 +779,9 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
                 ['Monthly EIR', 'n_total_mos_pop']].agg('mean').reset_index()
             cdf = pd.merge(left=cdf, right=eirdf_mth, on=self.sweep_variables + ['year', 'month'])
 
-            cdf = cdf.rename(columns={"Monthly EIR": "simulatedEIR"})
+            cdf = cdf.rename(columns={"Monthly EIR": "eir"})
         else:
-            cdf['simulatedEIR'] = cdf['transmission_intensity_EMOD']
+            cdf['eir'] = cdf['transmission_intensity_EMOD']
             cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
 
         # Rename columns for alignment with OpenMalaria results
@@ -944,10 +944,10 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
             eirdf_daily = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_daily.csv'))
             eirdf_daily = eirdf_daily.groupby(self.sweep_variables + ['year', 'day', 'timestep'])[
-                ['simulatedEIR', 'n_total_mos_pop', 'n_infectious_mos']].agg('mean').reset_index()
+                ['eir', 'n_total_mos_pop', 'n_infectious_mos']].agg('mean').reset_index()
 
             eirdf_daily['5day'] = eirdf_daily['day'].apply(lambda x: 5 * math.ceil(x / 5))
-            eirdf_5day = eirdf_daily.groupby(self.sweep_variables + ['5day', 'year']).agg({'simulatedEIR': ['sum'],
+            eirdf_5day = eirdf_daily.groupby(self.sweep_variables + ['5day', 'year']).agg({'eir': ['sum'],
                                                                                            'n_total_mos_pop': ['mean'],
                                                                                            'n_infectious_mos': ['mean'],
                                                                                            'timestep': [
@@ -956,7 +956,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
             eirdf_5day = eirdf_5day.rename(columns={'5day': 'day'})
             cdf = pd.merge(left=cdf, right=eirdf_5day, on=self.sweep_variables + ['year', 'day'])
         else:
-            cdf['simulatedEIR'] = cdf['transmission_intensity_EMOD']
+            cdf['eir'] = cdf['transmission_intensity_EMOD']
             cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
 
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
@@ -970,7 +970,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD')
         cols_to_keep = ['scen_id', 'index', 'seed', 'target_output_values', 'transmission_intensity_EMOD', 'timestep',
                         'day', 'year', 'ageGroup', 'seasonality', 'cm_clinical', 'entomology_mode',
-                        'simulatedEIR', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence',
+                        'eir', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence',
                         'n_total_mos_pop', 'n_infectious_mos']
         if self.cc:
             cols_to_keep = cols_to_keep + ['ccstep', 'cc_factor', 'cc_timestep', 'cc_title']
@@ -1101,7 +1101,7 @@ class DailyAgebinAnalyzer(IAnalyzer):
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_daily.csv'))
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['day', 'year', 'eir'])
         else:
-            cdf['simulatedEIR'] = ''
+            cdf['eir'] = ''
         cdf = cdf.rename(columns={"Run_Number": "seed"})
         cdf['seed'] = cdf['seed'] + 1
 
@@ -1123,7 +1123,7 @@ if __name__ == "__main__":
     file = open(os.path.join(job_directory, "exp.obj"), "rb")
     exp = pickle.load(file)
     # Set location of output files
-    wdir = exp.sim_out_dir
+    wdir = exp.output_directory
 
     exp_name = exp.exp_name
     age_groups_aggregates = exp.age_groups_aggregates  # Defined in utility.helper.py
@@ -1211,7 +1211,7 @@ if __name__ == "__main__":
             manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
                                      partial_analyze_ok=True)
             manager.analyze()
-            if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:
+            if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
                 daily_eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
                                                        sweep_variables=exp_tags,
                                                        start_year=start_year,
@@ -1239,9 +1239,9 @@ if __name__ == "__main__":
         if 'monthly' in exp.analyzer_list:
             analyzer = analyzer + monthly_analyzers
         # 5 day timeseries per age groups
-        if '5day' in exp.analyzer_list or 'cc_step' in exp.analyzer_list:
+        if '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
             if exp.emod_step != 'burnin':
-                ccstep = 'cc_step' in exp.intervention_list
+                ccstep = 'ccstep' in exp.intervention_list
             analyzer = analyzer + [FiveDayAgebinAnalyzer(expt_name=exp_name,
                                                          start_year=start_year,
                                                          end_year=end_year,

@@ -45,26 +45,26 @@ def get_simulation_time_params(exp):
 
     start_year = exp.start_year
     end_year = exp.end_year
-    models_to_run = exp.models_to_run
+    models = exp.models
     emod_step = exp.emod_step
 
     # Calculate the number of years to monitor
     monitoring_years = end_year - start_year
 
     if emod_step is None:
-        if 'EMOD' in models_to_run:
+        if 'EMOD' in models:
             print(" --------| Running EMOD burnin + pickup time in one simulation run |--------")
         burnin_start_year = start_year - exp.emod_burnin
         sim_dur_years = end_year - burnin_start_year
         sim_start_year = burnin_start_year
     elif emod_step == 'burnin':
-        if 'EMOD' in models_to_run:
+        if 'EMOD' in models:
             print(" --------| Running EMOD burnin (step 1) |--------")
         sim_dur_years = exp.emod_burnin
         burnin_start_year = start_year - exp.emod_burnin
         sim_start_year = burnin_start_year
     elif emod_step == 'pickup':
-        if 'EMOD' in models_to_run:
+        if 'EMOD' in models:
             print(" --------| Running EMOD pickup from serialized burnin (step 2) |--------")
         sim_dur_years = end_year - start_year
         sim_start_year = start_year
@@ -91,7 +91,7 @@ def param_variation(df, exp):
     Returns:
     DataFrame with added column 'malariasimulation_pv' representing malariasimulation parameter variation values.
     """
-    if exp.malariasimulation_parameter_variation and 'malariasimulation' in exp.models_to_run:
+    if exp.malariasimulation_parameter_variation and 'malariasimulation' in exp.models:
         from random import sample
         if exp.num_seeds > 1000:
             print("Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values")
@@ -272,7 +272,7 @@ def check_exp_inputs_emod(exp):
 
     Args:
         exp (object): An experiment object containing the attributes 'emod_step', 'num_seeds_burnin',
-                      'emod_burnin', 'emod_pop_size', and 'models_to_run'.
+                      'emod_burnin', 'emod_pop_size', and 'models'.
 
     Raises:
         ValueError: If the 'num_seeds_burnin' is not set to 1 during an EMOD burn-in simulation.
@@ -290,8 +290,8 @@ def check_exp_inputs_emod(exp):
             )
 
     if exp.emod_burnin < 100 and (
-            ('EMOD' in exp.models_to_run and exp.emod_step != 'pickup') or
-            'EMOD' not in exp.models_to_run ):
+            ('EMOD' in exp.models and exp.emod_step != 'pickup') or
+            'EMOD' not in exp.models ):
         print(
             f"Warning: A burn-in period of at least 100 years is recommended for EMOD. "
             f"Currently, a shorter burn-in of {exp.emod_burnin} years has been configured, which may lead to inaccurate results."

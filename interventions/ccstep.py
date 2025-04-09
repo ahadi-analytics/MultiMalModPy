@@ -1,9 +1,9 @@
 import os
 import pandas as pd
 import numpy as np
-# Carrying Capacity step change (cc_step)
+# Carrying Capacity step change (ccstep)
 
-def cc_step_params(exp):
+def ccstep_params(exp):
     """
     This function sets up the exp object so that the carrying capacity perterbation can occur.
 
@@ -15,9 +15,9 @@ def cc_step_params(exp):
             An object with updated experiment parameters.
     """
 
-    # Required fixed parameters for cc_step
+    # Required fixed parameters for ccstep
     if exp.emod_step != 'pickup':
-        exp.cc_decreasing = False  # this is important to note because decreasing sims are organized differently.
+        exp.cc_decreasing = True  # this is important to note because decreasing sims are organized differently.
 
     exp.step_in_years = 5 # determines after x amount of years, when the carrying capacity change occurs
 
@@ -48,16 +48,15 @@ def cc_step_params(exp):
 
     # Flexible parameters depending on type of run and user-specifications
     if exp.run_mode == 'production':
-        print('Warning: Running cc_step in production mode with pre-defined not user-defined parameters')
+        print('Warning: Running ccstep in production mode with pre-defined not user-defined parameters')
         if exp.emod_importation_rate == 0 and exp.cc_decreasing:
             print('Warning: You are running EMOD simulations with a decreasing carrying capacity.\nWithout importation, elimination can occur.')
         exp.mem_increase_factor = 6.0  # scaling factor on default memory requested
         exp.start_year = 1995
         exp.end_year = 2050
         exp.target_output_name = 'prevalence_2to10'
-        exp.target_output_values = [0.1, 0.25, 0.5]
         exp.emod_memory_per_sim = 6
-        exp.emod_time_per_sim = '6:00:00'
+        exp.emod_time_per_sim = '3:59:00'
         exp.malariasimulation_memory_per_sim = 6
         exp.malariasimulation_time_per_sim = '2:00:00'
         exp.openmalaria_memory_per_sim = 6
@@ -73,10 +72,10 @@ def cc_step_params(exp):
     return exp
 
 
-def cc_step_factor_calculator(exp, df, model):
+def ccstep_factor_calculator(exp, df, model):
     """
-    Calculates scaling factors for the `cc_step` intervention.
-    This function computes adjustment factors for the `cc_step` intervention by interpolating
+    Calculates scaling factors for the `ccstep` intervention.
+    This function computes adjustment factors for the `ccstep` intervention by interpolating
     values from a model-specific dataset. It takes input from a DataFrame `df`, an experiment
     object `exp`, and a model name `model`. The function performs the calculations using
     interpolation of prevalence or population size values and adjusts the output based on the
@@ -103,7 +102,7 @@ def cc_step_factor_calculator(exp, df, model):
 
     Notes:
         - The function expects the interpolation file to contain columns:
-          `cm_clinical`, `seasonality`, `modelname`, `pop_size`, `prevalence_2to10`, and
+          `cm_clinical`, `seasonality`, `models`, `pop_size`, `prevalence_2to10`, and
           either `input_target` or `n_total_mos_pop` depending on the model.
         - Population size scaling is applied to ensure compatibility with model fitting.
 
@@ -125,14 +124,14 @@ def cc_step_factor_calculator(exp, df, model):
         raise ValueError(f'Specified model is not valid {model}')
 
     # NOTE: Workaround to allow smaller populations for test runs
-    if exp.test and popsize not in data.loc[data['modelname'] == model, 'pop_size'].unique():
-        popsize = data.loc[data['modelname'] == model, 'pop_size'].min()
+    if exp.test and popsize not in data.loc[data['models'] == model, 'pop_size'].unique():
+        popsize = data.loc[data['models'] == model, 'pop_size'].min()
             
     for i, row in df.iterrows():
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
                       & (data['cm_severe'] == row['cm_severe'])
                       & (data['seasonality'] == row['seasonality'])
-                      & (data['modelname'] == model)
+                      & (data['models'] == model)
                       & (data['pop_size'] == popsize))]
         if model == 'EMOD':
             xt = idata['prevalence_2to10']
@@ -184,7 +183,7 @@ def cc_title_function(df):
     return output
 
 
-def cc_step_columns(exp, df):
+def ccstep_columns(exp, df):
     """
     Adds columns for CC steps if present.
 
@@ -197,20 +196,20 @@ def cc_step_columns(exp, df):
     """
 
     for model in ['EMOD', 'malariasimulation', 'OpenMalaria']:
-        if model in exp.models_to_run or model in exp.models_to_run_pickup:
-            df[f'cc_factor_{model}'] = cc_step_factor_calculator(exp, df, model=model)
+        if model in exp.models or model in exp.models_pickup:
+            df[f'cc_factor_{model}'] = ccstep_factor_calculator(exp, df, model=model)
             df[f'cc_timestep_{model}'] = getattr(exp, f'cc_timestep_{model}')
     df['cc_title'] = cc_title_function(df)
     return df  # TODO can be moved to postprocessing
 
 
 
-def cc_step_input_check(exp):
+def ccstep_input_check(exp):
 
     if exp.entomology_mode != "dynamic":
-        raise ValueError(f'Invalid entomology_mode for cc_step {exp.entomology_mode} specified, "dynamic" required')
+        raise ValueError(f'Invalid entomology_mode for ccstep {exp.entomology_mode} specified, "dynamic" required')
     if exp.target_output_name != 'prevalence_2to10':
-        raise ValueError("cc_step requires the target_output_name to be prevalence_2to10")
+        raise ValueError("ccstep requires the target_output_name to be prevalence_2to10")
 
     if exp.end_year - exp.start_year < exp.step_in_years:
         raise ValueError(f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and {exp.end_year}")

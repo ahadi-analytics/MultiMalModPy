@@ -5,7 +5,7 @@ library(dplyr)
 library(data.table)
 library(tidyr)
 library(patchwork)
-source('utility/functions.R')
+source('utils/functions.R')
 theme_set(theme_bw())
 datetoday <- Sys.Date()
 
@@ -16,34 +16,34 @@ mmmpy_models <- c("EMOD", "malariasimulation", "malariasimulation w/o pv", "Open
 
 # Load simulation outputs  CCStep_daily.csv-------------------------------
 dat_inc_em <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250219_production/sims_dynamic_perennial_cc_step_09_56_28_increasing/'),
-                                    modelname = c('EMOD'), ccstep=TRUE)
+                                    models = c('EMOD'), ccstep=TRUE)
 dat_inc_om <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250313_production/sims_dynamic_perennial_cc_step_15_17_23_increasing'),
-                         modelname = c('OpenMalaria'), ccstep=TRUE)
+                         models = c('OpenMalaria'), ccstep=TRUE)
 dat_inc_ms <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250219_production/sims_dynamic_perennial_cc_step_09_56_28_increasing'),
-                            modelname = c('malariasimulation'), ccstep=TRUE)
+                            models = c('malariasimulation'), ccstep=TRUE)
 dat_inc_ms_nompv <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250227_production/sims_dynamic_perennial_cc_step_09_15_52/'),
-                                  modelname = c('malariasimulation'), ccstep=TRUE)
-dat_inc_ms_nompv$modelname <- "malariasimulation w/o pv"
+                                  models = c('malariasimulation'), ccstep=TRUE)
+dat_inc_ms_nompv$models <- "malariasimulation w/o pv"
 
 dat_inc <- rbind(dat_inc_em, dat_inc_om, dat_inc_ms, dat_inc_ms_nompv, fill=TRUE)
 dat_inc <- dat_inc %>%
   filter(cm_clinical == 0.15) %>%
-  group_by(timestep,cm_clinical,seasonality, modelname, cc_title, ccstep, target_output_values) %>%
+  group_by(timestep,cm_clinical,seasonality, models, cc_title, ccstep, target_output_values) %>%
   summarise(prevalence_2to10__mean = mean(prevalence_2to10),
             prevalence_2to10__min = quantile(prevalence_2to10, 0.05),
             prevalence_2to10__up = quantile(prevalence_2to10, 0.95)) %>%
   ungroup()
 
 cc_title <-  c("10%-25%", "10%-50%", "25%-50%")
-dat_inc$modelname <- factor(dat_inc$modelname, levels = mmmpy_models)
+dat_inc$models <- factor(dat_inc$models, levels = mmmpy_models)
 dat_inc$cc_title <- factor(dat_inc$cc_title, levels = cc_title, labels = c("10% to 25%", "10% to 50%", "25% to 50%"))
 
 pA <- dat_inc %>%
   filter(cm_clinical == 0.15, seasonality == 'perennial', timestep<=20075) %>%
   filter(cc_title %in% c("10% to 25%", "10% to 50%", "25% to 50%")) %>%
   ggplot() + 
-  geom_ribbon(aes(x = timestep, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = modelname), alpha = 0.1) +
-  geom_line(aes(x = timestep, y = prevalence_2to10__mean, color = modelname, linetype = modelname)) +  
+  geom_ribbon(aes(x = timestep, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = models), alpha = 0.1) +
+  geom_line(aes(x = timestep, y = prevalence_2to10__mean, color = models, linetype = models)) +  
   geom_hline(yintercept = c(dat_inc$ccstep, dat_inc$target_output_values), color='#696969',linetype='dotted')+
   facet_wrap(~ cc_title, nrow=1) +
   scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#7570b3aa', '#d95f02ff')) +
@@ -61,20 +61,20 @@ pA
 
 
 dat_dec_em <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250314_production/sims_dynamic_perennial_cc_step_14_54_09'),
-                                  modelname = c('EMOD'), ccstep=TRUE)
+                                  models = c('EMOD'), ccstep=TRUE)
 dat_dec_om <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250313_production/sims_dynamic_perennial_cc_step_15_17_52_decreasing'),
-                         modelname = c('OpenMalaria'), ccstep=TRUE)
+                         models = c('OpenMalaria'), ccstep=TRUE)
 
 dat_dec_ms <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250219_production/sims_dynamic_perennial_cc_step_09_52_27_decreasing_and_OM_noImportation'),
-                           modelname = c('malariasimulation'), ccstep=TRUE)
+                           models = c('malariasimulation'), ccstep=TRUE)
 dat_dec_ms_nompv <- get_output_df(file.path('/projects/b1139/emod-om/simulation_outputs/rer4177/20250227_production/sims_dynamic_perennial_cc_step_09_12_53'),
-                            modelname = c('malariasimulation'), ccstep=TRUE)
-dat_dec_ms_nompv$modelname <- "malariasimulation w/o pv"
+                            models = c('malariasimulation'), ccstep=TRUE)
+dat_dec_ms_nompv$models <- "malariasimulation w/o pv"
 
 dat_dec <- rbind(dat_dec_em, dat_dec_om, dat_dec_ms,dat_dec_ms_nompv, fill=TRUE)
 dat_dec <- dat_dec %>%
   filter(cm_clinical == 0.15) %>%
-  group_by(timestep,cm_clinical,seasonality, modelname, cc_title, ccstep, target_output_values) %>%
+  group_by(timestep,cm_clinical,seasonality, models, cc_title, ccstep, target_output_values) %>%
   summarise(prevalence_2to10__mean = mean(prevalence_2to10),
             prevalence_2to10__min = quantile(prevalence_2to10, 0.05),
             prevalence_2to10__up = quantile(prevalence_2to10, 0.95)) %>%
@@ -82,15 +82,15 @@ dat_dec <- dat_dec %>%
 
 
 cc_title <-  c("25%-10%", "50%-10%", "50%-25%")
-dat_dec$modelname <- factor(dat_dec$modelname, levels = mmmpy_models, labels = c("EMOD*", "malariasimulation", "malariasimulation w/o pv", "OpenMalaria"))
+dat_dec$models <- factor(dat_dec$models, levels = mmmpy_models, labels = c("EMOD*", "malariasimulation", "malariasimulation w/o pv", "OpenMalaria"))
 dat_dec$cc_title <- factor(dat_dec$cc_title, levels = cc_title, labels = c("25% to 10%", "50% to 10%", "50% to 25%"))
 
 pB<- dat_dec %>%
   filter(cm_clinical == 0.15, seasonality == 'perennial', timestep<=20075) %>%
   filter(cc_title %in% c("25% to 10%", "50% to 10%", "50% to 25%")) %>%
   ggplot() + 
-  geom_ribbon(aes(x = timestep, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = modelname, linetype=modelname), alpha = 0.1) +
-  geom_line(aes(x = timestep, y = prevalence_2to10__mean, color = modelname, linetype = modelname)) +  
+  geom_ribbon(aes(x = timestep, ymin = prevalence_2to10__min, ymax = prevalence_2to10__up, fill = models, linetype=models), alpha = 0.1) +
+  geom_line(aes(x = timestep, y = prevalence_2to10__mean, color = models, linetype = models)) +  
   geom_hline(yintercept = c(dat_dec$ccstep, dat_dec$target_output_values), color='#696969',linetype='dotted')+
   facet_wrap(~ cc_title, nrow=1) +   
   scale_color_manual(values = c('#1b9e77ff','#7570b3ff','#7570b3aa', '#d95f02ff')) +

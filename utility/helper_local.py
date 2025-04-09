@@ -85,27 +85,27 @@ class LoadLaunchArgs:
                 f"overwrite={self.overwrite}, mpv={self.mpv}, test={self.test}, note={self.note}, target_output_name={self.target_output_name})")
 
 
-def write_ps1_runmodel(exp, filename, modelname):
+def write_ps1_runmodel(exp, filename, models):
     """
     Writes a PowerShell script that manages the execution of two jobs:
-    1. Runs the first script (e.g., run_{modelname}.ps1)
-    2. Runs the second script (e.g., analyze_sim_{modelname}.ps1) after the first completes
+    1. Runs the first script (e.g., run_{models}.ps1)
+    2. Runs the second script (e.g., analyze_sim_{models}.ps1) after the first completes
 
     Args:
         exp (Experiment): The experiment object that contains job directories and other parameters.
         filename (str): The full path where the PowerShell script should be saved.
-        modelname (str): The name of the model to run (e.g., 'malariasimulation', 'OpenMalaria').
+        models (str): The name of the model to run (e.g., 'malariasimulation', 'OpenMalaria').
 
     Raises:
-        ValueError: If the provided modelname is empty or if exp.job_directory is not valid.
+        ValueError: If the provided models is empty or if exp.job_directory is not valid.
 
     Returns:
         None: This function does not return a value but writes the PowerShell script to the specified file.
     """
 
-    # Check for valid modelname and experiment directory
-    if not modelname:
-        raise ValueError("Modelname cannot be empty.")
+    # Check for valid models and experiment directory
+    if not models:
+        raise ValueError("models cannot be empty.")
 
     if not os.path.isdir(exp.job_directory):
         raise ValueError(f"Invalid job directory: {exp.job_directory}")
@@ -114,9 +114,9 @@ def write_ps1_runmodel(exp, filename, modelname):
     # Start the first job
     $job1 = Start-Job -ScriptBlock {{
         try {{
-            # Run the first script: run_{modelname}.ps1
-            Write-Host "Running job 1: run_{modelname}.ps1"
-            & "{os.path.normpath(exp.job_directory)}\\run_{modelname}.ps1"
+            # Run the first script: run_{models}.ps1
+            Write-Host "Running job 1: run_{models}.ps1"
+            & "{os.path.normpath(exp.job_directory)}\\run_{models}.ps1"
         }} catch {{
             Write-Error "Job 1 failed: $_"
         }}
@@ -135,8 +135,8 @@ def write_ps1_runmodel(exp, filename, modelname):
     $job2 = Start-Job -ScriptBlock {{
         try {{
             # Run the second script with -ExecutionPolicy Bypass and explicit -File parameter
-            Write-Host "Running job 2: analyze_sim_{modelname}.ps1"
-            & "powershell.exe" -ExecutionPolicy Bypass -File "{os.path.normpath(exp.job_directory)}\\run_analyze_{modelname}.ps1"
+            Write-Host "Running job 2: analyze_sim_{models}.ps1"
+            & "powershell.exe" -ExecutionPolicy Bypass -File "{os.path.normpath(exp.job_directory)}\\run_analyze_{models}.ps1"
         }} catch {{
             Write-Error "Job 2 failed: $_"
         }}
@@ -178,7 +178,7 @@ def submit_runmodel_local(exp, model_to_run):
 
     file_name = f'jobs_{model_to_run}_simplerun.ps1'
     file_path = os.path.join(exp.job_directory, file_name)
-    write_ps1_runmodel(exp,filename=file_path, modelname=model_to_run)
+    write_ps1_runmodel(exp,filename=file_path, models=model_to_run)
     cmd_command = f'cmd.exe /c start powershell -ExecutionPolicy Bypass -File "{file_path}"'
     subprocess.Popen(cmd_command, shell=True)
 
@@ -257,7 +257,7 @@ def submit_run_plotters_local(exp):
 
     Args:
         exp (Experiment): The experiment object that contains attributes such as
-            `models_to_run` and `plots_to_run`, which determine which models and
+            `models` and `plots_to_run`, which determine which models and
             plots should be processed.
 
     Returns:
@@ -265,7 +265,7 @@ def submit_run_plotters_local(exp):
 
     Notes:
         - The function checks which models (EMOD, malariasimulation, OpenMalaria) are
-          specified in `exp.models_to_run` and sets corresponding job IDs.
+          specified in `exp.models` and sets corresponding job IDs.
         - It prepares a submission script for a set of default plots (`relationship`,
           `timeseries`, `agecurves`) and also handles custom plots if specified in
           `exp.plots_to_run`.
@@ -280,8 +280,8 @@ def submit_run_plotters_local(exp):
 
         job_name = f"run_plot_{plot_name}"
         subdir = "plotter"
-        model_args = ' '.join(exp.models_to_run)
-        py_command = f"python {pyscript} --directory {exp.sim_out_dir} --modelname {model_args}"
+        model_args = ' '.join(exp.models)
+        py_command = f"python {pyscript} --directory {exp.output_directory} --models {model_args}"
 
         create_ps1_script(exp, fname, subdir, job_name, py_command)
 
@@ -320,7 +320,7 @@ def write_bat_submission_plots(exp):
     # Add commands to run the plotting scripts
     for script in plot_scripts:
         plot_name = script.replace('.py', '')
-        bat_content += f'python {script} --directory {exp.sim_out_dir} --modelname malariasimulation OpenMalaria >> "%log_dir%\\run_{plot_name}.log" 2>> "%log_dir%\\run_{plot_name}.err"\n'
+        bat_content += f'python {script} --directory {exp.output_directory} --models malariasimulation OpenMalaria >> "%log_dir%\\run_{plot_name}.log" 2>> "%log_dir%\\run_{plot_name}.err"\n'
 
     # Add pause at the end to keep the terminal open
     bat_content += "pause\n"
