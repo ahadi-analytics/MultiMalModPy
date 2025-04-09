@@ -173,7 +173,7 @@ def write_ps1_runmodel(exp, filename, models):
     print(f"PowerShell script has been written to {filename}")
 
 
-def submit_runmodel_local(exp, model_to_run):
+def submit_runmodel_local(exp, model):
     """
     This function creates a PowerShell script for running the specified model, saves it in the specified job directory,
     and then executes the script using the 'cmd.exe' command.
@@ -186,13 +186,9 @@ def submit_runmodel_local(exp, model_to_run):
         OSError: If there is an issue with executing the command or running the script.
     """
 
-    file_name = f'jobs_{model_to_run}_simplerun.ps1'
+    file_name = f'jobs_{model}_simplerun.ps1'
     file_path = os.path.join(exp.job_directory, file_name)
-<<<<<<< HEAD
-    write_ps1_runmodel(exp, filename=file_path, modelname=model_to_run)
-=======
-    write_ps1_runmodel(exp,filename=file_path, models=model_to_run)
->>>>>>> 30f877d925d5092cccc967fdbf0658c92c50ab0d
+    write_ps1_runmodel(exp,filename=file_path, models=model)
     cmd_command = f'cmd.exe /c start powershell -ExecutionPolicy Bypass -File "{file_path}"'
     subprocess.Popen(cmd_command, shell=True)
 
