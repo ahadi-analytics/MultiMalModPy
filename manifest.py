@@ -10,6 +10,11 @@ hpc = 'NUCLUSTER'
 selected_platform = 'SLURM_LOCAL'
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
+use_container = False
+if os.path.exists("/.dockerenv"):
+    hpc = 'LOCAL'
+    use_container = True
+
 # ----------------------------- EMOD generic settings start -----------------------------
 # Location of the file containing AssetCollection id for the dtk sif (singularity image)
 sif_id = os.path.join(os.pardir, 'dtk_sif.id')
@@ -53,9 +58,18 @@ if hpc == 'NUCLUSTER':
     EMOD_venv_modules = os.path.join('\n\nml singularity/3.8.1 \nml python/3.9.16')
     EMOD_venv_path = os.path.join('\nsource /gpfs/projects/b1139/environments/mmmpy_dev/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
+    
+    ## When running inside a container
+    image_path = "/projects/b1139/emod-om/emodpy4.1-OM46-R4.4.1.sif"
+    image_venv_name = "emodpy39"
+    OPENMALARIA_venv_container = f'/openmalaria-schema-46.0/build/'
+    EMOD_venv_container = f'source /opt/envs/{image_venv_name}/bin/activate'
+    bind_path = '/projects:/projects'
 
 elif hpc == 'SCICORE':
     sh_hpc_config = {'A': 'penny', 'p': 'scicore', 'em_modules': '', 'buyin': True}
+    projdir = os.path.join('/scicore/home/scicore/cavelan/git/model-characterization')
+
     SIF_PATH = "/scicore/home/scicore/cavelan/git/emodpy/dtk_run_rocky_py39.sif"
     OPENMALARIA_PATH = "/scicore/home/penny/GROUP/OpenMalaria/OM_schema46/"
 
@@ -70,6 +84,13 @@ elif hpc == 'SCICORE':
     #source /scicore/home/scicore/cavelan/git/MultiMalModPy/emodenv/bin/activate
     EMOD_venv_path = os.path.join(f'\nsource {ROOT_DIR}/emodenv/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
+    
+    ## When running inside a container
+    image_path = ''
+    image_venv_name = ''
+    OPENMALARIA_venv_container = ''
+    EMOD_venv_container =''
+    bind_path = ''
 
 elif hpc == 'LOCAL':
     sh_hpc_config = {'A': 'Local', 'p': None, 'em_modules': None, 'buyin': None}
@@ -80,16 +101,20 @@ elif hpc == 'LOCAL':
     OPENMALARIA_venv = ''
     r_local = "C:/Program Files/R/R-4.2.3/bin"
 
-    if openmalaria_version == 43:
-        OPENMALARIA_PATH = os.path.join(ROOT_DIR, 'dependencies/OpenMalaria/om_v43')
-    elif openmalaria_version == 46:
-        OPENMALARIA_PATH = os.path.join(ROOT_DIR, 'dependencies/OpenMalaria/om_v46')
+    if openmalaria_version in [43, 46]:
+        OPENMALARIA_PATH = os.path.join(ROOT_DIR, f'dependencies/OpenMalaria/om_v{openmalaria_version}')
+        OPENMALARIA_venv_container = f'/openmalaria-schema-{openmalaria_version}.0/build/'
     else:
         raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
 
     EMOD_venv_modules = os.path.join('')
     EMOD_venv_path = os.path.join(f'\nsource {ROOT_DIR}/dependencies/mmmpy_venv/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
+    
+    image_path = 'mmmpy_local:rocky8'
+    image_venv_name = ''
+    EMOD_venv_container ='source /opt/envs/mmmpy_container/bin/activate'
+    bind_path = 'C:/Users/mrung/gitrepos/model-characterization/'
 
 else:
     raise ValueError('HPC specification not available')
@@ -105,4 +130,11 @@ job_directory = os.path.normpath(os.path.join(projdir, 'experiments'))
 output_directory = os.path.normpath(os.path.join(projdir, 'simulation_outputs'))
 interp_csv = 'interpolation_data.csv'
 os.makedirs(job_directory, exist_ok=True)
+
+if use_container:
+    ROOT_DIR_local = os.path.join('C:/Users/mrung/Documents/')
+    # Required only when running inside docker, locally
+    OPENMALARIA_venv = OPENMALARIA_venv_container
+    EMOD_venv = EMOD_venv_container
+    
 # ----------------------------- Framework and cluster specific settings end -----------------------------

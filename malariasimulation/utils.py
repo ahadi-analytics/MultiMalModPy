@@ -1,3 +1,5 @@
+import os.path
+
 from utility.helper import *
 
 def submit_analyze_outputs(exp, t='01:00:00', memG=10):
@@ -58,17 +60,17 @@ def submit_run_malariasimulation(exp):
     os.makedirs(os.path.join(exp.job_directory, 'malariasimulation_jobs'), exist_ok=True)
 
     if exp.hpc == 'LOCAL':
-        from utility.helper_local import write_ps1_analyzer
-        # Write local submission script
-        write_ps1_malariasimulation(exp)
-        write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='malariasimulation')
-        # Note handled via submit_run_all_local
-        from utility.helper_local import submit_runmodel_local
-        submit_runmodel_local(exp, model_to_run='malariasimulation')
-        pass
-    elif exp.hpc == 'CONTAINER':
-        # TODO coming soon
-        pass
+        if not exp.use_container:
+            from utility.helper_local import write_ps1_analyzer, submit_runmodel_local
+            write_ps1_malariasimulation(exp)
+            write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='malariasimulation')
+            submit_runmodel_local(exp, model_to_run='malariasimulation')
+        else:
+            from utility.helper_local_docker import write_sh_analyzer, write_sh_plotters, submit_runmodel_sh
+            write_sh_malariasimulation(exp)
+            write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='malariasimulation')
+            #write_sh_plotters(exp, model_to_run='malariasimulation')
+            submit_runmodel_sh(exp, model_to_run='malariasimulation')
     else:
         # Default, run via SLURM on HPC
         submit_run_malariasimulation_slurm(exp)
@@ -115,7 +117,6 @@ def submit_run_malariasimulation_slurm(exp):
     write_txt(slurm_job_id, exp.job_directory, 'job_id_malariasimulation.txt')
     submit_analyze_outputs(exp)
     return
-
 
 def write_ps1_malariasimulation(exp):
     """
@@ -165,3 +166,69 @@ Write-Host "malariasimulation simulation complete."
     with open(file_path, 'w') as file:
         file.write(powershell_content)
     print(f"PowerShell script written successfully at {file_path}")
+
+def write_sh_malariasimulation(exp):
+    """
+    Creates a shell script to run malariasimulation simulations (sequentially) locally.
+
+    This function generates a shell script that:
+    1. Sets job parameters, including the path to the OpenMalaria executable and the job directory.
+    2. Ensures the log directory exists, creating it if necessary.
+    3. Iterates over all experiments, running the OpenMalaria simulation for each one.
+    4. Logs the output and errors to respective log files.
+
+    Args:
+        exp (object): An experiment object containing attributes such as 'job_directory', 'nexps', and paths
+                      necessary for setting up and running the simulation.
+
+    Raises:
+        IOError: If there is an issue with writing the shell script to the file.
+    """
+    # Define file path for shell script
+    file_path = os.path.join(exp.job_directory, 'run_malariasimulation.sh')
+
+    # Get the absolute path of the working directory
+    wdir = os.path.abspath(os.path.dirname(__file__))
+    wdir = os.path.abspath(os.path.join(wdir, os.pardir))
+
+    # Construct the content of the shell script
+    sh_content = f"""#!/bin/bash
+
+set -e  # Exit immediately if a command exits with a non-zero status
+trap 'echo "Error occurred in script at line $LINENO. Check logs for details." >> "$log_dir/run_malariasimulation.err"; exit 1' ERR
+
+# Job settings
+job_name="run_malariasimulation"
+work_dir="{os.path.normpath(os.path.join(os.getcwd(),'malariasimulation'))}"
+jobdir="{os.path.normpath(exp.job_directory)}"
+log_dir="$jobdir/log"
+
+# Navigate to the working directory
+cd $work_dir
+
+# Create log directory if it doesn't exist
+if [ ! -d "$log_dir" ]; then
+    mkdir -p "$log_dir"
+fi
+
+# Run the OpenMalaria simulation for each experiment
+for ((i = 1; i <= {exp.nexps}; i++)); do
+
+    Rscript "$work_dir/malariasimulation.R" "$work_dir" "$jobdir" $i >> "$log_dir/run_malariasimulation.log" 2>> "$log_dir/run_malariasimulation.err"  &
+
+    echo "Simulation $i completed successfully" >> "$log_dir/run_malariasimulation.log"
+done
+
+# Wait for all background jobs to finish
+wait  
+
+echo "All simulations completed successfully."
+"""
+
+    # Write the shell content to a .sh file
+    with open(file_path, 'w') as file:
+        file.write(sh_content)
+
+    # Make script executable
+    os.chmod(file_path, os.stat(file_path).st_mode | 0o111)
+    print(f"Shell script written at {file_path}")

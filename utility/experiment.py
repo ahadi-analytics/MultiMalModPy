@@ -245,8 +245,9 @@ class ManifestConfig:
         self.emod_input_path = manifest.emod_input_path
         self.EMOD_venv = manifest.EMOD_venv
         self.OPENMALARIA_venv = manifest.OPENMALARIA_venv
-        self.r_local = getattr(manifest, 'r_local', None)
+        self.OPENMALARIA_PATH = manifest.OPENMALARIA_PATH
         self.openmalaria_path = manifest.OPENMALARIA_PATH
+        self.r_local = getattr(manifest, 'r_local', None)
         self.openmalaria_version = manifest.openmalaria_version
         self.openmalaria_input_path = manifest.openmalaria_input_path
         self.malariasimulation_input_path = manifest.malariasimulation_input_path
@@ -254,6 +255,11 @@ class ManifestConfig:
         self.output_directory_manifest = manifest.output_directory
         self.interp_path = manifest.interp_path
         self.interp_csv = manifest.interp_csv
+        self.ROOT_DIR= manifest.ROOT_DIR
+        self.use_container = manifest.use_container
+        self.ROOT_DIR_local= manifest.ROOT_DIR_local
+        self.image_path = manifest.image_path
+        self.bind_path = manifest.bind_path
 
 
 class LoadExperiment:
