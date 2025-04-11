@@ -1221,6 +1221,30 @@ if __name__ == "__main__":
         survey_steps = 30
     if exp.openmalaria_survey_step == '1y':
         survey_steps = 365
+    
+    # Run analyzers
+    InputEIRAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
 
+    # Most raw outputs only combining single txt files into one CSV (for 5d potentially large file)
+    if 'openmalaria_base' in exp.analyzer_list:
+        BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip')
+    # Age groups aggregated to all and time intervals are kept unaggregated the same as survey steps (for 5d potentially large file)
+    if 'surveyallage' in exp.analyzer_list:
+        SurveyAllAgeAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
+    # Aggregated timeseries per age groups
+    if 'timeavrg' in exp.analyzer_list:
+        TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days=survey_steps, age_groups_aggregates=age_groups_aggregates)
+    # Annual timeseries per age groups
+    if 'annual' in exp.analyzer_list:
+        AnnualAgebinAnalyzer(exp, mmi, start_year=start_year, survey_step_days=survey_steps,
+                             age_groups_aggregates=age_groups_aggregates)
+    # Monthly timeseries per age groups
+    if 'monthly' in exp.analyzer_list:
+        MonthlyAgebinAnalyzer(exp, mmi, start_year=start_year, survey_step_days=survey_steps,
+                              age_groups_aggregates=age_groups_aggregates)
+    # 5 day timeseries per age groups, required per default survey_steps = 5
+    if '5day' in exp.analyzer_list and survey_steps ==5:
+        FiveDayAgebinAnalyzer(exp, mmi, start_year=start_year,
+                              age_groups_aggregates=age_groups_aggregates)
     if 'mda' in exp.analyzer_list and survey_steps == 5:
         mdaAnalyzer(exp, mm, start_year, compr='infer')
