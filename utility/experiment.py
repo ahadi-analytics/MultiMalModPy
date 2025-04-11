@@ -257,7 +257,8 @@ class ManifestConfig:
         self.interp_csv = manifest.interp_csv
         self.ROOT_DIR= manifest.ROOT_DIR
         self.use_container = manifest.use_container
-        self.ROOT_DIR_local= manifest.ROOT_DIR_local
+        if self.use_container:
+            self.ROOT_DIR_local= manifest.ROOT_DIR_local
         self.image_path = manifest.image_path
         self.bind_path = manifest.bind_path
 

@@ -819,7 +819,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
     """
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
-                 end_year=2020, age_groups_aggregates=None, burnin=None, cc=False):
+                 end_year=2020, age_groups_aggregates=None, burnin=None, cc=False, mda=False):
 
         super(FiveDayAgebinAnalyzer, self).__init__(working_dir=working_dir,
                                                     filenames=[f"output/MalariaSummaryReport_FiveDaily_{x}.json"
@@ -833,6 +833,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
                                                                [15, 20], [20, 100], [0, 5], [0, 100]]
         self.emod_burnin = burnin
         self.cc = cc
+        self.mda = mda
 
     def map(self, data, simulation: Simulation):
         """
@@ -974,8 +975,14 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
                         'n_total_mos_pop', 'n_infectious_mos']
         if self.cc:
             cols_to_keep = cols_to_keep + ['ccstep', 'cc_factor', 'cc_timestep', 'cc_title']
-            cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_ccstep_daily.csv')), index=False)
+            cdf = cdf[cols_to_keep]
+            cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_ccstep_5day.csv')), index=False)
+        if self.mda:
+            cols_to_keep = cols_to_keep + ['mda_coverage']
+            cdf = cdf[cols_to_keep]
+            cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_mda_5day.csv')), index=False)
         else:
+            cdf = cdf[cols_to_keep]
             cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_5day.csv')), index=False)
 
 
@@ -1211,7 +1218,8 @@ if __name__ == "__main__":
             manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
                                      partial_analyze_ok=True)
             manager.analyze()
-            if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
+            daily_list = ['daily', '5day', 'ccstep', 'mda']
+            if any(analyzer in exp.analyzer_list for analyzer in daily_list):
                 daily_eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
                                                        sweep_variables=exp_tags,
                                                        start_year=start_year,
@@ -1239,16 +1247,19 @@ if __name__ == "__main__":
         if 'monthly' in exp.analyzer_list:
             analyzer = analyzer + monthly_analyzers
         # 5 day timeseries per age groups
-        if '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
+        fiveday_list = ['5day','ccstep','mda']
+        if any(analyzer in exp.analyzer_list for analyzer in fiveday_list):
             if exp.emod_step != 'burnin':
                 ccstep = 'ccstep' in exp.intervention_list
+                mda = 'mda' in exp.intervention_list
             analyzer = analyzer + [FiveDayAgebinAnalyzer(expt_name=exp_name,
                                                          start_year=start_year,
                                                          end_year=end_year,
                                                          sweep_variables=exp_tags,
                                                          working_dir=wdir,
                                                          burnin=burnin,
-                                                         cc=ccstep)]
+                                                         cc=ccstep,
+                                                         mda=mda)]
         ## Daily timeseries per age groups
         if 'daily' in exp.analyzer_list:
             analyzer = analyzer + daily_analyzers

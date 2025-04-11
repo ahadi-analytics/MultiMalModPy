@@ -8,3 +8,10 @@ def carrying_capacity(exp, xml):
         snippet = file.read()
     xml = xml.replace('@intervention_ccstep@', snippet)
     return xml
+
+def mda(exp, xml):
+    snippet_file = 'intervention_mda.txt'
+    with open(os.path.join(exp.openmalaria_input_path, 'snippets', snippet_file), 'r', encoding='utf-8') as file:
+        snippet = file.read()
+    xml = xml.replace('@intervention_mda@', snippet)
+    return xml

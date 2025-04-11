@@ -107,6 +107,9 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     # Make sure to include the ccstep change only at pickup simulations.
     if 'ccstep' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):  
         camp = carrying_capacity(camp, row)
+
+    if 'mda' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):
+        camp = mda(camp, row)
         
     if exp.emod_importation_rate != 0:
         ncases_per_year_per1000pop = (exp.emod_importation_rate * exp.emod_pop_size) / 1000

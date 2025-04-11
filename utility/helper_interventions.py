@@ -1,4 +1,5 @@
 from interventions.ccstep import *
+from interventions.mda import *
 
 
 # from interventions.smc import  * # Currently not supported
@@ -38,6 +39,9 @@ def exp_params_to_update(exp):
         if 'ccstep' in exp.intervention_list:
             print('Adding parameters for ccstep')
             exp = ccstep_params(exp)
+        elif 'mda' in exp.intervention_list:
+            print('Adding parameters for MDA')
+            exp = mda_params(exp)
         else:
             raise ValueError('Invalid intervention specified. Note that case management is automatically included.')
     
@@ -77,6 +81,8 @@ def scenario_df_to_update(exp, df):
 
         # Additional cc step specific columns
         df = ccstep_columns(exp, df)
+    if 'mda' in exp.intervention_list:
+        df = mda_columns(exp,df)
 
     return df
 
@@ -97,5 +103,7 @@ def intervention_params_to_check(exp):
     """
 
     if "ccstep" in exp.intervention_list:
-        from interventions.ccstep import ccstep_input_check
         ccstep_input_check(exp)
+
+    if "mda" in exp.intervention_list:
+        mda_input_check(exp)

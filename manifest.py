@@ -60,7 +60,7 @@ if hpc == 'NUCLUSTER':
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
     
     ## When running inside a container
-    image_path = "/projects/b1139/emod-om/emodpy4.1-OM46-R4.4.1.sif"
+    image_path = "/gpfs/projects/b1139/emod-om/emodpy4.1-OM46-R4.4.1.sif"
     image_venv_name = "emodpy39"
     OPENMALARIA_venv_container = f'/openmalaria-schema-46.0/build/'
     EMOD_venv_container = f'source /opt/envs/{image_venv_name}/bin/activate'

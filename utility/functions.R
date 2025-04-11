@@ -33,7 +33,7 @@ mmmpy_cols <- c('#1b9e77ff', '#7570b3ff', '#d95f02ff')
 #' modelname <- c("EMOD","malariasimulation", "OpenMalaria")
 #' result <- get_output_df(wdir, modelname, mth = TRUE)
 #'
-get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE, ccstep = FALSE) {
+get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE, ccstep = FALSE, mda = FALSE) {
   cols_to_keep <- NULL
   fname <- 'mmmpy_timeavrg.csv'
 
@@ -55,12 +55,14 @@ get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily =
     }
   }
   if (ccstep) {
-    fname <- 'mmmpy_ccstep_daily.csv'
+    fname <- 'mmmpy_ccstep_5day.csv'
     cols_to_keep <- c('scen_id', 'target_output_values', 'ccstep', 'seed', 'timestep', 'cc_change',
                       'cm_clinical', 'seasonality', 'ageGroup', 'prevalence', 'prevalence_2to10', 'clinical_incidence',
                       'severe_incidence', 'simulatedEIR', 'n_total_mos_pop', 'n_infectious_mos', 'cc_title')
   }
-
+  if (mda) {
+    fname <- 'mmmpy_mda_5day.csv'
+  }
   if (file.exists(file.path(wdir, fname))) {
     df <- fread(file.path(wdir, fname), stringsAsFactors = FALSE)
   } else {

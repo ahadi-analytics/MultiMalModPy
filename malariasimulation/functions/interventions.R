@@ -87,3 +87,20 @@ carrying_capacity <- function(parameters, parameter_table, index){
                                               carrying_capacity = matrix(parameter_table[index,]$cc_factor_malariasimulation, ncol = 1))
   return(simparams[[i]])
   }
+
+mda <- function(parameters, parameter_table, index) {
+  simparams <- list()
+  simparams[[i]] <- set_equilibrium(parameters = parameters[[index]],
+                                        init_EIR = parameter_table[index,]$transmission_intensity_malariasimulation)
+  custom_mda <- c(1, 0.051, 11.3, 0.1)
+  simparams[[i]] <- set_drugs(simparams[[i]], drugs = list(custom_mda))
+  mda_events <- parameter_table[index,]$mda_timestep_malariasimulation
+  mda_coverage <- parameter_table[index,]$mda_coverage
+  simparams[[i]] <- set_mda(simparams[[i]], 
+                           drug=4,
+                           timesteps = mda_events,
+                           coverages = mda_coverage,
+                           min_ages = ((1/12)*365),
+                           max_ages = 100*365)
+  return(simparams[[i]])
+  }

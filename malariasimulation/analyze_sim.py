@@ -594,7 +594,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf.to_csv((os.path.join(wdir, 'mmmpy_mth.csv')), index=False)
 
 
-def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None, cc=None):
+def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None, cc=False, mda=False):
     """
     Run the FiveDayAgebinAnalyzer for OpenMalaria experiments to generate
     and save a results dataframe for defined age groups over time (5-day intervals and years).
@@ -714,9 +714,14 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf.to_csv((os.path.join(wdir, 'mmmpy_5day.csv')), index=False)
     if cc:
         cdf = cdf[['scen_id', 'seed', 'timestep', 'cm_clinical', 'seasonality', 'target_output_values', 'ccstep',
-                   'cc_title', 'ageGroup', 'timestep', 'eir', 'prevalence_2to10', 'prevalence',
+                   'cc_title', 'ageGroup', 'eir', 'prevalence_2to10', 'prevalence',
                    'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']]
-        cdf.to_csv((os.path.join(wdir, 'mmmpy_ccstep_daily.csv')), index=False)
+        cdf.to_csv((os.path.join(wdir, 'mmmpy_ccstep_5day.csv')), index=False)
+    if mda:
+        cdf = cdf[['scen_id', 'seed', 'timestep', 'cm_clinical', 'seasonality', 'target_output_values', 'mda_coverage',
+                   'ageGroup', 'eir', 'prevalence_2to10', 'prevalence',
+                   'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']]
+        cdf.to_csv((os.path.join(wdir, 'mmmpy_mda_5day.csv')), index=False)
 
 
 def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
@@ -853,4 +858,5 @@ if __name__ == "__main__":
             DailyAgeBinAnalyzer(job_directory, wdir, sweep_variables)
         if '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
             ccstep = 'ccstep' in exp.intervention_list
-            FiveDayAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates, cc=ccstep)
+            mda = 'mda' in exp.intervention_list
+            FiveDayAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates, cc=ccstep, mda = mda)

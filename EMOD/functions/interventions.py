@@ -1,7 +1,7 @@
 from emodpy_malaria.interventions.treatment_seeking import add_treatment_seeking
 from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
 import pandas as pd
-#from emodpy_malaria.interventions.drug_campaign import add_drug_campaign
+from emodpy_malaria.interventions.drug_campaign import add_drug_campaign
 
 def treatment_camp_simple(camp, cm_start, cm_clinical, cm_severe):
     """
@@ -72,4 +72,9 @@ def carrying_capacity(camp, row):
     add_scale_larval_habitats(camp, df=cc_factor_df,
                                   start_day=row.cc_timestep_EMOD,
                                   repetitions=1)
+    return camp
+
+def mda(camp, row):
+    add_drug_campaign(camp, campaign_type = 'MDA', drug_code = 'MDA_CUSTOM', start_days = [row.mda_timestep_EMOD],
+                      coverage = row.mda_coverage, repetitions = 1)
     return camp

@@ -72,7 +72,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     exp$h <- as.numeric(seasonal_coefficients$coefficients[5:7])
     exp$floor <- as.numeric(seasonal_coefficients$floor)
 
-    # Assign "perennial" (default) seasonality:
+    # Assign seasonality:
     simparams[[i]] <- get_parameters(overrides = list(
 
       # Set the human population size
@@ -139,6 +139,15 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
       simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
                                       init_EIR = parameter_table[i,]$transmission_intensity_malariasimulation)
       }
+    if ("mda" %in% intervention_list){
+      simparams[[i]] <- mda(parameters = simparams,
+                            parameter_table = parameter_table,
+                            index = i)
+    } else{
+      simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
+                                        init_EIR = parameter_table[i,]$transmission_intensity_malariasimulation)
+    }
+
 
     #-------------------------
     # 2. Run simulations:
@@ -164,6 +173,11 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
       } else{
         simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
       }
+    if ("mda" %in% intervention_list) {
+      simulation_outputs_list[[i]]$transmission_intensity_malariasimulation <- parameter_table[i,]$transmission_intensity_malariasimulation
+      simulation_outputs_list[[i]]$mda_coverage <- parameter_table[i,]$mda_coverage
+      simulation_outputs_list[[i]]$mda_timestep_malariasimulation <- parameter_table[i,]$mda_timestep_malariasimulation
+    }
 
     # When running simulation scenarios in parallel as on HPC, those always need to be saved, part of the framework
     # If run as a standalone and all simulations scenarios as part of the for loop, this would not be needed.

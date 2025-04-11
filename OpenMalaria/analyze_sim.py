@@ -1077,7 +1077,130 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
                     'cc_title', 'ageGroup', 'timestep', 'eir', 'prevalence_2to10', 'prevalence',
                     'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']
     df3 = df3[cols_to_keep]
-    df3.to_csv((os.path.join(wdir, 'mmmpy_ccstep_daily.csv')), index=False, compression=compr)
+    df3.to_csv((os.path.join(wdir, 'mmmpy_ccstep_5day.csv')), index=False, compression=compr)
+
+
+def mdaAnalyzer(exp, mm, start_year, compr='infer'):
+    """
+    Run the DailyAgebinAnalyzer equivalent for OpenMalaria experiments.
+    Args:
+        exp: The experiment object.
+        mm: The measure map object.
+        start_year: The starting year for the surveys.
+        compr: The compression type for saving the output CSV file (default: 'infer').
+    Saves:
+        mmmpy_ccstep_daily.csv
+    Returns:
+        None
+    """
+    print("Running mdaAnalyzer...", flush=True)
+    channels = ['index', 'survey', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp',
+                'expectedSevereWithoutComorbidities', 'Vector_Nv',
+                'Vector_Sv']
+
+    if exp.openmalaria_survey_step != '5d':
+        raise ValueError('mdaAnalyzer requires 5d survey steps')
+
+    # Read the scenario data from the CSV file
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
+
+    # Convert the experiment data to a DataFrame and format it
+    df = to_df(exp)
+    df = format_df(df)
+
+    # Remove rows with ageGroup 0 ('all age')
+    df.drop(df[df.ageGroup == 0].index, inplace=True)
+    df.drop(df[df.ageGroup > 1000].index,
+            inplace=True)  ## In OpenMalaria 'third dimension' may indicate other dimensions than age group
+
+    # Convert the measure map to a DataFrame
+    mm_df = pd.DataFrame.from_dict(mm, orient='index')
+    mm_df['measure'] = mm_df.index
+    mm_df['measure_name'] = mm_df[0]
+    mm_df = mm_df[['measure', 'measure_name']]
+
+    # Merge the experiment data with the measure map on the measure column
+    adf = df.merge(mm_df, on='measure', how='inner')
+
+    # Pivot the table to have measures as columns and values as cells
+    df1 = (adf.pivot_table(index=['index', 'survey', 'ageGroup'],
+                           columns=['measure_name'],
+                           values=['value'],
+                           aggfunc='first'))
+    df1.columns = [''.join(col).replace('value', '') for col in df1.columns]
+    df1 = df1.reset_index()
+
+    # only keep selected outcome columns
+    df1 = df1[channels]
+    # Merge the pivoted table with the scenario data
+    df2 = df1.merge(scen_df, on='index', how='inner')
+
+    df2 = df2.rename(columns={'ageGroup': 'agebin_nr'})
+
+    # Define age groups and labels
+    age_group_labels = get_age_group_labels(exp.agebins)
+    age_df = pd.DataFrame({'agebin_nr': df2['agebin_nr'].unique(), 'agebin': exp.agebins, 'ageGroup': age_group_labels})
+
+    # Merge the age group data with the previous DataFrame
+    df3 = df2.merge(age_df, on='agebin_nr', how='inner')
+
+    # Convert survey data to dates and set the start year
+    df3 = survey_to_date(df3, survey_step_days=5, start_year=start_year)
+
+    n_surveys_per_year = np.floor((365 / 5))
+    df3['nHost'] = (df3['nHost'] / n_surveys_per_year)
+    if exp.openmalaria_survey_step != '5d':
+        for i, row in df3.iterrows():
+            if float(df3.loc[i, 'agebin']) <= 1:
+                age1, age2 = df3.loc[i, 'ageGroup'].split('-')
+                age1 = float(age1)
+                age2 = float(age2)
+                df3.loc[i, 'nHost'] *= (1 - (1 - (age1 + age2) / 2) / n_surveys_per_year)
+
+    df3['nPatent'] = (df3['nPatent'] / n_surveys_per_year)
+    df3['nUncomp'] = (df3['nUncomp'] / n_surveys_per_year)
+    df3['expectedSevereWithoutComorbidities'] = (df3['expectedSevereWithoutComorbidities'] / n_surveys_per_year)
+    df3['prevalence'] = df3['nPatent'] / df3['nHost']
+    df3['clinical_incidence'] = df3['nUncomp'] / (df3['nHost'])  # per person per annum
+    df3['severe_incidence'] = df3['expectedSevereWithoutComorbidities'] / (df3['nHost'])  # per person per annum
+
+    first_columns = ['seed', 'year', 'month', 'agebin', 'ageGroup', 'nHost', 'prevalence', 'clinical_incidence',
+                     'severe_incidence']
+    df3 = df3[first_columns + df3.drop(columns=first_columns).columns.tolist()]
+    eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
+    eir_df = eir_df[['index', 'survey', 'year', 'eir', 'inputEIR']]
+    eir_df['eir'] = eir_df['eir'] / 5  # we divide by 5 for cc plotting, so it more closely reflects daily output
+    df3 = df3.merge(eir_df, on=['index', 'survey', 'year'], how='inner')
+    df3 = df3[['scen_id', 'index', 'seed', 'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey', 'days',
+               'month', 'year', 'agebin', 'ageGroup', 'Vector_Nv', 'Vector_Sv', 'mda_coverage',
+               'nHost', 'target_output_values', 'inputEIR', 'eir', 'prevalence', 'clinical_incidence',
+               'severe_incidence',
+               'nPatent']]
+
+    df3 = df3.rename(
+        columns={'days': 'timestep', 'Vector_Nv': 'n_total_mos_pop',
+                 'Vector_Sv': 'n_infectious_mos'})
+
+    grp_channels = ['index', 'timestep']
+    age_groups_2to10 = [5, 10]
+    g = df3[df3['agebin'].isin(age_groups_2to10)]
+    nHost2to10 = g.groupby(grp_channels)['nHost'].agg('sum').reset_index()
+    nPatent2to10 = g.groupby(grp_channels)['nPatent'].agg('sum').reset_index()
+    pfpr2to10 = nPatent2to10.merge(nHost2to10, on=grp_channels, how='inner')
+    pfpr2to10['prevalence_2to10'] = pfpr2to10['nPatent'] / pfpr2to10['nHost']
+    pfpr2to10 = pfpr2to10[['prevalence_2to10', 'timestep', 'index']]
+    df3 = df3.merge(pfpr2to10, on=['timestep', 'index'], how='inner')
+    vector_channels = ['n_total_mos_pop', 'n_infectious_mos']
+    v = df3.groupby(grp_channels)[vector_channels].agg('sum').reset_index()
+    df3 = df3.drop(columns=vector_channels)
+    df3 = df3.merge(v, on=grp_channels, how='inner')
+    # Save the processed DataFrame to a CSV file
+    print(f'\nSaving outputs to: {wdir}')
+    cols_to_keep = ['scen_id', 'seed', 'cm_clinical', 'cm_severe', 'seasonality', 'target_output_values', 
+                    'ageGroup', 'timestep', 'eir', 'prevalence_2to10', 'prevalence',
+                    'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos', 'mda_coverage']
+    df3 = df3[cols_to_keep]
+    df3.to_csv((os.path.join(wdir, 'mmmpy_mda_5day.csv')), index=False, compression=compr)
 
 
 if __name__ == "__main__":
@@ -1099,30 +1222,5 @@ if __name__ == "__main__":
     if exp.openmalaria_survey_step == '1y':
         survey_steps = 365
 
-    # Run analyzers
-    InputEIRAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
-
-    # Most raw outputs only combining single txt files into one CSV (for 5d potentially large file)
-    if 'openmalaria_base' in exp.analyzer_list:
-        BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip')
-    # Age groups aggregated to all and time intervals are kept unaggregated the same as survey steps (for 5d potentially large file)
-    if 'surveyallage' in exp.analyzer_list:
-        SurveyAllAgeAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
-    # Aggregated timeseries per age groups
-    if 'timeavrg' in exp.analyzer_list:
-        TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days=survey_steps, age_groups_aggregates=age_groups_aggregates)
-    # Annual timeseries per age groups
-    if 'annual' in exp.analyzer_list:
-        AnnualAgebinAnalyzer(exp, mmi, start_year=start_year, survey_step_days=survey_steps,
-                             age_groups_aggregates=age_groups_aggregates)
-    # Monthly timeseries per age groups
-    if 'monthly' in exp.analyzer_list:
-        MonthlyAgebinAnalyzer(exp, mmi, start_year=start_year, survey_step_days=survey_steps,
-                              age_groups_aggregates=age_groups_aggregates)
-    # 5 day timeseries per age groups, required per default survey_steps = 5
-    if '5day' in exp.analyzer_list and survey_steps ==5:
-        FiveDayAgebinAnalyzer(exp, mmi, start_year=start_year,
-                              age_groups_aggregates=age_groups_aggregates)
-    # Custom analyzers
-    if 'ccstep' in exp.analyzer_list and survey_steps == 5:
-        CCStepAnalyzer(exp, mm, start_year, compr='infer')
+    if 'mda' in exp.analyzer_list and survey_steps == 5:
+        mdaAnalyzer(exp, mm, start_year, compr='infer')

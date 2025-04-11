@@ -1,0 +1,11 @@
+<human>
+    <component id="MDA">
+      <treatSimple durationBlood="1t" durationLiver="0"/>
+    </component>
+    <deployment name="MDA">
+      <component id="MDA"/>
+      <timed>
+        <deploy time="@mda_timestep_OpenMalaria@" coverage="@mda_coverage@"/>
+      </timed>
+    </deployment>
+</human>
