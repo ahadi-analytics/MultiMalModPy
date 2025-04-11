@@ -72,7 +72,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     exp$h <- as.numeric(seasonal_coefficients$coefficients[5:7])
     exp$floor <- as.numeric(seasonal_coefficients$floor)
 
-    # Assign "perennial" (default) seasonality:
+    # Assign seasonality:
     simparams[[i]] <- get_parameters(overrides = list(
 
       # Set the human population size

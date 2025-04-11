@@ -107,7 +107,7 @@ def submit_run_EMOD(exp, scen_df):
         submit_run_pyscript(exp, pyscript='launch_sim.py', shname='launch_pickup.sh',
                             custom_args=f"--suite {exp.SUITEname} --expname {exp.exp_name_pickup} "
                                         f"--emodstep pickup --serializedid {exp.emod_id} "
-                                        f"--models {' '.join([m for m in exp.models_to_run_pickup])} ",
+                                        f"--models {' '.join([m for m in exp.models_pickup])} ",
                             job_id_EMOD='job_id_EMODanalyze',memG=exp.mem_increase_factor*5, job='pickup_launch')
     return experiment
 

@@ -3,7 +3,7 @@ import shutil
 
 # from OpenMalaria.functions.interventions import * # Currently not supported
 from OpenMalaria.functions.convert_access import convert_access_lookup
-from OpenMalaria.functions.interventions import carrying_capacity
+from OpenMalaria.functions.interventions import *
 
 
 
