@@ -1080,7 +1080,7 @@ def CCStepAnalyzer(exp, mm, start_year, compr='infer'):
     df3.to_csv((os.path.join(wdir, 'mmmpy_ccstep_5day.csv')), index=False, compression=compr)
 
 
-def mdaAnalyzer(exp, mm, start_year, compr='infer'):
+def infclAnalyzer(exp, mm, start_year, compr='infer'):
     """
     Run the DailyAgebinAnalyzer equivalent for OpenMalaria experiments.
     Args:
@@ -1093,13 +1093,13 @@ def mdaAnalyzer(exp, mm, start_year, compr='infer'):
     Returns:
         None
     """
-    print("Running mdaAnalyzer...", flush=True)
+    print("Running infclAnalyzer...", flush=True)
     channels = ['index', 'survey', 'ageGroup', 'nHost', 'nPatent', 'nInfect', 'nUncomp',
                 'expectedSevereWithoutComorbidities', 'Vector_Nv',
                 'Vector_Sv']
 
     if exp.openmalaria_survey_step != '5d':
-        raise ValueError('mdaAnalyzer requires 5d survey steps')
+        raise ValueError('infclAnalyzer requires 5d survey steps')
 
     # Read the scenario data from the CSV file
     scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios_wseeds.csv'))
@@ -1172,7 +1172,7 @@ def mdaAnalyzer(exp, mm, start_year, compr='infer'):
     eir_df['eir'] = eir_df['eir'] / 5  # we divide by 5 for cc plotting, so it more closely reflects daily output
     df3 = df3.merge(eir_df, on=['index', 'survey', 'year'], how='inner')
     df3 = df3[['scen_id', 'index', 'seed', 'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey', 'days',
-               'month', 'year', 'agebin', 'ageGroup', 'Vector_Nv', 'Vector_Sv', 'mda_coverage',
+               'month', 'year', 'agebin', 'ageGroup', 'Vector_Nv', 'Vector_Sv', 'infcl_coverage',
                'nHost', 'target_output_values', 'inputEIR', 'eir', 'prevalence', 'clinical_incidence',
                'severe_incidence',
                'nPatent']]
@@ -1198,9 +1198,9 @@ def mdaAnalyzer(exp, mm, start_year, compr='infer'):
     print(f'\nSaving outputs to: {wdir}')
     cols_to_keep = ['scen_id', 'seed', 'cm_clinical', 'cm_severe', 'seasonality', 'target_output_values', 
                     'ageGroup', 'timestep', 'eir', 'prevalence_2to10', 'prevalence',
-                    'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos', 'mda_coverage']
+                    'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos', 'infcl_coverage']
     df3 = df3[cols_to_keep]
-    df3.to_csv((os.path.join(wdir, 'mmmpy_mda_5day.csv')), index=False, compression=compr)
+    df3.to_csv((os.path.join(wdir, 'mmmpy_infcl_5day.csv')), index=False, compression=compr)
 
 
 if __name__ == "__main__":
@@ -1246,5 +1246,5 @@ if __name__ == "__main__":
     if '5day' in exp.analyzer_list and survey_steps ==5:
         FiveDayAgebinAnalyzer(exp, mmi, start_year=start_year,
                               age_groups_aggregates=age_groups_aggregates)
-    if 'mda' in exp.analyzer_list and survey_steps == 5:
-        mdaAnalyzer(exp, mm, start_year, compr='infer')
+    if 'infcl' in exp.analyzer_list and survey_steps == 5:
+        infclAnalyzer(exp, mm, start_year, compr='infer')

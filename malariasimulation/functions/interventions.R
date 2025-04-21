@@ -88,19 +88,98 @@ carrying_capacity <- function(parameters, parameter_table, index){
   return(simparams[[i]])
   }
 
-mda <- function(parameters, parameter_table, index) {
+infectious_clearance <- function(parameters, parameter_table, index) {
+  assignInNamespace(x = "update_mass_drug_admin",
+                    value = update_infectious_clearance,
+                    pos = "package:malariasimulation")
   simparams <- list()
   simparams[[i]] <- set_equilibrium(parameters = parameters[[index]],
                                         init_EIR = parameter_table[index,]$transmission_intensity_malariasimulation)
-  custom_mda <- c(1, 0.051, 11.3, 0.1)
-  simparams[[i]] <- set_drugs(simparams[[i]], drugs = list(custom_mda))
-  mda_events <- parameter_table[index,]$mda_timestep_malariasimulation
-  mda_coverage <- parameter_table[index,]$mda_coverage
+  infectious_clearance_drug <- c(1, 0.051, 11.3, 0.1)
+  simparams[[i]] <- set_drugs(simparams[[i]], drugs = list(infectious_clearance_drug))
+  infcl_events <- parameter_table[index,]$infcl_timestep_malariasimulation
+  infcl_coverage <- parameter_table[index,]$infcl_coverage
   simparams[[i]] <- set_mda(simparams[[i]], 
                            drug=4,
-                           timesteps = mda_events,
-                           coverages = mda_coverage,
+                           timesteps = infcl_events,
+                           coverages = infcl_coverage,
                            min_ages = ((1/12)*365),
                            max_ages = 100*365)
   return(simparams[[i]])
+}
+
+update_infectious_clearance <- function(
+    target,
+    variables,
+    parameters,
+    timestep,
+    drug
+    )
+{
+  # If the target population is greater than 0:
+  if (target$successfully_treated$size() > 0) {
+    
+    # Move clinical and detectable asymptomatic into treated
+    clinical <- variables$state$get_index_of('D')
+    asymptomatic <- variables$state$get_index_of('A')
+    detectable <- malariasimulation:::calculate_asymptomatic_detectable(
+      variables$state,
+      variables$birth,
+      variables$id,
+      parameters,
+      timestep
+    )
+    to_treated <- clinical$or(asymptomatic$and(detectable))$and(target$successfully_treated)
+    
+    # If antimalarial resistance is switched on, generate the vector of dts to update:
+    if(parameters$antimalarial_resistance) {
+      dt_update_vector <- target$dt_spc_combined[
+        target$successfully_treated$copy()$and(to_treated)$to_vector()
+      ]
+    } else {
+      dt_update_vector <- parameters$dt
+    }
+    
+    # TODO: Alter this to make these individuals move to S
+    # Move individuals who were clinical and asymptomatic detected to Treated
+    malariasimulation:::update_infection(
+      variables$state,
+      'S',
+      variables$infectivity,
+      0,
+      variables$progression_rates,
+      0,
+      to_treated
+    )
+    
+    # Move everyone else (susceptible, subpatent, non-detected asymptomatic and treated) to susceptible
+    other <- target$successfully_treated$copy()$and(to_treated$not(TRUE))
+    if (other$size() > 0) {
+      malariasimulation:::update_infection(
+        variables$state,
+        "S",
+        variables$infectivity,
+        0,
+        variables$progression_rates,
+        0,
+        other
+      )
+    }
+    
+    # Update drug
+    variables$drug$queue_update(drug, target$successfully_treated)
+    variables$drug_time$queue_update(timestep, target$successfully_treated)
+    
   }
+  
+  # Update liver stage drug effects
+  if(any(parameters$drug_hypnozoite_efficacy > 0)){
+    if(target$successfully_treated_hypnozoites$size() > 0){
+      variables$hypnozoites$queue_update(0, target$successfully_treated_hypnozoites)
+      variables$ls_drug$queue_update(drug, target$successfully_treated_hypnozoites)
+      variables$ls_drug_time$queue_update(timestep, target$successfully_treated_hypnozoites)
+    }
+  }
+}
+
+

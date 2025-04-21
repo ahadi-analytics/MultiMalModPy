@@ -5,7 +5,7 @@
     <deployment name="MDA">
       <component id="MDA"/>
       <timed>
-        <deploy time="@mda_timestep_OpenMalaria@" coverage="@mda_coverage@"/>
+        <deploy time="@infcl_timestep_OpenMalaria@" coverage="@infcl_coverage@"/>
       </timed>
     </deployment>
 </human>

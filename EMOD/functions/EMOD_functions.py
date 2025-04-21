@@ -6,7 +6,6 @@ import numpy as np
 from COMPS import AuthManager
 from EMOD.functions.forcedEIR import *
 from EMOD.functions.interventions import *
-from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
 from emodpy_malaria.interventions.outbreak import add_outbreak_individual
 from emodpy_malaria.reporters.builtin import *
 import emodpy_malaria.malaria_config as malaria_config
@@ -108,8 +107,8 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     if 'ccstep' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):  
         camp = carrying_capacity(camp, row)
 
-    if 'mda' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):
-        camp = mda(camp, row)
+    if 'infcl' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):
+        camp = infcl(camp, row)
         
     if exp.emod_importation_rate != 0:
         ncases_per_year_per1000pop = (exp.emod_importation_rate * exp.emod_pop_size) / 1000
@@ -130,6 +129,19 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     #    smc_campaign(camp, row, start_array)
 
     return {'scen_id': int(row.scen_id)}
+
+def drug_setup(config, exp=None):
+    """
+    Functions to alter drug parameters specific to MultiMalModPy drug campaigns.
+    """
+    if 'infcl' in exp.intervention_list:
+        setup_infectious_clearance_drug(config, drug_name="DHA") #This should be vehicle, not DHA, but there is an internal IDM issue around using vehicle
+    # On line 257 of emodpy_malaria/interventions/drug_campaign.py in the function add_drug_campaign,
+    # There is a "Received_Vehicle" broadcast event that is programmed in, however broadcast event does not accept Received vechile as an
+    # acceptable event.
+    #SMC currently not supported
+    if 'smc' in exp.intervention_list:
+        return
 
 
 def habitat_setup(config, exp, row):

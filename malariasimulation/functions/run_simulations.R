@@ -139,8 +139,8 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
       simparams[[i]] <- set_equilibrium(parameters = simparams[[i]],
                                       init_EIR = parameter_table[i,]$transmission_intensity_malariasimulation)
       }
-    if ("mda" %in% intervention_list){
-      simparams[[i]] <- mda(parameters = simparams,
+    if ("infcl" %in% intervention_list){
+      simparams[[i]] <- infectious_clearance(parameters = simparams,
                             parameter_table = parameter_table,
                             index = i)
     } else{
@@ -173,10 +173,10 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
       } else{
         simulation_outputs_list[[i]]$input_target <- parameter_table[i,]$input_target
       }
-    if ("mda" %in% intervention_list) {
+    if ("infcl" %in% intervention_list) {
       simulation_outputs_list[[i]]$transmission_intensity_malariasimulation <- parameter_table[i,]$transmission_intensity_malariasimulation
-      simulation_outputs_list[[i]]$mda_coverage <- parameter_table[i,]$mda_coverage
-      simulation_outputs_list[[i]]$mda_timestep_malariasimulation <- parameter_table[i,]$mda_timestep_malariasimulation
+      simulation_outputs_list[[i]]$infcl_coverage <- parameter_table[i,]$infcl_coverage
+      simulation_outputs_list[[i]]$infcl_timestep_malariasimulation <- parameter_table[i,]$infcl_timestep_malariasimulation
     }
 
     # When running simulation scenarios in parallel as on HPC, those always need to be saved, part of the framework
