@@ -30,21 +30,21 @@ The framework comes with three standardized plotting scripts:
 
 # Repository Layout and Directory Structure
 
-<span title="Multi-Malaria_Modeling Python Framework (EMOD, malariasimulation, EMOD)" style="color: #007BFF; text-decoration: underline; cursor: pointer;">MultiMalModPy</span> features a well-structured GitHub repository and two user-defined simulation directories: the experiments folder,   
-which contains all simulation inputs and dependencies, and the simulation outputs folder, which stores standardized results for easy analysis.  
+<span title="Multi-Malaria_Modeling Python Framework (EMOD, malariasimulation, EMOD)" style="color: #007BFF; text-decoration: underline; cursor: pointer;">MultiMalModPy</span> features a well-structured GitHub repository and two user-defined simulation directories: the experiments folder, which contains all simulation inputs and dependencies, and the simulation outputs folder, which stores standardized results for easy analysis.  
 
 ![folder structure](../img/folder_structure.png)  
 
 
 ## Repository  
 The MultiMalModPy repository is organized into back-end and front-end components:     
-- **Back-end**: Contains subdirectories for each model, with model-specific functions for input handling, simulation execution, and output processing.  
+ **Back-end**: Contains subdirectories for each model, with model-specific functions for input handling, simulation execution, and output processing.  
     - utility – generic helper functions   
     - model-specific subdirectories:     
       – EMOD-specific helper functions     
       – malariasimualtion-specific helper functions    
       – OpenMalaria-specific helper functions    
-- **Front-end**: Includes user-facing scripts located in the root directory:    
+
+ **Front-end**: Includes user-facing scripts located in the root directory:    
     - manifest.py – Manages configurations and dependencies.  
     - setup_sim.py – Prepares simulation environments and input data.  
     - launch_sim.py – Executes simulations and handles runtime operations.   
