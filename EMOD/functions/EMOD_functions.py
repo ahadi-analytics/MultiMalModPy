@@ -199,12 +199,12 @@ def climate_setup(task, seasonality=None):
     """
     task.config.parameters.Climate_Model = "CLIMATE_BY_DATA"
     task.config.parameters.Air_Temperature_Filename = os.path.join('climate',
-                                                                   f'{seasonality}_air_temperature_daily.bin')
+                                                                   'seasonal_air_temperature_daily.bin')
     task.config.parameters.Land_Temperature_Filename = os.path.join('climate',
-                                                                    f'{seasonality}_air_temperature_daily.bin')
-    task.config.parameters.Rainfall_Filename = os.path.join('climate', f'{seasonality}_rainfall_daily.bin')
+                                                                    'seasonal_air_temperature_daily.bin')
+    task.config.parameters.Rainfall_Filename = os.path.join('climate', 'seasonal_rainfall_daily.bin')
     task.config.parameters.Relative_Humidity_Filename = os.path.join('climate',
-                                                                     f'{seasonality}_relative_humidity_daily.bin')
+                                                                     'seasonal_relative_humidity_daily.bin')
 
 
 def _get_serialized_filenames(num_cores, timesteps):

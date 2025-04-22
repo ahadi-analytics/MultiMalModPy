@@ -32,12 +32,14 @@ def infcl_params(exp):
     exp.openmalaria_survey_step = '5d'
     exp.infcl_timestep_OpenMalaria = int((73 * (exp.openmalaria_burnin + exp.infcl_in_years)))
     
-    if 'infcl_coverage' not in exp.plots_to_run:
+    if 'infcl' not in exp.plots_to_run:
         exp.plots_to_run = exp.plots_to_run + ['infcl']
-    if 'infcl_coverage' not in exp.analyzer_list:
-        exp.analyzer_list = exp.analyzer_list + ['infcl']
+    if '5day' not in exp.analyzer_list:
+        exp.analyzer_list = exp.analyzer_list + ['5day']
     if 'infcl_coverage' not in exp.sweep_list:
         exp.sweep_list = exp.sweep_list + ['infcl_coverage']
+    if 'infcl_coverage' not in exp.intervention_analyzer_columns:
+        exp.intervention_analyzer_columns = exp.intervention_analyzer_columns + ['infcl_coverage']    
 
     # Flexible parameters depending on type of run and user-specifications
     if exp.run_mode == 'production':
@@ -46,7 +48,7 @@ def infcl_params(exp):
         exp.start_year = 1995
         exp.end_year = 2010
         exp.emod_memory_per_sim = 6
-        exp.emod_time_per_sim = '2:30:00'
+        exp.emod_time_per_sim = '3:59:00'
         exp.malariasimulation_memory_per_sim = 6
         exp.malariasimulation_time_per_sim = '2:00:00'
         exp.openmalaria_memory_per_sim = 6
