@@ -57,12 +57,13 @@ Alternatively, you can download the latest release directly from the GitHub rele
 page [here](https://github.com/ahadi-analytics/MultiMalModPy/releases). if you just need to use the software
 without modifications.
 
+via HTTPS:
 ``` 
 cd <target_directory>  
 git clone https://github.com/ahadi-analytics/MultiMalModPy.git  
 ```
 
-or via [SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
+or via [SSH:](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
 
 ``` 
 cd <target_directory>  
@@ -290,11 +291,6 @@ set_shell_function("openMalaria",bashStr)
 ```
 
 Then, actually install the latest OpenMalaria by generating a container following as follows:
-
-```
-module load singularity
-singularity remote login
-```
 
 ```
 module load singularity

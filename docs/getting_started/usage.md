@@ -24,15 +24,15 @@ Once the simulations complete, analyzer scripts and default plots will automatic
 **Example submission lines**
  
 - Testrun: Run a quick test with predefined settings:
-  - `python launch_sim.py  --models EMOD MalSim OpenMalaria --test`
+  - `python launch_sim.py  --models EMOD malariasimulation OpenMalaria --test`
 
 - Baseline run: Run simulations with default settings or modified defaults from the Python file:
-  - `python launch_sim.py  --models EMOD MalSim OpenMalaria`
-  - `python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM`  
+  - `python launch_sim.py  --models EMOD malariasimulation OpenMalaria`
+  - `python launch_sim.py  --models EMOD malariasimulation OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM`  
 
 - Custom run: Run a simulation with specific interventions and test settings:
-  - `python launch_sim.py  --models EMOD MalSim OpenMalaria --intervention cc_step --test --emodstep burnin`
-  - `python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test`  
+  - `python launch_sim.py  --models EMOD malariasimulation OpenMalaria --intervention cc_step --test --emodstep burnin`
+  - `python launch_sim.py  --models EMOD malariasimulation OpenMalaria  --rownum 0 --csv cc_step_test`  
 
 
 ## View standardized simulation outputs 
