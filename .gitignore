@@ -3,10 +3,11 @@ __pycache__/
 _scratch/
 *.log
 pdf/
-dependencies/
 simulations_local/
 site/
 .cache/
 *.rej
 .Rhistory
-
+*.tar
+!dependencies/OpenMalaria/readme.md
+dependencies/OpenMalaria/
