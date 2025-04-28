@@ -8,7 +8,6 @@ import numpy as np
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)
 from OpenMalaria.functions.measures import mm, mmi
-from utility.experiment import LoadExperiment
 
 
 def parse_args():
