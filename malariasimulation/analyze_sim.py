@@ -594,7 +594,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf.to_csv((os.path.join(wdir, 'mmmpy_mth.csv')), index=False)
 
 
-def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None, cc=False):
+def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None, intervention_analyzer_columns = None):
     """
     Run the FiveDayAgebinAnalyzer for OpenMalaria experiments to generate
     and save a results dataframe for defined age groups over time (5-day intervals and years).
@@ -608,7 +608,8 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
         sweep_variables (list of str): List of column names used for grouping in the aggregation.
         age_groups_aggregates (list of lists, optional): List of age ranges to aggregate in the form of
             [[min_age, max_age], ...]. Defaults to standard age bins if not provided.
-        cc (bool, optional): If True, an additional climate change data file `mmmpy_ccstep_daily.csv` will be generated.
+        intervention_analyzer_columns (list, optional): List of intervention specific columns that need to be included
+            in the final mmmpy_5day.csv file.
 
     Raises:
         FileNotFoundError: If required files (`daily.csv`, `EIR_daily.csv`, or `scenarios_wseeds.csv`) are missing.
@@ -616,7 +617,6 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     Saves:
         mmmpy_5day.csv
-        mmmpy_ccstep_daily.csv (if `cc=True`).
 
     Returns:
         None
@@ -711,12 +711,11 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     print(f'\nSaving outputs to: {wdir}')
     # Save the processed DataFrame to a CSV file
+    columns_to_keep = ['scen_id', 'seed', 'timestep', 'cm_clinical', 'seasonality', 'target_output_values',
+                        'ageGroup', 'eir', 'prevalence_2to10', 'prevalence',
+                        'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos'] + intervention_analyzer_columns
+    cdf = cdf[[columns_to_keep]]
     cdf.to_csv((os.path.join(wdir, 'mmmpy_5day.csv')), index=False)
-    if cc:
-        cdf = cdf[['scen_id', 'seed', 'timestep', 'cm_clinical', 'seasonality', 'target_output_values', 'ccstep',
-                   'cc_title', 'ageGroup', 'eir', 'prevalence_2to10', 'prevalence',
-                   'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']]
-        cdf.to_csv((os.path.join(wdir, 'mmmpy_ccstep_daily.csv')), index=False)
 
 
 def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
@@ -833,6 +832,8 @@ if __name__ == "__main__":
 
     # Run analyzers
     InputEIRAnalyzer(job_directory, wdir)
+    if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list:
+        InputEIRAnalyzer(job_directory, wdir, daily=True)
 
     # Age groups aggregated to all and time intervals are kept unaggregated (1day)
     if 'surveyallage' in exp.analyzer_list:
@@ -847,10 +848,7 @@ if __name__ == "__main__":
     if 'monthly' in exp.analyzer_list:
         MonthlyAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates)
     ## 5 day (or daily) timeseries per age groups
-    if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
-        InputEIRAnalyzer(job_directory, wdir, daily=True)
-        if 'daily' in exp.analyzer_list:
-            DailyAgeBinAnalyzer(job_directory, wdir, sweep_variables)
-        if '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
-            ccstep = 'ccstep' in exp.intervention_list
-            FiveDayAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates, cc=ccstep)
+    if 'daily' in exp.analyzer_list:
+        DailyAgeBinAnalyzer(job_directory, wdir, sweep_variables)
+    if '5day' in exp.analyzer_list:
+        FiveDayAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates, intervention_analyzer_columns=exp.intervention_analyzer_columns)
