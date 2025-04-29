@@ -3,7 +3,7 @@
 
 ## Model-specific structure    
 
-Model-specific structure of case management is described  [here](../malaria_models/interventions.md#case-management-).
+Model-specific structure of case management is described  [here](../malaria_models/interventions.md#case-management).
 
 
 ## Implementation in MultiMalModPy

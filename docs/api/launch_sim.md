@@ -4,9 +4,9 @@
 This script is designed to set up and launch simulations, enabling users to easily customize 
 and manage their simulation experiments:  
 [Dependencies](#dependencies)
-[Configuration Steps](#configuration)
+[Configuration Steps](#configuration-steps)
 [Execution](#execution)
-[Custom Functions Overview ](#function_overview)
+[Custom Functions Overview ](#custom-functions-overview)
 
 ## Dependencies  
 

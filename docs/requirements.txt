@@ -12,7 +12,7 @@ mkdocstrings-python==1.12.1
 
 # Markdown & Syntax Highlighting
 Markdown==3.7
-Pygments==2.18.0
+pygments==2.18.0
 pymdown-extensions==10.11.2
 
 # Supporting Libraries
