@@ -25,6 +25,12 @@ markdown_extensions:
   - codehilite
   - smarty
   - tables
+  - pymdownx.highlight:
+      linenums: true
+      anchor_linenums: true
+      use_pygments: true
+  - toc:
+      permalink: true
 extra_javascript:
   - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
   - javascripts/tablesort.js
@@ -55,6 +61,7 @@ nav:
     - Scenarios: guide/scenarios.md
     - Model specific options: guide/model_specificities.md
     - Randomness and uncertainty: guide/uncertainty.md
+    #- Postprocessing: guide\postprocessing.md
   - API:
     - manifest.py: api/manifest.md
     - launch_sim.py: api/launch_sim.md
@@ -65,6 +72,7 @@ nav:
       - api/utility/helper_interventions.md
       - api/utility/helper_simulation.md
       - api/utility/helper_slurm.md
+      - api/utility/helper_local.md
     - EMOD:
       - api/EMOD/utils.md
       - api/EMOD/analyze_sim.md
@@ -89,6 +97,7 @@ nav:
       - api/plotter/plot_agecurves.md
       - api/plotter/plot_timeseries.md
       - api/plotter/plot_relationship.md
+      - api\plotter\plot_sampleplots.md
       - api/plotter/plot_ccstep.md
       - api/plotter/plot_custom.md
   - About:

@@ -9,11 +9,11 @@ _Implementation in MultiMalModPy_
 </div>
 
 
-In MultiMalModPy, the user can specify the following time related parameters:
-- `start_year` 
-- `end_year` 
-- `emod_burnin`  `malariasimulation_burnin`  , `openmalaria_burnin`
-- `openmalaria_survey_step` 
+In MultiMalModPy, the user can specify the following time related parameters:  
+- `start_year`  
+- `end_year`  
+- `emod_burnin`  `malariasimulation_burnin`  , `openmalaria_burnin` 
+- `openmalaria_survey_step`  
 
 
 Example from [setup_sim.py](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/setup_sim.py#L53C14-L53C96): 
