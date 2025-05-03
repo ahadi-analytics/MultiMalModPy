@@ -276,7 +276,7 @@ Running the script interactively can be useful for debugging or understanding sp
 **Need to rerun the analyzer or plots?**  
 - The analyzer and plotting scripts can also be run interactively.  
 - To do this, comment out the `args` argument in the script.  
-- Then, manually specify the `job_directory` and `models_to_run` within the script before execution.  
+- Then, manually specify the `job_directory` and `models` within the script before execution.  
 
 
 ### Using Docker Container

@@ -107,18 +107,18 @@ if __name__ == '__main__':
     print(f' --------| Running {exp.exp_name} for {", ".join(exp.models)}: {len(exp.sweep_list)} '
           f'varying parameters: {", ".join(exp.sweep_list)}. Run mode:  {exp.run_mode} |--------')
 
-    # Set platform and associated values, such as the maximum number of jobs to run at one time
-    from idmtools.core.platform_factory import Platform
-    exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
-                        mem_per_cpu=f'{exp.emod_memory_per_sim}G', partition=manifest.sh_hpc_config['p'],
-                        time=exp.emod_time_per_sim, account=manifest.sh_hpc_config['A'],
-                        modules=[manifest.sh_hpc_config['em_modules']],
-                        max_running_jobs=exp.max_running_jobs)
-
     # Submit EMOD simulation as SLURM job, including scheduled analyzer
     if 'EMOD' in exp.models:
+        # Set platform and associated values, such as the maximum number of jobs to run at one time
+        from idmtools.core.platform_factory import Platform
+        exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
+                                mem_per_cpu=f'{exp.emod_memory_per_sim}G', partition=manifest.sh_hpc_config['p'],
+                                time=exp.emod_time_per_sim, account=manifest.sh_hpc_config['A'],
+                                modules=[manifest.sh_hpc_config['em_modules']],
+                                max_running_jobs=exp.max_running_jobs)
+
         from EMOD.utils import submit_run_EMOD
-        submit_run_EMOD(exp,scen_df)
+        submit_run_EMOD(exp, scen_df)
 
     # Submit malariasimulation as SLURM job, including scheduled analyzer
     if 'malariasimulation' in exp.models:

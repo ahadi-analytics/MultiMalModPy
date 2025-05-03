@@ -69,7 +69,7 @@ def parse_launch_args():
                         help='Serialized ID for EMOD, if applicable.')
     parser.add_argument('-m','--models',
                         nargs='+',
-                        default=['EMOD', 'malariasimulation', 'OpenMalaria'],
+                        default=['malariasimulation', 'OpenMalaria'],   # For testing, local and on HPC
                         choices=['EMOD', 'malariasimulation', 'OpenMalaria'],
                         help="List of malaria models to run - any combination of ['EMOD', 'malariasimulation', 'OpenMalaria'].")
     parser.add_argument('--user',
@@ -281,8 +281,9 @@ def check_exp_inputs(exp, attribute_check=False):
         ValueError: If input parameters are invalid.
     """
 
-    if exp.hpc == 'LOCAL' and not exp.test :
-        raise ValueError("Local execution of the framework is only permitted for test runs.")
+    if exp.hpc == 'LOCAL' and not exp.test:
+        exp.test = True
+        print("Local execution of the framework is only permitted for test runs - changing to test")
 
     ## Generell check on input parameter combinations and formats
     check_exp_input_parameters(exp)

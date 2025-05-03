@@ -34,7 +34,7 @@ if __name__ == "__main__":
     df_mth, _ = get_output_df(wdir, models, mth=True)
 
     out_dir = os.path.join(out_dir, 'plots')
-    if len(models) == 1 and len(exp.models_to_run) > 1:
+    if len(models) == 1 and len(exp.models) > 1:
         out_dir = os.path.join(out_dir, models[0])
     os.makedirs(out_dir, exist_ok=True)
 

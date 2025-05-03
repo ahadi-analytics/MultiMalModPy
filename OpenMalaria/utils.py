@@ -199,10 +199,10 @@ def submit_run_OpenMalaria(exp, scen_df):
         from utility.helper_local import write_ps1_analyzer
         # Write local submission script
         write_ps1_OpenMalaria(exp)
-        write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='OpenMalaria')
+        write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model='OpenMalaria')
         # Note handled via submit_run_all_local
         from utility.helper_local import submit_runmodel_local
-        submit_runmodel_local(exp, model_to_run='OpenMalaria')
+        submit_runmodel_local(exp, model='OpenMalaria')
     elif exp.hpc == 'CONTAINER':
         # TODO coming soon
         pass

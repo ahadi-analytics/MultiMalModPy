@@ -34,7 +34,7 @@ Updates the attributes of the LoadExperiment instance with new values provided a
 - **`SUITEname`**: The name of the suite for the experiment.   
 - **`exp_name`**: Name of the experiment.  
 - **`emod_step`**: Specifies the EMOD step.  
-- **`models_to_run`**: List of models to run.  
+- **`models`**: List of models to run.  
 - **`intervention_list`**: List of interventions to be applied.  
 - **`run_mode`**: Specifies the run mode of the experiment.  
 - **`emod_calib_params`**: Calibration parameters for EMOD.  
