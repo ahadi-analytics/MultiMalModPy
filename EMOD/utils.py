@@ -238,8 +238,8 @@ def build_demog(task, exp):
     task.set_parameter("Demographics_Filenames", [f"demographics_{exp.emod_pop_size}.json"])
     task.config.parameters.Age_Initialization_Distribution_Type = "DISTRIBUTION_COMPLEX"
     task.config.parameters.Death_Rate_Dependence = "NONDISEASE_MORTALITY_BY_AGE_AND_GENDER"
-    task.config.parameters.Enable_Demographics_Risk = 1
-    task.config.parameters.Enable_Demographics_Birth = 1 
+    task.config.parameters.Enable_Demographics_Risk = 0
+    task.config.parameters.Enable_Demographics_Birth = 0
     task.config.parameters.Enable_Initial_Prevalence = 1
     task.config.parameters.Enable_Natural_Mortality = 1
     task.config.parameters.x_Other_Mortality = 1

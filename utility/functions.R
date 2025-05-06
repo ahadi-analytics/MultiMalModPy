@@ -18,88 +18,88 @@ mmmpy_cols <- c('#1b9e77ff', '#7570b3ff', '#d95f02ff')
 #' This function loads and combines data from the standardized mmmpy output files.
 #'
 #' @param wdir Working directory where the data files are located.
-#' @param modelname Name of models for which result CSVs should be loaded, case sensitive.
+#' @param models Name of models for which result CSVs should be loaded, case sensitive.
 #' @param mth Set to TRUE if the data files have monthly data. Default is FALSE.
 #' @param timeseries Set to TRUE if the unaggregated timeseries data should be read in. Default is FALSE.
 #'
 #' @return df
 #'
-#' @raises An error if invalid modelname value is specified.
+#' @raises An error if invalid models value is specified.
 #'
 #' @import data.table
 #'
 #' @examples
 #' wdir <- "path/to/data"
-#' modelname <- c("EMOD","malariasimulation", "OpenMalaria")
-#' result <- get_output_df(wdir, modelname, mth = TRUE)
+#' models <- c("EMOD","malariasimulation", "OpenMalaria")
+#' result <- get_output_df(wdir, models, mth = TRUE)
 #'
-get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE) {
+get_output_df <- function(wdir, models, yearly = FALSE, monthly = FALSE, fiveday = FALSE, daily = FALSE) {
   cols_to_keep <- NULL
   fname <- 'mmmpy_timeavrg.csv'
 
-  if (timeseries) {
+  if (yearly) {
     fname <- 'mmmpy_yr.csv'
-    if (mth) {
-      fname <- 'mmmpy_mth.csv'
-    }
-    if (daily) {
-      fname <- 'mmmpy_daily.csv'
-    }
-    if (fiveday) {
-      fname <- 'mmmpy_5day.csv'
-    }
+  }
+  if (monthly) {
+    fname <- 'mmmpy_mth.csv'
+  }
+  if (daily) {
+    fname <- 'mmmpy_daily.csv'
+  }
+  if (fiveday) {
+    fname <- 'mmmpy_5day.csv'
   }
 
   if (file.exists(file.path(wdir, fname))) {
     df <- fread(file.path(wdir, fname), stringsAsFactors = FALSE)
   } else {
-    if ('OpenMalaria' %in% modelname) {
+    if ('OpenMalaria' %in% models) {
       om_df <- fread(file.path(wdir, paste('OpenMalaria', fname, sep = '/')), select = cols_to_keep)
-      om_df$modelname <- 'OpenMalaria'
+      om_df$models <- 'OpenMalaria'
     }
-    if ('EMOD' %in% modelname) {
+    if ('EMOD' %in% models) {
       em_df <- fread(file.path(wdir, paste('EMOD', fname, sep = '/')), select = cols_to_keep)
-      em_df$modelname <- 'EMOD'
+      em_df$models <- 'EMOD'
       #em_df <- em_df[em_df$simulatedEIR >0,]
     }
-    if ('malariasimulation' %in% modelname) {
+    if ('malariasimulation' %in% models) {
       ms_df <- fread(file.path(wdir, paste('malariasimulation', fname, sep = '/')), select = cols_to_keep)
-      ms_df$modelname <- 'malariasimulation'
+      ms_df$models <- 'malariasimulation'
     }
 
-    if ('EMOD' %in% modelname &
-      'OpenMalaria' %in% modelname &
-      'malariasimulation' %in% modelname) {
+    if ('EMOD' %in% models &
+      'OpenMalaria' %in% models &
+      'malariasimulation' %in% models) {
       df <- em_df %>% bind_rows(om_df) %>% bind_rows(ms_df)
-    } else if ('OpenMalaria' %in% modelname &
-      'EMOD' %in% modelname &
-      !('malariasimulation' %in% modelname)) {
+    } else if ('OpenMalaria' %in% models &
+      'EMOD' %in% models &
+      !('malariasimulation' %in% models)) {
       df <- em_df %>% bind_rows(om_df)
-    } else if ('OpenMalaria' %in% modelname &
-      'malariasimulation' %in% modelname &
-      !('EMOD' %in% modelname)) {
+    } else if ('OpenMalaria' %in% models &
+      'malariasimulation' %in% models &
+      !('EMOD' %in% models)) {
       df <- ms_df %>% bind_rows(om_df)
-    } else if ('EMOD' %in% modelname &
-      'malariasimulation' %in% modelname &
-      !('OpenMalaria' %in% modelname)) {
+    } else if ('EMOD' %in% models &
+      'malariasimulation' %in% models &
+      !('OpenMalaria' %in% models)) {
       df <- ms_df %>% bind_rows(em_df)
-    } else if ('OpenMalaria' %in% modelname &
-      !('EMOD' %in% modelname) &
-      !('malariasimulation' %in% modelname)) {
+    } else if ('OpenMalaria' %in% models &
+      !('EMOD' %in% models) &
+      !('malariasimulation' %in% models)) {
       wdir <- file.path(wdir, 'om')
       df <- om_df
-    } else if ('EMOD' %in% modelname &
-      !('OpenMalaria' %in% modelname) &
-      !('malariasimulation' %in% modelname)) {
+    } else if ('EMOD' %in% models &
+      !('OpenMalaria' %in% models) &
+      !('malariasimulation' %in% models)) {
       wdir <- file.path(wdir, 'em')
       df <- em_df
-    } else if ('malariasimulation' %in% modelname &
-      !('OpenMalaria' %in% modelname) &
-      !('EMOD' %in% modelname)) {
+    } else if ('malariasimulation' %in% models &
+      !('OpenMalaria' %in% models) &
+      !('EMOD' %in% models)) {
       wdir <- file.path(wdir, 'malariasimulation')
       df <- ms_df
     } else {
-      stop(paste("Please specify modelname as some combination of EMOD, malariasimulation and OpenMalaria, (list), ", modelname, " not valid"))
+      stop(paste("Please specify models as some combination of EMOD, malariasimulation and OpenMalaria, (list), ", models, " not valid"))
     }
 
     if ('ageGroup' %in% colnames(df)) {
@@ -151,8 +151,8 @@ calculate_dailyEIRs_seasonal <- function(wdir,note){
   df <- df %>%
     filter(scen_id == 1, year == max(year)) %>%
     group_by(scen_id, Run_Number) %>%
-    mutate(sumEIR = sum(simulatedEIR),
-           simulatedEIR = (simulatedEIR/sumEIR))
+    mutate(sumEIR = sum(eir),
+           simulatedEIR = (eir/sumEIR))
   df <- df %>%
     group_by(scen_id, day) %>%
     summarise(simulatedEIR = mean(simulatedEIR))

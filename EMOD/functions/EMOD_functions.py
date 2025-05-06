@@ -112,7 +112,15 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
         
     if exp.emod_importation_rate != 0:
         ncases_per_year_per1000pop = (exp.emod_importation_rate * exp.emod_pop_size) / 1000
-        add_outbreak_individual(camp, start_day=1, target_num_individuals=ncases_per_year_per1000pop,
+        add_outbreak_individual(camp, start_day=73, target_num_individuals=ncases_per_year_per1000pop,
+                                repetitions=-1, timesteps_between_repetitions=365)
+        add_outbreak_individual(camp, start_day=146, target_num_individuals=ncases_per_year_per1000pop,
+                                repetitions=-1, timesteps_between_repetitions=365)
+        add_outbreak_individual(camp, start_day=219, target_num_individuals=ncases_per_year_per1000pop,
+                                repetitions=-1, timesteps_between_repetitions=365)
+        add_outbreak_individual(camp, start_day=292, target_num_individuals=ncases_per_year_per1000pop,
+                                repetitions=-1, timesteps_between_repetitions=365)
+        add_outbreak_individual(camp, start_day=365, target_num_individuals=ncases_per_year_per1000pop,
                                 repetitions=-1, timesteps_between_repetitions=365)
 
     # SMC currently not supported
@@ -166,7 +174,7 @@ def habitat_setup(config, exp, row):
     if row.seasonality == 'perennial':
         habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat1.parameters.Habitat_Type = "CONSTANT"
-        habitat1.parameters.Max_Larval_Capacity = 10000000 * max_capacity_multiplier
+        habitat1.parameters.Max_Larval_Capacity = 5265700 * max_capacity_multiplier
         habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type,
                          "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
         malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list, overwrite=True)

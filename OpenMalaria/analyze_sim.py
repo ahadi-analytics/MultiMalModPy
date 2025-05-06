@@ -228,7 +228,6 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
 
     scen_var = ['scen_id', 'num_seeds', 'seasonality', 'entomology_mode']
     outcome_var = ['InputEIR', 'SimulatedEIR', 'nTransmit', 'Vector_Nv', 'Vector_Sv']
-    ccstep_var = ['cc_factor_OpenMalaria', 'cc_timestep_OpenMalaria', 'cc_title']
     columns_to_keep = ['index', 'seed', 'survey', 'days', 'year'] + scen_var + outcome_var
 
     if survey_step_days == 5:
@@ -236,12 +235,8 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
         df_day = pivot_wider(df_day, index_cols=['index', 'survey', 'days', 'year'])
         df_day = df_day.merge(scen_df, on='index', how='inner')
 
-        # If different EIRs for each simulation were created, those need to be parsed out here, so all the models can eventually be aligned
-        # The only difference between these two dfs is if eir_openmalaria (om specific eir) or eir (general to all models) is used.
-        if 'ccstep' in df_day:
-            df_day = df_day[columns_to_keep + ccstep_var]
-        else:
-            df_day = df_day[columns_to_keep]
+        columns_to_keep += [column for column in exp.intervention_analyzer_columns if column in df_day.columns]       
+        df_day = df_day[columns_to_keep]
 
         df_day = df_day.rename(columns={'SimulatedEIR': 'eir',
                                         'InputEIR': 'inputEIR',
@@ -949,15 +944,14 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     adf = survey_to_date(adf, survey_step_days=5, start_year=start_year)
     adf['day'] = (adf['days'] - 1) % 365 + 1
 
-    columns_to_keep = ['scen_id', 'index','inputEIR', 'target_output_values', 'seed',
-               'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey',
-                'days', 'month', 'year', 'agebin', 'ageGroup', 'Vector_Nv',
-                'Vector_Sv', 'nHost', 'eir', 'prevalence', 'clinical_incidence',
-               'severe_incidence', 'nPatent'] + exp.intervention_analyzer_columns
+    columns_to_keep = ['scen_id', 'index','inputEIR', 'target_output_values', 'seed', 
+               'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey', 'days',
+                'day', 'month', 'year', 'ageGroup', 'n_total_mos_pop',
+                'n_infectious_mos', 'nHost', 'eir', 'prevalence', 'prevalence_2to10','clinical_incidence',
+               'severe_incidence']
+    columns_to_keep += [column for column in exp.intervention_analyzer_columns if column in adf.columns]       
     adf = adf[columns_to_keep]  
-    adf = adf.rename(columns={'days': 'timestep',
-                              'Vector_Nv': 'n_total_mos_pop',
-                              'Vector_Sv': 'n_infectious_mos'})
+    adf = adf.rename(columns={'days': 'timestep'})
     
     print(f'Saving mmmpy_5day.csv to {wdir}')
     adf.to_csv((os.path.join(wdir, 'mmmpy_5day.csv')), index=False)

@@ -46,7 +46,7 @@ def ccstep_params(exp):
     if 'ccstep' not in exp.sweep_list:
         exp.sweep_list = exp.sweep_list + ['ccstep']
     if 'ccstep' not in exp.intervention_analyzer_columns:
-        exp.intervention_analyzer_columns = exp.intervention_analyzer_columns + ['ccstep', 'cc_timestep', 'cc_title']
+        exp.intervention_analyzer_columns = exp.intervention_analyzer_columns + ['cc_title']
 
     # Flexible parameters depending on type of run and user-specifications
     if exp.run_mode == 'production':
