@@ -18,13 +18,13 @@ mmmpy_cols <- c('#1b9e77ff', '#7570b3ff', '#d95f02ff')
 #' This function loads and combines data from the standardized mmmpy output files.
 #'
 #' @param wdir Working directory where the data files are located.
-#' @param modelname Name of models for which result CSVs should be loaded, case sensitive.
+#' @param modelName of models for which result CSVs should be loaded, case sensitive.
 #' @param mth Set to TRUE if the data files have monthly data. Default is FALSE.
 #' @param timeseries Set to TRUE if the unaggregated timeseries data should be read in. Default is FALSE.
 #'
 #' @return df
 #'
-#' @raises An error if invalid modelname value is specified.
+#' @raises An error if invalid model value is specified.
 #'
 #' @import data.table
 #'
@@ -33,7 +33,7 @@ mmmpy_cols <- c('#1b9e77ff', '#7570b3ff', '#d95f02ff')
 #' modelname <- c("EMOD","malariasimulation", "OpenMalaria")
 #' result <- get_output_df(wdir, modelname, mth = TRUE)
 #'
-get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE) {
+get_output_df <- function(wdir, model, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE) {
   cols_to_keep <- NULL
   fname <- 'mmmpy_timeavrg.csv'
 

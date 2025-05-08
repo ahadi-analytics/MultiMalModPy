@@ -16,7 +16,7 @@ def generate_plots_example1(out_dir, exp, df, df_mth):
     if df_mth_sub.empty:
         df_mth_sub = df_mth  # Fallback to the original dataframe
 
-    monthly_timeseries(out_dir, df_mth_sub, channel='prevalence_2to10', sweepvar='modelname', facet_var='target_output_values',
+    monthly_timeseries(out_dir, df_mth_sub, channel='prevalence_2to10', sweepvar='model', facet_var='target_output_values',
                        agegrps='0-100', facet_name = exp.target_output_name)
 
     # Plot 2
@@ -36,5 +36,5 @@ def generate_plots_example1(out_dir, exp, df, df_mth):
                age_groups_aggregates=age_groups_aggregates_sub)
 
     # Plot 3
-    eir_to_outcome(out_dir, df, sweepvar='modelname', facet_var='cm_clinical', eir_val='simulatedEIR',  channel='prevalence_2to10',  agegrps='0-100')
+    eir_to_outcome(out_dir, df, sweepvar='model', facet_var='cm_clinical', eir_val='simulatedEIR',  channel='prevalence_2to10',  agegrps='0-100')
     prevalence2to10_to_outcome(out_dir, df, sweepvar='cm_clinical', facet_var='modelname', channel='clinical_incidence', agegrps=['0-100'])
