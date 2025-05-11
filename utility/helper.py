@@ -113,6 +113,10 @@ def parse_launch_args():
         print(f"The '--csv' argument was specified ({args.csv}). "
               "Setting 'run_mode' to 'csv'.")
 
+    if os.name != 'posix'  and not args.test:
+        args.test = True
+        print("Local execution of the framework is only permitted for test runs - changing to test")
+
     # Validate Windows compatibility with EMOD
     if os.name != 'posix' and 'EMOD' in args.models:
         raise ValueError(
@@ -280,10 +284,6 @@ def check_exp_inputs(exp, attribute_check=False):
     Raises:
         ValueError: If input parameters are invalid.
     """
-
-    if exp.hpc == 'LOCAL' and not exp.test:
-        exp.test = True
-        print("Local execution of the framework is only permitted for test runs - changing to test")
 
     ## Generell check on input parameter combinations and formats
     check_exp_input_parameters(exp)
