@@ -109,8 +109,12 @@ def create_scenarios(exp, scen_df):
             scenario = scenario.replace(f'@seasonality{i}@', str(seasonality[i - 1]))
 
         # Write the scenario XML file
-        with open(f"{exp.job_directory}/xml/{row['index']}.xml", 'w') as fo:
-            fo.write(f"{scenario}")
+        if '@' not in scenario:
+            # Write the scenario XML file
+            with open(f"{exp.job_directory}/xml/{row['index']}.xml", 'w') as fo:
+                fo.write(f"{scenario}")
+        else:
+            raise ValueError(f"Error: The '@' symbol is present in the scenario XML {row['index']}.")
 
     # Copy additional files required by OpenMalaria
     shutil.copy(exp.openmalaria_path + "/densities.csv", f"{exp.job_directory}/")
