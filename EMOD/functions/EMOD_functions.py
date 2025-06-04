@@ -142,11 +142,13 @@ def drug_setup(config, exp=None):
     """
     Functions to alter drug parameters specific to MultiMalModPy drug campaigns.
     """
-    if 'infcl' in exp.intervention_list:
-        setup_infectious_clearance_drug(config, drug_name="DHA") #This should be vehicle, not DHA, but there is an internal IDM issue around using vehicle
+    #This should be vehicle, not DHA, but there is an internal IDM issue around using vehicle
     # On line 257 of emodpy_malaria/interventions/drug_campaign.py in the function add_drug_campaign,
     # There is a "Received_Vehicle" broadcast event that is programmed in, however broadcast event does not accept Received vechile as an
     # acceptable event.
+    if 'infcl' in exp.intervention_list:
+        setup_infectious_clearance_drug(config, drug_name="DHA") 
+
     #SMC currently not supported
     if 'smc' in exp.intervention_list:
         return
@@ -207,12 +209,12 @@ def climate_setup(task, seasonality=None):
     """
     task.config.parameters.Climate_Model = "CLIMATE_BY_DATA"
     task.config.parameters.Air_Temperature_Filename = os.path.join('climate',
-                                                                   'seasonal_air_temperature_daily.bin')
+                                                                   f'{seasonality}_air_temperature_daily.bin')
     task.config.parameters.Land_Temperature_Filename = os.path.join('climate',
-                                                                    'seasonal_air_temperature_daily.bin')
-    task.config.parameters.Rainfall_Filename = os.path.join('climate', 'seasonal_rainfall_daily.bin')
+                                                                    f'{seasonality}_air_temperature_daily.bin')
+    task.config.parameters.Rainfall_Filename = os.path.join('climate', f'{seasonality}_rainfall_daily.bin')
     task.config.parameters.Relative_Humidity_Filename = os.path.join('climate',
-                                                                     'seasonal_relative_humidity_daily.bin')
+                                                                     f'{seasonality}_relative_humidity_daily.bin')
 
 
 def _get_serialized_filenames(num_cores, timesteps):

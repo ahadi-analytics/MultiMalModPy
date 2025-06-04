@@ -5,7 +5,7 @@ import numpy as np
 
 def infcl_params(exp):
     """
-    This function sets up the exp object so that the carrying capacity perterbation can occur.
+    This function sets up the exp object so that the infectious clearance perterbation can occur.
 
     Parameters:
         exp: Experiment object.
@@ -15,9 +15,8 @@ def infcl_params(exp):
             An object with updated experiment parameters.
     """
         
-    exp.infcl_in_years = 5 # determines after x amount of years, when the carrying capacity change occurs
-    exp.infcl_coverage = [0.8]
-    #exp.infcl_duration = 1 #should be in multiples of five
+    exp.infcl_in_years = 5 # determines after x amount of years, when the infectious clearance  occurs
+    exp.infcl_coverage = [0.8] # infcl_coverage is a sweep variable, you can select multiple values
 
     if exp.emod_step is None:
         ## if None, no serialization done, hence burnin period is added to the infcl_in_years
@@ -30,7 +29,7 @@ def infcl_params(exp):
 
     # 5 Years in to the pickup time OpenMalaria
     exp.openmalaria_survey_step = '5d'
-    exp.infcl_timestep_OpenMalaria = int((73 * (exp.openmalaria_burnin + exp.infcl_in_years)))
+    exp.infcl_timestep_OpenMalaria = int((73 * (exp.openmalaria_burnin + exp.infcl_in_years))-1)
     
     if 'infcl' not in exp.plots_to_run:
         exp.plots_to_run = exp.plots_to_run + ['infcl']
@@ -46,7 +45,7 @@ def infcl_params(exp):
         print('Warning: Running infcl in production mode with pre-defined not user-defined parameters')
         exp.mem_increase_factor = 6.0  # scaling factor on default memory requested
         exp.start_year = 1995
-        exp.end_year = 2010
+        exp.end_year = 2020
         exp.emod_memory_per_sim = 6
         exp.emod_time_per_sim = '3:59:00'
         exp.malariasimulation_memory_per_sim = 6
@@ -75,7 +74,5 @@ def infcl_columns(exp, df):
 
 
 def infcl_input_check(exp):
-    if exp.entomology_mode != "dynamic":
-        raise ValueError(f'Invalid entomology_mode for infcl {exp.entomology_mode} specified, "dynamic" required')
     if exp.end_year - exp.start_year < exp.infcl_in_years:
         raise ValueError(f"infcl ({exp.infcl_in_years} years) falls outside of the range of {exp.start_year} and {exp.end_year}")

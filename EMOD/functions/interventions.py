@@ -60,7 +60,7 @@ def setup_infectious_clearance_drug(config, drug_name = ""):
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_Decay_T1", value = 1)
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_Decay_T2", value = 1)
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_Vd", value = 1)
-    set_drug_param(config, drug_name = drug_name, parameter = "Drug_PKPD_C50", value = 1)
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_PKPD_C50", value = 750)
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_Fulltreatment_Doses", value = 1)
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_Dose_Interval", value = 1)
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_Gametocyte02_Killrate", value = 0)
