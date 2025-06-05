@@ -816,7 +816,6 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
     """
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
-                 end_year=2020, age_groups_aggregates=None, burnin=None, cc=False):
                  end_year=2020, age_groups_aggregates=None, burnin=None, intervention_analyzer_columns = []):
 
         super(FiveDayAgebinAnalyzer, self).__init__(working_dir=working_dir,
