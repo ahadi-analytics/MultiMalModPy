@@ -33,7 +33,6 @@ mmmpy_cols <- c('#1b9e77ff', '#7570b3ff', '#d95f02ff')
 #' models <- c("EMOD","malariasimulation", "OpenMalaria")
 #' result <- get_output_df(wdir, models, mth = TRUE)
 #'
-get_output_df <- function(wdir, modelname, mth = FALSE, fiveday = FALSE, daily = FALSE, timeseries = FALSE, ccstep = FALSE) {
 get_output_df <- function(wdir, models, yearly = FALSE, monthly = FALSE, fiveday = FALSE, daily = FALSE) {
   cols_to_keep <- NULL
   fname <- 'mmmpy_timeavrg.csv'
