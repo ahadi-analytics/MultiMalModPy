@@ -40,21 +40,20 @@ def ccstep_params(exp):
     
     if 'ccstep' not in exp.plots_to_run:
         exp.plots_to_run = exp.plots_to_run + ['ccstep']
-    if 'ccstep' not in exp.analyzer_list:
-        exp.analyzer_list = exp.analyzer_list + ['ccstep']
+    if '5day' not in exp.analyzer_list:
+        exp.analyzer_list = exp.analyzer_list + ['5day']
     # Add ccstep to the list of sweep parameters
     if 'ccstep' not in exp.sweep_list:
         exp.sweep_list = exp.sweep_list + ['ccstep']
+    if 'ccstep' not in exp.intervention_analyzer_columns:
+        exp.intervention_analyzer_columns = exp.intervention_analyzer_columns + ['cc_title']
 
     # Flexible parameters depending on type of run and user-specifications
     if exp.run_mode == 'production':
         print('Warning: Running ccstep in production mode with pre-defined not user-defined parameters')
-        if exp.emod_importation_rate == 0 and exp.cc_decreasing:
-            print('Warning: You are running EMOD simulations with a decreasing carrying capacity.\nWithout importation, elimination can occur.')
         exp.mem_increase_factor = 6.0  # scaling factor on default memory requested
         exp.start_year = 1995
         exp.end_year = 2050
-        exp.target_output_name = 'prevalence_2to10'
         exp.emod_memory_per_sim = 6
         exp.emod_time_per_sim = '3:59:00'
         exp.malariasimulation_memory_per_sim = 6
@@ -66,9 +65,10 @@ def ccstep_params(exp):
         ## Keep parameters as defined by user in helper.py
         exp.ccstep = exp.target_output_values
     
+    if exp.emod_importation_rate == 0 and exp.cc_decreasing:
+        print('Warning: You are running EMOD simulations with a decreasing carrying capacity.\nWithout importation, elimination can occur.')
     if len(exp.target_output_values) < 2:
         raise ValueError(f'Please specify at least 2 output targets, for cc step to increase/decrease to.')
-
     return exp
 
 
@@ -205,11 +205,9 @@ def ccstep_columns(exp, df):
 
 
 def ccstep_input_check(exp):
-
     if exp.entomology_mode != "dynamic":
         raise ValueError(f'Invalid entomology_mode for ccstep {exp.entomology_mode} specified, "dynamic" required')
     if exp.target_output_name != 'prevalence_2to10':
         raise ValueError("ccstep requires the target_output_name to be prevalence_2to10")
-
     if exp.end_year - exp.start_year < exp.step_in_years:
         raise ValueError(f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and {exp.end_year}")

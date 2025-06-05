@@ -89,7 +89,7 @@ def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname=
     Args:
         exp (object): Experiment configuration object, must have:
             - `EMOD_venv` (str): Virtual environment activation command.
-            - `sim_out_dir` (str): Simulation output directory.
+            - `output_directory` (str): Simulation output directory.
             - `job_directory` (str): Directory where the shell script will be created.
         pyscript (str, optional): Path to the Python script to execute.
             Defaults to `"plotter/plot_relationship.py"`.
@@ -123,7 +123,7 @@ def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname=
 cd "{wdir}"
 
 # Run the Python script with arguments
-python "{pyscript}" -d "{exp.sim_out_dir}" {custom_args}
+python "{pyscript}" -d "{exp.output_directory}" {custom_args}
 """
 
     # Define the shell script path
@@ -220,7 +220,7 @@ def write_sh_plotters(exp, model_to_run):
     sh_content += f"# Set working directory\ncd {exp.ROOT_DIR}/plotter\n"
 
     # Set custom arguments and run the Python command
-    py_args = f'--directory "{exp.sim_out_dir}" --modelname {model_to_run} '  # Custom directory argument for your script
+    py_args = f'--directory "{exp.output_directory}" --modelname {model_to_run} '  # Custom directory argument for your script
 
     # Determine which plots to run
     plots_to_run = [p for p in exp.plots_to_run if not p == 'sampleplots']

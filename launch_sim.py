@@ -29,14 +29,9 @@ if args.emodstep in ['pickup', 'new_pickup']:
     exp.models = args.models
     exp.emod_serialized_id = args.serializedid
     if args.emodstep == 'new_pickup': ## Allows to run a independent pickup from burnin
-        ## Optional parameters to update in new run
-        exp.sweep_list = ['eir', 'case_management', 'seasonality']
-        # exp.eir = [8]  # note, needs to be one of the eir values included in the burnin
-        # exp.cm = [0.4]  # note, depends on user which parameters desired to change and how
-        # exp.num_seeds = ''
-        # ...
         ## USER SPECIFIC PARAMETER EDITS
-        # ...
+        ## Optional parameters to update in new run
+        exp.sweep_list = ['target_output_values', 'case_management', 'seasonality']
 
     # ensure intervention parameters are correctly setup (some may get updated between burnin and pickup run)
     exp = get_intervention_params(exp)
@@ -60,7 +55,7 @@ else:
     exp = get_seasonal_eir(exp)
 
     ## Add intervention params, note, for some interventions this might come only in  pickup, not yet setup
-    exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run (OM scaffolds etc)
+    exp = get_intervention_params(exp)  # if empty, uses defaults for a simple baseline run
 
     exp.models_pickup = exp.models  # Models to run in pickup
     # EMOD burn-in and pickup configuration
@@ -82,7 +77,7 @@ else:
     if exp.exp_name_note != '':
         exp.exp_name = f'{exp.exp_name}_{exp.exp_name_note}'
 
-## Arguments that chage for pickup
+## Create the directories for experiment and simulation_output folders
 exp = make_dirs(exp)
 
 # Simulation duration, start and end configuration
