@@ -829,7 +829,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
                                                                [15, 20], [20, 100], [0, 5], [0, 100]]
         self.emod_burnin = burnin
-        self.cc = cc
+        self.intervention_analyzer_columns = intervention_analyzer_columns
 
     def map(self, data, simulation: Simulation):
         """
@@ -968,12 +968,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         columns_to_keep = ['scen_id', 'index', 'seed', 'target_output_values', 'transmission_intensity_EMOD', 'timestep',
                         'day', 'year', 'ageGroup', 'seasonality', 'cm_clinical', 'entomology_mode',
                         'eir', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence',
-                        'n_total_mos_pop', 'n_infectious_mos']
-        if self.cc:
-            cols_to_keep = cols_to_keep + ['ccstep', 'cc_factor', 'cc_timestep', 'cc_title']
-            cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_ccstep_daily.csv')), index=False)
-        else:
-            cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_5day.csv')), index=False)
+                        'n_total_mos_pop', 'n_infectious_mos'] 
         columns_to_keep += [column for column in self.intervention_analyzer_columns if column in cdf.columns]        
         cdf = cdf[columns_to_keep]
         cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_5day.csv')), index=False)
@@ -1099,7 +1094,7 @@ class DailyAgebinAnalyzer(IAnalyzer):
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_daily.csv'))
-            cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['day', 'year', 'eir'])
+            cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['day', 'year'])
         else:
             cdf['eir'] = ''
         cdf = cdf.rename(columns={"Run_Number": "seed"})
@@ -1211,7 +1206,7 @@ if __name__ == "__main__":
             manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
                                      partial_analyze_ok=True)
             manager.analyze()
-            if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
+            if '5day' in exp.analyzer_list or 'daily' in exp.analyzer_list:
                 daily_eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
                                                        sweep_variables=exp_tags,
                                                        start_year=start_year,
@@ -1239,16 +1234,6 @@ if __name__ == "__main__":
         if 'monthly' in exp.analyzer_list:
             analyzer = analyzer + monthly_analyzers
         # 5 day timeseries per age groups
-        if '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
-            if exp.emod_step != 'burnin':
-                ccstep = 'ccstep' in exp.intervention_list
-            analyzer = analyzer + [FiveDayAgebinAnalyzer(expt_name=exp_name,
-                                                         start_year=start_year,
-                                                         end_year=end_year,
-                                                         sweep_variables=exp_tags,
-                                                         working_dir=wdir,
-                                                         burnin=burnin,
-                                                         cc=ccstep)]
         if '5day' in exp.analyzer_list:
             if exp.emod_step != 'burnin':
                 analyzer = analyzer + [FiveDayAgebinAnalyzer(expt_name=exp_name,
