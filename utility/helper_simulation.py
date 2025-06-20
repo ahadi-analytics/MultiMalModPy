@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 import subprocess
 import itertools
 import pickle
@@ -349,6 +350,16 @@ def check_exp_inputs_openmalaria(exp):
     Raises:
         ValueError: If the 'ccstep' intervention is specified with a 30-day survey step in OpenMalaria.
     """
+
+    # Check required files
+    required_files = [
+        os.path.join(exp.openmalaria_path, "densities.csv"),
+        os.path.join(exp.openmalaria_path, f"scenario_{exp.openmalaria_version}.xsd")
+    ]
+
+    for file_path in required_files:
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"Required file not found: {file_path}")
 
     if exp.openmalaria_survey_step == '30d' and "5day" in exp.analyzer_list:
         print("Warning: OpenMalaria is configured with 30-day survey steps. Using a 5-day analyzer will cause errors during post-processing. Adjust your configuration to ensure compatibility.")

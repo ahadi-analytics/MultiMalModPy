@@ -98,5 +98,4 @@ def intervention_params_to_check(exp):
     """
 
     if "ccstep" in exp.intervention_list:
-        from interventions.ccstep import ccstep_input_check
         ccstep_input_check(exp)

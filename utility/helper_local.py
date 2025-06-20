@@ -85,7 +85,7 @@ class LoadLaunchArgs:
                 f"overwrite={self.overwrite}, mpv={self.mpv}, test={self.test}, note={self.note}, target_output_name={self.target_output_name})")
 
 
-def write_ps1_runmodel(exp, filename, models):
+def write_ps1_runmodel(exp, filename, model):
     """
     Writes a PowerShell script that manages the execution of two jobs:
     1. Runs the first script (e.g., run_{models}.ps1)
@@ -94,7 +94,7 @@ def write_ps1_runmodel(exp, filename, models):
     Args:
         exp (Experiment): The experiment object that contains job directories and other parameters.
         filename (str): The full path where the PowerShell script should be saved.
-        models (str): The name of the model to run (e.g., 'malariasimulation', 'OpenMalaria').
+        model (str): The name of the model to run (e.g., 'malariasimulation', 'OpenMalaria').
 
     Raises:
         ValueError: If the provided models is empty or if exp.job_directory is not valid.
@@ -104,23 +104,23 @@ def write_ps1_runmodel(exp, filename, models):
     """
 
     # Check for valid models and experiment directory
-    if not models:
-        raise ValueError("models cannot be empty.")
+    if not model:
+        raise ValueError("model cannot be empty.")
 
     if not os.path.isdir(exp.job_directory):
         raise ValueError(f"Invalid job directory: {exp.job_directory}")
 
     ps1_content = f"""
     # Start logging to a file
-    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory, 'log'))}\\run_{modelname}.out }}
+    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory, 'log'))}\\run_{model}.out }}
     Start-Transcript -Path $LogFile
     
     # Start the first job
     $job1 = Start-Job -ScriptBlock {{
         try {{
-            # Run the first script: run_{models}.ps1
-            Write-Host "Running job 1: run_{models}.ps1"
-            & "{os.path.normpath(exp.job_directory)}\\run_{models}.ps1"
+            # Run the first script: run_{model}.ps1
+            Write-Host "Running job 1: run_{model}.ps1"
+            & "{os.path.normpath(exp.job_directory)}\\run_{model}.ps1"
         }} catch {{
             Write-Error "Job 1 failed: $_"
         }}
@@ -138,14 +138,14 @@ def write_ps1_runmodel(exp, filename, models):
     
 
     # Start the second job (only after the first job completes)
-    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory, 'log'))}\\run_analyzer_{modelname}.out }}
+    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory, 'log'))}\\run_analyzer_{model}.out }}
     Start-Transcript -Path $LogFile
     
     $job2 = Start-Job -ScriptBlock {{
         try {{
             # Run the second script with -ExecutionPolicy Bypass and explicit -File parameter
-            Write-Host "Running job 2: analyze_sim_{models}.ps1"
-            & "powershell.exe" -ExecutionPolicy Bypass -File "{os.path.normpath(exp.job_directory)}\\run_analyze_{models}.ps1"
+            Write-Host "Running job 2: analyze_sim_{model}.ps1"
+            & "powershell.exe" -ExecutionPolicy Bypass -File "{os.path.normpath(exp.job_directory)}\\run_analyze_{model}.ps1"
         }} catch {{
             Write-Error "Job 2 failed: $_"
         }}
@@ -180,7 +180,7 @@ def submit_runmodel_local(exp, model):
 
     Args:
         exp (object): An experiment object containing the 'job_directory' attribute where the PowerShell script will be saved.
-        model_to_run (str): The name of the model to be run (e.g., 'OpenMalaria', 'malariasimulation').
+        model (str): The name of the model to be run (e.g., 'OpenMalaria', 'malariasimulation').
 
     Raises:
         OSError: If there is an issue with executing the command or running the script.
@@ -188,7 +188,7 @@ def submit_runmodel_local(exp, model):
 
     file_name = f'jobs_{model}_simplerun.ps1'
     file_path = os.path.join(exp.job_directory, file_name)
-    write_ps1_runmodel(exp,filename=file_path, models=model)
+    write_ps1_runmodel(exp,filename=file_path, model=model)
     cmd_command = f'cmd.exe /c start powershell -ExecutionPolicy Bypass -File "{file_path}"'
     subprocess.Popen(cmd_command, shell=True)
 
@@ -241,7 +241,7 @@ Read-Host "Press Enter to continue"
     print(f"PowerShell script written to {file_path}")
 
 
-def write_ps1_analyzer(exp, pyscript, model_to_run):
+def write_ps1_analyzer(exp, pyscript, model):
     """
     This function generates a batch file that runs the specified analyzer script for the given model.
     It calls the `create_ps1_script` function to generate the PowerShell script file.
@@ -249,15 +249,15 @@ def write_ps1_analyzer(exp, pyscript, model_to_run):
     Args:
         exp (object): An experiment object containing the 'job_directory' attribute for saving the script.
         pyscript (str): The path to the Python script to be run by the analyzer.
-        model_to_run (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.
+        model (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.
 
     Raises:
         ValueError: If the model name or script path is invalid, ensuring correct arguments are passed.
     """
-    job_name = f"analyzer_{model_to_run}"
-    subdir = model_to_run
+    job_name = f"analyzer_{model}"
+    subdir = model
     py_command = f'python {pyscript} --directory "{exp.job_directory}"'
-    fname = f'run_analyze_{model_to_run}.ps1'
+    fname = f'run_analyze_{model}.ps1'
     create_ps1_script(exp, fname, subdir, job_name, py_command)
 
 def submit_run_plotters_local(exp):

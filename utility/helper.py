@@ -69,7 +69,7 @@ def parse_launch_args():
                         help='Serialized ID for EMOD, if applicable.')
     parser.add_argument('-m','--models',
                         nargs='+',
-                        default=['EMOD', 'malariasimulation', 'OpenMalaria'],
+                        default=['malariasimulation', 'OpenMalaria'],   # For testing, local and on HPC
                         choices=['EMOD', 'malariasimulation', 'OpenMalaria'],
                         help="List of malaria models to run - any combination of ['EMOD', 'malariasimulation', 'OpenMalaria'].")
     parser.add_argument('--user',
@@ -112,6 +112,10 @@ def parse_launch_args():
         args.run_mode = "csv"
         print(f"The '--csv' argument was specified ({args.csv}). "
               "Setting 'run_mode' to 'csv'.")
+
+    if os.name != 'posix'  and not args.test:
+        args.test = True
+        print("Local execution of the framework is only permitted for test runs - changing to test")
 
     # Validate Windows compatibility with EMOD
     if os.name != 'posix' and 'EMOD' in args.models:
@@ -161,12 +165,12 @@ def get_param_from_dataframe(df, name, sim_params_list):
     Retrieves a parameter value from a DataFrame and returns it in the correct format for storage in an experiment object (exp).
 
     Example:
-        exp.seasonality = get_param(exp_scen_df, 'seasonality', listparam=True)
+        exp.seasonality = get_param_from_dataframe(exp_scen_df, 'seasonality', listparam=True)
 
     Args:
         df (pandas.DataFrame): The DataFrame containing the parameter value.
         name (str): The name of the parameter.
-        listparam (bool, optional): Indicates whether the parameter value should be returned as a list. Defaults to False.
+        sim_params_list (List[str]): List of parameter names expected to be lists.
 
     Returns:
         Union[list, str]: The parameter value, either as a list or a string, based on the 'listparam' argument.
@@ -280,9 +284,6 @@ def check_exp_inputs(exp, attribute_check=False):
     Raises:
         ValueError: If input parameters are invalid.
     """
-
-    if exp.hpc == 'LOCAL' and not exp.test :
-        raise ValueError("Local execution of the framework is only permitted for test runs.")
 
     ## Generell check on input parameter combinations and formats
     check_exp_input_parameters(exp)
@@ -434,7 +435,10 @@ def create_simsetup_csv(exp):
     setup_df['parameter'] = setup_df.index
     save_dirs = [exp.job_directory, exp.output_directory]
     for sdir in save_dirs:
-        setup_df.to_csv(os.path.join(sdir, 'exp_setup_df.csv'), index=False)
+        if not os.path.exists(sdir):
+            raise OSError(f"Cannot save file into a non-existent directory: '{sdir}'")
+        save_path = os.path.join(sdir, 'exp_setup_df.csv')
+        setup_df.to_csv(save_path, index=False)
 
 
 def process_case_management(df):

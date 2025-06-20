@@ -571,7 +571,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf.to_csv((os.path.join(wdir, 'mmmpy_mth.csv')), index=False)
 
 
-def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None, cc=None):
+def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None, intervention_analyzer_columns = None):
     """
     Run the FiveDayAgebinAnalyzer for OpenMalaria experiments to generate
     and save a results dataframe for defined age groups over time (5-day intervals and years).
@@ -690,11 +690,6 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf = cdf[columns_to_keep]
     print(f'\nSaving outputs to: {wdir}')
     cdf.to_csv((os.path.join(wdir, 'mmmpy_5day.csv')), index=False)
-    if cc:
-        cdf = cdf[['scen_id', 'seed', 'timestep', 'cm_clinical', 'seasonality', 'target_output_values', 'ccstep',
-                   'cc_title', 'ageGroup', 'timestep', 'eir', 'prevalence_2to10', 'prevalence',
-                   'clinical_incidence', 'severe_incidence', 'n_total_mos_pop', 'n_infectious_mos']]
-        cdf.to_csv((os.path.join(wdir, 'mmmpy_ccstep_daily.csv')), index=False)
 
 
 def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None):
@@ -810,6 +805,8 @@ if __name__ == "__main__":
 
     # Run analyzers
     InputEIRAnalyzer(job_directory, wdir)
+    if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list:
+        InputEIRAnalyzer(job_directory, wdir, daily=True)
 
     # Age groups aggregated to all and time intervals are kept unaggregated (1day)
     if 'surveyallage' in exp.analyzer_list:
@@ -823,15 +820,11 @@ if __name__ == "__main__":
     ## Monthly timeseries per age groups
     if 'monthly' in exp.analyzer_list:
         MonthlyAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates)
-    ## 5 day (or daily) timeseries per age groups
-    if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
-        InputEIRAnalyzer(job_directory, wdir, daily=True)
-        if 'daily' in exp.analyzer_list:
-            DailyAgeBinAnalyzer(job_directory, wdir, sweep_variables)
-        if '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
-            ccstep = 'ccstep' in exp.intervention_list
-            FiveDayAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates, cc=ccstep)
-    if 'daily' in exp.analyzer_list:
-        DailyAgeBinAnalyzer(job_directory, wdir, sweep_variables)
+    ## 5 day timeseries per age groups
     if '5day' in exp.analyzer_list:
         FiveDayAgebinAnalyzer(job_directory, wdir, sweep_variables, age_groups_aggregates, intervention_analyzer_columns=exp.intervention_analyzer_columns)
+    ## Daily timeseries per age groups
+    if 'daily' in exp.analyzer_list:
+        InputEIRAnalyzer(job_directory, wdir, daily=True)
+        DailyAgeBinAnalyzer(job_directory, wdir, sweep_variables)
+    

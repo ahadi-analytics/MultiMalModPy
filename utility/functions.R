@@ -49,12 +49,6 @@ get_output_df <- function(wdir, models, yearly = FALSE, monthly = FALSE, fiveday
   if (fiveday) {
     fname <- 'mmmpy_5day.csv'
   }
-  if (ccstep) {
-    fname <- 'mmmpy_ccstep_daily.csv'
-    cols_to_keep <- c('scen_id', 'target_output_values', 'ccstep', 'seed', 'timestep', 'cc_change',
-                      'cm_clinical', 'seasonality', 'ageGroup', 'prevalence', 'prevalence_2to10', 'clinical_incidence',
-                      'severe_incidence', 'simulatedEIR', 'n_total_mos_pop', 'n_infectious_mos', 'cc_title')
-  }
 
   if (file.exists(file.path(wdir, fname))) {
     df <- fread(file.path(wdir, fname), stringsAsFactors = FALSE)

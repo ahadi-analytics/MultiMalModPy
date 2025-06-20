@@ -7,7 +7,8 @@ from EMOD.functions.reporters import add_annual_reports, add_daily_reports, add_
 from EMOD.functions.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup, drug_setup
 from EMOD.functions.forcedEIR import mAb_vs_EIR
 from emodpy_malaria.reporters.builtin import *
-import emodpy_malaria.malaria_config as malaria_config
+import emod_api.config.default_from_schema_no_validation as dfs
+import emodpy_malaria.vector_config as vector_config
 from emodpy.emod_task import EMODTask
 from idmtools.builders import SimulationBuilder
 from idmtools.entities.experiment import Experiment
@@ -109,7 +110,7 @@ def submit_run_EMOD(exp, scen_df):
         submit_run_pyscript(exp, pyscript='launch_sim.py', shname='launch_pickup.sh',
                             custom_args=f"--suite {exp.SUITEname} --expname {exp.exp_name_pickup} "
                                         f"--emodstep pickup --serializedid {exp.emod_id} "
-                                        f"--models {' '.join([m for m in exp.models_to_run_pickup])} ",
+                                        f"--models {' '.join([m for m in exp.models_pickup])} ",
                             job_id_EMOD='job_id_EMODanalyze',memG=exp.mem_increase_factor*5, job='pickup_launch')
     return experiment
 
