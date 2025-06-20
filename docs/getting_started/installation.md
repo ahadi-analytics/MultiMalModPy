@@ -135,7 +135,7 @@ Once activated, your terminal prompt will change to show the name of the virtual
 
 **Step 5: Install Dependencies**
 Now that the virtual environment is activated, install MultiMalModPy's dependencies by running:
-`pip install -r requirements.txt`
+`pip install -r dependencies/requirements.txt`
 
 This will ensure that all required packages are installed within the virtual environment.
 
