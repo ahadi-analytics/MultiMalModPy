@@ -477,13 +477,13 @@ Start the container in interactive mode:
 If you previously created the container but stopped it, restart instead of creating a new one:
 List existing containers to check:  
 
-  ```
-  docker ps -a  # List all containers  
-  docker start -ai mmmpy_container  # Restart existing container  
-  ```
+```
+docker ps -a  # List all containers 
+docker start -ai mmmpy_container  # Restart existing container  
+```
   
 Your terminal should look something like: `[root@74350592befb /]#    `   
-🚪 To exit the container, type exit at any time.  
+🚪 To exit the container, type `exit`.  
 
 
 5️⃣ Check if the Python virtual environment exists
@@ -498,51 +498,58 @@ The name is `mmmpy_container` or `mmmpy_local`, check which one applies and upda
   source /opt/envs/mmmpy_container/bin/activate
   ```
   
-Your terminal should look something like: `(mmmpy_container) [root@74350592befb envs]#   `  
+Your terminal should look like: 
+`(mmmpy_container) [root@74350592befb envs]#   `  
 
-- Verify Python version and installed packages
+- To verify that Python is correctly installed and that the necessary packages are available, run:
   ```
   python --version
   pip list
   ```
 
-If everything works correctly, you now have a running Docker container with the expected Python environment! 
-Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-docker-container).
+- To **run a test simulation** using the container (from your host system), first exit the container if you're currently inside it. Then, execute the following command from your terminal:
+
+  ```
+docker run -it -v <USERPATH>:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"
+  ```
+🔁 Replace C:\Users\name\Documents with the full path to the folder where your MultiMalModPy repository is located
+.
+Further details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-docker-container).
 
 
 <br>
 
 ## Troubleshooting
 
-### EMOD examples
+### EMOD Test Run Issues
 
+If your test run using EMOD fails, it may be due to missing dependencies or version conflicts. Below are common issues and how to resolve them:
 
-If you encounter an error and the test run does was not successful, you may need to rerun some installation commands.
+**Missing python package or version conflict**
 
-- Missing python package or version conflict
+<span style="color:#ff3232">
+ERROR: Could not find a version that satisfies the requirement click==7.1.2
+ERROR: No matching distribution found for click==7.1.2
+</span>
 
-<span style="color:#ff3232">ERROR: Could not find a version that satisfies the requirement click==7.1.2 
-ERROR: No matching distribution found for click==7.1.2</span>
-
-In that case the python package needs to be manually re-installed using
-
+Solution:
+Manually install the required version:
 `pip install click==7.1.2`
 
-
-- Issue with installing idmtools slurm:
+If the installation of idmtools with SLURM support fails, you might see an error like this:
 
 <a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/idmtools_slurm_error_terminal.png" target="_blank">
 ![my_venv](../img/idmtools_slurm_error_terminal.png)
 </a>
 
-
-Try again using the same command
+Solution:
+Retry the installation using:
 
   ```  
   pip install idmtools[slurm] --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
   ```  
 
-- Python package version error:
+** Dependency Version Conflict**
 
   <span style="color:#ff3232"> ERROR: pip's dependency resolver does not currently take into account all the packages that are installed.
   This behaviour is the source of the following dependency conflicts. emodpy 1.22.1 requires click~=7.1, 
@@ -553,7 +560,7 @@ Try again using the same command
 
   If a dependency conflict remains, let us know and try again to verify installation.
 
-
+** EMOD ValueError (Likely Due to Wrong emodpy-malaria Version)**
 - EMOD ValueError: If it seems that EMOD is running, but you get a ValueError, this indicates that a wrong version of '
   emodpy-malaria' has been installed.
   Please let us know and we will update the online documentation.    
