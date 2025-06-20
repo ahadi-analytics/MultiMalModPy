@@ -55,7 +55,7 @@ def infcl(camp, row):
     return camp
 
 def setup_infectious_clearance_drug(config, drug_name = ""):
-    set_drug_param(config, drug_name = drug_name, parameter = "PKPD_Model", value = "CONCENTRATION_VERSUS_TIME")
+    set_drug_param(config, drug_name = drug_name, parameter = "PKPD_Model", value = "FIXED_DURATION_CONSTANT_EFFECT")
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_Cmax", value = 1000)
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_Decay_T1", value = 1)
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_Decay_T2", value = 1)
@@ -67,7 +67,7 @@ def setup_infectious_clearance_drug(config, drug_name = ""):
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_Gametocyte34_Killrate", value = 0)
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_GametocyteM_Killrate", value = 0)
     set_drug_param(config, drug_name = drug_name, parameter = "Drug_Hepatocyte_Killrate", value = 0)
-    set_drug_param(config, drug_name = drug_name, parameter = "Max_Drug_IRBC_Kill", value = 10)
+    set_drug_param(config, drug_name = drug_name, parameter = "Max_Drug_IRBC_Kill", value = 500)
     set_drug_param(config, drug_name = drug_name, parameter = "Bodyweight_Exponent", value = 1)
     set_drug_param(config, drug_name = drug_name, parameter = "Fractional_Dose_By_Upper_Age", value = [{"Fraction_Of_Adult_Dose": 1.0, "Upper_Age_In_Years": 115.0}])
 

@@ -45,7 +45,7 @@ def infcl_params(exp):
         print('Warning: Running infcl in production mode with pre-defined not user-defined parameters')
         exp.mem_increase_factor = 6.0  # scaling factor on default memory requested
         exp.start_year = 1995
-        exp.end_year = 2020
+        exp.end_year = 2010
         exp.emod_memory_per_sim = 6
         exp.emod_time_per_sim = '3:59:00'
         exp.malariasimulation_memory_per_sim = 6
