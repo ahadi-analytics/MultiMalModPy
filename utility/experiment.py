@@ -129,8 +129,6 @@ class RunModeManager:
         self.experiment.emod_pop_size = 5000
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
-        if self.experiment.target_output_name == 'clinical_incidence_U5':
-            raise ValueError('target_output_name clinical_incidence_U5 not defined for production run')
 
 
     def _configure_csv(self):
