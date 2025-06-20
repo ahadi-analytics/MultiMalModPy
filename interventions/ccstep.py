@@ -134,13 +134,13 @@ def ccstep_factor_calculator(exp, df, model):
                       & (data['models'] == model)
                       & (data['pop_size'] == popsize))]
         if model == 'EMOD':
-            xt = idata['prevalence_2to10']
+            xt = idata[exp.target_output_name]
             yp = idata['input_target']
             xold = row['target_output_values']
             xnew = row['ccstep']
             interpolated_old = np.interp(xold, xt, yp)
         else:
-            xt = idata['prevalence_2to10']
+            xt = idata[exp.target_output_name]
             yp = idata['n_total_mos_pop']
             xold = row['target_output_values']
             xnew = row['ccstep']
@@ -207,7 +207,7 @@ def ccstep_columns(exp, df):
 def ccstep_input_check(exp):
     if exp.entomology_mode != "dynamic":
         raise ValueError(f'Invalid entomology_mode for ccstep {exp.entomology_mode} specified, "dynamic" required')
-    if exp.target_output_name != 'prevalence_2to10':
-        raise ValueError("ccstep requires the target_output_name to be prevalence_2to10")
+    #if exp.target_output_name != 'prevalence_2to10':
+    #    raise ValueError("ccstep requires the target_output_name to be prevalence_2to10")
     if exp.end_year - exp.start_year < exp.step_in_years:
         raise ValueError(f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and {exp.end_year}")
