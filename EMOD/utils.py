@@ -1,22 +1,20 @@
 import os
 import sys
+import time
 import json
 import subprocess
 from functools import partial
 from EMOD.functions.reporters import add_annual_reports, add_daily_reports, add_monthly_reports, add_5daily_reports
-from EMOD.functions.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup, drug_setup
+from EMOD.functions.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup
 from EMOD.functions.forcedEIR import mAb_vs_EIR
 from emodpy_malaria.reporters.builtin import *
-import emod_api.config.default_from_schema_no_validation as dfs
-import emodpy_malaria.vector_config as vector_config
+import emodpy_malaria.malaria_config as malaria_config
 from emodpy.emod_task import EMODTask
 from idmtools.builders import SimulationBuilder
 from idmtools.entities.experiment import Experiment
 sys.path.append('../')
 import manifest
 from utility.helper_slurm import shell_header_quest, write_txt, submit_run_pyscript
-import emodpy_malaria.malaria_config as malaria_config
-
 
 def submit_run_EMOD(exp, scen_df):
     """
@@ -101,17 +99,26 @@ def submit_run_EMOD(exp, scen_df):
     experiment.job_directory = exp.job_directory
     experiment.emod_step = exp.emod_step
     experiment.start_end = [sim_start_year_emod, sim_start_year_emod + sim_dur_years - 1]
-    generate_run_EMOD_file(experiment, platform, suite_directory = exp.suite_directory)
-    submit_analyze_EMOD(experiment, platform)
-    print(f"Experiment submission {experiment.uid} succeeded.")
     exp.emod_id = experiment.id
-    if exp.emod_step == 'burnin':
-        exp.exp_name_pickup = exp.exp_name.replace(f'_burnin{exp.emod_burnin}', '')
-        submit_run_pyscript(exp, pyscript='launch_sim.py', shname='launch_pickup.sh',
-                            custom_args=f"--suite {exp.SUITEname} --expname {exp.exp_name_pickup} "
-                                        f"--emodstep pickup --serializedid {exp.emod_id} "
-                                        f"--models {' '.join([m for m in exp.models_pickup])} ",
-                            job_id_EMOD='job_id_EMODanalyze',memG=exp.mem_increase_factor*5, job='pickup_launch')
+    print(f"Experiment submission {experiment.uid} succeeded.")
+
+    if exp.hpc != "LOCAL":
+        generate_run_EMOD_file(experiment, platform, suite_directory = exp.suite_directory)
+        submit_analyze_EMOD(experiment, platform)
+
+        if exp.emod_step == 'burnin':
+            exp.exp_name_pickup = exp.exp_name.replace(f'_burnin{exp.emod_burnin}', '')
+            submit_run_pyscript(exp, pyscript='launch_sim.py', shname='launch_pickup.sh',
+                                custom_args=f"--suite {exp.SUITEname} --expname {exp.exp_name_pickup} "
+                                            f"--emodstep pickup --serializedid {exp.emod_id} "
+                                            f"--models {' '.join([m for m in exp.models_pickup])} ",
+                                job_id_EMOD='job_id_EMODanalyze',memG=exp.mem_increase_factor*5, job='pickup_launch')
+    else:
+        from utility.helper_local import create_ps1_script
+        write_analyze_EMOD_local(experiment, platform)
+        exp.container_id = platform.container_id
+        print(f"Container ID: {exp.container_id}")
+
     return experiment
 
 
@@ -149,7 +156,10 @@ def config_task(platform, exp):
         plugin_report=None
     )
     set_emod_exp_parameters(task.config, exp)
-    task.set_sif(manifest.SIF_PATH, exp.platform)
+
+    if exp.selected_platform !='CONTAINER' : # Relates to container used locally, not on HPC
+        task.set_sif(manifest.SIF_PATH, exp.platform)
+
     return task
 
 
@@ -238,8 +248,7 @@ def build_demog(task, exp):
     task.set_parameter("Demographics_Filenames", [f"demographics_{exp.emod_pop_size}.json"])
     task.config.parameters.Age_Initialization_Distribution_Type = "DISTRIBUTION_COMPLEX"
     task.config.parameters.Death_Rate_Dependence = "NONDISEASE_MORTALITY_BY_AGE_AND_GENDER"
-    task.config.parameters.Enable_Demographics_Risk = 0
-    task.config.parameters.Enable_Demographics_Birth = 0
+    task.config.parameters.Enable_Demographics_Risk = 1
     task.config.parameters.Enable_Initial_Prevalence = 1
     task.config.parameters.Enable_Natural_Mortality = 1
     task.config.parameters.x_Other_Mortality = 1
@@ -271,14 +280,12 @@ def config_sweep_builder(exp, scen_df):
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   CfgFn(drug_setup, exp),
                    partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.transmission_intensity_EMOD)),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   CfgFn(drug_setup, exp),
                    CfgFn(habitat_setup, exp, row=row),
                    SwpFn(climate_setup,  seasonality = row.seasonality),
                    partial(set_param, param='x_Temporary_Larval_Habitat', value=row.transmission_intensity_EMOD),
@@ -326,7 +333,6 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
         matAP = 0.1327
         sweeps = [[
             ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-            CfgFn(drug_setup, exp),
             partial(set_param, param='Serialized_Population_Path',
                     value=os.path.join(row["serialized_file_path"], "output")),
             partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
@@ -336,7 +342,6 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
-                   CfgFn(drug_setup, exp),
                    CfgFn(habitat_setup, exp, row=row),
                    SwpFn(climate_setup,  seasonality = row.seasonality),
                    partial(set_param, param='Serialized_Population_Path',
@@ -442,3 +447,103 @@ def submit_analyze_EMOD(experiment, platform, t='04:00:00', memG=20):
     write_txt(job_id, experiment.job_directory, 'job_id_EMODsim.txt')
     write_txt(experiment.id, experiment.job_directory, 'exp_id_EMODsim.txt')
     write_txt(slurm_job_id, experiment.job_directory, 'job_id_EMODanalyze.txt')
+
+
+def write_analyze_EMOD_local(experiment, platform):
+    """
+    Runs the analyzer script directly inside the container (no SLURM).
+    """
+    # Write local submission script (for   analyzer_script[0] only)
+    from utility.helper_local import create_ps1_script
+    job_name = f"analyzer_EMOD"
+    subdir = 'EMOD'
+    py_command = f"python {experiment.analyzer_script[0]}  -d {experiment.job_directory} -i {experiment.id}"
+    fname = f'run_analyze_EMOD.ps1'
+
+    file_path = os.path.join(experiment.job_directory, fname)
+    wdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+
+    # Define the content of the PowerShell script
+    powershell_content = f"""
+    # Job settings
+    $job_name = "{job_name}"
+    $work_dir = "{wdir}"
+    $jobdir = "{experiment.job_directory}"
+    $log_dir = Join-Path $jobdir "log"
+
+    # Navigate to the subdirectory
+    Set-Location -Path "$work_dir\\{subdir}"
+
+    # Run the Python command
+    {py_command} 
+     """
+
+    # Write the PowerShell script
+    with open(file_path, 'w') as file:
+        file.write(powershell_content)
+
+    print(f"PowerShell script written to {file_path}")
+
+
+def get_container_jobs_status(container_id):
+    """
+    Run `idmtools container jobs` and parse output to get running simulations count.
+    Returns number of running simulations (int).
+    """
+    try:
+        result = subprocess.run(
+            ["idmtools", "container", "jobs", container_id],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        output = result.stdout
+        # Simple parse: count how many lines contain 'running' under SIMULATION entity
+        running_sims = 0
+        for line in output.splitlines():
+            if "SIMULATION" in line and "running" in line:
+                running_sims += 1
+        return running_sims
+    except Exception as e:
+        print(f"Error checking container jobs: {e}")
+        return -1
+
+
+def run_analyze_EMOD_local_with_polling(exp, container_id, poll_interval=30, timeout=7200):
+    """
+    Poll container jobs for running simulations; when all done, run analyzer script.
+    """
+    print(f"Polling container {container_id} for running simulations...")
+
+    elapsed = 0
+    while True:
+        running_sims = get_container_jobs_status(container_id)
+        if running_sims == 0:
+            print("All simulations completed.")
+            break
+        elif running_sims < 0:
+            print("Error checking running jobs; continuing polling.")
+        else:
+            print(f"{running_sims} simulations still running. Elapsed time: {elapsed}s")
+
+        if elapsed >= timeout:
+            print("Timeout waiting for simulations to finish. Exiting.")
+            return
+        time.sleep(poll_interval)
+        elapsed += poll_interval
+
+    # All done, run analyzer script
+    #py_command = ['python', exp.analyzer_script[0], '-d', exp.job_directory, '-i', exp.id]
+
+    script_path = os.path.join(exp.job_directory, 'run_analyze_EMOD.ps1')
+    try:
+        result = subprocess.run(
+            ["powershell", "-ExecutionPolicy", "Bypass", "-File", script_path],
+            capture_output=True,
+            text=True
+        )
+        print("Analyzer STDOUT:\n", result.stdout)
+        print("Analyzer STDERR:\n", result.stderr)
+    except Exception as e:
+        print(f"Failed to run analyzer script: {e}")
+

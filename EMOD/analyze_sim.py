@@ -1144,7 +1144,7 @@ if __name__ == "__main__":
                             'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
                             'Infectious Vectors', 'Daily EIR']
     # Run analyzers
-    with Platform('SLURM_LOCAL', job_directory=exp.suite_directory) as platform:
+    with Platform(exp.selected_platform , job_directory=exp.suite_directory) as platform:
         all_age_analyzer = [SurveyAllAgeAnalyzer(expt_name=exp_name,
                                                channels=channels_inset_chart,
                                                sweep_variables=exp_tags,

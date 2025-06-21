@@ -128,3 +128,8 @@ if __name__ == '__main__':
     ## Submit plotters to run using wrapper function in utility.helper.py
     if exp.emod_step != 'burnin':
         submit_run_plotters(exp)
+
+    if exp.selected_platform == 'CONTAINER' and 'EMOD' in exp.models:
+        from EMOD.utils import run_analyze_EMOD_local_with_polling
+        run_analyze_EMOD_local_with_polling(exp, exp.container_id)
+
