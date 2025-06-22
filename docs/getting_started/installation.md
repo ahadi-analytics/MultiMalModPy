@@ -1,43 +1,42 @@
 # Installation
 
-Simulations are designed to run on a Linux-based high-performance cluster (HPC).   
-However, installation instructions also include sections for local setup and container-based environments.
+**MultiMalModPy** is designed to run full-scale simulations on **Linux-based high-performance clusters (HPCs)**.  
+However, it also supports **local test runs** using **Docker** or, optionally, a **native Python environment**.
 
-**In this section:**
+Use this guide to:
+- Choose and set up your preferred environment  
+- Download and configure the necessary container or dependencies  
+- Launch a basic test simulation to verify your setup  
 
-- [Get MultiMalModPy](#get-multimalmodpy)
-- [**HPC Setup**](#hpc)
-    - [Create a Virtual Environment](#create-a-virtual-environment)
-    - [Install EMOD](#install-emod)
-    - [Install OpenMalaria](#install-openmalaria)
-    - [Install malariasimulation](#install-malariasimulation)
-- [**Local Setup**](#local-setup)
-    - [Install OpenMalaria](#install-openmalaria)
-    - [Install malariasimulation](#install-malariasimulation)
-- [**Container Setup**](#container-setup)
-    - [HPC singularity image](#hpc-singularity-image)
-    - [Local docker image](#local-docker-image)
-
-<div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>📝 NOTE:</em></strong>  
-   Functionality for local runs is  limited and intended only for test purposes using 
-    <strong>malariasimulation</strong> and <strong>OpenMalaria</strong>. 
+<div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>⚠️ NOTE:</em></strong>  
+   Local setups (Docker or native Python) are **limited to test runs only** and do not support full-scale or multi-node simulations. 
 </div> 
 
 
+
+## Prerequisites
+
+
 <div style="background-color: #f4f4f4; padding: 20px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif; font-size: 16px; color: #333;">
-  <strong><em style="font-size: 18px; color: #00796b;">Software requirements:</em></strong>  
-  <ul style="padding-left: 20px; line-height: 1.6; margin-top: 10px;">
-    <li>MultiMalModPy</li>
+  <strong><em style="font-size: 18px; color: #00796b;">Software Requirements:</em></strong>  
+  <ul style="padding-left: 20px; line-height: 1.5; margin-top: 5px; margin-bottom: 0px;">
     <li>Python 3.9.4</li>
-    <li>R &gt;= 4.0.0</li>
-    <li>malariasimulation 2.0.0</li>
-    <li>emodpy==1.22.1</li>
-    <li>emodpy-malaria 4.1.0</li>
-    <li>idmtools-platform-slurm==2.0.2</li>
+    <li>R ≥ 4.0.0</li>
+    <li>EMOD:
+      <ul>
+        <li>emodpy==1.22.1</li>
+        <li>emodpy-malaria==4.1.0</li>
+        <li>idmtools-platform-slurm==2.0.2</li>
+      </ul>
+    </li>
+    <li>malariasimulation==2.0.0</li>
     <li>OpenMalaria v46+</li>
+    <li>singularity/3.8.1 <em>or</em> Docker</li>
+    <li>git/2.8.2</li>
   </ul>
 </div>
 
+📦 Note: All Python dependencies are listed in `dependencies/requirements.txt`
 
 <div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
   <strong><em>💡 TIP:</em></strong>
@@ -46,50 +45,52 @@ However, installation instructions also include sections for local setup and con
 
 <br>
 
-## Get MultiMalModPy
+---------------- 
+
+## Clone MultiMalModPy
 
 To get started with MultiMalModPy, the recommended approach is
 to [fork](https://github.com/ahadi-analytics/MultiMalModPy/fork)  the repository and clone it to your local machine or
 cluster.
-This allows you to easily update the code and contribute to the project.
+Forking makes it easier to keep your version up-to-date and contribute changes back to the project.
 
-Alternatively, you can download the latest release directly from the GitHub releases
-page [here](https://github.com/ahadi-analytics/MultiMalModPy/releases). if you just need to use the software
-without modifications.
+If you simply want to run the software without modifying it,
+you can also [**download the latest release**](https://github.com/ahadi-analytics/MultiMalModPy/releases) directly.
 
-via HTTPS:
-``` 
-cd <target_directory>  
-git clone https://github.com/ahadi-analytics/MultiMalModPy.git  
-```
 
-or via [SSH:](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
+You can clone the repository (or your fork) using the terminal or Git GUI clients like GitHub Desktop or Sourcetree or other Git GUI clients:
+- Navigate to the MultiMalModPy GitHub page, or your fork.
+- Click the Code button.
+- Copy the HTTPS or SSH URL.
+- Clone via terminal: 
+  - HTTPS
+    ``` 
+    cd <target_directory>  
+    git clone https://github.com/ahadi-analytics/MultiMalModPy.git  
+    ```
+  - [SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
+  
+    ``` 
+    cd <target_directory>  
+    git clone git@github.com:ahadi-analytics/MultiMalModPy.git
+    ```
+- Or use **Git GUI client’s “Clone repository” feature**.
+- Paste the URL and choose your local folder to clone into.
 
-``` 
-cd <target_directory>  
-git clone git@github.com:ahadi-analytics/MultiMalModPy.git
-```
+### Update `manifest.py`  
+Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to
+the  [first time configurations](../getting_started/configuration.md)
 
-## HPC
+---------------- 
 
-Before running MultiMalModPy on an HPC cluster, ensure that the necessary modules are loaded.
-Use the following commands to load the required dependencies:
+## Create a Virtual Environment
 
-``` 
-module load singularity/3.8.1 #singularity/3.7.0
-module load git/2.8.2
-module load python/3.9.16
-module load R/4.4.0
-```
-
-### Create a virtual environment
-
-MultiMalModPy works best when used within a virtual environment, as it helps manage dependencies and keep your project
+MultiMalModPy works best when used within a python virtual environment, as it helps manage dependencies and keep your project
 isolated from other Python projects.
 
 Follow the steps below to set up a virtual environment:
 
-**Step 1: Install Python (if necessary)**
+### Install Python and virtualvenv
 Make sure you have Python 3.8+ installed on your system. You can verify this by running in your terminal:
 
 ```
@@ -101,14 +102,30 @@ via `module load python/3.9.16` (to check existing python versions run `module s
 Alternatively, if running locally, and Python isn't installed, you can download and install the latest version from
 python.org.
 
-**Step 2: Install virtualenv**
 If you don't have virtualenv installed, you can install it via pip:
 
 ```
 pip install virtualenv
 ```
 
-**Step 3: Create the Virtual Environment**
+### Create the Virtual Environment 
+
+#### Via sh/bat file
+Navigate to the MultiMalModPy/dependencies folder and run 
+
+On macOS/Linux:
+```
+cd dependencies
+bash create_mmmpy_venv.sh
+```
+
+On Windows: 
+click on `create_mmmpy_venv.bat`
+
+#### Via terminal 
+Alternatively, run each step separately via terminal
+
+**Create the Virtual Environment**  
 Navigate to the directory where you want to store your project, and then run the following command to create a virtual
 environment:
 
@@ -118,13 +135,13 @@ virtualenv my_venv
 
 This will create a folder named `my_venv` in your project directory that will contain the virtual environment.
 
-**Step 4: Activate the Virtual Environment**  
-On Windows:  `.\my_venv\Scripts\activate`
+**Activate the Virtual Environment**   
 
+
+On Windows:  `.\my_venv\Scripts\activate`
 On macOS/Linux: `source my_venv/bin/activate`
 
-Once activated, your terminal prompt will change to show the name of the virtual environment (e.g., (my_venv)).
-
+_Once activated, your terminal prompt will change to show the name of the virtual environment (e.g., (my_venv))._
 
 <a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/activated_venv_terminal.png" target="_blank">
 ![my_venv](../img/activated_venv_terminal.png)
@@ -133,54 +150,69 @@ Once activated, your terminal prompt will change to show the name of the virtual
 <br>
 
 
-**Step 5: Install Dependencies**
+**Install Dependencies**  
+
 Now that the virtual environment is activated, install MultiMalModPy's dependencies by running:
 `pip install -r dependencies/requirements.txt`
 
 This will ensure that all required packages are installed within the virtual environment.
 
-### Install EMOD
 
-[Prerequisites](https://docs.idmod.org/projects/idmtools/en/latest/platforms/slurm/index.html#prerequisites):
+---------------- 
 
-- Linux client
-- SLURM cluster access and general understanding
-- Python 3.8/3.9/3.10/3.11/3.12 x64-bit (https://www.python.org/downloads/release)
-- Python virtual environments
+## Install Malaria Models 
 
-**Step 1: Activate venv (if not already active)**
-On macOS/Linux: `source my_venv/bin/activate`
+### EMOD
+
+ For system requirements on HPC using slurm, refer to the  [idmtools SLURM prerequisites](https://docs.idmod.org/projects/idmtools/en/latest/platforms/slurm/index.html#prerequisites)
+ For system requirements using windowsm, refer to the [idmtools container prerequisites](https://docs.idmod.org/projects/idmtools/en/latest/platforms/container/index.html#prerequisites) 
+
+#### Activate your Python virtual environment 
+
+- **macOS/Linux:** 
+`source my_venv/bin/activate`
+
+- **Windows:**  
+`.\my_venv\Scripts\activate`
 
 Optional: clean previous installed packages, only needed when a new idmtools Singularity image is
 available : `rm –fr ~/.local/lib/python* `
 
-**Step 2: Pull Singularity image containing Python and MPI**
 
+#### Pull the Singularity image (HPC only)
+Download the Singularity image containing Python and MPI: 
 ```
 curl https://packages.idmod.org:443/artifactory/idm-docker-public/idmtools/rocky_mpi/dtk_run_rocky_py39.sif -o dtk_run_rocky_py39.sif
 ```
 
-**Step 3:Install emodpy-malaria and idmtools_platform_slurm**
-
-Run the following command to install `emodpy-malaria`:
+#### Install emodpy-malaria
 
 ```
 pip install emodpy-malaria --ignore-installed --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple 
 ```
 
-You may encounter the following warning which can be ignored.
+You may see a warning about your pip version. This can be safely ignored but consider upgrading pip with:
 
 <span style="color:#FFAA33">WARNING: You are using pip version 22.0.4; however, version 25.0 is available.
 You should consider upgrading via the '~/my_venv/bin/python -m pip install --upgrade pip' command.</span>
 
-Install the `idmtools_platform_slurm` package with this command:
+#### Install `idmtools_platform_slurm` :
 
+- **HPC**:
 ```
 pip install idmtools[slurm] --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
 ```
 
+- **Windows:**
+(see [idmtools
+/idmtools_platform_container](https://github.com/InstituteforDiseaseModeling/idmtools/tree/e0e045e4049d33d99c8f7fc54ba0563bd4577c9e/idmtools_platform_container#readme))
+```
+pip install idmtools[container] --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
+```
+
+
 This may take a few minutes to build.
-Again, if the 'pip install' warning appears, you can ignore it.
+If the 'pip install' warning appears, you can ignore it.
 The outcome should look as below:
 
 <a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/install_idmtools_platform_slurm_terminal.png" target="_blank">
@@ -189,33 +221,32 @@ The outcome should look as below:
 
 <br>
 
-Verify installation via:
+#### Verify installation
+
+Run the following command to confirm idmtools is installed correctly:
 
 ```
 idmtools --help
 ```
 
-**Step 6: Verify installation and test run**     
-You can check whether the installation was successfull by typing:
-
-```
-cd <custom_dir/MultiMalModPy>
-python launch_sim.py --models EMOD --test
-``` 
-
-<br>
-
-**Step 8: Update `manifest.py`**  
+#### Update `manifest.py`  
 Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to
 the  [first time configurations](../getting_started/configuration.md)
 
-### Install OpenMalaria
 
-**Step 1: Install OpenMalaria by following developer's site instructions**
+<br>
+
+---------------- 
+
+###  OpenMalaria
+
+
+#### Install OpenMalaria by following developer's site instructions 
 
 Installation instructions can be found on
 the [OpenMalaria wiki](https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria) .
 
+- **HPC** (example NU cluster):
 
 <details><summary><span>Installation instructions for the Northwestern University cluster:</span></summary>   
 <p>
@@ -226,7 +257,7 @@ One can build the container on Quest using the remote Sylabs build environment.
 
 Updating to the latest OpenMalaria version:
 
-1) Create a new folder for the version to install
+Create a new folder for the version to install
 
 ```
 mkdir /gpfs/projects/b1139/OpenMalaria/om_v46/
@@ -323,117 +354,95 @@ openMalaria -s example_scenario.xml
 <br>
 
 
-**Update `manifest.py`**
+- Windows (local machine):
+
+  - Create additional subfolders for OpenMalaria version i.e. `v46` under `dependencies`**
+  - Download or copy **OpenMalaria dependencies**: 
+    - Visit the OpenMalaria release page and download the requred version.  
+    - Alternatively, copy the files over from the installation on HPC for the respective version.
+      - `autoRegressionParameters.csv`
+      - `densities.csv`
+      - `openMalaria.exe`
+      - `scenario_46.xsd`
+
+
+#### Update `manifest.py` 
 
 Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to
 the  [first time configurations](../getting_started/configuration.md)
 
 Define `OPENMALARIA_PATH` to point to the location of the required OpenMalaria files:
 
-```
-OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria/om_v43/"
-```
 
-No edits needed for `openmalaria_input_path` which defines the location of OpenMalaria
+- **Linux (HPC)**: 
+  - OPENMALARIA_PATH, example for NU cluster:  
 
-``` 
-openmalaria_input_path = os.path.join(os.path.expanduser('~'), 'MultiMalModPy/OpenMalaria/')
-```
+  ```
+  OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria/om_v43/"
+  ```
+  
+  - OPENMALARIA_venv, if using the OpenMalaria module, configure `OPENMALARIA_venv` to load the necessary environment modules
+  
+  ```
+  OPENMALARIA_venv = f'\n\nmodule use {OPENMALARIA_PATH}/modules/ \nmodule load openmalaria\n'
+  ```
+  
 
-If using the OpenMalaria module, configure `OPENMALARIA_venv` to load the necessary environment modules
+- **Windows (local machine)**:
 
-```
-OPENMALARIA_venv = f'\n\nmodule use {OPENMALARIA_PATH}/modules/ \nmodule load openmalaria\n'
-```
+  - Define `OPENMALARIA_PATH` to point to the location of the required OpenMalaria files:
 
-### Install malariasimulation
+  ```
+  OPENMALARIA_PATH = os.path.join(ROOT_DIR, 'dependencies/OpenMalaria/om_v46')
+  ```
+  
+  `OPENMALARIA_venv` is not used when running on local machine (`OPENMALARIA_venv = ''`)
 
-**Step 1: Install R or load R module**
-On HPC: `module load R/>=4.4.0` (required >=4.4.0).
 
-**Step 2: Install R packages**
+---------------- 
+
+### malariasimulation
+
+#### Install R or load R module
+
+- **Linux (HPC)**: 
+`module load R/>=4.4.0` (required >=4.4.0).
+
+- **Windows (local machine)**:
+  - Download and install the latest version of [R](https://www.r-project.org/) from CRAN.
+  - For Windows users, also install [Rtools](https://cran.r-project.org/bin/windows/Rtools/)  from CRAN Rtools to ensure compatibility with package compilation.
+
+#### Install R packages
 
 Open a R console and run `source(file.path('dependencies/install_packages.R'))`
 Select a CRAN mirror, and packages will be installed thereafter:  
 `--- Please select a CRAN mirror for use in this session ---`
 
-**Step 3: Update `manifest.py`**
-No edits needed for malariasimulation when running on HPC.
-
-## Local Setup
-
-### Install OpenMalaria
-
-**Step 1: Create additional subfolders for OpenMalaria version i.e. `v46` under `dependencies`**
-
-**Step 2: Download or copy OpenMalaria files**
-Visit the OpenMalaria release page and download the requred version.
-Alternatively, copy the files over from the installation on HPC for the respective version.
-
-The OpenMalaria dependencies include:
-
-- `autoRegressionParameters.csv`
-- `densities.csv`
-- `openMalaria.exe`
-- `scenario_46.xsd`
-
-**Step 3: Update `manifest.py`**
-Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to
-the  [first time configurations](../getting_started/configuration.md)
-
-Define `OPENMALARIA_PATH` to point to the location of the required OpenMalaria files:
-
-```
-OPENMALARIA_PATH = os.path.join(ROOT_DIR, 'dependencies/OpenMalaria/om_v46')
-```
-
-No edits needed for `openmalaria_input_path` which defines the location of OpenMalaria
-
-``` 
-openmalaria_input_path = os.path.join(os.path.expanduser('~'), 'MultiMalModPy/OpenMalaria/')
-```
-
-`OPENMALARIA_venv` is not used when running on local machine.
-
-```
-OPENMALARIA_venv = ''
-```
-
-### Install malariasimulation
-
-**Step 1: Install R or load R module**
-
-Download and install the latest version of [R](https://www.r-project.org/) from CRAN.
-For Windows users, also install [Rtools](https://cran.r-project.org/bin/windows/Rtools/)  from CRAN Rtools to ensure
-compatibility with package compilation.
-
-**Step 2: Install R packages**
-
-Open an R console and run `source(file.path('dependencies/install_packages.R'))`
-Select a CRAN mirror, and packages will be installed thereafter:  
-`--- Please select a CRAN mirror for use in this session ---`
-
 Install any additional R packages you may want to use for your project.
 
-**Step 3: Update `manifest.py`**
-Make sure to update the manifest.py file with the necessary configurations. For first-time setup, refer to
-the  [first time configurations](../getting_started/configuration.md)
+#### Update `manifest.py` 
 
-Define the path to your local R installation:
+- **Linux (HPC)**: 
+  - No edits needed for malariasimulation when running on HPC.
 
-``` 
-r_local = "C:/Program Files/R/R-4.2.3/bin"
-``` 
+- **Windows (local machine)**:
+  -  Define the path to your local R installation:
+  ``` 
+  r_local = "C:/Program Files/R/R-4.2.3/bin"
+  ``` 
+  - No edits needed for `malariasimulation_input_path` which defines the location of malariasimulation
 
-No edits needed for `malariasimulation_input_path` which defines the location of OpenMalaria
+  ``` 
+   malariasimulation_input_path = os.path.join(os.path.expanduser('~'), 'MultiMalModPy/malariasimulation/')
+  ```
 
-``` 
- malariasimulation_input_path = os.path.join(os.path.expanduser('~'), 'MultiMalModPy/malariasimulation/')
-```
+<br>
 
-## Container Setup
+---------------- 
 
-### HPC singularity image
+## Run MultiMalModPy without installing models using containers
+
+### Using singularity container (HPC)
 A singularity container allows running MultiMalModPy instantly, without the need for
 installations. You can download it from [https://cloud.sylabs.io/library/rungma/multimalmodpy/mmmpy_hpc:rocky8](https://cloud.sylabs.io/library/rungma/multimalmodpy/mmmpy_hpc:rocky8) .
 
@@ -444,88 +453,129 @@ singularity pull --arch amd64 library://rungma/multimalmodpy/mmmpy_hpc:rocky8
 
 Details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-singularity-container)
 
-### Local Docker image  
-_For Windows Users_  
+### Using Docker  (local)
 
-1️⃣ Install Docker Desktop from  🔗[Docker Desktop Download](https://www.docker.com/products/docker-desktop/). 
-This will make it easier to download and use the docker image.  
-Ensure Docker Daemon is Running
-  ```
-  docker info 
-  ```
-If Docker is not running, start it with opening Docker Desktop (Windows).
-  
+Navigate to dependencies and double click on `run_mmmpy_docker.bat`
 
-2️⃣ Pull the docker file from [DockerHub](https://hub.docker.com/r/mrm9534/mmmpy_local) via   
+??? info "Docker Manual Setup and Troubleshooting"
 
-```
-docker pull mrm9534/mmmpy_local:rocky8
-```
+    #### 1️⃣ Install Docker Desktop
 
-3️⃣ Verify the Downloaded Image 
-Before running the container, check if the image exists locally:  
-  ```
-  docker images
-  ```
-  Look for `mrm9534/mmmpy_local` and verify it has the `rocky8` tag.
+    Download and install from 🔗 [Docker Desktop](https://www.docker.com/products/docker-desktop/).  
+    Ensure the Docker daemon is running:
 
-4️⃣ Run the Docker Container  
-Start the container in interactive mode:  
-  ```
-  docker run -it --name mmmpy_container mrm9534/mmmpy_local:rocky8 /bin/bash 
-  ```
-If you previously created the container but stopped it, restart instead of creating a new one:
-List existing containers to check:  
+    ```
+    docker info
+    ```
 
-```
-docker ps -a  # List all containers 
-docker start -ai mmmpy_container  # Restart existing container  
-```
-  
-Your terminal should look something like: `[root@74350592befb /]#    `   
-🚪 To exit the container, type `exit`.  
+    If it's not running, open Docker Desktop (especially on Windows).
+
+    #### 2️⃣ Pull the Docker Image
+
+    Pull the container image from Docker Hub:
+
+    ```
+    docker pull mrm9534/mmmpy_local:rocky8
+    ```
+
+    🔗 [View image on Docker Hub](https://hub.docker.com/r/mrm9534/mmmpy_local)
 
 
-5️⃣ Check if the Python virtual environment exists
-Check if the virtual environment exists inside the container 
-  ```
-  ls /opt/envs/
-  ```
-The name is `mmmpy_container` or `mmmpy_local`, check which one applies and update subsequent code accordingly.  
+    #### 3️⃣ Verify the Image
 
-- Activate the virtual environment
-  ```
-  source /opt/envs/mmmpy_container/bin/activate
-  ```
-  
-Your terminal should look like: 
-`(mmmpy_container) [root@74350592befb envs]#   `  
+    Confirm the image exists locally:
 
-- To verify that Python is correctly installed and that the necessary packages are available, run:
-  ```
-  python --version
-  pip list
-  ```
+    ```
+    docker images
+    ```
 
-- To **run a test simulation** using the container (from your host system), first exit the container if you're currently inside it. Then, execute the following command from your terminal:
-
-  ```
-docker run -it -v <USERPATH>:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"
-  ```
-🔁 Replace C:\Users\name\Documents with the full path to the folder where your MultiMalModPy repository is located
-.
-Further details on how to run simulations from within a container are described in the [Example run](../getting_started/example_run.md#using-docker-container).
+    Look for `mrm9534/mmmpy_local` with the tag `rocky8`.
 
 
-<br>
+    #### 4️⃣ Run the Docker Container
 
-## Troubleshooting
+    Start the container in interactive mode:
 
-### EMOD Test Run Issues
+    ```
+    docker run -it --name mmmpy_container mrm9534/mmmpy_local:rocky8 /bin/bash
+    ```
 
-If your test run using EMOD fails, it may be due to missing dependencies or version conflicts. Below are common issues and how to resolve them:
+    To resume an existing container instead of creating a new one:
 
-**Missing python package or version conflict**
+    ```
+    docker ps -a               # List all containers
+    docker start -ai mmmpy_container
+    ```
+
+    You should see a terminal like:
+
+    ```
+    [root@74350592befb /]#
+    ```
+
+    🛑 To exit the container, type:
+
+    ```
+    exit
+    ```
+
+
+    #### 5️⃣ Activate the Python Virtual Environment
+
+    Check for available environments:
+
+    ```
+    ls /opt/envs/
+    ```
+
+    You'll likely see `mmmpy_container` or `mmmpy_local`.
+
+    Activate the correct one:
+
+    ```
+    source /opt/envs/mmmpy_container/bin/activate
+    ```
+
+    Your prompt should look like:
+
+    ```
+    (mmmpy_container) [root@74350592befb envs]#
+    ```
+
+    Verify the Python setup:
+
+    ```
+    python --version
+    pip list
+    ```
+
+    #### Run a Test Simulation (from Host System)
+
+    If you're inside the container, `exit` first.
+
+    Then run from your host terminal:
+
+    ```
+    docker run -it -v <USERPATH>:/mnt/c/projects \
+      mrm9534/mmmpy_local:rocky8 \
+      /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"
+    ```
+
+    🔁 Replace `<USERPATH>` (e.g., `C:\Users\YourName\Documents`) with the full path to your MultiMalModPy folder.  
+
+    📘 More details: [Example Run – Docker Container](../getting_started/example_run.md#using-docker-container)  
+
+<br />
+
+---------------- 
+
+## Troubleshooting  
+
+### EMOD Test Run Issues  
+
+If your test run using EMOD fails, it may be due to missing dependencies or version conflicts. Below are common issues and how to resolve them:  
+
+**Missing python package or version conflict**  
 
 <span style="color:#ff3232">
 ERROR: Could not find a version that satisfies the requirement click==7.1.2
@@ -538,9 +588,11 @@ Manually install the required version:
 
 If the installation of idmtools with SLURM support fails, you might see an error like this:
 
-<a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/idmtools_slurm_error_terminal.png" target="_blank">
-![my_venv](../img/idmtools_slurm_error_terminal.png)
-</a>
+??? info "Show image"
+
+    ![-idmtools_slurm_error_terminal](../img/idmtools_slurm_error_terminal.png)  
+    [View image file](https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/idmtools_slurm_error_terminal.png)
+
 
 Solution:
 Retry the installation using:
@@ -549,7 +601,7 @@ Retry the installation using:
   pip install idmtools[slurm] --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
   ```  
 
-** Dependency Version Conflict**
+**Dependency Version Conflict**  
 
   <span style="color:#ff3232"> ERROR: pip's dependency resolver does not currently take into account all the packages that are installed.
   This behaviour is the source of the following dependency conflicts. emodpy 1.22.1 requires click~=7.1, 
@@ -560,14 +612,20 @@ Retry the installation using:
 
   If a dependency conflict remains, let us know and try again to verify installation.
 
-** EMOD ValueError (Likely Due to Wrong emodpy-malaria Version)**
+**EMOD ValueError (Likely Due to Wrong emodpy-malaria Version)**  
+
 - EMOD ValueError: If it seems that EMOD is running, but you get a ValueError, this indicates that a wrong version of '
   emodpy-malaria' has been installed.
   Please let us know and we will update the online documentation.    
   An example is shown in the screenshot below:
 
-<a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/emodpy_malaria_version_error_example.png" target="_blank">
-![my_venv](../img/emodpy_malaria_version_error_example.png)
-</a>
+??? info "Show image"
+
+    ![-emodpy_malaria_version_error_example](../img/emodpy_malaria_version_error_example.png)  
+    [View image file](https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/emodpy_malaria_version_error_example.png)
+
+<br>
+
+
 
 
