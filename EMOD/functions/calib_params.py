@@ -36,6 +36,8 @@ def get_emod_calib_params(exp, scen_df):
             for s in range(seeds)]
     elif exp.emod_calib_type == 'emod_severe':
         calib_params = [[
+            partial(set_param, param='Anemia_Severe_Inverse_Width', value=float(calib_config_df.loc[int(row.calib_config_pointer), 'Anemia_Severe_Inverse_Width'])),
+            partial(set_param, param='Anemia_Severe_Threshold', value=float(calib_config_df.loc[int(row.calib_config_pointer), 'Anemia_Severe_Threshold'])),
             partial(set_param, param='Fever_Severe_Inverse_Width', value=float(calib_config_df.loc[int(row.calib_config_pointer), 'Fever_Severe_Inverse_Width'])),
             partial(set_param, param='Fever_Severe_Threshold', value=float(calib_config_df.loc[int(row.calib_config_pointer), 'Fever_Severe_Threshold'])),
             partial(set_param, param='Parasite_Severe_Inverse_Width', value=float(calib_config_df.loc[int(row.calib_config_pointer), 'Parasite_Severe_Inverse_Width'])),

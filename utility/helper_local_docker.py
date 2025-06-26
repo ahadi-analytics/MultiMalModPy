@@ -89,7 +89,7 @@ def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname=
     Args:
         exp (object): Experiment configuration object, must have:
             - `EMOD_venv` (str): Virtual environment activation command.
-            - `sim_out_dir` (str): Simulation output directory.
+            - `output_directory` (str): Simulation output directory.
             - `job_directory` (str): Directory where the shell script will be created.
         pyscript (str, optional): Path to the Python script to execute.
             Defaults to `"plotter/plot_relationship.py"`.
@@ -123,7 +123,7 @@ def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname=
 cd "{wdir}"
 
 # Run the Python script with arguments
-python "{pyscript}" -d "{exp.sim_out_dir}" {custom_args}
+python "{pyscript}" -d "{exp.output_directory}" {custom_args}
 """
 
     # Define the shell script path
@@ -138,14 +138,14 @@ def submit_run_plotters_sh(exp):
 
     Args:
         exp (Experiment): The experiment object containing attributes such as
-            `models_to_run` and `plots_to_run`, which determine which models and
+            `models` and `plots_to_run`, which determine which models and
             plots should be processed.
 
     Returns:
         list: List of paths to the generated shell scripts
 
     Notes:
-        - The function checks which models are specified in `exp.models_to_run`
+        - The function checks which models are specified in `exp.models`
         - It creates shell scripts for default plots (`relationship`, `timeseries`, `agecurves`)
           and custom plots if specified in `exp.plots_to_run`
         - If `exp.plots_to_run` is set to `'all'`, all available plots will be processed
@@ -169,11 +169,11 @@ def submit_run_plotters_sh(exp):
 
         # Generate the shell script
         submit_run_pyscript_sh(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
-                               custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
+                               custom_args=f"--modelname {' '.join([x for x in exp.models])}",
                                wdir=os.path.join(parent_dir, 'plotter'))
 
 
-def write_sh_plotters(exp, model_to_run):
+def write_sh_plotters(exp, model):
     """
     This function generates a shell script that runs the specified analyzer script for the given model.
     The generated shell script will activate the virtual environment and run the Python script.
@@ -181,14 +181,14 @@ def write_sh_plotters(exp, model_to_run):
     Args:
         exp (object): An experiment object containing the 'job_directory' attribute for saving the script.
         pyscript (str): The path to the Python script to be run by the analyzer.
-        model_to_run (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.
+        model (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.
 
     Raises:
         ValueError: If the model name or script path is invalid, ensuring correct arguments are passed.
     """
 
     # Validate inputs
-    if not model_to_run:
+    if not model:
         raise ValueError("Model name cannot be empty.")
 
     # Define the shell script filename and path
@@ -203,7 +203,7 @@ def write_sh_plotters(exp, model_to_run):
     sh_content = "#!/bin/bash\n\n"
 
     # Job settings
-    job_name = f"analyze_{model_to_run}"
+    job_name = f"analyze_{model}"
     sh_content += f"# Job settings\n"
     sh_content += f'job_name="{job_name}"\n'
     sh_content += f'jobdir="{exp.job_directory}"\n'
@@ -220,7 +220,7 @@ def write_sh_plotters(exp, model_to_run):
     sh_content += f"# Set working directory\ncd {exp.ROOT_DIR}/plotter\n"
 
     # Set custom arguments and run the Python command
-    py_args = f'--directory "{exp.sim_out_dir}" --modelname {model_to_run} '  # Custom directory argument for your script
+    py_args = f'--directory "{exp.output_directory}" --modelname {model} '  # Custom directory argument for your script
 
     # Determine which plots to run
     plots_to_run = [p for p in exp.plots_to_run if not p == 'sampleplots']
@@ -246,18 +246,18 @@ def write_sh_analyzer(exp, pyscript, model_to_run):
     Args:
         exp (object): An experiment object containing the 'job_directory' attribute for saving the script.
         pyscript (str): The path to the Python script to be run by the analyzer.
-        model_to_run (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.
+        model (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.
 
     Raises:
         ValueError: If the model name or script path is invalid, ensuring correct arguments are passed.
     """
 
     # Validate inputs
-    if not model_to_run:
+    if not model:
         raise ValueError("Model name cannot be empty.")
 
     # Define the shell script filename and path
-    shname = f'run_analyze_{model_to_run}.sh'
+    shname = f'run_analyze_{model}.sh'
     script_path = os.path.join(exp.job_directory, shname)
 
     # Check that the job directory exists
@@ -268,7 +268,7 @@ def write_sh_analyzer(exp, pyscript, model_to_run):
     sh_content = "#!/bin/bash\n\n"
 
     # Job settings
-    job_name = f"analyze_{model_to_run}"
+    job_name = f"analyze_{model}"
     sh_content += f"# Job settings\n"
     sh_content += f'job_name="{job_name}"\n'
     sh_content += f'jobdir="{exp.job_directory}"\n'
@@ -288,7 +288,7 @@ def write_sh_analyzer(exp, pyscript, model_to_run):
     pycommand = f'python {pyscript} {py_args}\n'  # Command to run the Python script
 
     # Change to the appropriate directory and run the script
-    sh_content += f'cd {os.path.join(exp.ROOT_DIR, model_to_run)}\n'
+    sh_content += f'cd {os.path.join(exp.ROOT_DIR, model)}\n'
     sh_content += pycommand + '>> "$log_dir/run_analyzer_openmalaria.log" 2>> "$log_dir/run_analyzer_openmalaria.err"\n'
 
     # Write the shell script to a file
@@ -367,25 +367,25 @@ def write_sh_runmodel(exp, filename, modelname):
     write_and_execute_sh_script(script_path=filename, content=sh_content, exp=exp, execute=True)
 
 
-def submit_runmodel_sh(exp, model_to_run):
+def submit_runmodel_sh(exp, model):
     """
     This function creates a PowerShell script for running the specified model, saves it in the specified job directory,
     and then executes the script using the 'cmd.exe' command.
 
     Args:
         exp (object): An experiment object containing the 'job_directory' attribute where the PowerShell script will be saved.
-        model_to_run (str): The name of the model to be run (e.g., 'OpenMalaria', 'malariasimulation').
+        model (str): The name of the model to be run (e.g., 'OpenMalaria', 'malariasimulation').
 
     Raises:
         OSError: If there is an issue with executing the command or running the script.
     """
 
     # Generate shell script name
-    file_name = f'jobs_{model_to_run}_simplerun.sh'
+    file_name = f'jobs_{model}_simplerun.sh'
     file_path = os.path.join(exp.job_directory, file_name)
 
     # Assuming `create_shell_script` is the function from the previous response
-    write_sh_runmodel(exp, filename=file_path, modelname=model_to_run)
+    write_sh_runmodel(exp, filename=file_path, modelname=model)
 
     # Execute the generated shell script using subprocess
     exec(exp, command=f"bash {file_path}")

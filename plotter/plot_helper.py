@@ -158,7 +158,7 @@ def get_output_df(wdir, models, yr=False, mth=False, daily=False, custom_name=No
         ValueError: If an invalid models value is specified.
     """
 
-    cols_to_keep = None  # default read all
+    columns_to_keep = None  # default read all
     fname = 'mmmpy_timeavrg.csv'
     if yr:
         fname = 'mmmpy_yr.csv'
@@ -166,8 +166,6 @@ def get_output_df(wdir, models, yr=False, mth=False, daily=False, custom_name=No
         fname = 'mmmpy_mth.csv'
     if daily:
         fname = 'mmmpy_daily.csv'
-        # cols_to_keep = ['index', 'timestep', 'ageGroup', 'eir', 'prevalence_2to10', 'prevalence',
-        #                'clinical_incidence', 'severe_incidence', 'seed']
     if custom_name:
         fname = f'{custom_name}.csv'
 
@@ -190,7 +188,7 @@ def get_output_df(wdir, models, yr=False, mth=False, daily=False, custom_name=No
             model_path = os.path.join(wdir, model, fname)
             try:
                 if os.path.isfile(model_path):
-                    df = pd.read_csv(model_path, usecols=cols_to_keep)
+                    df = pd.read_csv(model_path, usecols=columns_to_keep)
                     df['models'] = model
                     if model == 'EMOD':
                         df['seed'] = df['seed'] + 1
