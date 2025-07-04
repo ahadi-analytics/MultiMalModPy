@@ -5,16 +5,19 @@ import json
 import subprocess
 from functools import partial
 from EMOD.functions.reporters import add_annual_reports, add_daily_reports, add_monthly_reports, add_5daily_reports
-from EMOD.functions.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup
+from EMOD.functions.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup, drug_setup
 from EMOD.functions.forcedEIR import mAb_vs_EIR
 from emodpy_malaria.reporters.builtin import *
-import emodpy_malaria.malaria_config as malaria_config
+import emod_api.config.default_from_schema_no_validation as dfs
+import emodpy_malaria.vector_config as vector_config
 from emodpy.emod_task import EMODTask
 from idmtools.builders import SimulationBuilder
 from idmtools.entities.experiment import Experiment
 sys.path.append('../')
 import manifest
 from utility.helper_slurm import shell_header_quest, write_txt, submit_run_pyscript
+import emodpy_malaria.malaria_config as malaria_config
+
 
 def submit_run_EMOD(exp, manifest, scen_df):
     """
@@ -111,12 +114,10 @@ def submit_run_EMOD(exp, manifest, scen_df):
     experiment.emod_step = exp.emod_step
     experiment.start_end = [sim_start_year_emod, sim_start_year_emod + sim_dur_years - 1]
     exp.emod_id = experiment.id
-    print(f"Experiment submission {experiment.uid} succeeded.")
 
     if exp.hpc != "LOCAL":
         generate_run_EMOD_file(experiment, platform, suite_directory = exp.suite_directory)
         submit_analyze_EMOD(experiment, platform)
-
         if exp.emod_step == 'burnin':
             exp.exp_name_pickup = exp.exp_name.replace(f'_burnin{exp.emod_burnin}', '')
             submit_run_pyscript(exp, pyscript='launch_sim.py', shname='launch_pickup.sh',
@@ -130,6 +131,7 @@ def submit_run_EMOD(exp, manifest, scen_df):
         exp.container_id = platform.container_id
         print(f"Container ID: {exp.container_id}")
 
+    print(f"Experiment submission {experiment.uid} succeeded.")
     return experiment
 
 
@@ -259,7 +261,8 @@ def build_demog(task, exp):
     task.set_parameter("Demographics_Filenames", [f"demographics_{exp.emod_pop_size}.json"])
     task.config.parameters.Age_Initialization_Distribution_Type = "DISTRIBUTION_COMPLEX"
     task.config.parameters.Death_Rate_Dependence = "NONDISEASE_MORTALITY_BY_AGE_AND_GENDER"
-    task.config.parameters.Enable_Demographics_Risk = 1
+    task.config.parameters.Enable_Demographics_Risk = 0
+    task.config.parameters.Enable_Demographics_Birth = 0
     task.config.parameters.Enable_Initial_Prevalence = 1
     task.config.parameters.Enable_Natural_Mortality = 1
     task.config.parameters.x_Other_Mortality = 1
@@ -291,12 +294,14 @@ def config_sweep_builder(exp, scen_df):
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+                   CfgFn(drug_setup, exp),
                    partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.transmission_intensity_EMOD)),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+                   CfgFn(drug_setup, exp),
                    CfgFn(habitat_setup, exp, row=row),
                    SwpFn(climate_setup,  seasonality = row.seasonality),
                    partial(set_param, param='x_Temporary_Larval_Habitat', value=row.transmission_intensity_EMOD),
@@ -344,6 +349,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
         matAP = 0.1327
         sweeps = [[
             ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+            CfgFn(drug_setup, exp),
             partial(set_param, param='Serialized_Population_Path',
                     value=os.path.join(row["serialized_file_path"], "output")),
             partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
@@ -353,6 +359,7 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
             for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
         sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+                   CfgFn(drug_setup, exp),
                    CfgFn(habitat_setup, exp, row=row),
                    SwpFn(climate_setup,  seasonality = row.seasonality),
                    partial(set_param, param='Serialized_Population_Path',

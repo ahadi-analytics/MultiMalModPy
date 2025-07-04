@@ -34,7 +34,7 @@ eradication_path = os.path.join(os.path.expanduser('~'), "download/Eradication")
 # ----------------------------- EMOD generic settings end -----------------------------
 if os.name != 'posix':
     hpc ='LOCAL'
-    print("Running MMMPy locally. Note: Local execution is supported only for test simulations.")
+    print("Running MultiMalModPy locally. Note: Local execution is supported only for test simulations.")
 
 # ----------------------------- Framework and cluster specific settings start -----------------------------
 # job_directory is where your simulations and outputs will be stored
@@ -94,7 +94,7 @@ elif hpc == 'SCICORE':
     bind_path = ''
 
 elif hpc == 'LOCAL':
-    sh_hpc_config = {'A': 'Local', 'p': None, 'em_modules': None, 'buyin': None}
+    sh_hpc_config = {'A': 'Local', 'p': None, 'em_modules': [], 'buyin': None}
     projdir = os.path.join(ROOT_DIR, 'simulations_local')
     os.makedirs(projdir, exist_ok=True)
     selected_platform = 'CONTAINER'
