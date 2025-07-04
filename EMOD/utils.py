@@ -16,7 +16,7 @@ sys.path.append('../')
 import manifest
 from utility.helper_slurm import shell_header_quest, write_txt, submit_run_pyscript
 
-def submit_run_EMOD(exp, scen_df):
+def submit_run_EMOD(exp, manifest, scen_df):
     """
     Submit and run an EMOD experiment, parameterizing various steps involved in the simulation.
     This function sets up the experiment, configures input files, manages reporting, and submits the experiment.
@@ -45,15 +45,26 @@ def submit_run_EMOD(exp, scen_df):
     """
     import emod_malaria.bootstrap as dtk
     import pathlib
+    from idmtools.core.platform_factory import Platform
+
     dtk.setup(pathlib.Path(manifest.eradication_path).parent)
     emod_serialized_id = exp.emod_serialized_id
     sim_dur_years = exp.sim_dur_years
     entomology_mode = exp.entomology_mode
     emod_step = exp.emod_step
     burnin = exp.emod_burnin
-    platform = exp.platform
     agebins = exp.agebins
     sim_start_year_emod = exp.sim_start_year_emod
+
+    if exp.hpc == 'LOCAL':
+        platform = Platform('Container', job_directory=exp.suite_directory)
+    else:
+        platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
+                                           mem_per_cpu=f'{exp.emod_memory_per_sim}G',
+                                           partition=manifest.sh_hpc_config['p'],
+                                           time=exp.emod_time_per_sim, account=manifest.sh_hpc_config['A'],
+                                           modules=[manifest.sh_hpc_config['em_modules']],
+                                           max_running_jobs=exp.max_running_jobs)
 
     # create EMODTask
     print("Creating EMODTask (from files)...")
