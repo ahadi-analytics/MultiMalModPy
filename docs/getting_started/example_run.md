@@ -28,7 +28,7 @@
 
 
 - **Configure simulations to run**
-    - If you want to customize your simulation settings, the easiest way is to modify the `setup_sim.py` file and adjust the parameters as needed.   
+    - If you want to customize your simulation settings, the easiest way is to modify the [setup_sim.py](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/setup_sim.py) file and adjust the parameters as needed.   
     - However, you can skip this step and proceed with the default settings for a simple test run.   
     - You can also run multiple simulations simultaneously using configurations from a CSV file.      
 
@@ -37,21 +37,20 @@
 
 ## Using Python virtual environment (HPC or local)
 
--  Navigate to the Repository and Activate the Virtual Environment 
+-  Navigate to the cloned MultiMalModPy repository and activate the virtual environment.  
 If you haven’t set up the virtual environment yet, follow the installation instructions [here](../getting_started/installation.md).      
 
 
-- Launch test simulations   
-To run the simulation, use the following command.
+- Launch test simulations.  
 
-- HPC:
+  - **HPC**:
 
 ``` 
 python launch_sim.py --models EMOD malariasimulation OpenMalaria --test
 ```  
 
-- Windows:
-  - Open a command-line interface (CLI) terminal such as CMD, PyCharm terminal, or RStudio terminal.
+  - **Windows**:
+      - Open a command-line interface (CLI) terminal such as CMD, PyCharm terminal, or RStudio terminal.
 
     
 ??? info "Show image run_from_pycharm"
@@ -59,6 +58,7 @@ python launch_sim.py --models EMOD malariasimulation OpenMalaria --test
     ![-launch_sim.py](../img/run_from_pycharm.png)  
 
 
+<br/>
 
 ??? info "Show image"
 
@@ -66,19 +66,17 @@ python launch_sim.py --models EMOD malariasimulation OpenMalaria --test
     [View image file](https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/2025-02-02 19_34_10-run_simulations.R.png)
  
 
-<br />
+<br/>
 
-_You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly._   
+You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly.
 
 
-- **Monitor Simulation Progress** 
-
-  - on **HPC**: 
-      Check you simulations via `squeue -u <username>`.
-
- - on Windows:
-   - EMOD: type in terminal `idmtools container status`
-   - malariasimulation and OpenMalaria: terminal windows per model appear.
+- **Monitor Simulation Progress**
+  - on **HPC**:   
+      - Check you simulations via `squeue -u <username>`.  
+  - on Windows:  
+      - EMOD: type in terminal `idmtools container status`  
+      - malariasimulation and OpenMalaria: terminal windows per model appear.  
 
 
 ??? info "View CMD terminals"
@@ -98,7 +96,7 @@ _You can choose to run all three models (EMOD, malariasimulation, and OpenMalari
 
 ------------------------------------  
 
-## Using singularity container   (HPC)
+## Using singularity container (HPC)
 
 - **Navigate to the Repository**   
     Open a terminal on your cluster and move into the MultiMalModPy repository using:
@@ -120,22 +118,28 @@ _You can choose to run all three models (EMOD, malariasimulation, and OpenMalari
 
 - **Launch the Simulation**  
    To run the simulation, use the following command:  
+    
+    ```   
+    cd dependencies
+    dos2unix run_mmmpy_container.sh
+    bash run_mmmpy_container.sh  
+    ```   
+ 
+  
+You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly.    
 
-```   
 
-singularity exec -B /etc/slurm -B `which sbatch ` -B `which srun ` -B `which sacct ` -B `which scontrol ` -B `which salloc ` -B `which scancel ` -B `which squeue ` -B /usr/lib64/slurm/ -B /usr/lib64/libmunge.so.2 -B /usr/lib64/libmunge.so.2.0.0 -B /usr/lib64/libpmi2.so -B /usr/lib64/libpmi2.so.0 -B /usr/lib64/libpmi2.so.0.0.0 -B /usr/lib64/libpmi.so -B /usr/lib64/libpmi.so.0 -B /usr/lib64/libpmi.so.0.0.0 -B /run -B /usr/lib64/libnvidia-ml.so.1 -B /run -B /projects -B /scratch --writable-tmpfs /gpfs/projects/b1139/emod-om/container/emod-with-om-46-R-4.4.1.sif /opt/envs/emodpy39/bin/python3 launch_sim.py --models EMOD --test
+??? info "View terminal"
 
-```   
-   
-  - The command includes at the very end the: 
-    - location of the image file `/gpfs/projects/b1139/emod-om/emodpy4.1-OM46-R4.4.1.sif`  
-    - location of the python virtual environment within the container `/opt/envs/emodpy39/bin/python3 launch_sim.py`  
-    - MultiMalModPy submission command `launch_sim.py --models EMOD -- test`
-    _You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly._    
+    ![hpc_container_run_terminal](../img/hpc_container_run_terminal.png)  
+    [View image file](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/docs/img/hpc_container_run_terminal.png)
 
       
-- **Monitor Simulation Progress** 
-  - Check simulations via `squeue -u <username>`
+- **Monitor Simulation Progress**   
+      - Check simulations via 
+       ```  
+       squeue -u <username>
+       ```  
 
 ------------- 
 
@@ -148,54 +152,51 @@ singularity exec -B /etc/slurm -B `which sbatch ` -B `which srun ` -B `which sac
 - Alternatively, you can follow manual steps as below (for developer, or troubleshooting).     
 
 
+??? info "Manual steps to run using docker"
 
-<details><summary><span>Manual steps to run using docker</span></summary>   
-<p>
-
-
-**Ensure the Docker image is available on your computer**   
-- If you haven’t installed it yet, refer to the [installation page](../getting_started/installation.md#local-docker-image)     
-
-**Set up your directory path:**   
-- In the example command below, replace `PATH_TO_REPO` with the directory path to your _MultiMalModPy_ folder on your computer, excluding the _MultiMalModPy_ directory itself. 
-  - Example, if MultiMalModPy is in `C:/Users/<user>/Documents/MultiMalModPy`, then type  `C:/Users/<user>/Documents/`
-
-**Modify manifest.py:**     
-- Open the file and add the following line:  
-    ```
-    container_run = True             
-    ```
-
-**Run the Docker container:**     
-- Use the following command, replacing PATH_TO_REPO with the actual path:  
- 
-```
-docker run -it -v PATH_TO_REPO:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"                           
-```
-
-**What This Command Does:** 
-- Mount the local directory in which MultiMalModPy is located to /mnt/c/projects in the Docker container.  
-- Activate the Python virtual environment inside the container.  
-- Navigate to the MultiMalModPy directory inside the container and run the simulation script (`launch_sim.py`) with the specified models and test flag.  
-
-Example Terminal Output: 
-
-    ```
-    PS C:\Users\mrung\Documents\MultiMalModPy> docker run -it -v C:/Users/mrung/Documents/:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"
+     
+    **Ensure the Docker image is available on your computer**   
+    - If you haven’t installed it yet, refer to the [installation page](../getting_started/installation.md#local-docker-image)     
     
-    No interventions specified
-    Warning: the popsize specified for malariasimulation (1000) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize (50000)
-    Warning: the popsize specified for OpenMalaria (1000) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize (50000)
-    Warning: A burn-in period of at least 80 years is recommended for OpenMalaria. Currently, a shorter burn-in of 10 years has been configured, which may lead to inaccurate results.
-    Warning: A population of at least 10000 is recommended for OpenMalaria. Current pop_size 1000  may lead to inaccurate results.
-    Warning: A burn-in period of at least 80 years is recommended for malariasimulation. Currently, a shorter burn-in of 10 years has been configured, which may lead to inaccurate results.
-     --------| Running sims_dynamic_perennial_10_28_39 for malariasimulation, OpenMalaria: 3 varying parameters: target_output_values, case_management, seasonality. Run mode:  custom |--------
+    **Set up your directory path:**   
+    - In the example command below, replace `PATH_TO_REPO` with the directory path to your _MultiMalModPy_ folder on your computer, excluding the _MultiMalModPy_ directory itself. 
+      - Example, if MultiMalModPy is in `C:/Users/<user>/Documents/MultiMalModPy`, then type  `C:/Users/<user>/Documents/`
+    
+    **Modify manifest.py:**     
+    - Open the file and add the following line:  
+        ```
+        container_run = True             
+        ```
+    
+    **Run the Docker container:**     
+    - Use the following command, replacing PATH_TO_REPO with the actual path:  
+     
     ```
+    docker run -it -v PATH_TO_REPO:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"                           
+    ```
+    
+    **What This Command Does:** 
+    - Mount the local directory in which MultiMalModPy is located to /mnt/c/projects in the Docker container.  
+      - Activate the Python virtual environment inside the container.  
+      - Navigate to the MultiMalModPy directory inside the container and run the simulation script (`launch_sim.py`) with the specified models and test flag.  
+    
+    Example Terminal Output: 
+    
+        ```
+        PS C:\Users\mrung\Documents\MultiMalModPy> docker run -it -v C:/Users/mrung/Documents/:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"
+        
+        No interventions specified
+        Warning: the popsize specified for malariasimulation (1000) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize (50000)
+        Warning: the popsize specified for OpenMalaria (1000) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize (50000)
+        Warning: A burn-in period of at least 80 years is recommended for OpenMalaria. Currently, a shorter burn-in of 10 years has been configured, which may lead to inaccurate results.
+        Warning: A population of at least 10000 is recommended for OpenMalaria. Current pop_size 1000  may lead to inaccurate results.
+        Warning: A burn-in period of at least 80 years is recommended for malariasimulation. Currently, a shorter burn-in of 10 years has been configured, which may lead to inaccurate results.
+         --------| Running sims_dynamic_perennial_10_28_39 for malariasimulation, OpenMalaria: 3 varying parameters: target_output_values, case_management, seasonality. Run mode:  custom |--------
+        ```
 
-</p>
-</details>   
+   
 
-<br>
+<br>  
 
 -------------------- 
 

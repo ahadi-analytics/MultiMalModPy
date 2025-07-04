@@ -1,14 +1,21 @@
 #!/bin/bash
 
 # === Configuration (user and platform specific) ===
-REPO_PATH="/gpfs/home/mrm9534/Documents/MultiMalModPy"   # Change to your actual repo path
-IMAGE_PATH="/gpfs/projects/b1139/emod-om/container/emod-with-om-46-R-4.4.1.sif"
-IMAGE_URI="library://rungma/multimalmodpy/mmmpy_hpc:rocky8"
-MODELS="EMOD malariasimulation OpenMalaria"  # Change this to "EMOD malariasimulation OpenMalaria" or any models you want
+REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+IMAGE_NAME="emod-with-om-46-R-4.4.1.sif"
+IMAGE_DIR="${IMAGE_DIR:-/gpfs/projects/b1139/emod-om/container}"
+IMAGE_PATH="${IMAGE_DIR}/${IMAGE_NAME}"
+IMAGE_URI="${IMAGE_URI:-library://rungma/multimalmodpy/mmmpy_hpc:rocky8}"
+DEFAULT_MODELS="EMOD malariasimulation OpenMalaria"
+
+# === Prompt user for models ===
+read -rp "Enter the models to run [default: $DEFAULT_MODELS]: " MODELS
+MODELS="${MODELS:-$DEFAULT_MODELS}"
 
 # === Load singularity module ===
 echo "Loading Singularity module..."
 module load singularity
+
 
 # === Check if image exists, if not pull it ===
 if [ ! -f "$IMAGE_PATH" ]; then
@@ -22,6 +29,7 @@ if [ ! -f "$IMAGE_PATH" ]; then
 else
   echo "Singularity image found at $IMAGE_PATH"
 fi
+
 
 # === Change directory to the repo ===
 echo "Changing directory to repository: $REPO_PATH"
@@ -56,3 +64,5 @@ singularity exec \
   /opt/envs/emodpy39/bin/python3 launch_sim.py --models $MODELS  --test
 
 echo "Simulation submission completed."
+
+
