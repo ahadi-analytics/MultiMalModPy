@@ -300,9 +300,8 @@ def check_exp_inputs_emod(exp):
         ValueError: If the 'num_seeds_burnin' is not set to 1 during an EMOD burn-in simulation.
     """
 
-    if exp.hpc == 'LOCAL':
-        raise ValueError("Local execution of the framework is not functional for EMOD.")
-
+    if exp.hpc == 'LOCAL' and exp.emod_step is not None:
+        raise ValueError("Local execution of EMOD does not allow serialization.")
 
     if exp.emod_step:
         if exp.num_seeds_burnin != 1:

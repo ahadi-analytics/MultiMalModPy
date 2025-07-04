@@ -69,7 +69,7 @@ def parse_launch_args():
                         help='Serialized ID for EMOD, if applicable.')
     parser.add_argument('-m','--models',
                         nargs='+',
-                        default=['malariasimulation', 'OpenMalaria'],   # For testing, local and on HPC
+                        default=['EMOD', 'malariasimulation', 'OpenMalaria'],
                         choices=['EMOD', 'malariasimulation', 'OpenMalaria'],
                         help="List of malaria models to run - any combination of ['EMOD', 'malariasimulation', 'OpenMalaria'].")
     parser.add_argument('--user',
@@ -112,16 +112,6 @@ def parse_launch_args():
         args.run_mode = "csv"
         print(f"The '--csv' argument was specified ({args.csv}). "
               "Setting 'run_mode' to 'csv'.")
-
-    if os.name != 'posix'  and not args.test:
-        args.test = True
-        print("Local execution of the framework is only permitted for test runs - changing to test")
-
-    # Validate Windows compatibility with EMOD
-    if os.name != 'posix' and 'EMOD' in args.models:
-        raise ValueError(
-            "EMOD is not available for local execution on Windows, but it was specified in the models argument. "
-            "Did you forget to exclude EMOD from the models list?")
 
     # Ensure EMOD is specified if emodstep is set
     if args.emodstep is not None and 'EMOD' not in args.models:
@@ -284,6 +274,9 @@ def check_exp_inputs(exp, attribute_check=False):
     Raises:
         ValueError: If input parameters are invalid.
     """
+
+    if exp.hpc == 'LOCAL' and not exp.test :
+        raise ValueError("Local execution of the framework is only permitted for test runs.")
 
     ## Generell check on input parameter combinations and formats
     check_exp_input_parameters(exp)
