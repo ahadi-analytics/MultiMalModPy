@@ -3,6 +3,7 @@ import os
 # This is a user-modifiable Python file designed to customize input file and directory settings.
 openmalaria_version = 46
 emod_build = 220405
+SUPPORTED_OM_VERSIONS = {43, 46}
 
 # Select cluster name
 hpc = 'NUCLUSTER'
@@ -42,18 +43,21 @@ if os.name != 'posix':
 # OPENMALARIA_PATH is the location of the OpenMalaria dependencies (xsd schema, densities.csv, ...)
 # openmalaria_input_path is location of OpenMalaria input files, scaffolds specific to project
 
+if openmalaria_version in SUPPORTED_OM_VERSIONS:
+    OPENMALARIA_PATH = os.path.join(ROOT_DIR, f'dependencies/OpenMalaria/om_v{openmalaria_version}')
+else:
+    raise ValueError(
+        f"OpenMalaria version '{openmalaria_version}' is not supported. "
+        f"Available versions: {sorted(SUPPORTED_OM_VERSIONS)}"
+    )
+
 # ----------------------------- User-defined input -----------------------------
 if hpc == 'NUCLUSTER':
     sh_hpc_config = {'A': 'b1139', 'p': 'b1139', 'em_modules': 'singularity', 'buyin': True}
     projdir = os.path.join('/gpfs/projects/b1139/emod-om/')
 
     SIF_PATH = "--bind /gpfs/projects /gpfs/projects/b1139/images/dtk_run_rocky_py39.sif"
-    if openmalaria_version == 43:
-        OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria/om_v43/"
-    elif openmalaria_version == 46:
-        OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria/om_v46/"
-    else:
-        raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
+    OPENMALARIA_PATH = os.path.join( f'/gpfs/projects/b1139/OpenMalaria/om_v{openmalaria_version}')
     OPENMALARIA_venv = f'\n\nmodule use {OPENMALARIA_PATH}modules/ \nmodule load openmalaria\n'
 
     EMOD_venv_modules = os.path.join('\n\nml singularity/3.8.1 \nml python/3.9.16')
@@ -102,12 +106,7 @@ elif hpc == 'LOCAL':
     SIF_PATH = ""
     OPENMALARIA_venv = ''
     r_local = "C:/Program Files/R/R-4.2.3/bin"
-
-    if openmalaria_version in [43, 46]:
-        OPENMALARIA_PATH = os.path.join(ROOT_DIR, f'dependencies/OpenMalaria/om_v{openmalaria_version}')
-        OPENMALARIA_venv_container = f'/openmalaria-schema-{openmalaria_version}.0/build/'
-    else:
-        raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
+    OPENMALARIA_venv_container = f'/openmalaria-schema-{openmalaria_version}.0/build/'
 
     EMOD_venv_modules = os.path.join('')
     EMOD_venv_path = os.path.join(f'\nsource {ROOT_DIR}/dependencies/mmmpy_venv/bin/activate\n')
