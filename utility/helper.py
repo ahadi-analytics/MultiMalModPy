@@ -106,7 +106,7 @@ def parse_launch_args():
 
     # Validate CSV and rownum combination
     if args.csv:
-        if not args.rownum:
+        if args.rownum is None:
             print(f"The '--csv' argument was specified ({args.csv}) but no rownum"
                    "Using default 'rownum' 0 to run first row")
         args.run_mode = "csv"
