@@ -52,7 +52,7 @@ providing structured guidance while supplementing—rather than replacing—the 
 
 ## Release and download 
 
-_Initial release expected in Q1 2025._
+_Initial release expected in Q3 2025._
 
 
 <a href="https://github.com/ahadi-analytics/MultiMalModPy/tags">
