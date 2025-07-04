@@ -63,14 +63,14 @@ def submit_run_malariasimulation(exp):
         if not exp.use_container:
             from utility.helper_local import write_ps1_analyzer, submit_runmodel_local
             write_ps1_malariasimulation(exp)
-            write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='malariasimulation')
-            submit_runmodel_local(exp, model_to_run='malariasimulation')
+            write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model='malariasimulation')
+            submit_runmodel_local(exp, model='malariasimulation')
         else:
             from utility.helper_local_docker import write_sh_analyzer, write_sh_plotters, submit_runmodel_sh
             write_sh_malariasimulation(exp)
-            write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='malariasimulation')
-            #write_sh_plotters(exp, model_to_run='malariasimulation')
-            submit_runmodel_sh(exp, model_to_run='malariasimulation')
+            write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model='malariasimulation')
+            #write_sh_plotters(exp, model='malariasimulation')
+            submit_runmodel_sh(exp, model='malariasimulation')
     else:
         # Default, run via SLURM on HPC
         submit_run_malariasimulation_slurm(exp)

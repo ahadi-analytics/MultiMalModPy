@@ -3,7 +3,7 @@ import shutil
 
 # from OpenMalaria.functions.interventions import * # Currently not supported
 from OpenMalaria.functions.convert_access import convert_access_lookup
-from OpenMalaria.functions.interventions import carrying_capacity
+from OpenMalaria.functions.interventions import *
 
 
 
@@ -109,8 +109,12 @@ def create_scenarios(exp, scen_df):
             scenario = scenario.replace(f'@seasonality{i}@', str(seasonality[i - 1]))
 
         # Write the scenario XML file
-        with open(f"{exp.job_directory}/xml/{row['index']}.xml", 'w') as fo:
-            fo.write(f"{scenario}")
+        if '@' not in scenario:
+            # Write the scenario XML file
+            with open(f"{exp.job_directory}/xml/{row['index']}.xml", 'w') as fo:
+                fo.write(f"{scenario}")
+        else:
+            raise ValueError(f"Error: The '@' symbol is present in the scenario XML {row['index']}.")
 
     # Copy additional files required by OpenMalaria
     shutil.copy(exp.openmalaria_path + "/densities.csv", f"{exp.job_directory}/")
@@ -199,10 +203,10 @@ def submit_run_OpenMalaria(exp, scen_df):
         from utility.helper_local import write_ps1_analyzer
         # Write local submission script
         write_ps1_OpenMalaria(exp)
-        write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='OpenMalaria')
+        write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model='OpenMalaria')
         # Note handled via submit_run_all_local
         from utility.helper_local import submit_runmodel_local
-        submit_runmodel_local(exp, model_to_run='OpenMalaria')
+        submit_runmodel_local(exp, model='OpenMalaria')
     elif exp.hpc == 'CONTAINER':
         # TODO coming soon
         pass

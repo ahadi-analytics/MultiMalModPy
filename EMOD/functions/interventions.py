@@ -39,6 +39,13 @@ def treatment_camp_simple(camp, cm_start, cm_clinical, cm_severe):
     return {'cm_start': cm_start,'cm_clinical': cm_clinical, 'cm_severe': cm_severe}
 
 
+def carrying_capacity(camp, row):
+    cc_factor_df = pd.DataFrame({'CONSTANT': [row.cc_factor_EMOD]})
+    add_scale_larval_habitats(camp, df=cc_factor_df,
+                                  start_day=row.cc_timestep_EMOD,
+                                  repetitions=1)
+    return camp
+
 # SMC currently not supported
 # def smc_campaign(camp, row, start_array):
 #     """

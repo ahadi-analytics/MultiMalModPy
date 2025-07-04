@@ -79,7 +79,7 @@ They are specified in the `parse_launch_args` function within the `utility/helpe
 | [directory](../getting_started/usage.md)             | Specifies the directory for storing simulation inputs, config, and model outputs.                                                  |
 | [suite](../getting_started/usage.md)                 | Suite (collection of) of simulation experiments.                                                                                   |
 | [expname, exp_name](../getting_started/usage.md)     | Name of the simulation experiment.                                                                                                 |
-| [models, models_to_run](../getting_started/usage.md) | Specifies which models to run (one or multiple).                                                                                   |
+| [models](../getting_started/usage.md) | Specifies which models to run (one or multiple).                                                                                   |
 | [user](../getting_started/usage.md)                  | Creates a user-specific directory for storing experiments and simulation outputs.                                                  |
 | [rownum](../getting_started/usage.md)                | If running from CSV, defines row of the simulation scenario to run.                                                                |
 | [memory_per_sim*](../getting_started/usage.md)       | Memory allocation per simulation, ensuring appropriate resources.                                                                  |

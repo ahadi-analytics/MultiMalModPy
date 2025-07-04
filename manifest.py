@@ -14,6 +14,7 @@ use_container = False
 if os.path.exists("/.dockerenv"):
     hpc = 'LOCAL'
     use_container = True
+    selected_platform = 'CONTAINER'
 
 # ----------------------------- EMOD generic settings start -----------------------------
 # Location of the file containing AssetCollection id for the dtk sif (singularity image)
@@ -33,7 +34,7 @@ eradication_path = os.path.join(os.path.expanduser('~'), "download/Eradication")
 # ----------------------------- EMOD generic settings end -----------------------------
 if os.name != 'posix':
     hpc ='LOCAL'
-    print("Running the framework locally. Note: Local execution is supported only for OpenMalaria and malariasimulation.")
+    print("Running MultiMalModPy locally. Note: Local execution is supported only for test simulations.")
 
 # ----------------------------- Framework and cluster specific settings start -----------------------------
 # job_directory is where your simulations and outputs will be stored
@@ -60,11 +61,11 @@ if hpc == 'NUCLUSTER':
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
     
     ## When running inside a container
-    image_path = "/projects/b1139/emod-om/emodpy4.1-OM46-R4.4.1.sif"
+    image_path = "/gpfs/projects/b1139/emod-om/emodpy4.1-OM46-R4.4.1.sif"
     image_venv_name = "emodpy39"
     OPENMALARIA_venv_container = f'/openmalaria-schema-46.0/build/'
     EMOD_venv_container = f'source /opt/envs/{image_venv_name}/bin/activate'
-    bind_path = '/projects:/projects'
+    bind_path = '/gpfs/projects:/projects'
 
 elif hpc == 'SCICORE':
     sh_hpc_config = {'A': 'penny', 'p': 'scicore', 'em_modules': '', 'buyin': True}
@@ -93,9 +94,10 @@ elif hpc == 'SCICORE':
     bind_path = ''
 
 elif hpc == 'LOCAL':
-    sh_hpc_config = {'A': 'Local', 'p': None, 'em_modules': None, 'buyin': None}
+    sh_hpc_config = {'A': 'Local', 'p': None, 'em_modules': [], 'buyin': None}
     projdir = os.path.join(ROOT_DIR, 'simulations_local')
     os.makedirs(projdir, exist_ok=True)
+    selected_platform = 'CONTAINER'
 
     SIF_PATH = ""
     OPENMALARIA_venv = ''
@@ -114,7 +116,7 @@ elif hpc == 'LOCAL':
     image_path = 'mmmpy_local:rocky8'
     image_venv_name = ''
     EMOD_venv_container ='source /opt/envs/mmmpy_container/bin/activate'
-    bind_path = 'C:/Users/mrung/gitrepos/model-characterization/'
+    bind_path = ROOT_DIR
 
 else:
     raise ValueError('HPC specification not available')
@@ -132,7 +134,7 @@ interp_csv = 'interpolation_data.csv'
 os.makedirs(job_directory, exist_ok=True)
 
 if use_container:
-    ROOT_DIR_local = os.path.join('C:/Users/mrung/Documents/')
+    ROOT_DIR_local = os.path.dirname(ROOT_DIR)
     # Required only when running inside docker, locally
     OPENMALARIA_venv = OPENMALARIA_venv_container
     EMOD_venv = EMOD_venv_container

@@ -19,7 +19,7 @@ from plotter.plot_helper import *
 
 
 # Plots over time - requires mmmpy_mth.csv
-def monthly_smc(wdir, df, channel, sweepvar='modelname', facet_var='ageGroup',age_groups_aggregates=None, one_year=False):
+def monthly_smc(wdir, df, channel, sweepvar='model', facet_var='ageGroup',age_groups_aggregates=None, one_year=False):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
@@ -67,8 +67,8 @@ def monthly_smc(wdir, df, channel, sweepvar='modelname', facet_var='ageGroup',ag
         df = df[(df.eir == selected_eir)]
     print(facet_var)
     print(df[facet_var].unique())
-    if 'modelname' not in [sweepvar, facet_var] and len(df['modelname'].unique()) > 1:
-        raise ValueError('modelname needs to be specified in plot if results were combined for more than 1 model')
+    if 'model' not in [sweepvar, facet_var] and len(df['model'].unique()) > 1:
+        raise ValueError('model needs to be specified in plot if results were combined for more than 1 model')
 
     df = df.groupby(['seed', sweepvar, facet_var, 'smc_coverage','date'])[channel].agg(np.mean).reset_index()
     unique_facets = df[facet_var].unique()
@@ -130,7 +130,7 @@ def monthly_smc(wdir, df, channel, sweepvar='modelname', facet_var='ageGroup',ag
         fig.savefig(os.path.join(wdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
         plt.close()
 
-def smc_age_curves(wdir, df, channel, sweepvar='modelname', facet_var='seasonality', age_groups_aggregates=None):
+def smc_age_curves(wdir, df, channel, sweepvar='model', facet_var='seasonality', age_groups_aggregates=None):
     """
     Parameters:
         wdir (str): Working directory where the plot will be saved.
