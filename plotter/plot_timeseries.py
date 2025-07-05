@@ -42,7 +42,6 @@ def monthly_trends(fdir, df, channel, sweepvar='models', facet_var='target_outpu
     figure_vars = [channel] + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars, agegrps)
 
-    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
 
@@ -67,7 +66,7 @@ def monthly_trends(fdir, df, channel, sweepvar='models', facet_var='target_outpu
         max_ylim = []
         for i, grp in enumerate(unique_groups):
             mdf = fdf[fdf[sweepvar] == grp]
-            color_key = color_selector(i, grp)
+            color = color_selector(i, grp, sweepvar=sweepvar, n_colors=len(unique_groups))
             ylim_up = np.max(mdf[channel]) * 1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
@@ -79,9 +78,9 @@ def monthly_trends(fdir, df, channel, sweepvar='models', facet_var='target_outpu
             merge_df = pd.merge(left=xmean, right=ymean, on='month')
 
             ax.plot(merge_df['month'], merge_df[channel], '-', linewidth=0.8,
-                    label=f"{grp} ", color=color_palette[color_key])
+                    label=f"{grp} ", color=color)
             ax.fill_between(merge_df['month'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'],
-                            alpha=0.1, color=color_palette[color_key])
+                            alpha=0.1, color=color)
 
         if firstPlot:
             lg_title = get_legend_title(sweepvar, exp)
@@ -142,7 +141,6 @@ def monthly_timeseries(
 
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
-    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
 
     # Layout setup
     if facet_layout == 'horizontal':
@@ -172,7 +170,7 @@ def monthly_timeseries(
         max_ylim = []
         for i, grp in enumerate(unique_groups):
             sdf = fdf[fdf[sweepvar] == grp]
-            color_key = color_selector(i, grp)
+            color = color_selector(i, grp, sweepvar=sweepvar, n_colors=len(unique_groups))
             ylim_up = np.max(sdf[channel]) * 1.1
             if channel in ['prevalence', 'prevalence_2to10']:
                 ylim_up = min(ylim_up, 1)
@@ -184,9 +182,9 @@ def monthly_timeseries(
             merge_df.sort_values(by='date', inplace=True)
 
             ax.plot(merge_df['date'], merge_df[channel], '-', linewidth=0.8, label=f"{grp}",
-                    color=color_palette[color_key])
+                    color=color)
             ax.fill_between(merge_df['date'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
-                            color=color_palette[color_key])
+                            color=color)
 
         if firstPlot:
             lg_title = get_legend_title(sweepvar, exp)
@@ -262,7 +260,6 @@ def annual_timeseries(
 
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
-    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
 
     # Layout handling
     if facet_layout == 'horizontal':
@@ -293,7 +290,7 @@ def annual_timeseries(
 
         for i, grp in enumerate(unique_groups):
             sdf = fdf[fdf[sweepvar] == grp]
-            color_key = color_selector(i, grp)
+            color = color_selector(i, grp, sweepvar=sweepvar, n_colors=len(unique_groups))
             ylim_up = np.max(sdf[channel]) * 1.1
             if channel in ['prevalence', 'prevalence_2to10']:
                 ylim_up = min(ylim_up, 1)
@@ -304,9 +301,9 @@ def annual_timeseries(
             merge_df = pd.merge(left=xmean, right=ymean, on='year')
             merge_df.sort_values(by='year', inplace=True)
             ax.plot(merge_df['year'], merge_df[channel], '-', linewidth=0.8, label=f"{grp}",
-                    color=color_palette[color_key])
+                    color=color)
             ax.fill_between(merge_df['year'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
-                            color=color_palette[color_key])
+                            color=color)
 
         if firstPlot:
             lg_title = get_legend_title(sweepvar, exp)

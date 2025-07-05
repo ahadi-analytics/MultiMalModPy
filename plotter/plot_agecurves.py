@@ -68,7 +68,6 @@ def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_va
     firstPlot = True
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
-    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
 
     # Determine facet layout
     if facet_layout == 'horizontal':
@@ -97,7 +96,7 @@ def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_va
         f += 1
         max_ylim = []
         for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
-            color_key = color_selector(i, s)
+            color = color_selector(i, s, sweepvar=sweepvar, n_colors=len(unique_groups))
             ylim_up = np.max(sdf[channel]) * 1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
@@ -108,10 +107,9 @@ def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_va
             merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], age_groups_aggregates)
             merge_df = merge_df.dropna()
             merge_df.sort_values('ageGroup', inplace=True)
-            ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=1, label=f"{s}",
-                    color=color_palette[color_key])
+            ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=1, label=f"{s}", color=color)
             ax.fill_between(merge_df['ageGroup'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
-                            color=color_palette[color_key])
+                            color=color)
         if firstPlot:
             lg_title = get_legend_title(sweepvar, exp)
             lg = ax.legend(title=lg_title, loc='upper left', bbox_to_anchor=(0, 1))

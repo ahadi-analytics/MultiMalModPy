@@ -63,7 +63,6 @@ def prevalence2to10_to_outcome(
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
     num_colors = len(unique_groups)
-    color_palette = sns.color_palette('colorblind', max(num_colors, 4))
 
     # Layout logic
     if facet_layout == 'horizontal':
@@ -92,9 +91,8 @@ def prevalence2to10_to_outcome(
 
         for mi, grp in enumerate(unique_groups):
             pdf = adf[adf[sweepvar] == grp]
-            color_key = color_selector(mi, grp)
+            color = color_selector(i, s, sweepvar=sweepvar, n_colors=len(unique_groups))
             if not pd.isnull(pdf['prevalence_2to10']).all():
-                # plot mean, min and max of seeds
                 xmean, ymean = get_x_y(pdf, 'target_output_values', 'prevalence_2to10', channel)
                 merge_df = pd.merge(left=xmean, right=ymean, on='target_output_values')
                 if channel == 'eir':
@@ -102,9 +100,9 @@ def prevalence2to10_to_outcome(
                 else:
                     merge_df.sort_values(by='prevalence_2to10', inplace=True)
                 ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=grp,
-                        color=color_palette[color_key])
+                        color=color)
                 ax.fill_between(merge_df['prevalence_2to10'], merge_df[f'{channel}_min'],
-                                merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[color_key])
+                                merge_df[f'{channel}_max'], alpha=0.1, color=color)
         if channel == "prevalence":
             y_lim = 1
         else:
@@ -165,9 +163,6 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
 
     unique_groups = sorted_list(df['models'])
 
-    num_colors = len(unique_groups)
-    color_palette = sns.color_palette('colorblind', max(num_colors, 4))
-
     # Define the age categories
     age_categories = {
         "young_child": {"min": 0, "max": 5},
@@ -207,7 +202,7 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
         adf = sdf[sdf['ageGroup'].isin(ages)]
 
         for mi, grp in enumerate(unique_groups):
-            color_key = color_selector(mi, grp)
+            color = color_selector(mi, grp, sweepvar=sweepvar, n_colors=len(unique_groups))
             ax = fig.add_subplot(ny, nx, f)
             ax.title.set_text(f'{grp}')
 
@@ -224,9 +219,9 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
                 merge_df = pd.merge(left=xmean, right=ymean, on='target_output_values')
                 merge_df.sort_values(by='prevalence_2to10', inplace=True)
                 ax.plot(merge_df['prevalence_2to10'], merge_df[channel], label=grp,
-                        color=color_palette[color_key])
+                        color=color)
                 ax.fill_between(merge_df['prevalence_2to10'], merge_df[f'{channel}_min'],
-                                merge_df[f'{channel}_max'], alpha=0.1, color=color_palette[color_key])
+                                merge_df[f'{channel}_max'], alpha=0.1, color=color)
             if channel == "prevalence":
                 y_lim = 1
             else:
@@ -282,8 +277,6 @@ def eir_to_outcome(
 
     figure_vars = [eir_val, channel] + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars, agegrps)
-    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
-
     firstPlot = True
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
@@ -312,14 +305,14 @@ def eir_to_outcome(
         fdf = df[(df[facet_var] == fi)]
 
         for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
-            color_key = color_selector(i, s)
+            color = color_selector(i, s, sweepvar=sweepvar, n_colors=len(unique_groups))
             xmean, ymean = get_x_y(sdf, 'target_output_values', eir_val, channel)
             merge_df = pd.merge(left=xmean, right=ymean, on='target_output_values')
             merge_df.sort_values(by=eir_val, inplace=True)
             ax.plot(merge_df[eir_val], merge_df[channel], '-', linewidth=0.8, label=f"{s}",
-                    color=color_palette[color_key])
+                    color=color)
             ax.fill_between(merge_df[eir_val], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
-                            color=color_palette[color_key])
+                            color=color)
 
         if channel == "prevalence" or channel == 'prevalence_2to10':
             y_lim = 1
@@ -386,9 +379,6 @@ def input_to_simulated_eir(
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars)
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
-
-    num_colors = len(unique_groups)
-    color_palette = sns.color_palette('colorblind', max(num_colors, 4))
     firstPlot = True
 
     # Layout logic
@@ -412,7 +402,7 @@ def input_to_simulated_eir(
         f += 1
 
         for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
-            color_key = color_selector(i, s)
+            color = color_selector(i, s, sweepvar=sweepvar, n_colors=len(unique_groups))
             if sweepvar == 'models':
                 xchannel = f'transmission_intensity_{s}'
             elif facet_var == 'models':
@@ -427,9 +417,9 @@ def input_to_simulated_eir(
             merge_df = pd.merge(left=xmean, right=ymean, on='target_output_values')
             merge_df.sort_values(by=xchannel, inplace=True)
             ax.plot(merge_df[xchannel], merge_df['eir'], '-', linewidth=0.8, label=f"{s}",
-                    color=color_palette[color_key])
+                    color=color)
             ax.fill_between(merge_df[xchannel], merge_df['eir_min'],
-                            merge_df['eir_max'], alpha=0.1, color=color_palette[color_key])
+                            merge_df['eir_max'], alpha=0.1, color=color)
 
         if firstPlot:
             lg_title = get_legend_title(sweepvar, exp)
