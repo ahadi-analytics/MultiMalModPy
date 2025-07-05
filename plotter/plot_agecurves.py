@@ -19,8 +19,9 @@ from plotter.plot_helper import *
 
 
 # Plots over age - requires mmmpy_yr.csv
-def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_values', age_groups_aggregates=None, facet_name=None, exp=None):
-
+def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_values',
+               age_groups_aggregates=None, facet_name=None, exp=None, facet_layout=None,
+               width_per_col=8, height_per_row=8, space=0.4, file_format='png'):
     """
     Plots age curves based on model results and saves the figure to the specified directory.
 
@@ -33,19 +34,23 @@ def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_va
         facet_var (str, optional): Variable used to create subplots based on its unique values.
                                    Defaults to 'target_output_values'.
         age_groups_aggregates (list, optional): List of age group labels to use for aggregation.
-                                                 If None, default age groups will be used.
+                                                If None, default age groups will be used.
+        facet_name (str, optional): Friendly name for facet_var in plot titles. If None, uses facet_var.
+        exp (object, optional): Optional experiment object used for legend labeling.
+        facet_layout (str or None, optional): Layout of subplots. One of:
+            - 'horizontal': all facets in a single row
+            - 'vertical': all facets in a single column
+            - None: automatic grid layout (default)
+        width_per_col (int or float, optional): Width of each subplot column in inches. Default is 8.
+        height_per_row (int or float, optional): Height of each subplot row in inches. Default is 8.
+        space (float, optional): Space between subplots (both hspace and wspace). Default is 0.4.
+        file_format (str, optional): File format for saved figure. One of: 'png', 'pdf', 'jpg'. Default is 'png'.
 
     Raises:
         ValueError: If `facet_var` is set to 'ageGroup'.
 
     Returns:
-        None: The function saves the generated plots to disk.
-
-    Notes:
-        - The function generates a multi-faceted plot with separate subplots for each unique value
-          of the `facet_var` and lines representing the `sweepvar` variable.
-        - Each subplot visualizes the age distribution of the specified `channel` variable, with
-          filled areas representing the confidence interval.
+        None: The function saves the generated plot to disk in the specified format.
     """
 
     if facet_name is None:
@@ -65,10 +70,20 @@ def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_va
     unique_groups = sorted_list(df[sweepvar])
     color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
 
-    nx = max(1, round(len(unique_facets) / 2))
-    ny = 2
+    # Determine facet layout
+    if facet_layout == 'horizontal':
+        nx = len(unique_facets)
+        ny = 1
+    elif facet_layout == 'vertical':
+        nx = 1
+        ny = len(unique_facets)
+    else:
+        nx = max(1, round(len(unique_facets) / 2))
+        ny = 2
+
     f = 1
-    fig = plt.figure(figsize=(10 * nx, 10 * ny))
+
+    fig = plt.figure(figsize=(width_per_col * nx, height_per_row * ny))
     for fi in unique_facets:
         fdf = df[df[facet_var] == fi]
         fdf = fdf[fdf[channel].notnull()]
@@ -90,10 +105,10 @@ def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_va
             xmean, ymean = get_x_y(sdf, 'ageGroup', channel, channel)
             xmean = xmean['ageGroup']
             merge_df = pd.merge(left=xmean, right=ymean, on='ageGroup')
-            merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], age_groups_aggregates)  # NOTE: returns NA for 0-5 and 0-100 to be excluded
+            merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], age_groups_aggregates)
             merge_df = merge_df.dropna()
             merge_df.sort_values('ageGroup', inplace=True)
-            ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=0.8, label=f"{s}",
+            ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=1, label=f"{s}",
                     color=color_palette[color_key])
             ax.fill_between(merge_df['ageGroup'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
                             color=color_palette[color_key])
@@ -108,7 +123,10 @@ def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_va
 
     fname = f'agecurves_{channel}_{sweepvar}_{facet_var}'
     fname = clean_fname(fname, sweepvar, unique_groups, facet_var, unique_facets)
-    fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.tight_layout()
+    fig.subplots_adjust(hspace=space, wspace=space)
+    fig.savefig(os.path.join(fdir, f'{fname}.{file_format}'), format=file_format, bbox_extra_artists=(lg,),
+                bbox_inches='tight')
     plt.close()
 
 
@@ -145,7 +163,7 @@ if __name__ == "__main__":
     for channel in channel_list:
         print(f'#----- Plotting Age Curves for {channel}-----#')
         age_curves(out_dir, df, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
-                   age_groups_aggregates=age_groups_aggregates_sub,exp=exp)
+                   age_groups_aggregates=age_groups_aggregates_sub, exp=exp)
 
     sweepvar = 'target_output_values'
     facet_var = 'models'
