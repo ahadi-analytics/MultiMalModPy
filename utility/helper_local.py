@@ -288,7 +288,7 @@ def submit_run_plotters_local(exp):
             job_name = f"run_plot_{plot_name}"
             subdir = "plotter"
             model_args = ' '.join(exp.models)
-            py_command = f"python {pyscript} --directory {exp.output_directory} --modelname {model_args}"
+            py_command = f"python {pyscript} --directory {exp.output_directory} --models {model_args}"
 
             fname = pyscript.replace('.py', '.ps1')
             create_ps1_script(exp, fname, subdir, job_name, py_command)
