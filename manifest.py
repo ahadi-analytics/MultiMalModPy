@@ -57,7 +57,7 @@ if hpc == 'NUCLUSTER':
     projdir = os.path.join('/gpfs/projects/b1139/emod-om/')
 
     SIF_PATH = "--bind /gpfs/projects /gpfs/projects/b1139/images/dtk_run_rocky_py39.sif"
-    OPENMALARIA_PATH = os.path.join( f'/gpfs/projects/b1139/OpenMalaria/om_v{openmalaria_version}')
+    OPENMALARIA_PATH = os.path.join(f'/gpfs/projects/b1139/OpenMalaria/om_v{openmalaria_version}/')
     OPENMALARIA_venv = f'\n\nmodule use {OPENMALARIA_PATH}modules/ \nmodule load openmalaria\n'
 
     EMOD_venv_modules = os.path.join('\n\nml singularity/3.8.1 \nml python/3.9.16')
@@ -134,6 +134,7 @@ os.makedirs(job_directory, exist_ok=True)
 
 if use_container:
     ROOT_DIR_local = os.path.dirname(ROOT_DIR)
+    OPENMALARIA_PATH = os.path.join(ROOT_DIR, f'dependencies/OpenMalaria/om_v{openmalaria_version}')
     # Required only when running inside docker, locally
     OPENMALARIA_venv = OPENMALARIA_venv_container
     EMOD_venv = EMOD_venv_container
