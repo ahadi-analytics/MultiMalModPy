@@ -57,15 +57,17 @@ def combine_plot_example1(panel_a_name, panel_b_name, panel_c_name,
     print(f"Combined figure saved to: {os.path.join(save_path, save_name)}")
 
 
-def define_submit_combine_plot():
+def define_submit_combine_plot(out_dir, scen1_name, scen2_name):
     combine_plot_example1(
         panel_a_name='timeseries_monthly_prevalence_2to10_0_model_target_output_values.png',
         panel_b_name='eir_prevalence_2to10_0_cm_clinical_model.png',
         panel_c_name='agecurves_clinical_incidence_target_output_values_model.png',
-        panel_a_path='/gpfs/projects/b1139/emod-om/simulation_outputs/rer4177/20250620_CSV/example_scen2_12_54_55/plots/',
-        panel_b_path='/gpfs/projects/b1139/emod-om/simulation_outputs/rer4177/20250620_CSV/example_scen1_12_54_04/plots/',
-        panel_c_path='/gpfs/projects/b1139/emod-om/simulation_outputs/rer4177/20250620_CSV/example_scen2_12_54_55/plots/',
-        save_path='/gpfs/projects/b1139/emod-om/simulation_outputs/rer4177/20250620_CSV/example_scen2_12_54_55/plots/',
+
+        panel_a_path=os.path.join(out_dir, scen1_name, 'plots/'),
+        panel_b_path=os.path.join(out_dir, scen1_name, 'plots/'),
+        panel_c_path=os.path.join(out_dir, scen2_name, 'plots/'),
+        save_path=os.path.join(out_dir, scen2_name, 'plots/'),
+
         padding=10,
         panel_ab_gap=70,
         panel_c_padding=10,
@@ -74,8 +76,15 @@ def define_submit_combine_plot():
 
 
 def generate_plots_example1(out_dir, exp, df, df_mth, file_format='png', run_combine_plot=False):
+
     if run_combine_plot:
-        define_submit_combine_plot()
+
+        ## USER to modify, for combined plots across simulation experiments
+        scen1_name = 'example_scen1_05_49_27'
+        scen2_name = 'example_scen2_05_49_27'
+
+        define_submit_combine_plot(os.path.dirname(out_dir), scen1_name, scen2_name)
+
     else:
 
         # print(df_mth['target_output_values'].unique())

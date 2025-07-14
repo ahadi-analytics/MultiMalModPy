@@ -36,5 +36,6 @@ if __name__ == "__main__":
         out_dir = os.path.join(out_dir, models[0])
     os.makedirs(out_dir, exist_ok=True)
 
-    ### Add or modify for plots to run from imported script
-    generate_plots_example1(out_dir, exp, df, df_mth, run_combine_plot=True)
+    ## Add or modify for plots to run from imported script
+    ## If run run_combine_plot, add scenarios to example1.py (user-defined)
+    generate_plots_example1(out_dir, exp, df, df_mth, run_combine_plot=False)
