@@ -1,4 +1,4 @@
-# How to Launch Simulations - Example run
+# How to Launch Simulations By Platform
 
 
 
@@ -11,29 +11,24 @@
     </li>
     <li> ✅You want to run MultiMalModPy from a container without manual installation
     </li>
-    <li> If not, revisit the
+    <li> ❌ If not, revisit the
     </li>
      &nbsp;➡️ <a href="../getting_started/installation.md">Installation guide</a>
      &nbsp;➡️ <a href="../getting_started/configuration.md">First-time configuration</a>
   </ul>
 </div>
 
- 
-**Before you start:**    
-
-- **Where to find simulation files**
-    - Simulation files will be generated in the `experiments` and the `simulation_outputs` folder.      
-    - In the `experiments` folder, you will find log files for each step and model, as well as the input files used for the simulationper model.      
-    - In the `simulation_outputs` folder, you can review the scenarios that were submitted in `scen_df.csv`, and  the outputs appear in the folder once the simulation finishes.     
+---
 
 
-- **Configure simulations to run**
-    - If you want to customize your simulation settings, the easiest way is to modify the [setup_sim.py](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/setup_sim.py) file and adjust the parameters as needed.   
-    - However, you can skip this step and proceed with the default settings for a simple test run.   
-    - You can also run multiple simulations simultaneously using configurations from a CSV file.      
+**Jump to**
+Quickly navigate to your preferred execution method:   
+🔹 [Run simulation – using Python virtual environment (HPC or local)](#-using-python-virtual-environment-hpc-or-local)    
+🔹 [Run simulation – using Singularity container (HPC)](#-using-singularity-container-hpc)    
+🔹 [Run simulation – using Docker (local)](#-using-docker-local)    
+🔹 [Troubleshooting](#-troubleshooting)  
 
 
------------------------------------- 
 
 ## Using Python virtual environment (HPC or local)
 
@@ -193,45 +188,38 @@ You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria
         Warning: A burn-in period of at least 80 years is recommended for malariasimulation. Currently, a shorter burn-in of 10 years has been configured, which may lead to inaccurate results.
          --------| Running sims_dynamic_perennial_10_28_39 for malariasimulation, OpenMalaria: 3 varying parameters: target_output_values, case_management, seasonality. Run mode:  custom |--------
         ```
-
-   
+  
 
 <br>  
 
 -------------------- 
 
 
-## Postprocessing
-- HPC: 
-  - Since the postprocessing runs automatically once the simulation job finishes, there is  no extra step required to process simulation outputs.   
+## Postprocessing   
 
-- Windows: 
-  - Analyzers do run automatically.  
-  - **Plotting (Manual Step)**: Unlike when running on HPC, the plotting step is not automated on local setup when not running inside a container. 
-     - After the simulations (including the analyzer) have finished, navigate to the experiment folder and manually run the plotter.bat file by double-clicking it.  
+**HPC**   
+Postprocessing runs automatically once the simulation job completes. No additional steps are needed to generate outputs or plots.
 
-In case of further content-debugging or customization needs, you can go to `Customize and troubleshoot analyzer` section.   
+ 
+**Windows (Local)**   
+After the simulation finishes:
+
+1. Navigate to the `experiments/` folder.
+2. Double-click `plotter.bat` to generate the standard output plots.
+
+> 📝 Note: Plotting does **not run automatically** on Windows unless you're using the containerized setup. Run the plot script manually after each simulation.  
+
+    
+
+## Troubleshooting   
+
+If expected output files are missing, first check the `log/` folder inside the experiment directory for error messages.  
+The `.err` and `.out` files can help determine whether the simulations completed successfully or if any issues occurred during execution.
 
 
-
-## Example outputs   
-
-
-The output CSV files and figures will appear in the `simulation_outputs` folder.  
-
-![Example outputs](../img/example_output_csv.png)   
-
-
-## View log files    
-
-If the files are missing, check the `log` files for error messages and verify whether any raw simulation outputs were generated.  
-The log files are located in the experiment folder under 'log'.
-
-<div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>📝 NOTE</em></strong>
-  To debug or rerun specific steps, use the saved `.sh` files to execute each step separately and identify the issue.    
-  <strong>malariasimulation</strong> and <strong>OpenMalaria</strong>. 
-</div> 
-
-Details on the process scripts (.sh, .err, .out etc.) are described [here]().
-
+<div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;">
+  <strong><em>📝 NOTE</em></strong><br>
+  To rerun specific steps, use the saved <code>.sh</code> scripts (HPC) or <code>.psi</code> files (local) to execute each step individually.<br>
+  For debugging, you can also interactively use the framework from a Python console or Jupyter environment.
+</div>
 
