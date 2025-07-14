@@ -2,7 +2,7 @@
 
 ## OpenMalaria
 
-## Timesteps
+**Timesteps**
 
 ```python   
     # Determine survey step size
@@ -153,7 +153,9 @@ _Example nHost,nPatent and nUncomp_
 Since a single age_bin falls under the selected age_group_aggregate , the same values appear as shown in the `value`
 column above
 
-```python
-    prevalence = nPatentInfections / nHost
-  clinical_incidence = nClinicalCases / nHost
 ```
+ prevalence = nPatentInfections / nHost
+ clinical_incidence = nClinicalCases / nHost
+```
+
+

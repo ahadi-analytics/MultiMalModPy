@@ -6,32 +6,54 @@ at:  [/MultiMalModPy/issues](https://github.com/ahadi-analytics/MultiMalModPy/is
 
 ## 1.0.0 Initial release  
 
-Expected for Q1 2025  
+Expected for Q3 2025  
 
 ------------------------------------
 
 ## Pre-releases 
 
-### 0.11.0-dev.1  (9 Feb 2025)
-- Framework cleanup
-- Bugfixes and improvements 
-- Restored functionality of CC step
-- Calibration  update
+### 0.12.0-dev.1 (4 Jul 2025) 
+- Added support for running EMOD locally using the idmtools container 
+- Updated seasonal interpolation datasets for all models 
+- Improved plot layout customization and formatting 
+- Fixed bugs in analyzers, plotter, and EMOD serialization 
+- Refined local and containerized run modes for all models 
+- Enhanced documentation and added install scripts 
+- General framework cleanup    
+
+### 0.11.0-dev.1  (9 Apr 2025)
+- Refactored internal structure and cleaned up `manifest.py`  
+- Improved plotter behavior and output handling for better customization and clarity  
+- Fixed bugs related to `cc_step`, interpolation, **EMOD** outputs, and local execution  
+- Enhanced support for containerized runs (e.g., Singularity on HPC)  
+- Updated seasonal and calibration datasets for OpenMalaria and **malariasimulation**  
+- Streamlined run argument parsing and added shell script support  
+- Improved logging, parameter validation, and handling of runmode logic  
+- Updated documentation, added online doc files, and renamed project structure  
 
 ### 0.10.0-dev.1  (8 Jan 2025)
-- Framework restructuring 
-  - separated run_modes and test run
+- Enabled simple `local launch` for test runs with **malariasimulation** and **OpenMalaria**   
+- Improved support for CSV-based runs and expanded run_mode logic     
+- Introduced separate `run_mode=test` option and refined argument parsing    
+- Added climate and population size checks to ensure valid **EMOD** runs  
+- Enhanced plotter functionality with better handling of age groups, sweep order, and sample plots  
+- Cleaned up and reorganized figures, adding support for custom outputs  
+- Applied multiple bugfixes across interpolation, experiment setup, and analyzers
+
   
-### 0.9.0-dev.1  (4 Jan 2025)
-- Alignment improvements and bugfixes 
-- Improved seasonality 
-- Framework restructuring  
-  - added setup_sim.py 
-- Local launch   
+### 0.9.0-dev.1  (2 Jan 2025)
+- Alignment improvements and bugfixes across model-characterization branches  
+- Improved seasonality handling and interpolation stability  
+- Framework restructuring and repository cleanup  
+- Added `setup_sim.py` and restored key configuration files  
+- Fixed **EMOD** population sizing and pfpr issues  
+- Reintroduced and updated function docstrings  
+- Enabled module loading with added `__init__.py` files  
+- Applied automatic code formatting and restored missing documentation  
 
 ### 0.8.0-dev.1  (12 Nov 2024)
 - Other bugfixes and improvements 
-  - EMOD multi-habitat  
+  - **EMOD** multi-habitat  
   - age demography and age group aggregation  
   
 ### 0.7.0-dev.1  (25 Oct 2024)
@@ -40,12 +62,12 @@ Expected for Q1 2025
 - Other bugfixes and improvements 
   - allow to run multiple seasonality patterns in same simulation
   - fixed burnin issue 
-  - updated EMOD multiple calibration parameter setup 
+  - updated **EMOD** multiple calibration parameter setup 
   - removed config_exp.py 
 
 ### 0.6.0-dev.1  (9 Sep 2024)
 - Framework restructuring 
-  - introdued `utility`, `plotter` folders
+  - intriduced  `utility`, `plotter` folders
   - added config_exp.py
 - Bugfixes and improvements
 
@@ -63,7 +85,7 @@ Expected for Q1 2025
   - removed remaining 'emodom' terms used
 
 ### 0.3.0-dev.1  (23 Feb 2024)
-- Improved integration of malariasimulation to 'MultiMalModPy'
+- Improved integration of **malariasimulation** to 'MultiMalModPy'
 - CC step initial setup
 - Bugfixes and improvements 
 - Alignment of analyzers
@@ -72,11 +94,11 @@ Expected for Q1 2025
 - EMOD step (burnin, pickup) automatized setup
 
 ### 0.2.0-dev.1  (26 Sep 2023)
-- Initial integration of malariasimulation 
+- Initial integration of **malariasimulation** 
 - Bugfixes and improvements 
-- EMOD step (burnin, pickup) initial setup
+- **EMOD** step (burnin, pickup) initial setup
 
 ### 0.1.0-dev.1  (22 May 2023)
-- Initial upload EMOD and OpenMalaria 'emodom' framework
+- Initial upload **EMOD** and **OpenMalaria** 'emodom' framework
 
 ------------------------------------
