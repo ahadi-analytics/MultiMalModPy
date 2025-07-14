@@ -113,12 +113,6 @@ def parse_launch_args():
         print(f"The '--csv' argument was specified ({args.csv}). "
               "Setting 'run_mode' to 'csv'.")
 
-    # Validate Windows compatibility with EMOD
-    if os.name != 'posix' and 'EMOD' in args.models:
-        raise ValueError(
-            "EMOD is not available for local execution on Windows, but it was specified in the models argument. "
-            "Did you forget to exclude EMOD from the models list?")
-
     # Ensure EMOD is specified if emodstep is set
     if args.emodstep is not None and 'EMOD' not in args.models:
         raise ValueError(f"EMOD is not specified in the models list, but emodstep is set to {args.emodstep}. "
@@ -161,12 +155,12 @@ def get_param_from_dataframe(df, name, sim_params_list):
     Retrieves a parameter value from a DataFrame and returns it in the correct format for storage in an experiment object (exp).
 
     Example:
-        exp.seasonality = get_param(exp_scen_df, 'seasonality', listparam=True)
+        exp.seasonality = get_param_from_dataframe(exp_scen_df, 'seasonality', listparam=True)
 
     Args:
         df (pandas.DataFrame): The DataFrame containing the parameter value.
         name (str): The name of the parameter.
-        listparam (bool, optional): Indicates whether the parameter value should be returned as a list. Defaults to False.
+        sim_params_list (List[str]): List of parameter names expected to be lists.
 
     Returns:
         Union[list, str]: The parameter value, either as a list or a string, based on the 'listparam' argument.
@@ -434,7 +428,10 @@ def create_simsetup_csv(exp):
     setup_df['parameter'] = setup_df.index
     save_dirs = [exp.job_directory, exp.output_directory]
     for sdir in save_dirs:
-        setup_df.to_csv(os.path.join(sdir, 'exp_setup_df.csv'), index=False)
+        if not os.path.exists(sdir):
+            raise OSError(f"Cannot save file into a non-existent directory: '{sdir}'")
+        save_path = os.path.join(sdir, 'exp_setup_df.csv')
+        setup_df.to_csv(save_path, index=False)
 
 
 def process_case_management(df):

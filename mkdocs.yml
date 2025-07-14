@@ -22,6 +22,7 @@ plugins:
             show_source: true
 markdown_extensions:
   - admonition
+  - pymdownx.details
   - codehilite
   - smarty
   - tables
@@ -50,7 +51,7 @@ nav:
     - First time configurations (manifest.py): getting_started/configuration.md
     - How to use MultiMalModPy: getting_started/usage.md
     - User-modifiable parameters and defaults: getting_started/parameters.md
-    - Example run (demo): getting_started/example_run.md
+    - Launch simulations: getting_started/example_run.md
     - Glossary: getting_started/glossary.md
   - Simulation Guide:
     - Time: guide/time.md

@@ -6,7 +6,6 @@ import numpy as np
 from COMPS import AuthManager
 from EMOD.functions.forcedEIR import *
 from EMOD.functions.interventions import *
-from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
 from emodpy_malaria.interventions.outbreak import add_outbreak_individual
 from emodpy_malaria.reporters.builtin import *
 import emodpy_malaria.malaria_config as malaria_config
@@ -110,7 +109,19 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
         
     if exp.emod_importation_rate != 0:
         ncases_per_year_per1000pop = (exp.emod_importation_rate * exp.emod_pop_size) / 1000
-        add_outbreak_individual(camp, start_day=1, target_num_individuals=ncases_per_year_per1000pop,
+        if ncases_per_year_per1000pop < 1:
+            print('WARNING: ncases_per_year_per1000pop < 1. Setting to minimum of 1.')
+            ncases_per_year_per1000pop = 1
+
+        add_outbreak_individual(camp, start_day=73, target_num_individuals=ncases_per_year_per1000pop,
+                                repetitions=-1, timesteps_between_repetitions=365)
+        add_outbreak_individual(camp, start_day=146, target_num_individuals=ncases_per_year_per1000pop,
+                                repetitions=-1, timesteps_between_repetitions=365)
+        add_outbreak_individual(camp, start_day=219, target_num_individuals=ncases_per_year_per1000pop,
+                                repetitions=-1, timesteps_between_repetitions=365)
+        add_outbreak_individual(camp, start_day=292, target_num_individuals=ncases_per_year_per1000pop,
+                                repetitions=-1, timesteps_between_repetitions=365)
+        add_outbreak_individual(camp, start_day=365, target_num_individuals=ncases_per_year_per1000pop,
                                 repetitions=-1, timesteps_between_repetitions=365)
 
     # SMC currently not supported
@@ -127,6 +138,14 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     #    smc_campaign(camp, row, start_array)
 
     return {'scen_id': int(row.scen_id)}
+
+def drug_setup(config, exp=None):
+    """
+    Functions to alter drug parameters specific to MultiMalModPy drug campaigns.
+    """
+    #SMC currently not supported
+    if 'smc' in exp.intervention_list:
+        return
 
 
 def habitat_setup(config, exp, row):
@@ -151,7 +170,7 @@ def habitat_setup(config, exp, row):
     if row.seasonality == 'perennial':
         habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
         habitat1.parameters.Habitat_Type = "CONSTANT"
-        habitat1.parameters.Max_Larval_Capacity = 10000000 * max_capacity_multiplier
+        habitat1.parameters.Max_Larval_Capacity = 5265700 * max_capacity_multiplier
         habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type,
                          "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
         malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list, overwrite=True)

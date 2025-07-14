@@ -129,8 +129,6 @@ class RunModeManager:
         self.experiment.emod_pop_size = 5000
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
-        if self.experiment.target_output_name == 'clinical_incidence_U5':
-            raise ValueError('target_output_name clinical_incidence_U5 not defined for production run')
 
 
     def _configure_csv(self):
@@ -257,7 +255,8 @@ class ManifestConfig:
         self.interp_csv = manifest.interp_csv
         self.ROOT_DIR= manifest.ROOT_DIR
         self.use_container = manifest.use_container
-        self.ROOT_DIR_local= manifest.ROOT_DIR_local
+        if self.use_container:
+            self.ROOT_DIR_local= manifest.ROOT_DIR_local
         self.image_path = manifest.image_path
         self.bind_path = manifest.bind_path
 
