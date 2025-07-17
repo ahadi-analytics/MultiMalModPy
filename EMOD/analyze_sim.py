@@ -451,14 +451,16 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
         cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_timeavrg.csv')), index=False)
 
         if exp.run_mode == 'calibration':
+            mean_columns = ['eir', 'prevalence_2to10', 'prevalence', 'severe_incidence']
+            if scen_df.entomology_mode[0] == 'dynamic':
+                mean_columns = mean_columns + ['n_total_mos_pop']
             u5 = cdf[cdf['ageGroup'] == '0-5'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
             u5 = u5.rename(columns={'clinical_incidence': 'clinical_incidence_U5'})
             all_ages = cdf[cdf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg(
                 'mean').reset_index()
             cdf = cdf[cdf['ageGroup'] == '0-100']
-            cdf = cdf.groupby(['scen_id', 'transmission_intensity_EMOD', 'seasonality', 'cm_clinical','cm_severe'])[
-                ['eir', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
-                'mean').reset_index()
+            cdf = cdf.groupby(['scen_id', 'transmission_intensity_EMOD', 'seasonality', 'cm_clinical', 'cm_severe'])[
+                mean_columns].agg('mean').reset_index()
             cdf = cdf.merge(all_ages, on='scen_id')
             cdf = cdf.merge(u5, on='scen_id')
             cdf = cdf.drop(['scen_id'], axis=1)
@@ -933,6 +935,10 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['year', 'day'])
 
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
+        columns_to_keep = ['scen_id', 'index', 'seed', 'target_output_values', 'transmission_intensity_EMOD',
+                           'timestep', 'day', 'year', 'ageGroup', 'seasonality', 'cm_clinical', 'entomology_mode',
+                           'eir', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence']
+
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
             eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg('mean').reset_index()
@@ -951,6 +957,8 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
             eirdf_5day.columns = eirdf_5day.columns.get_level_values(0)
             eirdf_5day = eirdf_5day.rename(columns={'5day': 'day'})
             cdf = pd.merge(left=cdf, right=eirdf_5day, on=self.sweep_variables + ['year', 'day'])
+
+            columns_to_keep = columns_to_keep + ['n_total_mos_pop', 'n_infectious_mos']
         else:
             cdf['eir'] = cdf['transmission_intensity_EMOD']
             cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
@@ -964,11 +972,8 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
         # Save the processed DataFrame to a CSV file
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD')
-        columns_to_keep = ['scen_id', 'index', 'seed', 'target_output_values', 'transmission_intensity_EMOD', 'timestep',
-                        'day', 'year', 'ageGroup', 'seasonality', 'cm_clinical', 'entomology_mode',
-                        'eir', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence',
-                        'n_total_mos_pop', 'n_infectious_mos'] 
-        columns_to_keep += [column for column in self.intervention_analyzer_columns if column in cdf.columns]        
+
+        columns_to_keep += [column for column in self.intervention_analyzer_columns if column in cdf.columns]
         cdf = cdf[columns_to_keep]
         cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_5day.csv')), index=False)
 

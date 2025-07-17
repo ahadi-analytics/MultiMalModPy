@@ -106,7 +106,7 @@ def parse_launch_args():
 
     # Validate CSV and rownum combination
     if args.csv:
-        if not args.rownum:
+        if args.rownum is None:
             print(f"The '--csv' argument was specified ({args.csv}) but no rownum"
                    "Using default 'rownum' 0 to run first row")
         args.run_mode = "csv"
@@ -399,6 +399,7 @@ def create_simsetup_csv(exp):
                  'output_directory': exp.output_directory,
                  'emod_serialized_id': exp.emod_serialized_id,
                  'burnin_directory': exp.burnin_directory,
+                 'entomology_mode': exp.entomology_mode,
                  'nexps': exp.nexps,
                  'sweep_list': exp.sweep_list,
                  'monitoring_years': exp.monitoring_years,
@@ -420,6 +421,7 @@ def create_simsetup_csv(exp):
                  'sim_start_year_emod': exp.sim_start_year_emod,
                  'sim_start_year_malariasimulation': exp.sim_start_year_malariasimulation,
                  'intervention_list': exp.intervention_list,
+                 'interp_csv': exp.interp_csv,
                  'target_output_name': exp.target_output_name,
                  'target_output_values':  ';'.join(map(str, exp.target_output_values))
                  }

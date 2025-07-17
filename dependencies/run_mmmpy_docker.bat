@@ -11,7 +11,7 @@ REM Pull the Docker image
 docker pull mrm9534/mmmpy_local:rocky8
 
 REM Ask the user for model names
-set /p "MODELS=Enter models to run (e.g. EMOD malariasimulation OpenMalaria): "
+set /p "MODELS=Enter models to run (e.g. malariasimulation OpenMalaria): "
 
 REM Get two levels up from current directory
 for %%i in ("%cd%\..\..") do set "REPO_PATH=%%~fi"
@@ -26,7 +26,7 @@ REM We surround %MODELS% with double quotes inside single quotes to preserve spa
 docker run -it --rm ^
   -v "%REPO_PATH%:/mnt/c/projects" ^
   mrm9534/mmmpy_local:rocky8 ^
-  /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models \"%MODELS%\" --test"
+  /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models %MODELS% --test"
 
 echo.
 pause

@@ -178,9 +178,16 @@ def check_transmission_targets_input(exp):
         else:
             raise ValueError(f'Specified model is not valid {model}')
 
+        if exp.entomology_mode == 'forced' and 'forced' not in exp.interp_csv:
+            interp_csv_forced = exp.interp_csv.replace('.csv', '_forced.csv')
+            print(
+                f'Warning: entomology_mode is {exp.entomology_mode}, however, interp_csv ({exp.interp_csv}) does not specify forced in filename. Changing to {interp_csv_forced}')
+            exp.interp_csv = interp_csv_forced
+
         interp_path = os.path.join(exp.interp_path, model, exp.interp_csv)
         if not os.path.exists(interp_path):
             raise ValueError(f'interp_file not found: {interp_path}')
+
         data = pd.read_csv(interp_path)
 
         popsize_options = list( data.loc[data['models'] == model, 'pop_size'].unique())

@@ -35,11 +35,19 @@ if args.emodstep in ['pickup', 'new_pickup']:
 
     # ensure intervention parameters are correctly setup (some may get updated between burnin and pickup run)
     exp = get_intervention_params(exp)
-    exp.plots_to_run = ['relationship', 'timeseries', 'agecurves'] # For pickup, this needs to be defined again, as for burnin set to empty
 
     ##  Note: to run a new pickup in same folder and suite, simply change expname
     exp.SUITEname = args.suite
     exp.exp_name = args.expname
+    
+    if exp.run_mode == 'csv':
+        exp_scen_df = pd.read_csv(os.path.join(f'scenario_csv/{exp.csv}.csv'))
+        exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == exp.rownum]
+        if 'plots_to_run' in exp_scen_df.columns:
+            exp.plots_to_run = get_param_from_dataframe(exp_scen_df, 'plots_to_run', exp.sim_params_list)
+    else: 
+        exp.plots_to_run = ['relationship', 'timeseries', 'agecurves'] # For pickup, this needs to be defined again, as for burnin set to empty
+
 
 else:
     # Creating an Experiment object and setting its attributes, saved as exp.obj
