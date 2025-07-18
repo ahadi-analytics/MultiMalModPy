@@ -1,17 +1,19 @@
+import os
 from plotter.plot_timeseries import monthly_timeseries
 from plotter.plot_agecurves import age_curves
 from plotter.plot_relationship import eir_to_outcome, prevalence2to10_to_outcome
-
-import os
-from PIL import Image
 
 
 def combine_plot_example1(panel_a_name, panel_b_name, panel_c_name,
                           panel_a_path, panel_b_path, panel_c_path,
                           save_path=None, save_name='combined_figure.png',
                           padding=30, panel_c_scale=1.2, panel_ab_gap=30, panel_c_padding=30):
-    from PIL import Image
-    import os
+
+    from PIL import Image, ImageDraw, ImageFont
+    import matplotlib.font_manager as fm
+
+    font_path = fm.findfont("DejaVu Sans", fallback_to_default=True)
+    font = ImageFont.truetype(font_path, size=40)
 
     # Load images
     panel_a = Image.open(os.path.join(panel_a_path, panel_a_name))
@@ -51,6 +53,13 @@ def combine_plot_example1(panel_a_name, panel_b_name, panel_c_name,
     combined_img.paste(stacked_left_padded, (0, 0))
     combined_img.paste(panel_c_padded, (stacked_left_padded.width, 0))
 
+    # Add labels
+    draw = ImageDraw.Draw(combined_img)
+    label_offset = 10
+    draw.text((label_offset, label_offset), 'A', fill='black', font=font)
+    draw.text((label_offset, panel_a.height + panel_ab_gap + label_offset), 'B', fill='black', font=font)
+    draw.text((stacked_left_padded.width + label_offset, label_offset), 'C', fill='black', font=font)
+
     if save_path is None:
         save_path = panel_a_path
     combined_img.save(os.path.join(save_path, save_name))
@@ -63,7 +72,7 @@ def define_submit_combine_plot(out_dir, scen1_name, scen2_name):
         panel_b_name='eir_prevalence_2to10_0_cm_clinical_model.png',
         panel_c_name='agecurves_clinical_incidence_target_output_values_model.png',
 
-        panel_a_path=os.path.join(out_dir, scen1_name, 'plots/'),
+        panel_a_path=os.path.join(out_dir, scen2_name, 'plots/'),
         panel_b_path=os.path.join(out_dir, scen1_name, 'plots/'),
         panel_c_path=os.path.join(out_dir, scen2_name, 'plots/'),
         save_path=os.path.join(out_dir, scen2_name, 'plots/'),
@@ -76,14 +85,13 @@ def define_submit_combine_plot(out_dir, scen1_name, scen2_name):
 
 
 def generate_plots_example1(out_dir, exp, df, df_mth, file_format='png', run_combine_plot=False):
-
     if run_combine_plot:
 
         ## USER to modify, for combined plots across simulation experiments
-        scen1_name = 'example_scen1_05_49_27'
-        scen2_name = 'example_scen2_05_49_27'
+        scen1_name = 'example_scen1_forced_07_58_19'
+        scen2_name = 'example_scen2_forced_07_58_31'
 
-        define_submit_combine_plot(os.path.dirname(out_dir), scen1_name, scen2_name)
+        define_submit_combine_plot(os.path.dirname(os.path.dirname(out_dir)), scen1_name, scen2_name)
 
     else:
 
