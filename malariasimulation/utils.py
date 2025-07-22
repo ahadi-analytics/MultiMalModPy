@@ -118,54 +118,75 @@ def submit_run_malariasimulation_slurm(exp):
     submit_analyze_outputs(exp)
     return
 
+import os
+
 def write_ps1_malariasimulation(exp):
     """
-    Creates a PowerShell script to run malariasimulation simulations (sequentially) locally.
-
-    This function generates a PowerShell script that:
-    1. Sets job parameters, including the path to the malariasimulation executable and the job directory.
-    2. Ensures the log directory exists, creating it if necessary.
-    3. Iterates over all experiments, running the malariasimulation for each one using the specified R script.
-    4. Logs the output and errors to respective log files.
+    Creates a PowerShell script to run malariasimulation simulations (sequentially) locally, with a progress bar.
 
     Args:
-        exp (object): An experiment object containing attributes such as 'job_directory', 'nexps', 'r_local', and paths
-                      necessary for setting up and running the malariasimulation.
+        exp (object): An experiment object with attributes:
+                      - job_directory: Path to job output directory.
+                      - nexps: Number of simulation runs.
+                      - r_local: Path to R binary (e.g. C:\\Program Files\\R\\R-4.2.3\\bin).
+                      - ROOT_DIR: Root directory containing malariasimulation script.
 
     Raises:
-        IOError: If there is an issue with writing the PowerShell script to the file.
+        IOError: If writing the PowerShell script fails.
     """
 
-    file_path = os.path.join(exp.job_directory, 'run_malariasimulation.ps1')  # Change file extension to .ps1
-    wdir = os.path.abspath(os.path.dirname(__file__))
-    wdir = os.path.abspath(os.path.join(wdir, os.pardir))
+    file_path = os.path.join(exp.job_directory, 'run_malariasimulation.ps1')
 
-    # Define the content of the PowerShell script
+    # Normalize paths
+    malariasimulation_path = os.path.normpath(os.path.join(exp.ROOT_DIR, 'malariasimulation'))
+    exe_path = os.path.normpath(exp.r_local)
+    job_dir = os.path.normpath(exp.job_directory)
+
     powershell_content = f"""
 # Job settings
 $job_name = "run_malariasimulation"
-$exe_path = "{os.path.join(exp.r_local)}"
-$work_dir = "{os.path.join(os.getcwd(),'malariasimulation')}"
-$jobdir = "{exp.job_directory}"
+$exe_path = "{exe_path}"
+$work_dir = "{malariasimulation_path}"
+$jobdir = "{job_dir}"
 $log_dir = Join-Path $jobdir "log"
+
+# Check dependencies
+if (!(Test-Path "$exe_path\\Rscript.exe")) {{
+    Write-Error "Rscript.exe not found at $exe_path"
+    exit 1
+}}
+if (!(Test-Path "$work_dir\\malariasimulation.R")) {{
+    Write-Error "malariasimulation.R not found in $work_dir"
+    exit 1
+}}
+if (!(Test-Path $log_dir)) {{
+    New-Item -ItemType Directory -Path $log_dir | Out-Null
+}}
 
 # Navigate to the working directory
 Set-Location -Path "$work_dir"
 
-# Loop to run the malariasimulation command
-for ($i = 1; $i -le {exp.nexps}; $i++) {{
-    # Run the malariasimulation command
-    & "$exe_path/Rscript.exe" "$work_dir\malariasimulation.R" "$work_dir" "$jobdir" $i >> "$log_dir/run_malariasimulation.log" 2>> "$log_dir/run_malariasimulation.err"
+# Run simulations with progress bar
+$total = {exp.nexps}
+for ($i = 1; $i -le $total; $i++) {{
+    Write-Progress -Activity "Running malariasimulation" -Status "Simulation $i of $total" -PercentComplete (($i / $total) * 100)
+
+    & "$exe_path\\Rscript.exe" "$work_dir\\malariasimulation.R" "$work_dir" "$jobdir" $i `
+        >> "$log_dir\\run_malariasimulation.log" `
+        2>> "$log_dir\\run_malariasimulation.err"
 }}
 
-# Pause to keep the console open
+Write-Progress -Activity "Running malariasimulation" -Completed
 Write-Host "malariasimulation simulation complete."
-    """
+"""
 
-    # Write the PowerShell script
-    with open(file_path, 'w') as file:
-        file.write(powershell_content)
-    print(f"PowerShell script written successfully at {file_path}")
+    try:
+        with open(file_path, 'w') as file:
+            file.write(powershell_content)
+        print(f"PowerShell script with progress bar written successfully at {file_path}")
+    except IOError as e:
+        raise IOError(f"Failed to write PowerShell script: {e}")
+
 
 def write_sh_malariasimulation(exp):
     """
@@ -188,8 +209,7 @@ def write_sh_malariasimulation(exp):
     file_path = os.path.join(exp.job_directory, 'run_malariasimulation.sh')
 
     # Get the absolute path of the working directory
-    wdir = os.path.abspath(os.path.dirname(__file__))
-    wdir = os.path.abspath(os.path.join(wdir, os.pardir))
+    malariasimulation_path = os.path.join(exp.ROOT_DIR, 'malariasimulation')
 
     # Construct the content of the shell script
     sh_content = f"""#!/bin/bash
@@ -199,7 +219,7 @@ trap 'echo "Error occurred in script at line $LINENO. Check logs for details." >
 
 # Job settings
 job_name="run_malariasimulation"
-work_dir="{os.path.normpath(os.path.join(os.getcwd(),'malariasimulation'))}"
+work_dir="{malariasimulation_path}"
 jobdir="{os.path.normpath(exp.job_directory)}"
 log_dir="$jobdir/log"
 

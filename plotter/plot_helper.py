@@ -276,33 +276,18 @@ def convert_to_date(x):
     return datetime.date(2005, 1, 1) + datetime.timedelta(days=x)
 
 
-def color_selector(i, s):
-    """
-    Select a color index based on the model name.
-
-    This function returns a color index based on the specified model name.
-    If the model name is recognized, a predefined index is returned;
-    otherwise, the input index is returned.
-
-    Args:
-        i (int): The default index to return if the model name is not recognized.
-        s (str): The name of the model. Possible values include:
-            - 'EMOD'
-            - 'malariasimulation'
-            - 'OpenMalaria'
-
-    Returns:
-        int: The color index corresponding to the model name.
-    """
-
-    if s == 'EMOD':
-        return 0
-    elif s == 'malariasimulation':
-        return 1
-    elif s == 'OpenMalaria':
-        return 2
+def color_selector(i, s, sweepvar='models', n_colors=4):
+    if sweepvar == 'models':
+        model_colors = {
+            'EMOD': '#1a9e77',
+            'malariasimulation': '#7a5c9f',
+            'OpenMalaria': '#e97926'
+        }
+        return model_colors.get(s, sns.color_palette('colorblind', n_colors)[i % n_colors])
     else:
-        return i
+        return sns.color_palette('colorblind', n_colors)[i % n_colors]
+
+
 
 
 def get_label(channel):

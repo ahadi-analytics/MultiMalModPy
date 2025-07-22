@@ -362,8 +362,9 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
     cdf = cdf.merge(eir_df, on='index', how='inner')
 
     # Severe Incidence Recalculation
-    cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
-
+    cdf['severe_incidence'] = cdf['severe_incidence'] * ((1- 0.42) * df['cm_clinical'] + (1 - df['cm_clinical'])) * (1 / 0.8)
+    #cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
+    
     # Rename columns for standardization across models
     cdf['mortality'] = ''
 
@@ -470,7 +471,8 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
     cdf = cdf.merge(eir_df, on=['index', 'year'], how='inner')
 
     # Severe Incidence Recalculation
-    cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
+    cdf['severe_incidence'] = cdf['severe_incidence'] * ((1- 0.42) * df['cm_clinical'] + (1 - df['cm_clinical'])) * (1 / 0.8)
+    #cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
 
     # Rename columns for alignment with OpenMalaria results
     cdf = cdf.rename({'n_age': 'nHost'}, axis=1)
@@ -559,8 +561,9 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf = cdf.merge(eir_df, on=['index', 'month', 'year'], how='inner')
 
     # Severe Incidence Recalculation
-    cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
-
+    cdf['severe_incidence'] = cdf['severe_incidence'] * ((1- 0.42) * df['cm_clinical'] + (1 - df['cm_clinical'])) * (1 / 0.8)
+    #cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
+    
     # Rename columns for alignment with OpenMalaria results
     cdf = cdf.rename({'n_age': 'nHost'}, axis=1)
     cdf = cdf.drop(columns=['n_prev', 'n_inc', 'n_inc_clinical', 'n_inc_severe'])
@@ -676,7 +679,8 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf = cdf.merge(eir_df, on=['index', 'day', 'year'], how='inner')
 
     # Severe Incidence Recalculation
-    cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
+    cdf['severe_incidence'] = cdf['severe_incidence'] * ((1- 0.42) * df['cm_clinical'] + (1 - df['cm_clinical'])) * (1 / 0.8)
+    #cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
 
     # Rename columns for alignment with OpenMalaria results
     cdf = cdf.rename({'n_age': 'nHost'}, axis=1)
@@ -771,7 +775,8 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None)
     df = df.merge(eir_df, on=['index', 'timestep', 'month', 'year'], how='inner')
 
     # Severe Incidence Recalculation
-    df['severe_incidence'] = df['severe_incidence'] * (0.5 * df['cm_severe'] + (1 - df['cm_severe']))
+    df['severe_incidence'] = df['severe_incidence'] * ((1- 0.42) * df['cm_clinical'] + (1 - df['cm_clinical'])) * (1 / 0.8)
+    #df['severe_incidence'] = df['severe_incidence'] * (0.5 * df['cm_severe'] + (1 - df['cm_severe']))
 
     # Let's limit the output of daily, so its a little more reasonable for us to process.
     columns_to_keep = ['index', 'scen_id', 'seed', 'ageGroup', 'timestep', 'eir', 'n_infectious_mos',

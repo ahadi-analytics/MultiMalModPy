@@ -2,6 +2,7 @@
 
 This page provides an overview of interventions implemented in **MultiMalModPy**, with a focus on **case management** in the initial release.
 
+
 Details on their function and implementation can be found in the framework’s  **API** under the `intervention.py` script for each model.
 
 <div style="background-color: #E9F2F9; padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
@@ -29,6 +30,16 @@ _Box is checked if aligned_
 | Target population            | ✔        | Whole population treated equally (no age-specific targeting).                                     |
 | Resistance                   | ✔        | Drug resistance **not included** in this release.                                                 |
 | Deployment time & duration   | ✔        | Intervention begins at **start of simulation** and remains constant.                              |
+=======
+
+Details on their function and implementation can be found in the framework’s  **API** under the `intervention.py` script for each model.
+
+<div style="background-color: #E9F2F9; padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>⚠️ NOTE:</em></strong> 
+  For the most up-to-date and detailed information, please refer to the official documentation of each supported model.
+</div>
+
+
 
 
 
@@ -41,6 +52,7 @@ _Box is checked if aligned_
 - Additional: [malaria_drug_params.csv](https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/malaria_drug_params.csv)   
 
 ??? treatment_seeking
+
 
   ```python 
 
@@ -173,6 +185,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
   
   ```
 
+
  
 
 <br>
@@ -185,6 +198,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
 
 ??? set_clinical_treatment
         
+
   ```R
   
   set_clinical_treatment <- function(parameters, drug, timesteps, coverages) {
@@ -212,6 +226,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
   
   ```
 
+
  
 <br>
 
@@ -222,6 +237,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
     - [ScenarioPharmacology](https://github.com/SwissTPH/openmalaria/wiki/ScenarioPharmacology#antimalarial-drug-modelling)  
 - Function: [set_clinical_treatment](https://github.com/mrc-ide/malariasimulation/blob/master/R/drug_parameters.R#L49)  
 - Related publications:  [Galactionova et al (2015).](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0127818) 
+
 
 
 > Multiple options for simulating 'case management' exist. Below is the  implementation as used in MultiMalModPy.
@@ -264,7 +280,6 @@ targets is a list of dictionaries defining the trigger event and coverage for an
     
   
   ```
-
 
   
 
