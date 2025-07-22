@@ -2,11 +2,13 @@
 _Implementation in MultiMalModPy_
 
 <div style="background-color: #f4f4f4; padding: 12px; border-left: 5px solid #FF6B8B; border-radius: 5px; margin: 10px 0;">
-    <strong>🔍</strong> For a detailed overview of how each model handles transmission intensity, refer to the 
-    <a href="../malaria_models/structure.md#transmission-intensity" style="color: #0073e6; text-decoration: none;">
-        Transmission Intensity 
-    </a> description under malaria models.
+    <strong>🔍 Tip:</strong> For a detailed overview of how each model handles transmission intensity, refer to the 
+    <a href="https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/structure/#transmission-intensity" 
+       style="color: #0073e6; text-decoration: none;">
+        Transmission Intensity
+    </a> section under malaria models.
 </div>
+
 
 
 In MultiMalModPy, the user can specify the level of transmission via the following two parameters in [setup_sim.py](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/setup_sim.py#L62): 
