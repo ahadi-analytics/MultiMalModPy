@@ -321,7 +321,7 @@ def eir_to_outcome(
         ax.set_ylim(0, y_lim)
         ax.set_xlim(0.1, 1000)
         ax.set_xscale('symlog')
-        ax.set_xlabel(f'{eir_val.replace("eir", " annual EIR")}', fontsize=14)
+        ax.set_xlabel(f'{eir_val.replace("eir", " Simulated EIR (annual)")}', fontsize=14)
         ax.set_ylabel(get_label(channel))
 
         if firstPlot:
@@ -432,7 +432,7 @@ def input_to_simulated_eir(
         ax.set_xscale('symlog')
 
     plt.xlabel('Input EIR')
-    plt.ylabel('Simulated annual EIR')
+    plt.ylabel('Simulated EIR (annual)')
 
     fname = f'input_to_simulated_eir_{sweepvar}_{facet_var}'
     fname = clean_fname(fname, sweepvar, unique_groups, facet_var, unique_facets)
