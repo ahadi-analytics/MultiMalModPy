@@ -50,17 +50,10 @@ exp$intervention_list <- exp_setup_df[exp_setup_df$parameter =='intervention_lis
 exp$intervention_list <- data.frame(interventions = unlist(strsplit(gsub("\\[|\\]|\\'",'',exp$intervention_list),','))) #This helps make the python list readable in R
 exp$intervention_list <- exp$intervention_list$interventions
 exp$monthly_or_daily_eirs <- 'daily' # This will change so we can toggle between daily and monthly later
-# Store the min/max ages (days):
-min_ages <- exp$min_ages
-max_ages <- exp$max_ages
 
 if( length(exp$intervention_list)>0){
   print("Adding interventions to simulations...")
   source(file.path(wdir,'functions','interventions.R'))
-  if ('smc' %in% exp$intervention_list){
-    exp <- define_smc_param(exp, parameter_table)
-  }
-  ## to be expanded with other interventions
 }
 
 # Run the simulations or load example:
