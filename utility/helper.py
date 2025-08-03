@@ -423,7 +423,8 @@ def create_simsetup_csv(exp):
                  'intervention_list': exp.intervention_list,
                  'interp_csv': exp.interp_csv,
                  'target_output_name': exp.target_output_name,
-                 'target_output_values':  ';'.join(map(str, exp.target_output_values))
+                 'target_output_values':  ';'.join(map(str, exp.target_output_values)),
+                 'malariasimulation_parameter_variation': exp.malariasimulation_parameter_variation
                  }
 
     setup_df = pd.DataFrame.from_dict(setup_dic, orient='index', columns=['Value'])
