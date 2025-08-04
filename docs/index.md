@@ -1,5 +1,5 @@
 
-# A novel programmatic framework for Multi-Malaria-Model simulation  
+# MultiMalModPy: A Python Framework for Multi-Model Malaria Simulation
 
 <div style="display: flex; align-items: center; color: #757575; padding: 5px;">
   <h1><small>Documentation and User Guide</small></h1>
@@ -32,22 +32,25 @@ providing structured guidance while supplementing—rather than replacing—the 
 </div>  
 
 
-**Content**  
+**Content Overview**  
 
 <font color="#53A5D1"><strong>MALARIA MODELS</strong></font>  
-&nbsp;&nbsp;&nbsp;&nbsp;  General information for each of, and compared across, the malaria models.    
+&nbsp;&nbsp;&nbsp;&nbsp;  Overview and comparison of the different malaria models supported by MultiMalModPy.  
 
-<font color="#53A5D1"><strong>GETTING STARTED</strong></font>    
-&nbsp;&nbsp;&nbsp;&nbsp;  General instructions and information on how to use MultiMalModPy. 
+<font color="#53A5D1"><strong>USER GUIDE</strong></font>    
+&nbsp;&nbsp;&nbsp;&nbsp;  Step-by-step instructions for installing, configuring, and running MultiMalModPy, including parameter customization and platform-specific execution.  
 
 <font color="#53A5D1"><strong>SIMULATION GUIDE</strong></font>    
-&nbsp;&nbsp;&nbsp;&nbsp;  Information and documentation on the parameters available to define simulations using MultiMalModPy.    
+&nbsp;&nbsp;&nbsp;&nbsp;  Information and documentation on the parameters available to define simulations using MultiMalModPy.      
+
+<font color="#53A5D1"><strong>DEVELOPER GUIDE</strong></font>    
+&nbsp;&nbsp;&nbsp;&nbsp;  Documentation for contributors, covering intervention development, model versioning, containerization, and maintenance.      
 
 <font color="#53A5D1"><strong>API</strong></font>   
-&nbsp;&nbsp;&nbsp;&nbsp;  List of framework-specific functions and scripts.   
+&nbsp;&nbsp;&nbsp;&nbsp;  Reference for framework-specific classes, functions, and scripts used within MultiMalModPy.  
 
 <font color="#53A5D1"><strong>ABOUT</strong></font>    
-&nbsp;&nbsp;&nbsp;&nbsp;  Information about the framework development, references and contact.      
+&nbsp;&nbsp;&nbsp;&nbsp;  Background on the MultiMalModPy framework, including contributors, references, and contact information.
 
 
 ## Release and download 
