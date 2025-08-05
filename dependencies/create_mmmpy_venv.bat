@@ -14,7 +14,7 @@ for %%i in ("%cd%\..") do set "PROJECT_ROOT=%%~fi"
 echo Project root detected as: %PROJECT_ROOT%
 
 REM Path to requirements.txt inside dependencies
-set "REQ_FILE=%cd%\requirements.txt"
+set "REQ_FILE=%cd%\requirements_container.txt"
 
 REM Ask user for venv folder name
 set /p "VENV_NAME=Enter name for the virtual environment folder (default: venv): "
