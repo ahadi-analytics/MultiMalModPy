@@ -237,9 +237,9 @@ Follow the [OpenMalaria wiki](https://github.com/SwissTPH/openmalaria/wiki/UserG
       
       The def files includes the following lines and does not require change (for information shown below) 
       
-      ```
-      Bootstrap: docker
-      From: ubuntu:20.04
+      ```  
+      Bootstrap: docker 
+      From: ubuntu:20.04  
       
       %post
           apt-get update && \
@@ -257,12 +257,12 @@ Follow the [OpenMalaria wiki](https://github.com/SwissTPH/openmalaria/wiki/UserG
           git config --global http.sslverify false
           git clone https://github.com/SwissTPH/openmalaria.git /openmalaria
           cd openmalaria && ./build.sh -r
-      ```
+      ```  
       
       However, the `modules/openmalaria/43.0.lua` needs to be renamed to the new version, and its content also updated to the
       latest version. 
       
-      ```
+      ```  
       help([[
       This git-repository contains source-code for Open Malaria, a simulator program for studying malaria epidemiology and the impacts of interventions against malaria.
       ]])
@@ -278,21 +278,21 @@ Follow the [OpenMalaria wiki](https://github.com/SwissTPH/openmalaria/wiki/UserG
       local bashStr = 'singularity exec -B /projects:/projects /gpfs/projects/b1139/OpenMalaria/om_v46/OpenMalaria.sif /openmalaria/openMalaria-46.0/openMalaria "$@"'
       
       set_shell_function("openMalaria",bashStr)
-      ```
+      ```  
       
       Then, actually install the latest OpenMalaria by generating a container following as follows: 
       
-      ```
+      ```  
       module load singularity
       singularity remote login
-      ```
-      
+      ```  
+       
       An access token is already set for this remote. Replace it? [N/y] y 
       Generate an access token at https://cloud.sylabs.io/auth/tokens, and paste it here. 
       
-      ```
+      ```  
       singularity build --remote OpenMalaria.sif OpenMalaria.def
-      ```
+      ```  
       
       Because calling containers is very annoying, Scott also added a module file in this folder which wraps the call to 
       openMalaria to make it easier to use, which is located in the modules/openmalaria folder copied and modified in an
@@ -300,12 +300,12 @@ Follow the [OpenMalaria wiki](https://github.com/SwissTPH/openmalaria/wiki/UserG
       
       Test to run new version
       
-      ```
+      ```  
       cd /gpfs/projects/b1139/OpenMalaria/om_v46/
       module use /gpfs/projects/b1139/OpenMalaria/om_v46/modules/
       module load openmalaria
       openMalaria -s example_scenario.xml
-      ```
+      ```  
 
  
 <br>
@@ -566,21 +566,22 @@ Expected output: test simulation runs without errors and logs are generated.
     
       <span style="color:#ff3232"> ERROR: pip's dependency resolver does not currently take into account all the packages that are installed.
       This behaviour is the source of the following dependency conflicts. emodpy 1.22.1 requires click~=7.1, 
-      but you have click 8.1.8 which is incompatible. </span> 
-      - Run required package installation i.e.  
+      but you have click 8.1.8 which is incompatible. </span>  
+
+      - Run required package installation i.e.   
     
-            pip install click==8.1.7    
+            pip install click==8.1.7     
     
       If a dependency conflict remains, let us know and try again to verify installation.
     
-    **EMOD ValueError (Likely Due to Wrong emodpy-malaria Version)**  
+    **EMOD ValueError (Likely Due to Wrong emodpy-malaria Version)**   
     
     - EMOD ValueError: If it seems that EMOD is running, but you get a ValueError, this indicates that a wrong version of '
       emodpy-malaria' has been installed.
-      Please let us know and we will update the online documentation.    
-      An example is shown in the screenshot below:
+      Please let us know and we will update the online documentation.     
+      An example is shown in the screenshot below: 
     
-    ??? info "Show image"
+    ??? info "Show image" 
     
         ![-emodpy_malaria_version_error_example](../img/emodpy_malaria_version_error_example.png)  
         [View image file](https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/emodpy_malaria_version_error_example.png)
