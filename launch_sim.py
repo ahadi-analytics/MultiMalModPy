@@ -129,7 +129,7 @@ if __name__ == '__main__':
     if exp.emod_step != 'burnin':
         submit_run_plotters(exp)
 
-    if exp.selected_platform == 'CONTAINER' and 'EMOD' in exp.models:
+    if exp.selected_platform == 'Container' and 'EMOD' in exp.models:
         from EMOD.utils import run_analyze_EMOD_local_with_polling
         run_analyze_EMOD_local_with_polling(exp, exp.container_id)
 
