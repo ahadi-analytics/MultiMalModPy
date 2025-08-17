@@ -12,10 +12,13 @@ selected_platform = 'SLURM_LOCAL'
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 use_container = False
-if os.path.exists("/.dockerenv"):
-    hpc = 'LOCAL'
+if os.path.exists("/.dockerenv") :
     use_container = True
+
+if os.name != 'posix':
+    hpc = 'LOCAL'
     selected_platform = 'Container'
+
 
 # ----------------------------- EMOD generic settings start -----------------------------
 # Location of the file containing AssetCollection id for the dtk sif (singularity image)
@@ -34,9 +37,7 @@ schema_file = os.path.join(os.path.expanduser('~'), "download/schema.json")
 eradication_path = os.path.join(os.path.expanduser('~'), "download/Eradication")
 # ----------------------------- EMOD generic settings end -----------------------------
 
-platform = 'SLURM_LOCAL'
-if os.name != 'posix':
-    platform ='Container'
+
 
 # ----------------------------- Framework and cluster specific settings start -----------------------------
 # job_directory is where your simulations and outputs will be stored

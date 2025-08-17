@@ -298,14 +298,22 @@ if (-not (Test-Path -Path $log_dir)) {{
 # Navigate to the working directory
 Set-Location -Path $jobdir
 
-# Run the OpenMalaria simulation for each experiment
+# Run the OpenMalaria simulation for each experiment, with progress bar
+$total = {exp.nexps}
+$startTime = Get-Date
 for ($i = 1; $i -le {exp.nexps}; $i++) {{
+    $elapsed = (Get-Date) - $startTime
+    $percent = ($i / $total) * 100
+    $status = "Simulation $i of $total | Elapsed: {{0:hh\\:mm\\:ss}}" -f $elapsed
+    Write-Progress -Activity "Running OpenMalaria" -Status $status -PercentComplete $percent
     # Run the openMalaria command
     & "$exe_path/openMalaria.exe" -s "xml/$i.xml" --output "txt/$i.txt" `
     >> "$log_dir/run_openmalaria.log" 2>> "$log_dir/run_openmalaria.err"
 }}
 
-Write-Host "OpenMalaria simulation complete."
+Write-Progress -Activity "Running OpenMalaria" -Completed
+$elapsedTotal = (Get-Date) - $startTime
+Write-Host "All $total simulations complete in $($elapsed_total.ToString())."
 """
 
     # Write the PowerShell content to a .ps1 file
