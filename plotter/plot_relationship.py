@@ -91,7 +91,7 @@ def prevalence2to10_to_outcome(
 
         for mi, grp in enumerate(unique_groups):
             pdf = adf[adf[sweepvar] == grp]
-            color = color_selector(i, s, sweepvar=sweepvar, n_colors=len(unique_groups))
+            color = color_selector(mi, grp, sweepvar=sweepvar, n_colors=len(unique_groups))
             if not pd.isnull(pdf['prevalence_2to10']).all():
                 xmean, ymean = get_x_y(pdf, 'target_output_values', 'prevalence_2to10', channel)
                 merge_df = pd.merge(left=xmean, right=ymean, on='target_output_values')
