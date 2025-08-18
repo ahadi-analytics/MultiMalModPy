@@ -287,7 +287,7 @@ def write_ps1_OpenMalaria(exp):
     ps_content = f"""
 # Job settings
 $job_name = "run_openmalaria"
-$exe_path = "{exp.OPENMALARIA_venv}"
+$exe_path = "{exp.OPENMALARIA_PATH}"
 $jobdir = "{exp.job_directory}"
 $log_dir = Join-Path $jobdir "log"
 
@@ -314,7 +314,7 @@ for ($i = 1; $i -le {exp.nexps}; $i++) {{
 
 Write-Progress -Activity "Running OpenMalaria" -Completed
 $elapsedTotal = (Get-Date) - $startTime
-Write-Host "All $total simulations complete in $($elapsed_total.ToString())."
+Write-Host "All $total simulations complete in $($elapsedTotal.ToString())."
 """
 
     # Write the PowerShell content to a .ps1 file
@@ -355,7 +355,7 @@ def write_sh_OpenMalaria(exp):
 
 # Job settings
 job_name="run_openmalaria"
-exe_path="{exp.OPENMALARIA_PATH}"
+exe_path="{exp.OPENMALARIA_venv}"
 jobdir="{exp.job_directory}"
 log_dir="$jobdir/log"
 
@@ -365,7 +365,7 @@ if [ ! -d "$log_dir" ]; then
 fi
 
 # Navigate to the job directory
-cd "$exe_path" || exit 1
+cd "$jobdir" || exit 1
 
 # Run the OpenMalaria simulation for each experiment
 for ((i = 1; i <= {exp.nexps}; i++)); do

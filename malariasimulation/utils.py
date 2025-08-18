@@ -182,7 +182,7 @@ for ($i = 1; $i -le $total; $i++) {{
 
 Write-Progress -Activity "Running malariasimulation" -Completed
 $elapsedTotal = (Get-Date) - $startTime
-Write-Host "All $total simulations complete in $($elapsed_total.ToString())."
+Write-Host "All $total simulations complete in $($elapsedTotal.ToString())."
 """
 
     try:
