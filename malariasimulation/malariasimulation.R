@@ -58,4 +58,4 @@ if( length(exp$intervention_list)>0){
 
 # Run the simulations or load example:
 print("Running the simulations...")
-simulation_outputs_raw <- run_simulations(exp = exp, exp_setup_df = exp_setup_df, parameter_table = parameter_table)
+run_simulations(exp = exp, exp_setup_df = exp_setup_df, parameter_table = parameter_table)

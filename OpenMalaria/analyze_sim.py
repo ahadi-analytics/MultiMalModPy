@@ -952,7 +952,6 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     columns_to_keep += [column for column in exp.intervention_analyzer_columns if column in adf.columns]       
     adf = adf[columns_to_keep]  
     adf = adf.rename(columns={'days': 'timestep'})
-    
     print(f'Saving mmmpy_5day.csv to {wdir}')
     adf.to_csv((os.path.join(wdir, 'mmmpy_5day.csv')), index=False)
 
@@ -979,6 +978,8 @@ if __name__ == "__main__":
     # Run analyzers
     InputEIRAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
 
+    # Run analyzers
+    InputEIRAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
     # Most raw outputs only combining single txt files into one CSV (for 5d potentially large file)
     if 'openmalaria_base' in exp.analyzer_list:
         BaseAnalyzer(exp, mm, saveExtract=False, compr='gzip')

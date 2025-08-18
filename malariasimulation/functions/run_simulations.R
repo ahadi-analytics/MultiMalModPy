@@ -30,12 +30,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
   #-------------------------
   # 1. Define simulation
   #-------------------------
-  # Open a list to store the simulation parameter lists in:
-  simparams <- list()
-  final_simulation_parameters <- list()
-  # Open a list to store the outputs in:
-  simulation_output <- list()
-  
+
   # Specify the min and max ages to render:
   min_ages <- exp$min_ages
   max_ages <- exp$max_ages
@@ -67,10 +62,11 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
   exp$h <- as.numeric(seasonal_coefficients$coefficients[5:7])
   exp$floor <- as.numeric(seasonal_coefficients$floor)
   
-  # Assign seasonality:
+  # Assign seasonality and age distribution:
   simparams <- get_parameters(overrides = list(
     # Set the human population size
     human_population = exp$pop_size,
+    
     # Set the seasonal profile
     model_seasonality = exp$model_seasonality,
     g0 = exp$g0, 
@@ -81,6 +77,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     # Average age of human population (affects demographic make-up)
     #average_age = 23.32067006 * 365, #average age of OpenMalaria's input age demography
     average_age = 26 * 365, # average age that looked closer to OM's input age demography.
+    
     # Render prevalence in age groups 0-5, 5-10, 10-15, and 15-20, and 2-10 (for PfPR_2-10)
     prevalence_rendering_min_ages = c(min_ages, (2 * 365)),
     prevalence_rendering_max_ages = c(max_ages, (10 * 365)),
@@ -112,7 +109,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
                                            drug = 1,
                                            timesteps = 1,
                                            coverages = parameter_table$cm_clinical)
-  print(simparams)
+  
   # Include interventions and calibrate to the initial EIR:
   if (length(intervention_list) > 0){
     simparams <- include_interventions(exp = exp,
@@ -129,6 +126,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
   #-------------------------
   # 2. Run simulations:
   #-------------------------
+  final_simulation_parameters <- list()
   final_simulation_parameters[[1]] <- simparams
   simulation_output <- run_simulation(timesteps = timesteps, parameters = final_simulation_parameters[[1]])
   
@@ -138,24 +136,18 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
   simulation_output$seasonality  <- parameter_table$seasonality
   simulation_output$seed <- parameter_table$seed
   simulation_output$transmission_intensity_malariasimulation <- parameter_table$transmission_intensity_malariasimulation
+  
+  # Include interventions output values
   if (length(intervention_list) > 0){
   simulation_output <- include_intervention_outputs(output_list = simulation_output,
                                                     intervention_list = intervention_list,
                                                     parameter_table = parameter_table)
   } 
+  
   # When running simulation scenarios in parallel as on HPC, those always need to be saved, part of the framework
   # If run as a standalone and all simulations scenarios as part of the for loop, this would not be needed.
   write_csv(simulation_output, file.path(exp$job_directory, 'malariasimulation_jobs', paste0(parameter_table$index, '_out.csv')))
   
   # Print the function progress:
-  print(paste0("Simulation ", parameter_table$index, " complete (", round(x = i / nrow(parameter_table) * 100, digits = 3), "% complete)"))
-  
-  
-  
-  # Create a list of the simulation parameters and simulation outputs to return:
-  sim.out <- list(simparams, simulation_output)
-  
-  # Return the list:
-  return(sim.out)
-  
+  print(paste0("Simulation ", parameter_table$index, " completed"))
 }
