@@ -1,7 +1,9 @@
 from emodpy_malaria.interventions.treatment_seeking import add_treatment_seeking
 from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
+from emodpy_malaria.interventions.drug_campaign import add_drug_campaign
+from emodpy_malaria.malaria_config import set_drug_param
 import pandas as pd
-#from emodpy_malaria.interventions.drug_campaign import add_drug_campaign
+
 
 def treatment_camp_simple(camp, cm_start, cm_clinical, cm_severe):
     """
@@ -46,6 +48,29 @@ def carrying_capacity(camp, row):
                                   repetitions=1)
     return camp
 
+def infcl(camp, row):
+
+    add_drug_campaign(camp, campaign_type = 'MDA', drug_code = 'DHA', start_days = [row.infcl_timestep_EMOD],
+                      coverage = row.infcl_coverage, repetitions = 1)
+    return camp
+
+def setup_infectious_clearance_drug(config, drug_name = ""):
+    set_drug_param(config, drug_name = drug_name, parameter = "PKPD_Model", value = "FIXED_DURATION_CONSTANT_EFFECT")
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_Cmax", value = 1000)
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_Decay_T1", value = 1)
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_Decay_T2", value = 1)
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_Vd", value = 1)
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_PKPD_C50", value = 750)
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_Fulltreatment_Doses", value = 1)
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_Dose_Interval", value = 1)
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_Gametocyte02_Killrate", value = 0)
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_Gametocyte34_Killrate", value = 0)
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_GametocyteM_Killrate", value = 0)
+    set_drug_param(config, drug_name = drug_name, parameter = "Drug_Hepatocyte_Killrate", value = 0)
+    set_drug_param(config, drug_name = drug_name, parameter = "Max_Drug_IRBC_Kill", value = 500)
+    set_drug_param(config, drug_name = drug_name, parameter = "Bodyweight_Exponent", value = 1)
+    set_drug_param(config, drug_name = drug_name, parameter = "Fractional_Dose_By_Upper_Age", value = [{"Fraction_Of_Adult_Dose": 1.0, "Upper_Age_In_Years": 115.0}])
+
 # SMC currently not supported
 # def smc_campaign(camp, row, start_array):
 #     """
@@ -72,11 +97,3 @@ def carrying_capacity(camp, row):
 #                       receiving_drugs_event_name="Received_SMC")
 #     start_arrays = '; '.join([str(x) for x in start_array])
 #     return {'smc_start_emod': start_arrays, 'smc_coverage': row.smc_coverage}
-
-
-def carrying_capacity(camp, row):
-    cc_factor_df = pd.DataFrame({'CONSTANT': [row.cc_factor_EMOD]})
-    add_scale_larval_habitats(camp, df=cc_factor_df,
-                                  start_day=row.cc_timestep_EMOD,
-                                  repetitions=1)
-    return camp
