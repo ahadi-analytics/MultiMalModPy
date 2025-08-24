@@ -53,8 +53,10 @@ def submit_analyze_outputs(exp, t='01:00:00', memG=10):
                 f'\n{exp.EMOD_venv}' \
                 f'\npython analyze_sim.py --dir "{exp.job_directory}"'
 
-    if exp.malariasimulation_parameter_variation:
+    if exp.malariasimulation_parameter_variation == "both":
         pycommand = pycommand + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
+    if exp.malariasimulation_parameter_variation == "yes":
+        pycommand = pycommand + '--mpv'
 
     script_path = os.path.join(exp.job_directory, 'run_analyzer_malariasimulation.sh')
     file = open(script_path, 'w')
@@ -93,11 +95,19 @@ def submit_run_malariasimulation(exp, scen_df):
     scen_df_wseeds = rep_scen_df(scen_df)
     scen_df_wseeds['malariasimulation_pv'] = 0
 
-    if exp.malariasimulation_parameter_variation:
+    if exp.malariasimulation_parameter_variation == "yes":
+        # run only parameter variation
+        scen_df_all = param_variation(scen_df_wseeds, exp)
+        scen_df_all['index_pv'] = range(len(scen_df_all))
+
+    elif exp.malariasimulation_parameter_variation == "both":
+        # run baseline AND parameter variation
         scen_df_mpv = param_variation(scen_df_wseeds, exp)
         scen_df_all = pd.concat([scen_df_wseeds, scen_df_mpv], ignore_index=True)
         scen_df_all['index_pv'] = range(len(scen_df_all))
-    else:
+
+    else:  # "no"
+        # run only baseline
         scen_df_all = scen_df_wseeds
 
     save_scen(scen_df_all, fname='scenarios_wseeds_mpv.csv', save_dirs=[exp.job_directory, exp.output_directory])
@@ -133,10 +143,10 @@ def submit_run_malariasimulation_slurm(exp):
         None: This function does not return any value. It submits the job and prints the job ID.
     """
 
-    if exp.malariasimulation_parameter_variation:
-        nexps = exp.nexps * 2
-    else:
-        nexps = exp.nexps
+
+    # When running with and without malariasimulation_parameter_variation, twice as many experiments are needed
+    nexps = exp.nexps * 2 if exp.malariasimulation_parameter_variation == "both" else exp.nexps
+
 
     array = f'#SBATCH --array=1-{str(nexps)}%{str(exp.max_running_jobs)}\n'
     header_post = shell_header_quest(exp.sh_hpc_config, exp.malariasimulation_time_per_sim,
@@ -194,10 +204,8 @@ def write_ps1_malariasimulation(exp):
     exe_path = os.path.normpath(exp.r_local)
     job_dir = os.path.normpath(exp.job_directory)
 
-    if exp.malariasimulation_parameter_variation:
-        nexps = exp.nexps * 2
-    else:
-        nexps = exp.nexps
+    # When running with and without malariasimulation_parameter_variation, twice as many experiments are needed
+    nexps = exp.nexps * 2 if exp.malariasimulation_parameter_variation == "both" else exp.nexps
 
     powershell_content = f"""
 # Job settings
@@ -272,10 +280,9 @@ def write_sh_malariasimulation(exp):
 
     # Get the absolute path of the working directory
     malariasimulation_path = os.path.join(exp.ROOT_DIR, 'malariasimulation')
-    if exp.malariasimulation_parameter_variation:
-        nexps = exp.nexps * 2
-    else:
-        nexps = exp.nexps
+
+    # When running with and without malariasimulation_parameter_variation, twice as many experiments are needed
+    nexps = exp.nexps * 2 if exp.malariasimulation_parameter_variation == "both" else exp.nexps
 
     # Construct the content of the shell script
     sh_content = f"""#!/bin/bash

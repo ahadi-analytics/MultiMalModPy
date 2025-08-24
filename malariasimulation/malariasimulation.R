@@ -38,7 +38,7 @@ exp_setup_df <- read.csv(file.path(job_directory, 'exp_setup_df.csv'))
 
 
 exp <- list()
-exp$malariasimulation_parameter_variation <- tolower(exp_setup_df[exp_setup_df$parameter == 'malariasimulation_parameter_variation', 'Value']) == "true"
+exp$malariasimulation_parameter_variation <- tolower(exp_setup_df[exp_setup_df$parameter == 'malariasimulation_parameter_variation', 'Value'])
 exp$job_directory <- exp_setup_df[exp_setup_df$parameter == 'job_directory', 'Value']
 exp$output_directory <- exp_setup_df[exp_setup_df$parameter == 'output_directory', 'Value']
 exp$pop_size <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'pop_size_malariasimulation', 'Value'])
