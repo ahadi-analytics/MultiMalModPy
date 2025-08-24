@@ -183,6 +183,11 @@ def get_param_from_dataframe(df, name, sim_params_list):
         else:
             out = value
 
+    if isinstance(out, list) and len(out) == 1:
+        v = out[0]
+        if v is None or v != v:
+            return []
+
     return out
 
 

@@ -224,9 +224,13 @@ if (!(Test-Path $log_dir)) {{
 Set-Location -Path "$work_dir"
 
 # Run simulations with progress bar
-$total = {nexps}
+$total = {exp.nexps}
+$startTime = Get-Date
 for ($i = 1; $i -le $total; $i++) {{
-    Write-Progress -Activity "Running malariasimulation" -Status "Simulation $i of $total" -PercentComplete (($i / $total) * 100)
+    $elapsed = (Get-Date) - $startTime
+    $percent = ($i / $total) * 100
+    $status = "Simulation $i of $total | Elapsed: {{0:hh\\:mm\\:ss}}" -f $elapsed
+    Write-Progress -Activity "Running malariasimulation" -Status $status -PercentComplete $percent
 
     & "$exe_path\\Rscript.exe" "$work_dir\\malariasimulation.R" "$work_dir" "$jobdir" $i `
         >> "$log_dir\\run_malariasimulation.log" `
@@ -234,7 +238,8 @@ for ($i = 1; $i -le $total; $i++) {{
 }}
 
 Write-Progress -Activity "Running malariasimulation" -Completed
-Write-Host "malariasimulation simulation complete."
+$elapsedTotal = (Get-Date) - $startTime
+Write-Host "All $total simulations complete in $($elapsedTotal.ToString())."
 """
 
     try:
