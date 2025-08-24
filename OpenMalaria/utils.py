@@ -3,7 +3,7 @@ import shutil
 
 # from OpenMalaria.functions.interventions import * # Currently not supported
 from OpenMalaria.functions.convert_access import convert_access_lookup
-from OpenMalaria.functions.interventions import *
+from OpenMalaria.functions.interventions import carrying_capacity, infcl
 
 
 
@@ -61,6 +61,10 @@ def create_scenarios(exp, scen_df):
         xml = carrying_capacity(exp, xml)
     else:
         xml = xml.replace('@intervention_ccstep@', '')
+    if "infcl" in exp.intervention_list:
+        xml = infcl(exp,xml)
+    else:
+        xml = xml.replace('@intervention_infcl@', '')
 
     # Model options
     snippet_file = exp.openmalaria_modeloptions
@@ -97,6 +101,9 @@ def create_scenarios(exp, scen_df):
         if 'ccstep' in exp.intervention_list:
             scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_OpenMalaria']))
             scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_OpenMalaria']))
+        if 'infcl' in exp.intervention_list:
+            scenario = scenario.replace('@infcl_coverage@', str(row['infcl_coverage']))
+            scenario = scenario.replace('@infcl_timestep_OpenMalaria@', str(exp.infcl_timestep_OpenMalaria))
         
         #SMC currently not supported
         #if 'smc' in exp.intervention_list:
