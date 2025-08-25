@@ -19,40 +19,40 @@ The malaria model structure for EMOD is detailed in the [malaria-model-overview]
 
 ## Model components configured in MultiMalModPy    
 
-The sections below outline key components of the simulation framework. 
-They provide relevant details to guide users but are not presented in a strict order or consistent level of detail.  
-
 
 ### Time
  
- **Model-specific timesteps**    
-- **EMOD**:
-  - 1 day timestep
-- **malariasimulation**: 
-   -  1 day timestep
-- **OpenMalaria**: 
-   - 5 day timestep  
+**Model-specific timesteps**    
+
+- **EMOD**: 1 day timestep  
+- **malariasimulation**: 1 day timestep   
+- **OpenMalaria**:  5 day timestep     
+ 
+**Model-specific monitoring surveys**    
+
+- **EMOD**: flexible, multiple options per simulation  (i.e. 5 days and 30 days, and 365 days)
+- **malariasimulation**: 1 day timestep   
+- **OpenMalaria**:  flexible, single option per simulation  (i.e. 5 days or 30 days)
+
 
 
 ### Population and age demography       
 
-- **EMOD**:  [Population dynamics](https://docs.idmod.org/projects/emod-malaria/en/latest/parameter-configuration-population.html?highlight=birth)
-- **malariasimulation**: [ModelDemography]() 
-- **OpenMalaria**:  [Demography](https://github.com/SwissTPH/openmalaria/wiki/ModelDemography)
-
+- **EMOD**:  [Population dynamics](https://docs.idmod.org/projects/emod-malaria/en/latest/parameter-configuration-population.html?highlight=birth)  
+- **malariasimulation**: [ModelDemography]()   
+- **OpenMalaria**:  [Demography](https://github.com/SwissTPH/openmalaria/wiki/ModelDemography)  
 
 
 ### Transmission intensity     
 
-The models handle transmission intensity primarily in two ways:  
-- Forced EIR: The EIR is explicitly set and remains constant.  
-- Dynamic EIR: The EIR emerges from mosquito population dynamics and host-vector interactions.  
+**EMOD**:
+- forced transmission model, using EIR as input    
+- dynamic transmission model, using Larval Habitat Availability as input     
 
-- **EMOD**:
-  - forced transmission model, using EIR as input
-  - dynamic transmission model, using Larval Habitat Availability as input 
-- **malariasimulation**: 
-   -  dynamic transmission model, using EIR together with monthly rainfall (see [seasonality](../guide/seasonality.md)) as input  
-- **OpenMalaria**: 
-  - forced transmission model, using EIR as input
-  - dynamic transmission model, using EIR as input
+**malariasimulation**:    
+- dynamic transmission model, using EIR together with monthly rainfall (see [seasonality](../guide/seasonality.md)) as input     
+
+**OpenMalaria**:    
+- forced transmission model, using EIR as input   
+- dynamic transmission model, using EIR as input
+

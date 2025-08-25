@@ -121,5 +121,4 @@ class SimulationConfig:
         self.plots_to_run = ['relationship', 'timeseries', 'agecurves']  # 'ccstep'
         self.burnin_directory = None
         self.sim_params_list = ['seasonality', 'sweep_list', 'case_management', 'eir', 'intervention_list', 'agebins',
-                                'target_output_values', 'plots_to_run']
-
+                                'target_output_values', 'plots_to_run','models']

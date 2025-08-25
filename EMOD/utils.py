@@ -60,7 +60,7 @@ def submit_run_EMOD(exp, manifest, scen_df):
     sim_start_year_emod = exp.sim_start_year_emod
 
     if exp.hpc == 'LOCAL':
-        platform = Platform('Container', job_directory=exp.suite_directory)
+        platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory)
     else:
         platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
                                            mem_per_cpu=f'{exp.emod_memory_per_sim}G',
@@ -126,13 +126,11 @@ def submit_run_EMOD(exp, manifest, scen_df):
                                             f"--models {' '.join([m for m in exp.models_pickup])} ",
                                 job_id_EMOD='job_id_EMODanalyze',memG=exp.mem_increase_factor*5, job='pickup_launch')
     else:
-        from utility.helper_local import create_ps1_script
         write_analyze_EMOD_local(experiment, platform)
         exp.container_id = platform.container_id
         print(f"Container ID: {exp.container_id}")
 
     print(f"Experiment submission {experiment.uid} succeeded.")
-    return experiment
 
 
 def config_task(platform, exp):
@@ -170,7 +168,7 @@ def config_task(platform, exp):
     )
     set_emod_exp_parameters(task.config, exp)
 
-    if exp.selected_platform !='CONTAINER' : # Relates to container used locally, not on HPC
+    if exp.selected_platform !='Container' : # Relates to container used locally, not on HPC
         task.set_sif(manifest.SIF_PATH, exp.platform)
 
     return task
@@ -472,7 +470,6 @@ def write_analyze_EMOD_local(experiment, platform):
     Runs the analyzer script directly inside the container (no SLURM).
     """
     # Write local submission script (for   analyzer_script[0] only)
-    from utility.helper_local import create_ps1_script
     job_name = f"analyzer_EMOD"
     subdir = 'EMOD'
     py_command = f"python {experiment.analyzer_script[0]}  -d {experiment.job_directory} -i {experiment.id}"
