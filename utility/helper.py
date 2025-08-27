@@ -415,7 +415,7 @@ def create_simsetup_csv(exp):
                  'seasonality': exp.seasonality,
                  'seasonal_monthly': ';'.join(map(str, exp.seasonal)),
                  'perennial_monthly': ';'.join(map(str, exp.perennial)),
-                 'seasonal_daily': ';'.join(map(str, exp.season_daily)),
+                 'seasonal_daily': ';'.join(map(str, exp.seasonal_daily)),
                  'perennial_daily': ';'.join(map(str, exp.perennial_daily)),
                  'start_year': exp.start_year,
                  'end_year': exp.end_year,
