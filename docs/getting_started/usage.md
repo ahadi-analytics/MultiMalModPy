@@ -1,44 +1,80 @@
-# How to use MultiMalModPy  
+# Quickstart on how to use MultiMalModPy  
 
-_This page provides an overview of the process steps_  
+_This page provides a concise overview of the main steps to configure, launch, and interpret simulations._
 
-## Define a simulation
-1. Open  `setup_sim.py` and modify parameters as needed (visit [building scenarios](../guide/scenarios.md) for details).
 
-##  Running a simulation
+<div style="background-color: #f4f4f4; padding: 20px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+  <strong style="font-size: 18px; color: #00796b;"><em>Continue on this page if:</em></strong>
+  <ul style="padding-left: 20px; line-height: 1.6; margin-top: 10px; margin-bottom: 0;">
+    <li>✅ You have installed all required software
+    </li>
+    <li> ✅Your simulation is configured in <code>manifest.py</code>
+    </li>
+    <li> ✅You want to run MultiMalModPy from a container without manual installation
+    </li>
+    <li> ❌ If not, revisit the
+    </li>
+     &nbsp;➡️ <a href="../getting_started/installation.md">Installation guide</a>
+     &nbsp;➡️ <a href="../getting_started/configuration.md">First-time configuration</a>
+  </ul>
+</div>
 
-1. Open a terminal and navigate to the repository: 
+
+---
+
+
+## Define a simulation   
+1. Open `setup_sim.py` and modify parameters as needed  
+   → See [Building Scenarios](../guide/scenarios.md) for examples
+
+---
+
+##  Run a Simulation
+
+1. Open a terminal and navigate to the repo:
+
 ```bash
 cd ~/MultiMalModPy
 ```
 
-2. Run the Python script to define and launch the simulation: 
+2. Launch the simulation:   
+
 ```bash
 python launch_sim.py
 ```
-This executes a test run using the default settings specified in the script and `parse_launch_args` (see `helper.py`).
 
-3. Wait for simulations to finish: 
-Once the simulations complete, analyzer scripts and default plots will automatically be generated.  
+> Note: This runs a test scenario using default parameters from setup_sim.py and parse_launch_args() (see helper.py).
 
-**Example submission lines**
+
+3. Wait for simulation completion.
+Output files and plots will be generated automatically after completion.
+
+
+###  Example Submission Lines 
  
-- Testrun: Run a quick test with predefined settings:
-  - `python launch_sim.py  --models EMOD MalSim OpenMalaria --test`
+- Test run – quick check with minimal settings:
+```
+python launch_sim.py --models EMOD malariasimulation OpenMalaria --test
 
-- Baseline run: Run simulations with default settings or modified defaults from the Python file:
-  - `python launch_sim.py  --models EMOD MalSim OpenMalaria`
-  - `python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv baseline_eirsweep_noCM`  
+```
 
-- Custom run: Run a simulation with specific interventions and test settings:
-  - `python launch_sim.py  --models EMOD MalSim OpenMalaria --intervention cc_step --test --emodstep burnin`
-  - `python launch_sim.py  --models EMOD MalSim OpenMalaria  --rownum 0 --csv cc_step_test`  
+Baseline run – use default settings: 
+``` 
+python launch_sim.py --models EMOD 
+python launch_sim.py --models malariasimulation
+python launch_sim.py --models OpenMalaria
+python launch_sim.py --models EMOD malariasimulation OpenMalaria
+python launch_sim.py --models EMOD OpenMalaria
+```
+
+Row-specific config from CSV:
+```
+python launch_sim.py  --models EMOD malariasimulation OpenMalaria  --csv example1  --rownum 0
+python launch_sim.py  --models EMOD malariasimulation OpenMalaria  --csv example1  --rownum 1
+```
 
 
-## View standardized simulation outputs 
-
-
-![Example outputs](../img/example_output_csv.png)
+## Simulation outputs 
 
 **Time-series:**
 

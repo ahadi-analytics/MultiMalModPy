@@ -10,16 +10,19 @@ For consistency the same set of seeds across all three models is run, for instan
 
 ## Model and parameter uncertainty  
 
-- **OpenMalaria** allows to take into account model and parameter uncertainty through varying ‘model variants’ [Smith et al 2012](https://pmc.ncbi.nlm.nih.gov/articles/PMC3260300/). 
-In the initial framework release, only the [base model]() is included.  
+- **OpenMalaria** provides a mechanism to account for model and parameter uncertainty by varying _model variants_. 
+This approach allows the user to explore different model configurations and their impact on simulation outcomes. 
+For more information, refer to the work by [Smith et al 2012](https://pmc.ncbi.nlm.nih.gov/articles/PMC3260300/). 
+In the initial framework release, only the base model is included. Future updates may include additional model variants.
 
 
-- **EMOD’s** functionality to account for parameter uncertainty is not yet available in the framework. 
-An [alternative base calibration](../getting_started/model_specificities.md#using-alternative-base-calibration#emod) will soon become available.   
+- **EMOD’s** currently does not include built-in functionality for accounting for parameter uncertainty in its framework. 
+However, an alternative approach for base calibration in EMOD will soon be available, enabling users to better account for parameter variability in future simulations. 
+For details, see the guide on [alternative base calibration](../guide/model_specificities.md#using-alternative-base-calibration).   
 
 
-- In **malariasimulation**, accounting for parameter uncertainty to better reflect potential variability in the simulation 
-results has been integrated by drawing parameter values from posterior distributions around defined parameter sets.
-Details are described under model-specific features [Paramerer sampling](../getting_started/model_specificities.md#parameter-sampling ). 
+- In **malariasimulation**, parameter uncertainty is addressed by drawing parameter values from posterior distributions around defined parameter sets. 
+This technique allows for a more realistic representation of parameter variability, which can influence the outcomes of the simulation 
+For more detailed information on how parameter sampling is implemented, see the section on [Paramerer sampling](../guide/model_specificities.md#parameter-sampling ). 
 
  

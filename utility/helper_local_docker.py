@@ -74,7 +74,7 @@ def write_and_execute_sh_script(script_path: str, content: str, exp=None, execut
 
 
 def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname='run_relationship_plots.sh',
-                           custom_args='--modelname EMOD malariasimulation OpenMalaria', wdir=None):
+                           custom_args='--models EMOD malariasimulation OpenMalaria', wdir=None):
     """
     Generates a shell script to execute a Python script inside a Docker container
     and runs the shell script.
@@ -89,14 +89,14 @@ def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname=
     Args:
         exp (object): Experiment configuration object, must have:
             - `EMOD_venv` (str): Virtual environment activation command.
-            - `sim_out_dir` (str): Simulation output directory.
+            - `output_directory` (str): Simulation output directory.
             - `job_directory` (str): Directory where the shell script will be created.
         pyscript (str, optional): Path to the Python script to execute.
             Defaults to `"plotter/plot_relationship.py"`.
         shname (str, optional): Name of the generated shell script.
             Defaults to `"run_relationship_plots.sh"`.
         custom_args (str, optional): Custom command-line arguments for the Python script.
-            Defaults to `"--modelname EMOD malariasimulation OpenMalaria"`.
+            Defaults to `"--models EMOD malariasimulation OpenMalaria"`.
         wdir (str, optional): Working directory for executing the script.
             If `None`, it defaults to the parent directory of the current file.
 
@@ -123,7 +123,7 @@ def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname=
 cd "{wdir}"
 
 # Run the Python script with arguments
-python "{pyscript}" -d "{exp.sim_out_dir}" {custom_args}
+python "{pyscript}" -d "{exp.output_directory}" {custom_args}
 """
 
     # Define the shell script path
@@ -138,14 +138,14 @@ def submit_run_plotters_sh(exp):
 
     Args:
         exp (Experiment): The experiment object containing attributes such as
-            `models_to_run` and `plots_to_run`, which determine which models and
+            `models` and `plots_to_run`, which determine which models and
             plots should be processed.
 
     Returns:
         list: List of paths to the generated shell scripts
 
     Notes:
-        - The function checks which models are specified in `exp.models_to_run`
+        - The function checks which models are specified in `exp.models`
         - It creates shell scripts for default plots (`relationship`, `timeseries`, `agecurves`)
           and custom plots if specified in `exp.plots_to_run`
         - If `exp.plots_to_run` is set to `'all'`, all available plots will be processed
@@ -169,11 +169,11 @@ def submit_run_plotters_sh(exp):
 
         # Generate the shell script
         submit_run_pyscript_sh(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
-                               custom_args=f"--modelname {' '.join([x for x in exp.models_to_run])}",
+                               custom_args=f"--models {' '.join([x for x in exp.models])}",
                                wdir=os.path.join(parent_dir, 'plotter'))
 
 
-def write_sh_plotters(exp, model_to_run):
+def write_sh_plotters(exp, model):
     """
     This function generates a shell script that runs the specified analyzer script for the given model.
     The generated shell script will activate the virtual environment and run the Python script.
@@ -181,14 +181,14 @@ def write_sh_plotters(exp, model_to_run):
     Args:
         exp (object): An experiment object containing the 'job_directory' attribute for saving the script.
         pyscript (str): The path to the Python script to be run by the analyzer.
-        model_to_run (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.
+        model (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.
 
     Raises:
         ValueError: If the model name or script path is invalid, ensuring correct arguments are passed.
     """
 
     # Validate inputs
-    if not model_to_run:
+    if not model:
         raise ValueError("Model name cannot be empty.")
 
     # Define the shell script filename and path
@@ -203,7 +203,7 @@ def write_sh_plotters(exp, model_to_run):
     sh_content = "#!/bin/bash\n\n"
 
     # Job settings
-    job_name = f"analyze_{model_to_run}"
+    job_name = f"analyze_{model}"
     sh_content += f"# Job settings\n"
     sh_content += f'job_name="{job_name}"\n'
     sh_content += f'jobdir="{exp.job_directory}"\n'
@@ -220,7 +220,7 @@ def write_sh_plotters(exp, model_to_run):
     sh_content += f"# Set working directory\ncd {exp.ROOT_DIR}/plotter\n"
 
     # Set custom arguments and run the Python command
-    py_args = f'--directory "{exp.sim_out_dir}" --modelname {model_to_run} '  # Custom directory argument for your script
+    py_args = f'--directory "{exp.output_directory}" --models {model} '  # Custom directory argument for your script
 
     # Determine which plots to run
     plots_to_run = [p for p in exp.plots_to_run if not p == 'sampleplots']
@@ -238,7 +238,7 @@ def write_sh_plotters(exp, model_to_run):
     write_and_execute_sh_script(script_path=script_path, content=sh_content, exp=exp, execute=False)
 
 
-def write_sh_analyzer(exp, pyscript, model_to_run):
+def write_sh_analyzer(exp, pyscript, model):
     """
     This function generates a shell script that runs the specified analyzer script for the given model.
     The generated shell script will activate the virtual environment and run the Python script.
@@ -246,18 +246,18 @@ def write_sh_analyzer(exp, pyscript, model_to_run):
     Args:
         exp (object): An experiment object containing the 'job_directory' attribute for saving the script.
         pyscript (str): The path to the Python script to be run by the analyzer.
-        model_to_run (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.
+        model (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.
 
     Raises:
         ValueError: If the model name or script path is invalid, ensuring correct arguments are passed.
     """
 
     # Validate inputs
-    if not model_to_run:
+    if not model:
         raise ValueError("Model name cannot be empty.")
 
     # Define the shell script filename and path
-    shname = f'run_analyze_{model_to_run}.sh'
+    shname = f'run_analyze_{model}.sh'
     script_path = os.path.join(exp.job_directory, shname)
 
     # Check that the job directory exists
@@ -268,7 +268,7 @@ def write_sh_analyzer(exp, pyscript, model_to_run):
     sh_content = "#!/bin/bash\n\n"
 
     # Job settings
-    job_name = f"analyze_{model_to_run}"
+    job_name = f"analyze_{model}"
     sh_content += f"# Job settings\n"
     sh_content += f'job_name="{job_name}"\n'
     sh_content += f'jobdir="{exp.job_directory}"\n'
@@ -284,38 +284,42 @@ def write_sh_analyzer(exp, pyscript, model_to_run):
     sh_content += f"# Activate virtual environment\n{venv_activation}\n"
 
     # Set custom arguments and run the Python command
-    py_args = f'--directory "{exp.job_directory}"'  # Custom directory argument for your script
-    pycommand = f'python {pyscript} {py_args}\n'  # Command to run the Python script
+    py_args = f'--directory "{exp.job_directory}"'
+    pycommand = f'python {pyscript} {py_args}\n'
+
+    if exp.malariasimulation_parameter_variation:
+        py_args_mpv = f'--directory "{exp.job_directory}" --mpv'
+        pycommand = pycommand + f'python {pyscript} {py_args_mpv}\n'
 
     # Change to the appropriate directory and run the script
-    sh_content += f'cd {os.path.join(exp.ROOT_DIR, model_to_run)}\n'
+    sh_content += f'cd {os.path.join(exp.ROOT_DIR, model)}\n'
     sh_content += pycommand + '>> "$log_dir/run_analyzer_openmalaria.log" 2>> "$log_dir/run_analyzer_openmalaria.err"\n'
 
     # Write the shell script to a file
     write_and_execute_sh_script(script_path=script_path, content=sh_content, exp=exp, execute=False)
 
 
-def write_sh_runmodel(exp, filename, modelname):
+def write_sh_runmodel(exp, filename, model):
     """
     Writes a PowerShell script that manages the execution of two jobs:
-    1. Runs the first script (e.g., run_{modelname}.sh)
-    2. Runs the second script (e.g., analyze_sim_{modelname}.sh) after the first completes
+    1. Runs the first script (e.g., run_{model}.sh)
+    2. Runs the second script (e.g., analyze_sim_{model}.sh) after the first completes
 
     Args:
         exp (Experiment): The experiment object that contains job directories and other parameters.
         filename (str): The full path where the PowerShell script should be saved.
-        modelname (str): The name of the model to run (e.g., 'malariasimulation', 'OpenMalaria').
+        model (str): The name of the model to run (e.g., 'malariasimulation', 'OpenMalaria').
 
     Raises:
-        ValueError: If the provided modelname is empty or if exp.job_directory is not valid.
+        ValueError: If the provided model is empty or if exp.job_directory is not valid.
 
     Returns:
         None: This function does not return a value but writes the PowerShell script to the specified file.
     """
 
-    # Check for valid modelname and experiment directory
-    if not modelname:
-        raise ValueError("Modelname cannot be empty.")
+    # Check for valid model and experiment directory
+    if not model:
+        raise ValueError("model cannot be empty.")
 
     if not os.path.isdir(exp.job_directory):
         raise ValueError(f"Invalid job directory: {exp.job_directory}")
@@ -324,10 +328,10 @@ def write_sh_runmodel(exp, filename, modelname):
     sh_content = f"""#!/bin/bash
 
     # Start the first job
-    echo "Running job 1: run_{modelname}.sh"
+    echo "Running job 1: run_{model}.sh"
     {{
-        # Run the first script: run_{modelname}.sh
-        bash "{os.path.normpath(os.path.join(exp.job_directory, 'run_' + modelname + '.sh'))}"
+        # Run the first script: run_{model}.sh
+        bash "{os.path.normpath(os.path.join(exp.job_directory, 'run_' + model + '.sh'))}"
     }} || {{
         echo "Job 1 failed"
         exit 1
@@ -336,10 +340,10 @@ def write_sh_runmodel(exp, filename, modelname):
     echo "Job 1 completed successfully."
 
     # Start the second job (only after the first job completes)
-    echo "Running job 2: analyze_{modelname}.sh"
+    echo "Running job 2: analyze_{model}.sh"
     {{
-        # Run the second script: analyze_sim_{modelname}.sh
-        bash "{os.path.normpath(os.path.join(exp.job_directory, 'run_analyze_' + modelname + '.sh'))}"
+        # Run the second script: analyze_sim_{model}.sh
+        bash "{os.path.normpath(os.path.join(exp.job_directory, 'run_analyze_' + model + '.sh'))}"
     }} || {{
         echo "Job 2 failed"
         exit 1
@@ -348,10 +352,10 @@ def write_sh_runmodel(exp, filename, modelname):
     echo "Job 2 completed successfully."
 
     # Start the third job (only after the second job completes)
-    #echo "Running job 3: plot_{modelname}.sh"
+    #echo "Running job 3: plot_{model}.sh"
     #{{
-    #    # Run the third script: plot_{modelname}.sh
-    #    bash "{os.path.normpath(os.path.join(exp.job_directory, 'run_plotters_' + modelname + '.sh'))}"
+    #    # Run the third script: plot_{model}.sh
+    #    bash "{os.path.normpath(os.path.join(exp.job_directory, 'run_plotters_' + model + '.sh'))}"
     #}} || {{
     #    echo "Job 3 failed"
     #    exit 1
@@ -367,25 +371,25 @@ def write_sh_runmodel(exp, filename, modelname):
     write_and_execute_sh_script(script_path=filename, content=sh_content, exp=exp, execute=True)
 
 
-def submit_runmodel_sh(exp, model_to_run):
+def submit_runmodel_sh(exp, model):
     """
     This function creates a PowerShell script for running the specified model, saves it in the specified job directory,
     and then executes the script using the 'cmd.exe' command.
 
     Args:
         exp (object): An experiment object containing the 'job_directory' attribute where the PowerShell script will be saved.
-        model_to_run (str): The name of the model to be run (e.g., 'OpenMalaria', 'malariasimulation').
+        model (str): The name of the model to be run (e.g., 'OpenMalaria', 'malariasimulation').
 
     Raises:
         OSError: If there is an issue with executing the command or running the script.
     """
 
     # Generate shell script name
-    file_name = f'jobs_{model_to_run}_simplerun.sh'
+    file_name = f'jobs_{model}_simplerun.sh'
     file_path = os.path.join(exp.job_directory, file_name)
 
     # Assuming `create_shell_script` is the function from the previous response
-    write_sh_runmodel(exp, filename=file_path, modelname=model_to_run)
+    write_sh_runmodel(exp, filename=file_path, model=model)
 
     # Execute the generated shell script using subprocess
     exec(exp, command=f"bash {file_path}")

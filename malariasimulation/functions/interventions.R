@@ -7,11 +7,13 @@ include_interventions <- function(exp, parameters, parameter_table, intervention
     simparams <- carrying_capacity(parameters = simparams,
                                         parameter_table = parameter_table)
   } 
+
   #Include Infectious Clearance Perturbation
   if ("infcl" %in% intervention_list){
     simparams <- infectious_clearance(parameters = simparams,
                                            parameter_table = parameter_table)
   }
+
   #Include SMC - Currently not supported
   if ("smc" %in% intervention_list){
     exp <- define_smc_param(exp, parameter_table)
@@ -24,7 +26,6 @@ include_interventions <- function(exp, parameters, parameter_table, intervention
   }
   return(simparams)
 }
-
 include_intervention_outputs <- function(output_list, intervention_list, parameter_table){
   simulation_output <- output_list
   if ("smc" %in% intervention_list){
@@ -39,7 +40,6 @@ include_intervention_outputs <- function(output_list, intervention_list, paramet
     simulation_output$infcl_coverage <- parameter_table$infcl_coverage
     simulation_output$infcl_timestep_malariasimulation <- parameter_table$infcl_timestep_malariasimulation
   }
-  return(simulation_output)
 }
 
 carrying_capacity <- function(parameters, parameter_table){
@@ -75,7 +75,6 @@ infectious_clearance <- function(parameters, parameter_table) {
                             max_ages = 100*365)
   return(simparams)
 }
-
 
 # SMC currently not supported
 

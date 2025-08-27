@@ -3,10 +3,20 @@ __pycache__/
 _scratch/
 *.log
 pdf/
-dependencies/
+dependencies/*
+!dependencies/
+!dependencies/requirements.txt
+!dependencies/create_mmmpy_venv.sh
+!dependencies/run_mmmpy_docker.bat
+!dependencies/create_mmmpy_venv.bat
+!dependencies/run_mmmpy_container.sh
 simulations_local/
 site/
 .cache/
 *.rej
 .Rhistory
+my_venv/
+test_venv/
+mmmpy_venv/
 
+mmmpy_venv_local/

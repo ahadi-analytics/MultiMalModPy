@@ -56,13 +56,11 @@ The following parameters need editing when running `launch_sim.py`:
 ### EMOD
 This section is under construction... 
 
-
 ### OpenMalaria     
 
 Model variants  
 OpenMalaria allows to take into account model and parameter uncertainty through varying  [model variants](https://github.com/SwissTPH/openmalaria/wiki/ModelWithinHost#specification-of-model-variants)). 
 However, for simplicity in MultiMalModPy, only the base model is included. 
-
 
 
 ## Parameter sampling    

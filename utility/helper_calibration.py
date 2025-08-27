@@ -12,11 +12,11 @@ def get_calib_range():
                  2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
 
 
-    x_temp_range = [5.00000000e-01, 6.58977729e-01, 8.68503294e-01, 1.14464866e+00,1.50859594e+00, 1.98826226e+00, 
-                    2.62044110e+00, 3.45362465e+00, 4.55172345e+00, 5.99896876e+00, 7.90637362e+00, 1.04202483e+01,
-                    1.37334231e+01, 1.81000399e+01, 2.38550464e+01, 3.14398886e+01, 4.14363727e+01, 5.46112936e+01, 
-                    7.19752525e+01, 9.48601768e+01, 1.25021488e+02, 1.64772752e+02, 2.17163148e+02, 2.86211356e+02,
-                    3.77213819e+02, 4.97151012e+02, 6.55222889e+02, 8.63554583e+02, 1.13812648e+03, 1.50000000e+03]
+    x_temp_range = [3.00000000e-01, 3.89896984e-01, 5.06732193e-01, 6.58577845e-01, 8.55925050e-01, 1.11240865e+00,
+                    1.44574926e+00, 1.87897758e+00, 2.44202564e+00, 3.17379477e+00, 4.12484335e+00, 5.36087994e+00,
+                    6.96730305e+00, 9.05510148e+00, 1.17685225e+01, 1.52950381e+01, 1.98782974e+01, 2.58349606e+01, 
+                    3.35765774e+01, 4.36380208e+01, 5.67144423e+01, 7.37092999e+01, 9.57967789e+01, 1.24502917e+02,
+                    1.61811039e+02, 2.10298787e+02, 2.73316209e+02, 3.55217219e+02, 4.61660407e+02, 6.00000000e+02]
     return eir_range, x_temp_range
 
 
@@ -178,9 +178,16 @@ def check_transmission_targets_input(exp):
         else:
             raise ValueError(f'Specified model is not valid {model}')
 
+        if exp.entomology_mode == 'forced' and 'forced' not in exp.interp_csv:
+            interp_csv_forced = exp.interp_csv.replace('.csv', '_forced.csv')
+            print(
+                f'Warning: entomology_mode is {exp.entomology_mode}, however, interp_csv ({exp.interp_csv}) does not specify forced in filename. Changing to {interp_csv_forced}')
+            exp.interp_csv = interp_csv_forced
+
         interp_path = os.path.join(exp.interp_path, model, exp.interp_csv)
         if not os.path.exists(interp_path):
             raise ValueError(f'interp_file not found: {interp_path}')
+
         data = pd.read_csv(interp_path)
 
         popsize_options = list( data.loc[data['models'] == model, 'pop_size'].unique())

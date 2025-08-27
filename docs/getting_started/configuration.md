@@ -110,7 +110,7 @@ Parameter specifications for framework and simulation setup:
       simulation experiment to run, default is `f'sim_{dt.now().strftime("%Y_%m_%d_%H_%M_%S")}'`, whereas a more
       meaningful name might be choosen for simulation experiments to use outputs for some result description rather than
       just for testing.
-    - `models_to_run`: Name of models to run (case-sensitive), options are **EMOD** , **OpenMalaria** and/or  **MalSim**
+    - `models`: Name of models to run (case-sensitive), options are **EMOD** , **OpenMalaria** and/or  **MalSim**
     - `om_scaffold`: name of **OpenMalaria** input XML to use
     - `MalSim_script`: name of **malariasimulation** R script to use
 

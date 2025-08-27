@@ -121,6 +121,35 @@ def custom_sort_key(age_group):
     return int(age_group.split('-')[0])
 
 
+
+def get_output_df_malariasimulation(wdir, base_fname):
+    """
+    Automatically detect baseline and _pv CSV files in wdir.
+    Adds a 'parameter_variation' column indicating source.
+    """
+
+    columns_to_keep = None
+    dfs = []
+
+    for suffix, pv_flag in [('', 'default'), ('_pv', 'parameter_variation')]:
+        fname = base_fname.replace('.csv', f'{suffix}.csv')
+        path = os.path.join(wdir, fname)
+        if os.path.isfile(path):
+            try:
+                df = pd.read_csv(path, usecols=columns_to_keep)
+                df['custom_model_spec'] = pv_flag
+                dfs.append(df)
+            except Exception as e:
+                print(f"Error reading {path}: {e}")
+        # else: skip missing files silently
+
+    if not dfs:
+        return pd.DataFrame()
+
+    combined_df = pd.concat(dfs, ignore_index=True)
+    return combined_df
+
+
 # Creates the combined dataframes for all models simulated.
 def get_output_df(wdir, models, yr=False, mth=False, daily=False, custom_name=None,
                   save_combined=False):
@@ -158,7 +187,7 @@ def get_output_df(wdir, models, yr=False, mth=False, daily=False, custom_name=No
         ValueError: If an invalid models value is specified.
     """
 
-    cols_to_keep = None  # default read all
+    columns_to_keep = None  # default read all
     fname = 'mmmpy_timeavrg.csv'
     if yr:
         fname = 'mmmpy_yr.csv'
@@ -166,39 +195,34 @@ def get_output_df(wdir, models, yr=False, mth=False, daily=False, custom_name=No
         fname = 'mmmpy_mth.csv'
     if daily:
         fname = 'mmmpy_daily.csv'
-        # cols_to_keep = ['index', 'timestep', 'ageGroup', 'eir', 'prevalence_2to10', 'prevalence',
-        #                'clinical_incidence', 'severe_incidence', 'seed']
     if custom_name:
         fname = f'{custom_name}.csv'
-
-    file_paths = [os.path.join(wdir, fname)]
-
-    for model in models:
-        file_paths.append(os.path.join(wdir, model, fname))
-
-    existing_files = [path for path in file_paths if os.path.isfile(path)]
-
-    if not existing_files:
-        return pd.DataFrame(), wdir
 
     if os.path.isfile(os.path.join(wdir, fname)):
         df = pd.read_csv((os.path.join(wdir, fname)), low_memory=False)
     else:
-
         dfs = []
         for model in models:
-            model_path = os.path.join(wdir, model, fname)
-            try:
+            if model.lower() == 'malariasimulation':
+                if model.lower() == 'malariasimulation':
+                    df_malariasimulation = get_output_df_malariasimulation(wdir=os.path.join(wdir, model),
+                                                                           base_fname=fname)
+                if not df_malariasimulation.empty:
+                    df_malariasimulation['models'] = model
+                    dfs.append(df_malariasimulation)
+            else:
+                model_path = os.path.join(wdir, model, fname)
                 if os.path.isfile(model_path):
-                    df = pd.read_csv(model_path, usecols=cols_to_keep)
-                    df['models'] = model
-                    if model == 'EMOD':
-                        df['seed'] = df['seed'] + 1
-                    dfs.append(df)
+                    try:
+                        df_tmp = pd.read_csv(model_path, usecols=columns_to_keep)
+                        df_tmp['models'] = model
+                        if model == 'EMOD' and 'seed' in df_tmp.columns:
+                            df_tmp['seed'] = df_tmp['seed'] + 1
+                        dfs.append(df_tmp)
+                    except Exception as e:
+                        print(f"Error reading {model_path}: {e}")
                 else:
                     print(f"File not found for {model}: {model_path}")
-            except Exception as e:
-                print(f"Error reading {model_path}: {e}")
 
         if not dfs:
             return pd.DataFrame(), wdir
@@ -278,33 +302,18 @@ def convert_to_date(x):
     return datetime.date(2005, 1, 1) + datetime.timedelta(days=x)
 
 
-def color_selector(i, s):
-    """
-    Select a color index based on the model name.
-
-    This function returns a color index based on the specified model name.
-    If the model name is recognized, a predefined index is returned;
-    otherwise, the input index is returned.
-
-    Args:
-        i (int): The default index to return if the model name is not recognized.
-        s (str): The name of the model. Possible values include:
-            - 'EMOD'
-            - 'malariasimulation'
-            - 'OpenMalaria'
-
-    Returns:
-        int: The color index corresponding to the model name.
-    """
-
-    if s == 'EMOD':
-        return 0
-    elif s == 'malariasimulation':
-        return 1
-    elif s == 'OpenMalaria':
-        return 2
+def color_selector(i, s, sweepvar='models', n_colors=4):
+    if sweepvar == 'models':
+        model_colors = {
+            'EMOD': '#1a9e77',
+            'malariasimulation': '#7a5c9f',
+            'OpenMalaria': '#e97926'
+        }
+        return model_colors.get(s, sns.color_palette('colorblind', n_colors)[i % n_colors])
     else:
-        return i
+        return sns.color_palette('colorblind', n_colors)[i % n_colors]
+
+
 
 
 def get_label(channel):

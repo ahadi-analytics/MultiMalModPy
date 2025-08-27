@@ -88,10 +88,12 @@ class RunModeManager:
         self.experiment.eir_range = eir_range
         self.experiment.x_temp_range =x_temp_range
 
-        if self.experiment.malariasimulation_parameter_variation:
+        if self.experiment.malariasimulation_parameter_variation in ("yes", "both"):
             warnings.warn(
-                "Warning: malariasimulation should not use parameter variation during calibration run. Parameter variation is now set to False.")
-            self.experiment.malariasimulation_parameter_variation = False
+                "Warning: malariasimulation should not use parameter variation during calibration run. "
+                "Parameter variation is now set to 'no'."
+            )
+            self.experiment.malariasimulation_parameter_variation = "no"
 
     def _configure_simple(self):
         """
@@ -129,8 +131,6 @@ class RunModeManager:
         self.experiment.emod_pop_size = 5000
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
-        if self.experiment.target_output_name == 'clinical_incidence_U5':
-            raise ValueError('target_output_name clinical_incidence_U5 not defined for production run')
 
 
     def _configure_csv(self):
@@ -184,7 +184,7 @@ class ArgsConfig:
         emod_step (str): Specifies the EMOD simulation step (e.g., 'burnin', 'pickup', 'new_pickup').
         serializedid (str): Serialized ID for initializing an EMOD simulation.
         emod_calib_params (bool): Indicates if calibration parameters should be included for EMOD.
-        malariasimulation_parameter_variation (bool): Specifies whether parameter variation is enabled for malariasimulation.
+        malariasimulation_parameter_variation (str): Specifies whether to run malariasimulation with or without parameter variationor both.
 
     Methods:
         __init__(args): Initializes the ArgsConfig object by mapping command-line arguments to attributes.
@@ -257,7 +257,8 @@ class ManifestConfig:
         self.interp_csv = manifest.interp_csv
         self.ROOT_DIR= manifest.ROOT_DIR
         self.use_container = manifest.use_container
-        self.ROOT_DIR_local= manifest.ROOT_DIR_local
+        if self.use_container:
+            self.ROOT_DIR_local= manifest.ROOT_DIR_local
         self.image_path = manifest.image_path
         self.bind_path = manifest.bind_path
 

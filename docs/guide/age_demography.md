@@ -3,7 +3,7 @@ _Implementation in MultiMalModPy_
 
 <div style="background-color: #f4f4f4; padding: 12px; border-left: 5px solid #FF6B8B; border-radius: 5px; margin: 10px 0;">
     <strong>🔍</strong> For a detailed overview of how each model handles population and age demography, refer to the 
-    <a href="../malaria_models/structure.md#population-age-demography" style="color: #0073e6; text-decoration: none;">
+    <a href="../malaria_models/structure.md#population-and-age-demography" style="color: #0073e6; text-decoration: none;">
         Population and age demography
     </a> description under malaria models.
 </div>
