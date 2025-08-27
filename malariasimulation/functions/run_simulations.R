@@ -26,10 +26,16 @@
 #'
 #' @export
 run_simulations <- function(exp, exp_setup_df, parameter_table) {
-
+  
   #-------------------------
   # 1. Define simulation
   #-------------------------
+
+  # Open a list to store the simulation parameter lists in:
+  simparams <- list()
+  final_simulation_parameters <- list()
+  # Open a list to store the outputs in:
+  simulation_output <- list()
 
   # Specify the min and max ages to render:
   min_ages <- exp$min_ages
@@ -89,11 +95,12 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     # Render clinical incidence in age groups 0-5, 5-10, 10-15, and 15-20:
     clinical_incidence_rendering_min_ages = min_ages,
     clinical_incidence_rendering_max_ages = max_ages,
-
+    
     # Render severe incidence in age groups 0-5, 5-10, 10-15, and 15-20:
     severe_incidence_rendering_min_ages = min_ages,
     severe_incidence_rendering_max_ages = max_ages
   ))
+
 
 
   # Parameter Sweeping
@@ -108,6 +115,13 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     sim_out_csv_name <- '_out.csv'
   }
 
+  
+  # Parameter Sweeping
+  if ("malariasimulation_pv" %in% colnames(parameter_table)){
+    simparams <- set_parameter_draw(parameters = simparams,
+                                    draw = parameter_table$malariasimulation_pv)
+  }
+  
   # Append the parameters for artemether lumefantrine:
   simparams <- set_drugs(parameters = simparams, drugs = list(AL_params, SP_AQ_params, DHA_PQP_params))
 
@@ -128,8 +142,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     simparams <- set_equilibrium(parameters = simparams,
                                       init_EIR = parameter_table$transmission_intensity_malariasimulation)
   }
-
-
+  
   #-------------------------
   # 2. Run simulations:
   #-------------------------
@@ -157,4 +170,5 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
 
   # Print the function progress:
   print(paste0("Simulation ", parameter_table$index, " completed"))
+
 }

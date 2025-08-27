@@ -8,6 +8,12 @@ include_interventions <- function(exp, parameters, parameter_table, intervention
                                         parameter_table = parameter_table)
   } 
 
+  #Include Infectious Clearance Perturbation
+  if ("infcl" %in% intervention_list){
+    simparams <- infectious_clearance(parameters = simparams,
+                                           parameter_table = parameter_table)
+  }
+
   #Include SMC - Currently not supported
   if ("smc" %in% intervention_list){
     exp <- define_smc_param(exp, parameter_table)
@@ -20,7 +26,6 @@ include_interventions <- function(exp, parameters, parameter_table, intervention
   }
   return(simparams)
 }
-
 include_intervention_outputs <- function(output_list, intervention_list, parameter_table){
   simulation_output <- output_list
   if ("smc" %in% intervention_list){
@@ -31,8 +36,10 @@ include_intervention_outputs <- function(output_list, intervention_list, paramet
     simulation_output$cc_timestep_malariasimulation <- parameter_table$cc_timestep_malariasimulation
     simulation_output$cc_title <- parameter_table$cc_title
   } 
-
-  return(simulation_output)
+  if ("infcl" %in% intervention_list) {
+    simulation_output$infcl_coverage <- parameter_table$infcl_coverage
+    simulation_output$infcl_timestep_malariasimulation <- parameter_table$infcl_timestep_malariasimulation
+  }
 }
 
 carrying_capacity <- function(parameters, parameter_table){
@@ -51,6 +58,23 @@ carrying_capacity <- function(parameters, parameter_table){
   return(simparams)
 }
 
+infectious_clearance <- function(parameters, parameter_table) {
+  simparams <- parameters
+  simparams <- set_equilibrium(parameters = simparams,
+                                    init_EIR = parameter_table$transmission_intensity_malariasimulation)
+  simparams$dt <- 0.00000002
+  infectious_clearance_drug <- c(1, 0.051, 11.3, 0.1)
+  simparams <- set_drugs(simparams, drugs = list(infectious_clearance_drug))
+  infcl_events <- parameter_table$infcl_timestep_malariasimulation
+  infcl_coverage <- parameter_table$infcl_coverage
+  simparams <- set_mda(simparams, 
+                            drug=4,
+                            timesteps = infcl_events,
+                            coverages = infcl_coverage,
+                            min_ages = ((1/12)*365),
+                            max_ages = 100*365)
+  return(simparams)
+}
 
 # SMC currently not supported
 

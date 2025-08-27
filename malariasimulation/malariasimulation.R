@@ -57,10 +57,9 @@ exp$monthly_or_daily_eirs <- 'daily' # This will change so we can toggle between
 if (length(exp$intervention_list) > 0) {
   print("Adding interventions to simulations...")
   source(file.path(wdir, 'functions', 'interventions.R'))
-}
+
 
 
 # Run the simulations:
 print("Running the simulations...")
 run_simulations(exp = exp, exp_setup_df = exp_setup_df, parameter_table = parameter_table)
-
