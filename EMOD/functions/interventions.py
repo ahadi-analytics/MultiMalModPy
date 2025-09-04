@@ -48,6 +48,7 @@ def carrying_capacity(camp, row):
                                   repetitions=1)
     return camp
 
+
 def infcl(camp, row):
 
     add_drug_campaign(camp, campaign_type = 'MDA', drug_code = 'DHA', start_days = [row.infcl_timestep_EMOD],
@@ -70,6 +71,7 @@ def setup_infectious_clearance_drug(config, drug_name = ""):
     set_drug_param(config, drug_name = drug_name, parameter = "Max_Drug_IRBC_Kill", value = 500)
     set_drug_param(config, drug_name = drug_name, parameter = "Bodyweight_Exponent", value = 1)
     set_drug_param(config, drug_name = drug_name, parameter = "Fractional_Dose_By_Upper_Age", value = [{"Fraction_Of_Adult_Dose": 1.0, "Upper_Age_In_Years": 115.0}])
+
 
 # SMC currently not supported
 # def smc_campaign(camp, row, start_array):

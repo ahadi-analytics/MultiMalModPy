@@ -13,11 +13,9 @@ def ccstep_params(exp):
     Returns:
         Experiment object
             An object with updated experiment parameters.
-    """
-
-    # Required fixed parameters for ccstep
-    if exp.emod_step != 'pickup':
-        exp.cc_decreasing = True  # this is important to note because decreasing sims are organized differently.
+    """    
+    exp.ccstep = [x[1] for x in exp.target_output_values]
+    exp.target_output_values = [x[0] for x in exp.target_output_values]
 
     exp.step_in_years = 5 # determines after x amount of years, when the carrying capacity change occurs
 
@@ -60,10 +58,6 @@ def ccstep_params(exp):
         exp.malariasimulation_time_per_sim = '2:00:00'
         exp.openmalaria_memory_per_sim = 6
         exp.openmalaria_time_per_sim = '2:00:00'
-        exp.ccstep = exp.target_output_values
-    else:
-        ## Keep parameters as defined by user in helper.py
-        exp.ccstep = exp.target_output_values
     
     if exp.emod_importation_rate == 0 and exp.cc_decreasing:
         print('Warning: You are running EMOD simulations with a decreasing carrying capacity.\nWithout importation, elimination can occur.')
@@ -134,13 +128,13 @@ def ccstep_factor_calculator(exp, df, model):
                       & (data['models'] == model)
                       & (data['pop_size'] == popsize))]
         if model == 'EMOD':
-            xt = idata['prevalence_2to10']
+            xt = idata[exp.target_output_name]
             yp = idata['input_target']
             xold = row['target_output_values']
             xnew = row['ccstep']
             interpolated_old = np.interp(xold, xt, yp)
         else:
-            xt = idata['prevalence_2to10']
+            xt = idata[exp.target_output_name]
             yp = idata['n_total_mos_pop']
             xold = row['target_output_values']
             xnew = row['ccstep']
@@ -207,7 +201,5 @@ def ccstep_columns(exp, df):
 def ccstep_input_check(exp):
     if exp.entomology_mode != "dynamic":
         raise ValueError(f'Invalid entomology_mode for ccstep {exp.entomology_mode} specified, "dynamic" required')
-    if exp.target_output_name != 'prevalence_2to10':
-        raise ValueError("ccstep requires the target_output_name to be prevalence_2to10")
     if exp.end_year - exp.start_year < exp.step_in_years:
         raise ValueError(f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and {exp.end_year}")

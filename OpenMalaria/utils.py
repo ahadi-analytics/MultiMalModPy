@@ -3,7 +3,8 @@ import shutil
 
 # from OpenMalaria.functions.interventions import * # Currently not supported
 from OpenMalaria.functions.convert_access import convert_access_lookup
-from OpenMalaria.functions.interventions import carrying_capacity, infcl
+from OpenMalaria.functions.interventions import *
+
 
 
 
@@ -116,8 +117,12 @@ def create_scenarios(exp, scen_df):
             scenario = scenario.replace(f'@seasonality{i}@', str(seasonality[i - 1]))
 
         # Write the scenario XML file
-        with open(f"{exp.job_directory}/xml/{row['index']}.xml", 'w') as fo:
-            fo.write(f"{scenario}")
+        if '@' not in scenario:
+            # Write the scenario XML file
+            with open(f"{exp.job_directory}/xml/{row['index']}.xml", 'w') as fo:
+                fo.write(f"{scenario}")
+        else:
+            raise ValueError(f"Error: The '@' symbol is present in the scenario XML {row['index']}.")
 
     # Copy additional files required by OpenMalaria
     shutil.copy(exp.openmalaria_path + "/densities.csv", f"{exp.job_directory}/")
@@ -203,16 +208,17 @@ def submit_run_OpenMalaria(exp, scen_df):
     create_scenarios(exp, scen_df)
 
     if exp.hpc == 'LOCAL':
-        from utility.helper_local import write_ps1_analyzer
-        # Write local submission script
-        write_ps1_OpenMalaria(exp)
-        write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model_to_run='OpenMalaria')
-        # Note handled via submit_run_all_local
-        from utility.helper_local import submit_runmodel_local
-        submit_runmodel_local(exp, model_to_run='OpenMalaria')
-    elif exp.hpc == 'CONTAINER':
-        # TODO coming soon
-        pass
+        if not exp.use_container:
+            from utility.helper_local import write_ps1_analyzer, submit_runmodel_local
+            write_ps1_OpenMalaria(exp)
+            write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model='OpenMalaria')
+            submit_runmodel_local(exp, model='OpenMalaria')
+        else:
+            from utility.helper_local_docker import write_sh_analyzer, submit_runmodel_sh
+            # Write local submission script
+            write_sh_OpenMalaria(exp)
+            write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model='OpenMalaria')
+            submit_runmodel_sh(exp, model='OpenMalaria')
     else:
         submit_run_OpenMalaria_slurm(exp)
 
@@ -289,7 +295,7 @@ def write_ps1_OpenMalaria(exp):
     ps_content = f"""
 # Job settings
 $job_name = "run_openmalaria"
-$exe_path = "{os.path.join(wdir, 'dependencies/OpenMalaria/om_v46')}"
+$exe_path = "{exp.OPENMALARIA_PATH}"
 $jobdir = "{exp.job_directory}"
 $log_dir = Join-Path $jobdir "log"
 
@@ -301,14 +307,22 @@ if (-not (Test-Path -Path $log_dir)) {{
 # Navigate to the working directory
 Set-Location -Path $jobdir
 
-# Run the OpenMalaria simulation for each experiment
+# Run the OpenMalaria simulation for each experiment, with progress bar
+$total = {exp.nexps}
+$startTime = Get-Date
 for ($i = 1; $i -le {exp.nexps}; $i++) {{
+    $elapsed = (Get-Date) - $startTime
+    $percent = ($i / $total) * 100
+    $status = "Simulation $i of $total | Elapsed: {{0:hh\\:mm\\:ss}}" -f $elapsed
+    Write-Progress -Activity "Running OpenMalaria" -Status $status -PercentComplete $percent
     # Run the openMalaria command
     & "$exe_path/openMalaria.exe" -s "xml/$i.xml" --output "txt/$i.txt" `
     >> "$log_dir/run_openmalaria.log" 2>> "$log_dir/run_openmalaria.err"
 }}
 
-Write-Host "OpenMalaria simulation complete."
+Write-Progress -Activity "Running OpenMalaria" -Completed
+$elapsedTotal = (Get-Date) - $startTime
+Write-Host "All $total simulations complete in $($elapsedTotal.ToString())."
 """
 
     # Write the PowerShell content to a .ps1 file
@@ -317,7 +331,67 @@ Write-Host "OpenMalaria simulation complete."
     print(f"PowerShell script written successfully at {file_path}")
 
 
+import os
 
+
+def write_sh_OpenMalaria(exp):
+    """
+    Creates a shell script to run OpenMalaria simulations (sequentially) locally.
+
+    This function generates a shell script that:
+    1. Sets job parameters, including the path to the OpenMalaria executable and the job directory.
+    2. Ensures the log directory exists, creating it if necessary.
+    3. Iterates over all experiments, running the OpenMalaria simulation for each one.
+    4. Logs the output and errors to respective log files.
+
+    Args:
+        exp (object): An experiment object containing attributes such as 'job_directory', 'nexps', and paths
+                      necessary for setting up and running the simulation.
+
+    Raises:
+        IOError: If there is an issue with writing the shell script to the file.
+    """
+    # Define file path for shell script
+    file_path = os.path.join(exp.job_directory, 'run_OpenMalaria.sh')
+
+    # Get the absolute path of the working directory
+    wdir = os.path.abspath(os.path.dirname(__file__))
+    wdir = os.path.abspath(os.path.join(wdir, os.pardir))
+
+    # Construct the content of the shell script
+    sh_content = f"""#!/bin/bash
+
+# Job settings
+job_name="run_openmalaria"
+exe_path="{exp.OPENMALARIA_venv}"
+jobdir="{exp.job_directory}"
+log_dir="$jobdir/log"
+
+# Create log directory if it doesn't exist
+if [ ! -d "$log_dir" ]; then
+    mkdir -p "$log_dir"
+fi
+
+# Navigate to the job directory
+cd "$jobdir" || exit 1
+
+# Run the OpenMalaria simulation for each experiment
+for ((i = 1; i <= {exp.nexps}; i++)); do
+    # Run the OpenMalaria command and log output and errors
+    "{exp.OPENMALARIA_venv}/openMalaria" -s "$jobdir/xml/$i.xml" --output "txt/$i.txt" >> "$log_dir/run_openmalaria.log" 2>> "$log_dir/run_openmalaria.err" || true
+done
+
+echo "OpenMalaria simulation complete."
+pause
+-e CONTAINER_NAME=$(hostname)
+
+"""
+
+    # Write the shell content to a .sh file
+    with open(file_path, 'w') as file:
+        file.write(sh_content)
+
+    print(f"Shell script written successfully at {file_path}")
 
 if __name__ == "__main__":
     wdir = ''

@@ -35,11 +35,19 @@ if args.emodstep in ['pickup', 'new_pickup']:
 
     # ensure intervention parameters are correctly setup (some may get updated between burnin and pickup run)
     exp = get_intervention_params(exp)
-    exp.plots_to_run = ['relationship', 'timeseries', 'agecurves'] # For pickup, this needs to be defined again, as for burnin set to empty
 
     ##  Note: to run a new pickup in same folder and suite, simply change expname
     exp.SUITEname = args.suite
     exp.exp_name = args.expname
+    
+    if exp.run_mode == 'csv':
+        exp_scen_df = pd.read_csv(os.path.join(f'scenario_csv/{exp.csv}.csv'))
+        exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == exp.rownum]
+        if 'plots_to_run' in exp_scen_df.columns:
+            exp.plots_to_run = get_param_from_dataframe(exp_scen_df, 'plots_to_run', exp.sim_params_list)
+    else: 
+        exp.plots_to_run = ['relationship', 'timeseries', 'agecurves'] # For pickup, this needs to be defined again, as for burnin set to empty
+
 
 else:
     # Creating an Experiment object and setting its attributes, saved as exp.obj
@@ -92,7 +100,7 @@ exp.nexps = len(scen_df) * exp.num_seeds
 exp.max_running_jobs = min(exp.nexps,300)
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.output_directory])
-save_scen(param_variation(rep_scen_df(scen_df), exp), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.output_directory])
+save_scen(rep_scen_df(scen_df), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.output_directory])
 
 # Write out simulation setup (required for malariasimulation)
 create_simsetup_csv(exp)
@@ -102,23 +110,15 @@ if __name__ == '__main__':
     print(f' --------| Running {exp.exp_name} for {", ".join(exp.models)}: {len(exp.sweep_list)} '
           f'varying parameters: {", ".join(exp.sweep_list)}. Run mode:  {exp.run_mode} |--------')
 
-    # Set platform and associated values, such as the maximum number of jobs to run at one time
-    from idmtools.core.platform_factory import Platform
-    exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
-                        mem_per_cpu=f'{exp.emod_memory_per_sim}G', partition=manifest.sh_hpc_config['p'],
-                        time=exp.emod_time_per_sim, account=manifest.sh_hpc_config['A'],
-                        modules=[manifest.sh_hpc_config['em_modules']],
-                        max_running_jobs=exp.max_running_jobs)
-
     # Submit EMOD simulation as SLURM job, including scheduled analyzer
     if 'EMOD' in exp.models:
         from EMOD.utils import submit_run_EMOD
-        submit_run_EMOD(exp,scen_df)
+        submit_run_EMOD(exp, manifest, scen_df)
 
     # Submit malariasimulation as SLURM job, including scheduled analyzer
     if 'malariasimulation' in exp.models:
         from malariasimulation.utils import submit_run_malariasimulation
-        submit_run_malariasimulation(exp)
+        submit_run_malariasimulation(exp, scen_df)
 
     # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
     if 'OpenMalaria' in exp.models:
@@ -128,3 +128,8 @@ if __name__ == '__main__':
     ## Submit plotters to run using wrapper function in utility.helper.py
     if exp.emod_step != 'burnin':
         submit_run_plotters(exp)
+
+    if exp.selected_platform == 'Container' and 'EMOD' in exp.models:
+        from EMOD.utils import run_analyze_EMOD_local_with_polling
+        run_analyze_EMOD_local_with_polling(exp, exp.container_id)
+

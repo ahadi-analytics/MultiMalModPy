@@ -22,33 +22,27 @@ If you are a developer or advanced user, click on 'Edit on GitHub' and make the 
 For developers, how to update the online documentation is described in the [./docs/README.md](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/docs/README.md).
 
 
-# Contact the MultiMalModPy Team
 
-For any enquiries, please contact  NAME EMAIL.  
+## Developers  
 
-## Developers 
-- **Malaria modeling group at Northwestern University, Chicago USA**  
-&nbsp;&nbsp;&nbsp;&nbsp; Ricky Richter, Manuela Runge, Jaline Gerardin
-- **University of Basel, Basel, Switzerland**    
-&nbsp;&nbsp;&nbsp;&nbsp; Aurelien Cavelan  
-- **University of Western Australia, Crawley, WA, Australia
-   Telethon Kids Institute, Nedlands, WA, Australia Center for Child Health Research**  
-&nbsp;&nbsp;&nbsp;&nbsp;  Melissa Penny
-- **Imperial College, London, UK**    
-&nbsp;&nbsp;&nbsp;&nbsp; Tom Brewer, Peter Winskill   
+- **Tom Brewer** — *Imperial College London, UK* 
+- **Aurelien Cavelan** — *University of Basel, Switzerland* 
+- **Jaline Gerardin** — *Northwestern University & AHADI, Chicago, USA* 
+- **Melissa Penny** — *University of Western Australia & Kids Research Institute, Australia* 
+- **Ricky Richter** — *Northwestern University, Chicago, USA* 
+- **Manuela Runge** — *Northwestern University, Chicago, USA*
+- **Peter Winskill** — *Imperial College London, UK* 
 
-## Contributors
-- **Malaria modeling group at Northwestern University, Chicago USA**  
-&nbsp;&nbsp;&nbsp;&nbsp; Tobias Holden  
-- **Swiss Tropical and Public Health Institute**    
-&nbsp;&nbsp;&nbsp;&nbsp; Josephine Malinga, Narimane Nekkab
-- **University of Western Australia, Crawley, WA, Australia
-   Telethon Kids Institute, Nedlands, WA, Australia Center for Child Health Research**  
-&nbsp;&nbsp;&nbsp;&nbsp; Andrew Shattock   
-- **Institute of Disease Modelling, Bill & Melinda Gates Foundation, Seattle, USA**    
-&nbsp;&nbsp;&nbsp;&nbsp;  Caitlin Bever
-- **Northwestern University IT Research Computing**   
-&nbsp;&nbsp;&nbsp;&nbsp;  Scott Coughlin, Sophie van Genderen, Matthew Gorby
+## Contributors  
+
+- **Caitlin Bever** — *Institute for Disease Modeling, USA* 
+- **Scott Coughlin** — *Northwestern University, USA* 
+- **Matthew Gorby** — *Northwestern University, USA* 
+- **Tobias Holden** — *Northwestern University, USA* 
+- **Josephine Malinga** — *Swiss TPH, Switzerland* 
+- **Narimane Nekkab** — *Swiss TPH, Switzerland* 
+- **Andrew Shattock** — *University of Western Australia & Kids Research Institute, Australia* 
+- **Sophie van Genderen** — *Northwestern University, USA* 
 
 <br>
 

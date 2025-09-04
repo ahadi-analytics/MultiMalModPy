@@ -112,6 +112,10 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
         
     if exp.emod_importation_rate != 0:
         ncases_per_year_per1000pop = (exp.emod_importation_rate * exp.emod_pop_size) / 1000
+        if ncases_per_year_per1000pop < 1:
+            print('WARNING: ncases_per_year_per1000pop < 1. Setting to minimum of 1.')
+            ncases_per_year_per1000pop = 1
+
         add_outbreak_individual(camp, start_day=73, target_num_individuals=ncases_per_year_per1000pop,
                                 repetitions=-1, timesteps_between_repetitions=365)
         add_outbreak_individual(camp, start_day=146, target_num_individuals=ncases_per_year_per1000pop,

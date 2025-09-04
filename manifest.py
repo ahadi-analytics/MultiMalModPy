@@ -3,6 +3,7 @@ import os
 # This is a user-modifiable Python file designed to customize input file and directory settings.
 openmalaria_version = 46
 emod_build = 220405
+SUPPORTED_OM_VERSIONS = {43, 46}
 
 # Select cluster name
 hpc = 'NUCLUSTER'
@@ -14,6 +15,7 @@ use_container = False
 if os.path.exists("/.dockerenv"):
     hpc = 'LOCAL'
     use_container = True
+    selected_platform = 'Container'
 
 # ----------------------------- EMOD generic settings start -----------------------------
 # Location of the file containing AssetCollection id for the dtk sif (singularity image)
@@ -31,9 +33,10 @@ schema_file = os.path.join(os.path.expanduser('~'), "download/schema.json")
 # The script is going to use this to store the downloaded Eradication binary. Create 'download' directory or change to your preferred (existing) location.
 eradication_path = os.path.join(os.path.expanduser('~'), "download/Eradication")
 # ----------------------------- EMOD generic settings end -----------------------------
+
+platform = 'SLURM_LOCAL'
 if os.name != 'posix':
-    hpc ='LOCAL'
-    print("Running the framework locally. Note: Local execution is supported only for OpenMalaria and malariasimulation.")
+    platform ='Container'
 
 # ----------------------------- Framework and cluster specific settings start -----------------------------
 # job_directory is where your simulations and outputs will be stored
@@ -41,18 +44,21 @@ if os.name != 'posix':
 # OPENMALARIA_PATH is the location of the OpenMalaria dependencies (xsd schema, densities.csv, ...)
 # openmalaria_input_path is location of OpenMalaria input files, scaffolds specific to project
 
+if openmalaria_version in SUPPORTED_OM_VERSIONS:
+    OPENMALARIA_PATH = os.path.join(ROOT_DIR, f'dependencies/OpenMalaria/om_v{openmalaria_version}')
+else:
+    raise ValueError(
+        f"OpenMalaria version '{openmalaria_version}' is not supported. "
+        f"Available versions: {sorted(SUPPORTED_OM_VERSIONS)}"
+    )
+
 # ----------------------------- User-defined input -----------------------------
 if hpc == 'NUCLUSTER':
     sh_hpc_config = {'A': 'b1139', 'p': 'b1139', 'em_modules': 'singularity', 'buyin': True}
     projdir = os.path.join('/gpfs/projects/b1139/emod-om/')
 
     SIF_PATH = "--bind /gpfs/projects /gpfs/projects/b1139/images/dtk_run_rocky_py39.sif"
-    if openmalaria_version == 43:
-        OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria/om_v43/"
-    elif openmalaria_version == 46:
-        OPENMALARIA_PATH = "/gpfs/projects/b1139/OpenMalaria/om_v46/"
-    else:
-        raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
+    OPENMALARIA_PATH = os.path.join(f'/gpfs/projects/b1139/OpenMalaria/om_v{openmalaria_version}/')
     OPENMALARIA_venv = f'\n\nmodule use {OPENMALARIA_PATH}modules/ \nmodule load openmalaria\n'
 
     EMOD_venv_modules = os.path.join('\n\nml singularity/3.8.1 \nml python/3.9.16')
@@ -64,7 +70,7 @@ if hpc == 'NUCLUSTER':
     image_venv_name = "emodpy39"
     OPENMALARIA_venv_container = f'/openmalaria-schema-46.0/build/'
     EMOD_venv_container = f'source /opt/envs/{image_venv_name}/bin/activate'
-    bind_path = '/projects:/projects'
+    bind_path = '/gpfs/projects:/projects'
 
 elif hpc == 'SCICORE':
     sh_hpc_config = {'A': 'penny', 'p': 'scicore', 'em_modules': '', 'buyin': True}
@@ -93,19 +99,15 @@ elif hpc == 'SCICORE':
     bind_path = ''
 
 elif hpc == 'LOCAL':
-    sh_hpc_config = {'A': 'Local', 'p': None, 'em_modules': None, 'buyin': None}
+    sh_hpc_config = {'A': 'Local', 'p': None, 'em_modules': [], 'buyin': None}
     projdir = os.path.join(ROOT_DIR, 'simulations_local')
     os.makedirs(projdir, exist_ok=True)
+    selected_platform = 'Container'
 
     SIF_PATH = ""
     OPENMALARIA_venv = ''
     r_local = "C:/Program Files/R/R-4.2.3/bin"
-
-    if openmalaria_version in [43, 46]:
-        OPENMALARIA_PATH = os.path.join(ROOT_DIR, f'dependencies/OpenMalaria/om_v{openmalaria_version}')
-        OPENMALARIA_venv_container = f'/openmalaria-schema-{openmalaria_version}.0/build/'
-    else:
-        raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
+    OPENMALARIA_venv_container = f'/openmalaria-schema-{openmalaria_version}.0/build/'
 
     EMOD_venv_modules = os.path.join('')
     EMOD_venv_path = os.path.join(f'\nsource {ROOT_DIR}/dependencies/mmmpy_venv/bin/activate\n')
@@ -114,7 +116,7 @@ elif hpc == 'LOCAL':
     image_path = 'mmmpy_local:rocky8'
     image_venv_name = ''
     EMOD_venv_container ='source /opt/envs/mmmpy_container/bin/activate'
-    bind_path = 'C:/Users/mrung/gitrepos/model-characterization/'
+    bind_path = ROOT_DIR
 
 else:
     raise ValueError('HPC specification not available')
@@ -132,7 +134,8 @@ interp_csv = 'interpolation_data.csv'
 os.makedirs(job_directory, exist_ok=True)
 
 if use_container:
-    ROOT_DIR_local = os.path.join('C:/Users/mrung/Documents/')
+    ROOT_DIR_local = os.path.dirname(ROOT_DIR)
+    OPENMALARIA_PATH = os.path.join(ROOT_DIR, f'dependencies/OpenMalaria/om_v{openmalaria_version}')
     # Required only when running inside docker, locally
     OPENMALARIA_venv = OPENMALARIA_venv_container
     EMOD_venv = EMOD_venv_container
