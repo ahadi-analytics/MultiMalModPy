@@ -259,7 +259,11 @@ def write_ps1_analyzer(exp, pyscript, model):
     """
     job_name = f"analyzer_{model}"
     subdir = model
-    py_command = f'python {pyscript} --directory "{exp.job_directory}"'
+    py_command = f'python {pyscript} --directory "{exp.job_directory}"\n'
+
+    if exp.malariasimulation_parameter_variation:
+        py_command = py_command + f'python {pyscript} --directory "{exp.job_directory}" --mpv\n'
+
     fname = f'run_analyze_{model}.ps1'
     create_ps1_script(exp, fname, subdir, job_name, py_command)
 

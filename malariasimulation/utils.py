@@ -2,6 +2,34 @@ import os.path
 
 from utility.helper import *
 
+
+def param_variation(df, exp):
+    """
+    Perform parameter variation for malariasimulation simulations.
+
+    Parameters:
+    - df: DataFrame containing data from scenarios.csv.
+    - exp: Experiment object.
+
+    Returns:
+    DataFrame with added column 'malariasimulation_pv' representing malariasimulation parameter variation values.
+    """
+
+    df_pv = df.copy(deep=True)
+    from random import sample
+    if exp.num_seeds > 1000:
+        print("Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values")
+        par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds + 1), exp.num_seeds)]
+        for i, row in df_pv.iterrows():
+            df_pv.loc[i, 'malariasimulation_pv'] = int(par_var[df_pv.loc[i, 'seed'] - 1])
+    else:
+        par_var = sample(range(1, 1001), exp.num_seeds)
+        for i, row in df_pv.iterrows():
+            df_pv.loc[i, 'malariasimulation_pv'] = int(par_var[df_pv.loc[i, 'seed'] - 1])
+
+    return df_pv
+
+
 def submit_analyze_outputs(exp, t='01:00:00', memG=10):
     """
     Submits a job to analyze malaria simulation outputs using SLURM.
@@ -25,6 +53,11 @@ def submit_analyze_outputs(exp, t='01:00:00', memG=10):
                 f'\n{exp.EMOD_venv}' \
                 f'\npython analyze_sim.py --dir "{exp.job_directory}"'
 
+    if exp.malariasimulation_parameter_variation == "both":
+        pycommand = pycommand + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
+    if exp.malariasimulation_parameter_variation == "yes":
+        pycommand = pycommand + '--mpv'
+
     script_path = os.path.join(exp.job_directory, 'run_analyzer_malariasimulation.sh')
     file = open(script_path, 'w')
     file.write(header_post + pycommand)
@@ -41,7 +74,7 @@ def submit_analyze_outputs(exp, t='01:00:00', memG=10):
     write_txt(slurm_job_id, exp.job_directory, 'job_id_malariasimulation_analyze.txt')
 
 
-def submit_run_malariasimulation(exp):
+def submit_run_malariasimulation(exp, scen_df):
     """
     Submits a malariasimulation job for execution on different platforms.
 
@@ -58,6 +91,26 @@ def submit_run_malariasimulation(exp):
         subprocess.CalledProcessError: If there is an issue with running the job submission command for SLURM.
     """
     os.makedirs(os.path.join(exp.job_directory, 'malariasimulation_jobs'), exist_ok=True)
+
+    scen_df_wseeds = rep_scen_df(scen_df)
+    scen_df_wseeds['malariasimulation_pv'] = 0
+
+    if exp.malariasimulation_parameter_variation == "yes":
+        # run only parameter variation
+        scen_df_all = param_variation(scen_df_wseeds, exp)
+        scen_df_all['index_pv'] = range(len(scen_df_all))
+
+    elif exp.malariasimulation_parameter_variation == "both":
+        # run baseline AND parameter variation
+        scen_df_mpv = param_variation(scen_df_wseeds, exp)
+        scen_df_all = pd.concat([scen_df_wseeds, scen_df_mpv], ignore_index=True)
+        scen_df_all['index_pv'] = range(len(scen_df_all))
+
+    else:  # "no"
+        # run only baseline
+        scen_df_all = scen_df_wseeds
+
+    save_scen(scen_df_all, fname='scenarios_wseeds_mpv.csv', save_dirs=[exp.job_directory, exp.output_directory])
 
     if exp.hpc == 'LOCAL':
         if not exp.use_container:
@@ -90,8 +143,15 @@ def submit_run_malariasimulation_slurm(exp):
         None: This function does not return any value. It submits the job and prints the job ID.
     """
 
-    array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
-    header_post = shell_header_quest(exp.sh_hpc_config, exp.malariasimulation_time_per_sim, exp.malariasimulation_memory_per_sim, job_name='run_malariasimulation', arrayJob=array)
+
+    # When running with and without malariasimulation_parameter_variation, twice as many experiments are needed
+    nexps = exp.nexps * 2 if exp.malariasimulation_parameter_variation == "both" else exp.nexps
+
+
+    array = f'#SBATCH --array=1-{str(nexps)}%{str(exp.max_running_jobs)}\n'
+    header_post = shell_header_quest(exp.sh_hpc_config, exp.malariasimulation_time_per_sim,
+                                     exp.malariasimulation_memory_per_sim, job_name=f'run_malariasimulation',
+                                     arrayJob=array)
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
     r_file_path = os.path.join(ROOT_DIR, 'malariasimulation.R')
@@ -114,11 +174,13 @@ def submit_run_malariasimulation_slurm(exp):
     slurm_job_id = p.stdout.decode('utf-8').strip().split(' ')[-1]
     print(f'Submitted simulations for malariasimulation  - job id: {slurm_job_id}')
 
-    write_txt(slurm_job_id, exp.job_directory, 'job_id_malariasimulation.txt')
+    write_txt(slurm_job_id, exp.job_directory, f'job_id_malariasimulation.txt')
     submit_analyze_outputs(exp)
     return
 
+
 import os
+
 
 def write_ps1_malariasimulation(exp):
     """
@@ -135,12 +197,15 @@ def write_ps1_malariasimulation(exp):
         IOError: If writing the PowerShell script fails.
     """
 
-    file_path = os.path.join(exp.job_directory, 'run_malariasimulation.ps1')
+    file_path = os.path.join(exp.job_directory, f'run_malariasimulation.ps1')
 
     # Normalize paths
     malariasimulation_path = os.path.normpath(os.path.join(exp.ROOT_DIR, 'malariasimulation'))
     exe_path = os.path.normpath(exp.r_local)
     job_dir = os.path.normpath(exp.job_directory)
+
+    # When running with and without malariasimulation_parameter_variation, twice as many experiments are needed
+    nexps = exp.nexps * 2 if exp.malariasimulation_parameter_variation == "both" else exp.nexps
 
     powershell_content = f"""
 # Job settings
@@ -211,10 +276,13 @@ def write_sh_malariasimulation(exp):
         IOError: If there is an issue with writing the shell script to the file.
     """
     # Define file path for shell script
-    file_path = os.path.join(exp.job_directory, 'run_malariasimulation.sh')
+    file_path = os.path.join(exp.job_directory, f'run_malariasimulation.sh')
 
     # Get the absolute path of the working directory
     malariasimulation_path = os.path.join(exp.ROOT_DIR, 'malariasimulation')
+
+    # When running with and without malariasimulation_parameter_variation, twice as many experiments are needed
+    nexps = exp.nexps * 2 if exp.malariasimulation_parameter_variation == "both" else exp.nexps
 
     # Construct the content of the shell script
     sh_content = f"""#!/bin/bash
@@ -237,7 +305,7 @@ if [ ! -d "$log_dir" ]; then
 fi
 
 # Run the OpenMalaria simulation for each experiment
-for ((i = 1; i <= {exp.nexps}; i++)); do
+for ((i = 1; i <= {nexps}; i++)); do
 
     Rscript "$work_dir/malariasimulation.R" "$work_dir" "$jobdir" $i >> "$log_dir/run_malariasimulation.log" 2>> "$log_dir/run_malariasimulation.err"  &
 
