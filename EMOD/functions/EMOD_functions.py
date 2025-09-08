@@ -106,6 +106,9 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     # Make sure to include the ccstep change only at pickup simulations.
     if 'ccstep' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):  
         camp = carrying_capacity(camp, row)
+
+    if 'infcl' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):
+        camp = infcl(camp, row)
         
     if exp.emod_importation_rate != 0:
         ncases_per_year_per1000pop = (exp.emod_importation_rate * exp.emod_pop_size) / 1000
@@ -143,6 +146,13 @@ def drug_setup(config, exp=None):
     """
     Functions to alter drug parameters specific to MultiMalModPy drug campaigns.
     """
+    #This should be vehicle, not DHA, but there is an internal IDM issue around using vehicle
+    # On line 257 of emodpy_malaria/interventions/drug_campaign.py in the function add_drug_campaign,
+    # There is a "Received_Vehicle" broadcast event that is programmed in, however broadcast event does not accept Received vechile as an
+    # acceptable event.
+    if 'infcl' in exp.intervention_list:
+        setup_infectious_clearance_drug(config, drug_name="DHA") 
+
     #SMC currently not supported
     if 'smc' in exp.intervention_list:
         return

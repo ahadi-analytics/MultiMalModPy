@@ -72,7 +72,6 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
   simparams <- get_parameters(overrides = list(
     # Set the human population size
     human_population = exp$pop_size,
-
     # Set the seasonal profile
     model_seasonality = exp$model_seasonality,
     g0 = exp$g0,

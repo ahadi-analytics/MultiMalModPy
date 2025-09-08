@@ -195,6 +195,7 @@ def InputEIRAnalyzer(jdir, wdir, daily=False, pv_suffix=''):
         df_daily = df_daily.rename({'EIR_gamb': 'eir'}, axis=1)
         print(f'Saving EIR_daily{pv_suffix}.csv to {wdir}')
         df_daily.to_csv((os.path.join(wdir, f'EIR_daily{pv_suffix}.csv')), index=False)
+
     else:
         # Monthly aggregation - keep months and years
         mean_channels = ['n_infectious_mos', 'n_total_mos_pop']
@@ -264,7 +265,6 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables, pv_suffix=''):
     mean_channels = ['nPopulation', 'prevalence_2to10', 'prev', 'n_infectious_mos', 'n_total_mos_pop', 'EIR_gamb']
     columns_to_keep = ['index', 'timestep', 'month', 'year', 'ageGroup',
                        'age_upper'] + sum_channels + mean_channels
-
     df = pd.read_csv(os.path.join(wdir, f'daily{pv_suffix}.csv'))
     df = df[columns_to_keep]
 
@@ -676,8 +676,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
             adf['prevalence'] = adf['n_prev'] / (adf['n_age'])
             # events per person per annum (annualized)
             # adf['incidence'] = (adf['n_inc'] / adf['n_age']/ 12)
-            adf['clinical_incidence'] = (
-                        adf['n_inc_clinical'] / (adf['n_age'] / 73))  ## 5-Daily to annualized incidence
+            adf['clinical_incidence'] = (adf['n_inc_clinical'] / (adf['n_age'] / 73))  ## 5-Daily to annualized incidence
             adf['severe_incidence'] = (adf['n_inc_severe'] / (adf['n_age'] / 73))
             adf['ageGroup'] = ageCond_labels
             cdf = pd.concat([cdf, adf])

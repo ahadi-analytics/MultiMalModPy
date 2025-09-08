@@ -12,6 +12,7 @@ import math
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)
 
+
 def parse_args():
     """
     Parse command-line arguments for simulation specifications.
@@ -972,8 +973,11 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
         # Save the processed DataFrame to a CSV file
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD')
-
-        columns_to_keep += [column for column in self.intervention_analyzer_columns if column in cdf.columns]
+        columns_to_keep = ['scen_id', 'index', 'seed', 'target_output_values', 'transmission_intensity_EMOD', 'timestep',
+                        'day', 'year', 'ageGroup', 'seasonality', 'cm_clinical', 'entomology_mode',
+                        'eir', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence',
+                        'n_total_mos_pop', 'n_infectious_mos'] 
+        columns_to_keep += [column for column in self.intervention_analyzer_columns if column in cdf.columns]        
         cdf = cdf[columns_to_keep]
         cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_5day.csv')), index=False)
 

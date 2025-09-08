@@ -4,7 +4,9 @@ import time
 import json
 import subprocess
 from functools import partial
+
 from EMOD.functions.reporters import add_annual_reports, add_daily_reports, add_monthly_reports, add_5daily_reports
+
 from EMOD.functions.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup, drug_setup
 from EMOD.functions.forcedEIR import mAb_vs_EIR
 from emodpy_malaria.reporters.builtin import *
@@ -91,6 +93,7 @@ def submit_run_EMOD(exp, manifest, scen_df):
                        num_year=sim_dur_years, detection_threshold=exp.detectionLimit)
 
     if emod_step != 'burnin':  # do not generate more granular reports for burnin
+        add_patientreport(task, manifest)
         if 'daily' in exp.analyzer_list:
             add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years,
                               detection_threshold=exp.detectionLimit) 
@@ -114,7 +117,6 @@ def submit_run_EMOD(exp, manifest, scen_df):
     experiment.emod_step = exp.emod_step
     experiment.start_end = [sim_start_year_emod, sim_start_year_emod + sim_dur_years - 1]
     exp.emod_id = experiment.id
-
     if exp.hpc != "LOCAL":
         generate_run_EMOD_file(experiment, platform, suite_directory = exp.suite_directory)
         submit_analyze_EMOD(experiment, platform)
