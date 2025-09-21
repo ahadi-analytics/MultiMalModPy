@@ -66,7 +66,7 @@ class SimulationConfig:
         #self.target_output_values = [20]
 
         # Interventions to include (intervention specific configurations in interventions/ folder
-        self.intervention_list = [] #can be empty or 'ccstep'
+        self.intervention_list = [] #can be empty, 'ccstep' or 'infcl'
 
         # Parameters to vary
         self.sweep_list = ['target_output_values', 'case_management', 'seasonality']

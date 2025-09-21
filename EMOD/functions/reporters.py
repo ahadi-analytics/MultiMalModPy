@@ -144,3 +144,6 @@ def add_annual_reports(task, manifest, sim_start_year, num_year, tot_year=None,
                                age_bins=age_bins, reporting_interval=365, max_number_reports = (tot_year + sim_start_year) - (sim_year + sim_start_year),
                                filename_suffix=desc, pretty_format=False,
                                add_true_density=True, parasite_detection_threshold = detection_threshold)
+
+def add_patientreport(task, manifest):
+    add_malaria_patient_json_report(task,manifest)

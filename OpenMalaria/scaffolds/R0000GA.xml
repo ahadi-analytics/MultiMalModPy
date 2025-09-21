@@ -51,7 +51,8 @@
         </ageGroup>
     </monitoring>
     <interventions name="Interventions">
-            @intervention_ccstep@
+        @intervention_ccstep@
+        @intervention_infcl@
         <importedInfections>
             <timed>
                 <rate time="0" value="@importation_rate@"/>

@@ -73,6 +73,66 @@ python launch_sim.py --models malariasimulation --test
 python launch_sim.py --models OpenMalaria --test  
 ```
 
+
+### OpenMalaria on NUCLUSTER
+
+
+These instructions were adapted from the original setup notes by **Scott Coughlin**, who provided the module file and Singularity definition file. 
+
+**Download and extract OpenMalaria i.e. v48**
+
+```   
+cd /gpfs/projects/b1139/OpenMalaria/  
+wget https://github.com/SwissTPH/openmalaria/releases/download/schema-48.0/openMalaria-ubuntu-24.04.tar.gz  
+tar -xvzf openMalaria-ubuntu-24.04.tar.gz  
+rm openMalaria-ubuntu-24.04.tar.gz  
+mv openMalaria-ubuntu-24.04 om_v48  
+```  
+
+**Copy modules and definition file from previous version**   
+
+```   
+cp -r /gpfs/projects/b1139/OpenMalaria/om_v46/modules/ /gpfs/projects/b1139/OpenMalaria/om_v48/  
+cp /gpfs/projects/b1139/OpenMalaria/OpenMalaria.def /gpfs/projects/b1139/OpenMalaria/om_v48/  
+```  
+
+**Build the container on Quest using the remote Sylabs build environment**  
+
+```  
+module load singularity  
+singularity remote login  
+# If prompted:  
+# An access token is already set for this remote. Replace it? [N/y] y   
+# Generate an access token at: https://cloud.sylabs.io/auth/tokens   
+# Paste it when prompted   
+ 
+singularity build --remote OpenMalaria.sif OpenMalaria.def    
+``` 
+
+ **Update the module file**    
+
+Example module file (`openmalaria/48.0.lua`):    
+
+```    
+help([[  
+This git-repository contains source-code for OpenMalaria, a simulator program for studying malaria epidemiology and the impacts of interventions against malaria.
+]]) 
+
+local pkgName = "openmalaria"  
+local version = "48.0"  
+
+whatis("Name: " .. pkgName)  
+whatis("Version: " .. version)  
+
+depends_on("singularity") 
+
+local bashStr = 'singularity exec -B /gpfs/projects:/gpfs/projects /gpfs/projects/b1139/OpenMalaria/om_v48/OpenMalaria.sif /openmalaria/openMalaria-48.0/openMalaria "$@"' 
+
+set_shell_function("openMalaria", bashStr) 
+``` 
+
+  
+
 ---
 
  
