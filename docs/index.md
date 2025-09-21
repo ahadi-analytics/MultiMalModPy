@@ -8,7 +8,7 @@
 
 ## About MultiMalModPy
 
-A new HPC-oriented framework in [Python](https://www.python.org/) and [R](https://www.r-project.org/) that enables users to interact with  [EMOD](https://docs.idmod.org/projects/emod-malaria/en/2.20_a/), [malariasimulation](https://mrc-ide.github.io/malariasimulation/index.html), and [OpenMalaria](https://github.com/SwissTPH/openmalaria/wiki).
+A new HPC-oriented framework in [Python](https://www.python.org/) and [R](https://www.r-project.org/) that enables users to interact with  [EMOD](https://docs.idmod.org/projects/emod-malaria/en/2.20_a/)-malaria, [malariasimulation](https://mrc-ide.github.io/malariasimulation/index.html), and [OpenMalaria](https://github.com/SwissTPH/openmalaria/wiki).
 This framework is designed for modelers already familiar with one of these models, 
 as well as for those who wish to learn more about all three models in a unified and accessible approach.
 
