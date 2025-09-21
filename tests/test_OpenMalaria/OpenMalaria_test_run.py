@@ -9,7 +9,16 @@ openmalaria_dir = os.path.join(manifest.ROOT_DIR, 'dependencies', 'OpenMalaria',
 openmalaria_exe = os.path.join(openmalaria_dir, 'openMalaria.exe')
 
 # Define job directory (working directory for running the job)
-job_directory = os.path.join(manifest.ROOT_DIR, 'tests')
+job_directory = os.path.join(manifest.ROOT_DIR, 'tests/test_OpenMalaria')
+output_file = os.path.join(job_directory, "output.txt")
+
+# Check if file exists
+if os.path.exists(output_file):
+    print("Removing old output.txt file.")
+    os.remove(output_file)
+
+    if os.path.exists(output_file):
+        raise RuntimeError("Failed to remove output.txt")
 
 # Files to copy and later remove
 required_files = [
@@ -42,3 +51,11 @@ for path in copied_paths:
         os.remove(path)
     except Exception as e:
         logging.warning(f"Failed to delete {path}: {e}")
+
+
+# Check output
+if os.path.exists(output_file):
+    print("Simulation ran successfully and returned an output.txt file!")
+else:
+    raise FileNotFoundError("Simulation failed or returned unexpected output.")
+
