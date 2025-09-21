@@ -48,9 +48,9 @@ jobs:
                       file_path = os.path.join(foldername, filename)
                       rel_path = os.path.relpath(file_path, root_dir)
                       zf.write(file_path, os.path.join("MultiMalModPy", rel_path))
-
-          version_content = tag_name
-          zf.writestr("MultiMalModPy/VERSION.txt", version_content)
+              version_content = tag_name
+              zf.writestr("MultiMalModPy/VERSION.txt", version_content)
+          
           print(f"Created release ZIP: {zip_name}")
           EOF
         env:
