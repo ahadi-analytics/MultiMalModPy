@@ -4,15 +4,26 @@ import os
 import pandas as pd
 import numpy as np
 from utility.helper_simulation import *
-from utility.helper import get_param_from_dataframe, rep_scen_df, map_model_calib_inputs
-from tests.dummy_experiment import DummyExperiment
-
+from utility.experiment import LoadExperiment
+from utility.helper import parse_launch_args, get_param_from_dataframe, rep_scen_df
+import manifest
 
 @pytest.fixture
 def dummy_exp():
-    return DummyExperiment()
 
-# ----------------- TEST: get_param_integration -----------------
+    # from tests.dummy_experiment import DummyExperiment
+
+    if __name__ == "__main__" and any(arg.endswith("launch_sim.py") for arg in sys.argv):
+        args = parse_launch_args()
+    else:
+        from utility.helper_local import LoadLaunchArgs
+        args = LoadLaunchArgs()
+
+    #return DummyExperiment()
+    return LoadExperiment(args, manifest)
+
+
+# ----------------- TEST: get_param_from_dataframe -----------------
 @pytest.fixture
 def example_scenario_CSV():
     # Creates a DataFrame equivalent to the contents of example1.csv
@@ -30,7 +41,7 @@ def example_scenario_CSV():
     return pd.DataFrame(data)
 
 
-def test_get_param_integration(dummy_exp, example_scenario_CSV):
+def test_get_param_from_dataframe(dummy_exp, example_scenario_CSV):
     exp_scen_df = example_scenario_CSV
     exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == 0]
 
@@ -101,5 +112,35 @@ def test_rep_scen_df_index_reset(basic_scenario_df):
     assert rep_df['index'].iloc[3] == 4
     assert rep_df['index'].iloc[4] == 5
     assert rep_df['index'].iloc[5] == 6
+
+# ----------------- TEST: create_scenarios_csv_combinations -----------------
+def test_create_scenarios_csv_combinations(dummy_exp):
+
+    # Patch processing functions to just return the dataframe
+    with patch('utility.helper.process_case_management', lambda df: df), \
+            patch('utility.helper.map_model_calib_inputs', lambda exp, df: df), \
+            patch('utility.helper_interventions.scenario_df_to_update', lambda exp, df: df):
+        from utility.helper import create_scenarios_csv  # import inside patch context
+        df = create_scenarios_csv(dummy_exp, None)
+
+    # Check default columns
+    expected_cols = ['index', 'scen_id', 'target_output_values', 'case_management', 'seasonality',
+                     'entomology_mode', 'num_seeds']
+    for col in expected_cols:
+        assert col in df.columns
+
+    # Check number of rows: 2 x 2 x 2 = 8 combinations
+    assert len(df) == len(dummy_exp.target_output_values) * len(dummy_exp.case_management) * len(dummy_exp.seasonality)
+
+    # Check entomology_mode and num_seeds are identical across all rows
+    assert all(df['entomology_mode'] == dummy_exp.entomology_mode)
+    assert all(df['num_seeds'] == dummy_exp.num_seeds)
+
+    # Check index and scen_id start at 1 and increment
+    assert df['index'].iloc[0] == 1
+    assert df['scen_id'].iloc[0] == 1
+    assert df['index'].iloc[-1] == len(df)
+    assert df['scen_id'].iloc[-1] == len(df)
+
 
 

@@ -2,12 +2,25 @@ import pytest
 import os
 import numpy as np
 import pandas as pd
+from utility.experiment import LoadExperiment
+from utility.helper import parse_launch_args
 from utility.helper_calibration import output_target_to_eir, output_target_to_xTemp
-from tests.dummy_experiment import DummyExperiment
+import manifest
 
 @pytest.fixture
 def dummy_exp():
-    return DummyExperiment()
+
+    # from tests.dummy_experiment import DummyExperiment
+
+    if __name__ == "__main__" and any(arg.endswith("launch_sim.py") for arg in sys.argv):
+        args = parse_launch_args()
+    else:
+        from utility.helper_local import LoadLaunchArgs
+        args = LoadLaunchArgs()
+
+    #return DummyExperiment()
+    return LoadExperiment(args, manifest)
+
 
 def dummy_interp_data(num_rows=10, seed=42, modelname="malariasimulation"):
     np.random.seed(seed)
@@ -45,7 +58,7 @@ def test_output_target_to_eir(tmp_path, dummy_exp):
     interp_df.to_csv(csv_path, index=False)
 
     # Create dummy experiment
-    exp = DummyExperiment()
+    exp = dummy_exp
     exp.interp_path = tmp_path  # Set path to the temporary directory
     exp.interp_csv = "interp.csv"  # Set CSV filename
     exp.target_output_name = "eir"  # Set target output name as 'eir'
@@ -82,7 +95,7 @@ def test_output_target_to_xTemp(tmp_path, dummy_exp):
     interp_df.to_csv(csv_path, index=False)
 
     # Create dummy experiment
-    exp = DummyExperiment()
+    exp = dummy_exp
     exp.interp_path = tmp_path  # Set path to the temporary directory
     exp.interp_csv = "interp.csv"  # Set CSV filename
     exp.target_output_name = "eir"  # Set target output name as 'eir'
