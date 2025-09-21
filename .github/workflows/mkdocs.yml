@@ -18,20 +18,20 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.9.x'
 
       - name: Cache pip
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/docs/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r docs/requirements.txt
 
       - name: Build MkDocs site
         run: mkdocs build
@@ -39,7 +39,7 @@ jobs:
       # Deploy main site on push to main
       - name: Deploy main site
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v6
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site
@@ -47,7 +47,7 @@ jobs:
       # Deploy PR preview on pull requests (except closed)
       - name: Deploy PR preview
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
-        uses: peaceiris/actions-gh-pages@v6
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site
@@ -65,7 +65,7 @@ jobs:
       # Cleanup PR preview folder when PR is closed
       - name: Remove PR preview on close
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
-        uses: peaceiris/actions-gh-pages@v6
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site  # dummy, required but will delete folder
