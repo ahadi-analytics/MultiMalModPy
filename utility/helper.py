@@ -39,7 +39,7 @@ def parse_launch_args():
         --rownum (int)              : Row number from the specified scenario CSV (default: 0).
         -r, --run_mode (str)        : Type of run ('custom', 'calibration', 'simple', 'production', or 'csv').
         --emod_calib_params (bool)  : Whether to include calibration parameters for EMOD.
-        --mpv (bool)                : Whether to run malariasimulation with parameter variation (default: True).
+        --mpv (str)                 : Whether to run malariasimulation with or without parameter variation (default: both with and without).
         -t, --test (bool)           : Runs the simulation with lower population, shorter burn-in, and fewer seeds.
         -n, --note (str)            : An optional tag to distinguish different runs.
     """
@@ -92,9 +92,15 @@ def parse_launch_args():
     parser.add_argument('--emod_calib_params',
                         action='store_true',
                         help='Include calibration parameters for EMOD (default: False).')
-    parser.add_argument('--mpv',
-                        action='store_true',
-                        help='Run malariasimulation with parameter variation (default: False).')
+    parser.add_argument('--mpv',  # malariasimulation_parameter_variation
+                        default='yes',
+                        choices=['no','yes','both'],
+                        help=(
+                            "Run malariasimulation with parameter variation:\n"
+                            "  no   - run without parameter variation\n"
+                            "  yes  - run with parameter variation only\n"
+                            "  both - run both with and without parameter variation (default)"
+                        ))
     parser.add_argument('-t','--test',
                         action='store_true',
                         help='Enable test mode with reduced population, burn-in, and seeds.')
@@ -104,9 +110,10 @@ def parse_launch_args():
                         help='Optional tag for distinguishing runs.')
     args = parser.parse_args()
 
+
     # Validate CSV and rownum combination
     if args.csv:
-        if not args.rownum:
+        if args.rownum is None:
             print(f"The '--csv' argument was specified ({args.csv}) but no rownum"
                    "Using default 'rownum' 0 to run first row")
         args.run_mode = "csv"
@@ -182,6 +189,11 @@ def get_param_from_dataframe(df, name, sim_params_list):
                 out = [value]
         else:
             out = value
+
+    if isinstance(out, list) and len(out) == 1:
+        v = out[0]
+        if v is None or v != v:
+            return []
 
     return out
 
@@ -399,6 +411,7 @@ def create_simsetup_csv(exp):
                  'output_directory': exp.output_directory,
                  'emod_serialized_id': exp.emod_serialized_id,
                  'burnin_directory': exp.burnin_directory,
+                 'entomology_mode': exp.entomology_mode,
                  'nexps': exp.nexps,
                  'sweep_list': exp.sweep_list,
                  'monitoring_years': exp.monitoring_years,
@@ -409,7 +422,7 @@ def create_simsetup_csv(exp):
                  'seasonality': exp.seasonality,
                  'seasonal_monthly': ';'.join(map(str, exp.seasonal)),
                  'perennial_monthly': ';'.join(map(str, exp.perennial)),
-                 'seasonal_daily': ';'.join(map(str, exp.season_daily)),
+                 'seasonal_daily': ';'.join(map(str, exp.seasonal_daily)),
                  'perennial_daily': ';'.join(map(str, exp.perennial_daily)),
                  'start_year': exp.start_year,
                  'end_year': exp.end_year,
@@ -420,8 +433,10 @@ def create_simsetup_csv(exp):
                  'sim_start_year_emod': exp.sim_start_year_emod,
                  'sim_start_year_malariasimulation': exp.sim_start_year_malariasimulation,
                  'intervention_list': exp.intervention_list,
+                 'interp_csv': exp.interp_csv,
                  'target_output_name': exp.target_output_name,
-                 'target_output_values':  ';'.join(map(str, exp.target_output_values))
+                 'target_output_values':  ';'.join(map(str, exp.target_output_values)),
+                 'malariasimulation_parameter_variation': exp.malariasimulation_parameter_variation
                  }
 
     setup_df = pd.DataFrame.from_dict(setup_dic, orient='index', columns=['Value'])

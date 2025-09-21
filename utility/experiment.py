@@ -88,10 +88,12 @@ class RunModeManager:
         self.experiment.eir_range = eir_range
         self.experiment.x_temp_range =x_temp_range
 
-        if self.experiment.malariasimulation_parameter_variation:
+        if self.experiment.malariasimulation_parameter_variation in ("yes", "both"):
             warnings.warn(
-                "Warning: malariasimulation should not use parameter variation during calibration run. Parameter variation is now set to False.")
-            self.experiment.malariasimulation_parameter_variation = False
+                "Warning: malariasimulation should not use parameter variation during calibration run. "
+                "Parameter variation is now set to 'no'."
+            )
+            self.experiment.malariasimulation_parameter_variation = "no"
 
     def _configure_simple(self):
         """
@@ -182,7 +184,7 @@ class ArgsConfig:
         emod_step (str): Specifies the EMOD simulation step (e.g., 'burnin', 'pickup', 'new_pickup').
         serializedid (str): Serialized ID for initializing an EMOD simulation.
         emod_calib_params (bool): Indicates if calibration parameters should be included for EMOD.
-        malariasimulation_parameter_variation (bool): Specifies whether parameter variation is enabled for malariasimulation.
+        malariasimulation_parameter_variation (str): Specifies whether to run malariasimulation with or without parameter variationor both.
 
     Methods:
         __init__(args): Initializes the ArgsConfig object by mapping command-line arguments to attributes.

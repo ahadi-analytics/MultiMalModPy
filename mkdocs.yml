@@ -4,6 +4,7 @@ docs_dir: 'docs'
 site_url: https://ahadi-analytics.github.io/MultiMalModPy/
 repo_url: https://github.com/ahadi-analytics/MultiMalModPy
 edit_uri: edit/main/docs/
+site_author: AHADI Analytics
 copyright: Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a>
 
 plugins:
@@ -12,8 +13,9 @@ plugins:
   - include-markdown:
       preserve_includer_indent: true
   - git-revision-date-localized:
-      enable_creation_date: true
-      type: date
+        enable_creation_date: false
+        locale: en
+        type: date
   - mkdocstrings:
       handlers:
         python:
@@ -32,6 +34,9 @@ markdown_extensions:
       use_pygments: true
   - toc:
       permalink: true
+extra:
+  git_revision_date:
+    enabled: true
 extra_javascript:
   - https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js
   - javascripts/tablesort.js
@@ -39,30 +44,35 @@ extra_javascript:
 nav:
   - Home: index.md
   - Malaria models:
-    - Software: malaria_models/software.md
-    - Documentation & Source Code: malaria_models/documentation-and-sourcecode.md
+    - Software overview: malaria_models/software.md
+    - Documentation & source code: malaria_models/documentation-and-sourcecode.md
     - Model structure: malaria_models/structure.md
     - Interventions: malaria_models/interventions.md
     - Core parameters: malaria_models/core_parameters.md
     - Input and output files: malaria_models/input_output.md
-  - Getting started:
+  - User Guide:
     - Overview of MultiMalModPy: getting_started/overview.md
     - Installation: getting_started/installation.md
     - First time configurations (manifest.py): getting_started/configuration.md
-    - How to use MultiMalModPy: getting_started/usage.md
+    - "Quickstart: Run your first simulation": getting_started/usage.md
     - User-modifiable parameters and defaults: getting_started/parameters.md
-    - Launch simulations: getting_started/example_run.md
+    - Launch simulations by platform: getting_started/example_run.md
     - Glossary: getting_started/glossary.md
   - Simulation Guide:
     - Time: guide/time.md
-    - Population and age structure: guide/age_demography.md
+    - Population & age structure: guide/age_demography.md
     - Seasonality: guide/seasonality.md
-    - Transmission and calibration: guide/transmission_calibration.md
     - Case management: guide/case_management.md
+    - Transmission calibration: guide/transmission_calibration.md
     - Scenarios: guide/scenarios.md
     - Model specific options: guide/model_specificities.md
-    - Randomness and uncertainty: guide/uncertainty.md
-    #- Postprocessing: guide\postprocessing.md
+    - Randomness & uncertainty: guide/uncertainty.md
+  - Developer Guide:
+    - Writing new interventions: developer/add_new_interventions.md
+    #- Adding parameters to vary: developer/add_new_sweep_parameters.md
+    - Updating malaria models : developer/update_models.md
+    - Creating new releases: developer/create_new_release.md
+    - Updating the documentation: developer/update_docs.md
   - API:
     - manifest.py: api/manifest.md
     - launch_sim.py: api/launch_sim.md
@@ -98,7 +108,7 @@ nav:
       - api/plotter/plot_agecurves.md
       - api/plotter/plot_timeseries.md
       - api/plotter/plot_relationship.md
-      - api\plotter\plot_sampleplots.md
+      - api/plotter/plot_sampleplots.md
       - api/plotter/plot_ccstep.md
       - api/plotter/plot_custom.md
   - About:
