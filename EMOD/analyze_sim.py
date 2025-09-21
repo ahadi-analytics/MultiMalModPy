@@ -703,8 +703,6 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
                                         'clinical_incidence': clinical_cases,  # per person per year
                                         'severe_incidence': severe_cases,  # per person per year
                                         'nHost': pop})
-                simdata['nUncomp'] = [x * 12 for x in simdata['clinical_incidence']]  # per person per month
-                simdata['nSevere'] = [x * 12 for x in simdata['severe_incidence']]  # per person per month
                 simdata['year'] = year
                 simdata['agebin'] = age_bins[age]
                 simdata['prevalence_2to10'] = pfpr2to10
