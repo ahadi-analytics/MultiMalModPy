@@ -13,11 +13,9 @@ def ccstep_params(exp):
     Returns:
         Experiment object
             An object with updated experiment parameters.
-    """
-
-    # Required fixed parameters for ccstep
-    if exp.emod_step != 'pickup':
-        exp.cc_decreasing = True  # this is important to note because decreasing sims are organized differently.
+    """    
+    exp.ccstep = [x[1] for x in exp.target_output_values]
+    exp.target_output_values = [x[0] for x in exp.target_output_values]
 
     exp.step_in_years = 5 # determines after x amount of years, when the carrying capacity change occurs
 
@@ -60,10 +58,6 @@ def ccstep_params(exp):
         exp.malariasimulation_time_per_sim = '2:00:00'
         exp.openmalaria_memory_per_sim = 6
         exp.openmalaria_time_per_sim = '2:00:00'
-        exp.ccstep = exp.target_output_values
-    else:
-        ## Keep parameters as defined by user in helper.py
-        exp.ccstep = exp.target_output_values
     
     if exp.emod_importation_rate == 0 and exp.cc_decreasing:
         print('Warning: You are running EMOD simulations with a decreasing carrying capacity.\nWithout importation, elimination can occur.')

@@ -100,7 +100,7 @@ exp.nexps = len(scen_df) * exp.num_seeds
 exp.max_running_jobs = min(exp.nexps,300)
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.output_directory])
-save_scen(param_variation(rep_scen_df(scen_df), exp), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.output_directory])
+save_scen(rep_scen_df(scen_df), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.output_directory])
 
 # Write out simulation setup (required for malariasimulation)
 create_simsetup_csv(exp)
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     # Submit malariasimulation as SLURM job, including scheduled analyzer
     if 'malariasimulation' in exp.models:
         from malariasimulation.utils import submit_run_malariasimulation
-        submit_run_malariasimulation(exp)
+        submit_run_malariasimulation(exp, scen_df)
 
     # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
     if 'OpenMalaria' in exp.models:
@@ -129,7 +129,7 @@ if __name__ == '__main__':
     if exp.emod_step != 'burnin':
         submit_run_plotters(exp)
 
-    if exp.selected_platform == 'CONTAINER' and 'EMOD' in exp.models:
+    if exp.selected_platform == 'Container' and 'EMOD' in exp.models:
         from EMOD.utils import run_analyze_EMOD_local_with_polling
         run_analyze_EMOD_local_with_polling(exp, exp.container_id)
 

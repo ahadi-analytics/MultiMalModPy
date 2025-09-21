@@ -110,10 +110,13 @@ def write_ps1_runmodel(exp, filename, model):
     if not os.path.isdir(exp.job_directory):
         raise ValueError(f"Invalid job directory: {exp.job_directory}")
 
+    logfile = os.path.normpath(os.path.join(exp.job_directory, "log", f"run_{model}.out"))
+    logfile_analyzer = os.path.normpath(os.path.join(exp.job_directory, "log", f"run_analyzer_{model}.out"))
+
     ps1_content = f"""
     # Start logging to a file
-    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory, 'log'))}\\run_{model}.out }}
-    Start-Transcript -Path $LogFile
+    $LogFile = "{logfile}"
+    Start-Transcript -Path $LogFile -Force
     
     # Start the first job
     $job1 = Start-Job -ScriptBlock {{
@@ -138,8 +141,8 @@ def write_ps1_runmodel(exp, filename, model):
     
 
     # Start the second job (only after the first job completes)
-    $LogFile = {{ {os.path.normpath(os.path.join(exp.job_directory, 'log'))}\\run_analyzer_{model}.out }}
-    Start-Transcript -Path $LogFile
+    $LogFile = "{logfile_analyzer}"
+    Start-Transcript -Path $LogFile -Force
     
     $job2 = Start-Job -ScriptBlock {{
         try {{
@@ -256,7 +259,11 @@ def write_ps1_analyzer(exp, pyscript, model):
     """
     job_name = f"analyzer_{model}"
     subdir = model
-    py_command = f'python {pyscript} --directory "{exp.job_directory}"'
+    py_command = f'python {pyscript} --directory "{exp.job_directory}"\n'
+
+    if exp.malariasimulation_parameter_variation:
+        py_command = py_command + f'python {pyscript} --directory "{exp.job_directory}" --mpv\n'
+
     fname = f'run_analyze_{model}.ps1'
     create_ps1_script(exp, fname, subdir, job_name, py_command)
 

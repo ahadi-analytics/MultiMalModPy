@@ -284,8 +284,12 @@ def write_sh_analyzer(exp, pyscript, model):
     sh_content += f"# Activate virtual environment\n{venv_activation}\n"
 
     # Set custom arguments and run the Python command
-    py_args = f'--directory "{exp.job_directory}"'  # Custom directory argument for your script
-    pycommand = f'python {pyscript} {py_args}\n'  # Command to run the Python script
+    py_args = f'--directory "{exp.job_directory}"'
+    pycommand = f'python {pyscript} {py_args}\n'
+
+    if exp.malariasimulation_parameter_variation:
+        py_args_mpv = f'--directory "{exp.job_directory}" --mpv'
+        pycommand = pycommand + f'python {pyscript} {py_args_mpv}\n'
 
     # Change to the appropriate directory and run the script
     sh_content += f'cd {os.path.join(exp.ROOT_DIR, model)}\n'
