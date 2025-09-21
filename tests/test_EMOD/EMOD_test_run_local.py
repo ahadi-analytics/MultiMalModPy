@@ -1,6 +1,7 @@
 ## --------------------------------------------------------------------------------------------------
 ## https://github.com/EMOD-Hub/emodpy-malaria/blob/main/examples-container/simple_example/example_container.py
 ## --------------------------------------------------------------------------------------------------
+import os
 from emodpy.emod_task import EMODTask
 import manifest
 from idmtools.entities.experiment import Experiment
@@ -53,9 +54,10 @@ def build_demog():
     return demog
 
 
-def general_sim():
+def general_sim(job_directory):
+
     # Set platform
-    platform = Platform('Container', job_directory="destination_directory")
+    platform = Platform('Container', job_directory=job_directory)
 
     # create EMODTask
     print("Creating EMODTask (from files)...")
@@ -75,9 +77,48 @@ def general_sim():
     experiment.run(wait_until_done=True)
 
 
+def find_insetchart(job_directory):
+    for root, _, files in os.walk(job_directory):
+        if "InsetChart.json" in files:
+            return os.path.join(root, "InsetChart.json")
+    return None
+
+
+import os
+
+def delete_suite_folder(base_dir: str):
+    """
+    Deletes the first folder in base_dir that starts with 'Suite' using only os.
+    """
+    for entry in os.listdir(base_dir):
+        full_path = os.path.join(base_dir, entry)
+        if os.path.isdir(full_path) and entry.startswith("Suite"):
+            print(f"Removing folder: {full_path}")
+            # Recursively delete contents
+            for root, dirs, files in os.walk(full_path, topdown=False):
+                for f in files:
+                    os.remove(os.path.join(root, f))
+                for d in dirs:
+                    os.rmdir(os.path.join(root, d))
+            # Remove the top-level folder
+            os.rmdir(full_path)
+            return  # stop after deleting first match
+    print("No folder starting with 'Suite' found.")
+
 if __name__ == "__main__":
     import emod_malaria.bootstrap as dtk
     import pathlib
 
+    job_directory = os.path.dirname(os.path.abspath(__file__))
+
+    ## Delete previous experiment if exosts
+    delete_suite_folder(job_directory)
+
     dtk.setup(pathlib.Path(manifest.eradication_path).parent)
-    general_sim()
+    general_sim(job_directory)
+
+    inset_file = find_insetchart(job_directory)
+    if inset_file:
+        print("Simulation ran successfully and returned an InsetChart.json file!")
+    else:
+        raise FileNotFoundError("Simulation failed or returned unexpected output.")

@@ -6,10 +6,8 @@
 library(malariasimulation); library(malariaEquilibrium); library(lubridate)
 library(dplyr); library(tibble); library(readr); library(umbrella)
 
-wdir <- file.path(getwd(), 'malariasimulation')
-
 print(" Load the functions required and load experiment objects...")
-rfiles <- list.files(file.path(wdir, 'functions'), pattern = ".R", full.names = T)
+rfiles <- list.files(file.path(getwd(), 'malariasimulation/functions'), pattern = ".R", full.names = T)
 for (i in c(1:length(rfiles))) {
   source(rfiles[i])
 }
@@ -36,15 +34,14 @@ parameter_table <- data.table::data.table(
 )
 
 perennial_daily <- paste(rep("0.0027397260273972603", 365), collapse = "; ")
-exp_setup_df <- data.table::data.table(
-  Value = c("custom", "['target_output_values', 'case_management', 'seasonality']","5", "3", "500", "[0.5, 1, 2, 5, 10, 15, 20, 100]", "['perennial']", perennial_daily),
-  parameter = c("run_mode", "sweep_list","burnin_malariasimulation", "monitoring_years", "pop_size_malariasimulation", "agebins", "seasonality", "perennial_daily")
-)
-
+exp_setup_df <- data.frame(parameter = c("run_mode", "sweep_list", "burnin_malariasimulation", "monitoring_years",
+                                         "pop_size_malariasimulation", "agebins", "seasonality", "perennial_daily"),
+                           Value = c("custom", "['target_output_values', 'case_management', 'seasonality']", "5", "3", "500",
+                                     "[0.5, 1, 2, 5, 10, 15, 20, 100]", "['perennial']", perennial_daily), stringsAsFactors = FALSE)
 
 exp <- list()
-exp$job_directory <- file.path(getwd(), 'tests')
-exp$output_directory <- file.path(getwd(), 'tests')
+exp$job_directory <- file.path(getwd(), 'tests/test_malariasimulation')
+exp$output_directory <- file.path(getwd(), 'tests/test_malariasimulation')
 exp$pop_size <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'pop_size_malariasimulation', 'Value'])
 exp$burnin <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'burnin_malariasimulation', 'Value'])
 exp$monitoring_years <- as.numeric(exp_setup_df[exp_setup_df$parameter == 'monitoring_years', 'Value'])
@@ -54,7 +51,7 @@ exp$min_ages <- (round(c(0, exp$agebins[1:length(exp$agebins) - 1]) * 365)) + 1
 exp$min_ages[1] <- 0
 exp$max_ages <- (round(exp$agebins * 365))
 exp$intervention_list <- exp_setup_df[exp_setup_df$parameter == 'intervention_list', 'Value']
-exp$intervention_list <- data.frame(interventions = unlist(strsplit(gsub("\\[|\\]|\\'", '', exp$intervention_list), ','))) #This helps make the python list readable in R
+exp$intervention_list <- data.frame(interventions = unlist(strsplit(gsub("\\[|\\]|\\'", '', exp$intervention_list), ',')))
 exp$intervention_list <- exp$intervention_list$interventions
 exp$monthly_or_daily_eirs <- 'daily' # This will change so we can toggle between daily and monthly later
 
@@ -71,14 +68,17 @@ if (length(exp$intervention_list) > 0) {
   ## to be expanded with other interventions
 }
 
+## Remove file if already existing
+output_file <- file.path(exp$job_directory, 'malariasimulation_jobs/1_out_pv.csv')
+if (file.exists(output_file))unlink(output_file)
+
 # Run the simulations or load example:
 print("Running the simulations...")
 dir.create(file.path(exp$job_directory, "malariasimulation_jobs"), showWarnings = FALSE, recursive = TRUE)
 simulation_outputs_raw <- run_simulations(exp = exp, exp_setup_df = exp_setup_df, parameter_table = parameter_table[1,]) # run single simulation for testing
 
-if (!is.null(simulation_outputs_raw) && is.data.frame(simulation_outputs_raw)) {
+if (simulation_outputs_raw == 'Simulation 1 completed' & file.exists(file.path(exp$job_directory, 'malariasimulation_jobs/1_out_pv.csv'))) {
   message("Simulation ran successfully and returned a data frame!")
 } else {
   stop("Simulation failed or returned unexpected output.")
 }
-
