@@ -54,7 +54,8 @@ else:
 
 # ----------------------------- User-defined input -----------------------------
 if hpc == 'NUCLUSTER':
-    sh_hpc_config = {'A': 'b1139', 'p': 'b1139', 'em_modules': 'singularity', 'buyin': True}
+    #sh_hpc_config = {'A': 'b1139', 'p': 'b1139', 'em_modules': 'singularity', 'buyin': True}
+    sh_hpc_config = {'A': 'p32714', 'p':'normal', 'em_modules': 'singularity', 'buyin': True}
     projdir = os.path.join('/gpfs/projects/b1139/emod-om/')
 
     SIF_PATH = "--bind /gpfs/projects /gpfs/projects/b1139/images/dtk_run_rocky_py39.sif"

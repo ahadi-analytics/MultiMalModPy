@@ -6,6 +6,7 @@ from datetime import datetime as dt
 import pandas as pd
 import numpy as np
 from scipy.interpolate import interp1d
+import ast
 # from idmtools.entities.experiment import Experiment
 from utility.helper_slurm import *
 from utility.helper_simulation import *
@@ -31,7 +32,7 @@ def parse_launch_args():
         -d, --directory (str)       : Job directory for burn-in; ignored if no EMOD burn-in is provided.
         --suite (str)               : Name of the suite; defaults to the current date followed by "_test".
         --expname (str)             : Name of the experiment; defaults to include the current time.
-        --emodstep (str)            : Specifies the EMOD step (e.g., 'burnin', 'pickup', 'new_pickup').
+        --emod_step (str)            : Specifies the EMOD step (e.g., 'burnin', 'pickup', 'new_pickup').
         --serializedid (str)        : Serialized ID for EMOD, if applicable.
         --models (list)             : List of models to run (default: ['EMOD', 'malariasimulation', 'OpenMalaria']).
         --user (str)                : Subdirectory for simulations, based on the current user or 'b1139' for NUCLUSTER.
@@ -58,7 +59,7 @@ def parse_launch_args():
                         type=str,
                         default=f'sims_entomologymode_seasonality_intervention_{dt.now().strftime("%H_%M_%S")}',
                         help="Experiment name (default: includes timestamp).")
-    parser.add_argument('--emodstep',
+    parser.add_argument('--emod_step',
                         type=str,
                         default=None,
                         choices=[None, 'burnin', 'pickup', 'new_pickup'],
@@ -120,13 +121,13 @@ def parse_launch_args():
         print(f"The '--csv' argument was specified ({args.csv}). "
               "Setting 'run_mode' to 'csv'.")
 
-    # Ensure EMOD is specified if emodstep is set
-    if args.emodstep is not None and 'EMOD' not in args.models:
-        raise ValueError(f"EMOD is not specified in the models list, but emodstep is set to {args.emodstep}. "
+    # Ensure EMOD is specified if emod_step is set
+    if args.emod_step is not None and 'EMOD' not in args.models:
+        raise ValueError(f"EMOD is not specified in the models list, but emod_step is set to {args.emod_step}. "
                          "Did you forget to include EMOD in models?")
 
     # Warning for experimental feature
-    if args.emodstep == 'new_pickup':
+    if args.emod_step == 'new_pickup':
         print("Warning: 'new_pickup' is in development mode. Please review your simulation and results carefully.")
 
     return args
@@ -177,9 +178,18 @@ def get_param_from_dataframe(df, name, sim_params_list):
     value = df[name].iat[0]
 
     if name == "case_management":
-        import ast
         out = ast.literal_eval(f'[{value}]')
         out = [float(i) if isinstance(i, str) and i.replace('.', '', 1).isdigit() else i for i in out]
+    elif name == 'target_output_values':
+        try:
+            out = ast.literal_eval(f'[{value}]')
+            out = [float(i) if isinstance(i, str) and i.replace('.', '', 1).isdigit() else i for i in out]
+        except:
+            try:
+                out = value.replace(' ', '').split(',')
+                out = [float(i) if i.replace('.', '', 1).isdigit() else i for i in out]
+            except:
+                out = [value]
     else:
         if name in sim_params_list:
             try:

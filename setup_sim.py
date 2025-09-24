@@ -52,7 +52,7 @@ class SimulationConfig:
         self.cm_start = 1
         self.case_management = [(0, 0),(0.15,0.5)]  # format: [(cm_clinical, cm_severe), (...)]
         self.detectionLimit = 40
-        self.emod_importation_rate = 1
+        self.emod_importation_rate = 0
         self.openmalaria_importation_rate = 0
         
         # Parameters also modifiable via args (if specified in args, those will get priority)

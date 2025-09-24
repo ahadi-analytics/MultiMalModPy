@@ -564,7 +564,7 @@ def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days, grp_channels=['ageGroup',
         all_ages = adf[adf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         adf = adf[adf['ageGroup'] == '0-100']
         adf = adf.groupby(['scen_id', 'transmission_intensity_OpenMalaria', 'seasonality', 'cm_clinical','cm_severe'])[
-            ['eir', 'prevalence_2to10', 'prevalence', 'severe_incidence','expected_severe_incidence', 'expected_severe_incidence_wo_CoMo' 'n_total_mos_pop']].agg(
+            ['eir', 'prevalence_2to10', 'prevalence', 'severe_incidence','expected_severe_incidence', 'expected_severe_incidence_wo_CoMo', 'n_total_mos_pop']].agg(
             'mean').reset_index()
         adf = adf.merge(all_ages, on='scen_id')
         adf = adf.merge(u5, on='scen_id')
