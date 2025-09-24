@@ -202,7 +202,7 @@ def ccstep_columns(exp, df):
 
 
 def ccstep_input_check(exp):
-    #if exp.entomology_mode != "dynamic":
-    #    raise ValueError(f'Invalid entomology_mode for ccstep {exp.entomology_mode} specified, "dynamic" required')
+    if exp.entomology_mode != "dynamic":
+        raise ValueError(f'Invalid entomology_mode for ccstep {exp.entomology_mode} specified, "dynamic" required')
     if exp.end_year - exp.start_year < exp.step_in_years:
         raise ValueError(f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and {exp.end_year}")
