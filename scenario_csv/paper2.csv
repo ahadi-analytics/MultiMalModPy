@@ -1,0 +1,23 @@
+rownum,exp_name,exp_description,entomology_mode,seasonality,target_output_name,target_output_values,case_management,malariasimulation_parameter_variation,intervention_list,emod_importation_rate,openmalaria_importation_rate,models,emod_step,plots_to_run
+1,calibration_perennial,Fig 2,dynamic,perennial,eir,,"(0, 0), (0.15, 0.5)",no,,0,0,"EMOD, malariasimulation, OpenMalaria",burnin,customR
+2,calibration_seasonal_EMOD,Not In Figures,dynamic,seasonal,eir,,"(0, 0), (0.15, 0.5)",,,0,,EMOD,burnin,customR
+3,seasonal_EIR20_EMOD,Fig 3 A+B,dynamic,seasonal,eir,20,"(0,0)",,,0,,EMOD,burnin,customR
+4,calibration_seasonal_OpenMalaria_malariasimulation,Not In Figures,dynamic,seasonal,eir,,"(0,0),(0.15, 0.5)",no,,0,0,"malariasimulation, OpenMalaria",,customR
+5,perennial_pfpr,"Fig 3, Fig 4",dynamic,perennial,prevalence_2to10,"0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6,0.7,0.8","(0, 0), (0.15, 0.5)",both,,0,0,OpenMalaria,None,customR
+6,seasonal_EIR20,Fig 5 AB,dynamic,seasonal,eir,20,"(0, 0), (0.15, 0.5)",both,,0,0,"EMOD, malariasimulation, OpenMalaria",burnin,customR
+7,seasonal_pfpr,Fig 5,dynamic,seasonal,prevalence_2to10,"0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6,0.7,0.8","(0,0), (0.15,0.5)",both,,0,0,"EMOD, malariasimulation, OpenMalaria",burnin,customR
+8,perennial_ccstep_pfpr,Fig 6,dynamic,perennial,prevalence_2to10,"(0.25,0.15),(0.25,0.35)","(0,0), (0.15,0.5)",both,ccstep,0,0,"EMOD, malariasimulation, OpenMalaria",burnin,customR
+9,perennial_ccstep_pfpr_wEMODImportation,Fig 6,dynamic,perennial,prevalence_2to10,"(0.25,0.15),(0.25,0.35)","(0,0), (0.15,0.5)",both,ccstep,1,0,EMOD,burnin,customR
+10,perennial_infcl_pfpr,Fig 7,dynamic,perennial,prevalence_2to10,"0.05, 0.1, 0.25, 0.5","(0,0), (0.15,0.5)",both,infcl,0,0,"EMOD, malariasimulation, OpenMalaria",burnin,customR
+11,SUPP_seasonal_eir_sweep,SUPP,dynamic,seasonal,eir,"0.1,1,2.5,5,10,15,20,30,40,50,100,200,500,1000","(0,0), (0.15,0.5)",both,,0,0,"EMOD, malariasimulation, OpenMalaria",burnin,customR
+12,SUPP_perennial_ccstep_ciu5,SUPP,dynamic,perennial,clinical_incidence_U5,"(1,1.2),(1,0.8)","(0,0), (0.15,0.5)",both,ccstep,0,0,"EMOD, malariasimulation, OpenMalaria",burnin,customR
+13,SUPP_perennial_infcl_eir,SUPP,dynamic,perennial,eir,20,"(0,0), (0.15,0.5)",both,infcl,0,0,"EMOD, malariasimulation, OpenMalaria",burnin,customR
+14,SUPP_perennial_infcl_ciu5,SUPP,dynamic,perennial,clinical_incidence_U5,1,"(0,0), (0.15,0.5)",both,infcl,0,0,"EMOD, malariasimulation, OpenMalaria",burnin,customR
+15,forced_calibration_perennial,SUPP Fig 2,forced,perennial,eir,,"(0, 0), (0.15, 0.5)",,,0,0,"EMOD, OpenMalaria",burnin,customR
+16,forced_calibration_seasonal,Not In Figures,forced,seasonal,eir,,"(0, 0), (0.15, 0.5)",,,0,0,"EMOD, OpenMalaria",burnin,customR
+17,forced_perennial_pfpr,"SUP Fig 3, Fig 4",forced,perennial,prevalence_2to10,"0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6,0.7,0.8","(0, 0), (0.15, 0.5)",,,0,0,"EMOD, OpenMalaria",burnin,customR
+18,forced_seasonal_EIR20,SUPP Fig 5 AB,forced,seasonal,eir,20,"(0, 0), (0.15, 0.5)",,,0,0,"EMOD, OpenMalaria",burnin,customR
+19,forced_seasonal_pfpr,SUPP Fig 5,forced,seasonal,prevalence_2to10,"0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6,0.7,0.8","(0,0), (0.15,0.5)",,,0,0,"EMOD, OpenMalaria",burnin,customR
+20,forced_perennial_ccstep_noImportation,SUPP Fig 6,forced,perennial,prevalence_2to10,"(0.25,0.15),(0.25,0.35)","(0,0), (0.15,0.5)",,ccstep,0,0,"EMOD, OpenMalaria",burnin,customR
+21,forced_perennial_infcl_pfpr,SUPP Fig 7,forced,perennial,prevalence_2to10,"0.05, 0.1, 0.25, 0.5","(0,0), (0.15,0.5)",,infcl,0,0,"EMOD, OpenMalaria",burnin,customR
+,Additional Importation simulations may be necessary after reviewing these simulation results,,,,,,,,,,,,,
