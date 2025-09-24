@@ -20,7 +20,6 @@ wdir <- arguments[1]  # getwd()
 job_directory <- arguments[2]
 scen_id <- arguments[3]  
 
-
 print(" Load the functions required and load experiment objects...")
 rfiles <- list.files(file.path(wdir,'functions'),  pattern = ".R", full.names = T)
 for (i in c(1:length(rfiles))) {
@@ -57,6 +56,7 @@ exp$monthly_or_daily_eirs <- 'daily' # This will change so we can toggle between
 if (length(exp$intervention_list) > 0) {
   print("Adding interventions to simulations...")
   source(file.path(wdir, 'functions', 'interventions.R'))
+}
 
 
 

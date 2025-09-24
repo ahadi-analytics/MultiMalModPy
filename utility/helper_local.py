@@ -15,7 +15,7 @@ class LoadLaunchArgs:
         directory (str or None): Directory where data is stored or to be saved.
         suite (str): The name of the suite, default is a string with the current date.
         expname (str): The name of the experiment, default is a string with the current time.
-        emodstep (str or None): The EMOD step name.
+        emod_step (str or None): The EMOD step name.
         serializedid (str): A serialized identifier for the experiment.
         models (list of str): A list of models to be used in the experiment, default includes 'OpenMalaria' and 'malariasimulation'.
         user (str): The username of the person running the experiment, fetched from the environment.
@@ -47,7 +47,7 @@ class LoadLaunchArgs:
         self.directory = None
         self.suite = f'test_{dt.now().strftime("%Y%m%d")}'
         self.expname = f'sims_entomologymode_seasonality_intervention_{dt.now().strftime("%H_%M_%S")}'
-        self.emodstep = None
+        self.emod_step = None
         self.serializedid = ''
         self.models = ['OpenMalaria', 'malariasimulation']  # 'EMOD'
         self.user = os.environ.get('USER')
@@ -79,7 +79,7 @@ class LoadLaunchArgs:
         Return a string representation of the current argument settings.
         """
         return (f"Args(directory={self.directory}, suite={self.suite}, expname={self.expname}, "
-                f"emodstep={self.emodstep}, serializedid={self.serializedid}, models={self.models}, "
+                f"emod_step={self.emod_step}, serializedid={self.serializedid}, models={self.models}, "
                 f"user={self.user}, csv={self.csv},  rownum={self.rownum}, "
                 f"run_mode={self.run_mode}, emod_calib_params={self.emod_calib_params}, "
                 f"overwrite={self.overwrite}, mpv={self.mpv}, test={self.test}, note={self.note}, target_output_name={self.target_output_name})")

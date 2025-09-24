@@ -93,7 +93,7 @@ def submit_run_EMOD(exp, manifest, scen_df):
                        num_year=sim_dur_years, detection_threshold=exp.detectionLimit)
 
     if emod_step != 'burnin':  # do not generate more granular reports for burnin
-        add_patientreport(task, manifest)
+        #add_patientreport(task, manifest)
         if 'daily' in exp.analyzer_list:
             add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years,
                               detection_threshold=exp.detectionLimit) 
@@ -124,7 +124,7 @@ def submit_run_EMOD(exp, manifest, scen_df):
             exp.exp_name_pickup = exp.exp_name.replace(f'_burnin{exp.emod_burnin}', '')
             submit_run_pyscript(exp, pyscript='launch_sim.py', shname='launch_pickup.sh',
                                 custom_args=f"--suite {exp.SUITEname} --expname {exp.exp_name_pickup} "
-                                            f"--emodstep pickup --serializedid {exp.emod_id} "
+                                            f"--emod_step pickup --serializedid {exp.emod_id} "
                                             f"--models {' '.join([m for m in exp.models_pickup])} ",
                                 job_id_EMOD='job_id_EMODanalyze',memG=exp.mem_increase_factor*5, job='pickup_launch')
     else:

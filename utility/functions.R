@@ -33,38 +33,42 @@ mmmpy_cols <- c('#1b9e77ff', '#7570b3ff', '#d95f02ff')
 #' models <- c("EMOD","malariasimulation", "OpenMalaria")
 #' result <- get_output_df(wdir, models, mth = TRUE)
 #'
-get_output_df <- function(wdir, models, yearly = FALSE, monthly = FALSE, fiveday = FALSE, daily = FALSE) {
+get_output_df <- function(wdir, models, yearly = FALSE, monthly = FALSE, fiveday = FALSE, daily = FALSE, mpv = FALSE) {
   cols_to_keep <- NULL
-  fname <- 'mmmpy_timeavrg.csv'
+  fname <- 'mmmpy_timeavrg'
 
   if (yearly) {
-    fname <- 'mmmpy_yr.csv'
+    fname <- 'mmmpy_yr'
   }
   if (monthly) {
-    fname <- 'mmmpy_mth.csv'
+    fname <- 'mmmpy_mth'
   }
   if (daily) {
-    fname <- 'mmmpy_daily.csv'
+    fname <- 'mmmpy_daily'
   }
   if (fiveday) {
-    fname <- 'mmmpy_5day.csv'
+    fname <- 'mmmpy_5day'
   }
 
   if (file.exists(file.path(wdir, fname))) {
     df <- fread(file.path(wdir, fname), stringsAsFactors = FALSE)
   } else {
     if ('OpenMalaria' %in% models) {
-      om_df <- fread(file.path(wdir, paste('OpenMalaria', fname, sep = '/')), select = cols_to_keep)
+      om_df <- fread(file.path(wdir, paste0('OpenMalaria/',fname, '.csv')), select = cols_to_keep)
       om_df$models <- 'OpenMalaria'
     }
     if ('EMOD' %in% models) {
-      em_df <- fread(file.path(wdir, paste('EMOD', fname, sep = '/')), select = cols_to_keep)
+      em_df <- fread(file.path(wdir, paste0('EMOD/', fname,'.csv')), select = cols_to_keep)
       em_df$models <- 'EMOD'
-      #em_df <- em_df[em_df$simulatedEIR >0,]
     }
     if ('malariasimulation' %in% models) {
-      ms_df <- fread(file.path(wdir, paste('malariasimulation', fname, sep = '/')), select = cols_to_keep)
+      ms_df <- fread(file.path(wdir, paste0('malariasimulation/', fname,'.csv')), select = cols_to_keep)
       ms_df$models <- 'malariasimulation'
+      if (mpv) {
+        ms_df_pv <- fread(file.path(wdir, paste0('malariasimulation/', fname,'_pv.csv')), select=cols_to_keep)
+        ms_df_pv$models <- 'malariasimulation - pv'
+        ms_df <- rbind(ms_df, ms_df_pv, fill=TRUE)
+      }
     }
 
     if ('EMOD' %in% models &

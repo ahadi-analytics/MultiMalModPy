@@ -104,23 +104,22 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
 
   # Parameter Sweeping
   draw_value <- parameter_table$malariasimulation_pv
-  if (!is.na(draw_value) && draw_value > 0) {
-    if (draw_value < 1 || draw_value > 1000) {
-      stop(paste("Invalid draw value:", draw_value, "- must be between 1 and 1000"))
+  if (!is.na(draw_value) && !is.null(draw_value)) {
+    if (draw_value != 0) {
+      if (draw_value < 1 || draw_value > 1000) {
+        stop(paste("Invalid draw value:", draw_value, "- must be between 1 and 1000"))
+      }
+      simparams <- set_parameter_draw(parameters = simparams, draw = as.integer(draw_value))
+      sim_out_csv_name <- '_out_pv.csv'
     }
-    simparams <- set_parameter_draw(parameters = simparams, draw = as.integer(draw_value))
-    sim_out_csv_name <- '_out_pv.csv'
+    else {
+      sim_out_csv_name <- '_out.csv'
+    }
+    
   } else {
     sim_out_csv_name <- '_out.csv'
   }
 
-  
-  # Parameter Sweeping
-  if ("malariasimulation_pv" %in% colnames(parameter_table)){
-    simparams <- set_parameter_draw(parameters = simparams,
-                                    draw = parameter_table$malariasimulation_pv)
-  }
-  
   # Append the parameters for artemether lumefantrine:
   simparams <- set_drugs(parameters = simparams, drugs = list(AL_params, SP_AQ_params, DHA_PQP_params))
 

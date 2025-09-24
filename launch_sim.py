@@ -21,14 +21,14 @@ else:
     from utility.helper_local import LoadLaunchArgs
     args = LoadLaunchArgs()
 
-if args.emodstep in ['pickup', 'new_pickup']:
+if args.emod_step in ['pickup', 'new_pickup']:
     file = open(os.path.join(args.directory, "exp.obj"), "rb")
     exp = pickle.load(file)
     exp.emod_step = 'pickup'
     exp.burnin_directory = args.directory
     exp.models = args.models
     exp.emod_serialized_id = args.serializedid
-    if args.emodstep == 'new_pickup': ## Allows to run a independent pickup from burnin
+    if args.emod_step == 'new_pickup': ## Allows to run a independent pickup from burnin
         ## USER SPECIFIC PARAMETER EDITS
         ## Optional parameters to update in new run
         exp.sweep_list = ['target_output_values', 'case_management', 'seasonality']
