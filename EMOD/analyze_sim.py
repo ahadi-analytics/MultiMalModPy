@@ -704,8 +704,6 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
                                         'clinical_incidence': clinical_cases,  # per person per year
                                         'severe_incidence': severe_cases,  # per person per year
                                         'nHost': pop})
-                simdata['nUncomp'] = [x * 12 for x in simdata['clinical_incidence']]  # per person per month
-                simdata['nSevere'] = [x * 12 for x in simdata['severe_incidence']]  # per person per month
                 simdata['year'] = year
                 simdata['agebin'] = age_bins[age]
                 simdata['prevalence_2to10'] = pfpr2to10
@@ -872,8 +870,6 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
                                         'clinical_incidence': clinical_cases,  # per person per year
                                         'severe_incidence': severe_cases,  # per person per year
                                         'nHost': pop})
-                simdata['nUncomp'] = [x * (365 / 5) for x in simdata['clinical_incidence']]  # per person per 5 days
-                simdata['nSevere'] = [x * (365 / 5) for x in simdata['severe_incidence']]  # per person per 5 days
                 simdata['year'] = year
                 simdata['agebin'] = age_bins[age]
                 simdata['prevalence_2to10'] = pfpr2to10
@@ -1047,8 +1043,6 @@ class DailyAgebinAnalyzer(IAnalyzer):
                                         'clinical_incidence': clinical_cases,  # per person per year
                                         'severe_incidence': severe_cases,  # per person per year
                                         'nHost': pop})
-                simdata['nUncomp'] = [x for x in simdata['clinical_incidence']]  # per person per 1 day period
-                simdata['nSevere'] = [x for x in simdata['severe_incidence']]  # per person per 1 day period
                 simdata['year'] = year
                 simdata['agebin'] = age_bins[age]
                 simdata['prevalence_2to10'] = pfpr2to10
