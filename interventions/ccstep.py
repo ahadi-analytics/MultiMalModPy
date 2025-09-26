@@ -13,9 +13,10 @@ def ccstep_params(exp):
     Returns:
         Experiment object
             An object with updated experiment parameters.
-    """    
-    exp.ccstep = [x[1] for x in exp.target_output_values]
-    exp.target_output_values = [x[0] for x in exp.target_output_values]
+    """   
+    if exp.emod_step != 'pickup': 
+        exp.ccstep = [x[1] for x in exp.target_output_values]
+        exp.target_output_values = [x[0] for x in exp.target_output_values]
 
     exp.step_in_years = 5 # determines after x amount of years, when the carrying capacity change occurs
 
@@ -59,10 +60,12 @@ def ccstep_params(exp):
         exp.openmalaria_memory_per_sim = 6
         exp.openmalaria_time_per_sim = '2:00:00'
     
-    if exp.emod_importation_rate == 0 and exp.cc_decreasing:
+    if exp.emod_importation_rate == 0:
         print('Warning: You are running EMOD simulations with a decreasing carrying capacity.\nWithout importation, elimination can occur.')
-    if len(exp.target_output_values) < 2:
-        raise ValueError(f'Please specify at least 2 output targets, for cc step to increase/decrease to.')
+    if len(exp.target_output_values) != len(exp.ccstep):
+        raise ValueError('There is an unequal amount of target_output_values and ccsteps, make sure your ccstep input is set up correctly')
+    if len(exp.target_output_values) == 0 or len(exp.ccstep) == 0:
+        raise ValueError('Your input for target_outputs_value is formatted incorrectly, please make sure your input is in the format (cc_from, cc_to)')
     return exp
 
 

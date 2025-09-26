@@ -40,6 +40,7 @@ include_intervention_outputs <- function(output_list, intervention_list, paramet
     simulation_output$infcl_coverage <- parameter_table$infcl_coverage
     simulation_output$infcl_timestep_malariasimulation <- parameter_table$infcl_timestep_malariasimulation
   }
+  return(simulation_output)
 }
 
 carrying_capacity <- function(parameters, parameter_table){

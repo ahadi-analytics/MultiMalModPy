@@ -1,11 +1,9 @@
 from utility.helper import *
 import shutil
-
+import os
 # from OpenMalaria.functions.interventions import * # Currently not supported
 from OpenMalaria.functions.convert_access import convert_access_lookup
 from OpenMalaria.functions.interventions import *
-
-
 
 
 def create_scenarios(exp, scen_df):
@@ -329,9 +327,6 @@ Write-Host "All $total simulations complete in $($elapsedTotal.ToString())."
     with open(file_path, 'w') as file:
         file.write(ps_content)
     print(f"PowerShell script written successfully at {file_path}")
-
-
-import os
 
 
 def write_sh_OpenMalaria(exp):

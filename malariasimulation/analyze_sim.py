@@ -40,6 +40,7 @@ def parse_args():
         required=True,
         help="Job Directory of exp.obj")
     parser.add_argument('--mpv',
+                        default=False,
                         action='store_true',
                         help='Analyze malariasimulation runs with parameter variation (default: False).')
     return parser.parse_args()
@@ -177,6 +178,10 @@ def InputEIRAnalyzer(jdir, wdir, daily=False, pv_suffix=''):
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds_mpv.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
+    if pv_suffix == '':
+        scen_df = scen_df[scen_df['malariasimulation_pv'] == 0]
+    else:
+        scen_df = scen_df[scen_df['malariasimulation_pv'] != 0]
 
     columns_to_keep = ['index', 'timestep', 'month', 'year', 'nPopulation', 'EIR_gamb', 'n_infectious_mos',
                        'n_total_mos_pop']
@@ -259,6 +264,10 @@ def SurveyAllAgeAnalyzer(jdir, wdir, sweep_variables, pv_suffix=''):
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds_mpv.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'target_output_values'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
+    if pv_suffix == '':
+        scen_df = scen_df[scen_df['malariasimulation_pv'] == 0]
+    else:
+        scen_df = scen_df[scen_df['malariasimulation_pv'] != 0]
 
     # Read experiment data daily
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']
@@ -313,7 +322,7 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, f'EIR{pv_suffix}.csv'))
-    eir_df = eir_df[['index', 'target_output_values', 'eir', 'n_total_mos_pop']]
+    eir_df = eir_df[['index', 'target_output_values', 'eir', 'n_total_mos_pop', 'n_infectious_mos']]
 
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']
@@ -362,6 +371,10 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds_mpv.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'target_output_values'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
+    if pv_suffix == '':
+        scen_df = scen_df[scen_df['malariasimulation_pv'] == 0]
+    else:
+        scen_df = scen_df[scen_df['malariasimulation_pv'] != 0]
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on='index', how='inner')
 
@@ -379,7 +392,7 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
     # Save the processed DataFrame to a CSV file named 'mmmpy_timeavrg.csv'
     cdf.to_csv((os.path.join(wdir, f'mmmpy_timeavrg{pv_suffix}.csv')), index=False)
 
-    if exp.run_mode == 'calibration' and pv_suffix == None:
+    if exp.run_mode == 'calibration':
         u5 = cdf[cdf['ageGroup'] == '0-5'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         u5 = u5.rename(columns={'clinical_incidence': 'clinical_incidence_U5'})
         all_ages = cdf[cdf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
@@ -426,7 +439,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
 
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, f'EIR_yr{pv_suffix}.csv'))
-    eir_df = eir_df[['index', 'year', 'target_output_values', 'eir', 'n_total_mos_pop']]
+    eir_df = eir_df[['index', 'year', 'target_output_values', 'eir', 'n_total_mos_pop', 'n_infectious_mos']]
 
     # Convert the experiment data to a DataFrame and format it
     sum_channels = ['n_inc', 'n_inc_clinical', 'n_inc_severe', 'n_age']
@@ -471,6 +484,10 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds_mpv.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'target_output_values'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
+    if pv_suffix == '':
+        scen_df = scen_df[scen_df['malariasimulation_pv'] == 0]
+    else:
+        scen_df = scen_df[scen_df['malariasimulation_pv'] != 0]
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index', 'year'], how='inner')
 
@@ -516,9 +533,9 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     # Read the EIR data from the CSV file
     eir_df = pd.read_csv(os.path.join(wdir, f'EIR_mth{pv_suffix}.csv'))
     eir_df = eir_df.groupby(sweep_variables + ['month', 'year'])[
-        ['eir', 'target_output_values', 'n_total_mos_pop']].agg(
+        ['eir', 'target_output_values', 'n_total_mos_pop', 'n_infectious_mos']].agg(
         'mean').reset_index()  # mean across runs per month and year
-    eir_df = eir_df[['index', 'month', 'year', 'target_output_values', 'eir', 'n_total_mos_pop']]
+    eir_df = eir_df[['index', 'month', 'year', 'target_output_values', 'eir', 'n_total_mos_pop', 'n_infectious_mos']]
 
     # Convert the experiment data to a DataFrame and format it
     mean_channels = ['prevalence_2to10']
@@ -564,6 +581,10 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds_mpv.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'target_output_values'],
                            axis=1, errors='ignore')  ## remove EMOD specific columns
+    if pv_suffix == '':
+        scen_df = scen_df[scen_df['malariasimulation_pv'] == 0]
+    else:
+        scen_df = scen_df[scen_df['malariasimulation_pv'] != 0]
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
     cdf = cdf.merge(eir_df, on=['index', 'month', 'year'], how='inner')
 
@@ -684,6 +705,10 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
     cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=sweep_variables + ['day', 'year'])
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds_mpv.csv'))
     scen_df = scen_df.drop(['entomology_mode'], axis=1, errors='ignore')
+    if pv_suffix == '':
+        scen_df = scen_df[scen_df['malariasimulation_pv'] == 0]
+    else:
+        scen_df = scen_df[scen_df['malariasimulation_pv'] != 0]
     cdf = cdf.merge(scen_df, on=sweep_variables, how='inner')
 
     cdf = cdf.merge(eir_df, on=['index', 'day', 'year'], how='inner')
@@ -780,7 +805,10 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None,
     scen_df = pd.read_csv(os.path.join(jdir, 'scenarios_wseeds_mpv.csv'))
     scen_df = scen_df.drop(['x_Temporary_Larval_Habitat', 'entomology_mode', 'target_output_values'], axis=1,
                            errors='ignore')  ## remove EMOD specific columns
-
+    if pv_suffix == '':
+        scen_df = scen_df[scen_df['malariasimulation_pv'] == 0]
+    else:
+        scen_df = scen_df[scen_df['malariasimulation_pv'] != 0]
     df = cdf.merge(scen_df, on=sweep_variables, how='inner')
     eir_df = pd.read_csv(os.path.join(wdir, 'EIR_daily.csv'))
     eir_df = eir_df[['index', 'timestep', 'month', 'year', 'eir', 'target_output_values']]
