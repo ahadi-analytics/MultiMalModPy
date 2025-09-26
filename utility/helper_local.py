@@ -230,8 +230,7 @@ $log_dir = Join-Path $jobdir "log"
 Set-Location -Path "$work_dir\\{subdir}"
 
 # Run the Python command
-{py_command}`
-    >> "$log_dir/run_{job_name}.log" 2>> "$log_dir/run_{job_name}.err"
+{py_command}  >> "$log_dir/run_{job_name}.log" 2>> "$log_dir/run_{job_name}.err"
 
 # Pause to keep the console open
 Read-Host "Press Enter to continue"
@@ -261,7 +260,7 @@ def write_ps1_analyzer(exp, pyscript, model):
     subdir = model
     py_command = f'python {pyscript} --directory "{exp.job_directory}"\n'
 
-    if exp.malariasimulation_parameter_variation:
+    if exp.malariasimulation_parameter_variation and model =='malariasimulation':
         py_command = py_command + f'python {pyscript} --directory "{exp.job_directory}" --mpv\n'
 
     fname = f'run_analyze_{model}.ps1'
