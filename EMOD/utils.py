@@ -60,12 +60,18 @@ def submit_run_EMOD(exp, manifest, scen_df):
     sim_start_year_emod = exp.sim_start_year_emod
 
     if exp.hpc == 'LOCAL':
-        platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory)
+        #platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory)
+        # EMOD local gives Error message when type and block are not defined
+        platform = exp.platform = Platform(type=manifest.selected_platform,
+                                           job_directory=exp.suite_directory,
+                                           block=manifest.selected_platform)
     else:
-        platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
+        platform = exp.platform = Platform(manifest.selected_platform,
+                                           job_directory=exp.suite_directory,
                                            mem_per_cpu=f'{exp.emod_memory_per_sim}G',
                                            partition=manifest.sh_hpc_config['p'],
-                                           time=exp.emod_time_per_sim, account=manifest.sh_hpc_config['A'],
+                                           time=exp.emod_time_per_sim,
+                                           account=manifest.sh_hpc_config['A'],
                                            modules=[manifest.sh_hpc_config['em_modules']],
                                            max_running_jobs=exp.max_running_jobs)
 
