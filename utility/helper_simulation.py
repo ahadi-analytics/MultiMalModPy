@@ -93,17 +93,16 @@ def param_variation(df, exp):
     Returns:
     DataFrame with added column 'malariasimulation_pv' representing malariasimulation parameter variation values.
     """
-    if exp.malariasimulation_parameter_variation and 'malariasimulation' in exp.models:
-        from random import sample
-        if exp.num_seeds > 1000:
-            print("Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values")
-            par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds + 1), exp.num_seeds)]
-            for i, row in df.iterrows():
-                df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
-        else:
-            par_var = sample(range(1, 1001), exp.num_seeds)
-            for i, row in df.iterrows():
-                df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
+    from random import sample
+    if exp.num_seeds > 1000:
+        print("Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values")
+        par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds + 1), exp.num_seeds)]
+        for i, row in df.iterrows():
+            df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
+    else:
+        par_var = sample(range(1, 1001), exp.num_seeds)
+        for i, row in df.iterrows():
+            df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
     return df
 
 

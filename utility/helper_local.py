@@ -209,7 +209,7 @@ def create_ps1_script(exp, fname, subdir, job_name, py_command):
         fname (str): The name of the PowerShell script file to be created.
         subdir (str): The subdirectory within the working directory where the Python command should be executed.
         job_name (str): The name of the job, used for log file naming and script content.
-        py_command (str): The Python command to be executed within the PowerShell script.
+        pycommand  (str): The Python command to be executed within the PowerShell script.
 
     Raises:
         IOError: If there is an issue with writing the PowerShell script to the file.
@@ -258,13 +258,16 @@ def write_ps1_analyzer(exp, pyscript, model):
     """
     job_name = f"analyzer_{model}"
     subdir = model
-    py_command = f'python {pyscript} --directory "{exp.job_directory}"\n'
+    pycommand  = f'python {pyscript} --directory "{exp.job_directory}"\n'
 
-    if exp.malariasimulation_parameter_variation and model =='malariasimulation':
-        py_command = py_command + f'python {pyscript} --directory "{exp.job_directory}" --mpv\n'
+    if model =='malariasimulation':
+        if exp.malariasimulation_parameter_variation == "both"  :
+            pycommand  = pycommand  + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
+        if exp.malariasimulation_parameter_variation == "yes"  :
+            pycommand  = pycommand  + '--mpv'
 
     fname = f'run_analyze_{model}.ps1'
-    create_ps1_script(exp, fname, subdir, job_name, py_command)
+    create_ps1_script(exp, fname, subdir, job_name, pycommand )
 
 def submit_run_plotters_local(exp):
     """
@@ -294,10 +297,10 @@ def submit_run_plotters_local(exp):
             job_name = f"run_plot_{plot_name}"
             subdir = "plotter"
             model_args = ' '.join(exp.models)
-            py_command = f"python {pyscript} --directory {exp.output_directory} --models {model_args}"
+            pycommand  = f"python {pyscript} --directory {exp.output_directory} --models {model_args}"
 
             fname = pyscript.replace('.py', '.ps1')
-            create_ps1_script(exp, fname, subdir, job_name, py_command)
+            create_ps1_script(exp, fname, subdir, job_name, pycommand )
 
         from utility.helper_local  import write_bat_submission_plots
         write_bat_submission_plots(exp)

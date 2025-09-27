@@ -56,7 +56,7 @@ def submit_analyze_outputs(exp, t='01:00:00', memG=10):
     if exp.malariasimulation_parameter_variation == "both":
         pycommand = pycommand + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
     if exp.malariasimulation_parameter_variation == "yes":
-        pycommand = pycommand + '--mpv'
+        pycommand = pycommand + ' --mpv'
 
     script_path = os.path.join(exp.job_directory, 'run_analyzer_malariasimulation.sh')
     file = open(script_path, 'w')
