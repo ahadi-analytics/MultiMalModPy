@@ -22,83 +22,80 @@ details, and interventions.
 For a detailed overview of these input files, refer to the official  
 documentation: https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-inputs.html.
 
-Key input files:  
-- demographics file 
-- configuration file  
-- campaign file  
-- climate files  
+Key input files:     
+- demographics file   
+- configuration file   
+- campaign file     
+- climate files    
 
-**Implementation in MultiMalModPy:**  
-- ... 
-- ...
-- ... 
+**Implementation in MultiMalModPy:**    
+- ...   
+- ...  
+- ...   
 
 
-### malariasimulation
+### malariasimulation   
 malariasimulation comes with an R packages that includes all the necessary objects and configurations and no additional files are required.
 
-**Implementation in MultiMalModPy:**
-- a scenario CSV (`scen_df.csv`) is handled as an input for generate simulation scenarios  
-- simulation parameters are derived from the `get_parameters` function and overwritten with scenario specific parameters (view script [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/malariasimulation/functions/run_simulations.R#L77))
+**Implementation in MultiMalModPy:**    
+- a scenario CSV (`scen_df.csv`) is handled as an input for generate simulation scenarios    
+- simulation parameters are derived from the `get_parameters` function and overwritten with scenario specific parameters (view script [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/malariasimulation/functions/run_simulations.R#L77))   
 
-### OpenMalaria
+### OpenMalaria  
 
-In OpenMalaria, each simulation scenario is defined by a single XML input file (more details on the OpenMalaria
-wiki [here](https://github.com/SwissTPH/openmalaria/wiki/ScenarioDesign)).
+In OpenMalaria, each simulation scenario is defined by a single XML input file (more details on the OpenMalaria wiki [here](https://github.com/SwissTPH/openmalaria/wiki/ScenarioDesign)).   
 
-**Implementation in MultiMalModPy:**
+**Implementation in MultiMalModPy:**    
 
-- one XML main scaffold with placeholders for parameters or 'snippets' of XML lines to replace
-- parameter replacements `@parameter_value@`
-- snippet replacements i.e. `@demography@` is replaced by multiple lines (view demography
-  snippet [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/OpenMalaria/snippets/Ifakara_age_demography.txt))
-- a scenario CSV (`scen_df.csv`) is handled as an input for generate simulation scenarios
+- one XML main scaffold with placeholders for parameters or 'snippets' of XML lines to replace   
+- parameter replacements `@parameter_value@`   
+- snippet replacements i.e. `@demography@` is replaced by multiple lines (view demography snippet [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/OpenMalaria/snippets/Ifakara_age_demography.txt))   
+- a scenario CSV (`scen_df.csv`) is handled as an input for generate simulation scenarios    
 
 
-## Output files
+## Output files   
 
-<div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>📌 Model Insider: Output formats</em></strong>    
+<div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;"> <strong><em>📌 Model Insider: Output formats</em></strong>      
 
-The format and number of output files per single scenario varies across the three models.
+The format and number of output files per single scenario varies across the three models.  
   <ul style="padding-left: 20px; line-height: 1.6; margin-top: 10px;">
     <li><strong>EMOD:</strong> Multiple output files per scenario, as specified by the user with varying time aggregation and outcome measures [Format: JSON, CSV]</li>
     <li><strong>malariasimulation:</strong>  Single output file, after first-stage postprocessing from the generated R object, with daily outcome measures as requested by the user [Format: CSV]</li>
     <li><strong>OpenMalaria:</strong>: One (or two) output files per scenario, main output survey-based outcome metrics not-user-modifiable [Format: TXT]</li>
   </ul>
-</div> 
+</div>   
 
-### EMOD
+### EMOD   
+ 
+**Output files**   
+After a simulation finishes, a reporter extracts, aggregates, and saves the data as an output report in the working directory.   
+These reports summarize different aspects of the simulation and can be in JSON, CSV, or binary formats.  
+For a detailed overview of output files, refer to the official documentation:  
+https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-outputs.html 
+EMOD allows users to configure which reports are generated through specific settings.  
+By default, InsetChart.json is always created. More information described at:  
+https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/parameter-configuration-output.html  
 
-**Output files**
-After a simulation finishes, a reporter extracts, aggregates, and saves the data as an output report in the working
-directory.
-These reports summarize different aspects of the simulation and can be in JSON, CSV, or binary formats.
-For a detailed overview of output files, refer to the official documentation:
-https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-outputs.html
-EMOD allows users to configure which reports are generated through specific settings.
-By default, InsetChart.json is always created. More information described at:
-https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/parameter-configuration-output.html
+Key output files used in MultiMalModPy and examples:  
+- [InsetChart.json](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-report-inset-chart.html)    
+- [MalariaSummary report](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-report-malaria-summary.html#)    
 
-Key output files used in MultiMalModPy and examples:
-- [InsetChart.json](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-report-inset-chart.html)  
-- [MalariaSummary report](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-report-malaria-summary.html#)  
+**Implementation in MultiMalModPy:**   
 
-**Implementation in MultiMalModPy:**
+- Raw output files are written into the EMOD specific experiments folder `experiments/<emod_id>/outputs`.  
+- Each output file is written into a scenario specific folder with unique IDs that are automatically assigned in  
+  EMOD, `MalariaSummaryReport_FiveDaily_2003.json`,...,`MalariaSummaryReport_FiveDaily_2003.json` etc.  
+- During postprocessing, data is extracted, transformed, and merged into a single CSV file(view the  script [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/EMOD/analyze_sim.py))  
 
-- Raw output files are written into the EMOD specific experiments folder `experiments/<emod_id>/outputs`.
-- Each output file is written into a scenario specific folder with unique IDs that are automatically assigned in
-  EMOD, `MalariaSummaryReport_FiveDaily_2003.json`,...,`MalariaSummaryReport_FiveDaily_2003.json` etc.
-- During postprocessing, data is extracted, transformed, and merged into a single CSV file(view the
-  script [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/EMOD/analyze_sim.py))
+![EMOD_scenario_folders](../img/EMOD_scenario_folders.png)   
 
-![EMOD_scenario_folders](../img/EMOD_scenario_folders.png)  
+Under  `outputs` within each of the scenario folders:     
 
-Under  `outputs` within each of the scenario folders:   
+![ EMOD_outputs](../img/example_EMOD_outputs.png)   
 
-![ EMOD_outputs](../img/example_EMOD_outputs.png)  
+**Truncated and simplified example output from a MalariaSummaryReport:**  
+This example file shows output for 1 scenario, for 12 values for 1 year, for 8 age groups.   
 
-**Truncated and simplified example output from a MalariaSummaryReport:**
-This example file shows output for 1 scenario, for 12 values for 1 year, for 8 age groups. 
 ```json 
 
 {
@@ -156,20 +153,18 @@ This example file shows output for 1 scenario, for 12 values for 1 year, for 8 a
 ```
 
 
-### malariasimulation
+### malariasimulation   
 
-**Implementation in MultiMalModPy:**
+**Implementation in MultiMalModPy:**   
 
-- R object gets written into a CSV file.
-- Raw output (CSV) files are written into the experiments folder `experiments/<SUITE>/<expname>/malariasimulation_jobs`.
-- Each output file is labeled with a unique scenario index, resulting in simple numbered
-  filenames `1_out.csv`,...,`100_out.csv` etc.
-- During postprocessing, data is extracted, transformed, and merged into a single CSV file(view the
-  script [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/malariasimulation/analyze_sim.py))
+- R object gets written into a CSV file.  
+- Raw output (CSV) files are written into the experiments folder `experiments/<SUITE>/<expname>/malariasimulation_jobs`.  
+- Each output file is labeled with a unique scenario index, resulting in simple numbered  filenames `1_out.csv`,...,`100_out.csv` etc.   
+- During postprocessing, data is extracted, transformed, and merged into a single CSV file  (view the  script [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/malariasimulation/analyze_sim.py))  
 
-![malariasimulation_out](../img/example_malariasimulation_out.png)
+![malariasimulation_out](../img/example_malariasimulation_out.png)  
 
-**Example CSV**:
+**Example CSV**:  
 
 
 
@@ -182,24 +177,21 @@ This example file shows output for 1 scenario, for 12 values for 1 year, for 8 a
 | 5        | 0.023507    | 55.24666 | 0.007587  | 0.132   | 35       | 7       | 0           | 0           | 12        | 0             | 0             | 17        | 0             | 0             | 39         | 0              | 0.420354       | 79          | 0               | 1.761803        | 63          | 4               | 1.740675        | 53          | 2               | 1.414195        | 223          | 4                | 6.542305         | 0                    | 0                    | 0                      | 0                      | 0                      | 0                      | 0                       | 0                       | 0                        | 0                        | 0                        | 0.062957                 | 0                        | 0.034283                 | 0                         | 0.020451                  | 0                  | 0                  | 0                    | 0                    | 0                    | 0                    | 0                     | 0                     | 0                      | 0                      | 0                      | 7.67E-05               | 0                      | 4.11E-05               | 0                       | 3.59E-05                | 11           | 0              | 61      | 363     | 3       | 73      | 0        | 106.9399 | 1.662982 | 113.2002 | 62.16124 | 108.7789 | 0.649786 | 6              | 5.98985        | 7                | 6.990584         | 10               | 9.972264         | 25                | 24.88463          | 53                 | 53.24906           | 36                 | 37.44715           | 23                 | 21.71909           | 50                  | 56.958              | 118        | 78                | 78.13369          | 647638.2     | 18847.14     | 2808.178     | 15674.99      | 644.3929      | 223.3472      | 16542.73     | 1     | 0           | perennial   | 1    |
 
 
-### OpenMalaria
+### OpenMalaria   
 
-OpenMalaria simulations generate two types of output **survey-based** and  **continuous monitoring** (
-details [here](https://github.com/SwissTPH/openmalaria/wiki/MonitoringOutput)).
+OpenMalaria simulations generate two types of output **survey-based** and  **continuous monitoring** (details [here](https://github.com/SwissTPH/openmalaria/wiki/MonitoringOutput)).  
 
-**Implementation in MultiMalModPy:**
+**Implementation in MultiMalModPy:**  
 
-- Currently, **MultiMalModPy** only supports **survey output**.
-- Raw output (TXT) files are written into the experiments folder  `experiments/<SUITE>/<expname>/txt`.
-- Each output file is labeled with a unique scenario index, resulting in simple numbered filenames `1.txt`,...,`100.txt`
-  etc.
-- During postprocessing, data is extracted, transformed, and merged into a single CSV file(view the
-  script [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/OpenMalaria/analyze_sim.py))
+- Currently, **MultiMalModPy** only supports **survey output**.  
+- Raw output (TXT) files are written into the experiments folder  `experiments/<SUITE>/<expname>/txt`.  
+- Each output file is labeled with a unique scenario index, resulting in simple numbered filenames `1.txt`,...,`100.txt`  etc.  
+- During postprocessing, data is extracted, transformed, and merged into a single CSV file(view the  script [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/OpenMalaria/analyze_sim.py))    
 
-![OpenMalaria_out ](../img/example_OpenMalaria_out.png)  
-(_Example shows local run results, with default application Notepad++ to open TXT files_)
+![OpenMalaria_out ](../img/example_OpenMalaria_out.png)    
+(_Example shows local run results, with default application Notepad++ to open TXT files_)   
 
-**Example TXT (truncated)**:
+**Example TXT (truncated)**:  
 
 | survey number | third dimension | measure | value |
 |---------------|-----------------|---------|-------|
@@ -219,7 +211,7 @@ details [here](https://github.com/SwissTPH/openmalaria/wiki/MonitoringOutput)).
 | 1             | 4               | 3       | 38    |
 | 1             | 5               | 3       | 45    |
 
-(_Example shows a truncated TXT file with inserted column headers, that do not exist in the raw output_)    
+(_Example shows a truncated TXT file with inserted column headers, that do not exist in the raw output_)      
 
 
 

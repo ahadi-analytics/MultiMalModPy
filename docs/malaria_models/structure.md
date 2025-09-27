@@ -38,21 +38,21 @@ The malaria model structure for EMOD is detailed in the [malaria-model-overview]
 
 ### Population and age demography       
 
-- **EMOD**:  [Population dynamics](https://docs.idmod.org/projects/emod-malaria/en/latest/parameter-configuration-population.html?highlight=birth)  
-- **malariasimulation**: [ModelDemography]()   
-- **OpenMalaria**:  [Demography](https://github.com/SwissTPH/openmalaria/wiki/ModelDemography)  
+- **EMOD**:  [Population dynamics](https://docs.idmod.org/projects/emod-malaria/en/latest/parameter-configuration-population.html?highlight=birth)   
+- **malariasimulation**: [ModelDemography]()    
+- **OpenMalaria**:  [Demography](https://github.com/SwissTPH/openmalaria/wiki/ModelDemography)   
 
 
-### Transmission intensity     
+### Transmission dynamics     
 
-**EMOD**:
-- forced transmission model, using EIR as input    
-- dynamic transmission model, using Larval Habitat Availability as input     
+**EMOD**:  
+- 'dynamic' transmission, using [Larval Habitat](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/vector-model-larval-habitat.html) and [climate](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/vector-model-climate-demographics.html) as inputs.        
+- 'forced' transmission, using [InputEIR](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/parameter-campaign-node-inputeir.html). 
 
 **malariasimulation**:    
-- dynamic transmission model, using EIR together with monthly rainfall (see [seasonality](../guide/seasonality.md)) as input     
+- 'dynamic' transmission, using EIR together with monthly rainfall (see [seasonality](../guide/seasonality.md)) as input.    
 
 **OpenMalaria**:    
-- forced transmission model, using EIR as input   
-- dynamic transmission model, using EIR as input
+- 'dynamic' transmission, using EIR as input [ModelTransmission](https://github.com/SwissTPH/openmalaria/wiki/ModelTransmission).  
+- 'forced' transmission, using EIR as input [ModelTransmission](https://github.com/SwissTPH/openmalaria/wiki/ModelTransmission).  
 
