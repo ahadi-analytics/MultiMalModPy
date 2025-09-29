@@ -12,6 +12,7 @@ import math
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)
 
+
 def parse_args():
     """
     Parse command-line arguments for simulation specifications.
@@ -703,8 +704,6 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
                                         'clinical_incidence': clinical_cases,  # per person per year
                                         'severe_incidence': severe_cases,  # per person per year
                                         'nHost': pop})
-                simdata['nUncomp'] = [x * 12 for x in simdata['clinical_incidence']]  # per person per month
-                simdata['nSevere'] = [x * 12 for x in simdata['severe_incidence']]  # per person per month
                 simdata['year'] = year
                 simdata['agebin'] = age_bins[age]
                 simdata['prevalence_2to10'] = pfpr2to10
@@ -849,7 +848,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
             age_bins = data[fname]['Metadata']['Age Bins']
             pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True'][:73]
-            # timestep = data[fname]['DataByTime']['Time Of Report'][:73]
+            #timestep = data[fname]['DataByTime']['Time Of Report'][:73]
 
             for age in list(range(0, len(age_bins))):
                 # Extract data per agebin
@@ -871,8 +870,6 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
                                         'clinical_incidence': clinical_cases,  # per person per year
                                         'severe_incidence': severe_cases,  # per person per year
                                         'nHost': pop})
-                simdata['nUncomp'] = [x * (365 / 5) for x in simdata['clinical_incidence']]  # per person per 5 days
-                simdata['nSevere'] = [x * (365 / 5) for x in simdata['severe_incidence']]  # per person per 5 days
                 simdata['year'] = year
                 simdata['agebin'] = age_bins[age]
                 simdata['prevalence_2to10'] = pfpr2to10
@@ -935,8 +932,9 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['year', 'day'])
 
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
-        columns_to_keep = ['scen_id', 'index', 'seed', 'target_output_values', 'transmission_intensity_EMOD',
-                           'timestep', 'day', 'year', 'ageGroup', 'seasonality', 'cm_clinical', 'entomology_mode',
+        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
+        columns_to_keep = ['scen_id', 'index', 'seed', 'target_output_values',
+                           'day', 'year', 'ageGroup', 'seasonality', 'cm_clinical', 'entomology_mode',
                            'eir', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence']
 
         if scen_df.entomology_mode[0] == 'dynamic':
@@ -957,13 +955,12 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
             eirdf_5day.columns = eirdf_5day.columns.get_level_values(0)
             eirdf_5day = eirdf_5day.rename(columns={'5day': 'day'})
             cdf = pd.merge(left=cdf, right=eirdf_5day, on=self.sweep_variables + ['year', 'day'])
-
-            columns_to_keep = columns_to_keep + ['n_total_mos_pop', 'n_infectious_mos']
+ 
+            columns_to_keep = columns_to_keep + ['timestep','n_total_mos_pop', 'n_infectious_mos']
         else:
             cdf['eir'] = cdf['transmission_intensity_EMOD']
             cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
 
-        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
         cdf['seed'] = cdf['seed'] + 1
@@ -972,8 +969,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
         # Save the processed DataFrame to a CSV file
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD')
-
-        columns_to_keep += [column for column in self.intervention_analyzer_columns if column in cdf.columns]
+        columns_to_keep += [column for column in self.intervention_analyzer_columns if column in cdf.columns]        
         cdf = cdf[columns_to_keep]
         cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_5day.csv')), index=False)
 
@@ -1047,8 +1043,6 @@ class DailyAgebinAnalyzer(IAnalyzer):
                                         'clinical_incidence': clinical_cases,  # per person per year
                                         'severe_incidence': severe_cases,  # per person per year
                                         'nHost': pop})
-                simdata['nUncomp'] = [x for x in simdata['clinical_incidence']]  # per person per 1 day period
-                simdata['nSevere'] = [x for x in simdata['severe_incidence']]  # per person per 1 day period
                 simdata['year'] = year
                 simdata['agebin'] = age_bins[age]
                 simdata['prevalence_2to10'] = pfpr2to10

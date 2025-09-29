@@ -95,8 +95,9 @@ def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_va
 
         f += 1
         max_ylim = []
-        for i, (s, sdf) in enumerate(fdf.groupby([sweepvar])):
-            color = color_selector(i, s, sweepvar=sweepvar, n_colors=len(unique_groups))
+        for mi, grp in enumerate(unique_groups):
+            sdf = fdf[fdf[sweepvar] == grp]
+            color = color_selector(mi, grp, sweepvar=sweepvar, n_colors=len(unique_groups))
             ylim_up = np.max(sdf[channel]) * 1.1
             if channel == 'prevalence' or channel == 'prevalence_2to10':
                 ylim_up = min(ylim_up, 1)
@@ -107,7 +108,7 @@ def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_va
             merge_df['ageGroup'] = pd.Categorical(merge_df['ageGroup'], age_groups_aggregates)
             merge_df = merge_df.dropna()
             merge_df.sort_values('ageGroup', inplace=True)
-            ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=1, label=f"{s}", color=color)
+            ax.plot(merge_df['ageGroup'], merge_df[channel], '-', linewidth=1, label=f"{mi}", color=color)
             ax.fill_between(merge_df['ageGroup'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
                             color=color)
         if firstPlot:

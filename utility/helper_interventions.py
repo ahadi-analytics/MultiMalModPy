@@ -69,6 +69,7 @@ def scenario_df_to_update(exp, df):
 
     if 'ccstep' in exp.intervention_list:
         df = df.reset_index(drop=True)
+        df = df.drop_duplicates()
 
         # Additional cc step specific columns
         df = ccstep_columns(exp, df)
