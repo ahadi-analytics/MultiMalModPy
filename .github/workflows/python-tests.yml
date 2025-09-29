@@ -1,0 +1,22 @@
+name: Python Tests with Docker
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - dev
+      - mmmpy_tests
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build and run Docker container
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            mrm9534/mmmpy_local:rocky8 \
+            /bin/bash -c "cd /app && source /opt/envs/mmmpy_container/bin/activate &&  pytest -v tests"
