@@ -1,13 +1,14 @@
-import os
-import sys
 import argparse
-import pickle
 import datetime
-import pandas as pd
+import math
+import os
+import pickle
+import sys
+
 import numpy as np
+import pandas as pd
 from idmtools.entities import IAnalyzer
 from idmtools.entities.simulation import Simulation
-import math
 
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)

@@ -1,6 +1,5 @@
 import os
 
-
 # Currently SMC is not supported
 
 

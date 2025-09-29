@@ -1,11 +1,12 @@
-import os
-import sys
 import argparse
-import pickle
 import datetime
-import pandas as pd
-import numpy as np
 import math
+import os
+import pickle
+import sys
+
+import numpy as np
+import pandas as pd
 
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)

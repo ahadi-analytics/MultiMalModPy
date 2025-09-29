@@ -1,5 +1,6 @@
-from emodpy_malaria.weather import *
 import os
+
+from emodpy_malaria.weather import *
 
 
 def get_climate(

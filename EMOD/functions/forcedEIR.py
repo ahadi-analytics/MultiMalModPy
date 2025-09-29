@@ -1,4 +1,5 @@
 from emodpy_malaria.interventions.inputeir import add_scheduled_input_eir
+
 from utility.helper import get_seasonal_eir
 
 

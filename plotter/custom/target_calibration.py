@@ -1,12 +1,13 @@
 import argparse
-import pickle
 import os
+import pickle
 import sys
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib as mpl
 import seaborn as sns
-import matplotlib.pyplot as plt
 
 mpl.rcParams["pdf.fonttype"] = 3
 plt.rcParams.update({"font.size": 16})
@@ -14,8 +15,8 @@ plt.rcParams.update({"font.sans-serif": "Arial"})
 
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)
-from plotter.plot_helper import *
 import manifest
+from plotter.plot_helper import *
 
 
 def target_calibration_plot(

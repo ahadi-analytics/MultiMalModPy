@@ -1,9 +1,11 @@
+import argparse
 import os
+
 import pandas as pd
 from emodpy_malaria.weather import *
 from emodpy_malaria.weather.weather_variable import WeatherVariable
+
 import manifest
-import argparse
 
 
 def parse_args():

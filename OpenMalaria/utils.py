@@ -1,10 +1,10 @@
 import os
-from utility.helper import *
 import shutil
 
 # from OpenMalaria.functions.interventions import * # Currently not supported
 from OpenMalaria.functions.convert_access import convert_access_lookup
 from OpenMalaria.functions.interventions import *
+from utility.helper import *
 
 
 def create_scenarios(exp, scen_df):
@@ -239,7 +239,7 @@ def submit_run_OpenMalaria(exp, scen_df):
 
     if exp.hpc == "LOCAL":
         if not exp.use_container:
-            from utility.helper_local import write_ps1_analyzer, submit_runmodel_local
+            from utility.helper_local import submit_runmodel_local, write_ps1_analyzer
 
             write_ps1_OpenMalaria(exp)
             write_ps1_analyzer(
@@ -248,8 +248,8 @@ def submit_run_OpenMalaria(exp, scen_df):
             submit_runmodel_local(exp, model="OpenMalaria")
         else:
             from utility.helper_local_docker import (
-                write_sh_analyzer,
                 submit_runmodel_sh,
+                write_sh_analyzer,
             )
 
             # Write local submission script

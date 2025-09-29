@@ -1,11 +1,12 @@
 import logging
-import manifest
 import os
 import sys
-from utility.helper import *
-from utility.helper_slurm import *
-from utility.helper_simulation import *
+
+import manifest
 from utility.experiment import LoadExperiment
+from utility.helper import *
+from utility.helper_simulation import *
+from utility.helper_slurm import *
 
 # Setting up variables and flags for the simulation
 log = logging.getLogger(__name__)

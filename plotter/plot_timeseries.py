@@ -1,14 +1,15 @@
 import argparse
-import pickle
+import datetime
 import os
+import pickle
 import sys
+
+import matplotlib as mpl
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib as mpl
-import datetime
 import seaborn as sns
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 from matplotlib.ticker import FuncFormatter
 
 mpl.rcParams["pdf.fonttype"] = 3

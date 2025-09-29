@@ -1,7 +1,9 @@
 # This is primarily seperate from MultiMalModPy's general function. This will allow  to vary NU's EMOD parameters associated with our within-host calibration efforts.
 import os
-import pandas as pd
 from functools import partial
+
+import pandas as pd
+
 from EMOD.utils import set_param
 
 

@@ -1,39 +1,42 @@
+import json
 import os
+import subprocess
 import sys
 import time
-import json
-import subprocess
 from functools import partial
-from EMOD.functions.reporters import (
-    add_annual_reports,
-    add_daily_reports,
-    add_monthly_reports,
-    add_5daily_reports,
-)
-from EMOD.functions.EMOD_functions import (
-    build_burnin_df,
-    all_campaigns,
-    set_param,
-    SwpFn,
-    ItvFn,
-    CfgFn,
-    sweep_functions,
-    habitat_setup,
-    climate_setup,
-    drug_setup,
-)
-from EMOD.functions.forcedEIR import mAb_vs_EIR
-from emodpy_malaria.reporters.builtin import *
+
 import emod_api.config.default_from_schema_no_validation as dfs
 import emodpy_malaria.vector_config as vector_config
 from emodpy.emod_task import EMODTask
+from emodpy_malaria.reporters.builtin import *
 from idmtools.builders import SimulationBuilder
 from idmtools.entities.experiment import Experiment
 
+from EMOD.functions.EMOD_functions import (
+    CfgFn,
+    ItvFn,
+    SwpFn,
+    all_campaigns,
+    build_burnin_df,
+    climate_setup,
+    drug_setup,
+    habitat_setup,
+    set_param,
+    sweep_functions,
+)
+from EMOD.functions.forcedEIR import mAb_vs_EIR
+from EMOD.functions.reporters import (
+    add_5daily_reports,
+    add_annual_reports,
+    add_daily_reports,
+    add_monthly_reports,
+)
+
 sys.path.append("../")
-import manifest
-from utility.helper_slurm import shell_header_quest, write_txt, submit_run_pyscript
 import emodpy_malaria.malaria_config as malaria_config
+
+import manifest
+from utility.helper_slurm import shell_header_quest, submit_run_pyscript, write_txt
 
 
 def submit_run_EMOD(exp, manifest, scen_df):
@@ -63,8 +66,9 @@ def submit_run_EMOD(exp, manifest, scen_df):
         ValueError: If the experiment configuration or scenario data is incomplete or invalid.
 
     """
-    import emod_malaria.bootstrap as dtk
     import pathlib
+
+    import emod_malaria.bootstrap as dtk
     from idmtools.core.platform_factory import Platform
 
     dtk.setup(pathlib.Path(manifest.eradication_path).parent)

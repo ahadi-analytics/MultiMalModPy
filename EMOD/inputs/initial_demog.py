@@ -1,5 +1,5 @@
-from emod_api.demographics.DemographicsTemplates import CrudeRate
 import emodpy_malaria.demographics.MalariaDemographics as Demographics
+from emod_api.demographics.DemographicsTemplates import CrudeRate
 
 
 def build_demog():

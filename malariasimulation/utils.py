@@ -143,7 +143,7 @@ def submit_run_malariasimulation(exp, scen_df):
 
     if exp.hpc == "LOCAL":
         if not exp.use_container:
-            from utility.helper_local import write_ps1_analyzer, submit_runmodel_local
+            from utility.helper_local import submit_runmodel_local, write_ps1_analyzer
 
             write_ps1_malariasimulation(exp)
             write_ps1_analyzer(
@@ -152,9 +152,9 @@ def submit_run_malariasimulation(exp, scen_df):
             submit_runmodel_local(exp, model="malariasimulation")
         else:
             from utility.helper_local_docker import (
+                submit_runmodel_sh,
                 write_sh_analyzer,
                 write_sh_plotters,
-                submit_runmodel_sh,
             )
 
             write_sh_malariasimulation(exp)

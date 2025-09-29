@@ -1,7 +1,8 @@
 import os
-from plotter.plot_timeseries import monthly_timeseries
+
 from plotter.plot_agecurves import age_curves
 from plotter.plot_relationship import eir_to_outcome, prevalence2to10_to_outcome
+from plotter.plot_timeseries import monthly_timeseries
 
 
 def combine_plot_example1(
@@ -18,8 +19,8 @@ def combine_plot_example1(
     panel_ab_gap=30,
     panel_c_padding=30,
 ):
-    from PIL import Image, ImageDraw, ImageFont
     import matplotlib.font_manager as fm
+    from PIL import Image, ImageDraw, ImageFont
 
     font_path = fm.findfont("DejaVu Sans", fallback_to_default=True)
     font = ImageFont.truetype(font_path, size=40)

@@ -1,7 +1,6 @@
-from emodpy_malaria.interventions.treatment_seeking import add_treatment_seeking
-from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
 import pandas as pd
-
+from emodpy_malaria.interventions.scale_larval_habitats import add_scale_larval_habitats
+from emodpy_malaria.interventions.treatment_seeking import add_treatment_seeking
 
 # from emodpy_malaria.interventions.drug_campaign import add_drug_campaign
 

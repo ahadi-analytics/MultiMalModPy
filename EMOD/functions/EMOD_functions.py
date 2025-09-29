@@ -1,18 +1,20 @@
-import os
 import copy
-from typing import List, Dict, Any
-import pandas as pd
+import os
+import sys
+from typing import Any, Dict, List
+
+import emodpy_malaria.malaria_config as malaria_config
 import numpy as np
+import pandas as pd
 from COMPS import AuthManager
-from EMOD.functions.forcedEIR import *
-from EMOD.functions.interventions import *
 from emodpy_malaria.interventions.outbreak import add_outbreak_individual
 from emodpy_malaria.reporters.builtin import *
-import emodpy_malaria.malaria_config as malaria_config
 from idmtools.core import ItemType
 from idmtools.entities.iplatform import IPlatform
 from idmtools.entities.simulation import Simulation
-import sys
+
+from EMOD.functions.forcedEIR import *
+from EMOD.functions.interventions import *
 
 sys.path.append("../../")
 import manifest
