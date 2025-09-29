@@ -11,9 +11,9 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.ticker import FuncFormatter
 
-mpl.rcParams['pdf.fonttype'] = 3
-plt.rcParams.update({'font.size': 16})
-plt.rcParams.update({'font.sans-serif': "Arial"})
+mpl.rcParams["pdf.fonttype"] = 3
+plt.rcParams.update({"font.size": 16})
+plt.rcParams.update({"font.sans-serif": "Arial"})
 
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)
@@ -21,8 +21,17 @@ from plotter.plot_helper import *
 
 
 # Plots trends over available months, requires mmmpy_mth.csv
-def monthly_trends(fdir, df, channel, sweepvar='models', facet_var='target_output_values', agegrps=['0-100'],
-                   new_index=None, facet_name=None, exp=None):
+def monthly_trends(
+    fdir,
+    df,
+    channel,
+    sweepvar="models",
+    facet_var="target_output_values",
+    agegrps=["0-100"],
+    new_index=None,
+    facet_name=None,
+    exp=None,
+):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
     Note, assumed single occurence per month, i.e. aggregated across years (reads in mmmpy_mth.csv)
@@ -57,35 +66,48 @@ def monthly_trends(fdir, df, channel, sweepvar='models', facet_var='target_outpu
     for fi in unique_facets:
         fdf = df[df[facet_var] == fi]
         ax = fig.add_subplot(ny, nx, f)
-        ax.set_title(f'{facet_var} = {fi}')
-        if facet_var == 'models':
+        ax.set_title(f"{facet_var} = {fi}")
+        if facet_var == "models":
             ax.set_title(fi)
-        if facet_var == 'target_output_values':
+        if facet_var == "target_output_values":
             ax.set_title(f"{get_label(facet_name)} = {fi}")
 
         f += 1
         max_ylim = []
         for i, grp in enumerate(unique_groups):
             mdf = fdf[fdf[sweepvar] == grp]
-            color = color_selector(i, grp, sweepvar=sweepvar, n_colors=len(unique_groups))
+            color = color_selector(
+                i, grp, sweepvar=sweepvar, n_colors=len(unique_groups)
+            )
             ylim_up = np.max(mdf[channel]) * 1.1
-            if channel == 'prevalence' or channel == 'prevalence_2to10':
+            if channel == "prevalence" or channel == "prevalence_2to10":
                 ylim_up = min(ylim_up, 1)
             max_ylim.append(ylim_up)
-            xmean, ymean = get_x_y(mdf, 'month', channel, channel)
+            xmean, ymean = get_x_y(mdf, "month", channel, channel)
             for ii, ff in ymean.iterrows():
-                ymean.loc[ii, 'month'] = new_index[ii]
-            xmean = xmean['month']
-            merge_df = pd.merge(left=xmean, right=ymean, on='month')
+                ymean.loc[ii, "month"] = new_index[ii]
+            xmean = xmean["month"]
+            merge_df = pd.merge(left=xmean, right=ymean, on="month")
 
-            ax.plot(merge_df['month'], merge_df[channel], '-', linewidth=0.8,
-                    label=f"{grp} ", color=color)
-            ax.fill_between(merge_df['month'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'],
-                            alpha=0.1, color=color)
+            ax.plot(
+                merge_df["month"],
+                merge_df[channel],
+                "-",
+                linewidth=0.8,
+                label=f"{grp} ",
+                color=color,
+            )
+            ax.fill_between(
+                merge_df["month"],
+                merge_df[f"{channel}_min"],
+                merge_df[f"{channel}_max"],
+                alpha=0.1,
+                color=color,
+            )
 
         if firstPlot:
             lg_title = get_legend_title(sweepvar, exp)
-            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1), title=lg_title)
+            lg = ax.legend(loc="upper left", bbox_to_anchor=(0, 1), title=lg_title)
             firstPlot = False
 
         ax.set_ylim(0, max(max_ylim))
@@ -94,24 +116,38 @@ def monthly_trends(fdir, df, channel, sweepvar='models', facet_var='target_outpu
         ax.set_xticks(np.arange(len(graphing_axis)))
         ax.set_xticklabels(graphing_axis)
         ax.set_xlim(1, 12)
-        ax.set_xlabel('month')
+        ax.set_xlabel("month")
         ax.set_ylabel(get_label(channel))
 
-    if 'ageGroup' not in figure_vars:
-        fname = f'monthly_{channel}_{agegrps[0]}_{sweepvar}_{facet_var}'
+    if "ageGroup" not in figure_vars:
+        fname = f"monthly_{channel}_{agegrps[0]}_{sweepvar}_{facet_var}"
     else:
-        fname = f'monthly_{channel}_{sweepvar}_{facet_var}'
+        fname = f"monthly_{channel}_{sweepvar}_{facet_var}"
     fname = clean_fname(fname, sweepvar, unique_groups, facet_var, unique_facets)
-    fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(
+        os.path.join(fdir, f"{fname}.png"),
+        bbox_extra_artists=(lg,),
+        bbox_inches="tight",
+    )
     plt.close()
 
 
 # Plots over time - requires mmmpy_mth.csv
 def monthly_timeseries(
-        fdir, df, channel, sweepvar='models', facet_var='ageGroup', agegrps=['0-100'],
-        calendar_year=False, facet_name=None, exp=None,
-        facet_layout=None, width_per_col=8, height_per_row=6,
-        space=0.4, file_format='png'
+    fdir,
+    df,
+    channel,
+    sweepvar="models",
+    facet_var="ageGroup",
+    agegrps=["0-100"],
+    calendar_year=False,
+    facet_name=None,
+    exp=None,
+    facet_layout=None,
+    width_per_col=8,
+    height_per_row=6,
+    space=0.4,
+    file_format="png",
 ):
     """
     Parameters:
@@ -138,16 +174,16 @@ def monthly_timeseries(
         facet_name = facet_var
     figure_vars = [channel] + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars, agegrps)
-    df['date'] = pd.to_datetime(df['date'])
+    df["date"] = pd.to_datetime(df["date"])
 
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
 
     # Layout setup
-    if facet_layout == 'horizontal':
+    if facet_layout == "horizontal":
         nx = len(unique_facets)
         ny = 1
-    elif facet_layout == 'vertical':
+    elif facet_layout == "vertical":
         nx = 1
         ny = len(unique_facets)
     else:
@@ -162,68 +198,97 @@ def monthly_timeseries(
         fdf = df[df[facet_var] == fi]
         ax = fig.add_subplot(ny, nx, f)
         ax.set_title(f"{facet_var} = {fi}")
-        if facet_var == 'models':
+        if facet_var == "models":
             ax.set_title(fi)
-        if facet_var == 'target_output_values':
+        if facet_var == "target_output_values":
             ax.set_title(f"{get_label(facet_name)} = {fi}")
 
         f += 1
         max_ylim = []
         for i, grp in enumerate(unique_groups):
             sdf = fdf[fdf[sweepvar] == grp]
-            color = color_selector(i, grp, sweepvar=sweepvar, n_colors=len(unique_groups))
+            color = color_selector(
+                i, grp, sweepvar=sweepvar, n_colors=len(unique_groups)
+            )
             ylim_up = np.max(sdf[channel]) * 1.1
-            if channel in ['prevalence', 'prevalence_2to10']:
+            if channel in ["prevalence", "prevalence_2to10"]:
                 ylim_up = min(ylim_up, 1)
             max_ylim.append(ylim_up)
 
-            xmean, ymean = get_x_y(sdf, 'date', channel, channel)
-            xmean = xmean['date']
-            merge_df = pd.merge(left=xmean, right=ymean, on='date')
-            merge_df.sort_values(by='date', inplace=True)
+            xmean, ymean = get_x_y(sdf, "date", channel, channel)
+            xmean = xmean["date"]
+            merge_df = pd.merge(left=xmean, right=ymean, on="date")
+            merge_df.sort_values(by="date", inplace=True)
 
-            ax.plot(merge_df['date'], merge_df[channel], '-', linewidth=0.8, label=f"{grp}",
-                    color=color)
-            ax.fill_between(merge_df['date'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
-                            color=color)
+            ax.plot(
+                merge_df["date"],
+                merge_df[channel],
+                "-",
+                linewidth=0.8,
+                label=f"{grp}",
+                color=color,
+            )
+            ax.fill_between(
+                merge_df["date"],
+                merge_df[f"{channel}_min"],
+                merge_df[f"{channel}_max"],
+                alpha=0.1,
+                color=color,
+            )
 
         if firstPlot:
             lg_title = get_legend_title(sweepvar, exp)
-            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1), title=lg_title)
+            lg = ax.legend(loc="upper left", bbox_to_anchor=(0, 1), title=lg_title)
             firstPlot = False
 
         ax.set_ylabel(get_label(channel))
         ax.set_ylim(0, max(max_ylim))
 
         if calendar_year:
-            ax.set_xlabel('Year')
+            ax.set_xlabel("Year")
             ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=6))
-            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+            ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
         else:
-            ax.set_xlabel('Monitoring year')
-            start_year = df['date'].min().year
-            ax.xaxis.set_major_formatter(FuncFormatter(lambda x, pos: year_to_custom(x, start_year)))
+            ax.set_xlabel("Monitoring year")
+            start_year = df["date"].min().year
+            ax.xaxis.set_major_formatter(
+                FuncFormatter(lambda x, pos: year_to_custom(x, start_year))
+            )
 
-    if 'ageGroup' not in figure_vars:
-        fname = f'timeseries_monthly_{channel}_{agegrps[0]}_{sweepvar}_{facet_var}'
+    if "ageGroup" not in figure_vars:
+        fname = f"timeseries_monthly_{channel}_{agegrps[0]}_{sweepvar}_{facet_var}"
     else:
-        fname = f'timeseries_monthly_{channel}_{sweepvar}_{facet_var}'
+        fname = f"timeseries_monthly_{channel}_{sweepvar}_{facet_var}"
 
     fname = clean_fname(fname, sweepvar, unique_groups, facet_var, unique_facets)
 
     fig.tight_layout()
     fig.subplots_adjust(hspace=space, wspace=space)
-    fig.savefig(os.path.join(fdir, f'{fname}.{file_format}'), format=file_format,
-                bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(
+        os.path.join(fdir, f"{fname}.{file_format}"),
+        format=file_format,
+        bbox_extra_artists=(lg,),
+        bbox_inches="tight",
+    )
     plt.close()
 
 
 # Plots over time - requires mmmpy_yr.csv
 def annual_timeseries(
-        fdir, df, channel, sweepvar='models', facet_var='seasonality', agegrps=['0-100'],
-        calendar_year=False, facet_name=None, exp=None,
-        facet_layout=None, width_per_col=8, height_per_row=6,
-        space=0.4, file_format='png'
+    fdir,
+    df,
+    channel,
+    sweepvar="models",
+    facet_var="seasonality",
+    agegrps=["0-100"],
+    calendar_year=False,
+    facet_name=None,
+    exp=None,
+    facet_layout=None,
+    width_per_col=8,
+    height_per_row=6,
+    space=0.4,
+    file_format="png",
 ):
     """
     Plots annual timeseries of a given output variable, grouped by sweepvar and faceted by another variable.
@@ -254,19 +319,19 @@ def annual_timeseries(
     figure_vars = [channel] + [sweepvar, facet_var]
     df, caption_txt = subset_dataframe_for_plot(df, figure_vars, agegrps)
 
-    xlabel = 'Year'
+    xlabel = "Year"
     if not calendar_year:
-        xlabel = 'Monitoring year'
-        df['year'] = df['year'] - df['year'].min()
+        xlabel = "Monitoring year"
+        df["year"] = df["year"] - df["year"].min()
 
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
 
     # Layout handling
-    if facet_layout == 'horizontal':
+    if facet_layout == "horizontal":
         nx = len(unique_facets)
         ny = 1
-    elif facet_layout == 'vertical':
+    elif facet_layout == "vertical":
         nx = 1
         ny = len(unique_facets)
     else:
@@ -281,9 +346,9 @@ def annual_timeseries(
         fdf = df[df[facet_var] == fi]
         ax = fig.add_subplot(ny, nx, f)
         ax.set_title(f"{facet_var} = {fi}")
-        if facet_var == 'models':
+        if facet_var == "models":
             ax.set_title(fi)
-        if facet_var == 'target_output_values':
+        if facet_var == "target_output_values":
             ax.set_title(f"{get_label(facet_name)} = {fi}")
 
         f += 1
@@ -291,42 +356,59 @@ def annual_timeseries(
 
         for i, grp in enumerate(unique_groups):
             sdf = fdf[fdf[sweepvar] == grp]
-            color = color_selector(i, grp, sweepvar=sweepvar, n_colors=len(unique_groups))
+            color = color_selector(
+                i, grp, sweepvar=sweepvar, n_colors=len(unique_groups)
+            )
             ylim_up = np.max(sdf[channel]) * 1.1
-            if channel in ['prevalence', 'prevalence_2to10']:
+            if channel in ["prevalence", "prevalence_2to10"]:
                 ylim_up = min(ylim_up, 1)
             max_ylim.append(ylim_up)
 
-            xmean, ymean = get_x_y(sdf, 'year', channel, channel)
-            xmean = xmean['year']
-            merge_df = pd.merge(left=xmean, right=ymean, on='year')
-            merge_df.sort_values(by='year', inplace=True)
-            ax.plot(merge_df['year'], merge_df[channel], '-', linewidth=0.8, label=f"{grp}",
-                    color=color)
-            ax.fill_between(merge_df['year'], merge_df[f'{channel}_min'], merge_df[f'{channel}_max'], alpha=0.1,
-                            color=color)
+            xmean, ymean = get_x_y(sdf, "year", channel, channel)
+            xmean = xmean["year"]
+            merge_df = pd.merge(left=xmean, right=ymean, on="year")
+            merge_df.sort_values(by="year", inplace=True)
+            ax.plot(
+                merge_df["year"],
+                merge_df[channel],
+                "-",
+                linewidth=0.8,
+                label=f"{grp}",
+                color=color,
+            )
+            ax.fill_between(
+                merge_df["year"],
+                merge_df[f"{channel}_min"],
+                merge_df[f"{channel}_max"],
+                alpha=0.1,
+                color=color,
+            )
 
         if firstPlot:
             lg_title = get_legend_title(sweepvar, exp)
-            lg = ax.legend(loc='upper left', bbox_to_anchor=(0, 1), title=lg_title)
+            lg = ax.legend(loc="upper left", bbox_to_anchor=(0, 1), title=lg_title)
             firstPlot = False
 
         ax.set_ylabel(get_label(channel))
         ax.set_ylim(0, max(max_ylim))
         ax.set_xlabel(xlabel)
-        ax.locator_params(axis='x', nbins=len(df['year'].unique()))
+        ax.locator_params(axis="x", nbins=len(df["year"].unique()))
 
-    if 'ageGroup' not in figure_vars:
-        fname = f'timeseries_annual_{channel}_{agegrps[0]}_{sweepvar}_{facet_var}'
+    if "ageGroup" not in figure_vars:
+        fname = f"timeseries_annual_{channel}_{agegrps[0]}_{sweepvar}_{facet_var}"
     else:
-        fname = f'timeseries_annual_{channel}_{sweepvar}_{facet_var}'
+        fname = f"timeseries_annual_{channel}_{sweepvar}_{facet_var}"
 
     fname = clean_fname(fname, sweepvar, unique_groups, facet_var, unique_facets)
 
     fig.tight_layout()
     fig.subplots_adjust(hspace=space, wspace=space)
-    fig.savefig(os.path.join(fdir, f'{fname}.{file_format}'), format=file_format,
-                bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(
+        os.path.join(fdir, f"{fname}.{file_format}"),
+        format=file_format,
+        bbox_extra_artists=(lg,),
+        bbox_inches="tight",
+    )
     plt.close()
 
 
@@ -339,51 +421,77 @@ if __name__ == "__main__":
 
     exp = load_exp(wdir)
 
-    ento_channel_list = ['n_total_mos_pop']
-    epi_channel_list = ['eir', 'clinical_incidence', 'severe_incidence', 'prevalence', 'prevalence_2to10']
+    ento_channel_list = ["n_total_mos_pop"]
+    epi_channel_list = [
+        "eir",
+        "clinical_incidence",
+        "severe_incidence",
+        "prevalence",
+        "prevalence_2to10",
+    ]
     channel_list = epi_channel_list + ento_channel_list
 
     df_mth, out_dir = get_output_df(wdir, models, mth=True)
     df_yr, _ = get_output_df(wdir, models, yr=True)
-    agegrps = ['0-100']
+    agegrps = ["0-100"]
 
-    out_dir = os.path.join(out_dir, 'plots')
+    out_dir = os.path.join(out_dir, "plots")
     if len(models) == 1 and len(exp.models) > 1:
         out_dir = os.path.join(out_dir, models[0])
     os.makedirs(out_dir, exist_ok=True)
 
     if not df_mth.empty:
-        facet_var = 'models'
-        sweepvar = 'target_output_values'
+        facet_var = "models"
+        sweepvar = "target_output_values"
         for channel in channel_list:
             try:
-                print(f'#----- Plotting the monthly trends for {channel} -----#')
+                print(f"#----- Plotting the monthly trends for {channel} -----#")
                 # Example if order or months should be shifted
                 # new_index = [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6]
                 new_index = None  # If none, use default 1-12
-                monthly_trends(out_dir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
-                               agegrps=agegrps,
-                               new_index=new_index, exp=exp)
+                monthly_trends(
+                    out_dir,
+                    df_mth,
+                    channel=channel,
+                    sweepvar=sweepvar,
+                    facet_var=facet_var,
+                    agegrps=agegrps,
+                    new_index=new_index,
+                    exp=exp,
+                )
             except:
-                print(f'{channel} not found in dataframe')
+                print(f"{channel} not found in dataframe")
 
-    sweepvar = 'models'
-    facet_var = 'ageGroup'
+    sweepvar = "models"
+    facet_var = "ageGroup"
 
     if len(exp.target_output_values) > 1 & len(exp.target_output_values) <= 3:
-        facet_var = 'target_output_values'
-    if facet_var == 'ageGroup' and len(exp.cm_clinical) > 1:
-        facet_var = 'cm_clinical'
-    if facet_var == 'ageGroup' and len(exp.seasonality) > 1:
-        facet_var = 'seasonality'
+        facet_var = "target_output_values"
+    if facet_var == "ageGroup" and len(exp.cm_clinical) > 1:
+        facet_var = "cm_clinical"
+    if facet_var == "ageGroup" and len(exp.seasonality) > 1:
+        facet_var = "seasonality"
 
     if not df_mth.empty:
         for channel in channel_list:
-            print(f'#----- Plotting monthly timeseries for {channel}-----#')
-            monthly_timeseries(out_dir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
-                               agegrps=agegrps)
+            print(f"#----- Plotting monthly timeseries for {channel}-----#")
+            monthly_timeseries(
+                out_dir,
+                df_mth,
+                channel=channel,
+                sweepvar=sweepvar,
+                facet_var=facet_var,
+                agegrps=agegrps,
+            )
 
     if not df_yr.empty:
         for channel in channel_list:
-            print(f'#----- Plotting annual timeseries for {channel}-----#')
-            annual_timeseries(out_dir, df_yr, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrps=agegrps)
+            print(f"#----- Plotting annual timeseries for {channel}-----#")
+            annual_timeseries(
+                out_dir,
+                df_yr,
+                channel=channel,
+                sweepvar=sweepvar,
+                facet_var=facet_var,
+                agegrps=agegrps,
+            )

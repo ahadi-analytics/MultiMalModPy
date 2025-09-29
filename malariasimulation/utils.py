@@ -17,20 +17,29 @@ def param_variation(df, exp):
 
     df_pv = df.copy(deep=True)
     from random import sample
+
     if exp.num_seeds > 1000:
-        print("Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values")
-        par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds + 1), exp.num_seeds)]
+        print(
+            "Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values"
+        )
+        par_var = [
+            (i % 1000) + 1 for i in sample(range(1, exp.num_seeds + 1), exp.num_seeds)
+        ]
         for i, row in df_pv.iterrows():
-            df_pv.loc[i, 'malariasimulation_pv'] = int(par_var[df_pv.loc[i, 'seed'] - 1])
+            df_pv.loc[i, "malariasimulation_pv"] = int(
+                par_var[df_pv.loc[i, "seed"] - 1]
+            )
     else:
         par_var = sample(range(1, 1001), exp.num_seeds)
         for i, row in df_pv.iterrows():
-            df_pv.loc[i, 'malariasimulation_pv'] = int(par_var[df_pv.loc[i, 'seed'] - 1])
+            df_pv.loc[i, "malariasimulation_pv"] = int(
+                par_var[df_pv.loc[i, "seed"] - 1]
+            )
 
     return df_pv
 
 
-def submit_analyze_outputs(exp, t='01:00:00', memG=10):
+def submit_analyze_outputs(exp, t="01:00:00", memG=10):
     """
     Submits a job to analyze malaria simulation outputs using SLURM.
 
@@ -46,32 +55,46 @@ def submit_analyze_outputs(exp, t='01:00:00', memG=10):
         None: This function does not return any value. It only submits the job and prints the job ID.
     """
 
-    header_post = shell_header_quest(exp.sh_hpc_config, t, memG, job_name='analyze_malariasimulation',
-                                     mem_scl=exp.mem_increase_factor)
+    header_post = shell_header_quest(
+        exp.sh_hpc_config,
+        t,
+        memG,
+        job_name="analyze_malariasimulation",
+        mem_scl=exp.mem_increase_factor,
+    )
 
-    pycommand = f'\ncd {exp.root_directory}/malariasimulation' \
-                f'\n{exp.EMOD_venv}' \
-                f'\npython analyze_sim.py --dir "{exp.job_directory}"'
+    pycommand = (
+        f"\ncd {exp.root_directory}/malariasimulation"
+        f"\n{exp.EMOD_venv}"
+        f'\npython analyze_sim.py --dir "{exp.job_directory}"'
+    )
 
     if exp.malariasimulation_parameter_variation == "both":
-        pycommand = pycommand + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
+        pycommand = (
+            pycommand + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
+        )
     if exp.malariasimulation_parameter_variation == "yes":
-        pycommand = pycommand + ' --mpv'
+        pycommand = pycommand + " --mpv"
 
-    script_path = os.path.join(exp.job_directory, 'run_analyzer_malariasimulation.sh')
-    file = open(script_path, 'w')
+    script_path = os.path.join(exp.job_directory, "run_analyzer_malariasimulation.sh")
+    file = open(script_path, "w")
     file.write(header_post + pycommand)
     file.close()
 
-    malariasimulation_job_path = os.path.join(exp.job_directory, 'job_id_malariasimulation.txt')
+    malariasimulation_job_path = os.path.join(
+        exp.job_directory, "job_id_malariasimulation.txt"
+    )
     job_id = open(malariasimulation_job_path).read().strip()
 
-    p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path], stdout=subprocess.PIPE,
-                       cwd=str(exp.job_directory))
+    p = subprocess.run(
+        ["sbatch", "--parsable", f"--dependency=afterany:{job_id}", script_path],
+        stdout=subprocess.PIPE,
+        cwd=str(exp.job_directory),
+    )
 
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(' ')[-1]
-    print(f'Submitted analyzer for malariasimulation  - job id: {slurm_job_id}')
-    write_txt(slurm_job_id, exp.job_directory, 'job_id_malariasimulation_analyze.txt')
+    slurm_job_id = p.stdout.decode("utf-8").strip().split(" ")[-1]
+    print(f"Submitted analyzer for malariasimulation  - job id: {slurm_job_id}")
+    write_txt(slurm_job_id, exp.job_directory, "job_id_malariasimulation_analyze.txt")
 
 
 def submit_run_malariasimulation(exp, scen_df):
@@ -90,40 +113,56 @@ def submit_run_malariasimulation(exp, scen_df):
         ValueError: If an unsupported HPC configuration is provided.
         subprocess.CalledProcessError: If there is an issue with running the job submission command for SLURM.
     """
-    os.makedirs(os.path.join(exp.job_directory, 'malariasimulation_jobs'), exist_ok=True)
+    os.makedirs(
+        os.path.join(exp.job_directory, "malariasimulation_jobs"), exist_ok=True
+    )
 
     scen_df_wseeds = rep_scen_df(scen_df)
-    scen_df_wseeds['malariasimulation_pv'] = 0
+    scen_df_wseeds["malariasimulation_pv"] = 0
 
     if exp.malariasimulation_parameter_variation == "yes":
         # run only parameter variation
         scen_df_all = param_variation(scen_df_wseeds, exp)
-        scen_df_all['index_pv'] = range(len(scen_df_all))
+        scen_df_all["index_pv"] = range(len(scen_df_all))
 
     elif exp.malariasimulation_parameter_variation == "both":
         # run baseline AND parameter variation
         scen_df_mpv = param_variation(scen_df_wseeds, exp)
         scen_df_all = pd.concat([scen_df_wseeds, scen_df_mpv], ignore_index=True)
-        scen_df_all['index_pv'] = range(len(scen_df_all))
+        scen_df_all["index_pv"] = range(len(scen_df_all))
 
     else:  # "no"
         # run only baseline
         scen_df_all = scen_df_wseeds
 
-    save_scen(scen_df_all, fname='scenarios_wseeds_mpv.csv', save_dirs=[exp.job_directory, exp.output_directory])
+    save_scen(
+        scen_df_all,
+        fname="scenarios_wseeds_mpv.csv",
+        save_dirs=[exp.job_directory, exp.output_directory],
+    )
 
-    if exp.hpc == 'LOCAL':
+    if exp.hpc == "LOCAL":
         if not exp.use_container:
             from utility.helper_local import write_ps1_analyzer, submit_runmodel_local
+
             write_ps1_malariasimulation(exp)
-            write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model='malariasimulation')
-            submit_runmodel_local(exp, model='malariasimulation')
+            write_ps1_analyzer(
+                exp, pyscript=exp.analyzer_script[0], model="malariasimulation"
+            )
+            submit_runmodel_local(exp, model="malariasimulation")
         else:
-            from utility.helper_local_docker import write_sh_analyzer, write_sh_plotters, submit_runmodel_sh
+            from utility.helper_local_docker import (
+                write_sh_analyzer,
+                write_sh_plotters,
+                submit_runmodel_sh,
+            )
+
             write_sh_malariasimulation(exp)
-            write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model='malariasimulation')
+            write_sh_analyzer(
+                exp, pyscript=exp.analyzer_script[0], model="malariasimulation"
+            )
             # write_sh_plotters(exp, model='malariasimulation')
-            submit_runmodel_sh(exp, model='malariasimulation')
+            submit_runmodel_sh(exp, model="malariasimulation")
     else:
         # Default, run via SLURM on HPC
         submit_run_malariasimulation_slurm(exp)
@@ -145,35 +184,48 @@ def submit_run_malariasimulation_slurm(exp):
     """
 
     # When running with and without malariasimulation_parameter_variation, twice as many experiments are needed
-    nexps = exp.nexps * 2 if exp.malariasimulation_parameter_variation == "both" else exp.nexps
+    nexps = (
+        exp.nexps * 2
+        if exp.malariasimulation_parameter_variation == "both"
+        else exp.nexps
+    )
 
-    array = f'#SBATCH --array=1-{str(nexps)}%{str(exp.max_running_jobs)}\n'
-    header_post = shell_header_quest(exp.sh_hpc_config, exp.malariasimulation_time_per_sim,
-                                     exp.malariasimulation_memory_per_sim, job_name=f'run_malariasimulation',
-                                     arrayJob=array)
+    array = f"#SBATCH --array=1-{str(nexps)}%{str(exp.max_running_jobs)}\n"
+    header_post = shell_header_quest(
+        exp.sh_hpc_config,
+        exp.malariasimulation_time_per_sim,
+        exp.malariasimulation_memory_per_sim,
+        job_name=f"run_malariasimulation",
+        arrayJob=array,
+    )
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
-    r_file_path = os.path.join(ROOT_DIR, 'malariasimulation.R')
-    script_path = os.path.join(exp.job_directory, 'run_malariasimulation.sh')
+    r_file_path = os.path.join(ROOT_DIR, "malariasimulation.R")
+    script_path = os.path.join(exp.job_directory, "run_malariasimulation.sh")
     malariasimulation_input_path = exp.malariasimulation_input_path
-    slurmID = '${SLURM_ARRAY_TASK_ID}'
+    slurmID = "${SLURM_ARRAY_TASK_ID}"
 
     # Set up script for submitting malariasimulation simulations as a SLURM array job
     # The command structure for running an R Script as a subprocess is:
     #    1) the command (which sets up that the file type is a Rscript)
-    #    2) the path to the Rscript 
+    #    2) the path to the Rscript
     #    3) the inputs we want in our Rscript
-    file = open(script_path, 'w')
-    file.write(header_post + f'\ncd {malariasimulation_input_path}')
-    file.write(f'\nRscript {r_file_path} {ROOT_DIR} {exp.job_directory} {slurmID}')
+    file = open(script_path, "w")
+    file.write(header_post + f"\ncd {malariasimulation_input_path}")
+    file.write(f"\nRscript {r_file_path} {ROOT_DIR} {exp.job_directory} {slurmID}")
     file.close()
 
     # Now we can run the rscript as a subprocess via sbatch
-    p = subprocess.run(['sbatch', script_path], check=True, stdout=subprocess.PIPE, cwd=str(exp.job_directory))
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(' ')[-1]
-    print(f'Submitted simulations for malariasimulation  - job id: {slurm_job_id}')
+    p = subprocess.run(
+        ["sbatch", script_path],
+        check=True,
+        stdout=subprocess.PIPE,
+        cwd=str(exp.job_directory),
+    )
+    slurm_job_id = p.stdout.decode("utf-8").strip().split(" ")[-1]
+    print(f"Submitted simulations for malariasimulation  - job id: {slurm_job_id}")
 
-    write_txt(slurm_job_id, exp.job_directory, f'job_id_malariasimulation.txt')
+    write_txt(slurm_job_id, exp.job_directory, f"job_id_malariasimulation.txt")
     submit_analyze_outputs(exp)
     return
 
@@ -196,15 +248,21 @@ def write_ps1_malariasimulation(exp):
         IOError: If writing the PowerShell script fails.
     """
 
-    file_path = os.path.join(exp.job_directory, f'run_malariasimulation.ps1')
+    file_path = os.path.join(exp.job_directory, f"run_malariasimulation.ps1")
 
     # Normalize paths
-    malariasimulation_path = os.path.normpath(os.path.join(exp.ROOT_DIR, 'malariasimulation'))
+    malariasimulation_path = os.path.normpath(
+        os.path.join(exp.ROOT_DIR, "malariasimulation")
+    )
     exe_path = os.path.normpath(exp.r_local)
     job_dir = os.path.normpath(exp.job_directory)
 
     # When running with and without malariasimulation_parameter_variation, twice as many experiments are needed
-    nexps = exp.nexps * 2 if exp.malariasimulation_parameter_variation == "both" else exp.nexps
+    nexps = (
+        exp.nexps * 2
+        if exp.malariasimulation_parameter_variation == "both"
+        else exp.nexps
+    )
 
     powershell_content = f"""
 # Job settings
@@ -250,9 +308,11 @@ Write-Host "All $total simulations complete in $($elapsedTotal.ToString())."
 """
 
     try:
-        with open(file_path, 'w') as file:
+        with open(file_path, "w") as file:
             file.write(powershell_content)
-        print(f"PowerShell script with progress bar written successfully at {file_path}")
+        print(
+            f"PowerShell script with progress bar written successfully at {file_path}"
+        )
     except IOError as e:
         raise IOError(f"Failed to write PowerShell script: {e}")
 
@@ -275,13 +335,17 @@ def write_sh_malariasimulation(exp):
         IOError: If there is an issue with writing the shell script to the file.
     """
     # Define file path for shell script
-    file_path = os.path.join(exp.job_directory, f'run_malariasimulation.sh')
+    file_path = os.path.join(exp.job_directory, f"run_malariasimulation.sh")
 
     # Get the absolute path of the working directory
-    malariasimulation_path = os.path.join(exp.ROOT_DIR, 'malariasimulation')
+    malariasimulation_path = os.path.join(exp.ROOT_DIR, "malariasimulation")
 
     # When running with and without malariasimulation_parameter_variation, twice as many experiments are needed
-    nexps = exp.nexps * 2 if exp.malariasimulation_parameter_variation == "both" else exp.nexps
+    nexps = (
+        exp.nexps * 2
+        if exp.malariasimulation_parameter_variation == "both"
+        else exp.nexps
+    )
 
     # Construct the content of the shell script
     sh_content = f"""#!/bin/bash
@@ -318,7 +382,7 @@ echo "All simulations completed successfully."
 """
 
     # Write the shell content to a .sh file
-    with open(file_path, 'w') as file:
+    with open(file_path, "w") as file:
         file.write(sh_content)
 
     # Make script executable

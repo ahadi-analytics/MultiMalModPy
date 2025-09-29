@@ -27,6 +27,7 @@ def get_intervention_params(exp):
     Intervention parameters based on the specified experiment.
     """
     from utility.helper_interventions import exp_params_to_update
+
     return exp_params_to_update(exp)
 
 
@@ -57,24 +58,28 @@ def get_simulation_time_params(exp):
     monitoring_years = end_year - start_year
 
     if emod_step is None:
-        if 'EMOD' in models:
-            print(" --------| Running EMOD burnin + pickup time in one simulation run |--------")
+        if "EMOD" in models:
+            print(
+                " --------| Running EMOD burnin + pickup time in one simulation run |--------"
+            )
         burnin_start_year = start_year - exp.emod_burnin
         sim_dur_years = end_year - burnin_start_year
         sim_start_year = burnin_start_year
-    elif emod_step == 'burnin':
-        if 'EMOD' in models:
+    elif emod_step == "burnin":
+        if "EMOD" in models:
             print(" --------| Running EMOD burnin (step 1) |--------")
         sim_dur_years = exp.emod_burnin
         burnin_start_year = start_year - exp.emod_burnin
         sim_start_year = burnin_start_year
-    elif emod_step == 'pickup':
-        if 'EMOD' in models:
-            print(" --------| Running EMOD pickup from serialized burnin (step 2) |--------")
+    elif emod_step == "pickup":
+        if "EMOD" in models:
+            print(
+                " --------| Running EMOD pickup from serialized burnin (step 2) |--------"
+            )
         sim_dur_years = end_year - start_year
         sim_start_year = start_year
     else:
-        raise ValueError(f'Please specify valid emod_step, {emod_step} is not valid')
+        raise ValueError(f"Please specify valid emod_step, {emod_step} is not valid")
 
     # Update experiment object with simulation start year and duration
     exp.sim_start_year_emod = sim_start_year
@@ -97,15 +102,20 @@ def param_variation(df, exp):
     DataFrame with added column 'malariasimulation_pv' representing malariasimulation parameter variation values.
     """
     from random import sample
+
     if exp.num_seeds > 1000:
-        print("Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values")
-        par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds + 1), exp.num_seeds)]
+        print(
+            "Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values"
+        )
+        par_var = [
+            (i % 1000) + 1 for i in sample(range(1, exp.num_seeds + 1), exp.num_seeds)
+        ]
         for i, row in df.iterrows():
-            df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
+            df.loc[i, "malariasimulation_pv"] = int(par_var[df.loc[i, "seed"] - 1])
     else:
         par_var = sample(range(1, 1001), exp.num_seeds)
         for i, row in df.iterrows():
-            df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
+            df.loc[i, "malariasimulation_pv"] = int(par_var[df.loc[i, "seed"] - 1])
     return df
 
 
@@ -163,7 +173,7 @@ def monthly_to_daily_EIR(monthly_EIR):
     """
     x_monthly = np.linspace(0, 364, num=12, endpoint=True)
     x_daily = np.linspace(0, 364, num=365, endpoint=True)
-    EIR = interp1d(x_monthly, monthly_EIR, kind='linear')
+    EIR = interp1d(x_monthly, monthly_EIR, kind="linear")
     daily_EIR = EIR(x_daily)
     daily_EIR /= 30
     daily_EIR = daily_EIR.tolist()
@@ -182,11 +192,13 @@ def submit_run_plotters(exp):
         exp (object): An experiment object containing the necessary attributes, such as 'hpc',
                       to determine the appropriate submission method.
     """
-    if exp.hpc == 'LOCAL':
+    if exp.hpc == "LOCAL":
         from utility.helper_local import submit_run_plotters_local
+
         submit_run_plotters_local(exp)
     else:
         from utility.helper_slurm import submit_run_plotters_slurm
+
         submit_run_plotters_slurm(exp)
 
 
@@ -207,8 +219,12 @@ def check_exp_input_parameters(exp):
     """
 
     # Check agebins against age_groups_aggregates
-    missing_agebins = {age for interval in exp.age_groups_aggregates for age in interval if
-                       age != 0 and age not in exp.agebins}
+    missing_agebins = {
+        age
+        for interval in exp.age_groups_aggregates
+        for age in interval
+        if age != 0 and age not in exp.agebins
+    }
     if len(missing_agebins) > 0:
         raise ValueError(
             f"The 'agebins' parameter is not granular enough to allow aggregation by 'age_groups_aggregates'. "
@@ -230,7 +246,7 @@ def check_exp_input_parameters(exp):
         )
 
     for seasonal_name in exp.seasonality:
-        if seasonal_name not in ['seasonal', 'perennial']:
+        if seasonal_name not in ["seasonal", "perennial"]:
             raise ValueError(
                 f"Seasonality {seasonal_name} not in interpolation datasets."
                 "Please indicate either seasonal or perennial instead."
@@ -255,7 +271,7 @@ def check_exp_inputs_emod(exp):
         ValueError: If the 'num_seeds_burnin' is not set to 1 during an EMOD burn-in simulation.
     """
 
-    if exp.hpc == 'LOCAL' and exp.emod_step is not None:
+    if exp.hpc == "LOCAL" and exp.emod_step is not None:
         raise ValueError("Local execution of EMOD does not allow serialization.")
 
     if exp.emod_step:
@@ -266,8 +282,8 @@ def check_exp_inputs_emod(exp):
             )
 
     if exp.emod_burnin < 100 and (
-            ('EMOD' in exp.models and exp.emod_step != 'pickup') or
-            'EMOD' not in exp.models):
+        ("EMOD" in exp.models and exp.emod_step != "pickup") or "EMOD" not in exp.models
+    ):
         print(
             f"Warning: A burn-in period of at least 100 years is recommended for EMOD. "
             f"Currently, a shorter burn-in of {exp.emod_burnin} years has been configured, which may lead to inaccurate results."
@@ -312,8 +328,12 @@ def check_exp_inputs_openmalaria(exp):
     # List of possible locations for the schema
     possible_paths = [
         schema_path,  # default location
-        os.path.join(exp.openmalaria_path.replace('test', 'schema'), schema),
-        os.path.join(exp.ROOT_DIR, f'dependencies/OpenMalaria/om_v{exp.openmalaria_version}', schema)
+        os.path.join(exp.openmalaria_path.replace("test", "schema"), schema),
+        os.path.join(
+            exp.ROOT_DIR,
+            f"dependencies/OpenMalaria/om_v{exp.openmalaria_version}",
+            schema,
+        ),
     ]
 
     # Try to copy schema if missing
@@ -324,25 +344,29 @@ def check_exp_inputs_openmalaria(exp):
                 print(f"Copied schema from {alt_path} to {exp.openmalaria_path}")
                 break
         else:
-            raise FileNotFoundError(f"Required schema file not found in any location: {schema}")
+            raise FileNotFoundError(
+                f"Required schema file not found in any location: {schema}"
+            )
 
     # Ensure required files exist
     required_files = [
         os.path.join(exp.openmalaria_path, "densities.csv"),
-        os.path.join(exp.openmalaria_path, schema)
+        os.path.join(exp.openmalaria_path, schema),
     ]
 
     for file_path in required_files:
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"Required file not found: {file_path}")
 
-    if exp.openmalaria_survey_step == '30d' and "5day" in exp.analyzer_list:
+    if exp.openmalaria_survey_step == "30d" and "5day" in exp.analyzer_list:
         print(
-            "Warning: OpenMalaria is configured with 30-day survey steps. Using a 5-day analyzer will cause errors during post-processing. Adjust your configuration to ensure compatibility.")
+            "Warning: OpenMalaria is configured with 30-day survey steps. Using a 5-day analyzer will cause errors during post-processing. Adjust your configuration to ensure compatibility."
+        )
 
-    if exp.openmalaria_survey_step == '30d' and "ccstep" in exp.intervention_list:
+    if exp.openmalaria_survey_step == "30d" and "ccstep" in exp.intervention_list:
         raise ValueError(
-            "The 'ccstep' intervention requires 5-day survey steps in OpenMalaria. Please update the survey step configuration.")
+            "The 'ccstep' intervention requires 5-day survey steps in OpenMalaria. Please update the survey step configuration."
+        )
 
     if exp.openmalaria_burnin < 80:
         print(
@@ -374,9 +398,10 @@ def check_exp_inputs_malariasimulation(exp):
         ValueError: If the 'forced EIR' entomology mode is selected for MalariaSimulation.
     """
 
-    if exp.entomology_mode == 'forced':
+    if exp.entomology_mode == "forced":
         raise ValueError(
-            "The 'forced EIR' option is not supported in malariasimulation. Please select a valid entomology mode.")
+            "The 'forced EIR' option is not supported in malariasimulation. Please select a valid entomology mode."
+        )
 
     if exp.malariasimulation_burnin < 80:
         print(

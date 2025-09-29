@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import interp1d
 import ast
+
 # from idmtools.entities.experiment import Experiment
 from utility.helper_slurm import *
 from utility.helper_simulation import *
@@ -47,87 +48,125 @@ def parse_launch_args():
     parser = argparse.ArgumentParser(description="Description of your script.")
 
     # Define command-line arguments with default values
-    parser.add_argument("-d", "--directory",
-                        type=str,
-                        required=False,
-                        help="Job directory for burn-in; ignored if no EMOD burn-in is used.")
-    parser.add_argument('--suite',
-                        type=str,
-                        default=f'{dt.now().strftime("%Y%m%d")}',
-                        help="Name of the suite (default: current date).")
-    parser.add_argument('--expname',
-                        type=str,
-                        default=f'sims_entomologymode_seasonality_intervention_{dt.now().strftime("%H_%M_%S")}',
-                        help="Experiment name (default: includes timestamp).")
-    parser.add_argument('--emod_step',
-                        type=str,
-                        default=None,
-                        choices=[None, 'burnin', 'pickup', 'new_pickup'],
-                        help="Step for EMOD: 'burnin', 'pickup', or 'new_pickup'.")
-    parser.add_argument('--serializedid',
-                        type=str,
-                        default='',
-                        help='Serialized ID for EMOD, if applicable.')
-    parser.add_argument('-m', '--models',
-                        nargs='+',
-                        default=['EMOD', 'malariasimulation', 'OpenMalaria'],
-                        choices=['EMOD', 'malariasimulation', 'OpenMalaria'],
-                        help="List of malaria models to run - any combination of ['EMOD', 'malariasimulation', 'OpenMalaria'].")
-    parser.add_argument('--user',
-                        type=str,
-                        default=os.environ.get('USER'),
-                        help='User subdirectory for simulations (default: system username).')
-    parser.add_argument('--csv',
-                        type=str,
-                        required=False,
-                        help='Name of the scenario CSV file.')
-    parser.add_argument('--rownum',
-                        type=int,
-                        default=0,
-                        help='Row number in the scenario CSV file (default: 0).')
-    parser.add_argument('-r', '--run_mode',
-                        type=str,
-                        default='custom',
-                        choices=['custom', 'calibration', 'simple', 'production', 'csv'],
-                        help="Simulation run type (default: 'custom').")
-    parser.add_argument('--emod_calib_params',
-                        action='store_true',
-                        help='Include calibration parameters for EMOD (default: False).')
-    parser.add_argument('--mpv',  # malariasimulation_parameter_variation
-                        default='yes',
-                        choices=['no', 'yes', 'both'],
-                        help=(
-                            "Run malariasimulation with parameter variation:\n"
-                            "  no   - run without parameter variation\n"
-                            "  yes  - run with parameter variation only\n"
-                            "  both - run both with and without parameter variation (default)"
-                        ))
-    parser.add_argument('-t', '--test',
-                        action='store_true',
-                        help='Enable test mode with reduced population, burn-in, and seeds.')
-    parser.add_argument('-n', '--note',
-                        type=str,
-                        default='',
-                        help='Optional tag for distinguishing runs.')
+    parser.add_argument(
+        "-d",
+        "--directory",
+        type=str,
+        required=False,
+        help="Job directory for burn-in; ignored if no EMOD burn-in is used.",
+    )
+    parser.add_argument(
+        "--suite",
+        type=str,
+        default=f'{dt.now().strftime("%Y%m%d")}',
+        help="Name of the suite (default: current date).",
+    )
+    parser.add_argument(
+        "--expname",
+        type=str,
+        default=f'sims_entomologymode_seasonality_intervention_{dt.now().strftime("%H_%M_%S")}',
+        help="Experiment name (default: includes timestamp).",
+    )
+    parser.add_argument(
+        "--emod_step",
+        type=str,
+        default=None,
+        choices=[None, "burnin", "pickup", "new_pickup"],
+        help="Step for EMOD: 'burnin', 'pickup', or 'new_pickup'.",
+    )
+    parser.add_argument(
+        "--serializedid",
+        type=str,
+        default="",
+        help="Serialized ID for EMOD, if applicable.",
+    )
+    parser.add_argument(
+        "-m",
+        "--models",
+        nargs="+",
+        default=["EMOD", "malariasimulation", "OpenMalaria"],
+        choices=["EMOD", "malariasimulation", "OpenMalaria"],
+        help="List of malaria models to run - any combination of ['EMOD', 'malariasimulation', 'OpenMalaria'].",
+    )
+    parser.add_argument(
+        "--user",
+        type=str,
+        default=os.environ.get("USER"),
+        help="User subdirectory for simulations (default: system username).",
+    )
+    parser.add_argument(
+        "--csv", type=str, required=False, help="Name of the scenario CSV file."
+    )
+    parser.add_argument(
+        "--rownum",
+        type=int,
+        default=0,
+        help="Row number in the scenario CSV file (default: 0).",
+    )
+    parser.add_argument(
+        "-r",
+        "--run_mode",
+        type=str,
+        default="custom",
+        choices=["custom", "calibration", "simple", "production", "csv"],
+        help="Simulation run type (default: 'custom').",
+    )
+    parser.add_argument(
+        "--emod_calib_params",
+        action="store_true",
+        help="Include calibration parameters for EMOD (default: False).",
+    )
+    parser.add_argument(
+        "--mpv",  # malariasimulation_parameter_variation
+        default="yes",
+        choices=["no", "yes", "both"],
+        help=(
+            "Run malariasimulation with parameter variation:\n"
+            "  no   - run without parameter variation\n"
+            "  yes  - run with parameter variation only\n"
+            "  both - run both with and without parameter variation (default)"
+        ),
+    )
+    parser.add_argument(
+        "-t",
+        "--test",
+        action="store_true",
+        help="Enable test mode with reduced population, burn-in, and seeds.",
+    )
+    parser.add_argument(
+        "-n",
+        "--note",
+        type=str,
+        default="",
+        help="Optional tag for distinguishing runs.",
+    )
     args = parser.parse_args()
 
     # Validate CSV and rownum combination
     if args.csv:
         if args.rownum is None:
-            print(f"The '--csv' argument was specified ({args.csv}) but no rownum"
-                  "Using default 'rownum' 0 to run first row")
+            print(
+                f"The '--csv' argument was specified ({args.csv}) but no rownum"
+                "Using default 'rownum' 0 to run first row"
+            )
         args.run_mode = "csv"
-        print(f"The '--csv' argument was specified ({args.csv}). "
-              "Setting 'run_mode' to 'csv'.")
+        print(
+            f"The '--csv' argument was specified ({args.csv}). "
+            "Setting 'run_mode' to 'csv'."
+        )
 
     # Ensure EMOD is specified if emod_step is set
-    if args.emod_step is not None and 'EMOD' not in args.models:
-        raise ValueError(f"EMOD is not specified in the models list, but emod_step is set to {args.emod_step}. "
-                         "Did you forget to include EMOD in models?")
+    if args.emod_step is not None and "EMOD" not in args.models:
+        raise ValueError(
+            f"EMOD is not specified in the models list, but emod_step is set to {args.emod_step}. "
+            "Did you forget to include EMOD in models?"
+        )
 
     # Warning for experimental feature
-    if args.emod_step == 'new_pickup':
-        print("Warning: 'new_pickup' is in development mode. Please review your simulation and results carefully.")
+    if args.emod_step == "new_pickup":
+        print(
+            "Warning: 'new_pickup' is in development mode. Please review your simulation and results carefully."
+        )
 
     return args
 
@@ -177,23 +216,33 @@ def get_param_from_dataframe(df, name, sim_params_list):
     value = df[name].iat[0]
 
     if name == "case_management":
-        out = ast.literal_eval(f'[{value}]')
-        out = [float(i) if isinstance(i, str) and i.replace('.', '', 1).isdigit() else i for i in out]
-    elif name == 'target_output_values':
+        out = ast.literal_eval(f"[{value}]")
+        out = [
+            float(i) if isinstance(i, str) and i.replace(".", "", 1).isdigit() else i
+            for i in out
+        ]
+    elif name == "target_output_values":
         try:
-            out = ast.literal_eval(f'[{value}]')
-            out = [float(i) if isinstance(i, str) and i.replace('.', '', 1).isdigit() else i for i in out]
+            out = ast.literal_eval(f"[{value}]")
+            out = [
+                (
+                    float(i)
+                    if isinstance(i, str) and i.replace(".", "", 1).isdigit()
+                    else i
+                )
+                for i in out
+            ]
         except:
             try:
-                out = value.replace(' ', '').split(',')
-                out = [float(i) if i.replace('.', '', 1).isdigit() else i for i in out]
+                out = value.replace(" ", "").split(",")
+                out = [float(i) if i.replace(".", "", 1).isdigit() else i for i in out]
             except:
                 out = [value]
     else:
         if name in sim_params_list:
             try:
-                out = value.replace(' ', '').split(',')
-                out = [float(i) if i.replace('.', '', 1).isdigit() else i for i in out]
+                out = value.replace(" ", "").split(",")
+                out = [float(i) if i.replace(".", "", 1).isdigit() else i for i in out]
             except:
                 out = [value]
         else:
@@ -226,27 +275,35 @@ def make_dirs(exp, overwrite=False):
     else:
         exp_suite_path = os.path.join(exp.SUITEname)
     # Define the job directory path and simulation output directory path
-    exp.suite_directory = os.path.join(exp.job_directory_manifest,
-                                       exp_suite_path)  # Grouping folder for simulation exps
-    exp.job_directory = os.path.join(exp.job_directory_manifest, exp_suite_path,
-                                     exp.exp_name)  # stores simulation files to run
-    exp.output_directory = os.path.join(exp.output_directory_manifest, exp_suite_path,
-                                        exp.exp_name)  # stores results csvs and figures
+    exp.suite_directory = os.path.join(
+        exp.job_directory_manifest, exp_suite_path
+    )  # Grouping folder for simulation exps
+    exp.job_directory = os.path.join(
+        exp.job_directory_manifest, exp_suite_path, exp.exp_name
+    )  # stores simulation files to run
+    exp.output_directory = os.path.join(
+        exp.output_directory_manifest, exp_suite_path, exp.exp_name
+    )  # stores results csvs and figures
 
     # Create directories
     os.makedirs(exp.job_directory, exist_ok=overwrite)
-    os.makedirs(os.path.join(exp.job_directory, 'log'), exist_ok=overwrite)
+    os.makedirs(os.path.join(exp.job_directory, "log"), exist_ok=overwrite)
     os.makedirs(exp.output_directory, exist_ok=overwrite)
 
     # Create subdirectories for specific simulation models included in exp.models
-    if 'EMOD' in exp.models:
-        os.makedirs(os.path.join(exp.output_directory, 'EMOD'), exist_ok=overwrite)
+    if "EMOD" in exp.models:
+        os.makedirs(os.path.join(exp.output_directory, "EMOD"), exist_ok=overwrite)
 
-    if exp.emod_step != 'burnin':
-        if 'OpenMalaria' in exp.models:
-            os.makedirs(os.path.join(exp.output_directory, 'OpenMalaria'), exist_ok=overwrite)
-        if 'malariasimulation' in exp.models:
-            os.makedirs(os.path.join(exp.output_directory, 'malariasimulation'), exist_ok=overwrite)
+    if exp.emod_step != "burnin":
+        if "OpenMalaria" in exp.models:
+            os.makedirs(
+                os.path.join(exp.output_directory, "OpenMalaria"), exist_ok=overwrite
+            )
+        if "malariasimulation" in exp.models:
+            os.makedirs(
+                os.path.join(exp.output_directory, "malariasimulation"),
+                exist_ok=overwrite,
+            )
     return exp
 
 
@@ -264,24 +321,25 @@ def exp_obj_to_csv(file_path):
 
     """
     # Load the pickle object
-    with open(os.path.join(file_path, 'exp.obj'), 'rb') as pickle_file:
+    with open(os.path.join(file_path, "exp.obj"), "rb") as pickle_file:
         data = pickle.load(pickle_file)
 
-    with open(os.path.join(file_path, 'exp_obj.csv'), 'w') as csv_file:
+    with open(os.path.join(file_path, "exp_obj.csv"), "w") as csv_file:
         if isinstance(data, dict):
             # Write the header
-            csv_file.write('Key,Value\n')
+            csv_file.write("Key,Value\n")
             # Write the data
             for key, value in data.items():
-                csv_file.write(f'{key},{value}\n')
+                csv_file.write(f"{key},{value}\n")
         elif isinstance(data, list):
             # Write the data (assuming it's a list of lists or list of tuples)
             for item in data:
-                row = ','.join(map(str, item))
-                csv_file.write(f'{row}\n')
+                row = ",".join(map(str, item))
+                csv_file.write(f"{row}\n")
         else:
             raise ValueError(
-                "The pickle file contains unsupported data type. Only dictionaries and lists are supported.")
+                "The pickle file contains unsupported data type. Only dictionaries and lists are supported."
+            )
 
 
 # check inputs to be run after all exp parameters were updated, i.e. after exp_params_to_update
@@ -296,25 +354,28 @@ def check_exp_inputs(exp, attribute_check=False):
         ValueError: If input parameters are invalid.
     """
 
-    if exp.hpc == 'LOCAL' and not exp.test:
-        raise ValueError("Local execution of the framework is only permitted for test runs.")
+    if exp.hpc == "LOCAL" and not exp.test:
+        raise ValueError(
+            "Local execution of the framework is only permitted for test runs."
+        )
 
     ## Generell check on input parameter combinations and formats
     check_exp_input_parameters(exp)
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
     from utility.helper_calibration import check_transmission_targets_input
-    if exp.run_mode != 'calibration':
+
+    if exp.run_mode != "calibration":
         check_transmission_targets_input(exp)
 
     ## Model specific checks
-    if 'OpenMalaria' in exp.models:
+    if "OpenMalaria" in exp.models:
         check_exp_inputs_openmalaria(exp)
 
-    if 'EMOD' in exp.models:
+    if "EMOD" in exp.models:
         check_exp_inputs_emod(exp)
 
-    if 'malariasimulation' in exp.models:
+    if "malariasimulation" in exp.models:
         check_exp_inputs_malariasimulation(exp)
 
     # Check for interventions added to the framework
@@ -328,18 +389,38 @@ def check_exp_inputs(exp, attribute_check=False):
         for key, value in attributes_dict.items():
             # Check if the attribute is a list
             if isinstance(value, list) and len(value) > 1:
-                if key not in ['models', 'eir_scalar_emod', 'eir_malariasimulation',
-                               'eir_scalar_malariasimulation', 'eir_openmalaria',
-                               'eir_scalar_openmalaria', 'carrying_capacity_step', 'age_groups_aggregates',
-                               'plots_to_run',
-                               'agebins', 'sweep_list', 'season_daily', 'season_month', 'seasonal', 'perennial',
-                               'analyzer_list', 'analyzer_script', 'calib_config_pointer', 'models_pickup']:
+                if key not in [
+                    "models",
+                    "eir_scalar_emod",
+                    "eir_malariasimulation",
+                    "eir_scalar_malariasimulation",
+                    "eir_openmalaria",
+                    "eir_scalar_openmalaria",
+                    "carrying_capacity_step",
+                    "age_groups_aggregates",
+                    "plots_to_run",
+                    "agebins",
+                    "sweep_list",
+                    "season_daily",
+                    "season_month",
+                    "seasonal",
+                    "perennial",
+                    "analyzer_list",
+                    "analyzer_script",
+                    "calib_config_pointer",
+                    "models_pickup",
+                ]:
                     list_attributes_nGT1.append(key)
 
-        list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
+        list_attr_notsweep = [
+            attr
+            for attr in list_attributes_nGT1
+            if attr not in attributes_dict["sweep_list"]
+        ]
         if list_attr_notsweep:
             raise ValueError(
-                f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
+                f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}'
+            )
 
     # Check eligibility of parsed args
     if exp.run_mode == "calibration" and exp.intervention_list != []:
@@ -371,7 +452,7 @@ def save_exp_scen(exp, scen_df, save_dirs):
     """
     for sdir in save_dirs:
         # Save the scenario data as a CSV file
-        scen_df.to_csv(os.path.join(sdir, 'scenarios.csv'), index=False)
+        scen_df.to_csv(os.path.join(sdir, "scenarios.csv"), index=False)
 
         # Save the experiment object using pickle
         pickle.dump(exp, open(os.path.join(sdir, "exp.obj"), "wb"))
@@ -389,13 +470,15 @@ def rep_scen_df(df):
     """
 
     try:
-        df = df.drop(['index'], axis=1)
+        df = df.drop(["index"], axis=1)
     except:
         pass
-    rep_df = pd.DataFrame(np.repeat(df.to_numpy(), df.num_seeds[0], axis=0), columns=df.columns)
+    rep_df = pd.DataFrame(
+        np.repeat(df.to_numpy(), df.num_seeds[0], axis=0), columns=df.columns
+    )
     rep_df.reset_index(inplace=True)
-    rep_df['index'] = rep_df['index'] + 1
-    rep_df['seed'] = rep_df.groupby('scen_id').cumcount() + 1
+    rep_df["index"] = rep_df["index"] + 1
+    rep_df["seed"] = rep_df.groupby("scen_id").cumcount() + 1
     return rep_df
 
 
@@ -416,46 +499,47 @@ def create_simsetup_csv(exp):
     """
 
     # If other parameters should be savedm these need to be added to setup_dic
-    setup_dic = {'run_mode': exp.run_mode,
-                 'job_directory': exp.job_directory,
-                 'output_directory': exp.output_directory,
-                 'emod_serialized_id': exp.emod_serialized_id,
-                 'burnin_directory': exp.burnin_directory,
-                 'entomology_mode': exp.entomology_mode,
-                 'nexps': exp.nexps,
-                 'sweep_list': exp.sweep_list,
-                 'monitoring_years': exp.monitoring_years,
-                 'pop_size_emod': exp.emod_pop_size,
-                 'pop_size_malariasimulation': exp.malariasimulation_pop_size,
-                 'pop_size_openmalaria': exp.openmalaria_pop_size,
-                 'agebins': exp.agebins,
-                 'seasonality': exp.seasonality,
-                 'seasonal_monthly': ';'.join(map(str, exp.seasonal)),
-                 'perennial_monthly': ';'.join(map(str, exp.perennial)),
-                 'seasonal_daily': ';'.join(map(str, exp.seasonal_daily)),
-                 'perennial_daily': ';'.join(map(str, exp.perennial_daily)),
-                 'start_year': exp.start_year,
-                 'end_year': exp.end_year,
-                 'burnin_emod': exp.emod_burnin,
-                 'burnin_malariasimulation': exp.malariasimulation_burnin,
-                 'burnin_openmalaria': exp.openmalaria_burnin,
-                 'sim_start_year_openmalaria': exp.sim_start_year_openmalaria,
-                 'sim_start_year_emod': exp.sim_start_year_emod,
-                 'sim_start_year_malariasimulation': exp.sim_start_year_malariasimulation,
-                 'intervention_list': exp.intervention_list,
-                 'interp_csv': exp.interp_csv,
-                 'target_output_name': exp.target_output_name,
-                 'target_output_values': ';'.join(map(str, exp.target_output_values)),
-                 'malariasimulation_parameter_variation': exp.malariasimulation_parameter_variation
-                 }
+    setup_dic = {
+        "run_mode": exp.run_mode,
+        "job_directory": exp.job_directory,
+        "output_directory": exp.output_directory,
+        "emod_serialized_id": exp.emod_serialized_id,
+        "burnin_directory": exp.burnin_directory,
+        "entomology_mode": exp.entomology_mode,
+        "nexps": exp.nexps,
+        "sweep_list": exp.sweep_list,
+        "monitoring_years": exp.monitoring_years,
+        "pop_size_emod": exp.emod_pop_size,
+        "pop_size_malariasimulation": exp.malariasimulation_pop_size,
+        "pop_size_openmalaria": exp.openmalaria_pop_size,
+        "agebins": exp.agebins,
+        "seasonality": exp.seasonality,
+        "seasonal_monthly": ";".join(map(str, exp.seasonal)),
+        "perennial_monthly": ";".join(map(str, exp.perennial)),
+        "seasonal_daily": ";".join(map(str, exp.seasonal_daily)),
+        "perennial_daily": ";".join(map(str, exp.perennial_daily)),
+        "start_year": exp.start_year,
+        "end_year": exp.end_year,
+        "burnin_emod": exp.emod_burnin,
+        "burnin_malariasimulation": exp.malariasimulation_burnin,
+        "burnin_openmalaria": exp.openmalaria_burnin,
+        "sim_start_year_openmalaria": exp.sim_start_year_openmalaria,
+        "sim_start_year_emod": exp.sim_start_year_emod,
+        "sim_start_year_malariasimulation": exp.sim_start_year_malariasimulation,
+        "intervention_list": exp.intervention_list,
+        "interp_csv": exp.interp_csv,
+        "target_output_name": exp.target_output_name,
+        "target_output_values": ";".join(map(str, exp.target_output_values)),
+        "malariasimulation_parameter_variation": exp.malariasimulation_parameter_variation,
+    }
 
-    setup_df = pd.DataFrame.from_dict(setup_dic, orient='index', columns=['Value'])
-    setup_df['parameter'] = setup_df.index
+    setup_df = pd.DataFrame.from_dict(setup_dic, orient="index", columns=["Value"])
+    setup_df["parameter"] = setup_df.index
     save_dirs = [exp.job_directory, exp.output_directory]
     for sdir in save_dirs:
         if not os.path.exists(sdir):
             raise OSError(f"Cannot save file into a non-existent directory: '{sdir}'")
-        save_path = os.path.join(sdir, 'exp_setup_df.csv')
+        save_path = os.path.join(sdir, "exp_setup_df.csv")
         setup_df.to_csv(save_path, index=False)
 
 
@@ -474,10 +558,14 @@ def process_case_management(df):
     """
 
     for i, row in df.iterrows():
-        df.loc[i, 'cm_clinical'] = pd.to_numeric(df.loc[i, 'case_management'][0], errors='coerce')
-        df.loc[i, 'cm_severe'] = pd.to_numeric(df.loc[i, 'case_management'][1], errors='coerce')
-    df['cm_start'] = 1
-    df = df.drop('case_management', axis=1)
+        df.loc[i, "cm_clinical"] = pd.to_numeric(
+            df.loc[i, "case_management"][0], errors="coerce"
+        )
+        df.loc[i, "cm_severe"] = pd.to_numeric(
+            df.loc[i, "case_management"][1], errors="coerce"
+        )
+    df["cm_start"] = 1
+    df = df.drop("case_management", axis=1)
 
     return df
 
@@ -494,21 +582,30 @@ def map_model_calib_inputs(exp, df):
     """
     models = list(set(exp.models + exp.models_pickup))
 
-    if exp.run_mode == 'calibration':
+    if exp.run_mode == "calibration":
         for model in models:
             for i, row in df.iterrows():
-                value = exp.eir_range[int(row['target_output_values']) - 1] if model != 'EMOD' else exp.x_temp_range[
-                    int(row['target_output_values']) - 1]
-                df.loc[i, f'transmission_intensity_{model}'] = value
+                value = (
+                    exp.eir_range[int(row["target_output_values"]) - 1]
+                    if model != "EMOD"
+                    else exp.x_temp_range[int(row["target_output_values"]) - 1]
+                )
+                df.loc[i, f"transmission_intensity_{model}"] = value
     else:
         for model in models:
-            if model in ['malariasimulation', 'OpenMalaria']:
-                df[f'transmission_intensity_{model}'] = output_target_to_eir(df, exp, model=model)
-            if model == 'EMOD':
-                if exp.entomology_mode == 'dynamic':
-                    df['transmission_intensity_EMOD'] = output_target_to_xTemp(df, exp, model='EMOD')
-                elif exp.entomology_mode == 'forced':
-                    df['transmission_intensity_EMOD'] = output_target_to_eir(df, exp, model='EMOD')
+            if model in ["malariasimulation", "OpenMalaria"]:
+                df[f"transmission_intensity_{model}"] = output_target_to_eir(
+                    df, exp, model=model
+                )
+            if model == "EMOD":
+                if exp.entomology_mode == "dynamic":
+                    df["transmission_intensity_EMOD"] = output_target_to_xTemp(
+                        df, exp, model="EMOD"
+                    )
+                elif exp.entomology_mode == "forced":
+                    df["transmission_intensity_EMOD"] = output_target_to_eir(
+                        df, exp, model="EMOD"
+                    )
 
     return df
 
@@ -533,7 +630,7 @@ def create_scenarios_csv(exp, col_list):
     """
 
     if col_list is None:
-        col_list = ['target_output_values', 'case_management', 'seasonality']
+        col_list = ["target_output_values", "case_management", "seasonality"]
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
@@ -545,8 +642,10 @@ def create_scenarios_csv(exp, col_list):
     df = pd.DataFrame(df_array, columns=col_list)
 
     # And additional columns to keep
-    df['entomology_mode'] = exp.entomology_mode  # optional, same across all scenarios
-    df['num_seeds'] = exp.num_seeds  # optional, same across all scenarios+seeds (total number of seeds)
+    df["entomology_mode"] = exp.entomology_mode  # optional, same across all scenarios
+    df["num_seeds"] = (
+        exp.num_seeds
+    )  # optional, same across all scenarios+seeds (total number of seeds)
 
     # Specifc process for clinical and severe case management (not full factorial)
     df = process_case_management(df)
@@ -556,15 +655,18 @@ def create_scenarios_csv(exp, col_list):
 
     # Adjust scenarios as required for specific interventions
     from utility.helper_interventions import scenario_df_to_update
+
     df = scenario_df_to_update(exp, df)
 
     # Reset index
     df.reset_index(inplace=True)
-    df['index'] = df['index'] + 1
-    df['scen_id'] = df['index']
+    df["index"] = df["index"] + 1
+    df["scen_id"] = df["index"]
 
     # Move 'index' and 'scen_id' to the first two columns
-    columns_order = ['index', 'scen_id'] + [col for col in df.columns if col not in ['index', 'scen_id']]
+    columns_order = ["index", "scen_id"] + [
+        col for col in df.columns if col not in ["index", "scen_id"]
+    ]
     df = df[columns_order]
 
     return df
@@ -586,7 +688,7 @@ def write_txt(txtobj, path, fname):
         fname (str): The filename to use for the file.
 
     """
-    file = open(os.path.join(path, fname), 'w')
+    file = open(os.path.join(path, fname), "w")
     file.write(txtobj)
     file.close()
 

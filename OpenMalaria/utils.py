@@ -26,7 +26,12 @@ def create_scenarios(exp, scen_df):
         None
 
     """
-    with open(os.path.join(exp.openmalaria_input_path, 'scaffolds', f"{exp.openmalaria_scaffold}.xml"), "r") as fp:
+    with open(
+        os.path.join(
+            exp.openmalaria_input_path, "scaffolds", f"{exp.openmalaria_scaffold}.xml"
+        ),
+        "r",
+    ) as fp:
         xml = fp.read()
 
     exp.days_between_clinical_cases_5days = 6
@@ -40,81 +45,104 @@ def create_scenarios(exp, scen_df):
     xml = xml.replace("@survey_step@", f"{exp.openmalaria_survey_step}")
     xml = xml.replace("@entomology_mode@", f"{exp.entomology_mode}")
     xml = xml.replace("@detectionLimit@", f"{exp.detectionLimit}")
-    xml = xml.replace('@importation_rate@', f"{exp.openmalaria_importation_rate}")
-    xml = xml.replace('@healthSystemMemory@', f"{str(int(exp.days_between_clinical_cases_5days))}")
+    xml = xml.replace("@importation_rate@", f"{exp.openmalaria_importation_rate}")
+    xml = xml.replace(
+        "@healthSystemMemory@", f"{str(int(exp.days_between_clinical_cases_5days))}"
+    )
 
     # Load from snippets
     # Age Groups to monitor
     xmlageGroups = '\t\t<ageGroup lowerbound="0">'
     for item in exp.agebins:
         xmlageGroups += f'\n\t\t\t<group upperbound="{item}"/>'
-    xml = xml.replace('<@age_groups@>', xmlageGroups)
+    xml = xml.replace("<@age_groups@>", xmlageGroups)
 
     # Age demography
-    snippet_file = 'age_demography.txt'
-    with open(os.path.join(exp.openmalaria_input_path, 'snippets', snippet_file), 'r', encoding='utf-8') as file:
+    snippet_file = "age_demography.txt"
+    with open(
+        os.path.join(exp.openmalaria_input_path, "snippets", snippet_file),
+        "r",
+        encoding="utf-8",
+    ) as file:
         snippet = file.read()
-    xml = xml.replace('@age_demography@', snippet)
+    xml = xml.replace("@age_demography@", snippet)
 
     # Interventions
     if "ccstep" in exp.intervention_list:
         xml = carrying_capacity(exp, xml)
     else:
-        xml = xml.replace('@intervention_ccstep@', '')
+        xml = xml.replace("@intervention_ccstep@", "")
 
     # Model options
     snippet_file = exp.openmalaria_modeloptions
-    with open(os.path.join(exp.openmalaria_input_path, 'snippets', snippet_file), 'r', encoding='utf-8') as file:
+    with open(
+        os.path.join(exp.openmalaria_input_path, "snippets", snippet_file),
+        "r",
+        encoding="utf-8",
+    ) as file:
         snippet = file.read()
-    xml = xml.replace('@model_options@', snippet)
+    xml = xml.replace("@model_options@", snippet)
 
     # Model core parameters
     snippet_file = exp.openmalaria_parameter
-    with open(os.path.join(exp.openmalaria_input_path, 'snippets', snippet_file), 'r', encoding='utf-8') as file:
+    with open(
+        os.path.join(exp.openmalaria_input_path, "snippets", snippet_file),
+        "r",
+        encoding="utf-8",
+    ) as file:
         snippet = file.read()
-    xml = xml.replace('@model_parameters@', snippet)
+    xml = xml.replace("@model_parameters@", snippet)
 
     # Scenario sweeps and runs
     df = rep_scen_df(scen_df)
     for r, row in df.iterrows():
 
-        if row['cm_clinical'] == 0.45:
+        if row["cm_clinical"] == 0.45:
             cm_clinical_5daily = 0.209261
-        elif row['cm_clinical'] == 0.15:
+        elif row["cm_clinical"] == 0.15:
             cm_clinical_5daily = 0.05161556
-        elif row['cm_clinical'] == 0:
+        elif row["cm_clinical"] == 0:
             cm_clinical_5daily = 0
         else:
-            cm_clinical_5daily = convert_access_lookup(row[
-                                                           'cm_clinical'])  # converted from R function to python, returns an error if value outside of lookup range
+            cm_clinical_5daily = convert_access_lookup(
+                row["cm_clinical"]
+            )  # converted from R function to python, returns an error if value outside of lookup range
             # cm_clinical_5daily = convert_access(row['cm_clinical']) # TODO convert from R function to python
 
-        scenario = xml.replace('@seed@', str(row['seed']))
-        scenario = scenario.replace('@cm_clinical@', str(cm_clinical_5daily))
-        scenario = scenario.replace('@cm_severe@', str(row['cm_severe']))
-        scenario = scenario.replace('@eir@', str(row['transmission_intensity_OpenMalaria']))
+        scenario = xml.replace("@seed@", str(row["seed"]))
+        scenario = scenario.replace("@cm_clinical@", str(cm_clinical_5daily))
+        scenario = scenario.replace("@cm_severe@", str(row["cm_severe"]))
+        scenario = scenario.replace(
+            "@eir@", str(row["transmission_intensity_OpenMalaria"])
+        )
 
-        if 'ccstep' in exp.intervention_list:
-            scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_OpenMalaria']))
-            scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_OpenMalaria']))
+        if "ccstep" in exp.intervention_list:
+            scenario = scenario.replace(
+                "@EIR_reduction@", str(row["cc_factor_OpenMalaria"])
+            )
+            scenario = scenario.replace(
+                "@step_change_time@", str(row["cc_timestep_OpenMalaria"])
+            )
 
         # SMC currently not supported
         # if 'smc' in exp.intervention_list:
         #    scenario = write_smc_deployment(scenario, row)
 
-        seasonality = getattr(exp, row['seasonality'])
+        seasonality = getattr(exp, row["seasonality"])
 
         # Replace seasonality placeholders with corresponding values from the experiment object
         for i in range(1, 13):
-            scenario = scenario.replace(f'@seasonality{i}@', str(seasonality[i - 1]))
+            scenario = scenario.replace(f"@seasonality{i}@", str(seasonality[i - 1]))
 
         # Write the scenario XML file
-        if '@' not in scenario:
+        if "@" not in scenario:
             # Write the scenario XML file
-            with open(f"{exp.job_directory}/xml/{row['index']}.xml", 'w') as fo:
+            with open(f"{exp.job_directory}/xml/{row['index']}.xml", "w") as fo:
                 fo.write(f"{scenario}")
         else:
-            raise ValueError(f"Error: The '@' symbol is present in the scenario XML {row['index']}.")
+            raise ValueError(
+                f"Error: The '@' symbol is present in the scenario XML {row['index']}."
+            )
 
     # Copy additional files required by OpenMalaria
     shutil.copy(exp.openmalaria_path + "/densities.csv", f"{exp.job_directory}/")
@@ -122,7 +150,7 @@ def create_scenarios(exp, scen_df):
     shutil.copy(os.path.join(exp.openmalaria_path, schema), exp.job_directory)
 
 
-def submit_analyze_OpenMalaria(exp, t='03:59:00', memG=10):
+def submit_analyze_OpenMalaria(exp, t="03:59:00", memG=10):
     """
     Submits a job to analyze OpenMalaria simulation results on an HPC cluster.
 
@@ -142,33 +170,43 @@ def submit_analyze_OpenMalaria(exp, t='03:59:00', memG=10):
 
     """
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, time_str=t, memG=memG, job_name='analyze_OpenMalaria',
-                                     mem_scl=exp.mem_increase_factor)
+    header_post = shell_header_quest(
+        exp.sh_hpc_config,
+        time_str=t,
+        memG=memG,
+        job_name="analyze_OpenMalaria",
+        mem_scl=exp.mem_increase_factor,
+    )
 
-    pycommand = f'\ncd {exp.root_directory}/OpenMalaria' \
-                f'\n{exp.EMOD_venv}' \
-                f'\npython analyze_sim.py --dir "{exp.job_directory}"'
+    pycommand = (
+        f"\ncd {exp.root_directory}/OpenMalaria"
+        f"\n{exp.EMOD_venv}"
+        f'\npython analyze_sim.py --dir "{exp.job_directory}"'
+    )
 
     # Write the shell script to a file
-    script_path = os.path.join(exp.job_directory, 'run_analyzer_OpenMalaria.sh')
-    file = open(script_path, 'w')
+    script_path = os.path.join(exp.job_directory, "run_analyzer_OpenMalaria.sh")
+    file = open(script_path, "w")
     file.write(header_post + pycommand)
     file.close()
 
     # Read the job ID from the 'job_id.txt' file
-    job_id_path = os.path.join(exp.job_directory, 'job_id.txt')
+    job_id_path = os.path.join(exp.job_directory, "job_id.txt")
     job_id = open(job_id_path).read().strip()
 
     # Submit the job with dependency on the previous job
-    p = subprocess.run(['sbatch', '--parsable', f'--dependency=afterany:{job_id}', script_path], stdout=subprocess.PIPE,
-                       cwd=str(exp.job_directory))
+    p = subprocess.run(
+        ["sbatch", "--parsable", f"--dependency=afterany:{job_id}", script_path],
+        stdout=subprocess.PIPE,
+        cwd=str(exp.job_directory),
+    )
 
     # Extract the SLURM job ID from the output
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
+    slurm_job_id = p.stdout.decode("utf-8").strip().split(";")[0]
 
     # Print the submitted job ID and save it to a file
-    print(f'Submitted OpenMalaria analyzer - job id: {slurm_job_id}')
-    write_txt(slurm_job_id, exp.job_directory, 'job_id_OManalyze.txt')
+    print(f"Submitted OpenMalaria analyzer - job id: {slurm_job_id}")
+    write_txt(slurm_job_id, exp.job_directory, "job_id_OManalyze.txt")
 
 
 def submit_run_OpenMalaria(exp, scen_df):
@@ -199,18 +237,25 @@ def submit_run_OpenMalaria(exp, scen_df):
     # Generate OpenMalaria scenario XML files
     create_scenarios(exp, scen_df)
 
-    if exp.hpc == 'LOCAL':
+    if exp.hpc == "LOCAL":
         if not exp.use_container:
             from utility.helper_local import write_ps1_analyzer, submit_runmodel_local
+
             write_ps1_OpenMalaria(exp)
-            write_ps1_analyzer(exp, pyscript=exp.analyzer_script[0], model='OpenMalaria')
-            submit_runmodel_local(exp, model='OpenMalaria')
+            write_ps1_analyzer(
+                exp, pyscript=exp.analyzer_script[0], model="OpenMalaria"
+            )
+            submit_runmodel_local(exp, model="OpenMalaria")
         else:
-            from utility.helper_local_docker import write_sh_analyzer, submit_runmodel_sh
+            from utility.helper_local_docker import (
+                write_sh_analyzer,
+                submit_runmodel_sh,
+            )
+
             # Write local submission script
             write_sh_OpenMalaria(exp)
-            write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model='OpenMalaria')
-            submit_runmodel_sh(exp, model='OpenMalaria')
+            write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model="OpenMalaria")
+            submit_runmodel_sh(exp, model="OpenMalaria")
     else:
         submit_run_OpenMalaria_slurm(exp)
 
@@ -231,28 +276,36 @@ def submit_run_OpenMalaria_slurm(exp):
     Raises:
         subprocess.CalledProcessError: If there is an issue with running the SLURM job submission command.
     """
-    array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
-    header_post = shell_header_quest(exp.sh_hpc_config, exp.openmalaria_time_per_sim, exp.openmalaria_memory_per_sim,
-                                     job_name='run_openmalaria', arrayJob=array)
+    array = f"#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n"
+    header_post = shell_header_quest(
+        exp.sh_hpc_config,
+        exp.openmalaria_time_per_sim,
+        exp.openmalaria_memory_per_sim,
+        job_name="run_openmalaria",
+        arrayJob=array,
+    )
     openmalaria = exp.OPENMALARIA_venv
-    path = f'export PATH=$PATH:{exp.job_directory}'
-    slurmID = '${SLURM_ARRAY_TASK_ID}'
-    command = f'\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt'
-    script_path = os.path.join(exp.job_directory, 'run_OpenMalaria.sh')
+    path = f"export PATH=$PATH:{exp.job_directory}"
+    slurmID = "${SLURM_ARRAY_TASK_ID}"
+    command = f"\nopenMalaria -s xml/{slurmID}.xml  --output txt/{slurmID}.txt"
+    script_path = os.path.join(exp.job_directory, "run_OpenMalaria.sh")
 
     # Write the bash script for submitting OpenMalaria simulations
-    file = open(script_path, 'w')
+    file = open(script_path, "w")
     file.write(header_post + openmalaria + path + command)
     file.close()
 
     # Submit the OpenMalaria simulations as a SLURM job
-    p = subprocess.run(['sbatch', '--parsable', 'run_OpenMalaria.sh'], stdout=subprocess.PIPE,
-                       cwd=str(exp.job_directory))
+    p = subprocess.run(
+        ["sbatch", "--parsable", "run_OpenMalaria.sh"],
+        stdout=subprocess.PIPE,
+        cwd=str(exp.job_directory),
+    )
 
     # Save the SLURM job ID to a file
-    slurm_job_id = p.stdout.decode('utf-8').strip().split(';')[0]
-    print(f'Submitted OpenMalaria simulations - job id: {slurm_job_id}')
-    file = open(os.path.join(exp.job_directory, 'job_id.txt'), 'w')
+    slurm_job_id = p.stdout.decode("utf-8").strip().split(";")[0]
+    print(f"Submitted OpenMalaria simulations - job id: {slurm_job_id}")
+    file = open(os.path.join(exp.job_directory, "job_id.txt"), "w")
     file.write(slurm_job_id)
     file.close()
 
@@ -278,7 +331,7 @@ def write_ps1_OpenMalaria(exp):
         IOError: If there is an issue with writing the PowerShell script to the file.
     """
     # Define file path for PowerShell script
-    file_path = os.path.join(exp.job_directory, 'run_openmalaria.ps1')
+    file_path = os.path.join(exp.job_directory, "run_openmalaria.ps1")
 
     # Get the absolute path of the working directory
     wdir = os.path.abspath(os.path.dirname(__file__))
@@ -319,7 +372,7 @@ Write-Host "All $total simulations complete in $($elapsedTotal.ToString())."
 """
 
     # Write the PowerShell content to a .ps1 file
-    with open(file_path, 'w') as file:
+    with open(file_path, "w") as file:
         file.write(ps_content)
     print(f"PowerShell script written successfully at {file_path}")
 
@@ -342,7 +395,7 @@ def write_sh_OpenMalaria(exp):
         IOError: If there is an issue with writing the shell script to the file.
     """
     # Define file path for shell script
-    file_path = os.path.join(exp.job_directory, 'run_OpenMalaria.sh')
+    file_path = os.path.join(exp.job_directory, "run_OpenMalaria.sh")
 
     # Get the absolute path of the working directory
     wdir = os.path.abspath(os.path.dirname(__file__))
@@ -375,15 +428,15 @@ echo "OpenMalaria simulation complete."
 """
 
     # Write the shell content to a .sh file
-    with open(file_path, 'w') as file:
+    with open(file_path, "w") as file:
         file.write(sh_content)
 
     print(f"Shell script written successfully at {file_path}")
 
 
 if __name__ == "__main__":
-    wdir = ''
+    wdir = ""
     file = open(os.path.join(wdir, "exp.obj"), "rb")
     exp = pickle.load(file)
-    scen_df = pd.read_csv(os.path.join(exp.job_directory, 'scenarios.csv'))
+    scen_df = pd.read_csv(os.path.join(exp.job_directory, "scenarios.csv"))
     create_scenarios(exp, scen_df)

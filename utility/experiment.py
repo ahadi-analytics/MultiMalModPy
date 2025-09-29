@@ -43,15 +43,15 @@ class RunModeManager:
                 - 'csv': Settings derived from a CSV file.
             test (bool): If True, applies test-specific overwrites for faster execution.
         """
-        if run_mode == 'calibration':
+        if run_mode == "calibration":
             self._configure_calibration()
-        elif run_mode == 'simple':
+        elif run_mode == "simple":
             self._configure_simple()
-        elif run_mode == 'production':
+        elif run_mode == "production":
             self._configure_production()
-        elif run_mode == 'csv':
+        elif run_mode == "csv":
             self._configure_csv()
-        elif run_mode == 'custom':
+        elif run_mode == "custom":
             ## User provided values will be kept as is
             pass
         else:
@@ -63,8 +63,10 @@ class RunModeManager:
             self._configure_test_overwrite()
 
     def _configure_calibration(self):
-        self.experiment.SUITEname = f'{self.experiment.SUITEname}_calibration'
-        self.mem_increase_factor = 5.0  # Currently the memory increase factor only effects the analyzers
+        self.experiment.SUITEname = f"{self.experiment.SUITEname}_calibration"
+        self.mem_increase_factor = (
+            5.0  # Currently the memory increase factor only effects the analyzers
+        )
         self.experiment.num_seeds = 20
         self.experiment.start_year = 2000
         self.experiment.end_year = 2005
@@ -75,12 +77,13 @@ class RunModeManager:
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
 
-        if self.experiment.target_output_name != 'eir':
+        if self.experiment.target_output_name != "eir":
             warnings.warn(
-                f"Warning: target_output_name changed to 'eir' as required for calibration (not {self.experiment.target_output_name})")
-        self.experiment.target_output_name = 'eir'
-        self.experiment.analyzer_list = ['timeavrg']
-        self.experiment.plots_to_run = ['relationship']
+                f"Warning: target_output_name changed to 'eir' as required for calibration (not {self.experiment.target_output_name})"
+            )
+        self.experiment.target_output_name = "eir"
+        self.experiment.analyzer_list = ["timeavrg"]
+        self.experiment.plots_to_run = ["relationship"]
         self.target_output_values = np.arange(1, 31)
 
         ## Configure calib run
@@ -101,8 +104,10 @@ class RunModeManager:
         Using fewer seeds and reduced ranges for output targets.
         Keeps appropriate values for popsize and burnin to ensure accurary of results.
         """
-        self.experiment.SUITEname = f'{self.experiment.SUITEname}_simple'
-        self.mem_increase_factor = 1.0  # Currently the memory increase factor only effects the analyzers
+        self.experiment.SUITEname = f"{self.experiment.SUITEname}_simple"
+        self.mem_increase_factor = (
+            1.0  # Currently the memory increase factor only effects the analyzers
+        )
         self.experiment.num_seeds = 3
         self.experiment.emod_burnin = 110
         self.experiment.openmalaria_burnin = 100
@@ -110,11 +115,11 @@ class RunModeManager:
         self.experiment.emod_pop_size = 5000
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
-        if self.experiment.target_output_name == 'eir':
+        if self.experiment.target_output_name == "eir":
             self.experiment.target_output_values = np.arange(1, 4)
-        if self.experiment.target_output_name == 'prevalence_2to10':
+        if self.experiment.target_output_name == "prevalence_2to10":
             self.experiment.target_output_values = [0.1, 0.25, 0.5]
-        if self.experiment.target_output_name == 'clinical_incidence_U5':
+        if self.experiment.target_output_name == "clinical_incidence_U5":
             self.experiment.target_output_values = [0.5, 1.2, 2.0]
 
     def _configure_production(self):
@@ -122,8 +127,10 @@ class RunModeManager:
         Configures the experiment for a pre-defined production run.
         Using appropriate number of seeds and large ranges for output targets.
         """
-        self.experiment.SUITEname = f'{self.experiment.SUITEname}_production'
-        self.mem_increase_factor = 1.0  # Currently the memory increase factor only effects the analyzers
+        self.experiment.SUITEname = f"{self.experiment.SUITEname}_production"
+        self.mem_increase_factor = (
+            1.0  # Currently the memory increase factor only effects the analyzers
+        )
         self.experiment.num_seeds = 20
         self.experiment.emod_burnin = 110
         self.experiment.openmalaria_burnin = 100
@@ -137,24 +144,35 @@ class RunModeManager:
         Configures the experiment based on user-defined parameters in the specified csv file
         If not specified, parameters as defined in setup_sim.py are used.
         """
-        self.experiment.SUITEname = f'{self.experiment.SUITEname}_CSV'
-        exp_scen_df = pd.read_csv(os.path.join(f'scenario_csv/{self.experiment.csv}.csv'))
-        exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == self.experiment.rownum]
-        self.experiment.exp_name = f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
+        self.experiment.SUITEname = f"{self.experiment.SUITEname}_CSV"
+        exp_scen_df = pd.read_csv(
+            os.path.join(f"scenario_csv/{self.experiment.csv}.csv")
+        )
+        exp_scen_df = exp_scen_df[exp_scen_df["rownum"] == self.experiment.rownum]
+        self.experiment.exp_name = (
+            f'{exp_scen_df.exp_name.iat[0]}_{dt.now().strftime("%H_%M_%S")}'
+        )
 
         ## Overwriting default parameters with parameters specific in scenario csv file
-        not_param_columns = ['rownum', 'exp_name']
+        not_param_columns = ["rownum", "exp_name"]
         for col in exp_scen_df.columns:
             if col not in not_param_columns:
-                setattr(self.experiment, col,
-                        get_param_from_dataframe(exp_scen_df, col, self.experiment.sim_params_list))
+                setattr(
+                    self.experiment,
+                    col,
+                    get_param_from_dataframe(
+                        exp_scen_df, col, self.experiment.sim_params_list
+                    ),
+                )
 
     def _configure_test_overwrite(self):
         """
         Overwrites popsize, burnin periods and seeds to allow a faster run of simulations (i.e. for testing, debugging).
         """
-        self.experiment.SUITEname = f'{self.experiment.SUITEname}_TEST'
-        self.mem_increase_factor = 1.0  # Currently the memory increase factor only effects the analyzers
+        self.experiment.SUITEname = f"{self.experiment.SUITEname}_TEST"
+        self.mem_increase_factor = (
+            1.0  # Currently the memory increase factor only effects the analyzers
+        )
         self.experiment.num_seeds = 3
         self.experiment.emod_burnin = 10
         self.experiment.openmalaria_burnin = 10
@@ -246,7 +264,7 @@ class ManifestConfig:
         self.OPENMALARIA_venv = manifest.OPENMALARIA_venv
         self.OPENMALARIA_PATH = manifest.OPENMALARIA_PATH
         self.openmalaria_path = manifest.OPENMALARIA_PATH
-        self.r_local = getattr(manifest, 'r_local', None)
+        self.r_local = getattr(manifest, "r_local", None)
         self.openmalaria_version = manifest.openmalaria_version
         self.openmalaria_input_path = manifest.openmalaria_input_path
         self.malariasimulation_input_path = manifest.malariasimulation_input_path
@@ -324,10 +342,12 @@ class LoadExperiment:
         """
         Configures calibration settings if emod_calib_params is enabled.
         """
-        calib_config_df = pd.read_csv(os.path.join(self.emod_input_path, 'emod_best.csv'))
+        calib_config_df = pd.read_csv(
+            os.path.join(self.emod_input_path, "emod_best.csv")
+        )
         self.calib_config_pointer = range(0, len(calib_config_df))
         del calib_config_df
-        self.sweep_list += ['calib_config_pointer']
+        self.sweep_list += ["calib_config_pointer"]
 
     def update(self, **kwargs):
         """

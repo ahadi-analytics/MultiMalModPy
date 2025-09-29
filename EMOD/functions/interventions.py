@@ -5,6 +5,7 @@ import pandas as pd
 
 # from emodpy_malaria.interventions.drug_campaign import add_drug_campaign
 
+
 def treatment_camp_simple(camp, cm_start, cm_clinical, cm_severe):
     """
     This function helps us establish treatment seeking behavior in an EMOD simulation.
@@ -26,26 +27,46 @@ def treatment_camp_simple(camp, cm_start, cm_clinical, cm_severe):
     if cm_clinical == 0:
         cm_severe = 0
 
-    add_treatment_seeking(camp, start_day=cm_start, drug=['Artemether', 'Lumefantrine'],
-                          targets=[
-                              {'trigger': 'NewClinicalCase', 'coverage': cm_clinical, 'agemin': 0, 'agemax': 115,
-                               'rate': 0.3}],
-                          broadcast_event_name="Received_Treatment")
+    add_treatment_seeking(
+        camp,
+        start_day=cm_start,
+        drug=["Artemether", "Lumefantrine"],
+        targets=[
+            {
+                "trigger": "NewClinicalCase",
+                "coverage": cm_clinical,
+                "agemin": 0,
+                "agemax": 115,
+                "rate": 0.3,
+            }
+        ],
+        broadcast_event_name="Received_Treatment",
+    )
 
-    add_treatment_seeking(camp, start_day=cm_start, drug=['Artemether', 'Lumefantrine'],
-                          targets=[
-                              {'trigger': 'NewSevereCase', 'coverage': cm_severe, 'agemin': 0, 'agemax': 115,
-                               'rate': 0.5}],
-                          broadcast_event_name="Received_Severe_Treatment")
+    add_treatment_seeking(
+        camp,
+        start_day=cm_start,
+        drug=["Artemether", "Lumefantrine"],
+        targets=[
+            {
+                "trigger": "NewSevereCase",
+                "coverage": cm_severe,
+                "agemin": 0,
+                "agemax": 115,
+                "rate": 0.5,
+            }
+        ],
+        broadcast_event_name="Received_Severe_Treatment",
+    )
 
-    return {'cm_start': cm_start, 'cm_clinical': cm_clinical, 'cm_severe': cm_severe}
+    return {"cm_start": cm_start, "cm_clinical": cm_clinical, "cm_severe": cm_severe}
 
 
 def carrying_capacity(camp, row):
-    cc_factor_df = pd.DataFrame({'CONSTANT': [row.cc_factor_EMOD]})
-    add_scale_larval_habitats(camp, df=cc_factor_df,
-                              start_day=row.cc_timestep_EMOD,
-                              repetitions=1)
+    cc_factor_df = pd.DataFrame({"CONSTANT": [row.cc_factor_EMOD]})
+    add_scale_larval_habitats(
+        camp, df=cc_factor_df, start_day=row.cc_timestep_EMOD, repetitions=1
+    )
     return camp
 
 
@@ -78,8 +99,8 @@ def carrying_capacity(camp, row):
 
 
 def carrying_capacity(camp, row):
-    cc_factor_df = pd.DataFrame({'CONSTANT': [row.cc_factor_EMOD]})
-    add_scale_larval_habitats(camp, df=cc_factor_df,
-                              start_day=row.cc_timestep_EMOD,
-                              repetitions=1)
+    cc_factor_df = pd.DataFrame({"CONSTANT": [row.cc_factor_EMOD]})
+    add_scale_larval_habitats(
+        camp, df=cc_factor_df, start_day=row.cc_timestep_EMOD, repetitions=1
+    )
     return camp

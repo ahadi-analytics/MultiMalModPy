@@ -46,7 +46,7 @@ def parse_args():
         type=str,
         required=False,
         help="Unique ID of simulation experiment, required for EMOD runs",
-        default=None
+        default=None,
     )
     return parser.parse_args()
 
@@ -78,39 +78,68 @@ class SurveyAllAgeAnalyzer(IAnalyzer):
         if x == 0:
             return 12
         else:
-            return datetime.datetime.strptime(str(x), '%j').month
+            return datetime.datetime.strptime(str(x), "%j").month
 
-    def __init__(self, expt_name, sweep_variables=None, channels=None, daily=False, working_dir=".", start_year=2022,
-                 burnin=None):
-        super(SurveyAllAgeAnalyzer, self).__init__(working_dir=working_dir, filenames=["output/InsetChart.json"])
+    def __init__(
+        self,
+        expt_name,
+        sweep_variables=None,
+        channels=None,
+        daily=False,
+        working_dir=".",
+        start_year=2022,
+        burnin=None,
+    ):
+        super(SurveyAllAgeAnalyzer, self).__init__(
+            working_dir=working_dir, filenames=["output/InsetChart.json"]
+        )
         self.sweep_variables = sweep_variables or ["Run_Number"]
-        self.inset_channels = channels or ['Statistical Population', 'Births', 'Disease Deaths',
-                                           'New Infections', 'Newly Symptomatic', 'New Clinical Cases',
-                                           'New Severe Cases'
-                                           'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
-                                           'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence',
-                                           'PfHRP2 Prevalence',
-                                           'Infectious Vectors', 'Daily EIR']
+        self.inset_channels = channels or [
+            "Statistical Population",
+            "Births",
+            "Disease Deaths",
+            "New Infections",
+            "Newly Symptomatic",
+            "New Clinical Cases",
+            "New Severe Cases" "Fever Prevalence",
+            "True Prevalence",
+            "PCR Gametocyte Prevalence",
+            "PCR Parasite Prevalence",
+            "Blood Smear Parasite Prevalence",
+            "PfHRP2 Prevalence",
+            "Infectious Vectors",
+            "Daily EIR",
+        ]
         self.expt_name = expt_name
         self.start_year = start_year
         self.daily = daily
         self.emod_burnin = burnin
 
     def map(self, data, simulation: Simulation):
-        simdata = pd.DataFrame({x: data[self.filenames[0]]['Channels'][x]['Data'] for x in self.inset_channels})
+        simdata = pd.DataFrame(
+            {
+                x: data[self.filenames[0]]["Channels"][x]["Data"]
+                for x in self.inset_channels
+            }
+        )
 
         # Create time variables
-        simdata['Time'] = simdata.index
-        simdata['Day'] = simdata['Time'] % 365
-        simdata['Year'] = simdata['Time'].apply(lambda x: int(x / 365) + self.start_year)
-        simdata['date'] = simdata.apply(
-            lambda x: datetime.date(int(x['Year']), 1, 1) + datetime.timedelta(int(x['Day']) - 1), axis=1)
+        simdata["Time"] = simdata.index
+        simdata["Day"] = simdata["Time"] % 365
+        simdata["Year"] = simdata["Time"].apply(
+            lambda x: int(x / 365) + self.start_year
+        )
+        simdata["date"] = simdata.apply(
+            lambda x: datetime.date(int(x["Year"]), 1, 1)
+            + datetime.timedelta(int(x["Day"]) - 1),
+            axis=1,
+        )
 
         # Add scenario sweeps (parameter that were varied) to data
         for sweep_var in self.sweep_variables:
             if sweep_var in simulation.tags.keys():
                 simdata[sweep_var] = simulation.tags[sweep_var]
-            elif sweep_var == 'Run_Number':
+            elif sweep_var == "Run_Number":
                 simdata[sweep_var] = 0
         return simdata
 
@@ -122,33 +151,62 @@ class SurveyAllAgeAnalyzer(IAnalyzer):
             return
 
         adf = pd.concat(selected).reset_index(drop=True)
-        adf = adf.rename(columns={'Daily Bites per Human': 'Bites per Human', 'Daily EIR': 'EIR'})
+        adf = adf.rename(
+            columns={"Daily Bites per Human": "Bites per Human", "Daily EIR": "EIR"}
+        )
         if self.daily:
-            adf.to_csv(os.path.join(self.working_dir, 'EMOD', 'All_Age_InsetChart_daily.csv'), index=False)
+            adf.to_csv(
+                os.path.join(self.working_dir, "EMOD", "All_Age_InsetChart_daily.csv"),
+                index=False,
+            )
 
         if self.emod_burnin is not None:
-            adf = adf[adf['Year'] >= self.start_year + self.emod_burnin]
+            adf = adf[adf["Year"] >= self.start_year + self.emod_burnin]
 
         # Change data to Year-months format, exclude days
-        adf['date'] = pd.to_datetime(adf['date'])
-        adf['date'] = adf['date'].dt.strftime('%b-%Y')
+        adf["date"] = pd.to_datetime(adf["date"])
+        adf["date"] = adf["date"].dt.strftime("%b-%Y")
 
         # Aggregate data per date and sweep_variables using sum and mean specific to outcome channel
-        sum_channels = ['Births', 'Disease Deaths', 'New Infections', 'Newly Symptomatic', 'New Clinical Cases',
-                        'New Severe Cases', 'Infectious Vectors', 'EIR']
-        mean_channels = ['Statistical Population', 'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
-                         'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence',
-                         'PfHRP2 Prevalence']
+        sum_channels = [
+            "Births",
+            "Disease Deaths",
+            "New Infections",
+            "Newly Symptomatic",
+            "New Clinical Cases",
+            "New Severe Cases",
+            "Infectious Vectors",
+            "EIR",
+        ]
+        mean_channels = [
+            "Statistical Population",
+            "Fever Prevalence",
+            "True Prevalence",
+            "PCR Gametocyte Prevalence",
+            "PCR Parasite Prevalence",
+            "Blood Smear Parasite Prevalence",
+            "PfHRP2 Prevalence",
+        ]
 
-        sdf = adf.groupby(['date'] + self.sweep_variables)[sum_channels].agg('sum').reset_index()
-        mdf = adf.groupby(['date'] + self.sweep_variables)[mean_channels].agg('mean').reset_index()
-        adf = pd.merge(left=sdf, right=mdf, on=(self.sweep_variables + ['date']))
+        sdf = (
+            adf.groupby(["date"] + self.sweep_variables)[sum_channels]
+            .agg("sum")
+            .reset_index()
+        )
+        mdf = (
+            adf.groupby(["date"] + self.sweep_variables)[mean_channels]
+            .agg("mean")
+            .reset_index()
+        )
+        adf = pd.merge(left=sdf, right=mdf, on=(self.sweep_variables + ["date"]))
 
-        adf = adf.rename(columns={'Run_Number': 'seed'})
-        adf['seed'] = adf['seed'] + 1
+        adf = adf.rename(columns={"Run_Number": "seed"})
+        adf["seed"] = adf["seed"] + 1
 
         # Save the processed DataFrame to a CSV file named 'All_Age_Outputs.csv'
-        adf.to_csv(os.path.join(self.working_dir, 'EMOD', 'All_Age_Outputs.csv'), index=False)
+        adf.to_csv(
+            os.path.join(self.working_dir, "EMOD", "All_Age_Outputs.csv"), index=False
+        )
 
 
 class InputEIRAnalyzer(IAnalyzer):
@@ -182,16 +240,32 @@ class InputEIRAnalyzer(IAnalyzer):
         if x == 0:
             return 12
         else:
-            return datetime.datetime.strptime(str(x), '%j').month
+            return datetime.datetime.strptime(str(x), "%j").month
 
-    def __init__(self, expt_name, channels=None, sweep_variables=None, working_dir='./', start_year=2010,
-                 selected_year=None, daily_report=False, monthly_report=False, burnin=None):
+    def __init__(
+        self,
+        expt_name,
+        channels=None,
+        sweep_variables=None,
+        working_dir="./",
+        start_year=2010,
+        selected_year=None,
+        daily_report=False,
+        monthly_report=False,
+        burnin=None,
+    ):
 
-        super(InputEIRAnalyzer, self).__init__(working_dir=working_dir,
-                                               filenames=["output/InsetChart.json"])  # ReportMalariaFiltered
+        super(InputEIRAnalyzer, self).__init__(
+            working_dir=working_dir, filenames=["output/InsetChart.json"]
+        )  # ReportMalariaFiltered
         self.sweep_variables = sweep_variables or ["Run_Number"]
-        self.channels = channels or ['Daily Bites per Human', 'Daily EIR', 'Rainfall', 'Adult Vectors',
-                                     'Infectious Vectors']
+        self.channels = channels or [
+            "Daily Bites per Human",
+            "Daily EIR",
+            "Rainfall",
+            "Adult Vectors",
+            "Infectious Vectors",
+        ]
         self.start_year = start_year
         self.selected_year = selected_year
         self.daily_report = daily_report
@@ -210,15 +284,23 @@ class InputEIRAnalyzer(IAnalyzer):
             pd.DataFrame: DataFrame containing the mapped simulation data with additional time variables.
         """
 
-        simdata = pd.DataFrame({x: data[self.filenames[0]]['Channels'][x]['Data'] for x in self.channels})
+        simdata = pd.DataFrame(
+            {x: data[self.filenames[0]]["Channels"][x]["Data"] for x in self.channels}
+        )
         # simdata = simdata[-365:]
-        simdata['time'] = simdata.index
-        simdata['day'] = simdata['time'] % 365
-        simdata['month'] = simdata['day'].apply(lambda x: self.monthparser((x + 1) % 365))
-        simdata['year'] = simdata['time'].apply(lambda x: int(x / 365) + self.start_year)
-        simdata['date'] = simdata.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
+        simdata["time"] = simdata.index
+        simdata["day"] = simdata["time"] % 365
+        simdata["month"] = simdata["day"].apply(
+            lambda x: self.monthparser((x + 1) % 365)
+        )
+        simdata["year"] = simdata["time"].apply(
+            lambda x: int(x / 365) + self.start_year
+        )
+        simdata["date"] = simdata.apply(
+            lambda x: datetime.date(int(x["year"]), int(x["month"]), 1), axis=1
+        )
         if self.selected_year is not None:
-            simdata = simdata.loc[(simdata['year'] == self.selected_year)]
+            simdata = simdata.loc[(simdata["year"] == self.selected_year)]
 
         # Add varying parameter values that describe and identify the simulation scenarios
         for sweep_var in self.sweep_variables:
@@ -226,7 +308,9 @@ class InputEIRAnalyzer(IAnalyzer):
                 try:
                     simdata[sweep_var] = simulation.tags[sweep_var]
                 except:
-                    simdata[sweep_var] = '-'.join([str(x) for x in simulation.tags[sweep_var]])
+                    simdata[sweep_var] = "-".join(
+                        [str(x) for x in simulation.tags[sweep_var]]
+                    )
         return simdata
 
     def reduce(self, all_data):
@@ -244,60 +328,119 @@ class InputEIRAnalyzer(IAnalyzer):
             return
 
         adf = pd.concat(selected).reset_index(drop=True)
-        adf['Infectious Vectors'] = round(adf['Infectious Vectors'] * adf['Adult Vectors'], 0)
+        adf["Infectious Vectors"] = round(
+            adf["Infectious Vectors"] * adf["Adult Vectors"], 0
+        )
         if self.emod_burnin is not None:
-            adf = adf[adf['year'] >= self.start_year + self.emod_burnin]
+            adf = adf[adf["year"] >= self.start_year + self.emod_burnin]
 
         # Aggregate data and save for specified time intervals (daily, monthly, annually)
-        grp_channels = self.sweep_variables  # [x for x in self.sweep_variables if x != "Run_Number"] ## Keep runs
-        adf = adf.groupby(['time', 'date', 'day', 'month', 'year'] + grp_channels)[self.channels].agg(
-            'mean').reset_index()
+        grp_channels = (
+            self.sweep_variables
+        )  # [x for x in self.sweep_variables if x != "Run_Number"] ## Keep runs
+        adf = (
+            adf.groupby(["time", "date", "day", "month", "year"] + grp_channels)[
+                self.channels
+            ]
+            .agg("mean")
+            .reset_index()
+        )
 
         # Add Larval Habitat Multipliers and sweep variables to EIR dataframe
-        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
-        adf = adf.merge(scen_df, on='scen_id', how='inner')
+        scen_df = pd.read_csv(os.path.join(self.working_dir, "scenarios.csv"))
+        adf = adf.merge(scen_df, on="scen_id", how="inner")
         grp_channels = list(set(grp_channels + list(scen_df.columns)))
-        adf = adf.rename(columns={'Adult Vectors': 'n_total_mos_pop', 'Infectious Vectors': 'n_infectious_mos'})
+        adf = adf.rename(
+            columns={
+                "Adult Vectors": "n_total_mos_pop",
+                "Infectious Vectors": "n_infectious_mos",
+            }
+        )
         if self.daily_report:
-            columns_to_keep = ['Daily EIR', 'n_total_mos_pop', 'n_infectious_mos', 'scen_id', 'Run_Number', 'time',
-                               'day', 'month', 'year', 'eir']
+            columns_to_keep = [
+                "Daily EIR",
+                "n_total_mos_pop",
+                "n_infectious_mos",
+                "scen_id",
+                "Run_Number",
+                "time",
+                "day",
+                "month",
+                "year",
+                "eir",
+            ]
             columns_to_keep = [col for col in columns_to_keep if col in adf.columns]
             df = adf[columns_to_keep]
-            df = df.rename(columns={'Daily EIR': 'eir', 'time': 'timestep'})
+            df = df.rename(columns={"Daily EIR": "eir", "time": "timestep"})
 
-            df['day'] = df['day'] + 1
-            df['timestep'] = (df['timestep'] + 1) - (self.emod_burnin * 365)
-            df.to_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_daily.csv'), index=False)
+            df["day"] = df["day"] + 1
+            df["timestep"] = (df["timestep"] + 1) - (self.emod_burnin * 365)
+            df.to_csv(
+                os.path.join(self.working_dir, "EMOD", "EIR_daily.csv"), index=False
+            )
         else:
-            sum_channels = ['Daily Bites per Human', 'Daily EIR', 'Rainfall']
-            mean_channels = ['n_total_mos_pop', 'n_infectious_mos']
+            sum_channels = ["Daily Bites per Human", "Daily EIR", "Rainfall"]
+            mean_channels = ["n_total_mos_pop", "n_infectious_mos"]
 
             # Monthly aggregation - keep months and years
             if self.monthly_report:
-                df = adf.groupby(['year', 'month'] + grp_channels)[sum_channels].agg('sum').reset_index()
-                df = df.rename(columns={'Daily Bites per Human': 'Monthly Bites per Human', 'Daily EIR': 'Monthly EIR'})
-                vdf = adf.groupby(['year', 'month'] + grp_channels)[mean_channels].agg('mean').reset_index()
-                df = df.merge(vdf, on=(['year', 'month'] + grp_channels), how='inner')
-                df.to_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_mth.csv'), index=False)
+                df = (
+                    adf.groupby(["year", "month"] + grp_channels)[sum_channels]
+                    .agg("sum")
+                    .reset_index()
+                )
+                df = df.rename(
+                    columns={
+                        "Daily Bites per Human": "Monthly Bites per Human",
+                        "Daily EIR": "Monthly EIR",
+                    }
+                )
+                vdf = (
+                    adf.groupby(["year", "month"] + grp_channels)[mean_channels]
+                    .agg("mean")
+                    .reset_index()
+                )
+                df = df.merge(vdf, on=(["year", "month"] + grp_channels), how="inner")
+                df.to_csv(
+                    os.path.join(self.working_dir, "EMOD", "EIR_mth.csv"), index=False
+                )
 
             # Yearly aggregation - keep years
-            df = adf.groupby(['year'] + grp_channels)[sum_channels].agg('sum').reset_index()
-            vdf = adf.groupby(['year'] + grp_channels)[mean_channels].agg('mean').reset_index()
-            df = df.merge(vdf, on=(['year'] + grp_channels), how='inner')
-            df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
-            df.to_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'), index=False)
+            df = (
+                adf.groupby(["year"] + grp_channels)[sum_channels]
+                .agg("sum")
+                .reset_index()
+            )
+            vdf = (
+                adf.groupby(["year"] + grp_channels)[mean_channels]
+                .agg("mean")
+                .reset_index()
+            )
+            df = df.merge(vdf, on=(["year"] + grp_channels), how="inner")
+            df = df.rename(
+                columns={
+                    "Daily Bites per Human": "Annual Bites per Human",
+                    "Daily EIR": "Annual EIR",
+                }
+            )
+            df.to_csv(os.path.join(self.working_dir, "EMOD", "EIR_yr.csv"), index=False)
 
             # Mean over monitoring period
-            nyears = len(adf['year'].unique())
-            df = adf.groupby(grp_channels)[sum_channels].agg('sum').reset_index()
-            vdf = adf.groupby(grp_channels)[mean_channels].agg('mean').reset_index()
-            df = df.merge(vdf, on=grp_channels, how='inner')
-            df['Daily EIR'] = df['Daily EIR'] / nyears
-            df['Daily Bites per Human'] = df['Daily Bites per Human'] / nyears
-            df['n_total_mos_pop'] = df['n_total_mos_pop'] / nyears
-            df['n_infectious_mos'] = df['n_infectious_mos'] / nyears
-            df = df.rename(columns={'Daily Bites per Human': 'Annual Bites per Human', 'Daily EIR': 'Annual EIR'})
-            df.to_csv(os.path.join(self.working_dir, 'EMOD', 'EIR.csv'), index=False)
+            nyears = len(adf["year"].unique())
+            df = adf.groupby(grp_channels)[sum_channels].agg("sum").reset_index()
+            vdf = adf.groupby(grp_channels)[mean_channels].agg("mean").reset_index()
+            df = df.merge(vdf, on=grp_channels, how="inner")
+            df["Daily EIR"] = df["Daily EIR"] / nyears
+            df["Daily Bites per Human"] = df["Daily Bites per Human"] / nyears
+            df["n_total_mos_pop"] = df["n_total_mos_pop"] / nyears
+            df["n_infectious_mos"] = df["n_infectious_mos"] / nyears
+            df = df.rename(
+                columns={
+                    "Daily Bites per Human": "Annual Bites per Human",
+                    "Daily EIR": "Annual EIR",
+                }
+            )
+            df.to_csv(os.path.join(self.working_dir, "EMOD", "EIR.csv"), index=False)
 
 
 class TimeavrgAgebinAnalyzer(IAnalyzer):
@@ -322,22 +465,42 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
         None
     """
 
-    def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
-                 end_year=2020, age_groups_aggregates=None, burnin=None):
+    def __init__(
+        self,
+        expt_name,
+        sweep_variables=None,
+        working_dir="./",
+        start_year=1920,
+        end_year=2020,
+        age_groups_aggregates=None,
+        burnin=None,
+    ):
         """
         Initialize the TimeavrgAgebinAnalyzer instance.
         """
 
-        super(TimeavrgAgebinAnalyzer, self).__init__(working_dir=working_dir,
-                                                     filenames=[
-                                                         f"output/MalariaSummaryReport_Annual_{start_year}to{end_year}.json"])
+        super(TimeavrgAgebinAnalyzer, self).__init__(
+            working_dir=working_dir,
+            filenames=[
+                f"output/MalariaSummaryReport_Annual_{start_year}to{end_year}.json"
+            ],
+        )
         self.sweep_variables = sweep_variables or ["Run_Number"]
         self.expt_name = expt_name
         self.start_year = start_year
         self.end_year = end_year
-        self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
-                                                               [15, 20], [20, 100],
-                                                               [0, 5], [0, 100]]
+        self.age_groups_aggregates = age_groups_aggregates or [
+            [0, 0.5],
+            [0.5, 1],
+            [1, 2],
+            [2, 5],
+            [5, 10],
+            [10, 15],
+            [15, 20],
+            [20, 100],
+            [0, 5],
+            [0, 100],
+        ]
         self.emod_burnin = burnin
 
     def map(self, data, simulation: Simulation):
@@ -355,26 +518,36 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
         nyears = self.end_year - self.start_year + 1
         for fname in self.filenames:
 
-            age_bins = data[fname]['Metadata']['Age Bins']
-            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True'][:nyears]
+            age_bins = data[fname]["Metadata"]["Age Bins"]
+            pfpr2to10 = data[fname]["DataByTime"]["PfPR_2to10-True"][:nyears]
 
             for age in list(range(0, len(age_bins))):
-                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin-True'][:nyears]
+                d = data[fname]["DataByTimeAndAgeBins"]["PfPR by Age Bin-True"][:nyears]
                 pfpr = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin'][:nyears]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Annual Clinical Incidence by Age Bin"
+                ][:nyears]
                 clinical_cases = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Annual Severe Incidence by Age Bin'][:nyears]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Annual Severe Incidence by Age Bin"
+                ][:nyears]
                 severe_cases = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Average Population by Age Bin'][:nyears]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Average Population by Age Bin"
+                ][:nyears]
                 pop = [x[age] for x in d]
 
-                simdata = pd.DataFrame({'year': range(self.start_year, self.end_year + 1),
-                                        'prevalence': pfpr,
-                                        'clinical_incidence': clinical_cases,  # per person per annum
-                                        'severe_incidence': severe_cases,  # per person per annum
-                                        'nHost': pop})
-                simdata['agebin'] = age_bins[age]
-                simdata['prevalence_2to10'] = pfpr2to10
+                simdata = pd.DataFrame(
+                    {
+                        "year": range(self.start_year, self.end_year + 1),
+                        "prevalence": pfpr,
+                        "clinical_incidence": clinical_cases,  # per person per annum
+                        "severe_incidence": severe_cases,  # per person per annum
+                        "nHost": pop,
+                    }
+                )
+                simdata["agebin"] = age_bins[age]
+                simdata["prevalence_2to10"] = pfpr2to10
                 adf = pd.concat([adf, simdata])
 
         # Add varying parameter values that describe and identify the simulation scenarios
@@ -383,7 +556,9 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
                 try:
                     adf[sweep_var] = simulation.tags[sweep_var]
                 except:
-                    adf[sweep_var] = '-'.join([str(x) for x in simulation.tags[sweep_var]])
+                    adf[sweep_var] = "-".join(
+                        [str(x) for x in simulation.tags[sweep_var]]
+                    )
 
         return adf
 
@@ -404,80 +579,138 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
 
         df = pd.concat(selected).reset_index(drop=True)
         if self.emod_burnin is not None:
-            df = df[df['year'] >= self.start_year + self.emod_burnin]
-        df_pfpr2to10 = df.groupby(self.sweep_variables)[['prevalence_2to10']].agg('mean').reset_index()
+            df = df[df["year"] >= self.start_year + self.emod_burnin]
+        df_pfpr2to10 = (
+            df.groupby(self.sweep_variables)[["prevalence_2to10"]]
+            .agg("mean")
+            .reset_index()
+        )
 
         ## Aggregate years
-        df = df.groupby(self.sweep_variables + ['agebin'])[
-            ['prevalence', 'clinical_incidence', 'severe_incidence', 'nHost']].agg('mean').reset_index()
-        df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
-        df['nUncomp'] = df['clinical_incidence'] * df['nHost']  ## total cases per annum
-        df['nSevere'] = df['severe_incidence'] * df['nHost']  ## total cases per annum
+        df = (
+            df.groupby(self.sweep_variables + ["agebin"])[
+                ["prevalence", "clinical_incidence", "severe_incidence", "nHost"]
+            ]
+            .agg("mean")
+            .reset_index()
+        )
+        df["nPatent"] = (
+            df["prevalence"] * df["nHost"]
+        )  ## total patent infections per annum
+        df["nUncomp"] = df["clinical_incidence"] * df["nHost"]  ## total cases per annum
+        df["nSevere"] = df["severe_incidence"] * df["nHost"]  ## total cases per annum
 
         cdf = pd.DataFrame()
 
         # Loop over age groups to aggregate results data
         for i in range(0, len(self.age_groups_aggregates)):
             ages = self.age_groups_aggregates[i]
-            ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
+            ageCond_labels = f"{str(ages[0])}-{str(ages[1])}"
             adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables)[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg(
-                    'sum').reset_index()
-                adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
-                adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
-                adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
-                adf['ageGroup'] = ageCond_labels
+                adf = (
+                    adf.groupby(self.sweep_variables)[
+                        ["nPatent", "nUncomp", "nSevere", "nHost"]
+                    ]
+                    .agg("sum")
+                    .reset_index()
+                )
+                adf["prevalence"] = adf["nPatent"] / (adf["nHost"])
+                adf["clinical_incidence"] = adf["nUncomp"] / (
+                    adf["nHost"]
+                )  # (events per person per annum)
+                adf["severe_incidence"] = adf["nSevere"] / (
+                    adf["nHost"]
+                )  # (events per person per annum)
+                adf["ageGroup"] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
         cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables)
-        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
-        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
-        if scen_df.entomology_mode[0] == 'dynamic':
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR', 'n_total_mos_pop', 'n_infectious_mos']].agg(
-                'mean').reset_index()  # mean across monitoring years and runs
+        scen_df = pd.read_csv(os.path.join(self.working_dir, "scenarios.csv"))
+        cdf = cdf.merge(scen_df, on="scen_id", how="inner")
+        if scen_df.entomology_mode[0] == "dynamic":
+            eirdf = pd.read_csv(os.path.join(self.working_dir, "EMOD", "EIR_yr.csv"))
+            eirdf = (
+                eirdf.groupby(self.sweep_variables)[
+                    ["Annual EIR", "n_total_mos_pop", "n_infectious_mos"]
+                ]
+                .agg("mean")
+                .reset_index()
+            )  # mean across monitoring years and runs
             eirdf = eirdf.rename(columns={"Annual EIR": "eir"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
             # cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
         else:
-            cdf['eir'] = cdf['transmission_intensity_EMOD']
-            cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
+            cdf["eir"] = cdf["transmission_intensity_EMOD"]
+            cdf["inputEIR"] = cdf["transmission_intensity_EMOD"]
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
-        cdf['seed'] = cdf['seed'] + 1
-        cdf['mortality'] = ''
-        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD')
+        cdf["seed"] = cdf["seed"] + 1
+        cdf["mortality"] = ""
+        print(f"\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD")
 
         # Save the processed DataFrame to a CSV file named 'mmmpy_timeavrg.csv'
-        cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_timeavrg.csv')), index=False)
+        cdf.to_csv(
+            (os.path.join(self.working_dir, "EMOD", "mmmpy_timeavrg.csv")), index=False
+        )
 
-        if exp.run_mode == 'calibration':
-            mean_columns = ['eir', 'prevalence_2to10', 'prevalence', 'severe_incidence']
-            if scen_df.entomology_mode[0] == 'dynamic':
-                mean_columns = mean_columns + ['n_total_mos_pop']
-            u5 = cdf[cdf['ageGroup'] == '0-5'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
-            u5 = u5.rename(columns={'clinical_incidence': 'clinical_incidence_U5'})
-            all_ages = cdf[cdf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg(
-                'mean').reset_index()
-            cdf = cdf[cdf['ageGroup'] == '0-100']
-            cdf = cdf.groupby(['scen_id', 'transmission_intensity_EMOD', 'seasonality', 'cm_clinical', 'cm_severe'])[
-                mean_columns].agg('mean').reset_index()
-            cdf = cdf.merge(all_ages, on='scen_id')
-            cdf = cdf.merge(u5, on='scen_id')
-            cdf = cdf.drop(['scen_id'], axis=1)
-            cdf['models'] = 'EMOD'
-            cdf['pop_size'] = exp.emod_pop_size
+        if exp.run_mode == "calibration":
+            mean_columns = ["eir", "prevalence_2to10", "prevalence", "severe_incidence"]
+            if scen_df.entomology_mode[0] == "dynamic":
+                mean_columns = mean_columns + ["n_total_mos_pop"]
+            u5 = (
+                cdf[cdf["ageGroup"] == "0-5"]
+                .groupby("scen_id")["clinical_incidence"]
+                .agg("mean")
+                .reset_index()
+            )
+            u5 = u5.rename(columns={"clinical_incidence": "clinical_incidence_U5"})
+            all_ages = (
+                cdf[cdf["ageGroup"] == "0-100"]
+                .groupby("scen_id")["clinical_incidence"]
+                .agg("mean")
+                .reset_index()
+            )
+            cdf = cdf[cdf["ageGroup"] == "0-100"]
+            cdf = (
+                cdf.groupby(
+                    [
+                        "scen_id",
+                        "transmission_intensity_EMOD",
+                        "seasonality",
+                        "cm_clinical",
+                        "cm_severe",
+                    ]
+                )[mean_columns]
+                .agg("mean")
+                .reset_index()
+            )
+            cdf = cdf.merge(all_ages, on="scen_id")
+            cdf = cdf.merge(u5, on="scen_id")
+            cdf = cdf.drop(["scen_id"], axis=1)
+            cdf["models"] = "EMOD"
+            cdf["pop_size"] = exp.emod_pop_size
             if exp.emod_importation_rate > 0:
-                cdf['importation'] = True
+                cdf["importation"] = True
             else:
-                cdf['importaion'] = False
-            cdf = cdf.rename(columns={'transmission_intensity_EMOD': 'input_target'})
-            cdf.to_csv((os.path.join(wdir, 'EMOD', 'interpolation_data.csv')), index=False)
-            cdf.to_csv((os.path.join(exp.interp_path, 'EMOD', f'{exp.exp_name}_interpolation_data.csv')), index=False)
+                cdf["importaion"] = False
+            cdf = cdf.rename(columns={"transmission_intensity_EMOD": "input_target"})
+            cdf.to_csv(
+                (os.path.join(wdir, "EMOD", "interpolation_data.csv")), index=False
+            )
+            cdf.to_csv(
+                (
+                    os.path.join(
+                        exp.interp_path,
+                        "EMOD",
+                        f"{exp.exp_name}_interpolation_data.csv",
+                    )
+                ),
+                index=False,
+            )
 
 
 class AnnualAgebinAnalyzer(IAnalyzer):
@@ -501,18 +734,39 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         None
     """
 
-    def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
-                 end_year=2020, age_groups_aggregates=None, burnin=None):
+    def __init__(
+        self,
+        expt_name,
+        sweep_variables=None,
+        working_dir="./",
+        start_year=1920,
+        end_year=2020,
+        age_groups_aggregates=None,
+        burnin=None,
+    ):
 
-        super(AnnualAgebinAnalyzer, self).__init__(working_dir=working_dir,
-                                                   filenames=[
-                                                       f"output/MalariaSummaryReport_Annual_{start_year}to{end_year}.json"])
+        super(AnnualAgebinAnalyzer, self).__init__(
+            working_dir=working_dir,
+            filenames=[
+                f"output/MalariaSummaryReport_Annual_{start_year}to{end_year}.json"
+            ],
+        )
         self.sweep_variables = sweep_variables or ["Run_Number"]
         self.expt_name = expt_name
         self.start_year = start_year
         self.end_year = end_year
-        self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
-                                                               [15, 20], [20, 100], [0, 5], [0, 100]]
+        self.age_groups_aggregates = age_groups_aggregates or [
+            [0, 0.5],
+            [0.5, 1],
+            [1, 2],
+            [2, 5],
+            [5, 10],
+            [10, 15],
+            [15, 20],
+            [20, 100],
+            [0, 5],
+            [0, 100],
+        ]
         self.emod_burnin = burnin
 
     def map(self, data, simulation: Simulation):
@@ -530,28 +784,38 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         nyears = self.end_year - self.start_year + 1
         for fname in self.filenames:
 
-            age_bins = data[fname]['Metadata']['Age Bins']
-            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True'][:nyears]
+            age_bins = data[fname]["Metadata"]["Age Bins"]
+            pfpr2to10 = data[fname]["DataByTime"]["PfPR_2to10-True"][:nyears]
 
             for age in list(range(0, len(age_bins))):
                 # Extract data for each age bin
-                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin-True'][:nyears]
+                d = data[fname]["DataByTimeAndAgeBins"]["PfPR by Age Bin-True"][:nyears]
                 pfpr = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin'][:nyears]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Annual Clinical Incidence by Age Bin"
+                ][:nyears]
                 clinical_cases = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Annual Severe Incidence by Age Bin'][:nyears]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Annual Severe Incidence by Age Bin"
+                ][:nyears]
                 severe_cases = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Average Population by Age Bin'][:nyears]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Average Population by Age Bin"
+                ][:nyears]
                 pop = [x[age] for x in d]
 
                 # Create a DataFrame for the simulation data
-                simdata = pd.DataFrame({'year': range(self.start_year, self.end_year + 1),
-                                        'prevalence': pfpr,
-                                        'clinical_incidence': clinical_cases,  # per person per year
-                                        'severe_incidence': severe_cases,  # per person per year
-                                        'nHost': pop})
-                simdata['agebin'] = age_bins[age]
-                simdata['prevalence_2to10'] = pfpr2to10
+                simdata = pd.DataFrame(
+                    {
+                        "year": range(self.start_year, self.end_year + 1),
+                        "prevalence": pfpr,
+                        "clinical_incidence": clinical_cases,  # per person per year
+                        "severe_incidence": severe_cases,  # per person per year
+                        "nHost": pop,
+                    }
+                )
+                simdata["agebin"] = age_bins[age]
+                simdata["prevalence_2to10"] = pfpr2to10
                 adf = pd.concat([adf, simdata])
 
         # Add varying parameter values that describe and identify the simulation scenarios
@@ -560,7 +824,9 @@ class AnnualAgebinAnalyzer(IAnalyzer):
                 try:
                     adf[sweep_var] = simulation.tags[sweep_var]
                 except:
-                    adf[sweep_var] = '-'.join([str(x) for x in simulation.tags[sweep_var]])
+                    adf[sweep_var] = "-".join(
+                        [str(x) for x in simulation.tags[sweep_var]]
+                    )
 
         return adf
 
@@ -581,57 +847,84 @@ class AnnualAgebinAnalyzer(IAnalyzer):
 
         df = pd.concat(selected).reset_index(drop=True)
         if self.emod_burnin is not None:
-            df = df[df['year'] >= self.start_year + self.emod_burnin]
-        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year'])[['prevalence_2to10']].agg('mean').reset_index()
+            df = df[df["year"] >= self.start_year + self.emod_burnin]
+        df_pfpr2to10 = (
+            df.groupby(self.sweep_variables + ["year"])[["prevalence_2to10"]]
+            .agg("mean")
+            .reset_index()
+        )
 
         # Aggregate months to years
-        df = df.groupby(self.sweep_variables + ['agebin', 'year'])[
-            ['prevalence', 'clinical_incidence', 'severe_incidence', 'nHost']].agg('mean').reset_index()
+        df = (
+            df.groupby(self.sweep_variables + ["agebin", "year"])[
+                ["prevalence", "clinical_incidence", "severe_incidence", "nHost"]
+            ]
+            .agg("mean")
+            .reset_index()
+        )
 
-        df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
-        df['nUncomp'] = df['clinical_incidence'] * df['nHost']  ## total cases per annum
-        df['nSevere'] = df['severe_incidence'] * df['nHost']  ## total cases per annum
+        df["nPatent"] = (
+            df["prevalence"] * df["nHost"]
+        )  ## total patent infections per annum
+        df["nUncomp"] = df["clinical_incidence"] * df["nHost"]  ## total cases per annum
+        df["nSevere"] = df["severe_incidence"] * df["nHost"]  ## total cases per annum
 
         cdf = pd.DataFrame()
 
         # Loop over the age groups to aggregate agebins to the defined groups
         for i in range(0, len(self.age_groups_aggregates)):
             ages = self.age_groups_aggregates[i]
-            ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
+            ageCond_labels = f"{str(ages[0])}-{str(ages[1])}"
             adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables + ['year'])[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg(
-                    'sum').reset_index()
-                adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
-                adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per year)
-                adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per year)
-                adf['ageGroup'] = ageCond_labels
+                adf = (
+                    adf.groupby(self.sweep_variables + ["year"])[
+                        ["nPatent", "nUncomp", "nSevere", "nHost"]
+                    ]
+                    .agg("sum")
+                    .reset_index()
+                )
+                adf["prevalence"] = adf["nPatent"] / (adf["nHost"])
+                adf["clinical_incidence"] = adf["nUncomp"] / (
+                    adf["nHost"]
+                )  # (events per person per year)
+                adf["severe_incidence"] = adf["nSevere"] / (
+                    adf["nHost"]
+                )  # (events per person per year)
+                adf["ageGroup"] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
-        cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['year'])
-        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
-        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
-        if scen_df.entomology_mode[0] == 'dynamic':
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR', 'n_total_mos_pop']].agg(
-                'mean').reset_index()
+        cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ["year"])
+        scen_df = pd.read_csv(os.path.join(self.working_dir, "scenarios.csv"))
+        cdf = cdf.merge(scen_df, on="scen_id", how="inner")
+        if scen_df.entomology_mode[0] == "dynamic":
+            eirdf = pd.read_csv(os.path.join(self.working_dir, "EMOD", "EIR_yr.csv"))
+            eirdf = (
+                eirdf.groupby(self.sweep_variables + ["year"])[
+                    ["Annual EIR", "n_total_mos_pop"]
+                ]
+                .agg("mean")
+                .reset_index()
+            )
             eirdf = eirdf.rename(columns={"Annual EIR": "eir"})
-            cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
+            cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ["year"])
 
         else:
-            cdf['eir'] = cdf['transmission_intensity_EMOD']
-            cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
+            cdf["eir"] = cdf["transmission_intensity_EMOD"]
+            cdf["inputEIR"] = cdf["transmission_intensity_EMOD"]
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
-        cdf['seed'] = cdf['seed'] + 1
-        cdf['mortality'] = ''
+        cdf["seed"] = cdf["seed"] + 1
+        cdf["mortality"] = ""
 
         # Save the processed DataFrame to a CSV file
-        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD')
-        cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_yr.csv')), index=False)
+        print(f"\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD")
+        cdf.to_csv(
+            (os.path.join(self.working_dir, "EMOD", "mmmpy_yr.csv")), index=False
+        )
 
 
 class MonthlyAgebinAnalyzer(IAnalyzer):
@@ -655,21 +948,42 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         None
     """
 
-    def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
-                 end_year=2020, age_groups_aggregates=None, burnin=None):
+    def __init__(
+        self,
+        expt_name,
+        sweep_variables=None,
+        working_dir="./",
+        start_year=1920,
+        end_year=2020,
+        age_groups_aggregates=None,
+        burnin=None,
+    ):
         """
         Initializes the MonthlyAgebinAnalyzer with the provided parameters.
         """
-        super(MonthlyAgebinAnalyzer, self).__init__(working_dir=working_dir,
-                                                    filenames=[f"output/MalariaSummaryReport_Monthly_{x}.json"
-                                                               for x in range(start_year, end_year)]
-                                                    )
+        super(MonthlyAgebinAnalyzer, self).__init__(
+            working_dir=working_dir,
+            filenames=[
+                f"output/MalariaSummaryReport_Monthly_{x}.json"
+                for x in range(start_year, end_year)
+            ],
+        )
         self.sweep_variables = sweep_variables or ["Run_Number"]
         self.expt_name = expt_name
         self.start_year = start_year
         self.end_year = end_year
-        self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
-                                                               [15, 20], [20, 100], [0, 5], [0, 100]]
+        self.age_groups_aggregates = age_groups_aggregates or [
+            [0, 0.5],
+            [0.5, 1],
+            [1, 2],
+            [2, 5],
+            [5, 10],
+            [10, 15],
+            [15, 20],
+            [20, 100],
+            [0, 5],
+            [0, 100],
+        ]
         self.emod_burnin = burnin
 
     def map(self, data, simulation: Simulation):
@@ -687,32 +1001,44 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         # Loop over summary reports (separate ones for each year)
         for year, fname in zip(range(self.start_year, self.end_year), self.filenames):
 
-            age_bins = data[fname]['Metadata']['Age Bins']
-            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True'][:12]
+            age_bins = data[fname]["Metadata"]["Age Bins"]
+            pfpr2to10 = data[fname]["DataByTime"]["PfPR_2to10-True"][:12]
 
             for age in list(range(0, len(age_bins))):
                 # Extract data per agebin
-                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin-True'][:12]
+                d = data[fname]["DataByTimeAndAgeBins"]["PfPR by Age Bin-True"][:12]
                 pfpr = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['New Infections by Age Bin'][:12]
+                d = data[fname]["DataByTimeAndAgeBins"]["New Infections by Age Bin"][
+                    :12
+                ]
                 new_infect = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin'][:12]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Annual Clinical Incidence by Age Bin"
+                ][:12]
                 clinical_cases = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Annual Severe Incidence by Age Bin'][:12]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Annual Severe Incidence by Age Bin"
+                ][:12]
                 severe_cases = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Average Population by Age Bin'][:12]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Average Population by Age Bin"
+                ][:12]
                 pop = [x[age] for x in d]
 
                 # Combine extracted data into a dataframe
-                simdata = pd.DataFrame({'month': range(1, 13),
-                                        'prevalence': pfpr,
-                                        'nInfect': new_infect,
-                                        'clinical_incidence': clinical_cases,  # per person per year
-                                        'severe_incidence': severe_cases,  # per person per year
-                                        'nHost': pop})
-                simdata['year'] = year
-                simdata['agebin'] = age_bins[age]
-                simdata['prevalence_2to10'] = pfpr2to10
+                simdata = pd.DataFrame(
+                    {
+                        "month": range(1, 13),
+                        "prevalence": pfpr,
+                        "nInfect": new_infect,
+                        "clinical_incidence": clinical_cases,  # per person per year
+                        "severe_incidence": severe_cases,  # per person per year
+                        "nHost": pop,
+                    }
+                )
+                simdata["year"] = year
+                simdata["agebin"] = age_bins[age]
+                simdata["prevalence_2to10"] = pfpr2to10
                 adf = pd.concat([adf, simdata])
 
         # Add varying parameter values that describe and identify the simulation scenarios
@@ -721,7 +1047,9 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
                 try:
                     adf[sweep_var] = simulation.tags[sweep_var]
                 except:
-                    adf[sweep_var] = '-'.join([str(x) for x in simulation.tags[sweep_var]])
+                    adf[sweep_var] = "-".join(
+                        [str(x) for x in simulation.tags[sweep_var]]
+                    )
         return adf
 
     def reduce(self, all_data):
@@ -743,60 +1071,97 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         print(f'\nSaving outputs to: {os.path.join(self.working_dir, "EMOD")}')
 
         if self.emod_burnin is not None:
-            df = df[df['year'] >= self.start_year + self.emod_burnin]
+            df = df[df["year"] >= self.start_year + self.emod_burnin]
 
-        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'month'])[['prevalence_2to10']].agg(
-            'mean').reset_index()
+        df_pfpr2to10 = (
+            df.groupby(self.sweep_variables + ["year", "month"])[["prevalence_2to10"]]
+            .agg("mean")
+            .reset_index()
+        )
 
-        df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
-        df['nUncomp'] = df['clinical_incidence'] * (df['nHost'] / 12)  ## total cases per annum
-        df['nSevere'] = df['severe_incidence'] * (df['nHost'] / 12)  ## total cases per annum
+        df["nPatent"] = (
+            df["prevalence"] * df["nHost"]
+        )  ## total patent infections per annum
+        df["nUncomp"] = df["clinical_incidence"] * (
+            df["nHost"] / 12
+        )  ## total cases per annum
+        df["nSevere"] = df["severe_incidence"] * (
+            df["nHost"] / 12
+        )  ## total cases per annum
 
         cdf = pd.DataFrame()
 
         # Loop over the age groups to aggregate agebins to the defined groups
         for i in range(0, len(self.age_groups_aggregates)):
             ages = self.age_groups_aggregates[i]
-            ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
+            ageCond_labels = f"{str(ages[0])}-{str(ages[1])}"
             adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables + ['year', 'month'])[
-                    ['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg('sum').reset_index()
-                adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
-                adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'] / 12)  # (events per person per year)
-                adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'] / 12)  # (events per person per year)
-                adf['ageGroup'] = ageCond_labels
+                adf = (
+                    adf.groupby(self.sweep_variables + ["year", "month"])[
+                        ["nPatent", "nUncomp", "nSevere", "nHost"]
+                    ]
+                    .agg("sum")
+                    .reset_index()
+                )
+                adf["prevalence"] = adf["nPatent"] / (adf["nHost"])
+                adf["clinical_incidence"] = adf["nUncomp"] / (
+                    adf["nHost"] / 12
+                )  # (events per person per year)
+                adf["severe_incidence"] = adf["nSevere"] / (
+                    adf["nHost"] / 12
+                )  # (events per person per year)
+                adf["ageGroup"] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
-        cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['year', 'month'])
-        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
-        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
-        if scen_df.entomology_mode[0] == 'dynamic':
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg('mean').reset_index()
-            cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
+        cdf = pd.merge(
+            left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ["year", "month"]
+        )
+        scen_df = pd.read_csv(os.path.join(self.working_dir, "scenarios.csv"))
+        cdf = cdf.merge(scen_df, on="scen_id", how="inner")
+        if scen_df.entomology_mode[0] == "dynamic":
+            eirdf = pd.read_csv(os.path.join(self.working_dir, "EMOD", "EIR_yr.csv"))
+            eirdf = (
+                eirdf.groupby(self.sweep_variables + ["year"])[["Annual EIR"]]
+                .agg("mean")
+                .reset_index()
+            )
+            cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ["year"])
 
-            eirdf_mth = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_mth.csv'))
-            eirdf_mth = eirdf_mth.groupby(self.sweep_variables + ['year', 'month'])[
-                ['Monthly EIR', 'n_total_mos_pop']].agg('mean').reset_index()
-            cdf = pd.merge(left=cdf, right=eirdf_mth, on=self.sweep_variables + ['year', 'month'])
+            eirdf_mth = pd.read_csv(
+                os.path.join(self.working_dir, "EMOD", "EIR_mth.csv")
+            )
+            eirdf_mth = (
+                eirdf_mth.groupby(self.sweep_variables + ["year", "month"])[
+                    ["Monthly EIR", "n_total_mos_pop"]
+                ]
+                .agg("mean")
+                .reset_index()
+            )
+            cdf = pd.merge(
+                left=cdf, right=eirdf_mth, on=self.sweep_variables + ["year", "month"]
+            )
 
             cdf = cdf.rename(columns={"Monthly EIR": "eir"})
         else:
-            cdf['eir'] = cdf['transmission_intensity_EMOD']
-            cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
+            cdf["eir"] = cdf["transmission_intensity_EMOD"]
+            cdf["inputEIR"] = cdf["transmission_intensity_EMOD"]
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
-        cdf['seed'] = cdf['seed'] + 1
-        cdf['mortality'] = ''
-        cdf['date'] = cdf.apply(lambda x: datetime.date(int(x['year']), int(x['month']), 1), axis=1)
+        cdf["seed"] = cdf["seed"] + 1
+        cdf["mortality"] = ""
+        cdf["date"] = cdf.apply(
+            lambda x: datetime.date(int(x["year"]), int(x["month"]), 1), axis=1
+        )
 
         # Save the processed DataFrame to a CSV file named 'mmmpy_mth.csv'
-        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD')
-        cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_mth.csv')), index=False)
+        print(f"\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD")
+        cdf.to_csv(
+            (os.path.join(self.working_dir, "EMOD", "mmmpy_mth.csv")), index=False
+        )
 
 
 class FiveDayAgebinAnalyzer(IAnalyzer):
@@ -822,19 +1187,41 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         None
     """
 
-    def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
-                 end_year=2020, age_groups_aggregates=None, burnin=None, intervention_analyzer_columns=[]):
+    def __init__(
+        self,
+        expt_name,
+        sweep_variables=None,
+        working_dir="./",
+        start_year=1920,
+        end_year=2020,
+        age_groups_aggregates=None,
+        burnin=None,
+        intervention_analyzer_columns=[],
+    ):
 
-        super(FiveDayAgebinAnalyzer, self).__init__(working_dir=working_dir,
-                                                    filenames=[f"output/MalariaSummaryReport_FiveDaily_{x}.json"
-                                                               for x in range(start_year, end_year)]
-                                                    )
+        super(FiveDayAgebinAnalyzer, self).__init__(
+            working_dir=working_dir,
+            filenames=[
+                f"output/MalariaSummaryReport_FiveDaily_{x}.json"
+                for x in range(start_year, end_year)
+            ],
+        )
         self.sweep_variables = sweep_variables or ["Run_Number"]
         self.expt_name = expt_name
         self.start_year = start_year
         self.end_year = end_year
-        self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
-                                                               [15, 20], [20, 100], [0, 5], [0, 100]]
+        self.age_groups_aggregates = age_groups_aggregates or [
+            [0, 0.5],
+            [0.5, 1],
+            [1, 2],
+            [2, 5],
+            [5, 10],
+            [10, 15],
+            [15, 20],
+            [20, 100],
+            [0, 5],
+            [0, 100],
+        ]
         self.emod_burnin = burnin
         self.intervention_analyzer_columns = intervention_analyzer_columns
 
@@ -853,33 +1240,45 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         # Loop over summary reports (separate ones for each year)
         for year, fname in zip(range(self.start_year, self.end_year), self.filenames):
 
-            age_bins = data[fname]['Metadata']['Age Bins']
-            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True'][:73]
+            age_bins = data[fname]["Metadata"]["Age Bins"]
+            pfpr2to10 = data[fname]["DataByTime"]["PfPR_2to10-True"][:73]
             # timestep = data[fname]['DataByTime']['Time Of Report'][:73]
 
             for age in list(range(0, len(age_bins))):
                 # Extract data per agebin
-                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin-True'][:73]
+                d = data[fname]["DataByTimeAndAgeBins"]["PfPR by Age Bin-True"][:73]
                 pfpr = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['New Infections by Age Bin'][:73]
+                d = data[fname]["DataByTimeAndAgeBins"]["New Infections by Age Bin"][
+                    :73
+                ]
                 new_infect = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin'][:73]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Annual Clinical Incidence by Age Bin"
+                ][:73]
                 clinical_cases = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Annual Severe Incidence by Age Bin'][:73]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Annual Severe Incidence by Age Bin"
+                ][:73]
                 severe_cases = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Average Population by Age Bin'][:73]
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Average Population by Age Bin"
+                ][:73]
                 pop = [x[age] for x in d]
 
                 # Combine extracted data into a dataframe
-                simdata = pd.DataFrame({'day': [t * 5 for t in range(1, 74)],
-                                        'prevalence': pfpr,
-                                        'nInfect': new_infect,
-                                        'clinical_incidence': clinical_cases,  # per person per year
-                                        'severe_incidence': severe_cases,  # per person per year
-                                        'nHost': pop})
-                simdata['year'] = year
-                simdata['agebin'] = age_bins[age]
-                simdata['prevalence_2to10'] = pfpr2to10
+                simdata = pd.DataFrame(
+                    {
+                        "day": [t * 5 for t in range(1, 74)],
+                        "prevalence": pfpr,
+                        "nInfect": new_infect,
+                        "clinical_incidence": clinical_cases,  # per person per year
+                        "severe_incidence": severe_cases,  # per person per year
+                        "nHost": pop,
+                    }
+                )
+                simdata["year"] = year
+                simdata["agebin"] = age_bins[age]
+                simdata["prevalence_2to10"] = pfpr2to10
                 adf = pd.concat([adf, simdata])
 
         # Add varying parameter values that describe and identify the simulation scenarios
@@ -888,7 +1287,9 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
                 try:
                     adf[sweep_var] = simulation.tags[sweep_var]
                 except:
-                    adf[sweep_var] = '-'.join([str(x) for x in simulation.tags[sweep_var]])
+                    adf[sweep_var] = "-".join(
+                        [str(x) for x in simulation.tags[sweep_var]]
+                    )
         return adf
 
     def reduce(self, all_data):
@@ -910,76 +1311,142 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         print(f'\nSaving outputs to: {os.path.join(self.working_dir, "EMOD")}')
 
         if self.emod_burnin is not None:
-            df = df[df['year'] >= self.start_year + self.emod_burnin]
+            df = df[df["year"] >= self.start_year + self.emod_burnin]
 
-        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'day'])[['prevalence_2to10']].agg(
-            'mean').reset_index()
+        df_pfpr2to10 = (
+            df.groupby(self.sweep_variables + ["year", "day"])[["prevalence_2to10"]]
+            .agg("mean")
+            .reset_index()
+        )
 
-        df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
-        df['nUncomp'] = df['clinical_incidence'] * (df['nHost'] / (365 / 5))  ## total cases per annum
-        df['nSevere'] = df['severe_incidence'] * (df['nHost'] / (365 / 5))  ## total cases per annum
+        df["nPatent"] = (
+            df["prevalence"] * df["nHost"]
+        )  ## total patent infections per annum
+        df["nUncomp"] = df["clinical_incidence"] * (
+            df["nHost"] / (365 / 5)
+        )  ## total cases per annum
+        df["nSevere"] = df["severe_incidence"] * (
+            df["nHost"] / (365 / 5)
+        )  ## total cases per annum
 
         cdf = pd.DataFrame()
 
         # Loop over the age groups to aggregate agebins to the defined groups
         for i in range(0, len(self.age_groups_aggregates)):
             ages = self.age_groups_aggregates[i]
-            ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
+            ageCond_labels = f"{str(ages[0])}-{str(ages[1])}"
             adf = df[(df.agebin > ages[0]) & (df.agebin <= ages[1])]
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables + ['year', 'day'])[
-                    ['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg('sum').reset_index()
-                adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
-                adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'] / (365 / 5))  # (events per person per year)
-                adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'] / (365 / 5))  # (events per person per year)
-                adf['ageGroup'] = ageCond_labels
+                adf = (
+                    adf.groupby(self.sweep_variables + ["year", "day"])[
+                        ["nPatent", "nUncomp", "nSevere", "nHost"]
+                    ]
+                    .agg("sum")
+                    .reset_index()
+                )
+                adf["prevalence"] = adf["nPatent"] / (adf["nHost"])
+                adf["clinical_incidence"] = adf["nUncomp"] / (
+                    adf["nHost"] / (365 / 5)
+                )  # (events per person per year)
+                adf["severe_incidence"] = adf["nSevere"] / (
+                    adf["nHost"] / (365 / 5)
+                )  # (events per person per year)
+                adf["ageGroup"] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
-        cdf = pd.merge(left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ['year', 'day'])
+        cdf = pd.merge(
+            left=cdf, right=df_pfpr2to10, on=self.sweep_variables + ["year", "day"]
+        )
 
-        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
-        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
-        columns_to_keep = ['scen_id', 'index', 'seed', 'target_output_values',
-                           'day', 'year', 'ageGroup', 'seasonality', 'cm_clinical', 'entomology_mode',
-                           'eir', 'prevalence_2to10', 'prevalence', 'clinical_incidence', 'severe_incidence']
+        scen_df = pd.read_csv(os.path.join(self.working_dir, "scenarios.csv"))
+        cdf = cdf.merge(scen_df, on="scen_id", how="inner")
+        columns_to_keep = [
+            "scen_id",
+            "index",
+            "seed",
+            "target_output_values",
+            "day",
+            "year",
+            "ageGroup",
+            "seasonality",
+            "cm_clinical",
+            "entomology_mode",
+            "eir",
+            "prevalence_2to10",
+            "prevalence",
+            "clinical_incidence",
+            "severe_incidence",
+        ]
 
-        if scen_df.entomology_mode[0] == 'dynamic':
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR']].agg('mean').reset_index()
-            cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
+        if scen_df.entomology_mode[0] == "dynamic":
+            eirdf = pd.read_csv(os.path.join(self.working_dir, "EMOD", "EIR_yr.csv"))
+            eirdf = (
+                eirdf.groupby(self.sweep_variables + ["year"])[["Annual EIR"]]
+                .agg("mean")
+                .reset_index()
+            )
+            cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ["year"])
 
-            eirdf_daily = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_daily.csv'))
-            eirdf_daily = eirdf_daily.groupby(self.sweep_variables + ['year', 'day', 'timestep'])[
-                ['eir', 'n_total_mos_pop', 'n_infectious_mos']].agg('mean').reset_index()
+            eirdf_daily = pd.read_csv(
+                os.path.join(self.working_dir, "EMOD", "EIR_daily.csv")
+            )
+            eirdf_daily = (
+                eirdf_daily.groupby(self.sweep_variables + ["year", "day", "timestep"])[
+                    ["eir", "n_total_mos_pop", "n_infectious_mos"]
+                ]
+                .agg("mean")
+                .reset_index()
+            )
 
-            eirdf_daily['5day'] = eirdf_daily['day'].apply(lambda x: 5 * math.ceil(x / 5))
-            eirdf_5day = eirdf_daily.groupby(self.sweep_variables + ['5day', 'year']).agg({'eir': ['sum'],
-                                                                                           'n_total_mos_pop': ['mean'],
-                                                                                           'n_infectious_mos': ['mean'],
-                                                                                           'timestep': [
-                                                                                               'max']}).reset_index()
+            eirdf_daily["5day"] = eirdf_daily["day"].apply(
+                lambda x: 5 * math.ceil(x / 5)
+            )
+            eirdf_5day = (
+                eirdf_daily.groupby(self.sweep_variables + ["5day", "year"])
+                .agg(
+                    {
+                        "eir": ["sum"],
+                        "n_total_mos_pop": ["mean"],
+                        "n_infectious_mos": ["mean"],
+                        "timestep": ["max"],
+                    }
+                )
+                .reset_index()
+            )
             eirdf_5day.columns = eirdf_5day.columns.get_level_values(0)
-            eirdf_5day = eirdf_5day.rename(columns={'5day': 'day'})
-            cdf = pd.merge(left=cdf, right=eirdf_5day, on=self.sweep_variables + ['year', 'day'])
+            eirdf_5day = eirdf_5day.rename(columns={"5day": "day"})
+            cdf = pd.merge(
+                left=cdf, right=eirdf_5day, on=self.sweep_variables + ["year", "day"]
+            )
 
-            columns_to_keep = columns_to_keep + ['timestep', 'n_total_mos_pop', 'n_infectious_mos']
+            columns_to_keep = columns_to_keep + [
+                "timestep",
+                "n_total_mos_pop",
+                "n_infectious_mos",
+            ]
         else:
-            cdf['eir'] = cdf['transmission_intensity_EMOD']
-            cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
+            cdf["eir"] = cdf["transmission_intensity_EMOD"]
+            cdf["inputEIR"] = cdf["transmission_intensity_EMOD"]
 
         # Rename columns for alignment with OpenMalaria results
         cdf = cdf.rename(columns={"Run_Number": "seed"})
-        cdf['seed'] = cdf['seed'] + 1
-        cdf['mortality'] = ''
+        cdf["seed"] = cdf["seed"] + 1
+        cdf["mortality"] = ""
         # cdf['date'] = cdf.apply( lambda x: datetime.date(int(x['year']), 1, 1) + datetime.timedelta(x['day'] - 1), axis=1)
 
         # Save the processed DataFrame to a CSV file
-        print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD')
-        columns_to_keep += [column for column in self.intervention_analyzer_columns if column in cdf.columns]
+        print(f"\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD")
+        columns_to_keep += [
+            column
+            for column in self.intervention_analyzer_columns
+            if column in cdf.columns
+        ]
         cdf = cdf[columns_to_keep]
-        cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_5day.csv')), index=False)
+        cdf.to_csv(
+            (os.path.join(self.working_dir, "EMOD", "mmmpy_5day.csv")), index=False
+        )
 
 
 class DailyAgebinAnalyzer(IAnalyzer):
@@ -1005,21 +1472,43 @@ class DailyAgebinAnalyzer(IAnalyzer):
         None
     """
 
-    def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=2000,
-                 end_year=2020, age_groups_aggregates=None, burnin=None):
+    def __init__(
+        self,
+        expt_name,
+        sweep_variables=None,
+        working_dir="./",
+        start_year=2000,
+        end_year=2020,
+        age_groups_aggregates=None,
+        burnin=None,
+    ):
         """
         Initialize the DailyAgebinAnalyzer instance.
         """
 
-        super(DailyAgebinAnalyzer, self).__init__(working_dir=working_dir,
-                                                  filenames=[f"output/MalariaSummaryReport_Daily_{x}.json"
-                                                             for x in range(start_year, end_year)])
+        super(DailyAgebinAnalyzer, self).__init__(
+            working_dir=working_dir,
+            filenames=[
+                f"output/MalariaSummaryReport_Daily_{x}.json"
+                for x in range(start_year, end_year)
+            ],
+        )
         self.sweep_variables = sweep_variables or ["Run_Number"]
         self.expt_name = expt_name
         self.start_year = start_year
         self.end_year = end_year
-        self.age_groups_aggregates = age_groups_aggregates or [[0, 0.5], [0.5, 1], [1, 2], [2, 5], [5, 10], [10, 15],
-                                                               [15, 20], [20, 100], [0, 5], [0, 100]]
+        self.age_groups_aggregates = age_groups_aggregates or [
+            [0, 0.5],
+            [0.5, 1],
+            [1, 2],
+            [2, 5],
+            [5, 10],
+            [10, 15],
+            [15, 20],
+            [20, 100],
+            [0, 5],
+            [0, 100],
+        ]
         self.emod_burnin = burnin
 
     def map(self, data, simulation: Simulation):
@@ -1028,32 +1517,40 @@ class DailyAgebinAnalyzer(IAnalyzer):
         # Loop over summary reports (separate ones for each year)
         for year, fname in zip(range(self.start_year, self.end_year), self.filenames):
 
-            age_bins = data[fname]['Metadata']['Age Bins']
-            pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True']
+            age_bins = data[fname]["Metadata"]["Age Bins"]
+            pfpr2to10 = data[fname]["DataByTime"]["PfPR_2to10-True"]
 
             for age in list(range(0, len(age_bins))):
                 # Extract data per agebin
-                d = data[fname]['DataByTimeAndAgeBins']['PfPR by Age Bin-True']
+                d = data[fname]["DataByTimeAndAgeBins"]["PfPR by Age Bin-True"]
                 pfpr = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['New Infections by Age Bin']
+                d = data[fname]["DataByTimeAndAgeBins"]["New Infections by Age Bin"]
                 new_infect = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin']
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Annual Clinical Incidence by Age Bin"
+                ]
                 clinical_cases = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Annual Severe Incidence by Age Bin']
+                d = data[fname]["DataByTimeAndAgeBins"][
+                    "Annual Severe Incidence by Age Bin"
+                ]
                 severe_cases = [x[age] for x in d]
-                d = data[fname]['DataByTimeAndAgeBins']['Average Population by Age Bin']
+                d = data[fname]["DataByTimeAndAgeBins"]["Average Population by Age Bin"]
                 pop = [x[age] for x in d]
 
                 # Combine extracted data into a dataframe
-                simdata = pd.DataFrame({'day': range(1, 366),
-                                        'prevalence': pfpr,
-                                        'nInfect': new_infect,
-                                        'clinical_incidence': clinical_cases,  # per person per year
-                                        'severe_incidence': severe_cases,  # per person per year
-                                        'nHost': pop})
-                simdata['year'] = year
-                simdata['agebin'] = age_bins[age]
-                simdata['prevalence_2to10'] = pfpr2to10
+                simdata = pd.DataFrame(
+                    {
+                        "day": range(1, 366),
+                        "prevalence": pfpr,
+                        "nInfect": new_infect,
+                        "clinical_incidence": clinical_cases,  # per person per year
+                        "severe_incidence": severe_cases,  # per person per year
+                        "nHost": pop,
+                    }
+                )
+                simdata["year"] = year
+                simdata["agebin"] = age_bins[age]
+                simdata["prevalence_2to10"] = pfpr2to10
                 adf = pd.concat([adf, simdata])
 
         # Add varying parameter values that describe and identify the simulation scenarios
@@ -1062,7 +1559,9 @@ class DailyAgebinAnalyzer(IAnalyzer):
                 try:
                     adf[sweep_var] = simulation.tags[sweep_var]
                 except:
-                    adf[sweep_var] = '-'.join([str(x) for x in simulation.tags[sweep_var]])
+                    adf[sweep_var] = "-".join(
+                        [str(x) for x in simulation.tags[sweep_var]]
+                    )
         return adf
 
     def reduce(self, all_data):
@@ -1073,42 +1572,58 @@ class DailyAgebinAnalyzer(IAnalyzer):
             return
         df = pd.concat(selected).reset_index(drop=True)
         if self.emod_burnin is not None:
-            df = df[df['year'] >= self.start_year + self.emod_burnin]
+            df = df[df["year"] >= self.start_year + self.emod_burnin]
 
         cdf = pd.DataFrame()
         # Age group labels
         for i in range(0, len(self.age_groups_aggregates)):
             ages = self.age_groups_aggregates[i]
-            ageCond_labels = f'{str(ages[0])}-{str(ages[1])}'
-            adf = df[(df['agebin'] > ages[0]) & (df['agebin'] <= ages[1])]
+            ageCond_labels = f"{str(ages[0])}-{str(ages[1])}"
+            adf = df[(df["agebin"] > ages[0]) & (df["agebin"] <= ages[1])]
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables + ['day', 'year']).agg(
-                    nHost=('nHost', 'sum'),
-                    prevalence=('prevalence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
-                    clinical_incidence=(
-                        'clinical_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
-                    severe_incidence=('severe_incidence', lambda x: np.average(x, weights=adf.loc[x.index, 'nHost'])),
-                    prevalence_2to10=('prevalence_2to10', 'mean')
-                ).reset_index()
-                adf['ageGroup'] = ageCond_labels
+                adf = (
+                    adf.groupby(self.sweep_variables + ["day", "year"])
+                    .agg(
+                        nHost=("nHost", "sum"),
+                        prevalence=(
+                            "prevalence",
+                            lambda x: np.average(x, weights=adf.loc[x.index, "nHost"]),
+                        ),
+                        clinical_incidence=(
+                            "clinical_incidence",
+                            lambda x: np.average(x, weights=adf.loc[x.index, "nHost"]),
+                        ),
+                        severe_incidence=(
+                            "severe_incidence",
+                            lambda x: np.average(x, weights=adf.loc[x.index, "nHost"]),
+                        ),
+                        prevalence_2to10=("prevalence_2to10", "mean"),
+                    )
+                    .reset_index()
+                )
+                adf["ageGroup"] = ageCond_labels
                 cdf = pd.concat([cdf, adf])
 
-        scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
+        scen_df = pd.read_csv(os.path.join(self.working_dir, "scenarios.csv"))
 
-        cdf = cdf.merge(scen_df, on='scen_id', how='inner')
-        if scen_df.entomology_mode[0] == 'dynamic':
-            eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_daily.csv'))
-            cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['day', 'year'])
+        cdf = cdf.merge(scen_df, on="scen_id", how="inner")
+        if scen_df.entomology_mode[0] == "dynamic":
+            eirdf = pd.read_csv(os.path.join(self.working_dir, "EMOD", "EIR_daily.csv"))
+            cdf = pd.merge(
+                left=cdf, right=eirdf, on=self.sweep_variables + ["day", "year"]
+            )
         else:
-            cdf['eir'] = ''
+            cdf["eir"] = ""
         cdf = cdf.rename(columns={"Run_Number": "seed"})
-        cdf['seed'] = cdf['seed'] + 1
+        cdf["seed"] = cdf["seed"] + 1
 
         #  Reorder the DataFrame columns , by specified first columns to appear first
         print(f'\nSaving outputs to: {os.path.join(self.working_dir, "EMOD")}')
-        cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_daily.csv')), index=False)
+        cdf.to_csv(
+            (os.path.join(self.working_dir, "EMOD", "mmmpy_daily.csv")), index=False
+        )
 
 
 if __name__ == "__main__":
@@ -1130,129 +1645,190 @@ if __name__ == "__main__":
     age_groups_aggregates = exp.age_groups_aggregates  # Defined in utility.helper.py
 
     # Define tags and simulation experiment configurations
-    exp_tags = ['scen_id', 'Run_Number']
+    exp_tags = ["scen_id", "Run_Number"]
 
     start_year = exp.sim_start_year_emod
     end_year = exp.end_year
     monitoring_start = end_year - exp.monitoring_years
 
-    if exp.emod_step == 'burnin':
+    if exp.emod_step == "burnin":
         end_year = start_year + exp.emod_burnin
         burnin = 0  ## Keep all years
-    elif exp.emod_step == 'pickup':
+    elif exp.emod_step == "pickup":
         burnin = 0
     else:
-        burnin = int(exp.emod_burnin)  ## Years burnin to discard when running burnin+pickup together
+        burnin = int(
+            exp.emod_burnin
+        )  ## Years burnin to discard when running burnin+pickup together
 
     # Define which outcome metrics to process in inset_chart (all age per daily timestep)
-    channels_inset_chart = ['Statistical Population', 'Births', 'Disease Deaths',
-                            'New Infections', 'Newly Symptomatic', 'New Clinical Cases', 'New Severe Cases',
-                            'Fever Prevalence', 'True Prevalence', 'PCR Gametocyte Prevalence',
-                            'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
-                            'Infectious Vectors', 'Daily EIR']
+    channels_inset_chart = [
+        "Statistical Population",
+        "Births",
+        "Disease Deaths",
+        "New Infections",
+        "Newly Symptomatic",
+        "New Clinical Cases",
+        "New Severe Cases",
+        "Fever Prevalence",
+        "True Prevalence",
+        "PCR Gametocyte Prevalence",
+        "PCR Parasite Prevalence",
+        "Blood Smear Parasite Prevalence",
+        "PfHRP2 Prevalence",
+        "Infectious Vectors",
+        "Daily EIR",
+    ]
     # Run analyzers
     with Platform(exp.selected_platform, job_directory=exp.suite_directory) as platform:
-        all_age_analyzer = [SurveyAllAgeAnalyzer(expt_name=exp_name,
-                                                 channels=channels_inset_chart,
-                                                 sweep_variables=exp_tags,
-                                                 start_year=start_year,
-                                                 burnin=burnin,
-                                                 working_dir=wdir)]
+        all_age_analyzer = [
+            SurveyAllAgeAnalyzer(
+                expt_name=exp_name,
+                channels=channels_inset_chart,
+                sweep_variables=exp_tags,
+                start_year=start_year,
+                burnin=burnin,
+                working_dir=wdir,
+            )
+        ]
 
-        eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
-                                         sweep_variables=exp_tags,
-                                         start_year=start_year,
-                                         daily_report=False,
-                                         monthly_report=True,
-                                         burnin=burnin,
-                                         working_dir=wdir)]
+        eir_analyzer = [
+            InputEIRAnalyzer(
+                expt_name=exp_name,
+                sweep_variables=exp_tags,
+                start_year=start_year,
+                daily_report=False,
+                monthly_report=True,
+                burnin=burnin,
+                working_dir=wdir,
+            )
+        ]
 
-        daily_analyzers = [DailyAgebinAnalyzer(expt_name=exp_name,
-                                               start_year=start_year,
-                                               end_year=end_year,
-                                               age_groups_aggregates=age_groups_aggregates,
-                                               sweep_variables=exp_tags,
-                                               working_dir=wdir,
-                                               burnin=burnin)]
+        daily_analyzers = [
+            DailyAgebinAnalyzer(
+                expt_name=exp_name,
+                start_year=start_year,
+                end_year=end_year,
+                age_groups_aggregates=age_groups_aggregates,
+                sweep_variables=exp_tags,
+                working_dir=wdir,
+                burnin=burnin,
+            )
+        ]
 
-        fiveday_analyzers = [FiveDayAgebinAnalyzer(expt_name=exp_name,
-                                                   start_year=start_year,
-                                                   end_year=end_year,
-                                                   age_groups_aggregates=age_groups_aggregates,
-                                                   sweep_variables=exp_tags,
-                                                   working_dir=wdir,
-                                                   burnin=burnin)]
+        fiveday_analyzers = [
+            FiveDayAgebinAnalyzer(
+                expt_name=exp_name,
+                start_year=start_year,
+                end_year=end_year,
+                age_groups_aggregates=age_groups_aggregates,
+                sweep_variables=exp_tags,
+                working_dir=wdir,
+                burnin=burnin,
+            )
+        ]
 
-        monthly_analyzers = [MonthlyAgebinAnalyzer(expt_name=exp_name,
-                                                   start_year=start_year,
-                                                   end_year=end_year,
-                                                   age_groups_aggregates=age_groups_aggregates,
-                                                   sweep_variables=exp_tags,
-                                                   working_dir=wdir,
-                                                   burnin=burnin)]
+        monthly_analyzers = [
+            MonthlyAgebinAnalyzer(
+                expt_name=exp_name,
+                start_year=start_year,
+                end_year=end_year,
+                age_groups_aggregates=age_groups_aggregates,
+                sweep_variables=exp_tags,
+                working_dir=wdir,
+                burnin=burnin,
+            )
+        ]
 
-        annual_analyzers = [AnnualAgebinAnalyzer(expt_name=exp_name,
-                                                 sweep_variables=exp_tags,
-                                                 working_dir=wdir,
-                                                 start_year=start_year,
-                                                 end_year=end_year - 1,
-                                                 age_groups_aggregates=age_groups_aggregates,
-                                                 burnin=burnin)]
+        annual_analyzers = [
+            AnnualAgebinAnalyzer(
+                expt_name=exp_name,
+                sweep_variables=exp_tags,
+                working_dir=wdir,
+                start_year=start_year,
+                end_year=end_year - 1,
+                age_groups_aggregates=age_groups_aggregates,
+                burnin=burnin,
+            )
+        ]
 
-        analyzers_timeavrg = [TimeavrgAgebinAnalyzer(expt_name=exp_name,
-                                                     sweep_variables=exp_tags,
-                                                     working_dir=wdir,
-                                                     start_year=start_year,
-                                                     end_year=end_year - 1,
-                                                     age_groups_aggregates=age_groups_aggregates,
-                                                     burnin=burnin)]
+        analyzers_timeavrg = [
+            TimeavrgAgebinAnalyzer(
+                expt_name=exp_name,
+                sweep_variables=exp_tags,
+                working_dir=wdir,
+                start_year=start_year,
+                end_year=end_year - 1,
+                age_groups_aggregates=age_groups_aggregates,
+                burnin=burnin,
+            )
+        ]
         ## EIR analyzer
         # Run eir_analyzers first to avoid any of the other analyzers running without this dependency completed.
-        if exp.entomology_mode == 'dynamic':
-            manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=eir_analyzer,
-                                     partial_analyze_ok=True)
+        if exp.entomology_mode == "dynamic":
+            manager = AnalyzeManager(
+                configuration={},
+                ids=[(exp_id, ItemType.EXPERIMENT)],
+                analyzers=eir_analyzer,
+                partial_analyze_ok=True,
+            )
             manager.analyze()
-            if '5day' in exp.analyzer_list or 'daily' in exp.analyzer_list:
-                daily_eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
-                                                       sweep_variables=exp_tags,
-                                                       start_year=start_year,
-                                                       daily_report=True,
-                                                       monthly_report=True,
-                                                       burnin=burnin,
-                                                       working_dir=wdir)]
-                manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)],
-                                         analyzers=daily_eir_analyzer,
-                                         partial_analyze_ok=True)
+            if "5day" in exp.analyzer_list or "daily" in exp.analyzer_list:
+                daily_eir_analyzer = [
+                    InputEIRAnalyzer(
+                        expt_name=exp_name,
+                        sweep_variables=exp_tags,
+                        start_year=start_year,
+                        daily_report=True,
+                        monthly_report=True,
+                        burnin=burnin,
+                        working_dir=wdir,
+                    )
+                ]
+                manager = AnalyzeManager(
+                    configuration={},
+                    ids=[(exp_id, ItemType.EXPERIMENT)],
+                    analyzers=daily_eir_analyzer,
+                    partial_analyze_ok=True,
+                )
                 manager.analyze()
 
         # Default
         analyzer = []
         # Age groups aggregated to all and time intervals are kept unaggregated (1day, InsetChart)
-        if 'surveyallage' in exp.analyzer_list:
+        if "surveyallage" in exp.analyzer_list:
             analyzer = analyzer + all_age_analyzer
         # Aggregated timeseries per age groups
-        if 'timeavrg' in exp.analyzer_list:
+        if "timeavrg" in exp.analyzer_list:
             analyzer = analyzer + analyzers_timeavrg
         # Annual timeseries per age groups
-        if 'annual' in exp.analyzer_list:
+        if "annual" in exp.analyzer_list:
             analyzer = analyzer + annual_analyzers
         # Monthly timeseries per age groups
-        if 'monthly' in exp.analyzer_list:
+        if "monthly" in exp.analyzer_list:
             analyzer = analyzer + monthly_analyzers
         # 5 day timeseries per age groups
-        if '5day' in exp.analyzer_list:
-            if exp.emod_step != 'burnin':
-                analyzer = analyzer + [FiveDayAgebinAnalyzer(expt_name=exp_name,
-                                                             start_year=start_year,
-                                                             end_year=end_year,
-                                                             sweep_variables=exp_tags,
-                                                             working_dir=wdir,
-                                                             burnin=burnin,
-                                                             intervention_analyzer_columns=exp.intervention_analyzer_columns)]
+        if "5day" in exp.analyzer_list:
+            if exp.emod_step != "burnin":
+                analyzer = analyzer + [
+                    FiveDayAgebinAnalyzer(
+                        expt_name=exp_name,
+                        start_year=start_year,
+                        end_year=end_year,
+                        sweep_variables=exp_tags,
+                        working_dir=wdir,
+                        burnin=burnin,
+                        intervention_analyzer_columns=exp.intervention_analyzer_columns,
+                    )
+                ]
         ## Daily timeseries per age groups
-        if 'daily' in exp.analyzer_list:
+        if "daily" in exp.analyzer_list:
             analyzer = analyzer + daily_analyzers
 
-        manager = AnalyzeManager(configuration={}, ids=[(exp_id, ItemType.EXPERIMENT)], analyzers=analyzer,
-                                 partial_analyze_ok=True)
+        manager = AnalyzeManager(
+            configuration={},
+            ids=[(exp_id, ItemType.EXPERIMENT)],
+            analyzers=analyzer,
+            partial_analyze_ok=True,
+        )
         manager.analyze()

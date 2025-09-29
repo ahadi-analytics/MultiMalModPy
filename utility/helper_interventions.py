@@ -3,6 +3,7 @@ from interventions.ccstep import *
 
 # from interventions.smc import  * # Currently not supported
 
+
 # Wrapper functions to integrate custom updates the exp object or the scenario dataframe as required by interventions
 def exp_params_to_update(exp):
     """
@@ -34,15 +35,17 @@ def exp_params_to_update(exp):
 
     exp.intervention_analyzer_columns = []
     if not exp.intervention_list or exp.intervention_list == []:
-        print('No interventions specified')
+        print("No interventions specified")
     else:
-        if 'ccstep' in exp.intervention_list:
-            print('Adding parameters for ccstep')
+        if "ccstep" in exp.intervention_list:
+            print("Adding parameters for ccstep")
             exp = ccstep_params(exp)
         else:
-            raise ValueError('Invalid intervention specified. Note that case management is automatically included.')
+            raise ValueError(
+                "Invalid intervention specified. Note that case management is automatically included."
+            )
 
-    # if 'smc' in exp.intervention_list:	
+    # if 'smc' in exp.intervention_list:
     #    print('Adding parameters for smc')
     #    exp = smc_params(exp)
     return exp
@@ -67,7 +70,7 @@ def scenario_df_to_update(exp, df):
                           - Addition of columns specific to the `ccstep` intervention.
     """
 
-    if 'ccstep' in exp.intervention_list:
+    if "ccstep" in exp.intervention_list:
         df = df.reset_index(drop=True)
         df = df.drop_duplicates()
 

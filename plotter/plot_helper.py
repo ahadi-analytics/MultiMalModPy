@@ -10,9 +10,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-mpl.rcParams['pdf.fonttype'] = 3
-plt.rcParams.update({'font.size': 16})
-plt.rcParams.update({'font.sans-serif': "Arial"})
+mpl.rcParams["pdf.fonttype"] = 3
+plt.rcParams.update({"font.size": 16})
+plt.rcParams.update({"font.sans-serif": "Arial"})
 
 
 # Helps process script inputs
@@ -46,11 +46,11 @@ def parse_args():
     parser.add_argument(
         "-m",
         "--models",
-        nargs='+',
+        nargs="+",
         type=str,
         required=False,
         help="Name of models to compare",
-        default=['EMOD', 'OpenMalaria', 'malariasimulation']
+        default=["EMOD", "OpenMalaria", "malariasimulation"],
     )
 
     return parser.parse_args()
@@ -77,12 +77,14 @@ def load_exp(wdir):
         class Exp:
             pass
 
-        exp_setup_file = os.path.join(wdir, 'exp_setup_df.csv')
-        scen_file = os.path.join(wdir, 'scenarios.csv')
+        exp_setup_file = os.path.join(wdir, "exp_setup_df.csv")
+        scen_file = os.path.join(wdir, "scenarios.csv")
 
         # Check if the required CSV files exist
         if not os.path.exists(exp_setup_file) or not os.path.exists(scen_file):
-            raise FileNotFoundError("Required files 'exp_setup_df.csv' and 'scenarios.csv' are missing.")
+            raise FileNotFoundError(
+                "Required files 'exp_setup_df.csv' and 'scenarios.csv' are missing."
+            )
 
         # Load data from CSV files
         exp_setup_df = pd.read_csv(exp_setup_file)
@@ -119,7 +121,7 @@ def custom_sort_key(age_group):
         int: The lower bound of the age group as an integer.
     """
 
-    return int(age_group.split('-')[0])
+    return int(age_group.split("-")[0])
 
 
 def get_output_df_malariasimulation(wdir, base_fname):
@@ -131,13 +133,13 @@ def get_output_df_malariasimulation(wdir, base_fname):
     columns_to_keep = None
     dfs = []
 
-    for suffix, pv_flag in [('', 'default'), ('_pv', 'parameter_variation')]:
-        fname = base_fname.replace('.csv', f'{suffix}.csv')
+    for suffix, pv_flag in [("", "default"), ("_pv", "parameter_variation")]:
+        fname = base_fname.replace(".csv", f"{suffix}.csv")
         path = os.path.join(wdir, fname)
         if os.path.isfile(path):
             try:
                 df = pd.read_csv(path, usecols=columns_to_keep)
-                df['custom_model_spec'] = pv_flag
+                df["custom_model_spec"] = pv_flag
                 dfs.append(df)
             except Exception as e:
                 print(f"Error reading {path}: {e}")
@@ -151,8 +153,15 @@ def get_output_df_malariasimulation(wdir, base_fname):
 
 
 # Creates the combined dataframes for all models simulated.
-def get_output_df(wdir, models, yr=False, mth=False, daily=False, custom_name=None,
-                  save_combined=False):
+def get_output_df(
+    wdir,
+    models,
+    yr=False,
+    mth=False,
+    daily=False,
+    custom_name=None,
+    save_combined=False,
+):
     """
     Load and combine data from the model output files.
 
@@ -188,36 +197,37 @@ def get_output_df(wdir, models, yr=False, mth=False, daily=False, custom_name=No
     """
 
     columns_to_keep = None  # default read all
-    fname = 'mmmpy_timeavrg.csv'
+    fname = "mmmpy_timeavrg.csv"
     if yr:
-        fname = 'mmmpy_yr.csv'
+        fname = "mmmpy_yr.csv"
     if mth:
-        fname = 'mmmpy_mth.csv'
+        fname = "mmmpy_mth.csv"
     if daily:
-        fname = 'mmmpy_daily.csv'
+        fname = "mmmpy_daily.csv"
     if custom_name:
-        fname = f'{custom_name}.csv'
+        fname = f"{custom_name}.csv"
 
     if os.path.isfile(os.path.join(wdir, fname)):
         df = pd.read_csv((os.path.join(wdir, fname)), low_memory=False)
     else:
         dfs = []
         for model in models:
-            if model.lower() == 'malariasimulation':
-                if model.lower() == 'malariasimulation':
-                    df_malariasimulation = get_output_df_malariasimulation(wdir=os.path.join(wdir, model),
-                                                                           base_fname=fname)
+            if model.lower() == "malariasimulation":
+                if model.lower() == "malariasimulation":
+                    df_malariasimulation = get_output_df_malariasimulation(
+                        wdir=os.path.join(wdir, model), base_fname=fname
+                    )
                 if not df_malariasimulation.empty:
-                    df_malariasimulation['models'] = model
+                    df_malariasimulation["models"] = model
                     dfs.append(df_malariasimulation)
             else:
                 model_path = os.path.join(wdir, model, fname)
                 if os.path.isfile(model_path):
                     try:
                         df_tmp = pd.read_csv(model_path, usecols=columns_to_keep)
-                        df_tmp['models'] = model
-                        if model == 'EMOD' and 'seed' in df_tmp.columns:
-                            df_tmp['seed'] = df_tmp['seed'] + 1
+                        df_tmp["models"] = model
+                        if model == "EMOD" and "seed" in df_tmp.columns:
+                            df_tmp["seed"] = df_tmp["seed"] + 1
                         dfs.append(df_tmp)
                     except Exception as e:
                         print(f"Error reading {model_path}: {e}")
@@ -229,22 +239,24 @@ def get_output_df(wdir, models, yr=False, mth=False, daily=False, custom_name=No
 
         df = pd.concat(dfs, ignore_index=True)
 
-        if 'ageGroup' in df.columns:
+        if "ageGroup" in df.columns:
             try:
-                age_grps = sorted(list(df['ageGroup'].unique()), key=custom_sort_key)
+                age_grps = sorted(list(df["ageGroup"].unique()), key=custom_sort_key)
             except:
-                age_grps = list(df['ageGroup'].unique())
-            df['ageGroup'] = df['ageGroup'].astype('category')
-            df['ageGroup'] = df['ageGroup'].cat.reorder_categories(age_grps)
+                age_grps = list(df["ageGroup"].unique())
+            df["ageGroup"] = df["ageGroup"].astype("category")
+            df["ageGroup"] = df["ageGroup"].cat.reorder_categories(age_grps)
 
-        warning_df = df[df['eir'] == 0]
-        if len(warning_df) > 0 and daily is False:  # we don't want to include simulations were eir was 0 or less, because we won't get any outcome measures and that crashes the system
-            print('Warning: some eirs had simulated EIRS of 0, and were removed')
-            df = df[df['eir'] > 0]
-            df = df[df['eir'].notnull()]
+        warning_df = df[df["eir"] == 0]
+        if (
+            len(warning_df) > 0 and daily is False
+        ):  # we don't want to include simulations were eir was 0 or less, because we won't get any outcome measures and that crashes the system
+            print("Warning: some eirs had simulated EIRS of 0, and were removed")
+            df = df[df["eir"] > 0]
+            df = df[df["eir"].notnull()]
 
         if not daily and save_combined:
-            df.to_csv(os.path.join(wdir, f'{fname}'), index=False)
+            df.to_csv(os.path.join(wdir, f"{fname}"), index=False)
     return df, wdir
 
 
@@ -272,12 +284,14 @@ def get_x_y(df, grpvar, x_channel, y_channel):
 
     xmean = df.groupby(grpvar, observed=False)[x_channel].agg("mean").reset_index()
     ymean = df.groupby(grpvar, observed=False)[y_channel].agg("mean").reset_index()
-    p_df = pd.DataFrame(columns=[grpvar, f'{y_channel}_min', f'{y_channel}_max'])
+    p_df = pd.DataFrame(columns=[grpvar, f"{y_channel}_min", f"{y_channel}_max"])
     for i, row in ymean.iterrows():
         p = df[df[grpvar] == row[grpvar]]
         pmin = np.nanpercentile(p[y_channel], 2.5, axis=0)
         pmax = np.nanpercentile(p[y_channel], 97.5, axis=0)
-        new_row = pd.DataFrame([{grpvar: row[grpvar], f'{y_channel}_min': pmin, f'{y_channel}_max': pmax}])
+        new_row = pd.DataFrame(
+            [{grpvar: row[grpvar], f"{y_channel}_min": pmin, f"{y_channel}_max": pmax}]
+        )
         if not new_row.empty and not new_row.isna().all(axis=None):
             p_df = pd.concat([p_df, new_row], axis=0, ignore_index=True)
     ymean = pd.merge(left=ymean, right=p_df, on=grpvar)
@@ -299,10 +313,11 @@ def convert_to_date(x):
     """
 
     import datetime
+
     return datetime.date(2005, 1, 1) + datetime.timedelta(days=x)
 
 
-def color_selector(i, s, sweepvar='models', n_colors=4):
+def color_selector(i, s, sweepvar="models", n_colors=4):
     """
      Select a color for plotting based on a model name or sweep variable index.
 
@@ -320,16 +335,18 @@ def color_selector(i, s, sweepvar='models', n_colors=4):
      Notes
          - For 'models', predefined colors are returned for 'EMOD', 'malariasimulation' and 'OpenMalaria'.
          - For any other string or sweepvar type, colors are taken from the seaborn colorblind palette.
-     """
-    if sweepvar == 'models':
+    """
+    if sweepvar == "models":
         model_colors = {
-            'EMOD': '#1a9e77',
-            'malariasimulation': '#7a5c9f',
-            'OpenMalaria': '#e97926'
+            "EMOD": "#1a9e77",
+            "malariasimulation": "#7a5c9f",
+            "OpenMalaria": "#e97926",
         }
-        return model_colors.get(s, sns.color_palette('colorblind', n_colors)[i % n_colors])
+        return model_colors.get(
+            s, sns.color_palette("colorblind", n_colors)[i % n_colors]
+        )
     else:
-        return sns.color_palette('colorblind', n_colors)[i % n_colors]
+        return sns.color_palette("colorblind", n_colors)[i % n_colors]
 
 
 def get_label(channel):
@@ -355,14 +372,15 @@ def get_label(channel):
         If the channel is not recognized, the channel name itself is returned.
     """
 
-    channel_labels = {'ageGroup': 'Age group',
-                      'prevalence_2to10': r'$\it{Pf}$PR$_{2-10}$',  # (%) if %, then pfpr outcomes need to be *100
-                      'prevalence': r'$\it{Pf}$PR',
-                      'clinical_incidence': 'Clinical incidence (pppy)',
-                      'severe_incidence': 'Severe incidence (pppy)',
-                      'eir': 'simulated EIR',
-                      'n_total_mos_pop': 'Total female mosquito population'
-                      }
+    channel_labels = {
+        "ageGroup": "Age group",
+        "prevalence_2to10": r"$\it{Pf}$PR$_{2-10}$",  # (%) if %, then pfpr outcomes need to be *100
+        "prevalence": r"$\it{Pf}$PR",
+        "clinical_incidence": "Clinical incidence (pppy)",
+        "severe_incidence": "Severe incidence (pppy)",
+        "eir": "simulated EIR",
+        "n_total_mos_pop": "Total female mosquito population",
+    }
 
     # If channel is not found in channel_labels, it defaults to returning the value of channel itself
     return channel_labels.get(channel, channel)
@@ -380,29 +398,32 @@ def get_legend_title(sweepvar, exp=None):
         str: The legend title associated with the sweep variable, or the sweep variable name if not found.
     """
 
-    if exp is not None and sweepvar == 'target_output_values':
+    if exp is not None and sweepvar == "target_output_values":
         sweepvar = exp.target_output_name
 
-    channel_title = {'ageGroup': 'Age group',
-                     'prevalence_2to10': r'$\it{Pf}$PR$_{2-10}$',  # (%) if %, then pfpr outcomes need to be *100
-                     'prevalence': r'$\it{Pf}$PR',
-                     'clinical_incidence': 'Clinical incidence (pppy)',
-                     'severe_incidence': 'Severe incidence (pppy)',
-                     'eir': 'simulated EIR',
-                     'n_total_mos_pop': 'Total female mosquito population',
-                     # Input parameters to sweep over
-                     'models': '',
-                     'cm_clinical': 'Clinical case management',
-                     'seasonality': 'Seasonality',
-                     'entomology_mode': 'Entomology mode',
-                     'eir': 'EIR'
-                     }
+    channel_title = {
+        "ageGroup": "Age group",
+        "prevalence_2to10": r"$\it{Pf}$PR$_{2-10}$",  # (%) if %, then pfpr outcomes need to be *100
+        "prevalence": r"$\it{Pf}$PR",
+        "clinical_incidence": "Clinical incidence (pppy)",
+        "severe_incidence": "Severe incidence (pppy)",
+        "eir": "simulated EIR",
+        "n_total_mos_pop": "Total female mosquito population",
+        # Input parameters to sweep over
+        "models": "",
+        "cm_clinical": "Clinical case management",
+        "seasonality": "Seasonality",
+        "entomology_mode": "Entomology mode",
+        "eir": "EIR",
+    }
 
     # If channel is not found in channel_labels, it defaults to returning the value of channel itself
     return channel_title.get(sweepvar, sweepvar)
 
 
-def clean_fname(fname, sweepvar=None, unique_groups=None, facet_var=None, unique_facets=None):
+def clean_fname(
+    fname, sweepvar=None, unique_groups=None, facet_var=None, unique_facets=None
+):
     """
     Clean and modify a given filename by replacing placeholder variables with actual values.
     This function replaces placeholder values in the provided filename based on the provided
@@ -427,7 +448,7 @@ def clean_fname(fname, sweepvar=None, unique_groups=None, facet_var=None, unique
     if sweepvar is not None:
         if len(unique_groups) == 1 and not isinstance(unique_groups[0], int):
             fname = fname.replace(sweepvar, str(unique_groups[0]))
-    fname = fname.replace('models', 'model')
+    fname = fname.replace("models", "model")
     return fname
 
 
@@ -460,44 +481,56 @@ def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True)
         are multiple unique model names in the DataFrame.
     """
 
-    txt = 'Filtered dataset by: '
+    txt = "Filtered dataset by: "
 
     if agegrps is not None:
         if isinstance(agegrps, list):
-            df = df[df['ageGroup'].isin(agegrps)]
-            txt += f'ageGroup in {agegrps}, '
+            df = df[df["ageGroup"].isin(agegrps)]
+            txt += f"ageGroup in {agegrps}, "
         else:
-            df = df[df['ageGroup'] == agegrps]
-            txt += f'ageGroup {agegrps}, '
+            df = df[df["ageGroup"] == agegrps]
+            txt += f"ageGroup {agegrps}, "
 
-    if 'cm_clinical' not in figure_vars:
-        selected_cm = df['cm_clinical'].min()
-        df = df[df['cm_clinical'] == selected_cm]
-        txt += f'cm_clinical {selected_cm}, '
+    if "cm_clinical" not in figure_vars:
+        selected_cm = df["cm_clinical"].min()
+        df = df[df["cm_clinical"] == selected_cm]
+        txt += f"cm_clinical {selected_cm}, "
 
-    if 'seasonality' not in figure_vars:
-        selected_season = 'seasonal' if 'seasonal' in df['seasonality'].unique() else df['seasonality'].unique()[0]
-        df = df[df['seasonality'] == selected_season]
-        txt += f'seasonality {selected_season}, '
+    if "seasonality" not in figure_vars:
+        selected_season = (
+            "seasonal"
+            if "seasonal" in df["seasonality"].unique()
+            else df["seasonality"].unique()[0]
+        )
+        df = df[df["seasonality"] == selected_season]
+        txt += f"seasonality {selected_season}, "
 
     if filter_target:
-        if not any(var in figure_vars for var in ['eir', 'prevalence_2to10', 'target_output_values']):
-            selected_output = df['target_output_values'].max()
-            df = df[df['target_output_values'] == selected_output]
-            txt += f'target_output_values {selected_output}, '
+        if not any(
+            var in figure_vars
+            for var in ["eir", "prevalence_2to10", "target_output_values"]
+        ):
+            selected_output = df["target_output_values"].max()
+            df = df[df["target_output_values"] == selected_output]
+            txt += f"target_output_values {selected_output}, "
 
-    if 'models' not in figure_vars and df['models'].nunique() > 1:
-        raise ValueError('models needs to be specified in plot if results were combined for more than 1 model')
+    if "models" not in figure_vars and df["models"].nunique() > 1:
+        raise ValueError(
+            "models needs to be specified in plot if results were combined for more than 1 model"
+        )
 
     # Remove trailing comma and space if any filtering has been done
-    if txt.endswith(', '):
+    if txt.endswith(", "):
         txt = txt[:-2]
 
     return df, txt
 
 
 def sorted_list(string_char):
-    return sorted(string_char.unique(), key=lambda x: (str(x).lower() if isinstance(x, str) else x))
+    return sorted(
+        string_char.unique(),
+        key=lambda x: (str(x).lower() if isinstance(x, str) else x),
+    )
 
 
 # Function to assign an age range to a category

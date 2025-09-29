@@ -14,7 +14,7 @@ from idmtools.entities.iplatform import IPlatform
 from idmtools.entities.simulation import Simulation
 import sys
 
-sys.path.append('../../')
+sys.path.append("../../")
 import manifest
 
 
@@ -52,13 +52,16 @@ def build_burnin_df(exp_id: str, platform, serialize_days):
     df["Num_Cores"] = df["simid"].apply(_get_core_counts, platform=platform)
 
     # try:
-    burnin_length_in_days = serialize_days  # int(df["Serialization_Time_Steps"].iloc[0].strip('[]'))
+    burnin_length_in_days = (
+        serialize_days  # int(df["Serialization_Time_Steps"].iloc[0].strip('[]'))
+    )
     # except AttributeError:
     # different versions of pandas save this as either a string or a list
     # burnin_length_in_days = df["Serialization_Time_Steps"].iloc[0][-1]
 
-    df["Serialized_Population_Filenames"] = df["Num_Cores"].apply(_get_serialized_filenames,
-                                                                  timesteps=burnin_length_in_days)
+    df["Serialized_Population_Filenames"] = df["Num_Cores"].apply(
+        _get_serialized_filenames, timesteps=burnin_length_in_days
+    )
     df = df.reset_index(drop=True)
     return df
 
@@ -96,33 +99,69 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     """
 
     ## If forced EIR, treated as campaign in EMOD
-    if row.entomology_mode == 'forced':
-        set_inputEIR_seasonality(camp, float(row.transmission_intensity_EMOD), row.seasonality)
+    if row.entomology_mode == "forced":
+        set_inputEIR_seasonality(
+            camp, float(row.transmission_intensity_EMOD), row.seasonality
+        )
 
     # Case management
-    treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
+    treatment_camp_simple(
+        camp,
+        cm_start=row.cm_start,
+        cm_clinical=row.cm_clinical,
+        cm_severe=row.cm_severe,
+    )
 
     ## Carrying capacity step change
     # Make sure to include the ccstep change only at pickup simulations.
-    if 'ccstep' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):
+    if "ccstep" in intervention_list and (
+        exp.emod_step == "pickup" or exp.emod_step is None
+    ):
         camp = carrying_capacity(camp, row)
 
     if exp.emod_importation_rate != 0:
-        ncases_per_year_per1000pop = (exp.emod_importation_rate * exp.emod_pop_size) / 1000
+        ncases_per_year_per1000pop = (
+            exp.emod_importation_rate * exp.emod_pop_size
+        ) / 1000
         if ncases_per_year_per1000pop < 1:
-            print('WARNING: ncases_per_year_per1000pop < 1. Setting to minimum of 1.')
+            print("WARNING: ncases_per_year_per1000pop < 1. Setting to minimum of 1.")
             ncases_per_year_per1000pop = 1
 
-        add_outbreak_individual(camp, start_day=73, target_num_individuals=ncases_per_year_per1000pop,
-                                repetitions=-1, timesteps_between_repetitions=365)
-        add_outbreak_individual(camp, start_day=146, target_num_individuals=ncases_per_year_per1000pop,
-                                repetitions=-1, timesteps_between_repetitions=365)
-        add_outbreak_individual(camp, start_day=219, target_num_individuals=ncases_per_year_per1000pop,
-                                repetitions=-1, timesteps_between_repetitions=365)
-        add_outbreak_individual(camp, start_day=292, target_num_individuals=ncases_per_year_per1000pop,
-                                repetitions=-1, timesteps_between_repetitions=365)
-        add_outbreak_individual(camp, start_day=365, target_num_individuals=ncases_per_year_per1000pop,
-                                repetitions=-1, timesteps_between_repetitions=365)
+        add_outbreak_individual(
+            camp,
+            start_day=73,
+            target_num_individuals=ncases_per_year_per1000pop,
+            repetitions=-1,
+            timesteps_between_repetitions=365,
+        )
+        add_outbreak_individual(
+            camp,
+            start_day=146,
+            target_num_individuals=ncases_per_year_per1000pop,
+            repetitions=-1,
+            timesteps_between_repetitions=365,
+        )
+        add_outbreak_individual(
+            camp,
+            start_day=219,
+            target_num_individuals=ncases_per_year_per1000pop,
+            repetitions=-1,
+            timesteps_between_repetitions=365,
+        )
+        add_outbreak_individual(
+            camp,
+            start_day=292,
+            target_num_individuals=ncases_per_year_per1000pop,
+            repetitions=-1,
+            timesteps_between_repetitions=365,
+        )
+        add_outbreak_individual(
+            camp,
+            start_day=365,
+            target_num_individuals=ncases_per_year_per1000pop,
+            repetitions=-1,
+            timesteps_between_repetitions=365,
+        )
 
     # SMC currently not supported
     # SMC using PKPD model
@@ -137,7 +176,7 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     #        # add_drug_campaign(camp, campaign_type = "SMC", start_days = [396,761,1126,1491,1856],
     #    smc_campaign(camp, row, start_array)
 
-    return {'scen_id': int(row.scen_id)}
+    return {"scen_id": int(row.scen_id)}
 
 
 def drug_setup(config, exp=None):
@@ -145,7 +184,7 @@ def drug_setup(config, exp=None):
     Functions to alter drug parameters specific to MultiMalModPy drug campaigns.
     """
     # SMC currently not supported
-    if 'smc' in exp.intervention_list:
+    if "smc" in exp.intervention_list:
         return
 
 
@@ -165,29 +204,56 @@ def habitat_setup(config, exp, row):
     """
 
     # Parameter configurations on climate for dynamic EIR
-    malaria_config.add_species(config, manifest, ["gambiae"])  # , "arabiensis", "funestus"
-    max_capacity_multiplier = (exp.emod_pop_size / 1000)
+    malaria_config.add_species(
+        config, manifest, ["gambiae"]
+    )  # , "arabiensis", "funestus"
+    max_capacity_multiplier = exp.emod_pop_size / 1000
     import emod_api.config.default_from_schema_no_validation as dfs
-    if row.seasonality == 'perennial':
-        habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
+
+    if row.seasonality == "perennial":
+        habitat1 = dfs.schema_to_config_subnode(
+            manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"]
+        )
         habitat1.parameters.Habitat_Type = "CONSTANT"
         habitat1.parameters.Max_Larval_Capacity = 5265700 * max_capacity_multiplier
-        habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type,
-                         "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
-        malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list, overwrite=True)
+        habitat_list = [
+            {
+                "Habitat_Type": habitat1.parameters.Habitat_Type,
+                "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity,
+            }
+        ]
+        malaria_config.set_species_param(
+            config, "gambiae", parameter="Habitats", value=habitat_list, overwrite=True
+        )
     else:
-        habitat1 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
+        habitat1 = dfs.schema_to_config_subnode(
+            manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"]
+        )
         habitat1.parameters.Habitat_Type = "TEMPORARY_RAINFALL"
         habitat1.parameters.Max_Larval_Capacity = 90000000 * max_capacity_multiplier
-        habitat_list = [{"Habitat_Type": habitat1.parameters.Habitat_Type,
-                         "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity}]
-        malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list, overwrite=True)
-        habitat2 = dfs.schema_to_config_subnode(manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"])
+        habitat_list = [
+            {
+                "Habitat_Type": habitat1.parameters.Habitat_Type,
+                "Max_Larval_Capacity": habitat1.parameters.Max_Larval_Capacity,
+            }
+        ]
+        malaria_config.set_species_param(
+            config, "gambiae", parameter="Habitats", value=habitat_list, overwrite=True
+        )
+        habitat2 = dfs.schema_to_config_subnode(
+            manifest.schema_file, ["idmTypes", "idmType:VectorHabitat"]
+        )
         habitat2.parameters.Habitat_Type = "CONSTANT"
         habitat2.parameters.Max_Larval_Capacity = 2850000 * max_capacity_multiplier
-        habitat_list = [{"Habitat_Type": habitat2.parameters.Habitat_Type,
-                         "Max_Larval_Capacity": habitat2.parameters.Max_Larval_Capacity}]
-        malaria_config.set_species_param(config, 'gambiae', parameter="Habitats", value=habitat_list, overwrite=False)
+        habitat_list = [
+            {
+                "Habitat_Type": habitat2.parameters.Habitat_Type,
+                "Max_Larval_Capacity": habitat2.parameters.Max_Larval_Capacity,
+            }
+        ]
+        malaria_config.set_species_param(
+            config, "gambiae", parameter="Habitats", value=habitat_list, overwrite=False
+        )
 
 
 def climate_setup(task, seasonality=None):
@@ -203,13 +269,18 @@ def climate_setup(task, seasonality=None):
         None
     """
     task.config.parameters.Climate_Model = "CLIMATE_BY_DATA"
-    task.config.parameters.Air_Temperature_Filename = os.path.join('climate',
-                                                                   f'{seasonality}_air_temperature_daily.bin')
-    task.config.parameters.Land_Temperature_Filename = os.path.join('climate',
-                                                                    f'{seasonality}_air_temperature_daily.bin')
-    task.config.parameters.Rainfall_Filename = os.path.join('climate', f'{seasonality}_rainfall_daily.bin')
-    task.config.parameters.Relative_Humidity_Filename = os.path.join('climate',
-                                                                     f'{seasonality}_relative_humidity_daily.bin')
+    task.config.parameters.Air_Temperature_Filename = os.path.join(
+        "climate", f"{seasonality}_air_temperature_daily.bin"
+    )
+    task.config.parameters.Land_Temperature_Filename = os.path.join(
+        "climate", f"{seasonality}_air_temperature_daily.bin"
+    )
+    task.config.parameters.Rainfall_Filename = os.path.join(
+        "climate", f"{seasonality}_rainfall_daily.bin"
+    )
+    task.config.parameters.Relative_Humidity_Filename = os.path.join(
+        "climate", f"{seasonality}_relative_humidity_daily.bin"
+    )
 
 
 def _get_serialized_filenames(num_cores, timesteps):
@@ -226,8 +297,10 @@ def _get_serialized_filenames(num_cores, timesteps):
         serialized_list = [f"state-{str(timesteps).zfill(5)}.dtk"]
     else:
         # For multi-core simulation, generate serialized files for each core
-        serialized_list = [f"state-{str(timesteps).zfill(5)}-{str(core_count).zfill(3)}.dtk"
-                           for core_count in range(num_cores)]
+        serialized_list = [
+            f"state-{str(timesteps).zfill(5)}-{str(core_count).zfill(3)}.dtk"
+            for core_count in range(num_cores)
+        ]
     return serialized_list
 
 
@@ -240,7 +313,9 @@ def _get_core_counts(sim_id, platform):
     return num_cores
 
 
-def get_workdir_from_simulations(platform: 'IPlatform', comps_simulations: List[Simulation]) -> Dict[str, str]:
+def get_workdir_from_simulations(
+    platform: "IPlatform", comps_simulations: List[Simulation]
+) -> Dict[str, str]:
     """
     Get COMPS filepath
     Args:
@@ -249,18 +324,27 @@ def get_workdir_from_simulations(platform: 'IPlatform', comps_simulations: List[
     Returns: dictionary with simid as key and filepath as value
     """
 
-    if platform.environment.upper() == "SLURMSTAGE" or platform.environment.upper() == "CALCULON":
-        mounts = AuthManager.get_environment_macros(platform.environment)['DOCKER_MOUNTS']
-        mounts = {v[0]: v[1:4] for v in [m.split(';') for m in mounts.split('|')]}
+    if (
+        platform.environment.upper() == "SLURMSTAGE"
+        or platform.environment.upper() == "CALCULON"
+    ):
+        mounts = AuthManager.get_environment_macros(platform.environment)[
+            "DOCKER_MOUNTS"
+        ]
+        mounts = {v[0]: v[1:4] for v in [m.split(";") for m in mounts.split("|")]}
         # pretend I'm on Linux and set the Linux mapping environment variables
         for k, v in mounts.items():
-            os.environ[k] = ';'.join([v[0], v[2]])
-    sim_work_dir = {str(sim.id): sim.hpc_jobs[-1].working_directory for sim in comps_simulations if sim.hpc_jobs}
+            os.environ[k] = ";".join([v[0], v[2]])
+    sim_work_dir = {
+        str(sim.id): sim.hpc_jobs[-1].working_directory
+        for sim in comps_simulations
+        if sim.hpc_jobs
+    }
 
     return sim_work_dir
 
 
-def create_sim_directory_map(exp_id: str, platform: 'IPlatform'):
+def create_sim_directory_map(exp_id: str, platform: "IPlatform"):
     """
         Return a dataframe which contains simulation's working_path and tags.
     Args:
@@ -280,17 +364,23 @@ def create_sim_directory_map(exp_id: str, platform: 'IPlatform'):
     df = pd.DataFrame(tags_list)
 
     if len(df) != len(exp.simulations):
-        print(f'Warning: not all jobs in {exp_id} succeeded', ':', )
-        print(len(exp.simulations) - len(df), 'unsucceeded')
+        print(
+            f"Warning: not all jobs in {exp_id} succeeded",
+            ":",
+        )
+        print(len(exp.simulations) - len(df), "unsucceeded")
 
     simulations = exp.simulations
     dir_list = []
     for sim in simulations:
-        dir_dict = {"simid": str(sim.id), "serialized_file_path": platform._op_client.get_directory(sim)}
+        dir_dict = {
+            "simid": str(sim.id),
+            "serialized_file_path": platform._op_client.get_directory(sim),
+        }
         dir_list.append(dir_dict)
 
     df_dir = pd.DataFrame(dir_list)
-    df = pd.merge(left=df, right=df_dir, on='simid')
+    df = pd.merge(left=df, right=df_dir, on="simid")
 
     return df
 
@@ -305,10 +395,11 @@ def get_burnin_exp_name(serialized_df):
     """
 
     import json
-    metadata_path = serialized_df.serialized_file_path[0].parent / 'metadata.json'
-    with open(metadata_path, 'r') as json_file:
+
+    metadata_path = serialized_df.serialized_file_path[0].parent / "metadata.json"
+    with open(metadata_path, "r") as json_file:
         metadata = json.load(json_file)
-    return metadata['name']
+    return metadata["name"]
 
 
 def get_scendf_burnin(exp, emod_serialized_id, manifest, platform, burnin):
@@ -327,7 +418,7 @@ def get_scendf_burnin(exp, emod_serialized_id, manifest, platform, burnin):
     serialized_df = build_burnin_df(emod_serialized_id, platform, burnin * 365)
     exp_name_burnin = get_burnin_exp_name(serialized_df)
     scen_df_burnin_path = os.path.join(exp.suite_directory, exp_name_burnin)
-    scen_df_burnin = pd.read_csv(os.path.join(scen_df_burnin_path, 'scenarios.csv'))
+    scen_df_burnin = pd.read_csv(os.path.join(scen_df_burnin_path, "scenarios.csv"))
     return scen_df_burnin
 
 
@@ -373,6 +464,7 @@ class ItvFn:
 
     def __call__(self, simulation: Simulation):
         import emod_api.campaign as campaign
+
         campaign.reset()
         md = self.func(campaign, *self.args, **self.kwargs)
 
@@ -383,18 +475,28 @@ class ItvFn:
         # update config for adhoc events
         adhoc_events = campaign.get_adhocs()
         if len(adhoc_events) > 0:
-            print("Found adhoc events in campaign. Needs some special processing behind the scenes.")
+            print(
+                "Found adhoc events in campaign. Needs some special processing behind the scenes."
+            )
             if "Custom_Individual_Events" in simulation.task.config.parameters:
-                ev_exist = set(simulation.task.config.parameters.Custom_Individual_Events)
+                ev_exist = set(
+                    simulation.task.config.parameters.Custom_Individual_Events
+                )
                 ev_addhoc = set(adhoc_events.keys())
-                simulation.task.config.parameters.Custom_Individual_Events = list(ev_exist.union(ev_addhoc))
+                simulation.task.config.parameters.Custom_Individual_Events = list(
+                    ev_exist.union(ev_addhoc)
+                )
             else:
-                simulation.task.config.parameters.Custom_Individual_Events = list(set(adhoc_events.keys()))
+                simulation.task.config.parameters.Custom_Individual_Events = list(
+                    set(adhoc_events.keys())
+                )
 
         # Make sure we cast numpy types into normal system types
         if md:
             for k, v in md.items():
-                if isinstance(v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)):
+                if isinstance(
+                    v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)
+                ):
                     md[k] = v.item()
 
         return md
@@ -425,7 +527,9 @@ class CfgFn:
         # Make sure we cast numpy types into normal system types
         if md:
             for k, v in md.items():
-                if isinstance(v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)):
+                if isinstance(
+                    v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)
+                ):
                     md[k] = v.item()
 
         return md
@@ -451,6 +555,8 @@ class SwpFn:
         # Make sure we cast numpy types into normal system types
         if md:
             for k, v in md.items():
-                if isinstance(v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)):
+                if isinstance(
+                    v, (np.int64, np.float64, np.float32, np.uint32, np.int16, np.int32)
+                ):
                     md[k] = v.item()
         return md

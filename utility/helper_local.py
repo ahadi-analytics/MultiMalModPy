@@ -43,23 +43,24 @@ class LoadLaunchArgs:
         User-provided values can override these defaults.
         """
         from datetime import datetime as dt
+
         # Default values
         self.directory = None
         self.suite = f'test_{dt.now().strftime("%Y%m%d")}'
         self.expname = f'sims_entomologymode_seasonality_intervention_{dt.now().strftime("%H_%M_%S")}'
         self.emod_step = None
-        self.serializedid = ''
-        self.models = ['OpenMalaria', 'malariasimulation']  # 'EMOD'
-        self.user = os.environ.get('USER')
+        self.serializedid = ""
+        self.models = ["OpenMalaria", "malariasimulation"]  # 'EMOD'
+        self.user = os.environ.get("USER")
         self.csv = None
         self.rownum = None
-        self.run_mode = 'custom'
+        self.run_mode = "custom"
         self.emod_calib_params = False
         self.overwrite = False
         self.mpv = True
         self.test = True
-        self.note = ''
-        self.target_output_name = 'prevalence_2to10'
+        self.note = ""
+        self.target_output_name = "prevalence_2to10"
 
         # Update with any user-provided values
         for key, value in kwargs.items():
@@ -78,11 +79,13 @@ class LoadLaunchArgs:
         """
         Return a string representation of the current argument settings.
         """
-        return (f"Args(directory={self.directory}, suite={self.suite}, expname={self.expname}, "
-                f"emod_step={self.emod_step}, serializedid={self.serializedid}, models={self.models}, "
-                f"user={self.user}, csv={self.csv},  rownum={self.rownum}, "
-                f"run_mode={self.run_mode}, emod_calib_params={self.emod_calib_params}, "
-                f"overwrite={self.overwrite}, mpv={self.mpv}, test={self.test}, note={self.note}, target_output_name={self.target_output_name})")
+        return (
+            f"Args(directory={self.directory}, suite={self.suite}, expname={self.expname}, "
+            f"emod_step={self.emod_step}, serializedid={self.serializedid}, models={self.models}, "
+            f"user={self.user}, csv={self.csv},  rownum={self.rownum}, "
+            f"run_mode={self.run_mode}, emod_calib_params={self.emod_calib_params}, "
+            f"overwrite={self.overwrite}, mpv={self.mpv}, test={self.test}, note={self.note}, target_output_name={self.target_output_name})"
+        )
 
 
 def write_ps1_runmodel(exp, filename, model):
@@ -110,8 +113,12 @@ def write_ps1_runmodel(exp, filename, model):
     if not os.path.isdir(exp.job_directory):
         raise ValueError(f"Invalid job directory: {exp.job_directory}")
 
-    logfile = os.path.normpath(os.path.join(exp.job_directory, "log", f"run_{model}.out"))
-    logfile_analyzer = os.path.normpath(os.path.join(exp.job_directory, "log", f"run_analyzer_{model}.out"))
+    logfile = os.path.normpath(
+        os.path.join(exp.job_directory, "log", f"run_{model}.out")
+    )
+    logfile_analyzer = os.path.normpath(
+        os.path.join(exp.job_directory, "log", f"run_analyzer_{model}.out")
+    )
 
     ps1_content = f"""
     # Start logging to a file
@@ -170,7 +177,7 @@ def write_ps1_runmodel(exp, filename, model):
     """
 
     # Write to the specified file
-    with open(filename, 'w') as file:
+    with open(filename, "w") as file:
         file.write(ps1_content)
 
     print(f"PowerShell script has been written to {filename}")
@@ -189,10 +196,12 @@ def submit_runmodel_local(exp, model):
         OSError: If there is an issue with executing the command or running the script.
     """
 
-    file_name = f'jobs_{model}_simplerun.ps1'
+    file_name = f"jobs_{model}_simplerun.ps1"
     file_path = os.path.join(exp.job_directory, file_name)
     write_ps1_runmodel(exp, filename=file_path, model=model)
-    cmd_command = f'cmd.exe /c start powershell -ExecutionPolicy Bypass -File "{file_path}"'
+    cmd_command = (
+        f'cmd.exe /c start powershell -ExecutionPolicy Bypass -File "{file_path}"'
+    )
     subprocess.Popen(cmd_command, shell=True)
 
 
@@ -237,7 +246,7 @@ Read-Host "Press Enter to continue"
     """
 
     # Write the PowerShell script
-    with open(file_path, 'w') as file:
+    with open(file_path, "w") as file:
         file.write(powershell_content)
 
     print(f"PowerShell script written to {file_path}")
@@ -260,13 +269,15 @@ def write_ps1_analyzer(exp, pyscript, model):
     subdir = model
     pycommand = f'python {pyscript} --directory "{exp.job_directory}"\n'
 
-    if model == 'malariasimulation':
+    if model == "malariasimulation":
         if exp.malariasimulation_parameter_variation == "both":
-            pycommand = pycommand + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
+            pycommand = (
+                pycommand + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
+            )
         if exp.malariasimulation_parameter_variation == "yes":
-            pycommand = pycommand + '--mpv'
+            pycommand = pycommand + "--mpv"
 
-    fname = f'run_analyze_{model}.ps1'
+    fname = f"run_analyze_{model}.ps1"
     create_ps1_script(exp, fname, subdir, job_name, pycommand)
 
 
@@ -297,16 +308,18 @@ def submit_run_plotters_local(exp):
             pyscript = f"plot_{plot_name}.py"
             job_name = f"run_plot_{plot_name}"
             subdir = "plotter"
-            model_args = ' '.join(exp.models)
+            model_args = " ".join(exp.models)
             pycommand = f"python {pyscript} --directory {exp.output_directory} --models {model_args}"
 
-            fname = pyscript.replace('.py', '.ps1')
+            fname = pyscript.replace(".py", ".ps1")
             create_ps1_script(exp, fname, subdir, job_name, pycommand)
 
         from utility.helper_local import write_bat_submission_plots
+
         write_bat_submission_plots(exp)
     else:
         from utility.helper_local_docker import submit_run_plotters_sh
+
         submit_run_plotters_sh(exp)
 
 
@@ -323,14 +336,14 @@ def write_bat_submission_plots(exp):
     """
     # Extract relevant data from the experiment object
     wdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-    filename = 'submit_run_plots.bat'
+    filename = "submit_run_plots.bat"
     work_dir = wdir
     jobdir = exp.job_directory
     log_dir = f"{jobdir}\\log"
-    model_args = ' '.join(exp.models)
+    model_args = " ".join(exp.models)
 
     # List of plot scripts to run
-    plot_scripts = [f'plot_{x}.py' for x in exp.plots_to_run]
+    plot_scripts = [f"plot_{x}.py" for x in exp.plots_to_run]
 
     # Start creating the batch script content
     bat_content = f"@echo on\n"
@@ -342,14 +355,14 @@ def write_bat_submission_plots(exp):
 
     # Add commands to run the plotting scripts
     for script in plot_scripts:
-        plot_name = script.replace('.py', '')
+        plot_name = script.replace(".py", "")
         bat_content += f'python {script} --directory {exp.output_directory} --models {model_args} >> "%log_dir%\\run_{plot_name}.log" 2>> "%log_dir%\\run_{plot_name}.err"\n'
 
     # Add pause at the end to keep the terminal open
     bat_content += "pause\n"
 
     # Write the content to the batch file
-    with open(os.path.join(exp.job_directory, filename), 'w') as file:
+    with open(os.path.join(exp.job_directory, filename), "w") as file:
         file.write(bat_content)
 
     print(f"Batch script written to {os.path.join(exp.job_directory, filename)}")

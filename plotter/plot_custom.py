@@ -9,9 +9,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-mpl.rcParams['pdf.fonttype'] = 3
-plt.rcParams.update({'font.size': 16})
-plt.rcParams.update({'font.sans-serif': "Arial"})
+mpl.rcParams["pdf.fonttype"] = 3
+plt.rcParams.update({"font.size": 16})
+plt.rcParams.update({"font.sans-serif": "Arial"})
 
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)
@@ -27,11 +27,11 @@ if __name__ == "__main__":
     file = open(os.path.join(wdir, "exp.obj"), "rb")
     exp = pickle.load(file)
 
-    channel_list = ['prevalence_2to10']
+    channel_list = ["prevalence_2to10"]
     df, out_dir = get_output_df(wdir, models)
     df_mth, _ = get_output_df(wdir, models, mth=True)
 
-    out_dir = os.path.join(out_dir, 'plots')
+    out_dir = os.path.join(out_dir, "plots")
     if len(models) == 1 and len(exp.models) > 1:
         out_dir = os.path.join(out_dir, models[0])
     os.makedirs(out_dir, exist_ok=True)
