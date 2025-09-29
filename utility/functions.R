@@ -1,4 +1,3 @@
-
 # Load standard R packages used
 library(data.table)
 library(dplyr)
@@ -54,20 +53,20 @@ get_output_df <- function(wdir, models, yearly = FALSE, monthly = FALSE, fiveday
     df <- fread(file.path(wdir, fname), stringsAsFactors = FALSE)
   } else {
     if ('OpenMalaria' %in% models) {
-      om_df <- fread(file.path(wdir, paste0('OpenMalaria/',fname, '.csv')), select = cols_to_keep)
+      om_df <- fread(file.path(wdir, paste0('OpenMalaria/', fname, '.csv')), select = cols_to_keep)
       om_df$models <- 'OpenMalaria'
     }
     if ('EMOD' %in% models) {
-      em_df <- fread(file.path(wdir, paste0('EMOD/', fname,'.csv')), select = cols_to_keep)
+      em_df <- fread(file.path(wdir, paste0('EMOD/', fname, '.csv')), select = cols_to_keep)
       em_df$models <- 'EMOD'
     }
     if ('malariasimulation' %in% models) {
-      ms_df <- fread(file.path(wdir, paste0('malariasimulation/', fname,'.csv')), select = cols_to_keep)
+      ms_df <- fread(file.path(wdir, paste0('malariasimulation/', fname, '.csv')), select = cols_to_keep)
       ms_df$models <- 'malariasimulation'
       if (mpv) {
-        ms_df_pv <- fread(file.path(wdir, paste0('malariasimulation/', fname,'_pv.csv')), select=cols_to_keep)
+        ms_df_pv <- fread(file.path(wdir, paste0('malariasimulation/', fname, '_pv.csv')), select = cols_to_keep)
         ms_df_pv$models <- 'malariasimulation - pv'
-        ms_df <- rbind(ms_df, ms_df_pv, fill=TRUE)
+        ms_df <- rbind(ms_df, ms_df_pv, fill = TRUE)
       }
     }
 
@@ -135,30 +134,30 @@ f_getCustomTheme <- function(fontscl = 1) {
   return(customTheme)
 }
 
-calculate_monthlyEIRs_seasonal <- function(wdir,note){
+calculate_monthlyEIRs_seasonal <- function(wdir, note) {
   df <- fread(file.path(wdir, 'EMOD', 'EIR_mth.csv'), stringsAsFactors = FALSE)
   df <- df %>%
     filter(year == max(year), cm_clinical == 0.0, seasonality == 'seasonal', target_output_values == 20) %>%
     group_by(target_output_values, cm_clinical, seasonality, Run_Number) %>%
     mutate(sumEIR = sum(`Monthly EIR`),
-           simulatedEIR = (`Monthly EIR`/sumEIR))
+           simulatedEIR = (`Monthly EIR` / sumEIR))
   df <- df %>%
     group_by(month) %>%
     summarise(simulatedEIR = mean(simulatedEIR)) %>%
     ungroup()
-  write.csv(df, paste0("monthly_seasonal_EIR_values_",note,".csv"), row.names=FALSE)
+  write.csv(df, paste0("monthly_seasonal_EIR_values_", note, ".csv"), row.names = FALSE)
 }
 
-calculate_dailyEIRs_seasonal <- function(wdir,note){
+calculate_dailyEIRs_seasonal <- function(wdir, note) {
   df <- fread(file.path(wdir, 'EMOD', 'EIR_daily.csv'), stringsAsFactors = FALSE)
   #dat_s$target_output_values <- dat_s$output_target
   df <- df %>%
     filter(scen_id == 1, year == max(year)) %>%
     group_by(scen_id, Run_Number) %>%
     mutate(sumEIR = sum(eir),
-           simulatedEIR = (eir/sumEIR))
+           simulatedEIR = (eir / sumEIR))
   df <- df %>%
     group_by(scen_id, day) %>%
     summarise(simulatedEIR = mean(simulatedEIR))
-  write.csv(df, paste0("daily_seasonal_EIR_values_",note,".csv"), row.names=FALSE)
+  write.csv(df, paste0("daily_seasonal_EIR_values_", note, ".csv"), row.names = FALSE)
 }

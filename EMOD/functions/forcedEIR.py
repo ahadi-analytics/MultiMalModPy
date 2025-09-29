@@ -24,7 +24,6 @@ def update_mab(simulation, value):
     return None
 
 
-
 def set_inputEIR_seasonality(camp, EIR_scale_factor=1, seasonality='perennial'):
     """
     Set input EIR (Entomological Inoculation Rate) based on seasonality.
@@ -37,8 +36,8 @@ def set_inputEIR_seasonality(camp, EIR_scale_factor=1, seasonality='perennial'):
     Returns:
     A dictionary containing the EIR scale factor and the specified seasonality.
     """
-    
-    season_daily = get_seasonal_eir() 
+
+    season_daily = get_seasonal_eir()
     if seasonality == 'perennial':
         daily_EIR = [x / 365 for x in [1] * 365]
     elif seasonality == 'seasonal':
@@ -51,4 +50,4 @@ def set_inputEIR_seasonality(camp, EIR_scale_factor=1, seasonality='perennial'):
     add_scheduled_input_eir(campaign=camp, start_day=1, daily_eir=daily_EIR, age_dependence="SURFACE_AREA_DEPENDENT",
                             node_ids=None, scaling_factor=EIR_scale_factor)
 
-    return {'EIR_scale_factor': EIR_scale_factor,'seasonality': seasonality}
+    return {'EIR_scale_factor': EIR_scale_factor, 'seasonality': seasonality}

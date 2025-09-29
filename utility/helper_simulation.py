@@ -11,7 +11,9 @@ import pandas as pd
 import numpy as np
 import set_seasonalprofile as seasonal_inputs
 from scipy.interpolate import interp1d
-#from idmtools.entities.experiment import Experiment
+
+
+# from idmtools.entities.experiment import Experiment
 
 
 def get_intervention_params(exp):
@@ -133,11 +135,11 @@ def get_seasonal_eir(exp=None):
     """
     seasonal = seasonal_inputs.monthly_seasonal_inputs
     eir_sum = sum(seasonal)
-    seasonal = [(x / eir_sum) for x in seasonal] # rescale to sum =1
-    
+    seasonal = [(x / eir_sum) for x in seasonal]  # rescale to sum =1
+
     seasonal_daily = seasonal_inputs.daily_seasonal_inputs
     perennial = [x / 12 for x in [1] * 12]
-    perennial_daily = [x/365 for x in [1]*365]
+    perennial_daily = [x / 365 for x in [1] * 365]
 
     if exp is not None:
         exp.seasonal = seasonal
@@ -187,6 +189,7 @@ def submit_run_plotters(exp):
         from utility.helper_slurm import submit_run_plotters_slurm
         submit_run_plotters_slurm(exp)
 
+
 def check_exp_input_parameters(exp):
     """
     Validates the input parameters and experiment configuration.
@@ -204,8 +207,9 @@ def check_exp_input_parameters(exp):
     """
 
     # Check agebins against age_groups_aggregates
-    missing_agebins  = {age for interval in exp.age_groups_aggregates for age in interval if age != 0 and age not in exp.agebins}
-    if len(missing_agebins ) > 0:
+    missing_agebins = {age for interval in exp.age_groups_aggregates for age in interval if
+                       age != 0 and age not in exp.agebins}
+    if len(missing_agebins) > 0:
         raise ValueError(
             f"The 'agebins' parameter is not granular enough to allow aggregation by 'age_groups_aggregates'. "
             f"The following age groups are missing from 'agebins': {missing_agebins}. Please ensure they are included."
@@ -224,14 +228,15 @@ def check_exp_input_parameters(exp):
             f"Only two seasonality patterns are allowed, but {len(exp.seasonality)} were specified. "
             "Please limit the number of seasonality patterns to two."
         )
-    
+
     for seasonal_name in exp.seasonality:
-        if seasonal_name not in ['seasonal','perennial']:
+        if seasonal_name not in ['seasonal', 'perennial']:
             raise ValueError(
                 f"Seasonality {seasonal_name} not in interpolation datasets."
                 "Please indicate either seasonal or perennial instead."
             )
-    
+
+
 def check_exp_inputs_emod(exp):
     """
     Checks input parameter compatibility with the framework configurations for EMOD.
@@ -262,7 +267,7 @@ def check_exp_inputs_emod(exp):
 
     if exp.emod_burnin < 100 and (
             ('EMOD' in exp.models and exp.emod_step != 'pickup') or
-            'EMOD' not in exp.models ):
+            'EMOD' not in exp.models):
         print(
             f"Warning: A burn-in period of at least 100 years is recommended for EMOD. "
             f"Currently, a shorter burn-in of {exp.emod_burnin} years has been configured, which may lead to inaccurate results."
@@ -279,7 +284,6 @@ def check_exp_inputs_emod(exp):
             f"Warning: A high population of over 10000 is causing computational challenges for EMOD"
             f"Current pop_size {exp.emod_pop_size}  may lead to memory related issues."
         )
-
 
 
 def check_exp_inputs_openmalaria(exp):
@@ -333,10 +337,12 @@ def check_exp_inputs_openmalaria(exp):
             raise FileNotFoundError(f"Required file not found: {file_path}")
 
     if exp.openmalaria_survey_step == '30d' and "5day" in exp.analyzer_list:
-        print("Warning: OpenMalaria is configured with 30-day survey steps. Using a 5-day analyzer will cause errors during post-processing. Adjust your configuration to ensure compatibility.")
+        print(
+            "Warning: OpenMalaria is configured with 30-day survey steps. Using a 5-day analyzer will cause errors during post-processing. Adjust your configuration to ensure compatibility.")
 
     if exp.openmalaria_survey_step == '30d' and "ccstep" in exp.intervention_list:
-        raise ValueError("The 'ccstep' intervention requires 5-day survey steps in OpenMalaria. Please update the survey step configuration.")
+        raise ValueError(
+            "The 'ccstep' intervention requires 5-day survey steps in OpenMalaria. Please update the survey step configuration.")
 
     if exp.openmalaria_burnin < 80:
         print(
@@ -349,7 +355,6 @@ def check_exp_inputs_openmalaria(exp):
             f"Warning: A population of at least 10000 is recommended for OpenMalaria. "
             f"Current pop_size {exp.openmalaria_pop_size}  may lead to inaccurate results."
         )
-
 
 
 def check_exp_inputs_malariasimulation(exp):
@@ -369,8 +374,9 @@ def check_exp_inputs_malariasimulation(exp):
         ValueError: If the 'forced EIR' entomology mode is selected for MalariaSimulation.
     """
 
-    if exp.entomology_mode == 'forced' :
-        raise ValueError("The 'forced EIR' option is not supported in malariasimulation. Please select a valid entomology mode.")
+    if exp.entomology_mode == 'forced':
+        raise ValueError(
+            "The 'forced EIR' option is not supported in malariasimulation. Please select a valid entomology mode.")
 
     if exp.malariasimulation_burnin < 80:
         print(
@@ -383,5 +389,3 @@ def check_exp_inputs_malariasimulation(exp):
             f"Warning: A population of at least 1000 is recommended for malariasimulation. "
             f"Current pop_size {exp.malariasimulation_pop_size}  may lead to inaccurate results."
         )
-
-

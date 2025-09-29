@@ -8,7 +8,6 @@ def combine_plot_example1(panel_a_name, panel_b_name, panel_c_name,
                           panel_a_path, panel_b_path, panel_c_path,
                           save_path=None, save_name='combined_figure.png',
                           padding=30, panel_c_scale=1.2, panel_ab_gap=30, panel_c_padding=30):
-
     from PIL import Image, ImageDraw, ImageFont
     import matplotlib.font_manager as fm
 

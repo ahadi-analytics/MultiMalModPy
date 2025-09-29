@@ -7,7 +7,7 @@ SUPPORTED_OM_VERSIONS = {43, 46}
 
 # Select cluster name
 hpc = 'NUCLUSTER'
-#hpc = 'SCICORE'
+# hpc = 'SCICORE'
 selected_platform = 'SLURM_LOCAL'
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -36,7 +36,7 @@ eradication_path = os.path.join(os.path.expanduser('~'), "download/Eradication")
 
 platform = 'SLURM_LOCAL'
 if os.name != 'posix':
-    platform ='Container'
+    platform = 'Container'
 
 # ----------------------------- Framework and cluster specific settings start -----------------------------
 # job_directory is where your simulations and outputs will be stored
@@ -55,7 +55,7 @@ else:
 # ----------------------------- User-defined input -----------------------------
 if hpc == 'NUCLUSTER':
     sh_hpc_config = {'A': 'b1139', 'p': 'b1139', 'em_modules': 'singularity', 'buyin': True}
-    #sh_hpc_config = {'A': 'p32714', 'p':'normal', 'em_modules': 'singularity', 'buyin': True}
+    # sh_hpc_config = {'A': 'p32714', 'p':'normal', 'em_modules': 'singularity', 'buyin': True}
     projdir = os.path.join('/gpfs/projects/b1139/emod-om/')
 
     SIF_PATH = "--bind /gpfs/projects /gpfs/projects/b1139/images/dtk_run_rocky_py39.sif"
@@ -65,7 +65,7 @@ if hpc == 'NUCLUSTER':
     EMOD_venv_modules = os.path.join('\n\nml singularity/3.8.1 \nml python/3.9.16')
     EMOD_venv_path = os.path.join('\nsource /gpfs/projects/b1139/environments/mmmpy_dev/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
-    
+
     ## When running inside a container
     image_path = "/gpfs/projects/b1139/emod-om/emodpy4.1-OM46-R4.4.1.sif"
     image_venv_name = "emodpy39"
@@ -88,15 +88,15 @@ elif hpc == 'SCICORE':
         raise ValueError(f'{openmalaria_version} not a valid OpenMalaria version, available versions: 43, 46')
 
     EMOD_venv_modules = os.path.join('\n\nml Python/3.9.6-GCCcore-11.2.0-bare')
-    #source /scicore/home/scicore/cavelan/git/MultiMalModPy/emodenv/bin/activate
+    # source /scicore/home/scicore/cavelan/git/MultiMalModPy/emodenv/bin/activate
     EMOD_venv_path = os.path.join(f'\nsource {ROOT_DIR}/emodenv/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
-    
+
     ## When running inside a container
     image_path = ''
     image_venv_name = ''
     OPENMALARIA_venv_container = ''
-    EMOD_venv_container =''
+    EMOD_venv_container = ''
     bind_path = ''
 
 elif hpc == 'LOCAL':
@@ -113,10 +113,10 @@ elif hpc == 'LOCAL':
     EMOD_venv_modules = os.path.join('')
     EMOD_venv_path = os.path.join(f'\nsource {ROOT_DIR}/dependencies/mmmpy_venv/bin/activate\n')
     EMOD_venv = f'{EMOD_venv_modules} {EMOD_venv_path}'
-    
+
     image_path = 'mmmpy_local:rocky8'
     image_venv_name = ''
-    EMOD_venv_container ='source /opt/envs/mmmpy_container/bin/activate'
+    EMOD_venv_container = 'source /opt/envs/mmmpy_container/bin/activate'
     bind_path = ROOT_DIR
 
 else:
@@ -136,10 +136,10 @@ os.makedirs(job_directory, exist_ok=True)
 
 if use_container:
     ROOT_DIR_local = os.path.dirname(ROOT_DIR)
-    #OPENMALARIA_PATH = os.path.join(ROOT_DIR, f'dependencies/OpenMalaria/om_v{openmalaria_version}')
-    OPENMALARIA_PATH = os.path.join( f'/openmalaria-schema-{openmalaria_version}.0/unittest/')
+    # OPENMALARIA_PATH = os.path.join(ROOT_DIR, f'dependencies/OpenMalaria/om_v{openmalaria_version}')
+    OPENMALARIA_PATH = os.path.join(f'/openmalaria-schema-{openmalaria_version}.0/unittest/')
     # Required only when running inside docker, locally
     OPENMALARIA_venv = OPENMALARIA_venv_container
     EMOD_venv = EMOD_venv_container
-    
+
 # ----------------------------- Framework and cluster specific settings end -----------------------------

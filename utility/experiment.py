@@ -64,7 +64,7 @@ class RunModeManager:
 
     def _configure_calibration(self):
         self.experiment.SUITEname = f'{self.experiment.SUITEname}_calibration'
-        self.mem_increase_factor = 5.0 #Currently the memory increase factor only effects the analyzers
+        self.mem_increase_factor = 5.0  # Currently the memory increase factor only effects the analyzers
         self.experiment.num_seeds = 20
         self.experiment.start_year = 2000
         self.experiment.end_year = 2005
@@ -86,7 +86,7 @@ class RunModeManager:
         ## Configure calib run
         eir_range, x_temp_range = get_calib_range()
         self.experiment.eir_range = eir_range
-        self.experiment.x_temp_range =x_temp_range
+        self.experiment.x_temp_range = x_temp_range
 
         if self.experiment.malariasimulation_parameter_variation in ("yes", "both"):
             warnings.warn(
@@ -102,7 +102,7 @@ class RunModeManager:
         Keeps appropriate values for popsize and burnin to ensure accurary of results.
         """
         self.experiment.SUITEname = f'{self.experiment.SUITEname}_simple'
-        self.mem_increase_factor = 1.0 #Currently the memory increase factor only effects the analyzers
+        self.mem_increase_factor = 1.0  # Currently the memory increase factor only effects the analyzers
         self.experiment.num_seeds = 3
         self.experiment.emod_burnin = 110
         self.experiment.openmalaria_burnin = 100
@@ -123,7 +123,7 @@ class RunModeManager:
         Using appropriate number of seeds and large ranges for output targets.
         """
         self.experiment.SUITEname = f'{self.experiment.SUITEname}_production'
-        self.mem_increase_factor = 1.0 #Currently the memory increase factor only effects the analyzers
+        self.mem_increase_factor = 1.0  # Currently the memory increase factor only effects the analyzers
         self.experiment.num_seeds = 20
         self.experiment.emod_burnin = 110
         self.experiment.openmalaria_burnin = 100
@@ -131,7 +131,6 @@ class RunModeManager:
         self.experiment.emod_pop_size = 5000
         self.experiment.openmalaria_pop_size = 50000
         self.experiment.malariasimulation_pop_size = 50000
-
 
     def _configure_csv(self):
         """
@@ -155,7 +154,7 @@ class RunModeManager:
         Overwrites popsize, burnin periods and seeds to allow a faster run of simulations (i.e. for testing, debugging).
         """
         self.experiment.SUITEname = f'{self.experiment.SUITEname}_TEST'
-        self.mem_increase_factor = 1.0 #Currently the memory increase factor only effects the analyzers
+        self.mem_increase_factor = 1.0  # Currently the memory increase factor only effects the analyzers
         self.experiment.num_seeds = 3
         self.experiment.emod_burnin = 10
         self.experiment.openmalaria_burnin = 10
@@ -255,10 +254,10 @@ class ManifestConfig:
         self.output_directory_manifest = manifest.output_directory
         self.interp_path = manifest.interp_path
         self.interp_csv = manifest.interp_csv
-        self.ROOT_DIR= manifest.ROOT_DIR
+        self.ROOT_DIR = manifest.ROOT_DIR
         self.use_container = manifest.use_container
         if self.use_container:
-            self.ROOT_DIR_local= manifest.ROOT_DIR_local
+            self.ROOT_DIR_local = manifest.ROOT_DIR_local
         self.image_path = manifest.image_path
         self.bind_path = manifest.bind_path
 

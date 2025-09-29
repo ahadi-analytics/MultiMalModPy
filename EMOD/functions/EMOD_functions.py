@@ -104,9 +104,9 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
 
     ## Carrying capacity step change
     # Make sure to include the ccstep change only at pickup simulations.
-    if 'ccstep' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):  
+    if 'ccstep' in intervention_list and (exp.emod_step == 'pickup' or exp.emod_step is None):
         camp = carrying_capacity(camp, row)
-        
+
     if exp.emod_importation_rate != 0:
         ncases_per_year_per1000pop = (exp.emod_importation_rate * exp.emod_pop_size) / 1000
         if ncases_per_year_per1000pop < 1:
@@ -126,7 +126,7 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
 
     # SMC currently not supported
     # SMC using PKPD model
-    #if 'smc' in intervention_list and exp.emod_step == 'pickup':
+    # if 'smc' in intervention_list and exp.emod_step == 'pickup':
     #    print(row.smc_coverage)
     #    if row.transmission_intensity_EMOD == 4:
     #        start_array = [366, 731, 1096, 1461, 1826]
@@ -139,11 +139,12 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
 
     return {'scen_id': int(row.scen_id)}
 
+
 def drug_setup(config, exp=None):
     """
     Functions to alter drug parameters specific to MultiMalModPy drug campaigns.
     """
-    #SMC currently not supported
+    # SMC currently not supported
     if 'smc' in exp.intervention_list:
         return
 

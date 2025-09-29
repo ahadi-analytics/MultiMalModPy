@@ -68,7 +68,7 @@ def parse_launch_args():
                         type=str,
                         default='',
                         help='Serialized ID for EMOD, if applicable.')
-    parser.add_argument('-m','--models',
+    parser.add_argument('-m', '--models',
                         nargs='+',
                         default=['EMOD', 'malariasimulation', 'OpenMalaria'],
                         choices=['EMOD', 'malariasimulation', 'OpenMalaria'],
@@ -88,35 +88,34 @@ def parse_launch_args():
     parser.add_argument('-r', '--run_mode',
                         type=str,
                         default='custom',
-                        choices=['custom','calibration', 'simple', 'production', 'csv'],
+                        choices=['custom', 'calibration', 'simple', 'production', 'csv'],
                         help="Simulation run type (default: 'custom').")
     parser.add_argument('--emod_calib_params',
                         action='store_true',
                         help='Include calibration parameters for EMOD (default: False).')
     parser.add_argument('--mpv',  # malariasimulation_parameter_variation
                         default='yes',
-                        choices=['no','yes','both'],
+                        choices=['no', 'yes', 'both'],
                         help=(
                             "Run malariasimulation with parameter variation:\n"
                             "  no   - run without parameter variation\n"
                             "  yes  - run with parameter variation only\n"
                             "  both - run both with and without parameter variation (default)"
                         ))
-    parser.add_argument('-t','--test',
+    parser.add_argument('-t', '--test',
                         action='store_true',
                         help='Enable test mode with reduced population, burn-in, and seeds.')
-    parser.add_argument('-n','--note',
+    parser.add_argument('-n', '--note',
                         type=str,
                         default='',
                         help='Optional tag for distinguishing runs.')
     args = parser.parse_args()
 
-
     # Validate CSV and rownum combination
     if args.csv:
         if args.rownum is None:
             print(f"The '--csv' argument was specified ({args.csv}) but no rownum"
-                   "Using default 'rownum' 0 to run first row")
+                  "Using default 'rownum' 0 to run first row")
         args.run_mode = "csv"
         print(f"The '--csv' argument was specified ({args.csv}). "
               "Setting 'run_mode' to 'csv'.")
@@ -232,7 +231,7 @@ def make_dirs(exp, overwrite=False):
     exp.job_directory = os.path.join(exp.job_directory_manifest, exp_suite_path,
                                      exp.exp_name)  # stores simulation files to run
     exp.output_directory = os.path.join(exp.output_directory_manifest, exp_suite_path,
-                                   exp.exp_name)  # stores results csvs and figures
+                                        exp.exp_name)  # stores results csvs and figures
 
     # Create directories
     os.makedirs(exp.job_directory, exist_ok=overwrite)
@@ -297,7 +296,7 @@ def check_exp_inputs(exp, attribute_check=False):
         ValueError: If input parameters are invalid.
     """
 
-    if exp.hpc == 'LOCAL' and not exp.test :
+    if exp.hpc == 'LOCAL' and not exp.test:
         raise ValueError("Local execution of the framework is only permitted for test runs.")
 
     ## Generell check on input parameter combinations and formats
@@ -309,7 +308,7 @@ def check_exp_inputs(exp, attribute_check=False):
         check_transmission_targets_input(exp)
 
     ## Model specific checks
-    if 'OpenMalaria'  in exp.models:
+    if 'OpenMalaria' in exp.models:
         check_exp_inputs_openmalaria(exp)
 
     if 'EMOD' in exp.models:
@@ -339,7 +338,8 @@ def check_exp_inputs(exp, attribute_check=False):
 
         list_attr_notsweep = [attr for attr in list_attributes_nGT1 if attr not in attributes_dict['sweep_list']]
         if list_attr_notsweep:
-            raise ValueError( f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
+            raise ValueError(
+                f'The following attributes have more than 1 value but are not included in sweep_list: {", ".join(list_attr_notsweep)}')
 
     # Check eligibility of parsed args
     if exp.run_mode == "calibration" and exp.intervention_list != []:
@@ -436,7 +436,7 @@ def create_simsetup_csv(exp):
                  'perennial_daily': ';'.join(map(str, exp.perennial_daily)),
                  'start_year': exp.start_year,
                  'end_year': exp.end_year,
-                 'burnin_emod':exp.emod_burnin,
+                 'burnin_emod': exp.emod_burnin,
                  'burnin_malariasimulation': exp.malariasimulation_burnin,
                  'burnin_openmalaria': exp.openmalaria_burnin,
                  'sim_start_year_openmalaria': exp.sim_start_year_openmalaria,
@@ -445,7 +445,7 @@ def create_simsetup_csv(exp):
                  'intervention_list': exp.intervention_list,
                  'interp_csv': exp.interp_csv,
                  'target_output_name': exp.target_output_name,
-                 'target_output_values':  ';'.join(map(str, exp.target_output_values)),
+                 'target_output_values': ';'.join(map(str, exp.target_output_values)),
                  'malariasimulation_parameter_variation': exp.malariasimulation_parameter_variation
                  }
 
@@ -472,7 +472,7 @@ def process_case_management(df):
     Returns:
         pandas.DataFrame: Updated DataFrame.
     """
-    
+
     for i, row in df.iterrows():
         df.loc[i, 'cm_clinical'] = pd.to_numeric(df.loc[i, 'case_management'][0], errors='coerce')
         df.loc[i, 'cm_severe'] = pd.to_numeric(df.loc[i, 'case_management'][1], errors='coerce')
@@ -480,6 +480,7 @@ def process_case_management(df):
     df = df.drop('case_management', axis=1)
 
     return df
+
 
 def map_model_calib_inputs(exp, df):
     """
@@ -496,7 +497,8 @@ def map_model_calib_inputs(exp, df):
     if exp.run_mode == 'calibration':
         for model in models:
             for i, row in df.iterrows():
-                value = exp.eir_range[int(row['target_output_values']) - 1] if model != 'EMOD' else exp.x_temp_range[int(row['target_output_values']) - 1]
+                value = exp.eir_range[int(row['target_output_values']) - 1] if model != 'EMOD' else exp.x_temp_range[
+                    int(row['target_output_values']) - 1]
                 df.loc[i, f'transmission_intensity_{model}'] = value
     else:
         for model in models:
@@ -509,6 +511,7 @@ def map_model_calib_inputs(exp, df):
                     df['transmission_intensity_EMOD'] = output_target_to_eir(df, exp, model='EMOD')
 
     return df
+
 
 def create_scenarios_csv(exp, col_list):
     """
@@ -530,7 +533,7 @@ def create_scenarios_csv(exp, col_list):
     """
 
     if col_list is None:
-        col_list = ['target_output_values', 'case_management','seasonality']
+        col_list = ['target_output_values', 'case_management', 'seasonality']
 
     # Get the attribute values from the experiment object
     my_attrs = [getattr(exp, attr) for attr in col_list]
@@ -539,10 +542,10 @@ def create_scenarios_csv(exp, col_list):
     df_array = list(itertools.product(*my_attrs))
 
     # Create a DataFrame with the combinations
-    df = pd.DataFrame(df_array, columns = col_list)
+    df = pd.DataFrame(df_array, columns=col_list)
 
     # And additional columns to keep
-    df['entomology_mode'] = exp.entomology_mode # optional, same across all scenarios
+    df['entomology_mode'] = exp.entomology_mode  # optional, same across all scenarios
     df['num_seeds'] = exp.num_seeds  # optional, same across all scenarios+seeds (total number of seeds)
 
     # Specifc process for clinical and severe case management (not full factorial)

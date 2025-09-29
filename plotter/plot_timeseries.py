@@ -10,6 +10,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.ticker import FuncFormatter
+
 mpl.rcParams['pdf.fonttype'] = 3
 plt.rcParams.update({'font.size': 16})
 plt.rcParams.update({'font.sans-serif': "Arial"})
@@ -21,7 +22,7 @@ from plotter.plot_helper import *
 
 # Plots trends over available months, requires mmmpy_mth.csv
 def monthly_trends(fdir, df, channel, sweepvar='models', facet_var='target_output_values', agegrps=['0-100'],
-                   new_index=None, facet_name = None, exp=None):
+                   new_index=None, facet_name=None, exp=None):
     """
     Generate line plots for monthly trends for channel (yaxis) by sweepvar for selected age groups.
     Note, assumed single occurence per month, i.e. aggregated across years (reads in mmmpy_mth.csv)
@@ -107,10 +108,10 @@ def monthly_trends(fdir, df, channel, sweepvar='models', facet_var='target_outpu
 
 # Plots over time - requires mmmpy_mth.csv
 def monthly_timeseries(
-    fdir, df, channel, sweepvar='models', facet_var='ageGroup', agegrps=['0-100'],
-    calendar_year=False, facet_name=None, exp=None,
-    facet_layout=None, width_per_col=8, height_per_row=6,
-    space=0.4, file_format='png'
+        fdir, df, channel, sweepvar='models', facet_var='ageGroup', agegrps=['0-100'],
+        calendar_year=False, facet_name=None, exp=None,
+        facet_layout=None, width_per_col=8, height_per_row=6,
+        space=0.4, file_format='png'
 ):
     """
     Parameters:
@@ -219,10 +220,10 @@ def monthly_timeseries(
 
 # Plots over time - requires mmmpy_yr.csv
 def annual_timeseries(
-    fdir, df, channel, sweepvar='models', facet_var='seasonality', agegrps=['0-100'],
-    calendar_year=False, facet_name=None, exp=None,
-    facet_layout=None, width_per_col=8, height_per_row=6,
-    space=0.4, file_format='png'
+        fdir, df, channel, sweepvar='models', facet_var='seasonality', agegrps=['0-100'],
+        calendar_year=False, facet_name=None, exp=None,
+        facet_layout=None, width_per_col=8, height_per_row=6,
+        space=0.4, file_format='png'
 ):
     """
     Plots annual timeseries of a given output variable, grouped by sweepvar and faceted by another variable.
@@ -360,7 +361,8 @@ if __name__ == "__main__":
                 # Example if order or months should be shifted
                 # new_index = [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6]
                 new_index = None  # If none, use default 1-12
-                monthly_trends(out_dir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrps=agegrps,
+                monthly_trends(out_dir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
+                               agegrps=agegrps,
                                new_index=new_index, exp=exp)
             except:
                 print(f'{channel} not found in dataframe')
@@ -378,7 +380,8 @@ if __name__ == "__main__":
     if not df_mth.empty:
         for channel in channel_list:
             print(f'#----- Plotting monthly timeseries for {channel}-----#')
-            monthly_timeseries(out_dir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var, agegrps=agegrps)
+            monthly_timeseries(out_dir, df_mth, channel=channel, sweepvar=sweepvar, facet_var=facet_var,
+                               agegrps=agegrps)
 
     if not df_yr.empty:
         for channel in channel_list:

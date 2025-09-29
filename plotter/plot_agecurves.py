@@ -138,7 +138,6 @@ if __name__ == "__main__":
 
     exp = load_exp(wdir)
 
-
     age_groups_aggregates_sub = [x for x in exp.age_groups_aggregates if x not in ([[0, 5], [0, 100]])]
     age_groups_aggregates_sub = ["{}-{}".format(sublist[0], sublist[1]) for sublist in age_groups_aggregates_sub]
 

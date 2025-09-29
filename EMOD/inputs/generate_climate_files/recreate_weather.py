@@ -5,6 +5,7 @@ from emodpy_malaria.weather.weather_variable import WeatherVariable
 import manifest
 import argparse
 
+
 def parse_args():
     description = "Simulation specifications"
     parser = argparse.ArgumentParser(description=description)
@@ -16,7 +17,7 @@ def parse_args():
     parser.add_argument(
         "-generate_csv",
         action='store_true',
-        help= 'Specify whether to generate csv based off of exisiting climate files'
+        help='Specify whether to generate csv based off of exisiting climate files'
     )
     parser.add_argument(
         "-climate_profile",
@@ -30,21 +31,21 @@ def parse_args():
         required=False,
         default=os.path.join(manifest.emod_input_path),
         help='Specify the directory to find and then later store the new weather files')
-    return parser.parse_args()    
+    return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_args()
     indir = args.indir
-    df, wa = weather_to_csv(weather_dir = os.path.join(indir, 'climate'), weather_file_prefix='seasonal')
-    
+    df, wa = weather_to_csv(weather_dir=os.path.join(indir, 'climate'), weather_file_prefix='seasonal')
+
     # Create Climate CSV, which can be modified to create different .json and .bin files.
 
     df1 = df.copy()
     df1['nodes'] = 1
-    df1.to_csv(os.path.join(indir, f"{args.climate_profile}.csv"), index=False) 
+    df1.to_csv(os.path.join(indir, f"{args.climate_profile}.csv"), index=False)
 
-    #Create EMOD-readable weather files to be used in simulations from modified CSVs if needed
+    # Create EMOD-readable weather files to be used in simulations from modified CSVs if needed
     if args.generate_climate:
         new_season_pattern = args.climate_profile
         df1 = pd.read_csv(os.path.join(indir, f"{new_season_pattern}.csv"))

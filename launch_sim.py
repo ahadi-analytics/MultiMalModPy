@@ -6,9 +6,9 @@ from utility.helper import *
 from utility.helper_slurm import *
 from utility.helper_simulation import *
 from utility.experiment import LoadExperiment
+
 # Setting up variables and flags for the simulation
 log = logging.getLogger(__name__)
-
 
 # EMOD flags for how to run simulations (in one run or separated into burnin + pickup)
 # In EMOD, running 'burnin' and 'pickup' time in one simulation (Default) can take very long in EMOD depending on burnin time and population size.
@@ -19,6 +19,7 @@ if __name__ == "__main__" and any(arg.endswith("launch_sim.py") for arg in sys.a
     args = parse_launch_args()
 else:
     from utility.helper_local import LoadLaunchArgs
+
     args = LoadLaunchArgs()
 
 if args.emod_step in ['pickup', 'new_pickup']:
@@ -28,7 +29,7 @@ if args.emod_step in ['pickup', 'new_pickup']:
     exp.burnin_directory = args.directory
     exp.models = args.models
     exp.emod_serialized_id = args.serializedid
-    if args.emod_step == 'new_pickup': ## Allows to run a independent pickup from burnin
+    if args.emod_step == 'new_pickup':  ## Allows to run a independent pickup from burnin
         ## USER SPECIFIC PARAMETER EDITS
         ## Optional parameters to update in new run
         exp.sweep_list = ['target_output_values', 'case_management', 'seasonality']
@@ -39,14 +40,15 @@ if args.emod_step in ['pickup', 'new_pickup']:
     ##  Note: to run a new pickup in same folder and suite, simply change expname
     exp.SUITEname = args.suite
     exp.exp_name = args.expname
-    
+
     if exp.run_mode == 'csv':
         exp_scen_df = pd.read_csv(os.path.join(f'scenario_csv/{exp.csv}.csv'))
         exp_scen_df = exp_scen_df[exp_scen_df['rownum'] == exp.rownum]
         if 'plots_to_run' in exp_scen_df.columns:
             exp.plots_to_run = get_param_from_dataframe(exp_scen_df, 'plots_to_run', exp.sim_params_list)
-    else: 
-        exp.plots_to_run = ['relationship', 'timeseries', 'agecurves'] # For pickup, this needs to be defined again, as for burnin set to empty
+    else:
+        exp.plots_to_run = ['relationship', 'timeseries',
+                            'agecurves']  # For pickup, this needs to be defined again, as for burnin set to empty
 
 
 else:
@@ -54,10 +56,10 @@ else:
     exp = LoadExperiment(args, manifest)
 
     if exp.emod_calib_params:
-        calib_config_df = pd.read_csv(os.path.join(exp.emod_input_path, 'emod_calibration_parameters', exp.emod_calib_type)+'.csv')
+        calib_config_df = pd.read_csv(
+            os.path.join(exp.emod_input_path, 'emod_calibration_parameters', exp.emod_calib_type) + '.csv')
         exp.calib_config_pointer = range(0, len(calib_config_df))  # define rows from calib_params df to run
         del calib_config_df
-
 
     # Entomology mode: Dynamic EIR configuration if selected
     exp = get_seasonal_eir(exp)
@@ -79,9 +81,9 @@ else:
     exp.exp_name = exp.exp_name.replace('entomologymode', exp.entomology_mode)
     if exp.intervention_list != []:
         exp.exp_name = exp.exp_name.replace('intervention',
-                                        '_'.join(exp.intervention_list))  
+                                            '_'.join(exp.intervention_list))
     else:
-        exp.exp_name = exp.exp_name.replace('_intervention','')
+        exp.exp_name = exp.exp_name.replace('_intervention', '')
     if exp.exp_name_note != '':
         exp.exp_name = f'{exp.exp_name}_{exp.exp_name_note}'
 
@@ -97,14 +99,13 @@ check_exp_inputs(exp)
 # Parameter names to create scenarios from
 scen_df = create_scenarios_csv(exp, exp.sweep_list)
 exp.nexps = len(scen_df) * exp.num_seeds
-exp.max_running_jobs = min(exp.nexps,300)
+exp.max_running_jobs = min(exp.nexps, 300)
 
 save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.output_directory])
 save_scen(rep_scen_df(scen_df), fname='scenarios_wseeds.csv', save_dirs=[exp.job_directory, exp.output_directory])
 
 # Write out simulation setup (required for malariasimulation)
 create_simsetup_csv(exp)
-
 
 if __name__ == '__main__':
     print(f' --------| Running {exp.exp_name} for {", ".join(exp.models)}: {len(exp.sweep_list)} '
@@ -113,16 +114,19 @@ if __name__ == '__main__':
     # Submit EMOD simulation as SLURM job, including scheduled analyzer
     if 'EMOD' in exp.models:
         from EMOD.utils import submit_run_EMOD
+
         submit_run_EMOD(exp, manifest, scen_df)
 
     # Submit malariasimulation as SLURM job, including scheduled analyzer
     if 'malariasimulation' in exp.models:
         from malariasimulation.utils import submit_run_malariasimulation
+
         submit_run_malariasimulation(exp, scen_df)
 
     # Submit OpenMalaria simulation as SLURM job, including scheduled analyzer
     if 'OpenMalaria' in exp.models:
         from OpenMalaria.utils import submit_run_OpenMalaria
+
         submit_run_OpenMalaria(exp, scen_df)  # Includes creating XML files
 
     ## Submit plotters to run using wrapper function in utility.helper.py
@@ -131,5 +135,5 @@ if __name__ == '__main__':
 
     if exp.selected_platform == 'Container' and 'EMOD' in exp.models:
         from EMOD.utils import run_analyze_EMOD_local_with_polling
-        run_analyze_EMOD_local_with_polling(exp, exp.container_id)
 
+        run_analyze_EMOD_local_with_polling(exp, exp.container_id)

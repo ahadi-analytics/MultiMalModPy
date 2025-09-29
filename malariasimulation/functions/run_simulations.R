@@ -39,18 +39,18 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
   # Parameterise the model, and run the simulation:
   set.seed(seed = parameter_table$seed)
   exp$seasonality <- parameter_table$seasonality
-  if (exp$seasonality != 'perennial'){
+  if (exp$seasonality != 'perennial') {
     exp$model_seasonality = TRUE
   } else {
     exp$model_seasonality = FALSE
   }
-  if (exp$monthly_or_daily_eirs == "monthly"){
-    exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality,'_monthly',sep=""), 'Value']
+  if (exp$monthly_or_daily_eirs == "monthly") {
+    exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality, '_monthly', sep = ""), 'Value']
     exp$eirs <- as.numeric(strsplit(exp$eirs, ';')[[1]])
     exp$eirs <- c(exp$eirs[2:12], exp$eirs[1])
   }
-  if (exp$monthly_or_daily_eirs == "daily"){
-    exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality,'_','daily',sep=""), 'Value']
+  if (exp$monthly_or_daily_eirs == "daily") {
+    exp$eirs <- exp_setup_df[exp_setup_df$parameter == paste(exp$seasonality, '_', 'daily', sep = ""), 'Value']
     exp$eirs <- as.numeric(strsplit(exp$eirs, ';')[[1]])
     exp$eirs <- c(exp$eirs[-(1:45)], exp$eirs[1:45])
   }
@@ -109,7 +109,7 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
     else {
       sim_out_csv_name <- '_out.csv'
     }
-    
+
   } else {
     sim_out_csv_name <- '_out.csv'
   }
@@ -119,20 +119,20 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
 
   # Parameterise the clinical treatment
   simparams <- set_clinical_treatment(parameters = simparams,
-                                           drug = 1,
-                                           timesteps = 1,
-                                           coverages = parameter_table$cm_clinical)
+                                      drug = 1,
+                                      timesteps = 1,
+                                      coverages = parameter_table$cm_clinical)
 
   # Include interventions and calibrate to the initial EIR:
-  if (length(intervention_list) > 0){
+  if (length(intervention_list) > 0) {
     simparams <- include_interventions(exp = exp,
-                          parameters = simparams,
-                          parameter_table = parameter_table,
-                          intervention_list = intervention_list)
-  } else{
+                                       parameters = simparams,
+                                       parameter_table = parameter_table,
+                                       intervention_list = intervention_list)
+  } else {
     # Calibrate to the initial EIR (same across models):
     simparams <- set_equilibrium(parameters = simparams,
-                                      init_EIR = parameter_table$transmission_intensity_malariasimulation)
+                                 init_EIR = parameter_table$transmission_intensity_malariasimulation)
   }
 
 
@@ -146,15 +146,15 @@ run_simulations <- function(exp, exp_setup_df, parameter_table) {
   # Add simulation identifiers to the output data frame:
   simulation_output$index <- parameter_table$index
   simulation_output$cm_clinical <- parameter_table$cm_clinical
-  simulation_output$seasonality  <- parameter_table$seasonality
+  simulation_output$seasonality <- parameter_table$seasonality
   simulation_output$seed <- parameter_table$seed
   simulation_output$transmission_intensity_malariasimulation <- parameter_table$transmission_intensity_malariasimulation
 
   # Include interventions output values
-  if (length(intervention_list) > 0){
-  simulation_output <- include_intervention_outputs(output_list = simulation_output,
-                                                    intervention_list = intervention_list,
-                                                    parameter_table = parameter_table)
+  if (length(intervention_list) > 0) {
+    simulation_output <- include_intervention_outputs(output_list = simulation_output,
+                                                      intervention_list = intervention_list,
+                                                      parameter_table = parameter_table)
   }
 
   # When running simulation scenarios in parallel as on HPC, those always need to be saved, part of the framework

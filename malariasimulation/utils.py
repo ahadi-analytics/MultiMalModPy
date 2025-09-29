@@ -122,11 +122,12 @@ def submit_run_malariasimulation(exp, scen_df):
             from utility.helper_local_docker import write_sh_analyzer, write_sh_plotters, submit_runmodel_sh
             write_sh_malariasimulation(exp)
             write_sh_analyzer(exp, pyscript=exp.analyzer_script[0], model='malariasimulation')
-            #write_sh_plotters(exp, model='malariasimulation')
+            # write_sh_plotters(exp, model='malariasimulation')
             submit_runmodel_sh(exp, model='malariasimulation')
     else:
         # Default, run via SLURM on HPC
         submit_run_malariasimulation_slurm(exp)
+
 
 def submit_run_malariasimulation_slurm(exp):
     """
@@ -143,10 +144,8 @@ def submit_run_malariasimulation_slurm(exp):
         None: This function does not return any value. It submits the job and prints the job ID.
     """
 
-
     # When running with and without malariasimulation_parameter_variation, twice as many experiments are needed
     nexps = exp.nexps * 2 if exp.malariasimulation_parameter_variation == "both" else exp.nexps
-
 
     array = f'#SBATCH --array=1-{str(nexps)}%{str(exp.max_running_jobs)}\n'
     header_post = shell_header_quest(exp.sh_hpc_config, exp.malariasimulation_time_per_sim,

@@ -191,7 +191,7 @@ def submit_runmodel_local(exp, model):
 
     file_name = f'jobs_{model}_simplerun.ps1'
     file_path = os.path.join(exp.job_directory, file_name)
-    write_ps1_runmodel(exp,filename=file_path, model=model)
+    write_ps1_runmodel(exp, filename=file_path, model=model)
     cmd_command = f'cmd.exe /c start powershell -ExecutionPolicy Bypass -File "{file_path}"'
     subprocess.Popen(cmd_command, shell=True)
 
@@ -258,16 +258,17 @@ def write_ps1_analyzer(exp, pyscript, model):
     """
     job_name = f"analyzer_{model}"
     subdir = model
-    pycommand  = f'python {pyscript} --directory "{exp.job_directory}"\n'
+    pycommand = f'python {pyscript} --directory "{exp.job_directory}"\n'
 
-    if model =='malariasimulation':
-        if exp.malariasimulation_parameter_variation == "both"  :
-            pycommand  = pycommand  + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
-        if exp.malariasimulation_parameter_variation == "yes"  :
-            pycommand  = pycommand  + '--mpv'
+    if model == 'malariasimulation':
+        if exp.malariasimulation_parameter_variation == "both":
+            pycommand = pycommand + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
+        if exp.malariasimulation_parameter_variation == "yes":
+            pycommand = pycommand + '--mpv'
 
     fname = f'run_analyze_{model}.ps1'
-    create_ps1_script(exp, fname, subdir, job_name, pycommand )
+    create_ps1_script(exp, fname, subdir, job_name, pycommand)
+
 
 def submit_run_plotters_local(exp):
     """
@@ -297,16 +298,17 @@ def submit_run_plotters_local(exp):
             job_name = f"run_plot_{plot_name}"
             subdir = "plotter"
             model_args = ' '.join(exp.models)
-            pycommand  = f"python {pyscript} --directory {exp.output_directory} --models {model_args}"
+            pycommand = f"python {pyscript} --directory {exp.output_directory} --models {model_args}"
 
             fname = pyscript.replace('.py', '.ps1')
-            create_ps1_script(exp, fname, subdir, job_name, pycommand )
+            create_ps1_script(exp, fname, subdir, job_name, pycommand)
 
-        from utility.helper_local  import write_bat_submission_plots
+        from utility.helper_local import write_bat_submission_plots
         write_bat_submission_plots(exp)
     else:
-        from utility.helper_local_docker  import submit_run_plotters_sh
+        from utility.helper_local_docker import submit_run_plotters_sh
         submit_run_plotters_sh(exp)
+
 
 def write_bat_submission_plots(exp):
     """
@@ -343,7 +345,6 @@ def write_bat_submission_plots(exp):
         plot_name = script.replace('.py', '')
         bat_content += f'python {script} --directory {exp.output_directory} --models {model_args} >> "%log_dir%\\run_{plot_name}.log" 2>> "%log_dir%\\run_{plot_name}.err"\n'
 
-
     # Add pause at the end to keep the terminal open
     bat_content += "pause\n"
 
@@ -352,6 +353,3 @@ def write_bat_submission_plots(exp):
         file.write(bat_content)
 
     print(f"Batch script written to {os.path.join(exp.job_directory, filename)}")
-
-
-

@@ -250,7 +250,8 @@ class InputEIRAnalyzer(IAnalyzer):
 
         # Aggregate data and save for specified time intervals (daily, monthly, annually)
         grp_channels = self.sweep_variables  # [x for x in self.sweep_variables if x != "Run_Number"] ## Keep runs
-        adf = adf.groupby(['time', 'date', 'day', 'month', 'year'] + grp_channels)[self.channels].agg('mean').reset_index()
+        adf = adf.groupby(['time', 'date', 'day', 'month', 'year'] + grp_channels)[self.channels].agg(
+            'mean').reset_index()
 
         # Add Larval Habitat Multipliers and sweep variables to EIR dataframe
         scen_df = pd.read_csv(os.path.join(self.working_dir, 'scenarios.csv'))
@@ -258,7 +259,8 @@ class InputEIRAnalyzer(IAnalyzer):
         grp_channels = list(set(grp_channels + list(scen_df.columns)))
         adf = adf.rename(columns={'Adult Vectors': 'n_total_mos_pop', 'Infectious Vectors': 'n_infectious_mos'})
         if self.daily_report:
-            columns_to_keep = ['Daily EIR', 'n_total_mos_pop', 'n_infectious_mos', 'scen_id', 'Run_Number', 'time', 'day', 'month', 'year', 'eir']
+            columns_to_keep = ['Daily EIR', 'n_total_mos_pop', 'n_infectious_mos', 'scen_id', 'Run_Number', 'time',
+                               'day', 'month', 'year', 'eir']
             columns_to_keep = [col for col in columns_to_keep if col in adf.columns]
             df = adf[columns_to_keep]
             df = df.rename(columns={'Daily EIR': 'eir', 'time': 'timestep'})
@@ -422,7 +424,8 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables)[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg('sum').reset_index()
+                adf = adf.groupby(self.sweep_variables)[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg(
+                    'sum').reset_index()
                 adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
                 adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per annum)
                 adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per annum)
@@ -434,7 +437,8 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR', 'n_total_mos_pop', 'n_infectious_mos']].agg('mean').reset_index()  # mean across monitoring years and runs
+            eirdf = eirdf.groupby(self.sweep_variables)[['Annual EIR', 'n_total_mos_pop', 'n_infectious_mos']].agg(
+                'mean').reset_index()  # mean across monitoring years and runs
             eirdf = eirdf.rename(columns={"Annual EIR": "eir"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables)
             # cdf['eir'] = [round(x, 1) if x < 1 else round(x, 0) for x in cdf['Annual EIR']]
@@ -598,7 +602,8 @@ class AnnualAgebinAnalyzer(IAnalyzer):
             if adf.empty:
                 pass
             else:
-                adf = adf.groupby(self.sweep_variables + ['year'])[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg('sum').reset_index()
+                adf = adf.groupby(self.sweep_variables + ['year'])[['nPatent', 'nUncomp', 'nSevere', 'nHost']].agg(
+                    'sum').reset_index()
                 adf['prevalence'] = adf['nPatent'] / (adf['nHost'])
                 adf['clinical_incidence'] = adf['nUncomp'] / (adf['nHost'])  # (events per person per year)
                 adf['severe_incidence'] = adf['nSevere'] / (adf['nHost'])  # (events per person per year)
@@ -610,7 +615,8 @@ class AnnualAgebinAnalyzer(IAnalyzer):
         cdf = cdf.merge(scen_df, on='scen_id', how='inner')
         if scen_df.entomology_mode[0] == 'dynamic':
             eirdf = pd.read_csv(os.path.join(self.working_dir, 'EMOD', 'EIR_yr.csv'))
-            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR', 'n_total_mos_pop']].agg('mean').reset_index()
+            eirdf = eirdf.groupby(self.sweep_variables + ['year'])[['Annual EIR', 'n_total_mos_pop']].agg(
+                'mean').reset_index()
             eirdf = eirdf.rename(columns={"Annual EIR": "eir"})
             cdf = pd.merge(left=cdf, right=eirdf, on=self.sweep_variables + ['year'])
 
@@ -739,7 +745,8 @@ class MonthlyAgebinAnalyzer(IAnalyzer):
         if self.emod_burnin is not None:
             df = df[df['year'] >= self.start_year + self.emod_burnin]
 
-        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'month'])[['prevalence_2to10']].agg('mean').reset_index()
+        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'month'])[['prevalence_2to10']].agg(
+            'mean').reset_index()
 
         df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
         df['nUncomp'] = df['clinical_incidence'] * (df['nHost'] / 12)  ## total cases per annum
@@ -816,7 +823,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
     """
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
-                 end_year=2020, age_groups_aggregates=None, burnin=None, intervention_analyzer_columns = []):
+                 end_year=2020, age_groups_aggregates=None, burnin=None, intervention_analyzer_columns=[]):
 
         super(FiveDayAgebinAnalyzer, self).__init__(working_dir=working_dir,
                                                     filenames=[f"output/MalariaSummaryReport_FiveDaily_{x}.json"
@@ -848,7 +855,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
             age_bins = data[fname]['Metadata']['Age Bins']
             pfpr2to10 = data[fname]['DataByTime']['PfPR_2to10-True'][:73]
-            #timestep = data[fname]['DataByTime']['Time Of Report'][:73]
+            # timestep = data[fname]['DataByTime']['Time Of Report'][:73]
 
             for age in list(range(0, len(age_bins))):
                 # Extract data per agebin
@@ -905,7 +912,8 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         if self.emod_burnin is not None:
             df = df[df['year'] >= self.start_year + self.emod_burnin]
 
-        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'day'])[['prevalence_2to10']].agg('mean').reset_index()
+        df_pfpr2to10 = df.groupby(self.sweep_variables + ['year', 'day'])[['prevalence_2to10']].agg(
+            'mean').reset_index()
 
         df['nPatent'] = df['prevalence'] * df['nHost']  ## total patent infections per annum
         df['nUncomp'] = df['clinical_incidence'] * (df['nHost'] / (365 / 5))  ## total cases per annum
@@ -955,8 +963,8 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
             eirdf_5day.columns = eirdf_5day.columns.get_level_values(0)
             eirdf_5day = eirdf_5day.rename(columns={'5day': 'day'})
             cdf = pd.merge(left=cdf, right=eirdf_5day, on=self.sweep_variables + ['year', 'day'])
- 
-            columns_to_keep = columns_to_keep + ['timestep','n_total_mos_pop', 'n_infectious_mos']
+
+            columns_to_keep = columns_to_keep + ['timestep', 'n_total_mos_pop', 'n_infectious_mos']
         else:
             cdf['eir'] = cdf['transmission_intensity_EMOD']
             cdf['inputEIR'] = cdf['transmission_intensity_EMOD']
@@ -969,7 +977,7 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
 
         # Save the processed DataFrame to a CSV file
         print(f'\nSaving outputs to: {os.path.join(self.working_dir)}/EMOD')
-        columns_to_keep += [column for column in self.intervention_analyzer_columns if column in cdf.columns]        
+        columns_to_keep += [column for column in self.intervention_analyzer_columns if column in cdf.columns]
         cdf = cdf[columns_to_keep]
         cdf.to_csv((os.path.join(self.working_dir, 'EMOD', 'mmmpy_5day.csv')), index=False)
 
@@ -1143,13 +1151,13 @@ if __name__ == "__main__":
                             'PCR Parasite Prevalence', 'Blood Smear Parasite Prevalence', 'PfHRP2 Prevalence',
                             'Infectious Vectors', 'Daily EIR']
     # Run analyzers
-    with Platform(exp.selected_platform , job_directory=exp.suite_directory) as platform:
+    with Platform(exp.selected_platform, job_directory=exp.suite_directory) as platform:
         all_age_analyzer = [SurveyAllAgeAnalyzer(expt_name=exp_name,
-                                               channels=channels_inset_chart,
-                                               sweep_variables=exp_tags,
-                                               start_year=start_year,
-                                               burnin=burnin,
-                                               working_dir=wdir)]
+                                                 channels=channels_inset_chart,
+                                                 sweep_variables=exp_tags,
+                                                 start_year=start_year,
+                                                 burnin=burnin,
+                                                 working_dir=wdir)]
 
         eir_analyzer = [InputEIRAnalyzer(expt_name=exp_name,
                                          sweep_variables=exp_tags,
@@ -1235,12 +1243,12 @@ if __name__ == "__main__":
         if '5day' in exp.analyzer_list:
             if exp.emod_step != 'burnin':
                 analyzer = analyzer + [FiveDayAgebinAnalyzer(expt_name=exp_name,
-                    start_year=start_year,
-                    end_year=end_year,
-                    sweep_variables=exp_tags,
-                    working_dir=wdir,
-                    burnin=burnin,
-                    intervention_analyzer_columns=exp.intervention_analyzer_columns)]
+                                                             start_year=start_year,
+                                                             end_year=end_year,
+                                                             sweep_variables=exp_tags,
+                                                             working_dir=wdir,
+                                                             burnin=burnin,
+                                                             intervention_analyzer_columns=exp.intervention_analyzer_columns)]
         ## Daily timeseries per age groups
         if 'daily' in exp.analyzer_list:
             analyzer = analyzer + daily_analyzers

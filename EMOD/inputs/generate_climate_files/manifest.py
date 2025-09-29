@@ -6,7 +6,7 @@ emod_build = 220405
 
 # Select cluster name
 hpc = 'NUCLUSTER'
-#hpc = 'SCICORE'
+# hpc = 'SCICORE'
 selected_platform = 'SLURM_LOCAL'
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -28,8 +28,9 @@ eradication_path = os.path.join(os.path.expanduser('~'), "download/Eradication")
 # ----------------------------- EMOD generic settings end -----------------------------
 
 if os.name != 'posix':
-    hpc ='LOCAL'
-    print("Running the framework locally. Note: Local execution is supported only for OpenMalaria and malariasimulation.")
+    hpc = 'LOCAL'
+    print(
+        "Running the framework locally. Note: Local execution is supported only for OpenMalaria and malariasimulation.")
 
 # ----------------------------- Framework and cluster specific settings start -----------------------------
 # job_directory is where your simulations and outputs will be stored
@@ -41,7 +42,7 @@ if hpc == 'NUCLUSTER':
     projdir = os.path.join('/projects/b1139/emod-om/')
     job_directory = os.path.join(projdir, 'experiments')
     output_directory = os.path.join(projdir, 'simulation_outputs')
-    
+
     SIF_PATH = "--bind /projects /projects/b1139/images/dtk_run_rocky_py39.sif"
     if openmalaria_version == 43:
         OPENMALARIA_PATH = "/projects/b1139/OpenMalaria/om_v43/"

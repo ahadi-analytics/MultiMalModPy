@@ -5,6 +5,7 @@ import pickle
 import datetime
 import pandas as pd
 import numpy as np
+
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 sys.path.append(parent_dir)
 from OpenMalaria.functions.measures import mm, mmi
@@ -235,14 +236,14 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
         df_day = pivot_wider(df_day, index_cols=['index', 'survey', 'days', 'year'])
         df_day = df_day.merge(scen_df, on='index', how='inner')
 
-        columns_to_keep += [column for column in exp.intervention_analyzer_columns if column in df_day.columns]       
+        columns_to_keep += [column for column in exp.intervention_analyzer_columns if column in df_day.columns]
         df_day = df_day[columns_to_keep]
 
         df_day = df_day.rename(columns={'SimulatedEIR': 'eir',
                                         'InputEIR': 'inputEIR',
                                         'Vector_Nv': 'n_total_mos_pop',
                                         'Vector_Sv': 'n_infectious_mos',
-                                            'days': 'timestep'})
+                                        'days': 'timestep'})
 
         print(f'Saving EIR_daily.csv to {wdir}')
         df_day['day'] = (df_day['timestep'] - 1) % 365 + 1
@@ -518,7 +519,8 @@ def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days, grp_channels=['ageGroup',
 
         nExpectedSevereCasesWithoutComorbidities = 0
         for m in ['expectedSevereWithoutComorbidities']:
-            nExpectedSevereCasesWithoutComorbidities += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
+            nExpectedSevereCasesWithoutComorbidities += g[(g.measure == mmi[m]) & ageCond].groupby(
+                grp_channels).value.sum()
 
         nDeaths = 0
         for m in ['expectedDirectDeaths', 'expectedIndirectDeaths']:
@@ -526,15 +528,15 @@ def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days, grp_channels=['ageGroup',
 
         if exp.openmalaria_survey_step != '5d' and ages[1] <= 1:
             nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum() * (
-                        1 - (1 - (ages[0] + ages[1]) / 2) / n_surveys_per_year)
+                    1 - (1 - (ages[0] + ages[1]) / 2) / n_surveys_per_year)
         else:
             nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
 
         prevalence = nPatentInfections / nHost  # prevalence
         clinical_incidence = nClinicalCases / nHost  # (events per person per year)
         severe_incidence = nSevere / nHost  # (events per person per year)
-        expected_severe_incidence = nExpectedSevere / nHost # (events per person per year)
-        expected_severe_incidence_wo_CoMo = nExpectedSevereCasesWithoutComorbidities / nHost # (events per person per year)
+        expected_severe_incidence = nExpectedSevere / nHost  # (events per person per year)
+        expected_severe_incidence_wo_CoMo = nExpectedSevereCasesWithoutComorbidities / nHost  # (events per person per year)
         mortality = nDeaths / nHost  # (events per person per year)
 
         # Create a DataFrame with the analysis results for the current age group
@@ -563,8 +565,9 @@ def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days, grp_channels=['ageGroup',
         u5 = u5.rename(columns={'clinical_incidence': 'clinical_incidence_U5'})
         all_ages = adf[adf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         adf = adf[adf['ageGroup'] == '0-100']
-        adf = adf.groupby(['scen_id', 'transmission_intensity_OpenMalaria', 'seasonality', 'cm_clinical','cm_severe'])[
-            ['eir', 'prevalence_2to10', 'prevalence', 'severe_incidence','expected_severe_incidence', 'expected_severe_incidence_wo_CoMo', 'n_total_mos_pop']].agg(
+        adf = adf.groupby(['scen_id', 'transmission_intensity_OpenMalaria', 'seasonality', 'cm_clinical', 'cm_severe'])[
+            ['eir', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'expected_severe_incidence',
+             'expected_severe_incidence_wo_CoMo', 'n_total_mos_pop']].agg(
             'mean').reset_index()
         adf = adf.merge(all_ages, on='scen_id')
         adf = adf.merge(u5, on='scen_id')
@@ -577,7 +580,8 @@ def TimeavrgAgebinAnalyzer(exp, mmi, survey_step_days, grp_channels=['ageGroup',
             adf['importaion'] = False
         adf = adf.rename(columns={'transmission_intensity_OpenMalaria': 'input_target'})
         adf.to_csv((os.path.join(wdir, 'interpolation_data.csv')), index=False)
-        adf.to_csv((os.path.join(exp.interp_path, 'OpenMalaria', f'{exp.exp_name}_interpolation_data.csv')), index=False)
+        adf.to_csv((os.path.join(exp.interp_path, 'OpenMalaria', f'{exp.exp_name}_interpolation_data.csv')),
+                   index=False)
 
 
 def AnnualAgebinAnalyzer(exp, mmi, start_year, survey_step_days, grp_channels=['ageGroup', 'index'],
@@ -673,7 +677,8 @@ def AnnualAgebinAnalyzer(exp, mmi, start_year, survey_step_days, grp_channels=['
 
             nExpectedSevereCasesWithoutComorbidities = 0
             for m in ['expectedSevereWithoutComorbidities']:
-                nExpectedSevereCasesWithoutComorbidities += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
+                nExpectedSevereCasesWithoutComorbidities += g[(g.measure == mmi[m]) & ageCond].groupby(
+                    grp_channels).value.sum()
 
             nDeaths = 0
             for m in ['expectedDirectDeaths', 'expectedIndirectDeaths']:
@@ -681,15 +686,15 @@ def AnnualAgebinAnalyzer(exp, mmi, start_year, survey_step_days, grp_channels=['
 
             if exp.openmalaria_survey_step != '5d' and ages[1] <= 1:
                 nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum() * (
-                            1 - (1 - (ages[0] + ages[1]) / 2) / n_surveys_per_year)
+                        1 - (1 - (ages[0] + ages[1]) / 2) / n_surveys_per_year)
             else:
                 nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
 
             prevalence = nPatentInfections / nHost  # prevalence
             clinical_incidence = nClinicalCases / nHost  # (events per person per year)
             severe_incidence = nSevere / nHost  # (events per person per year)
-            expected_severe_incidence = nExpectedSevere / nHost # (events per person per year)
-            expected_severe_incidence_wo_CoMo = nExpectedSevereCasesWithoutComorbidities / nHost # (events per person per year)
+            expected_severe_incidence = nExpectedSevere / nHost  # (events per person per year)
+            expected_severe_incidence_wo_CoMo = nExpectedSevereCasesWithoutComorbidities / nHost  # (events per person per year)
             mortality = nDeaths / nHost  # (events per person per year)
 
             # Create a DataFrame with the analysis results for the current age group
@@ -715,7 +720,8 @@ def AnnualAgebinAnalyzer(exp, mmi, start_year, survey_step_days, grp_channels=['
     adf.to_csv((os.path.join(wdir, 'mmmpy_yr.csv')), index=False)
 
 
-def MonthlyAgebinAnalyzer(exp, mmi, start_year, survey_step_days, grp_channels=['ageGroup', 'index'], age_groups_aggregates=None):
+def MonthlyAgebinAnalyzer(exp, mmi, start_year, survey_step_days, grp_channels=['ageGroup', 'index'],
+                          age_groups_aggregates=None):
     """
     Run the MonthlyAgebinAnalyzer for OpenMalaria experiments to generate
     and save a results dataframe for defined age groups over time (month and years).
@@ -814,7 +820,8 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, survey_step_days, grp_channels=[
 
             nExpectedSevereCasesWithoutComorbidities = 0
             for m in ['expectedSevereWithoutComorbidities']:
-                nExpectedSevereCasesWithoutComorbidities += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
+                nExpectedSevereCasesWithoutComorbidities += g[(g.measure == mmi[m]) & ageCond].groupby(
+                    grp_channels).value.sum()
 
             nDeaths = 0
             for m in ['expectedDirectDeaths', 'expectedIndirectDeaths']:
@@ -822,15 +829,15 @@ def MonthlyAgebinAnalyzer(exp, mmi, start_year, survey_step_days, grp_channels=[
 
             if exp.openmalaria_survey_step != '5d' and ages[1] <= 1:
                 nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum() * (
-                            1 - (1 - (ages[0] + ages[1]) / 2) / n_surveys_per_year)
+                        1 - (1 - (ages[0] + ages[1]) / 2) / n_surveys_per_year)
             else:
                 nHost = g[(g.measure == mmi['nHost']) & ageCond].groupby(grp_channels).value.sum()
 
             prevalence = nPatentInfections / nHost  # (prevalence)
             clinical_incidence = nClinicalCases / nHost  # (events per person per year) - for each month
             severe_incidence = nSevere / nHost  # (events per person per year) - for each month
-            expected_severe_incidence = nExpectedSevere / nHost # (events per person per year) - for each month
-            expected_severe_incidence_wo_CoMo = nExpectedSevereCasesWithoutComorbidities / nHost # (events per person per year) - for each month
+            expected_severe_incidence = nExpectedSevere / nHost  # (events per person per year) - for each month
+            expected_severe_incidence_wo_CoMo = nExpectedSevereCasesWithoutComorbidities / nHost  # (events per person per year) - for each month
             mortality = nDeaths / nHost  # (events per person per year)- for each month
 
             # Create a DataFrame with the analysis results for the current age group
@@ -954,7 +961,8 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
 
             nExpectedSevereCasesWithoutComorbidities = 0
             for m in ['expectedSevereWithoutComorbidities']:
-                nExpectedSevereCasesWithoutComorbidities += g[(g.measure == mmi[m]) & ageCond].groupby(grp_channels).value.sum()
+                nExpectedSevereCasesWithoutComorbidities += g[(g.measure == mmi[m]) & ageCond].groupby(
+                    grp_channels).value.sum()
 
             nDeaths = 0
             for m in ['expectedDirectDeaths', 'expectedIndirectDeaths']:
@@ -965,8 +973,8 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
             prevalence = nPatentInfections / nHost  # (prevalence)
             clinical_incidence = nClinicalCases / nHost  # (events per person per year) - for each 5day
             severe_incidence = nSevere / nHost  # (events per person per year) - for each 5day
-            expected_severe_incidence = nExpectedSevere / nHost # (events per person per year) - for each 5day
-            expected_severe_incidence_wo_CoMo = nExpectedSevereCasesWithoutComorbidities / nHost # (events per person per year) - for each 5day
+            expected_severe_incidence = nExpectedSevere / nHost  # (events per person per year) - for each 5day
+            expected_severe_incidence_wo_CoMo = nExpectedSevereCasesWithoutComorbidities / nHost  # (events per person per year) - for each 5day
             mortality = nDeaths / nHost  # (events per person per year)- for each 5day
 
             # Create a DataFrame with the analysis results for the current age group
@@ -992,13 +1000,13 @@ def FiveDayAgebinAnalyzer(exp, mmi, start_year, grp_channels=['ageGroup', 'index
     adf = survey_to_date(adf, survey_step_days=5, start_year=start_year)
     adf['day'] = (adf['days'] - 1) % 365 + 1
 
-    columns_to_keep = ['scen_id', 'index','inputEIR', 'target_output_values', 'seed', 
-               'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey', 'days',
-                'day', 'month', 'year', 'ageGroup', 'n_total_mos_pop',
-                'n_infectious_mos', 'nHost', 'eir', 'prevalence', 'prevalence_2to10','clinical_incidence',
-               'severe_incidence', 'expected_severe_incidence', 'expected_severe_incidence_wo_CoMo']
-    columns_to_keep += [column for column in exp.intervention_analyzer_columns if column in adf.columns]       
-    adf = adf[columns_to_keep]  
+    columns_to_keep = ['scen_id', 'index', 'inputEIR', 'target_output_values', 'seed',
+                       'cm_start', 'cm_severe', 'cm_clinical', 'seasonality', 'survey', 'days',
+                       'day', 'month', 'year', 'ageGroup', 'n_total_mos_pop',
+                       'n_infectious_mos', 'nHost', 'eir', 'prevalence', 'prevalence_2to10', 'clinical_incidence',
+                       'severe_incidence', 'expected_severe_incidence', 'expected_severe_incidence_wo_CoMo']
+    columns_to_keep += [column for column in exp.intervention_analyzer_columns if column in adf.columns]
+    adf = adf[columns_to_keep]
     adf = adf.rename(columns={'days': 'timestep'})
     print(f'Saving mmmpy_5day.csv to {wdir}')
     adf.to_csv((os.path.join(wdir, 'mmmpy_5day.csv')), index=False)
@@ -1022,7 +1030,7 @@ if __name__ == "__main__":
         survey_steps = 30
     if exp.openmalaria_survey_step == '1y':
         survey_steps = 365
-    
+
     # Run analyzers
     InputEIRAnalyzer(exp, mm, start_year=start_year, survey_step_days=survey_steps)
 
@@ -1046,6 +1054,6 @@ if __name__ == "__main__":
         MonthlyAgebinAnalyzer(exp, mmi, start_year=start_year, survey_step_days=survey_steps,
                               age_groups_aggregates=age_groups_aggregates)
     # 5 day timeseries per age groups, required per default survey_steps = 5
-    if '5day' in exp.analyzer_list and survey_steps ==5:
+    if '5day' in exp.analyzer_list and survey_steps == 5:
         FiveDayAgebinAnalyzer(exp, mmi, start_year=start_year,
                               age_groups_aggregates=age_groups_aggregates)

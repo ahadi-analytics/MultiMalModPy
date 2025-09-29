@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 import numpy as np
+
+
 # Carrying Capacity step change (ccstep)
 
 def ccstep_params(exp):
@@ -13,12 +15,12 @@ def ccstep_params(exp):
     Returns:
         Experiment object
             An object with updated experiment parameters.
-    """   
-    if exp.emod_step != 'pickup': 
+    """
+    if exp.emod_step != 'pickup':
         exp.ccstep = [x[1] for x in exp.target_output_values]
         exp.target_output_values = [x[0] for x in exp.target_output_values]
 
-    exp.step_in_years = 5 # determines after x amount of years, when the carrying capacity change occurs
+    exp.step_in_years = 5  # determines after x amount of years, when the carrying capacity change occurs
 
     if exp.emod_step is None:
         ## if None, no serialization done, hence burnin period is added to the step_in_years
@@ -26,7 +28,7 @@ def ccstep_params(exp):
     else:
         # 5 years in to the pickup time EMOD and malariasimulation, this parameter can already be defined in burnin for the respective pickup run
         exp.cc_timestep_EMOD = int(exp.step_in_years * 365)
-    
+
     exp.cc_timestep_malariasimulation = int((exp.malariasimulation_burnin + exp.step_in_years) * 365)
 
     # 5 Years in to the pickup time OpenMalaria
@@ -35,8 +37,8 @@ def ccstep_params(exp):
 
     # Required for flagging list items when running from CSV
     exp.sim_params_list += ['eir_scalar_malariasimulation', 'eir_malariasimulation', 'eir_scalar_openmalaria',
-                     'eir_scalar_emod',  'eir_openmalaria', 'eir_scalar_openmalaria', 'carrying_capacity_step']
-    
+                            'eir_scalar_emod', 'eir_openmalaria', 'eir_scalar_openmalaria', 'carrying_capacity_step']
+
     if 'ccstep' not in exp.plots_to_run:
         exp.plots_to_run = exp.plots_to_run + ['ccstep']
     if '5day' not in exp.analyzer_list:
@@ -59,13 +61,16 @@ def ccstep_params(exp):
         exp.malariasimulation_time_per_sim = '2:00:00'
         exp.openmalaria_memory_per_sim = 6
         exp.openmalaria_time_per_sim = '2:00:00'
-    
+
     if exp.emod_importation_rate == 0:
-        print('Warning: You are running EMOD simulations with a decreasing carrying capacity.\nWithout importation, elimination can occur.')
+        print(
+            'Warning: You are running EMOD simulations with a decreasing carrying capacity.\nWithout importation, elimination can occur.')
     if len(exp.target_output_values) != len(exp.ccstep):
-        raise ValueError('There is an unequal amount of target_output_values and ccsteps, make sure your ccstep input is set up correctly')
+        raise ValueError(
+            'There is an unequal amount of target_output_values and ccsteps, make sure your ccstep input is set up correctly')
     if len(exp.target_output_values) == 0 or len(exp.ccstep) == 0:
-        raise ValueError('Your input for target_outputs_value is formatted incorrectly, please make sure your input is in the format (cc_from, cc_to)')
+        raise ValueError(
+            'Your input for target_outputs_value is formatted incorrectly, please make sure your input is in the format (cc_from, cc_to)')
     return exp
 
 
@@ -123,7 +128,7 @@ def ccstep_factor_calculator(exp, df, model):
     # NOTE: Workaround to allow smaller populations for test runs
     if exp.test and popsize not in data.loc[data['models'] == model, 'pop_size'].unique():
         popsize = data.loc[data['models'] == model, 'pop_size'].min()
-            
+
     for i, row in df.iterrows():
         idata = data[((data['cm_clinical'] == row['cm_clinical'])
                       & (data['cm_severe'] == row['cm_severe'])
@@ -200,11 +205,11 @@ def ccstep_columns(exp, df):
     return df  # TODO can be moved to postprocessing
 
 
-
 def ccstep_input_check(exp):
     if exp.entomology_mode != "dynamic":
         raise ValueError(f'Invalid entomology_mode for ccstep {exp.entomology_mode} specified, "dynamic" required')
-    #if exp.target_output_name != 'prevalence_2to10':
+    # if exp.target_output_name != 'prevalence_2to10':
     #    raise ValueError("ccstep requires the target_output_name to be prevalence_2to10")
     if exp.end_year - exp.start_year < exp.step_in_years:
-        raise ValueError(f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and {exp.end_year}")
+        raise ValueError(
+            f"step_in_years ({exp.step_in_years} years) falls outside of the range of {exp.start_year} and {exp.end_year}")

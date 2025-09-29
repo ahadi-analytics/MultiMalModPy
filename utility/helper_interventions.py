@@ -31,7 +31,7 @@ def exp_params_to_update(exp):
     # Note having unique levels of those two parameters is currently needed in the plotting scripts
     exp.cm_clinical = [x[0] for x in exp.case_management]
     exp.cm_severe = [x[1] for x in exp.case_management]
-    
+
     exp.intervention_analyzer_columns = []
     if not exp.intervention_list or exp.intervention_list == []:
         print('No interventions specified')
@@ -41,10 +41,10 @@ def exp_params_to_update(exp):
             exp = ccstep_params(exp)
         else:
             raise ValueError('Invalid intervention specified. Note that case management is automatically included.')
-    
+
     # if 'smc' in exp.intervention_list:	
-        #    print('Adding parameters for smc')	
-        #    exp = smc_params(exp)
+    #    print('Adding parameters for smc')
+    #    exp = smc_params(exp)
     return exp
 
 
@@ -78,7 +78,6 @@ def scenario_df_to_update(exp, df):
 
 
 def intervention_params_to_check(exp):
-
     """
     Validates experiment configuration specific for the intervention recognized by the framework.
 

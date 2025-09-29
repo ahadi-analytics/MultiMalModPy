@@ -379,7 +379,8 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
     cdf = cdf.merge(eir_df, on='index', how='inner')
 
     # Severe Incidence Recalculation
-    cdf['severe_incidence'] = cdf['severe_incidence'] * ((1 - 0.42) * cdf['cm_clinical'] + (1 - cdf['cm_clinical'])) * ( 1 / 0.8)
+    cdf['severe_incidence'] = cdf['severe_incidence'] * ((1 - 0.42) * cdf['cm_clinical'] + (1 - cdf['cm_clinical'])) * (
+                1 / 0.8)
     # cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
 
     # Rename columns for standardization across models
@@ -397,7 +398,8 @@ def TimeavrgAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=No
         u5 = u5.rename(columns={'clinical_incidence': 'clinical_incidence_U5'})
         all_ages = cdf[cdf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg('mean').reset_index()
         cdf = cdf[cdf['ageGroup'] == '0-100']
-        cdf = cdf.groupby(['scen_id', 'transmission_intensity_malariasimulation', 'seasonality', 'cm_clinical', 'cm_severe'])[
+        cdf = \
+        cdf.groupby(['scen_id', 'transmission_intensity_malariasimulation', 'seasonality', 'cm_clinical', 'cm_severe'])[
             ['eir', 'prevalence_2to10', 'prevalence', 'severe_incidence', 'n_total_mos_pop']].agg(
             'mean').reset_index()
         cdf = cdf.merge(all_ages, on='scen_id')
@@ -493,7 +495,7 @@ def AnnualAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None
 
     # Severe Incidence Recalculation
     cdf['severe_incidence'] = cdf['severe_incidence'] * ((1 - 0.42) * cdf['cm_clinical'] + (1 - cdf['cm_clinical'])) * (
-                1 / 0.8)
+            1 / 0.8)
     # cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
 
     # Rename columns for alignment with OpenMalaria results
@@ -590,7 +592,7 @@ def MonthlyAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     # Severe Incidence Recalculation
     cdf['severe_incidence'] = cdf['severe_incidence'] * ((1 - 0.42) * cdf['cm_clinical'] + (1 - cdf['cm_clinical'])) * (
-                1 / 0.8)
+            1 / 0.8)
     # cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
 
     # Rename columns for alignment with OpenMalaria results
@@ -698,7 +700,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
             # events per person per annum (annualized)
             # adf['incidence'] = (adf['n_inc'] / adf['n_age']/ 12)
             adf['clinical_incidence'] = (
-                        adf['n_inc_clinical'] / (adf['n_age'] / 73))  ## 5-Daily to annualized incidence
+                    adf['n_inc_clinical'] / (adf['n_age'] / 73))  ## 5-Daily to annualized incidence
             adf['severe_incidence'] = (adf['n_inc_severe'] / (adf['n_age'] / 73))
             adf['ageGroup'] = ageCond_labels
             cdf = pd.concat([cdf, adf])
@@ -716,7 +718,7 @@ def FiveDayAgebinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=Non
 
     # Severe Incidence Recalculation
     cdf['severe_incidence'] = cdf['severe_incidence'] * ((1 - 0.42) * cdf['cm_clinical'] + (1 - cdf['cm_clinical'])) * (
-                1 / 0.8)
+            1 / 0.8)
     # cdf['severe_incidence'] = cdf['severe_incidence'] * (0.5 * cdf['cm_severe'] + (1 - cdf['cm_severe']))
 
     # Rename columns for alignment with OpenMalaria results
@@ -817,7 +819,7 @@ def DailyAgeBinAnalyzer(jdir, wdir, sweep_variables, age_groups_aggregates=None,
 
     # Severe Incidence Recalculation
     df['severe_incidence'] = df['severe_incidence'] * ((1 - 0.42) * df['cm_clinical'] + (1 - df['cm_clinical'])) * (
-                1 / 0.8)
+            1 / 0.8)
     # df['severe_incidence'] = df['severe_incidence'] * (0.5 * df['cm_severe'] + (1 - df['cm_severe']))
 
     # Let's limit the output of daily, so its a little more reasonable for us to process.
@@ -839,7 +841,7 @@ if __name__ == "__main__":
     job_directory = args.directory
     mpv = args.mpv
     if mpv:
-        suffix ='_pv'
+        suffix = '_pv'
     else:
         suffix = ''
 
@@ -857,7 +859,7 @@ if __name__ == "__main__":
     post_processing(exp, job_directory, pv_suffix=suffix)
 
     # Run analyzers
-    InputEIRAnalyzer(job_directory, wdir, pv_suffix = suffix)
+    InputEIRAnalyzer(job_directory, wdir, pv_suffix=suffix)
     if 'daily' in exp.analyzer_list or '5day' in exp.analyzer_list:
         InputEIRAnalyzer(job_directory, wdir, daily=True, pv_suffix=suffix)
 

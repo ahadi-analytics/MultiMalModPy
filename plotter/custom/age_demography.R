@@ -211,7 +211,7 @@ pp <- ggarrange(pA, pB, ncol = 1, common.legend = TRUE, legend = 'bottom', label
 
 print(pp)
 
-outdir <- file.path(getwd(), 'plotter','custom', 'generated_plots')
+outdir <- file.path(getwd(), 'plotter', 'custom', 'generated_plots')
 if (!dir.exists(outdir))dir.create(outdir)
 
 ggsave(plot = pp, filename = file.path(outdir, 'age_dempgraphy.png'), width = 8, height = 6)

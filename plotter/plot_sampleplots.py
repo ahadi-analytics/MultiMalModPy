@@ -85,7 +85,7 @@ def all_age_sample_plot(wdir, df, model, timestep_var, sweep_variables, sample_c
 
     # Save the plot
     fname = f'sampleplot_all_age_{model}.png'
-    fig.savefig( os.path.join(wdir, 'plots', fname), bbox_extra_artists=(lg,), bbox_inches='tight')
+    fig.savefig(os.path.join(wdir, 'plots', fname), bbox_extra_artists=(lg,), bbox_inches='tight')
 
 
 if __name__ == "__main__":
@@ -107,22 +107,25 @@ if __name__ == "__main__":
         df = pd.read_csv(os.path.join(wdir, 'EMOD', 'All_Age_Outputs.csv'))
         df['date'] = pd.to_datetime(df['date'])
         df['simday'] = (df['date'] - df['date'].min()).dt.days
-        all_age_sample_plot(wdir, df,'EMOD', timestep_var='simday', sweep_variables=exp_tags, sample_channels=sample_channels)
+        all_age_sample_plot(wdir, df, 'EMOD', timestep_var='simday', sweep_variables=exp_tags,
+                            sample_channels=sample_channels)
 
     if 'OpenMalaria' in models:
         sample_channels = ['nHost', 'nInfect', 'nPatent', 'totalInfs', 'totalPatentInf', 'nTreatments', 'nUncomp',
                            'nSevere', 'nSeq', 'nIndDeaths', 'expectedSevere' 'nDirDeaths', 'inputEIR', 'eir',
                            'expectedDirectDeaths']
         df = pd.read_csv(os.path.join(wdir, 'OpenMalaria', 'All_Age_Outputs.csv'))
-        all_age_sample_plot(wdir, df,'OpenMalaria', timestep_var='survey', sweep_variables=exp_tags, sample_channels=sample_channels)
+        all_age_sample_plot(wdir, df, 'OpenMalaria', timestep_var='survey', sweep_variables=exp_tags,
+                            sample_channels=sample_channels)
 
     if 'malariasimulation' in models:
-        sample_channels = ['nPopulation', 'n', 'n_inc','n_inc_clinical','n_inc_severe', 'clinical_incidence',
-                           'prevalence_2to10', 'prev', 'n_infectious_mos','n_total_mos_pop', 'EIR_gamb']
+        sample_channels = ['nPopulation', 'n', 'n_inc', 'n_inc_clinical', 'n_inc_severe', 'clinical_incidence',
+                           'prevalence_2to10', 'prev', 'n_infectious_mos', 'n_total_mos_pop', 'EIR_gamb']
         df = pd.read_csv(os.path.join(wdir, 'malariasimulation', 'All_Age_Outputs.csv'))
         df['date'] = pd.to_datetime(df['date'])
         df['simday'] = (df['date'] - df['date'].min()).dt.days
         scen_df = pd.read_csv(os.path.join(wdir, 'scenarios.csv'))
-        scen_df = scen_df[['index','target_output_values']]
+        scen_df = scen_df[['index', 'target_output_values']]
         df = df.merge(scen_df, on='index', how='inner')
-        all_age_sample_plot(wdir, df, 'malariasimulation', timestep_var='simday', sweep_variables=exp_tags, sample_channels=sample_channels)
+        all_age_sample_plot(wdir, df, 'malariasimulation', timestep_var='simday', sweep_variables=exp_tags,
+                            sample_channels=sample_channels)

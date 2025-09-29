@@ -53,7 +53,7 @@ def target_calibration_plot(fdir, df,
     num_colors = len(unique_groups)
     n_channels = len(channels)
 
-    fig, axs = plt.subplots(1, n_channels, figsize=( width_per_col * n_channels, height_per_row), squeeze=False)
+    fig, axs = plt.subplots(1, n_channels, figsize=(width_per_col * n_channels, height_per_row), squeeze=False)
     axs = axs.flatten()
     model = df['models'].unique()[0]
     fig.suptitle(model, fontsize=14, y=1.05)
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     malariasimulation_df = pd.read_csv(os.path.join(fpath, 'malariasimulation', fname))
     openmalaria_df = pd.read_csv(os.path.join(fpath, 'OpenMalaria', fname))
 
-    fdir = os.path.join(manifest.ROOT_DIR, 'plotter','custom', 'generated_plots')
+    fdir = os.path.join(manifest.ROOT_DIR, 'plotter', 'custom', 'generated_plots')
     os.makedirs(fdir, exist_ok=True)
 
     target_calibration_plot(fdir=fdir, df=emod_df, sweepvar=['seasonality', 'cm_clinical'],

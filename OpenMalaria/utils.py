@@ -7,7 +7,6 @@ from OpenMalaria.functions.convert_access import convert_access_lookup
 from OpenMalaria.functions.interventions import *
 
 
-
 def create_scenarios(exp, scen_df):
     """
     Creates OpenMalaria simulation scenarios based on a dataframe containing scenario parameters.
@@ -86,9 +85,9 @@ def create_scenarios(exp, scen_df):
         elif row['cm_clinical'] == 0:
             cm_clinical_5daily = 0
         else:
-            cm_clinical_5daily = convert_access_lookup(row['cm_clinical']) #  converted from R function to python, returns an error if value outside of lookup range
+            cm_clinical_5daily = convert_access_lookup(row[
+                                                           'cm_clinical'])  # converted from R function to python, returns an error if value outside of lookup range
             # cm_clinical_5daily = convert_access(row['cm_clinical']) # TODO convert from R function to python
-
 
         scenario = xml.replace('@seed@', str(row['seed']))
         scenario = scenario.replace('@cm_clinical@', str(cm_clinical_5daily))
@@ -98,9 +97,9 @@ def create_scenarios(exp, scen_df):
         if 'ccstep' in exp.intervention_list:
             scenario = scenario.replace('@EIR_reduction@', str(row['cc_factor_OpenMalaria']))
             scenario = scenario.replace('@step_change_time@', str(row['cc_timestep_OpenMalaria']))
-        
-        #SMC currently not supported
-        #if 'smc' in exp.intervention_list:
+
+        # SMC currently not supported
+        # if 'smc' in exp.intervention_list:
         #    scenario = write_smc_deployment(scenario, row)
 
         seasonality = getattr(exp, row['seasonality'])
@@ -143,7 +142,7 @@ def submit_analyze_OpenMalaria(exp, t='03:59:00', memG=10):
 
     """
     # Generate the SLURM shell script header for the job
-    header_post = shell_header_quest(exp.sh_hpc_config, time_str = t, memG=memG, job_name='analyze_OpenMalaria',
+    header_post = shell_header_quest(exp.sh_hpc_config, time_str=t, memG=memG, job_name='analyze_OpenMalaria',
                                      mem_scl=exp.mem_increase_factor)
 
     pycommand = f'\ncd {exp.root_directory}/OpenMalaria' \
@@ -233,7 +232,8 @@ def submit_run_OpenMalaria_slurm(exp):
         subprocess.CalledProcessError: If there is an issue with running the SLURM job submission command.
     """
     array = f'#SBATCH --array=1-{str(exp.nexps)}%{str(exp.max_running_jobs)}\n'
-    header_post = shell_header_quest(exp.sh_hpc_config, exp.openmalaria_time_per_sim, exp.openmalaria_memory_per_sim, job_name='run_openmalaria', arrayJob=array)
+    header_post = shell_header_quest(exp.sh_hpc_config, exp.openmalaria_time_per_sim, exp.openmalaria_memory_per_sim,
+                                     job_name='run_openmalaria', arrayJob=array)
     openmalaria = exp.OPENMALARIA_venv
     path = f'export PATH=$PATH:{exp.job_directory}'
     slurmID = '${SLURM_ARRAY_TASK_ID}'
@@ -379,6 +379,7 @@ echo "OpenMalaria simulation complete."
         file.write(sh_content)
 
     print(f"Shell script written successfully at {file_path}")
+
 
 if __name__ == "__main__":
     wdir = ''

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<om:scenario schemaVersion="@version@" name="R0000" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:om="http://openmalaria.org/schema/scenario_@version@" xsi:schemaLocation="http://openmalaria.org/schema/scenario_@version@ scenario_@version@.xsd">
+<om:scenario schemaVersion="@version@" name="R0000" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:om="http://openmalaria.org/schema/scenario_@version@"
+             xsi:schemaLocation="http://openmalaria.org/schema/scenario_@version@ scenario_@version@.xsd">
     <demography maximumAgeYrs="90" name="Ifakara" popSize="@pop_size@">
         <ageGroup lowerbound="0.0">
             @age_demography@
@@ -29,7 +31,7 @@
             <!--<option name="nHospitalRecovs"/>-->     <!-- id 23 -->
             <!--<option name="annAvgK"/>  -->     <!-- id 26 -->
             <option name="nNMFever"/>       <!-- id 27 -->
-            <option name="Vector_Nv"/>       <!-- id 32 --> 
+            <option name="Vector_Nv"/>       <!-- id 32 -->
             <option name="Vector_Sv"/>       <!-- id 34 -->
             <option name="inputEIR"/>       <!-- id 35 -->
             <option name="simulatedEIR"/>   <!-- id 36 -->
@@ -42,185 +44,185 @@
             <option name="expectedSevere"/>   <!-- id 77 -->
             <option name="expectedSevereWithoutComorbidities"/>  <!-- id 82 -->
         </SurveyOptions>
-    		<surveys detectionLimit="@detectionLimit@">
-    			<surveyTime repeatStep="@survey_step@" repeatEnd="@end_year@-12-31">
-            @start_year@-12-27
-    			</surveyTime>
-    		</surveys>
+        <surveys detectionLimit="@detectionLimit@">
+            <surveyTime repeatStep="@survey_step@" repeatEnd="@end_year@-12-31">
+                @start_year@-12-27
+            </surveyTime>
+        </surveys>
         <@age_groups@>
-        </ageGroup>
-    </monitoring>
-    <interventions name="Interventions">
-            @intervention_ccstep@
-        <importedInfections>
-            <timed>
-                <rate time="0" value="@importation_rate@"/>
-            </timed>
-        </importedInfections>
-    </interventions>
-    <healthSystem>
-        <ImmediateOutcomes name="Tanzania ACT">
-            <drugRegimen firstLine="ACT" inpatient="QN" secondLine="ACT"/>
-      
-            <initialACR>
-                <ACT value="1"/>
-                <QN value="1"/>
-                <selfTreatment value="0"/>
-            </initialACR>   
-   
-            <compliance>
-                <ACT value="1"/>
-                <selfTreatment value="0"/>
-            </compliance>
-      
-          <nonCompliersEffective>   
-            <ACT value="0"/>    
-            <selfTreatment value="0"/>  
-          </nonCompliersEffective>
-             
-            <treatmentActions>
-                <ACT name="clear blood-stage infections">
-                    <clearInfections stage="blood" timesteps="1"/>
-                </ACT>
-                <QN name="clear blood-stage infections">
-                    <clearInfections stage="blood" timesteps="1"/>
-                </QN>
-            </treatmentActions>
-      
-            <pSeekOfficialCareUncomplicated1 value="@cm_clinical@"/>
-            <pSelfTreatUncomplicated value="0.00"/>
-            <pSeekOfficialCareUncomplicated2 value="@cm_clinical@"/>
-            <pSeekOfficialCareSevere value="@cm_severe@"/>
-            <!-- Default value to use 0.48 as in Tediosi et al., 2006 for reference scenario -->
-            <!-- Modified to placeholder to allow dependency to cm_clinical being greater than 0.48 -->
-        </ImmediateOutcomes>
-        <CFR>
-            <group lowerbound="0" value="0.09189"/>
-            <group lowerbound="0.25" value="0.0810811"/>
-            <group lowerbound="0.75" value="0.0648649"/>
-            <group lowerbound="1.5" value="0.0689189"/>
-            <group lowerbound="2.5" value="0.0675676"/>
-            <group lowerbound="3.5" value="0.0297297"/>
-            <group lowerbound="4.5" value="0.0459459"/>
-            <group lowerbound="7.5" value="0.0945946"/>
-            <group lowerbound="12.5" value="0.1243243"/>
-            <group lowerbound="15" value="0.1378378"/>
-        </CFR>
-        <pSequelaeInpatient interpolation="none">
-            <group lowerbound="0.0" value="0.0132"/>
-            <group lowerbound="5.0" value="0.005"/>
-        </pSequelaeInpatient>
-    </healthSystem>
-    <entomology mode="@entomology_mode@" name="Namawala" scaledAnnualEIR="@eir@">
-        <vector>
-            <anopheles mosquito="gambiae_indoor" propInfected="0.078" propInfectious="0.021">
-                <seasonality annualEIR="0.8" input="EIR"> 
-                    <monthlyValues smoothing="fourier">      
-                        <value>@seasonality1@</value>
-                        <value>@seasonality2@</value>
-                        <value>@seasonality3@</value>
-                        <value>@seasonality4@</value>
-                        <value>@seasonality5@</value>
-                        <value>@seasonality6@</value>
-                        <value>@seasonality7@</value>
-                        <value>@seasonality8@</value>
-                        <value>@seasonality9@</value>
-                        <value>@seasonality10@</value>
-                        <value>@seasonality11@</value>
-                        <value>@seasonality12@</value>
-                    </monthlyValues>
-                </seasonality>
-                <mosq minInfectedThreshold="0.001">
-                    <mosqRestDuration value="3"/>
-                    <extrinsicIncubationPeriod value="11"/>
-                    <mosqLaidEggsSameDayProportion value="0.313"/>
-                    <mosqSeekingDuration value="0.33"/>
-                    <mosqSurvivalFeedingCycleProbability value="0.623"/>
-                    <availability/>
-                    <mosqProbBiting mean="0.95" variance="0"/>
-                    <mosqProbFindRestSite mean="0.95" variance="0"/>
-                    <mosqProbResting mean="0.99" variance="0"/>
-                    <mosqProbOvipositing value="0.88"/>
-                    <mosqHumanBloodIndex value="0.99"/>
-                </mosq>
-                <nonHumanHosts name="unprotectedAnimals">
-                    <mosqRelativeEntoAvailability value="1.0"/>
-                    <mosqProbBiting value="0.95"/>
-                    <mosqProbFindRestSite value="0.95"/>
-                    <mosqProbResting value="0.99"/>
-                </nonHumanHosts>
-            </anopheles>
-            <anopheles mosquito="gambiae_outdoor" propInfected="0.078" propInfectious="0.021">
-                <seasonality annualEIR="0.2" input="EIR"> 
-                    <monthlyValues smoothing="fourier">      
-                        <value>@seasonality1@</value>
-                        <value>@seasonality2@</value>
-                        <value>@seasonality3@</value>
-                        <value>@seasonality4@</value>
-                        <value>@seasonality5@</value>
-                        <value>@seasonality6@</value>
-                        <value>@seasonality7@</value>
-                        <value>@seasonality8@</value>
-                        <value>@seasonality9@</value>
-                        <value>@seasonality10@</value>
-                        <value>@seasonality11@</value>
-                        <value>@seasonality12@</value>
-                    </monthlyValues>
-                </seasonality>
-                <mosq minInfectedThreshold="0.001">
-                    <mosqRestDuration value="3"/>
-                    <extrinsicIncubationPeriod value="11"/>
-                    <mosqLaidEggsSameDayProportion value="0.313"/>
-                    <mosqSeekingDuration value="0.33"/>
-                    <mosqSurvivalFeedingCycleProbability value="0.623"/>
-                    <availability/>
-                    <mosqProbBiting mean="0.95" variance="0"/>
-                    <mosqProbFindRestSite mean="0.95" variance="0"/>
-                    <mosqProbResting mean="0.99" variance="0"/>
-                    <mosqProbOvipositing value="0.88"/>
-                    <mosqHumanBloodIndex value="0.5"/>
-                </mosq>
-                <nonHumanHosts name="unprotectedAnimals">
-                    <mosqRelativeEntoAvailability value="1.0"/>
-                    <mosqProbBiting value="0.95"/>
-                    <mosqProbFindRestSite value="0.95"/>
-                    <mosqProbResting value="0.99"/>
-                </nonHumanHosts>
-            </anopheles>
-            <nonHumanHosts name="unprotectedAnimals" number="1.0"/>
-        </vector>
-    </entomology>
-    <diagnostics>
-        <diagnostic name="Deterministic_diagnostic">
-            <deterministic minDensity="@detectionLimit@"/>
-        </diagnostic>
-    </diagnostics>
-    <model>
-        <ModelOptions>
-            @model_options@
-        </ModelOptions>
-        <clinical healthSystemMemory="@healthSystemMemory@"/>
-        <human>
-            <availabilityToMosquitoes>
-                <group lowerbound="0.0" value="0.225940909648"/>
-                <group lowerbound="1.0" value="0.286173633441"/>
-                <group lowerbound="2.0" value="0.336898395722"/>
-                <group lowerbound="3.0" value="0.370989854675"/>
-                <group lowerbound="4.0" value="0.403114915112"/>
-                <group lowerbound="5.0" value="0.442585112522"/>
-                <group lowerbound="6.0" value="0.473839351511"/>
-                <group lowerbound="7.0" value="0.512630464378"/>
-                <group lowerbound="8.0" value="0.54487872702"/>
-                <group lowerbound="9.0" value="0.581527755812"/>
-                <group lowerbound="10.0" value="0.630257580698"/>
-                <group lowerbound="11.0" value="0.663063362714"/>
-                <group lowerbound="12.0" value="0.702417432755"/>
-                <group lowerbound="13.0" value="0.734605377277"/>
-                <group lowerbound="14.0" value="0.788908765653"/>
-                <group lowerbound="15.0" value="0.839587932303"/>
-                <group lowerbound="20.0" value="1.0"/>
-            </availabilityToMosquitoes>
-        </human>
-            @model_parameters@
-    </model>
-</om:scenario>
+    </ageGroup>
+</monitoring>
+<interventions name="Interventions">
+@intervention_ccstep@
+<importedInfections>
+    <timed>
+        <rate time="0" value="@importation_rate@"/>
+    </timed>
+</importedInfections>
+</interventions>
+<healthSystem>
+<ImmediateOutcomes name="Tanzania ACT">
+    <drugRegimen firstLine="ACT" inpatient="QN" secondLine="ACT"/>
+
+    <initialACR>
+        <ACT value="1"/>
+        <QN value="1"/>
+        <selfTreatment value="0"/>
+    </initialACR>
+
+    <compliance>
+        <ACT value="1"/>
+        <selfTreatment value="0"/>
+    </compliance>
+
+    <nonCompliersEffective>
+        <ACT value="0"/>
+        <selfTreatment value="0"/>
+    </nonCompliersEffective>
+
+    <treatmentActions>
+        <ACT name="clear blood-stage infections">
+            <clearInfections stage="blood" timesteps="1"/>
+        </ACT>
+        <QN name="clear blood-stage infections">
+            <clearInfections stage="blood" timesteps="1"/>
+        </QN>
+    </treatmentActions>
+
+    <pSeekOfficialCareUncomplicated1 value="@cm_clinical@"/>
+    <pSelfTreatUncomplicated value="0.00"/>
+    <pSeekOfficialCareUncomplicated2 value="@cm_clinical@"/>
+    <pSeekOfficialCareSevere value="@cm_severe@"/>
+    <!-- Default value to use 0.48 as in Tediosi et al., 2006 for reference scenario -->
+    <!-- Modified to placeholder to allow dependency to cm_clinical being greater than 0.48 -->
+</ImmediateOutcomes>
+<CFR>
+    <group lowerbound="0" value="0.09189"/>
+    <group lowerbound="0.25" value="0.0810811"/>
+    <group lowerbound="0.75" value="0.0648649"/>
+    <group lowerbound="1.5" value="0.0689189"/>
+    <group lowerbound="2.5" value="0.0675676"/>
+    <group lowerbound="3.5" value="0.0297297"/>
+    <group lowerbound="4.5" value="0.0459459"/>
+    <group lowerbound="7.5" value="0.0945946"/>
+    <group lowerbound="12.5" value="0.1243243"/>
+    <group lowerbound="15" value="0.1378378"/>
+</CFR>
+<pSequelaeInpatient interpolation="none">
+    <group lowerbound="0.0" value="0.0132"/>
+    <group lowerbound="5.0" value="0.005"/>
+</pSequelaeInpatient>
+</healthSystem>
+<entomology mode="@entomology_mode@" name="Namawala" scaledAnnualEIR="@eir@">
+<vector>
+    <anopheles mosquito="gambiae_indoor" propInfected="0.078" propInfectious="0.021">
+        <seasonality annualEIR="0.8" input="EIR">
+            <monthlyValues smoothing="fourier">
+                <value>@seasonality1@</value>
+                <value>@seasonality2@</value>
+                <value>@seasonality3@</value>
+                <value>@seasonality4@</value>
+                <value>@seasonality5@</value>
+                <value>@seasonality6@</value>
+                <value>@seasonality7@</value>
+                <value>@seasonality8@</value>
+                <value>@seasonality9@</value>
+                <value>@seasonality10@</value>
+                <value>@seasonality11@</value>
+                <value>@seasonality12@</value>
+            </monthlyValues>
+        </seasonality>
+        <mosq minInfectedThreshold="0.001">
+            <mosqRestDuration value="3"/>
+            <extrinsicIncubationPeriod value="11"/>
+            <mosqLaidEggsSameDayProportion value="0.313"/>
+            <mosqSeekingDuration value="0.33"/>
+            <mosqSurvivalFeedingCycleProbability value="0.623"/>
+            <availability/>
+            <mosqProbBiting mean="0.95" variance="0"/>
+            <mosqProbFindRestSite mean="0.95" variance="0"/>
+            <mosqProbResting mean="0.99" variance="0"/>
+            <mosqProbOvipositing value="0.88"/>
+            <mosqHumanBloodIndex value="0.99"/>
+        </mosq>
+        <nonHumanHosts name="unprotectedAnimals">
+            <mosqRelativeEntoAvailability value="1.0"/>
+            <mosqProbBiting value="0.95"/>
+            <mosqProbFindRestSite value="0.95"/>
+            <mosqProbResting value="0.99"/>
+        </nonHumanHosts>
+    </anopheles>
+    <anopheles mosquito="gambiae_outdoor" propInfected="0.078" propInfectious="0.021">
+        <seasonality annualEIR="0.2" input="EIR">
+            <monthlyValues smoothing="fourier">
+                <value>@seasonality1@</value>
+                <value>@seasonality2@</value>
+                <value>@seasonality3@</value>
+                <value>@seasonality4@</value>
+                <value>@seasonality5@</value>
+                <value>@seasonality6@</value>
+                <value>@seasonality7@</value>
+                <value>@seasonality8@</value>
+                <value>@seasonality9@</value>
+                <value>@seasonality10@</value>
+                <value>@seasonality11@</value>
+                <value>@seasonality12@</value>
+            </monthlyValues>
+        </seasonality>
+        <mosq minInfectedThreshold="0.001">
+            <mosqRestDuration value="3"/>
+            <extrinsicIncubationPeriod value="11"/>
+            <mosqLaidEggsSameDayProportion value="0.313"/>
+            <mosqSeekingDuration value="0.33"/>
+            <mosqSurvivalFeedingCycleProbability value="0.623"/>
+            <availability/>
+            <mosqProbBiting mean="0.95" variance="0"/>
+            <mosqProbFindRestSite mean="0.95" variance="0"/>
+            <mosqProbResting mean="0.99" variance="0"/>
+            <mosqProbOvipositing value="0.88"/>
+            <mosqHumanBloodIndex value="0.5"/>
+        </mosq>
+        <nonHumanHosts name="unprotectedAnimals">
+            <mosqRelativeEntoAvailability value="1.0"/>
+            <mosqProbBiting value="0.95"/>
+            <mosqProbFindRestSite value="0.95"/>
+            <mosqProbResting value="0.99"/>
+        </nonHumanHosts>
+    </anopheles>
+    <nonHumanHosts name="unprotectedAnimals" number="1.0"/>
+</vector>
+</entomology>
+<diagnostics>
+<diagnostic name="Deterministic_diagnostic">
+    <deterministic minDensity="@detectionLimit@"/>
+</diagnostic>
+</diagnostics>
+<model>
+<ModelOptions>
+    @model_options@
+</ModelOptions>
+<clinical healthSystemMemory="@healthSystemMemory@"/>
+<human>
+    <availabilityToMosquitoes>
+        <group lowerbound="0.0" value="0.225940909648"/>
+        <group lowerbound="1.0" value="0.286173633441"/>
+        <group lowerbound="2.0" value="0.336898395722"/>
+        <group lowerbound="3.0" value="0.370989854675"/>
+        <group lowerbound="4.0" value="0.403114915112"/>
+        <group lowerbound="5.0" value="0.442585112522"/>
+        <group lowerbound="6.0" value="0.473839351511"/>
+        <group lowerbound="7.0" value="0.512630464378"/>
+        <group lowerbound="8.0" value="0.54487872702"/>
+        <group lowerbound="9.0" value="0.581527755812"/>
+        <group lowerbound="10.0" value="0.630257580698"/>
+        <group lowerbound="11.0" value="0.663063362714"/>
+        <group lowerbound="12.0" value="0.702417432755"/>
+        <group lowerbound="13.0" value="0.734605377277"/>
+        <group lowerbound="14.0" value="0.788908765653"/>
+        <group lowerbound="15.0" value="0.839587932303"/>
+        <group lowerbound="20.0" value="1.0"/>
+    </availabilityToMosquitoes>
+</human>
+@model_parameters@
+</model>
+        </om:scenario>

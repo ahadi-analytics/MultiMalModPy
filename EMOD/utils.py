@@ -5,7 +5,8 @@ import json
 import subprocess
 from functools import partial
 from EMOD.functions.reporters import add_annual_reports, add_daily_reports, add_monthly_reports, add_5daily_reports
-from EMOD.functions.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, sweep_functions, habitat_setup, climate_setup, drug_setup
+from EMOD.functions.EMOD_functions import build_burnin_df, all_campaigns, set_param, SwpFn, ItvFn, CfgFn, \
+    sweep_functions, habitat_setup, climate_setup, drug_setup
 from EMOD.functions.forcedEIR import mAb_vs_EIR
 from emodpy_malaria.reporters.builtin import *
 import emod_api.config.default_from_schema_no_validation as dfs
@@ -13,6 +14,7 @@ import emodpy_malaria.vector_config as vector_config
 from emodpy.emod_task import EMODTask
 from idmtools.builders import SimulationBuilder
 from idmtools.entities.experiment import Experiment
+
 sys.path.append('../')
 import manifest
 from utility.helper_slurm import shell_header_quest, write_txt, submit_run_pyscript
@@ -60,7 +62,7 @@ def submit_run_EMOD(exp, manifest, scen_df):
     sim_start_year_emod = exp.sim_start_year_emod
 
     if exp.hpc == 'LOCAL':
-        #platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory)
+        # platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory)
         # EMOD local gives Error message when type and block are not defined
         platform = exp.platform = Platform(type=manifest.selected_platform,
                                            job_directory=exp.suite_directory,
@@ -78,7 +80,7 @@ def submit_run_EMOD(exp, manifest, scen_df):
     # create EMODTask
     print("Creating EMODTask (from files)...")
     task = config_task(platform, exp)
-    task = build_demog(task,exp)
+    task = build_demog(task, exp)
 
     if entomology_mode == 'dynamic':
         task.common_assets.add_directory(os.path.join(manifest.input_dir, "climate"), relative_path="climate")
@@ -92,18 +94,21 @@ def submit_run_EMOD(exp, manifest, scen_df):
     else:
         builder = config_sweep_builder(exp, scen_df)
 
-    #add_report_vector_stats(task, manifest, species_list=["gambiae"], stratify_by_species =True)
-    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, 
+    # add_report_vector_stats(task, manifest, species_list=["gambiae"], stratify_by_species =True)
+    add_annual_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod,
                        num_year=sim_dur_years, detection_threshold=exp.detectionLimit)
 
     if emod_step != 'burnin':  # do not generate more granular reports for burnin
         if 'daily' in exp.analyzer_list:
-            add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years,
-                              detection_threshold=exp.detectionLimit) 
-        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years,
+            add_daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod,
+                              num_year=sim_dur_years,
+                              detection_threshold=exp.detectionLimit)
+        add_monthly_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod,
+                            num_year=sim_dur_years,
                             detection_threshold=exp.detectionLimit)
         if '5day' in exp.analyzer_list or 'ccstep' in exp.analyzer_list:
-            add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod, num_year=sim_dur_years,
+            add_5daily_reports(task, manifest, age_bins=agebins, sim_start_year=sim_start_year_emod,
+                               num_year=sim_dur_years,
                                detection_threshold=exp.detectionLimit)
 
     # Create experiment from builder and run
@@ -122,7 +127,7 @@ def submit_run_EMOD(exp, manifest, scen_df):
     exp.emod_id = experiment.id
 
     if exp.hpc != "LOCAL":
-        generate_run_EMOD_file(experiment, platform, suite_directory = exp.suite_directory)
+        generate_run_EMOD_file(experiment, platform, suite_directory=exp.suite_directory)
         submit_analyze_EMOD(experiment, platform)
         if exp.emod_step == 'burnin':
             exp.exp_name_pickup = exp.exp_name.replace(f'_burnin{exp.emod_burnin}', '')
@@ -130,7 +135,7 @@ def submit_run_EMOD(exp, manifest, scen_df):
                                 custom_args=f"--suite {exp.SUITEname} --expname {exp.exp_name_pickup} "
                                             f"--emod_step pickup --serializedid {exp.emod_id} "
                                             f"--models {' '.join([m for m in exp.models_pickup])} ",
-                                job_id_EMOD='job_id_EMODanalyze',memG=exp.mem_increase_factor*5, job='pickup_launch')
+                                job_id_EMOD='job_id_EMODanalyze', memG=exp.mem_increase_factor * 5, job='pickup_launch')
     else:
         write_analyze_EMOD_local(experiment, platform)
         exp.container_id = platform.container_id
@@ -174,7 +179,7 @@ def config_task(platform, exp):
     )
     set_emod_exp_parameters(task.config, exp)
 
-    if exp.selected_platform !='Container' : # Relates to container used locally, not on HPC
+    if exp.selected_platform != 'Container':  # Relates to container used locally, not on HPC
         task.set_sif(manifest.SIF_PATH, exp.platform)
 
     return task
@@ -230,13 +235,12 @@ def set_emod_exp_parameters(config, exp):
     config.parameters.Simulation_Duration = exp.sim_dur_years * 365
     config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = exp.detectionLimit
     config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = exp.detectionLimit
-    #We may no longer need to indicate blood smear parasites and gametocytes, instead we do need to indicate true parasite density
+    # We may no longer need to indicate blood smear parasites and gametocytes, instead we do need to indicate true parasite density
     config.parameters.Report_Detection_Threshold_True_Parasite_Density = exp.detectionLimit
     config.parameters.Report_Parasite_Smear_Sensitivity = 1
     config.parameters.Birth_Rate_Dependence = "FIXED_BIRTH_RATE"
-    config.parameters.Min_Days_Between_Clinical_Incidents = 14  
+    config.parameters.Min_Days_Between_Clinical_Incidents = 14
 
-    
     # Serialization configuration
     if exp.emod_step == 'burnin':
         config.parameters.Serialized_Population_Writing_Type = "TIMESTEP"
@@ -254,12 +258,12 @@ def build_demog(task, exp):
     Builds the demographic structure for the EMOD simulation.
     """
     # Create a Demographics object and set location and population size
-    #demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
-    demog = json.load(open(os.path.join(exp.emod_input_path,"demographics.json")))
-    #This calculation is the same as using crude rate, but jsons don't recognize 
-    birthrate = float(34.95*exp.emod_pop_size/365/1000)
+    # demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")
+    demog = json.load(open(os.path.join(exp.emod_input_path, "demographics.json")))
+    # This calculation is the same as using crude rate, but jsons don't recognize
+    birthrate = float(34.95 * exp.emod_pop_size / 365 / 1000)
     demog["Defaults"]["NodeAttributes"].update({"BirthRate": birthrate})
-    with open(os.path.join(exp.emod_input_path, f"demographics_{exp.emod_pop_size}.json"), "w") as outfile: 
+    with open(os.path.join(exp.emod_input_path, f"demographics_{exp.emod_pop_size}.json"), "w") as outfile:
         json.dump(demog, outfile)
     task.transient_assets.add_asset(os.path.join(exp.emod_input_path, f"demographics_{exp.emod_pop_size}.json"))
     task.set_parameter("Demographics_Filenames", [f"demographics_{exp.emod_pop_size}.json"])
@@ -297,17 +301,18 @@ def config_sweep_builder(exp, scen_df):
         nseeds = exp.num_seeds_burnin
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
-        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list=exp.intervention_list),
                    CfgFn(drug_setup, exp),
-                   partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.transmission_intensity_EMOD)),
+                   partial(set_param, param='Maternal_Antibody_Protection',
+                           value=matAP * mAb_vs_EIR(row.transmission_intensity_EMOD)),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
                   for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list=exp.intervention_list),
                    CfgFn(drug_setup, exp),
                    CfgFn(habitat_setup, exp, row=row),
-                   SwpFn(climate_setup,  seasonality = row.seasonality),
+                   SwpFn(climate_setup, seasonality=row.seasonality),
                    partial(set_param, param='x_Temporary_Larval_Habitat', value=row.transmission_intensity_EMOD),
                    partial(set_param, param='Run_Number', value=s)]
                   for i, row in scen_df.iterrows()
@@ -315,9 +320,9 @@ def config_sweep_builder(exp, scen_df):
     else:
         raise ValueError(f'{exp.entomology_mode} not valid')
 
-    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
+    if exp.emod_calib_params:  # This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.
         from EMOD.functions.calib_params import get_emod_calib_params
-        calib_params = get_emod_calib_params(exp,scen_df)
+        calib_params = get_emod_calib_params(exp, scen_df)
         for i in range(0, len(calib_params)):
             sweeps[i] = sweeps[i] + calib_params[i]
     builder.add_sweep_definition(sweep_functions, sweeps)
@@ -352,20 +357,21 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
     if exp.entomology_mode == 'forced':
         matAP = 0.1327
         sweeps = [[
-            ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+            ItvFn(all_campaigns, exp, row=row, intervention_list=exp.intervention_list),
             CfgFn(drug_setup, exp),
             partial(set_param, param='Serialized_Population_Path',
                     value=os.path.join(row["serialized_file_path"], "output")),
             partial(set_param, param='Serialized_Population_Filenames', value=row["Serialized_Population_Filenames"]),
-            partial(set_param, param='Maternal_Antibody_Protection', value=matAP * mAb_vs_EIR(row.transmission_intensity_EMOD)),
+            partial(set_param, param='Maternal_Antibody_Protection',
+                    value=matAP * mAb_vs_EIR(row.transmission_intensity_EMOD)),
             partial(set_param, param='Run_Number', value=s)]
             for i, row in scen_df_pickup.iterrows()
             for s in range(nseeds)]
     elif exp.entomology_mode == 'dynamic':
-        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list = exp.intervention_list),
+        sweeps = [[ItvFn(all_campaigns, exp, row=row, intervention_list=exp.intervention_list),
                    CfgFn(drug_setup, exp),
                    CfgFn(habitat_setup, exp, row=row),
-                   SwpFn(climate_setup,  seasonality = row.seasonality),
+                   SwpFn(climate_setup, seasonality=row.seasonality),
                    partial(set_param, param='Serialized_Population_Path',
                            value=os.path.join(row["serialized_file_path"], "output")),
                    partial(set_param, param='Serialized_Population_Filenames',
@@ -377,16 +383,16 @@ def config_sweep_builder_pickup(exp, scen_df_pickup):
     else:
         raise ValueError(f'{exp.entomology_mode} not valid')
 
-    if exp.emod_calib_params: #This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.
+    if exp.emod_calib_params:  # This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.
         from EMOD.functions.calib_params import get_emod_calib_params
-        calib_params = get_emod_calib_params(exp,scen_df_pickup)
+        calib_params = get_emod_calib_params(exp, scen_df_pickup)
         for i in range(0, len(calib_params)):
             sweeps[i] = sweeps[i] + calib_params[i]
     builder.add_sweep_definition(sweep_functions, sweeps)
     return [builder]
 
 
-def generate_run_EMOD_file(experiment, platform, suite_directory, t = '00:30:00', memG=5):
+def generate_run_EMOD_file(experiment, platform, suite_directory, t='00:30:00', memG=5):
     """
     Generates a SBATCH file to re-run EMOD simulations, in case the user wants to re-run simulation
     This function creates a SLURM shell script for re-submitting EMOD simulations.
@@ -409,7 +415,7 @@ def generate_run_EMOD_file(experiment, platform, suite_directory, t = '00:30:00'
     emod_directory = os.path.join(suite_directory, suite, experiment.id)
     script_path = os.path.join(experiment.job_directory, 'run_EMOD.sh')
     file = open(script_path, 'w')
-    file.write(header_post + emodpy_venv+ f'\ncd {emod_directory}'+ pycommand)
+    file.write(header_post + emodpy_venv + f'\ncd {emod_directory}' + pycommand)
     file.close()
 
 
@@ -554,7 +560,7 @@ def run_analyze_EMOD_local_with_polling(exp, container_id, poll_interval=30, tim
         elapsed += poll_interval
 
     # All done, run analyzer script
-    #py_command = ['python', exp.analyzer_script[0], '-d', exp.job_directory, '-i', exp.id]
+    # py_command = ['python', exp.analyzer_script[0], '-d', exp.job_directory, '-i', exp.id]
 
     script_path = os.path.join(exp.job_directory, 'run_analyze_EMOD.ps1')
     try:
@@ -567,4 +573,3 @@ def run_analyze_EMOD_local_with_polling(exp, container_id, poll_interval=30, tim
         print("Analyzer STDERR:\n", result.stderr)
     except Exception as e:
         print(f"Failed to run analyzer script: {e}")
-

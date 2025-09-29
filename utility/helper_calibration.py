@@ -4,21 +4,18 @@ import pandas as pd
 
 
 def get_calib_range():
-
     eir_range = [1.00000000e-01, 1.37382380e-01, 1.88739182e-01, 2.59294380e-01, 3.56224789e-01, 4.89390092e-01,
                  6.72335754e-01, 9.23670857e-01, 1.26896100e+00, 1.74332882e+00, 2.39502662e+00, 3.29034456e+00,
                  4.52035366e+00, 6.21016942e+00, 8.53167852e+00, 1.17210230e+01, 1.61026203e+01, 2.21221629e+01,
                  3.03919538e+01, 4.17531894e+01, 5.73615251e+01, 7.88046282e+01, 1.08263673e+02, 1.48735211e+02,
                  2.04335972e+02, 2.80721620e+02, 3.85662042e+02, 5.29831691e+02, 7.27895384e+02, 1.00000000e+03]
 
-
     x_temp_range = [3.00000000e-01, 3.89896984e-01, 5.06732193e-01, 6.58577845e-01, 8.55925050e-01, 1.11240865e+00,
                     1.44574926e+00, 1.87897758e+00, 2.44202564e+00, 3.17379477e+00, 4.12484335e+00, 5.36087994e+00,
-                    6.96730305e+00, 9.05510148e+00, 1.17685225e+01, 1.52950381e+01, 1.98782974e+01, 2.58349606e+01, 
+                    6.96730305e+00, 9.05510148e+00, 1.17685225e+01, 1.52950381e+01, 1.98782974e+01, 2.58349606e+01,
                     3.35765774e+01, 4.36380208e+01, 5.67144423e+01, 7.37092999e+01, 9.57967789e+01, 1.24502917e+02,
                     1.61811039e+02, 2.10298787e+02, 2.73316209e+02, 3.55217219e+02, 4.61660407e+02, 6.00000000e+02]
     return eir_range, x_temp_range
-
 
 
 def output_target_to_xTemp(df, exp, model):
@@ -167,7 +164,6 @@ def output_target_to_eir(df, exp, model):
 
 
 def check_transmission_targets_input(exp):
-
     for model in exp.models:
         if model == 'EMOD':
             popsize = exp.emod_pop_size
@@ -190,22 +186,27 @@ def check_transmission_targets_input(exp):
 
         data = pd.read_csv(interp_path)
 
-        popsize_options = list( data.loc[data['models'] == model, 'pop_size'].unique())
-        if  popsize not in popsize_options:
+        popsize_options = list(data.loc[data['models'] == model, 'pop_size'].unique())
+        if popsize not in popsize_options:
             if exp.test:
-                print(f'Warning: the popsize specified for {model} ({popsize}) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize ({min(popsize_options)})') # see L140
+                print(
+                    f'Warning: the popsize specified for {model} ({popsize}) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize ({min(popsize_options)})')  # see L140
             else:
-                raise ValueError(f"Selected popsize {popsize} not availabe, options for {model} are  {', '.join([str(x) for x in popsize_options])}")
+                raise ValueError(
+                    f"Selected popsize {popsize} not availabe, options for {model} are  {', '.join([str(x) for x in popsize_options])}")
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
     if any(value not in data['cm_clinical'].unique().tolist() for value in exp.cm_clinical):
-        raise ValueError(  f"Invalid cm_clinical values. Only allowed values are {data['cm_clinical'].unique().tolist()}. - requires new calibrun")
+        raise ValueError(
+            f"Invalid cm_clinical values. Only allowed values are {data['cm_clinical'].unique().tolist()}. - requires new calibrun")
 
     if any(value not in data['cm_severe'].unique().tolist() for value in exp.cm_severe):
-        raise ValueError( f"Invalid cm_severe values. Only allowed values are {data['cm_severe'].unique().tolist()}. - requires new calibrun")
+        raise ValueError(
+            f"Invalid cm_severe values. Only allowed values are {data['cm_severe'].unique().tolist()}. - requires new calibrun")
 
     if any(value not in data['seasonality'].unique().tolist() for value in exp.seasonality):
-        raise ValueError(  f"Invalid seasonality values. Only allowed values are {data['seasonality'].unique().tolist()}. - requires new calibrun")
+        raise ValueError(
+            f"Invalid seasonality values. Only allowed values are {data['seasonality'].unique().tolist()}. - requires new calibrun")
 
     valid_cm_combinations = set(zip(data['cm_clinical'], data['cm_severe']))
     invalid_cm_values = set(exp.case_management) - valid_cm_combinations

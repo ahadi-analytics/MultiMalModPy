@@ -8,7 +8,9 @@ from datetime import datetime as dt
 import pandas as pd
 import numpy as np
 from scipy.interpolate import interp1d
-#from idmtools.entities.experiment import Experiment
+
+
+# from idmtools.entities.experiment import Experiment
 
 
 def exec(command):
@@ -97,11 +99,11 @@ def shell_header_quest(sh_account, time_str='03:59:00', memG=3, job_name='myjob'
     return header
 
 
-
 def submit_run_pyscript(exp, pyscript='plotter/plot_relationship.py', shname='run_relationship_plots.sh',
-                        custom_args='--models EMOD malariasimulation OpenMalaria', t='05:00:00', memG=20, job_id_EMOD=False,
+                        custom_args='--models EMOD malariasimulation OpenMalaria', t='05:00:00', memG=20,
+                        job_id_EMOD=False,
                         job_id_malariasimulation=False, job_id_OpenMalaria=False,
-                        job='pyjob',  wdir=None, write_only=False):
+                        job='pyjob', wdir=None, write_only=False):
     """
     Submits a job to run a specified Python script using SLURM.
 
@@ -147,7 +149,7 @@ def submit_run_pyscript(exp, pyscript='plotter/plot_relationship.py', shname='ru
     if exp.use_container:
         pycommand = f'\n{exp.EMOD_venv} && python {pyscript} -d {exp.output_directory} {custom_args}'
         pycommand = (f'module load singularity '
-                f'\nsingularity exec --bind {exp.bind_path} --pwd {exp.ROOT_DIR}  {exp.image_path} bash -c "{pycommand}"')
+                     f'\nsingularity exec --bind {exp.bind_path} --pwd {exp.ROOT_DIR}  {exp.image_path} bash -c "{pycommand}"')
     else:
         pycommand = f'\npython {pyscript} -d {exp.output_directory} {custom_args}'
         pycommand = exp.EMOD_venv + f'\ncd {wdir}' + pycommand
@@ -167,7 +169,8 @@ def submit_run_pyscript(exp, pyscript='plotter/plot_relationship.py', shname='ru
             prior_dependency = True
         # Check if job_id_malariasimulation is provided as a string
         if job_id_malariasimulation:
-            id_malariasimulation = open(os.path.join(exp.job_directory, 'job_id_malariasimulation_analyze.txt')).read().strip()
+            id_malariasimulation = open(
+                os.path.join(exp.job_directory, 'job_id_malariasimulation_analyze.txt')).read().strip()
             if prior_dependency:
                 dependencies = dependencies + f',{id_malariasimulation}'
             else:
@@ -244,7 +247,7 @@ def submit_run_plotters_slurm(exp):
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                             custom_args=f"--models {' '.join([x for x in exp.models])}",
                             job=f'{plot_name}_plots', memG=plot_memG,
-                            wdir = parent_dir , write_only=True)
+                            wdir=parent_dir, write_only=True)
 
     ## Write and run plots specified in exp.plots_to_run
     plots_to_run = [p for p in exp.plots_to_run if not p == 'sampleplots']  # exp.plots_to_run
@@ -261,8 +264,10 @@ def submit_run_plotters_slurm(exp):
 
         submit_run_pyscript(exp, pyscript=pyscript_name, shname=f'run_{plot_name}_plots.sh',
                             custom_args=f"--models {' '.join([x for x in exp.models])}",
-                            job_id_EMOD=job_id_EMOD, job_id_malariasimulation=job_id_malariasimulation, job_id_OpenMalaria=job_id_OpenMalaria,
-                            job=f'{plot_name}_plots', memG=plot_memG,   wdir = parent_dir)
+                            job_id_EMOD=job_id_EMOD, job_id_malariasimulation=job_id_malariasimulation,
+                            job_id_OpenMalaria=job_id_OpenMalaria,
+                            job=f'{plot_name}_plots', memG=plot_memG, wdir=parent_dir)
+
 
 def write_txt(txtobj, path, fname):
     """

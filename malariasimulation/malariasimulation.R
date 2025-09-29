@@ -18,11 +18,11 @@ library(dplyr); library(tibble); library(readr); library(umbrella)
 arguments <- commandArgs(trailingOnly = TRUE)
 wdir <- arguments[1]  # getwd()
 job_directory <- arguments[2]
-scen_id <- arguments[3]  
+scen_id <- arguments[3]
 
 
 print(" Load the functions required and load experiment objects...")
-rfiles <- list.files(file.path(wdir,'functions'),  pattern = ".R", full.names = T)
+rfiles <- list.files(file.path(wdir, 'functions'), pattern = ".R", full.names = T)
 for (i in c(1:length(rfiles))) {
   source(rfiles[i])
 }

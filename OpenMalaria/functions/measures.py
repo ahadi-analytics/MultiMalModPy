@@ -77,7 +77,7 @@ mm = {
     77: 'expectedSequelae',
     78: 'expectedSevere',
     79: 'innoculationsPerVector',
-    82: 'expectedSevereWithoutComorbidities'        
+    82: 'expectedSevereWithoutComorbidities'
 }
 
 mmi = {v: k for k, v in mm.items()}

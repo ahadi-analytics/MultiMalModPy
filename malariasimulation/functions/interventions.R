@@ -1,53 +1,53 @@
 ### Interventions
 
-include_interventions <- function(exp, parameters, parameter_table, intervention_list){
+include_interventions <- function(exp, parameters, parameter_table, intervention_list) {
   #Include Carrying Capacity Perturbation
   simparams <- parameters
-  if ("ccstep" %in% intervention_list){ 
+  if ("ccstep" %in% intervention_list) {
     simparams <- carrying_capacity(parameters = simparams,
-                                        parameter_table = parameter_table)
-  } 
+                                   parameter_table = parameter_table)
+  }
 
   #Include SMC - Currently not supported
-  if ("smc" %in% intervention_list){
+  if ("smc" %in% intervention_list) {
     exp <- define_smc_param(exp, parameter_table)
     simparams <- set_smc(parameters = simparams,
-                              drug = 2,
-                              timesteps = exp$smc_days,
-                              coverages = exp$smc_coverages,
-                              min_ages = exp$smc_min_ages,
-                              max_ages = exp$smc_max_ages)
+                         drug = 2,
+                         timesteps = exp$smc_days,
+                         coverages = exp$smc_coverages,
+                         min_ages = exp$smc_min_ages,
+                         max_ages = exp$smc_max_ages)
   }
   return(simparams)
 }
 
-include_intervention_outputs <- function(output_list, intervention_list, parameter_table){
+include_intervention_outputs <- function(output_list, intervention_list, parameter_table) {
   simulation_output <- output_list
-  if ("smc" %in% intervention_list){
+  if ("smc" %in% intervention_list) {
     simulation_output$smc_coverage <- parameter_table$smc_coverage
   }
   if ("ccstep" %in% intervention_list) {
     simulation_output$cc_factor_malariasimulation <- parameter_table$cc_factor_malariasimulation
     simulation_output$cc_timestep_malariasimulation <- parameter_table$cc_timestep_malariasimulation
     simulation_output$cc_title <- parameter_table$cc_title
-  } 
+  }
 
   return(simulation_output)
 }
 
-carrying_capacity <- function(parameters, parameter_table){
+carrying_capacity <- function(parameters, parameter_table) {
   simparams <- parameters
   # Calibrate to the initial EIR (eirs unique to each model, based on which eir creates the high, medium and low prevalences required):
   simparams <- set_equilibrium(parameters = simparams,
-                                    init_EIR = parameter_table$transmission_intensity_malariasimulation)
-  
+                               init_EIR = parameter_table$transmission_intensity_malariasimulation)
+
   # Get the mosquito carrying capacity:
   mosquito_carrying_capacity <- get_init_carrying_capacity(parameters = simparams)
-  
+
   # Parameterise the changes in mosquito population carrying capacity (for EIR step change):
-  simparams <- set_carrying_capacity(parameters = simparams, 
-                                          timesteps = parameter_table$cc_timestep_malariasimulation, 
-                                          carrying_capacity = matrix(parameter_table$cc_factor_malariasimulation, ncol = 1))
+  simparams <- set_carrying_capacity(parameters = simparams,
+                                     timesteps = parameter_table$cc_timestep_malariasimulation,
+                                     carrying_capacity = matrix(parameter_table$cc_factor_malariasimulation, ncol = 1))
   return(simparams)
 }
 
@@ -80,7 +80,7 @@ carrying_capacity <- function(parameters, parameter_table){
 #'
 #' @export
 define_smc_param <- function(exp, parameter_table) {
-  
+
   # Find the seasonal peak (found manually using the peak_season_offset() function):
   #peak <- 59
   if (parameter_table$transmission_intensity_malariasimulation == 4) {
@@ -97,10 +97,12 @@ define_smc_param <- function(exp, parameter_table) {
   }
   # Assign some admin days around the peak
   admin_days <- c(-28, 0, 28, 56)
-  
+
   # Create the distribution days for the SMC campagin (in this case - 4 times per year starting in the 5th year)
-  smc_distribution_days <- rep((365 * seq(start, start + 4, by = 1)), each = length(admin_days)) + peak + rep(admin_days)
-  
+  smc_distribution_days <- rep((365 * seq(start, start + 4, by = 1)), each = length(admin_days)) +
+    peak +
+    rep(admin_days)
+
   # Create matrices of the SMC distribution days, coverages, and minimum and maximum ages of individuals targeted:
   exp$smc_days <- matrix(data = smc_distribution_days,
                          nrow = nrow(scenarios_to_run),
@@ -118,6 +120,6 @@ define_smc_param <- function(exp, parameter_table) {
                              nrow = nrow(exp$smc_days),
                              ncol = ncol(exp$smc_days),
                              byrow = F)
-  
+
   return(exp)
 }

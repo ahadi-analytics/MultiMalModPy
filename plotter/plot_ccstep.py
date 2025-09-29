@@ -37,9 +37,9 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='models', facet_var='a
     df_all['day_date'] = df_all['timestep'].apply(convert_to_date)
 
     for seasonality in df_all['seasonality'].unique():
-        dfs = df_all[df_all['seasonality']==seasonality]
+        dfs = df_all[df_all['seasonality'] == seasonality]
         for cm in dfs['cm_clinical'].unique():
-            dfc = dfs[dfs['cm_clinical']==cm]
+            dfc = dfs[dfs['cm_clinical'] == cm]
             for channel in channel_list:
                 print(f'#----- Plotting daily timeseries for {channel}-----#')
                 if channel == 'prevalence_2to10':
@@ -53,14 +53,16 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='models', facet_var='a
                 if agegrp is None:
                     print('Warning: agegrp is set to None, it will combine all ages, please check your age aggregation')
                     # df = dfc.groupby(['day_date', sweepvar, facet_var])[channel].agg(np.mean).reset_index()
-                    df = dfc.groupby(['day_date', sweepvar, facet_var, 'target_output_values','ccstep'])[channel].agg(np.mean).reset_index()
+                    df = dfc.groupby(['day_date', sweepvar, facet_var, 'target_output_values', 'ccstep'])[channel].agg(
+                        np.mean).reset_index()
 
                 if 'models' not in [sweepvar, facet_var] and len(df['models'].unique()) > 1:
-                    raise ValueError('models needs to be specified in plot if results were combined for more than 1 model')
+                    raise ValueError(
+                        'models needs to be specified in plot if results were combined for more than 1 model')
 
                 unique_facets = df[facet_var].unique()
                 unique_facets = np.sort(unique_facets)
-                color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()),4))
+                color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique()), 4))
                 firstPlot = True
                 nx = 2
                 ny = 3
@@ -86,7 +88,8 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='models', facet_var='a
                         ax.annotate(f"{round(x_min_note, 2)}", xy=(min(merge_df['day_date']), x_min_note),
                                     xytext=(min(merge_df['day_date']), x_min_note - int(x_min_note / 10)))
                         ax.annotate(f"{round(x_max_note, 2)}", xy=(max(merge_df['day_date']), x_max_note), xytext=(
-                        max(merge_df['day_date']) - pd.DateOffset(years=year_factor), x_max_note - int(x_min_note / 15)))
+                            max(merge_df['day_date']) - pd.DateOffset(years=year_factor),
+                            x_max_note - int(x_min_note / 15)))
                         ylim_up = np.max(ymean[channel]) * 1.01
                         if channel == 'prevalence' or channel == 'prevalence_2to10':
                             ylim_up = 1
@@ -149,7 +152,7 @@ def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='models', face
 
         unique_facets = df[facet_var].unique()
         unique_facets = np.sort(unique_facets)
-        color_palette = sns.color_palette('colorblind', max(len(df['seed'].unique())),4)
+        color_palette = sns.color_palette('colorblind', max(len(df['seed'].unique())), 4)
         nx = 2
         ny = 3
         f = 1
@@ -180,12 +183,13 @@ def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='models', face
                     ax.annotate(f"{round(x_min_note, 2)}", xy=(min(merge_df['day_date']), x_min_note),
                                 xytext=(min(merge_df['day_date']), x_min_note - int(x_min_note / 10)))
                     ax.annotate(f"{round(x_max_note, 2)}", xy=(max(merge_df['day_date']), x_max_note), xytext=(
-                    max(merge_df['day_date']) - pd.DateOffset(years=year_factor), x_max_note - int(x_min_note / 15)))
+                        max(merge_df['day_date']) - pd.DateOffset(years=year_factor),
+                        x_max_note - int(x_min_note / 15)))
                 if channel == 'prevalence' or channel == 'prevalence_2to10':
                     ax.axhline(lower_prevalence[i], linestyle='--')
                     ax.axhline(upper_prevalence[i], linestyle='--')
                 ax.set_ylabel(ylab)
-                ax.set_ylim(-0.1, upper_prevalence[i]+0.1)
+                ax.set_ylim(-0.1, upper_prevalence[i] + 0.1)
                 ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=8))
                 ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
                 ax.set_xlabel('Year')
@@ -227,7 +231,7 @@ def daily_vectors(fdir, df_all, channel, sweepvar='models', facet_var='ageGroup'
 
     unique_facets = df[facet_var].unique()
     unique_facets = np.sort(unique_facets)
-    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique())),4)
+    color_palette = sns.color_palette('colorblind', max(len(df[sweepvar].unique())), 4)
     firstPlot = True
     nx = 2
     ny = 3
@@ -256,7 +260,7 @@ def daily_vectors(fdir, df_all, channel, sweepvar='models', facet_var='ageGroup'
             ax.annotate(f"{round(x_min_note, 2)}", xy=(min(merge_df['day_date']), x_min_note),
                         xytext=(min(merge_df['day_date']), x_min_note - int(x_min_note / 10)))
             ax.annotate(f"{round(x_max_note, 2)}", xy=(max(merge_df['day_date']), x_max_note), xytext=(
-            max(merge_df['day_date']) - pd.DateOffset(years=year_factor), x_max_note - int(x_min_note / 15)))
+                max(merge_df['day_date']) - pd.DateOffset(years=year_factor), x_max_note - int(x_min_note / 15)))
 
             if firstPlot:
                 lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.4))
@@ -272,12 +276,11 @@ def daily_vectors(fdir, df_all, channel, sweepvar='models', facet_var='ageGroup'
         fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
         plt.close()
 
-def daily_eradication(fdir, df_all, channel, sweepvar='models', facet_var='ageGroup', agegrp = '0-100', pop_size = None):
 
-    #reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
-    #df_all = df_all[df_all['cc_title'].isin(reductions)]
+def daily_eradication(fdir, df_all, channel, sweepvar='models', facet_var='ageGroup', agegrp='0-100', pop_size=None):
+    # reductions = [f'25%-10%', f'50%-10%', f'50%-25%']
+    # df_all = df_all[df_all['cc_title'].isin(reductions)]
     df_all = df_all[df_all['ccstep'] < df_all['target_output_values']]
-   
 
     if facet_var != 'ageGroup' and agegrp is not None:
         df = df_all[(df_all.ageGroup == agegrp)]
@@ -288,15 +291,15 @@ def daily_eradication(fdir, df_all, channel, sweepvar='models', facet_var='ageGr
             selected_season = 'perennial'
         else:
             selected_season = 'seasonal'
-        df = df_all[(df_all.seasonality == selected_season)] 
-               
+        df = df_all[(df_all.seasonality == selected_season)]
+
     if agegrp is None:
         df = df_all.groupby(['timestep', sweepvar, facet_var, 'seed'])[channel].agg(np.mean).reset_index()
-    
-    if 'models' not in [sweepvar, facet_var] and len(df['models'].unique()) > 1:
-            raise ValueError('models needs to be specified.')
 
-    edf = pd.DataFrame(columns=['models','cc_title','total_sims','sims_failed','elimination_ratio'])
+    if 'models' not in [sweepvar, facet_var] and len(df['models'].unique()) > 1:
+        raise ValueError('models needs to be specified.')
+
+    edf = pd.DataFrame(columns=['models', 'cc_title', 'total_sims', 'sims_failed', 'elimination_ratio'])
     for m, model in enumerate(df[sweepvar].unique()):
         model_df = df[df[sweepvar] == model]
         for i, (facet, facet_df) in enumerate(model_df.groupby([facet_var])):
@@ -305,20 +308,18 @@ def daily_eradication(fdir, df_all, channel, sweepvar='models', facet_var='ageGr
             for si, (seeds, sdf) in enumerate(facet_df.groupby(['seed'])):
                 if sdf.iloc[-1]['eir'] == 0:
                     failed_sims += 1
-                total_sims +=1
+                total_sims += 1
             elimination_ratio = failed_sims / total_sims
             edf.loc[len(edf)] = {'models': model, 'cc_title': facet, 'num_sims': total_sims,
-                                'sims_failed': failed_sims, 'elimination_ratio': elimination_ratio} 
+                                 'sims_failed': failed_sims, 'elimination_ratio': elimination_ratio}
     edf['pop_size'] = pop_size
     edf.to_csv((os.path.join(fdir, 'elimination.csv')), index=False)
-
-    
 
 
 if __name__ == "__main__":
     args = parse_args()
     wdir = args.directory
-    models = args.models   #  ['EMOD', 'malariasimulation', 'OpenMalaria']
+    models = args.models  # ['EMOD', 'malariasimulation', 'OpenMalaria']
     if isinstance(models, str):
         models = [models]
 
@@ -330,12 +331,14 @@ if __name__ == "__main__":
 
     sweepvar = 'models'
     facet_var = 'ageGroup'
-    daily_channel_list = ['prevalence_2to10', 'prevalence', 'eir', 'clinical_incidence', 'severe_incidence', 'n_total_mos_pop']
+    daily_channel_list = ['prevalence_2to10', 'prevalence', 'eir', 'clinical_incidence', 'severe_incidence',
+                          'n_total_mos_pop']
     facet_daily = 'cc_title'
 
-    #daily_eradicaiton(wdir, df_cc, 'prevalence2to10', sweepvar=sweepvar, facet_var=facet_daily)
-    #If you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
-    daily_timeseries(out_dir, df_cc, channel_list=daily_channel_list, sweepvar=sweepvar, facet_var=facet_daily, agegrp=None)
-    #daily_eradication(out_dir, df_cc, channel = 'eir', sweepvar = sweepvar, facet_var=facet_daily, agegrp = None, pop_size=exp.pop_size)
+    # daily_eradicaiton(wdir, df_cc, 'prevalence2to10', sweepvar=sweepvar, facet_var=facet_daily)
+    # If you set agegrp to None, it will combine all ages, note, csv includes 0-5 and 0-100
+    daily_timeseries(out_dir, df_cc, channel_list=daily_channel_list, sweepvar=sweepvar, facet_var=facet_daily,
+                     agegrp=None)
+    # daily_eradication(out_dir, df_cc, channel = 'eir', sweepvar = sweepvar, facet_var=facet_daily, agegrp = None, pop_size=exp.pop_size)
     # daily_timeseries_by_seed(out_dir, df_cc, channel_list = daily_channel_list, sweepvar = sweepvar, facet_var = facet_daily, agegrp='0-100')
     # daily_vectors(out_dir, df_cc, channel='n_total_mos_pop', sweepvar=sweepvar, facet_var=facet_daily)
