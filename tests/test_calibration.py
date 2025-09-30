@@ -1,24 +1,29 @@
-import pytest
 import os
+
+import manifest
 import numpy as np
 import pandas as pd
+import pytest
 from utility.experiment import LoadExperiment
 from utility.helper import parse_launch_args
 from utility.helper_calibration import output_target_to_eir, output_target_to_xTemp
-import manifest
+
 
 @pytest.fixture
 def dummy_exp():
 
     # from tests.dummy_experiment import DummyExperiment
 
-    if __name__ == "__main__" and any(arg.endswith("launch_sim.py") for arg in sys.argv):
+    if __name__ == "__main__" and any(
+        arg.endswith("launch_sim.py") for arg in sys.argv
+    ):
         args = parse_launch_args()
     else:
         from utility.helper_local import LoadLaunchArgs
+
         args = LoadLaunchArgs()
 
-    #return DummyExperiment()
+    # return DummyExperiment()
     return LoadExperiment(args, manifest)
 
 
@@ -39,7 +44,7 @@ def dummy_interp_data(num_rows=10, seed=42, modelname="malariasimulation"):
         "clinical_incidence_U5": np.round(np.random.uniform(0.01, 0.35, num_rows), 9),
         "models": [modelname] * num_rows,
         "pop_size": [50000] * num_rows,
-        "importation": ["FALSE"] * num_rows
+        "importation": ["FALSE"] * num_rows,
     }
 
     return pd.DataFrame(data)
@@ -65,12 +70,14 @@ def test_output_target_to_eir(tmp_path, dummy_exp):
     exp.test = True  # Enable test mode (optional, based on your logic)
 
     # Create input dataframe for the test
-    test_input = pd.DataFrame({
-        "target_output_values": [0.5, 1.0, 2.0],
-        "seasonality": ["perennial"] * 3,
-        "cm_clinical": [0, 0, 0],
-        "cm_severe": [0, 0, 0]
-    })
+    test_input = pd.DataFrame(
+        {
+            "target_output_values": [0.5, 1.0, 2.0],
+            "seasonality": ["perennial"] * 3,
+            "cm_clinical": [0, 0, 0],
+            "cm_severe": [0, 0, 0],
+        }
+    )
 
     # Run the function with the test input
     result = output_target_to_eir(test_input, exp, model_name)
@@ -79,7 +86,6 @@ def test_output_target_to_eir(tmp_path, dummy_exp):
     assert len(result) == len(test_input)
     assert all(isinstance(r, float) for r in result)
     assert all(0.01 <= r <= 1000 for r in result)
-
 
 
 # Test function
@@ -102,12 +108,14 @@ def test_output_target_to_xTemp(tmp_path, dummy_exp):
     exp.test = True  # Enable test mode (optional, based on your logic)
 
     # Create input dataframe for the test
-    test_input = pd.DataFrame({
-        "target_output_values": [0.5, 1.0, 2.0],
-        "seasonality": ["perennial"] * 3,
-        "cm_clinical": [0, 0, 0],
-        "cm_severe": [0, 0, 0]
-    })
+    test_input = pd.DataFrame(
+        {
+            "target_output_values": [0.5, 1.0, 2.0],
+            "seasonality": ["perennial"] * 3,
+            "cm_clinical": [0, 0, 0],
+            "cm_severe": [0, 0, 0],
+        }
+    )
 
     # Run the function with the test input
     result = output_target_to_xTemp(test_input, exp, model_name)
@@ -116,4 +124,3 @@ def test_output_target_to_xTemp(tmp_path, dummy_exp):
     assert len(result) == len(test_input)
     assert all(isinstance(r, float) for r in result)
     assert all(0.01 <= r <= 10000 for r in result)
-

@@ -2,10 +2,11 @@
 ## https://github.com/EMOD-Hub/emodpy-malaria/blob/main/examples-container/simple_example/example_container.py
 ## --------------------------------------------------------------------------------------------------
 import os
-from emodpy.emod_task import EMODTask
+
 import manifest
-from idmtools.entities.experiment import Experiment
+from emodpy.emod_task import EMODTask
 from idmtools.core.platform_factory import Platform
+from idmtools.entities.experiment import Experiment
 
 
 def set_config_parameters(config):
@@ -86,6 +87,7 @@ def find_insetchart(job_directory):
 
 import os
 
+
 def delete_suite_folder(base_dir: str):
     """
     Deletes the first folder in base_dir that starts with 'Suite' using only os.
@@ -106,8 +108,9 @@ def delete_suite_folder(base_dir: str):
     print("No folder starting with 'Suite' found.")
 
 if __name__ == "__main__":
-    import emod_malaria.bootstrap as dtk
     import pathlib
+
+    import emod_malaria.bootstrap as dtk
 
     job_directory = os.path.dirname(os.path.abspath(__file__))
 

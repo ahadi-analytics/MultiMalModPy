@@ -1,26 +1,32 @@
-import pytest
+import os
 import tempfile
 from unittest.mock import patch
-import os
-import pandas as pd
+
+import manifest
 import numpy as np
+import pandas as pd
+import pytest
 from utility.experiment import LoadExperiment
 from utility.helper import parse_launch_args
-from utility.helper_local import write_ps1_runmodel , write_bat_submission_plots
-import manifest
+from utility.helper_local import write_bat_submission_plots, write_ps1_runmodel
+
 
 @pytest.fixture
 def dummy_exp():
 
     # from tests.dummy_experiment import DummyExperiment
-    if __name__ == "__main__" and any(arg.endswith("launch_sim.py") for arg in sys.argv):
+    if __name__ == "__main__" and any(
+        arg.endswith("launch_sim.py") for arg in sys.argv
+    ):
         args = parse_launch_args()
     else:
         from utility.helper_local import LoadLaunchArgs
+
         args = LoadLaunchArgs()
 
-    #return DummyExperiment()
+    # return DummyExperiment()
     return LoadExperiment(args, manifest)
+
 
 # ----------------- TEST: write_ps1_runmodel -----------------
 def test_write_ps1_runmodel_writes_file(tmp_path, dummy_exp):
@@ -68,8 +74,6 @@ def test_write_ps1_runmodel_invalid_directory(tmp_path, dummy_exp):
         write_ps1_runmodel(dummy_exp, tmp_path / "file.ps1", model="malariasimulation")
 
 
-
-
 # ----------------- TEST: write_bat_submission_plots -----------------
 
 
@@ -91,7 +95,7 @@ def test_write_bat_submission_plots(tmp_path, dummy_exp):
     content = bat_file.read_text()
 
     # Check basic content
-    assert "cd \"%work_dir%\\plotter\"" in content
+    assert 'cd "%work_dir%\\plotter"' in content
     assert "pause" in content
 
     # Check that each plot script appears

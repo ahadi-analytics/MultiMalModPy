@@ -1,15 +1,21 @@
 import logging
-import manifest
 import os
-import subprocess
 import shutil
+import subprocess
+
+import manifest
 
 # Construct OpenMalaria base path
-openmalaria_dir = os.path.join(manifest.ROOT_DIR, 'dependencies', 'OpenMalaria', f'om_v{manifest.openmalaria_version}')
-openmalaria_exe = os.path.join(openmalaria_dir, 'openMalaria.exe')
+openmalaria_dir = os.path.join(
+    manifest.ROOT_DIR,
+    "dependencies",
+    "OpenMalaria",
+    f"om_v{manifest.openmalaria_version}",
+)
+openmalaria_exe = os.path.join(openmalaria_dir, "openMalaria.exe")
 
 # Define job directory (working directory for running the job)
-job_directory = os.path.join(manifest.ROOT_DIR, 'tests/test_OpenMalaria')
+job_directory = os.path.join(manifest.ROOT_DIR, "tests/test_OpenMalaria")
 output_file = os.path.join(job_directory, "output.txt")
 
 # Check if file exists
@@ -24,7 +30,7 @@ if os.path.exists(output_file):
 required_files = [
     "example_scenario.xml",
     "densities.csv",
-    f"scenario_{manifest.openmalaria_version}.xsd"
+    f"scenario_{manifest.openmalaria_version}.xsd",
 ]
 
 # Copy files
@@ -58,4 +64,3 @@ if os.path.exists(output_file):
     print("Simulation ran successfully and returned an output.txt file!")
 else:
     raise FileNotFoundError("Simulation failed or returned unexpected output.")
-
