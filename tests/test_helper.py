@@ -13,8 +13,6 @@ from utility.helper_simulation import *
 @pytest.fixture
 def dummy_exp():
 
-    # from tests.dummy_experiment import DummyExperiment
-
     if __name__ == "__main__" and any(
         arg.endswith("launch_sim.py") for arg in sys.argv
     ):

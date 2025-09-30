@@ -14,7 +14,6 @@ from utility.helper_local import write_bat_submission_plots, write_ps1_runmodel
 @pytest.fixture
 def dummy_exp():
 
-    # from tests.dummy_experiment import DummyExperiment
     if __name__ == "__main__" and any(
         arg.endswith("launch_sim.py") for arg in sys.argv
     ):
