@@ -68,11 +68,12 @@ nav:
     - Model specific options: guide/model_specificities.md
     - Randomness & uncertainty: guide/uncertainty.md
   - Developer Guide:
-    - Writing new interventions: developer/add_new_interventions.md
+    - Add new interventions: developer/add_new_interventions.md
     #- Adding parameters to vary: developer/add_new_sweep_parameters.md
-    - Updating malaria models : developer/update_models.md
-    - Creating new releases: developer/create_new_release.md
-    - Updating the documentation: developer/update_docs.md
+    - Update malaria models : developer/update_models.md
+    - Write tests: developer/code_testing.md
+    - Create new releases: developer/create_new_release.md
+    - Update the documentation: developer/update_docs.md
   - API:
     - manifest.py: api/manifest.md
     - launch_sim.py: api/launch_sim.md

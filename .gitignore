@@ -21,3 +21,4 @@ dependencies/OpenMalaria*
 !dependencies/OpenMalaria/get_openmalaria.bat
 !dependencies/OpenMalaria/get_openmalaria.sh
 !dependencies/OpenMalaria/readme.md
+/.pytest_cache/
