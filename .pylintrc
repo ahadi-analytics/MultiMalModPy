@@ -1,0 +1,14 @@
+[MASTER]
+# Directories to ignore (relative to project root)
+ignore=.git,__pycache__,build,site,docs,venv,test_venv,mmmpy_venv_local,log,tests,dependencies,scenario_csv,simulations_local
+
+# Ignore absolute paths or regex matches
+ignore-paths=
+    ^/mnt/c/projects/MultiMalModPy.*
+
+[FORMAT]
+# Match Flake8’s max line length
+max-line-length=88
+
+[MESSAGES CONTROL]
+disable=line-too-long

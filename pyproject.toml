@@ -1,0 +1,19 @@
+[tool.isort]
+profile = "black"
+line_length = 88
+skip = [
+    ".git",
+    "__pycache__",
+    "build",
+    "site",
+    "docs",
+    "venv",
+    "test_venv",
+    "mmmpy_venv_local",
+    "log",
+    "tests",
+    "dependencies",
+    "scenario_csv",
+    "simulations_local",
+    "/mnt/c/projects/MultiMalModPy"
+]
