@@ -9,7 +9,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 echo "Project root detected as: $PROJECT_ROOT"
 
 # Path to requirements file
-REQ_FILE="$SCRIPT_DIR/requirements_container.txt"
+REQ_FILE="$SCRIPT_DIR/requirements.txt"
 echo "Using requirements file: $REQ_FILE"
 
 # Prompt user for venv folder name, default is 'venv'
