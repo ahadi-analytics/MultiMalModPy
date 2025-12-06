@@ -47,8 +47,7 @@ Details on their function and implementation can be found in the framework’s  
 - Related publications: [Gerardin et al 2015](https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-015-0887-y)   
 - Additional: [malaria_drug_params.csv](https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/malaria_drug_params.csv)    
 
-??? treatment_seeking   
-
+#### treatment seeking 
 
   ```python    
 
@@ -81,9 +80,9 @@ targets is a list of dictionaries defining the trigger event and coverage for an
   ```  
 
  
-???  json snippet (example)     
+#### json snippet (example)     
         
-  ```json  
+```json  
   
   { 
     "class": "CampaignEvent", 
@@ -191,7 +190,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
 - Function: [set_clinical_treatment](https://github.com/mrc-ide/malariasimulation/blob/master/R/drug_parameters.R#L49)  
 - Related publications:  [Okell et al (2014).](https://doi.org/10.1038/ncomms6606)  
  
-??? set_clinical_treatment  
+####  set_clinical_treatment  
         
 
   ```R 
@@ -218,7 +217,6 @@ targets is a list of dictionaries defining the trigger event and coverage for an
     } 
     parameters 
   } 
-   
   ``` 
 
 
@@ -236,7 +234,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
 > Multiple options for simulating 'case management' exist. Below is the  implementation as used in MultiMalModPy.  
 
  
-??? ImmediateOutcomes  
+####  ImmediateOutcomes  
   
   ```XML
   <ImmediateOutcomes name="example name"> 
@@ -269,6 +267,6 @@ targets is a list of dictionaries defining the trigger event and coverage for an
   </ImmediateOutcomes>
   ```
 
-  
+
 
  

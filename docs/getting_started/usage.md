@@ -14,8 +14,8 @@ _This page provides a concise overview of the main steps to configure, launch, a
     </li>
     <li> ❌ If not, revisit the
     </li>
-     &nbsp;➡️ <a href="../getting_started/installation.md">Installation guide</a>
-     &nbsp;➡️ <a href="../getting_started/configuration.md">First-time configuration</a>
+     &nbsp;➡️ <a href="../installation.md">Installation guide</a>
+     &nbsp;➡️ <a href="../configuration.md">First-time configuration</a>
   </ul>
 </div>
 
