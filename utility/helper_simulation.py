@@ -309,15 +309,17 @@ def check_exp_inputs_openmalaria(exp):
     possible_paths = [
         schema_path,  # default location
         os.path.join(exp.openmalaria_path.replace('test', 'schema'), schema),
-        os.path.join(exp.ROOT_DIR, f'dependencies/OpenMalaria/om_v{exp.openmalaria_version}', schema)
+        os.path.join( f'/openmalaria-schema-{exp.openmalaria_version}.0/build/schema/', 'scenario_current.xsd'),
+        os.path.join(exp.ROOT_DIR, f'dependencies/OpenMalaria/om_v{exp.openmalaria_version}', schema),
+        os.path.join(exp.ROOT_DIR, f'dependencies/OpenMalaria/', schema)
     ]
 
     # Try to copy schema if missing
     if not os.path.exists(schema_path):
         for alt_path in possible_paths[1:]:
             if os.path.exists(alt_path):
-                shutil.copy(alt_path, exp.openmalaria_path)
-                print(f"Copied schema from {alt_path} to {exp.openmalaria_path}")
+                shutil.copy(alt_path, schema_path)
+                print(f"Copied schema from {alt_path} to {schema_path}")
                 break
         else:
             raise FileNotFoundError(f"Required schema file not found in any location: {schema}")

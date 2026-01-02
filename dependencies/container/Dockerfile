@@ -42,14 +42,12 @@ RUN git clone -b schema-46.0 --single-branch https://github.com/SwissTPH/openmal
 ##RUN git clone -b schema-XX.X --single-branch https://github.com/SwissTPH/openmalaria.git /openmalaria-schema-XX.X
 ##RUN mkdir /openmalaria-schema-XX.X/build && cd /openmalaria-schema-XX.X/build && cmake .. && cmake --build . --parallel 4
 
-#RUN wget https://raw.githubusercontent.com/numalariamodeling/mmmpy_container/refs/heads/main/requirements.emodpy_om.txt
-#COPY requirements.dtk.txt  /requirements.dtk.txt
 
 RUN mkdir -p /opt/envs/
 ## INSTALL Python Environment
 RUN python3.9 -m venv /opt/envs/mmmpy_local
-COPY dependencies/requirements.txt /requirements.txt
-RUN . /opt/envs/mmmpy_local/bin/activate && python -m pip install -r requirements.txt
+COPY ../requirements_local.txt /requirements_local.txt
+RUN . /opt/envs/mmmpy_local/bin/activate && python -m pip install -r /requirements_local.txt --extra-index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
 RUN python3.9 -m pip install pandas
 
 ## Install R
@@ -57,10 +55,6 @@ ENV R_VERSION=4.4.1
 RUN curl -O https://cdn.rstudio.com/r/centos-8/pkgs/R-${R_VERSION}-1-1.x86_64.rpm \
     && dnf install -y R-${R_VERSION}-1-1.x86_64.rpm
 
-
-## Install DTK RUN
-##RUN python3.9 -m venv /opt/envs/dtk_run_py39
-##RUN . /opt/envs/dtk_run_py39/bin/activate && python -m pip install -r /requirements.dtk.txt --extra-index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
 
 # Set Environment Helpfully
 ENV PATH=/opt/R/4.4.1/bin/:$PATH
@@ -79,5 +73,5 @@ RUN dnf install -y \
 
 ## Install R packages
 RUN echo 'local({r <- getOption("repos"); r["CRAN"] <- "https://cloud.r-project.org/"; options(repos = r)})' > /opt/R/4.4.1/lib/R/etc/Rprofile.site
-COPY dependencies/requirements_R.txt /requirements_R.txt
-RUN Rscript requirements_R.txt
+COPY ../requirements_R.txt /requirements_R.txt
+RUN Rscript /requirements_R.txt
