@@ -8,7 +8,7 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 REM Pull the Docker image
-docker pull mrm9534/mmmpy_local:rocky8
+docker pull multimalmodpy/mmmpy_local:rocky8
 
 REM Ask the user for model names
 set /p "MODELS=Enter models to run (e.g. malariasimulation OpenMalaria): "
@@ -25,8 +25,8 @@ REM We surround %MODELS% with double quotes inside single quotes to preserve spa
 
 docker run -it --rm ^
   -v "%REPO_PATH%:/mnt/c/projects" ^
-  mrm9534/mmmpy_local:rocky8 ^
-  /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models %MODELS% --test"
+  multimalmodpy/mmmpy_local:rocky8 ^
+  /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models %MODELS% --test"
 
 echo.
 pause

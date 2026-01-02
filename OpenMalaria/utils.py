@@ -1,3 +1,4 @@
+import os
 from utility.helper import *
 import shutil
 
@@ -287,7 +288,7 @@ def write_ps1_OpenMalaria(exp):
     ps_content = f"""
 # Job settings
 $job_name = "run_openmalaria"
-$exe_path = "{exp.OPENMALARIA_PATH}"
+$exe_path = "{exp.openmalaria_path}"
 $jobdir = "{exp.job_directory}"
 $log_dir = Join-Path $jobdir "log"
 
@@ -321,9 +322,6 @@ Write-Host "All $total simulations complete in $($elapsedTotal.ToString())."
     with open(file_path, 'w') as file:
         file.write(ps_content)
     print(f"PowerShell script written successfully at {file_path}")
-
-
-import os
 
 
 def write_sh_OpenMalaria(exp):
@@ -374,9 +372,6 @@ for ((i = 1; i <= {exp.nexps}; i++)); do
 done
 
 echo "OpenMalaria simulation complete."
-pause
--e CONTAINER_NAME=$(hostname)
-
 """
 
     # Write the shell content to a .sh file

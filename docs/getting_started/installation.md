@@ -407,29 +407,35 @@ Manual Docker setup:
 
 ``` 
 # Pull the image
-docker pull mrm9534/mmmpy_local:rocky8
+docker pull multimalmodpy/mmmpy_local:rocky8 
 
-# Run interactively
-docker run -it --name mmmpy_container mrm9534/mmmpy_local:rocky8 /bin/bash
+# Check that the image exists 
+docker images 
+``` 
 
-# Activate Python environment inside container
-source /opt/envs/mmmpy_container/bin/activate
+``` 
+# Run interactively (optional to test it)
+source /opt/envs/mmmpy_local/bin/activate
+cd /mnt/c/projects
+python launch_sim.py --models OpenMalaria --test
+``` 
+Note: Inside Docker, you usually don’t need to activate a virtual environment. The Python in the image is ready to use.  
+
+Mount local project to the container to run a test simulation (from host):  
+
+```  
+docker run -it -v <USERPATH>:/mnt/c/projects mmmpy_local:rocky8 `
+  /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate && cd /mnt/c/projects && python launch_sim.py --models OpenMalaria --test"
 ```  
 
-Test simulation (from host):  
+🔁 Replace <USERPATH> with your local file path to MultiMalModPy repository (i.e. C:/Users/<USER>/Documents/MultiMalModPy).  
+Replace OpenMalaria with malariasimulation, Running both models at once via docker container is not recommended in the current version.  
 
-```  
-docker run -it -v <USERPATH>:/mnt/c/projects \
-  mrm9534/mmmpy_local:rocky8 \
-  /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"
-
-```  
-🔁 Replace <USERPATH> with your local file path    
 
 ??? info "Developer view"  
 
-
-    #### 1️⃣ Install Docker Desktop
+    <br>  
+    #### 1️⃣ Install Docker Desktop  
 
     Download and install from 🔗 [Docker Desktop](https://www.docker.com/products/docker-desktop/).  
     Ensure the Docker daemon is running:
@@ -445,10 +451,10 @@ docker run -it -v <USERPATH>:/mnt/c/projects \
     Pull the container image from Docker Hub:
 
     ```
-    docker pull mrm9534/mmmpy_local:rocky8
+    docker pull multimalmodpy/mmmpy_local:rocky8
     ```
 
-    🔗 [View image on Docker Hub](https://hub.docker.com/r/mrm9534/mmmpy_local)
+    🔗 [View image on Docker Hub](https://hub.docker.com/r/multimalmodpy/mmmpy_local)
 
 
     #### 3️⃣ Verify the Image
@@ -459,7 +465,7 @@ docker run -it -v <USERPATH>:/mnt/c/projects \
     docker images
     ```
 
-    Look for `mrm9534/mmmpy_local` with the tag `rocky8`.
+    Look for `multimalmodpy/mmmpy_local` with the tag `rocky8`.
 
 
     #### 4️⃣ Run the Docker Container
@@ -467,14 +473,14 @@ docker run -it -v <USERPATH>:/mnt/c/projects \
     Start the container in interactive mode:
 
     ```
-    docker run -it --name mmmpy_container mrm9534/mmmpy_local:rocky8 /bin/bash
+    docker run -it --name mmmpy_local multimalmodpy/mmmpy_local:rocky8 /bin/bash
     ```
 
     To resume an existing container instead of creating a new one:
 
     ```
     docker ps -a               # List all containers
-    docker start -ai mmmpy_container
+    docker start -ai mmmpy_local
     ```
 
     You should see a terminal like:
@@ -498,18 +504,18 @@ docker run -it -v <USERPATH>:/mnt/c/projects \
     ls /opt/envs/
     ```
 
-    You'll likely see `mmmpy_container` or `mmmpy_local`.
+    You'll likely see `mmmpy_local`.
 
     Activate the correct one:
 
     ```
-    source /opt/envs/mmmpy_container/bin/activate
+    source /opt/envs/mmmpy_local/bin/activate
     ```
 
     Your prompt should look like:
 
     ```
-    (mmmpy_container) [root@74350592befb envs]#
+    (mmmpy_local) [root@74350592befb envs]#
     ```
 
     Verify the Python setup:
@@ -528,10 +534,10 @@ docker run -it -v <USERPATH>:/mnt/c/projects \
     ```
     docker run -it -v <USERPATH>:/mnt/c/projects \
       mrm9534/mmmpy_local:rocky8 \
-      /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"
+      /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models OpenMalaria --test"
     ```
 
-    🔁 Replace `<USERPATH>` (e.g., `C:\Users\YourName\Documents`) with the full path to your MultiMalModPy folder.  
+    🔁 Replace `<USERPATH>` (e.g., `C:\Users\<USER>\Documents`) with the full path to your MultiMalModPy folder.  
 
     📘 More details: [Example Run – Docker Container](../getting_started/example_run.md#using-docker-container)  
 
@@ -568,7 +574,7 @@ To test each single model's installation, navigate to the `tests` folder and vie
 
 ### EMOD  
 
-??? info "EMOD Test Run Issues  "
+??? info "EMOD Test Run Issues  "  
     
     If your test run using EMOD fails, it may be due to missing dependencies or version conflicts. Below are common issues and how to resolve them:  
     
