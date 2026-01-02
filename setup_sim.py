@@ -52,7 +52,7 @@ class SimulationConfig:
         self.cm_start = 1
         self.case_management = [(0, 0),(0.15,0.5)]  # format: [(cm_clinical, cm_severe), (...)]
         self.detectionLimit = 40
-        self.emod_importation_rate = 1
+        self.emod_importation_rate = 0
         self.openmalaria_importation_rate = 0
         
         # Parameters also modifiable via args (if specified in args, those will get priority)
@@ -61,7 +61,7 @@ class SimulationConfig:
         # Note: These will be overwritten if a specific run mode is specified, as run modes may have their own defaults.
         # for ccstep have target_output_values in tuples (ccstep_from, ccstep_to)
         self.target_output_name = 'prevalence_2to10'
-        self.target_output_values = [0.05, 0.1, 0.25, 0.5] # [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8] 
+        self.target_output_values = [0.25] # [0.05, 0.1, 0.2, 0.25, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8] 
         #self.target_output_name = 'eir'
         #self.target_output_values = [20]
 

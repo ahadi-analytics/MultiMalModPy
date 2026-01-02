@@ -23,9 +23,9 @@
 
 **Jump to**
 Quickly navigate to your preferred execution method:   
-🔹 [Run simulation – using Python virtual environment (HPC or local)](#-using-python-virtual-environment-hpc-or-local)    
-🔹 [Run simulation – using Singularity container (HPC)](#-using-singularity-container-hpc)    
-🔹 [Run simulation – using Docker (local)](#-using-docker-local)    
+🔹 [Run simulation – using Python virtual environment (HPC or local)](#using-python-virtual-environment-hpc-or-local)    
+🔹 [Run simulation – using Singularity container (HPC)](#using-singularity-container-hpc)    
+🔹 [Run simulation – using Docker (local)](#using-docker-local)    
 🔹 [Troubleshooting](#-troubleshooting)  
 
 
@@ -147,15 +147,16 @@ You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria
 - Alternatively, you can follow manual steps as below (for developer, or troubleshooting).     
 
 
-??? info "Manual steps to run using docker"
+??? info "Manual steps to run using docker"  
 
-     
+    <br>  
+
     **Ensure the Docker image is available on your computer**   
     - If you haven’t installed it yet, refer to the [installation page](../getting_started/installation.md#local-docker-image)     
     
     **Set up your directory path:**   
     - In the example command below, replace `PATH_TO_REPO` with the directory path to your _MultiMalModPy_ folder on your computer, excluding the _MultiMalModPy_ directory itself. 
-      - Example, if MultiMalModPy is in `C:/Users/<user>/Documents/MultiMalModPy`, then type  `C:/Users/<user>/Documents/`
+      - Example, if MultiMalModPy is in `C:/Users/<USER>/Documents/MultiMalModPy`, then type  `C:/Users/<USER>/Documents/`
     
     **Modify manifest.py:**     
     - Open the file and add the following line:  
@@ -167,7 +168,7 @@ You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria
     - Use the following command, replacing PATH_TO_REPO with the actual path:  
      
     ```
-    docker run -it -v PATH_TO_REPO:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"                           
+    docker run -it -v <PATH_TO_REPO>:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models OpenMalaria --test"                           
     ```
     
     **What This Command Does:** 
@@ -178,7 +179,7 @@ You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria
     Example Terminal Output: 
     
         ```
-        PS C:\Users\mrung\Documents\MultiMalModPy> docker run -it -v C:/Users/mrung/Documents/:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models malariasimulation OpenMalaria --test"
+        PS C:\Users\<USER>\Documents\MultiMalModPy> docker run -it -v C:/Users/<USER>/Documents/:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models  OpenMalaria --test"
         
         No interventions specified
         Warning: the popsize specified for malariasimulation (1000) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize (50000)

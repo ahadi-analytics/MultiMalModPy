@@ -205,7 +205,7 @@ class ArgsConfig:
         self.custom_subdir = args.user
         self.exp_name_note = args.note
         # Model specific args
-        self.emod_step = args.emodstep
+        self.emod_step = args.emod_step
         self.serializedid = args.serializedid
         self.emod_calib_params = args.emod_calib_params
         self.malariasimulation_parameter_variation = args.mpv

@@ -45,7 +45,7 @@ nav:
   - Home: index.md
   - Malaria models:
     - Software overview: malaria_models/software.md
-    - Documentation & source code: malaria_models/documentation-and-sourcecode.md
+    - Source Documentation: malaria_models/documentation-and-sourcecode.md
     - Model structure: malaria_models/structure.md
     - Interventions: malaria_models/interventions.md
     - Core parameters: malaria_models/core_parameters.md
@@ -115,8 +115,8 @@ nav:
     - Contact and Contributions:  about/contributors.md
     - References: about/citation.md
     - License: about/license.md
-    - Changelog: about/changelog.md
-    - Getting help: about/getting_help.md
+    - Release Notes: about/changelog.md
+    - Support & Troubleshooting: about/getting_help.md
 theme:
   name: readthedocs
   navigation_depth: 4

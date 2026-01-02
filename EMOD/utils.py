@@ -60,12 +60,18 @@ def submit_run_EMOD(exp, manifest, scen_df):
     sim_start_year_emod = exp.sim_start_year_emod
 
     if exp.hpc == 'LOCAL':
-        platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory)
+        #platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory)
+        # EMOD local gives Error message when type and block are not defined
+        platform = exp.platform = Platform(type=manifest.selected_platform,
+                                           job_directory=exp.suite_directory,
+                                           block=manifest.selected_platform)
     else:
-        platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory,
+        platform = exp.platform = Platform(manifest.selected_platform,
+                                           job_directory=exp.suite_directory,
                                            mem_per_cpu=f'{exp.emod_memory_per_sim}G',
                                            partition=manifest.sh_hpc_config['p'],
-                                           time=exp.emod_time_per_sim, account=manifest.sh_hpc_config['A'],
+                                           time=exp.emod_time_per_sim,
+                                           account=manifest.sh_hpc_config['A'],
                                            modules=[manifest.sh_hpc_config['em_modules']],
                                            max_running_jobs=exp.max_running_jobs)
 
@@ -122,7 +128,7 @@ def submit_run_EMOD(exp, manifest, scen_df):
             exp.exp_name_pickup = exp.exp_name.replace(f'_burnin{exp.emod_burnin}', '')
             submit_run_pyscript(exp, pyscript='launch_sim.py', shname='launch_pickup.sh',
                                 custom_args=f"--suite {exp.SUITEname} --expname {exp.exp_name_pickup} "
-                                            f"--emodstep pickup --serializedid {exp.emod_id} "
+                                            f"--emod_step pickup --serializedid {exp.emod_id} "
                                             f"--models {' '.join([m for m in exp.models_pickup])} ",
                                 job_id_EMOD='job_id_EMODanalyze',memG=exp.mem_increase_factor*5, job='pickup_launch')
     else:

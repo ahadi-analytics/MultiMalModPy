@@ -7,8 +7,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 echo "Project root detected as: $PROJECT_ROOT"
-REQ_FILE="$SCRIPT_DIR/requirements.txt"
 
+# Path to requirements file
+REQ_FILE="$SCRIPT_DIR/requirements.txt"
 echo "Using requirements file: $REQ_FILE"
 
 # Prompt user for venv folder name, default is 'venv'
@@ -26,8 +27,17 @@ source "$PROJECT_ROOT/$VENV_NAME/bin/activate"
 # Upgrade pip
 python -m pip install --upgrade pip
 
-# Install requirements from dependencies folder
-pip install -r "$REQ_FILE"
+# Install packages one by one and continue on errors
+while IFS= read -r pkg || [[ -n "$pkg" ]]; do
+    # Skip empty lines or comments
+    [[ -z "$pkg" || "$pkg" =~ ^# ]] && continue
+
+    echo "Installing package: $pkg"
+    python -m pip install "$pkg" --extra-index-url=https://packages.idmod.org/api/pypi/pypi-production/simple || \
+        echo "Failed to install: $pkg"
+done < "$REQ_FILE"
 
 echo
+echo "NOTE: Some packages may fail to install if your Python version is incompatible or unavailable."
+echo "Please check the logs above for any failures."
 echo "Installation of virtual python environment complete."

@@ -82,7 +82,7 @@ def load_exp(wdir):
 
         # Check if the required CSV files exist
         if not os.path.exists(exp_setup_file) or not os.path.exists(scen_file):
-            raise FileNotFoundError("Required files 'exp_setup_df.csv' and 'scenarios.csv' are missing." )
+            raise FileNotFoundError("Required files 'exp_setup_df.csv' and 'scenarios.csv' are missing.")
 
         # Load data from CSV files
         exp_setup_df = pd.read_csv(exp_setup_file)
@@ -100,6 +100,7 @@ def load_exp(wdir):
             setattr(exp, col, scen_df[col].values)
 
     return exp
+
 
 def custom_sort_key(age_group):
     """
@@ -119,7 +120,6 @@ def custom_sort_key(age_group):
     """
 
     return int(age_group.split('-')[0])
-
 
 
 def get_output_df_malariasimulation(wdir, base_fname):
@@ -303,6 +303,24 @@ def convert_to_date(x):
 
 
 def color_selector(i, s, sweepvar='models', n_colors=4):
+    """
+     Select a color for plotting based on a model name or sweep variable index.
+
+    Args:
+         i (int) : Index of the current item in the sweep. Used for cycling through colors.
+         s (str) : Name of the model or item to select a specific color for.
+         sweepvar (str), optional:  Type of variable being swept ('models' or other). Default is 'models'.
+                 If 'models', specific model colors are applied.
+                 Otherwise, colors are selected from a colorblind palette.
+         n_colors (int), optional:   Number of colors in the palette to cycle through. Default is 4.
+
+     Returns:
+         str:  A hex color code or RGB tuple suitable for plotting in matplotlib/seaborn.
+
+     Notes
+         - For 'models', predefined colors are returned for 'EMOD', 'malariasimulation' and 'OpenMalaria'.
+         - For any other string or sweepvar type, colors are taken from the seaborn colorblind palette.
+     """
     if sweepvar == 'models':
         model_colors = {
             'EMOD': '#1a9e77',
@@ -312,8 +330,6 @@ def color_selector(i, s, sweepvar='models', n_colors=4):
         return model_colors.get(s, sns.color_palette('colorblind', n_colors)[i % n_colors])
     else:
         return sns.color_palette('colorblind', n_colors)[i % n_colors]
-
-
 
 
 def get_label(channel):
@@ -340,7 +356,7 @@ def get_label(channel):
     """
 
     channel_labels = {'ageGroup': 'Age group',
-                      'prevalence_2to10': r'$\it{Pf}$PR$_{2-10}$', # (%) if %, then pfpr outcomes need to be *100
+                      'prevalence_2to10': r'$\it{Pf}$PR$_{2-10}$',  # (%) if %, then pfpr outcomes need to be *100
                       'prevalence': r'$\it{Pf}$PR',
                       'clinical_incidence': 'Clinical incidence (pppy)',
                       'severe_incidence': 'Severe incidence (pppy)',
@@ -352,7 +368,7 @@ def get_label(channel):
     return channel_labels.get(channel, channel)
 
 
-def get_legend_title(sweepvar, exp = None):
+def get_legend_title(sweepvar, exp=None):
     """
     Retrieves the corresponding legend title for a given sweep variable.
 
@@ -386,7 +402,7 @@ def get_legend_title(sweepvar, exp = None):
     return channel_title.get(sweepvar, sweepvar)
 
 
-def clean_fname(fname, sweepvar= None,unique_groups=None, facet_var = None, unique_facets= None):
+def clean_fname(fname, sweepvar=None, unique_groups=None, facet_var=None, unique_facets=None):
     """
     Clean and modify a given filename by replacing placeholder variables with actual values.
     This function replaces placeholder values in the provided filename based on the provided
@@ -405,14 +421,15 @@ def clean_fname(fname, sweepvar= None,unique_groups=None, facet_var = None, uniq
     Returns:
         str: The cleaned and modified filename.
     """
-    if unique_facets is not None  :
+    if unique_facets is not None:
         if len(unique_facets) == 1 and not isinstance(unique_facets[0], int):
             fname = fname.replace(facet_var, str(unique_facets[0]))
-    if sweepvar is not None :
+    if sweepvar is not None:
         if len(unique_groups) == 1 and not isinstance(unique_groups[0], int):
             fname = fname.replace(sweepvar, str(unique_groups[0]))
     fname = fname.replace('models', 'model')
     return fname
+
 
 def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True):
     """
@@ -453,7 +470,6 @@ def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True)
             df = df[df['ageGroup'] == agegrps]
             txt += f'ageGroup {agegrps}, '
 
-
     if 'cm_clinical' not in figure_vars:
         selected_cm = df['cm_clinical'].min()
         df = df[df['cm_clinical'] == selected_cm]
@@ -465,10 +481,10 @@ def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True)
         txt += f'seasonality {selected_season}, '
 
     if filter_target:
-      if not any(var in figure_vars for var in ['eir', 'prevalence_2to10', 'target_output_values']) :
-          selected_output = df['target_output_values'].max()
-          df = df[df['target_output_values'] == selected_output]
-          txt += f'target_output_values {selected_output}, '
+        if not any(var in figure_vars for var in ['eir', 'prevalence_2to10', 'target_output_values']):
+            selected_output = df['target_output_values'].max()
+            df = df[df['target_output_values'] == selected_output]
+            txt += f'target_output_values {selected_output}, '
 
     if 'models' not in figure_vars and df['models'].nunique() > 1:
         raise ValueError('models needs to be specified in plot if results were combined for more than 1 model')
@@ -482,6 +498,7 @@ def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True)
 
 def sorted_list(string_char):
     return sorted(string_char.unique(), key=lambda x: (str(x).lower() if isinstance(x, str) else x))
+
 
 # Function to assign an age range to a category
 def assign_age_group(age_range, categories):
@@ -512,8 +529,6 @@ def assign_age_group(age_range, categories):
     return None  # If no category fits
 
 
-def year_to_custom(x,  start_year=None):
+def year_to_custom(x, start_year=None):
     year = mdates.num2date(x).year
     return year - start_year  # Adjust to 0-based range
-
-

@@ -62,7 +62,6 @@ def prevalence2to10_to_outcome(
 
     unique_facets = sorted_list(df[facet_var])
     unique_groups = sorted_list(df[sweepvar])
-    num_colors = len(unique_groups)
 
     # Layout logic
     if facet_layout == 'horizontal':

@@ -26,7 +26,7 @@ REM We surround %MODELS% with double quotes inside single quotes to preserve spa
 docker run -it --rm ^
   -v "%REPO_PATH%:/mnt/c/projects" ^
   mrm9534/mmmpy_local:rocky8 ^
-  /bin/bash -c "source /opt/envs/mmmpy_container/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models %MODELS% --test"
+  /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate && cd /mnt/c/projects/MultiMalModPy && python launch_sim.py --models %MODELS% --test"
 
 echo.
 pause

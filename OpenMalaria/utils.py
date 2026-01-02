@@ -1,3 +1,4 @@
+import os
 from utility.helper import *
 import shutil
 
@@ -330,9 +331,6 @@ Write-Host "All $total simulations complete in $($elapsedTotal.ToString())."
     print(f"PowerShell script written successfully at {file_path}")
 
 
-import os
-
-
 def write_sh_OpenMalaria(exp):
     """
     Creates a shell script to run OpenMalaria simulations (sequentially) locally.
@@ -381,9 +379,6 @@ for ((i = 1; i <= {exp.nexps}; i++)); do
 done
 
 echo "OpenMalaria simulation complete."
-pause
--e CONTAINER_NAME=$(hostname)
-
 """
 
     # Write the shell content to a .sh file

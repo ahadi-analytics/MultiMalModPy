@@ -1,5 +1,6 @@
 import argparse
 import os
+import shutil
 import sys
 import subprocess
 import itertools
@@ -93,17 +94,16 @@ def param_variation(df, exp):
     Returns:
     DataFrame with added column 'malariasimulation_pv' representing malariasimulation parameter variation values.
     """
-    if exp.malariasimulation_parameter_variation and 'malariasimulation' in exp.models:
-        from random import sample
-        if exp.num_seeds > 1000:
-            print("Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values")
-            par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds + 1), exp.num_seeds)]
-            for i, row in df.iterrows():
-                df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
-        else:
-            par_var = sample(range(1, 1001), exp.num_seeds)
-            for i, row in df.iterrows():
-                df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
+    from random import sample
+    if exp.num_seeds > 1000:
+        print("Warning: num_seeds > 1000, therefore malariasimulation parameter variation will have repeat values")
+        par_var = [(i % 1000) + 1 for i in sample(range(1, exp.num_seeds + 1), exp.num_seeds)]
+        for i, row in df.iterrows():
+            df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
+    else:
+        par_var = sample(range(1, 1001), exp.num_seeds)
+        for i, row in df.iterrows():
+            df.loc[i, 'malariasimulation_pv'] = int(par_var[df.loc[i, 'seed'] - 1])
     return df
 
 
@@ -301,9 +301,31 @@ def check_exp_inputs_openmalaria(exp):
     """
 
     # Check required files
+    # Define schema
+    schema = f"scenario_{exp.openmalaria_version}.xsd"
+    schema_path = os.path.join(exp.openmalaria_path, schema)
+
+    # List of possible locations for the schema
+    possible_paths = [
+        schema_path,  # default location
+        os.path.join(exp.openmalaria_path.replace('test', 'schema'), schema),
+        os.path.join(exp.ROOT_DIR, f'dependencies/OpenMalaria/om_v{exp.openmalaria_version}', schema)
+    ]
+
+    # Try to copy schema if missing
+    if not os.path.exists(schema_path):
+        for alt_path in possible_paths[1:]:
+            if os.path.exists(alt_path):
+                shutil.copy(alt_path, exp.openmalaria_path)
+                print(f"Copied schema from {alt_path} to {exp.openmalaria_path}")
+                break
+        else:
+            raise FileNotFoundError(f"Required schema file not found in any location: {schema}")
+
+    # Ensure required files exist
     required_files = [
         os.path.join(exp.openmalaria_path, "densities.csv"),
-        os.path.join(exp.openmalaria_path, f"scenario_{exp.openmalaria_version}.xsd")
+        os.path.join(exp.openmalaria_path, schema)
     ]
 
     for file_path in required_files:

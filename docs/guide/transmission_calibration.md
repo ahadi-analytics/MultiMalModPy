@@ -1,37 +1,38 @@
-# Defining transmission intensity 
-_Implementation in MultiMalModPy_
+# Defining transmission intensity   
 
-<div style="background-color: #f4f4f4; padding: 12px; border-left: 5px solid #FF6B8B; border-radius: 5px; margin: 10px 0;">
+_Implementation in MultiMalModPy_   
+
+<div style="background-color: #f4f4f4; padding: 12px; border-left: 5px solid #FF6B8B; border-radius: 5px; margin: 10px 0;">  
     <strong>🔍 Tip:</strong> For a detailed overview of how each model handles transmission intensity, refer to the 
     <a href="https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/structure/#transmission-intensity" 
-       style="color: #0073e6; text-decoration: none;">
-        Transmission Intensity
-    </a> section under malaria models.
+       style="color: #0073e6; text-decoration: none;"> 
+        Transmission Intensity 
+    </a> section under malaria models. 
 </div>
 
 
 
-In MultiMalModPy, the user can specify the level of transmission via the following two parameters in [setup_sim.py](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/setup_sim.py#L62): 
-- `target_output_name`    – Defines the epidemiological metric used for calibration.  
-- `target_output_values`    – Specifies the target values for the selected metric.  
+In MultiMalModPy, the user can specify the level of transmission via the following two parameters in [setup_sim.py](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/setup_sim.py#L62):    
+- `target_output_name`    – Defines the epidemiological metric used for calibration.    
+- `target_output_values`    – Specifies the target values for the selected metric.    
 
 
-Example: 
+Example:   
 ``` 
-target_output_name = 'prevalence_2to10'
-target_output_values = [0.25]
+target_output_name = 'prevalence_2to10'  
+target_output_values = [0.25] 
 ```
-In this example, the simulation is calibrated to achieve a 2-to-10-year-old malaria prevalence of 25% (0.25).  
+In this example, the simulation is calibrated to achieve a 2-to-10-year-old malaria prevalence of 25% (0.25).    
 
 
-### Matching defined transmission output targets 
+### Matching defined transmission output targets  
 
 
-The `target_calibration`  directory includes `interpolation_data.csv` for each of the models included in the framework.
-This file is generated during the transmission calibration process when running: 
+The `target_calibration`  directory includes `interpolation_data.csv` for each of the models included in the framework.  
+This file is generated during the transmission calibration process when running:   
 
 ```
-python launch_sim.py -r calibrun  
+python launch_sim.py -r calibrun   
 ```
 
 The table below provides an example of calibration results for EMOD, showing key epidemiological metrics related to malaria transmission.  
@@ -84,23 +85,21 @@ These files are named after your most recent calibration run.
 
 You should review and decide whether to integrate them into your `interpolation_data.csv` files.    
 
-#### Special Considerations for OpenMala
+#### Model Specific Considerations
 
 <div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
-  <strong><em>📝 OpenMalaria Consideration:</em></strong> 
+  <strong><em>📝 OpenMalaria:</em></strong> 
   It is recommended to discard OpenMalaria simulation outputs where the annual *Pf*PR (_Plasmodium falciparum_ prevalence in ages 2-10) exceeds 0.7, 
   as these can not be reliably simulated using OpenMalaria.
 </div>  
 
 
 <div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
-  <strong><em>📝 EMOD Consideration 1:</em></strong> 
+  <strong><em>📝 EMOD:</em></strong> 
 If your calibration simulations for EMOD did not include importation, check whether any lower xtemp simulations resulted in malaria elimination.
 To do this, open the relevant simulation_outputs/EMOD/mmmpy_yr.csv file and look for cases where simulatedEIR equals 0, indicating elimination.
-</div>  
 
-<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
-  <strong><em>📝 EMOD Consideration 2:</em></strong>
+  <strong><em>📝 EMOD:</em></strong>
 If even one of the simulations you ran resulted in elimination, remove that xtemp value from interpolation_data.csv, as it cannot reliably sustain malaria transmission. 
 If the lowest level of malaria EMOD can sustain does not meet your expectations, consider adjusting the max_larval_capacity values in the habitat_setup function (EMOD/functions/EMOD_functions.py).
 </div>  

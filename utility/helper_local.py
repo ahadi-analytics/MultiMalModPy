@@ -15,7 +15,7 @@ class LoadLaunchArgs:
         directory (str or None): Directory where data is stored or to be saved.
         suite (str): The name of the suite, default is a string with the current date.
         expname (str): The name of the experiment, default is a string with the current time.
-        emodstep (str or None): The EMOD step name.
+        emod_step (str or None): The EMOD step name.
         serializedid (str): A serialized identifier for the experiment.
         models (list of str): A list of models to be used in the experiment, default includes 'OpenMalaria' and 'malariasimulation'.
         user (str): The username of the person running the experiment, fetched from the environment.
@@ -47,7 +47,7 @@ class LoadLaunchArgs:
         self.directory = None
         self.suite = f'test_{dt.now().strftime("%Y%m%d")}'
         self.expname = f'sims_entomologymode_seasonality_intervention_{dt.now().strftime("%H_%M_%S")}'
-        self.emodstep = None
+        self.emod_step = None
         self.serializedid = ''
         self.models = ['OpenMalaria', 'malariasimulation']  # 'EMOD'
         self.user = os.environ.get('USER')
@@ -79,7 +79,7 @@ class LoadLaunchArgs:
         Return a string representation of the current argument settings.
         """
         return (f"Args(directory={self.directory}, suite={self.suite}, expname={self.expname}, "
-                f"emodstep={self.emodstep}, serializedid={self.serializedid}, models={self.models}, "
+                f"emod_step={self.emod_step}, serializedid={self.serializedid}, models={self.models}, "
                 f"user={self.user}, csv={self.csv},  rownum={self.rownum}, "
                 f"run_mode={self.run_mode}, emod_calib_params={self.emod_calib_params}, "
                 f"overwrite={self.overwrite}, mpv={self.mpv}, test={self.test}, note={self.note}, target_output_name={self.target_output_name})")
@@ -209,7 +209,7 @@ def create_ps1_script(exp, fname, subdir, job_name, py_command):
         fname (str): The name of the PowerShell script file to be created.
         subdir (str): The subdirectory within the working directory where the Python command should be executed.
         job_name (str): The name of the job, used for log file naming and script content.
-        py_command (str): The Python command to be executed within the PowerShell script.
+        pycommand  (str): The Python command to be executed within the PowerShell script.
 
     Raises:
         IOError: If there is an issue with writing the PowerShell script to the file.
@@ -230,8 +230,7 @@ $log_dir = Join-Path $jobdir "log"
 Set-Location -Path "$work_dir\\{subdir}"
 
 # Run the Python command
-{py_command}`
-    >> "$log_dir/run_{job_name}.log" 2>> "$log_dir/run_{job_name}.err"
+{py_command}  >> "$log_dir/run_{job_name}.log" 2>> "$log_dir/run_{job_name}.err"
 
 # Pause to keep the console open
 Read-Host "Press Enter to continue"
@@ -259,13 +258,16 @@ def write_ps1_analyzer(exp, pyscript, model):
     """
     job_name = f"analyzer_{model}"
     subdir = model
-    py_command = f'python {pyscript} --directory "{exp.job_directory}"\n'
+    pycommand  = f'python {pyscript} --directory "{exp.job_directory}"\n'
 
-    if exp.malariasimulation_parameter_variation:
-        py_command = py_command + f'python {pyscript} --directory "{exp.job_directory}" --mpv\n'
+    if model =='malariasimulation':
+        if exp.malariasimulation_parameter_variation == "both"  :
+            pycommand  = pycommand  + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
+        if exp.malariasimulation_parameter_variation == "yes"  :
+            pycommand  = pycommand  + '--mpv'
 
     fname = f'run_analyze_{model}.ps1'
-    create_ps1_script(exp, fname, subdir, job_name, py_command)
+    create_ps1_script(exp, fname, subdir, job_name, pycommand )
 
 def submit_run_plotters_local(exp):
     """
@@ -295,10 +297,10 @@ def submit_run_plotters_local(exp):
             job_name = f"run_plot_{plot_name}"
             subdir = "plotter"
             model_args = ' '.join(exp.models)
-            py_command = f"python {pyscript} --directory {exp.output_directory} --models {model_args}"
+            pycommand  = f"python {pyscript} --directory {exp.output_directory} --models {model_args}"
 
             fname = pyscript.replace('.py', '.ps1')
-            create_ps1_script(exp, fname, subdir, job_name, py_command)
+            create_ps1_script(exp, fname, subdir, job_name, pycommand )
 
         from utility.helper_local  import write_bat_submission_plots
         write_bat_submission_plots(exp)
