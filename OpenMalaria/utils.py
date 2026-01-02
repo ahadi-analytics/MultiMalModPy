@@ -288,7 +288,7 @@ def write_ps1_OpenMalaria(exp):
     ps_content = f"""
 # Job settings
 $job_name = "run_openmalaria"
-$exe_path = "{exp.OPENMALARIA_PATH}"
+$exe_path = "{exp.openmalaria_path}"
 $jobdir = "{exp.job_directory}"
 $log_dir = Join-Path $jobdir "log"
 

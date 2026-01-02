@@ -245,7 +245,6 @@ class ManifestConfig:
         self.emod_input_path = manifest.emod_input_path
         self.EMOD_venv = manifest.EMOD_venv
         self.OPENMALARIA_venv = manifest.OPENMALARIA_venv
-        self.OPENMALARIA_PATH = manifest.OPENMALARIA_PATH
         self.openmalaria_path = manifest.OPENMALARIA_PATH
         self.r_local = getattr(manifest, 'r_local', None)
         self.openmalaria_version = manifest.openmalaria_version
