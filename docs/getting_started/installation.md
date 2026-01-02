@@ -197,6 +197,18 @@ The outcome should look as below:
 
  <br>
 
+#### Simple test run
+
+Navigate to the tests folder and run 
+```
+cd tests/test_EMOD
+```
+
+Then run 
+```
+python EMOD_test_run_local.py
+```
+
 
 ---------------- 
 
@@ -334,6 +346,17 @@ OPENMALARIA_PATH = os.path.join(ROOT_DIR, 'dependencies/OpenMalaria/om_v46')
 OPENMALARIA_venv = ''  
 ```  
 
+### Simple test run
+
+Navigate to the tests folder and run 
+```
+cd tests/test_OpenMalaria
+```
+
+Then run 
+```
+python OpenMalaria_test_run.py
+```
 
 ---------------- 
 
@@ -520,6 +543,18 @@ Replace OpenMalaria with malariasimulation, Running both models at once via dock
 
 <br />
 
+
+### Simple test run
+
+Navigate to the tests folder and run 
+```
+cd tests/test_malariasismulation
+```
+
+Then run  via `R`
+- `malariasimulation_test_run.R`    
+- `malariasimulation_test_run_mmmpy.R`   
+
 ---------------- 
 
 
@@ -532,6 +567,7 @@ python launch_sim.py --models EMOD malariasimulation OpenMalaria --test
 ``` 
 
 Expected output: test simulation runs without errors and logs are generated.    
+To test each single model's installation, navigate to the `tests` folder and view the model specific example scripts. 
 
 
 ## Troubleshooting  

@@ -1,0 +1,68 @@
+name: Release Framework (ZIP named after tag)
+
+on:
+  push:
+    tags:
+      - '*'  # triggers only on new tags
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v3
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9.x
+
+      # Get the tag name
+      - name: Get tag name
+        id: get_tag
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+
+      # Build ZIP with tag name
+      - name: Build release ZIP
+        run: |
+          python - <<'EOF'
+          import os, zipfile
+
+          root_dir = os.getcwd()
+          tag_name = os.environ["TAG_NAME"]
+          zip_name = f"{tag_name}.zip"
+
+          exclude_folders = {"docs", "tests", ".git", ".github", "__pycache__"}
+          exclude_files_root = {"mkdocs.yml", "pytest.ini", ".gitattributes", "pyproject.toml"}
+
+          with zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED) as zf:
+              for foldername, subfolders, filenames in os.walk(root_dir):
+                  if any(foldername.startswith(os.path.join(root_dir, ef)) for ef in exclude_folders):
+                      continue
+                  for filename in filenames:
+                      if foldername == root_dir and filename in exclude_files_root:
+                          continue
+                      file_path = os.path.join(foldername, filename)
+                      rel_path = os.path.relpath(file_path, root_dir)
+                      zf.write(file_path, os.path.join("MultiMalModPy", rel_path))
+              version_content = tag_name
+              zf.writestr("MultiMalModPy/VERSION.txt", version_content)
+          
+          print(f"Created release ZIP: {zip_name}")
+          EOF
+        env:
+          TAG_NAME: ${{ steps.get_tag.outputs.tag_name }}
+
+      # Upload ZIP to GitHub release (auto-create)
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_tag.outputs.tag_name }}
+          files: "${{ steps.get_tag.outputs.tag_name }}.zip"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -13,8 +13,12 @@ my_venv/
 test_venv/
 mmmpy_venv/
 mmmpy_venv_local/
+tests/test_EMOD/
+!tests/test_EMOD/__init__.py
+!tests/test_EMOD/EMOD_test_run_local.py
 *.tar
 dependencies/OpenMalaria*
 !dependencies/OpenMalaria/get_openmalaria.bat
 !dependencies/OpenMalaria/get_openmalaria.sh
 !dependencies/OpenMalaria/readme.md
+/.pytest_cache/
