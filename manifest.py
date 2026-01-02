@@ -25,6 +25,7 @@ if IS_WINDOWS:
     selected_platform = 'Container'
     use_container = False
 
+## Currently not supported on HPC
 elif IS_DOCKER:
     hpc = "LOCAL"
     selected_platform = "Container"
@@ -158,7 +159,7 @@ os.makedirs(job_directory, exist_ok=True)
 if use_container:
     ROOT_DIR_local = os.path.dirname(ROOT_DIR)
     OPENMALARIA_PATH = os.path.join(ROOT_DIR, f'dependencies/OpenMalaria/om_v{openmalaria_version}')
-    if os.path.exists("/.dockerenv"):
+    if IS_DOCKER:
         OPENMALARIA_PATH = os.path.join( f'/openmalaria-schema-{openmalaria_version}.0/unittest/')
     # Required only when running inside docker, locally
     OPENMALARIA_venv = OPENMALARIA_venv_container
