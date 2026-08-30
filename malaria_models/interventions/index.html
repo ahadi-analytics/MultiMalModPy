@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="AHADI Analytics" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/malaria_models/interventions/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Interventions - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Interventions";
+        var mkdocs_page_input_path = "malaria_models/interventions.md";
+        var mkdocs_page_url = "/MultiMalModPy/malaria_models/interventions/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../software/">Software overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../documentation-and-sourcecode/">Source Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Interventions</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#case-management">Case Management</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#emod">EMOD</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#treatment-seeking">treatment seeking</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#json-snippet-example">json snippet (example)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#malariasimulation">malariasimulation</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#set_clinical_treatment">set_clinical_treatment</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#openmalaria">OpenMalaria</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#immediateoutcomes">ImmediateOutcomes</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../input_output/">Input and output files</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview/">Overview of MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">First time configurations (manifest.py)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/usage/">Quickstart: Run your first simulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_run/">Launch simulations by platform</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Population & age structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/scenarios/">Scenarios</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness & uncertainty</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developer Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/add_new_interventions/">Add new interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_models/">Update malaria models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/code_testing/">Write tests</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/create_new_release/">Create new releases</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_docs/">Update the documentation</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_local/">helper_local.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/calib_params/">calib_params.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">interventions.R</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations.R</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_sampleplots/">plot_sampleplots.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_ccstep/">plot_ccstep.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_custom/">plot_custom.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact and Contributions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Release Notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Support & Troubleshooting</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Malaria models</li>
+      <li class="breadcrumb-item active">Interventions</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/malaria_models/interventions.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="interventions">Interventions<a class="headerlink" href="#interventions" title="Permanent link">&para;</a></h1>
+<p>This page provides an overview of interventions implemented in <strong>MultiMalModPy</strong>, with a focus on <strong>case management</strong> in the initial release.</p>
+<p>Details on their function and implementation can be found in the framework’s  <strong>API</strong> under the <code>intervention.py</code> script for each model.</p>
+<div style="background-color: #E9F2F9; padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>⚠️ NOTE:</em></strong> 
+  For the most up-to-date and detailed information, please refer to the official documentation of each supported model.
+</div>
+
+<blockquote>
+<p><em>Interventions are not included in the initial release and are planned for future versions. 
+ Case management is included in the initial version</em></p>
+</blockquote>
+<h2 id="case-management">Case Management<a class="headerlink" href="#case-management" title="Permanent link">&para;</a></h2>
+<p>Each model simulates case management differently and defines a malaria case in its own way.  </p>
+<p>🚩 <strong>Alignment in MultiMalModPy</strong>  <br />
+<em>Box is checked if aligned</em>  </p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Aligned?</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode of action</td>
+<td>✗</td>
+<td>Varies significantly between models and cannot be standardized.</td>
+</tr>
+<tr>
+<td>Case definition</td>
+<td>✗</td>
+<td>Default case definitions are preserved for each model.</td>
+</tr>
+<tr>
+<td>Drug used</td>
+<td>✔</td>
+<td>All models use <strong>ACT</strong> as the first-line treatment for uncomplicated malaria.</td>
+</tr>
+<tr>
+<td>Coverage</td>
+<td>✔</td>
+<td>Implemented as <strong>14-day coverage</strong> across all models.</td>
+</tr>
+<tr>
+<td>Target population</td>
+<td>✔</td>
+<td>Whole population treated equally (no age-specific targeting).</td>
+</tr>
+<tr>
+<td>Resistance</td>
+<td>✔</td>
+<td>Drug resistance <strong>not included</strong> in this release.</td>
+</tr>
+<tr>
+<td>Deployment time &amp; duration</td>
+<td>✔</td>
+<td>Intervention begins at <strong>start of simulation</strong> and remains constant.</td>
+</tr>
+<tr>
+<td>=======</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Details on their function and implementation can be found in the framework’s  <strong>API</strong> under the <code>intervention.py</code> script for each model.</p>
+<h3 id="emod">EMOD<a class="headerlink" href="#emod" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Documentation main <br />
+  page:<a href="https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/malaria-model-antimalarial-drugs.html">malaria-model-antimalarial-drugs</a>    </li>
+<li>Function: <a href="https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/interventions/treatment_seeking.py">treatment_seeking.py</a>    </li>
+<li>Related publications: <a href="https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-015-0887-y">Gerardin et al 2015</a>   </li>
+<li>Additional: <a href="https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/malaria_drug_params.csv">malaria_drug_params.csv</a>    </li>
+</ul>
+<h4 id="treatment-seeking">treatment seeking<a class="headerlink" href="#treatment-seeking" title="Permanent link">&para;</a></h4>
+<p>```python    </p>
+<p>def add_treatment_seeking(campaign, 
+                            start_day: int = 1,<br />
+                            targets: list = None, 
+                            drug: list = None, 
+                            node_ids: list = None, 
+                            ind_property_restrictions: list = None, 
+                            drug_ineligibility_duration: float = 0, 
+                            duration: int = -1, 
+                            broadcast_event_name: str = &lsquo;Received_Treatment&rsquo;): 
+      camp_events = _get_events(campaign=campaign, start_day=start_day, targets=targets, drug=drug, node_ids=node_ids, 
+                                ind_property_restrictions=ind_property_restrictions, 
+                                drug_ineligibility_duration=drug_ineligibility_duration, duration=duration, 
+                                broadcast_event_name=broadcast_event_name) 
+      for event in camp_events: 
+          campaign.add(event) 
+  ```  </p>
+<p><code>targets is a list of dictionaries defining the trigger event and coverage for and  
+  properties of individuals to target with the intervention with all possible options being:  
+  [{"trigger":"NewClinicalCase","coverage":0.8,"agemin":15,"agemax":70, "rate":0.3}]  
+  "rate" is the inverse of the average delay in time to treatment seeking from an exponential distribution  
+  "trigger" must be defined, but everything else has defaults: 
+  coverage = 1, affects all  
+  agemin/agemax = 0/125, affects all 
+  rate = 0, no delay, seek treatment immediately</code>  </p>
+<h4 id="json-snippet-example">json snippet (example)<a class="headerlink" href="#json-snippet-example" title="Permanent link">&para;</a></h4>
+<p>```json  </p>
+<p>{ 
+    &ldquo;class&rdquo;: &ldquo;CampaignEvent&rdquo;, 
+    &ldquo;Event_Coordinator_Config&rdquo;: { 
+      &ldquo;class&rdquo;: &ldquo;StandardInterventionDistributionEventCoordinator&rdquo;, 
+      &ldquo;Demographic_Coverage&rdquo;: 1, 
+      &ldquo;Individual_Selection_Type&rdquo;: &ldquo;DEMOGRAPHIC_COVERAGE&rdquo;, 
+      &ldquo;Intervention_Config&rdquo;: { 
+        &ldquo;class&rdquo;: &ldquo;NodeLevelHealthTriggeredIV&rdquo;, 
+        &ldquo;Actual_IndividualIntervention_Config&rdquo;: { 
+          &ldquo;class&rdquo;: &ldquo;DelayedIntervention&rdquo;, 
+          &ldquo;Actual_IndividualIntervention_Configs&rdquo;: [ 
+            { 
+              &ldquo;class&rdquo;: &ldquo;AntimalarialDrug&rdquo;, 
+              &ldquo;Cost_To_Consumer&rdquo;: 0, 
+              &ldquo;Disqualifying_Properties&rdquo;: [], 
+              &ldquo;Dont_Allow_Duplicates&rdquo;: 0, 
+              &ldquo;Drug_Type&rdquo;: &ldquo;Artemether&rdquo;, 
+              &ldquo;Intervention_Name&rdquo;: &ldquo;AntimalarialDrug_Artemether&rdquo;, 
+              &ldquo;New_Property_Value&rdquo;: &ldquo;&rdquo; 
+            }, 
+            { 
+              &ldquo;class&rdquo;: &ldquo;AntimalarialDrug&rdquo;, 
+              &ldquo;Cost_To_Consumer&rdquo;: 0, 
+              &ldquo;Disqualifying_Properties&rdquo;: [], 
+              &ldquo;Dont_Allow_Duplicates&rdquo;: 0, 
+              &ldquo;Drug_Type&rdquo;: &ldquo;Lumefantrine&rdquo;, 
+              &ldquo;Intervention_Name&rdquo;: &ldquo;AntimalarialDrug_Lumefantrine&rdquo;, 
+              &ldquo;New_Property_Value&rdquo;: &ldquo;&rdquo; 
+            }, 
+            { 
+              &ldquo;class&rdquo;: &ldquo;BroadcastEvent&rdquo;, 
+              &ldquo;Broadcast_Event&rdquo;: &ldquo;Received_Treatment&rdquo;, 
+              &ldquo;Disqualifying_Properties&rdquo;: [], 
+              &ldquo;Dont_Allow_Duplicates&rdquo;: 0, 
+              &ldquo;Intervention_Name&rdquo;: &ldquo;BroadcastEvent&rdquo;, 
+              &ldquo;New_Property_Value&rdquo;: &ldquo;&rdquo; 
+            } 
+          ], 
+          &ldquo;Coverage&rdquo;: 1, 
+          &ldquo;Delay_Period_Distribution&rdquo;: &ldquo;EXPONENTIAL_DISTRIBUTION&rdquo;, 
+          &ldquo;Delay_Period_Exponential&rdquo;: 3.3333333333333335, 
+          &ldquo;Disqualifying_Properties&rdquo;: [], 
+          &ldquo;Dont_Allow_Duplicates&rdquo;: 0, 
+          &ldquo;Intervention_Name&rdquo;: &ldquo;DelayedIntervention&rdquo;, 
+          &ldquo;New_Property_Value&rdquo;: &ldquo;&rdquo; 
+        }, 
+        &ldquo;Blackout_Event_Trigger&rdquo;: &ldquo;&rdquo;, 
+        &ldquo;Blackout_On_First_Occurrence&rdquo;: 0, 
+        &ldquo;Blackout_Period&rdquo;: 0, 
+        &ldquo;Demographic_Coverage&rdquo;: 0.0, 
+        &ldquo;Disqualifying_Properties&rdquo;: [], 
+        &ldquo;Distribute_On_Return_Home&rdquo;: 0, 
+        &ldquo;Dont_Allow_Duplicates&rdquo;: 0, 
+        &ldquo;Duration&rdquo;: -1, 
+        &ldquo;Intervention_Name&rdquo;: &ldquo;NodeLevelHealthTriggeredIV&rdquo;, 
+        &ldquo;New_Property_Value&rdquo;: &ldquo;&rdquo;,<br />
+        &ldquo;Node_Property_Restrictions&rdquo;: [], 
+        &ldquo;Property_Restrictions&rdquo;: [], 
+        &ldquo;Target_Age_Max&rdquo;: 115, 
+        &ldquo;Target_Age_Min&rdquo;: 0, 
+        &ldquo;Target_Demographic&rdquo;: &ldquo;ExplicitAgeRanges&rdquo;, 
+        &ldquo;Target_Gender&rdquo;: &ldquo;All&rdquo;, 
+        &ldquo;Target_Residents_Only&rdquo;: 0, 
+        &ldquo;Targeting_Config&rdquo;: { 
+          &ldquo;HasIP&rdquo;: {}, 
+          &ldquo;HasIntervention&rdquo;: {}, 
+          &ldquo;IsPregnant&rdquo;: {}, 
+          &ldquo;TargetingLogic&rdquo;: {} 
+        }, 
+        &ldquo;Trigger_Condition_List&rdquo;: [ 
+          &ldquo;NewClinicalCase&rdquo; 
+        ] 
+      }, 
+      &ldquo;Node_Property_Restrictions&rdquo;: [], 
+      &ldquo;Number_Repetitions&rdquo;: 1, 
+      &ldquo;Property_Restrictions&rdquo;: [], 
+      &ldquo;Property_Restrictions_Within_Node&rdquo;: [], 
+      &ldquo;Target_Demographic&rdquo;: &ldquo;Everyone&rdquo;, 
+      &ldquo;Target_Gender&rdquo;: &ldquo;All&rdquo;, 
+      &ldquo;Target_Residents_Only&rdquo;: 0, 
+      &ldquo;Targeting_Config&rdquo;: { 
+        &ldquo;HasIP&rdquo;: {}, 
+        &ldquo;HasIntervention&rdquo;: {}, 
+        &ldquo;IsPregnant&rdquo;: {}, 
+        &ldquo;TargetingLogic&rdquo;: {} 
+      }, 
+      &ldquo;Timesteps_Between_Repetitions&rdquo;: -1 
+    }, 
+    &ldquo;Nodeset_Config&rdquo;: { 
+      &ldquo;class&rdquo;: &ldquo;NodeSetAll&rdquo; 
+    }, 
+    &ldquo;Start_Day&rdquo;: 1 
+  } </p>
+<p>```</p>
+<p><br>  </p>
+<h3 id="malariasimulation">malariasimulation<a class="headerlink" href="#malariasimulation" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Documentation main page: <a href="https://mrc-ide.github.io/malariasimulation/articles/Treatment.html">treatment</a>  </li>
+<li>Function: <a href="https://github.com/mrc-ide/malariasimulation/blob/master/R/drug_parameters.R#L49">set_clinical_treatment</a>  </li>
+<li>Related publications:  <a href="https://doi.org/10.1038/ncomms6606">Okell et al (2014).</a>  </li>
+</ul>
+<h4 id="set_clinical_treatment">set_clinical_treatment<a class="headerlink" href="#set_clinical_treatment" title="Permanent link">&para;</a></h4>
+<p>```R </p>
+<p>set_clinical_treatment &lt;- function(parameters, drug, timesteps, coverages) { 
+    stopifnot(all(coverages &gt;= 0) &amp;&amp; all(coverages &lt;= 1)) 
+    n_drugs &lt;- length(parameters$drug_efficacy) 
+    if (drug &lt; 1 | drug &gt; n_drugs) { 
+      stop(&lsquo;Drug index is invalid, please set drugs using set_drugs&rsquo;) 
+    } 
+    drug_index &lt;- which(parameters$clinical_treatment_drugs == drug) 
+    if (length(drug_index) == 0) { 
+      drug_index &lt;- length(parameters$clinical_treatment_drugs) + 1 
+    } 
+    parameters$clinical_treatment_drugs[[drug_index]] &lt;- drug 
+    parameters$clinical_treatment_timesteps[[drug_index]] &lt;- timesteps 
+    parameters$clinical_treatment_coverages[[drug_index]] &lt;- coverages 
+    last_timestep &lt;- max(unlist(parameters$clinical_treatment_timesteps)) </p>
+<div class="codehilite"><pre><span></span><code>for (t in seq(last_timestep)) { 
+  if (sum(get_treatment_coverages(parameters, t)) &gt; 1) { 
+    stop(&#39;The sum of drug coverages cannot be greater than 1 at any timestep&#39;) 
+  } 
+} 
+parameters
+</code></pre></div>
+
+<p>} 
+  ``` </p>
+<p><br> </p>
+<h3 id="openmalaria">OpenMalaria<a class="headerlink" href="#openmalaria" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Documentation main page:   <ul>
+<li><a href="https://github.com/SwissTPH/openmalaria/wiki/ScenarioHealthSystem">ScenarioHealthSystem</a>   </li>
+<li><a href="https://github.com/SwissTPH/openmalaria/wiki/ScenarioPharmacology#antimalarial-drug-modelling">ScenarioPharmacology</a>   </li>
+</ul>
+</li>
+<li>Function: <a href="https://github.com/mrc-ide/malariasimulation/blob/master/R/drug_parameters.R#L49">set_clinical_treatment</a>   </li>
+<li>Related publications:  <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0127818">Galactionova et al (2015).</a>  </li>
+</ul>
+<blockquote>
+<p>Multiple options for simulating &lsquo;case management&rsquo; exist. Below is the  implementation as used in MultiMalModPy.  </p>
+</blockquote>
+<h4 id="immediateoutcomes">ImmediateOutcomes<a class="headerlink" href="#immediateoutcomes" title="Permanent link">&para;</a></h4>
+<p><code>XML
+  &lt;ImmediateOutcomes name="example name"&gt; 
+      &lt;drugRegimen firstLine="ACT" inpatient="QN" secondLine="ACT"/&gt; 
+      &lt;initialACR&gt; 
+          &lt;ACT value="1.0"/&gt; 
+          &lt;QN value="1.0"/&gt; 
+          &lt;selfTreatment value="0.0"/&gt; 
+      &lt;/initialACR&gt; 
+      &lt;compliance&gt; 
+          &lt;ACT value="1.00"/&gt; 
+          &lt;selfTreatment value="1.0"/&gt; 
+      &lt;/compliance&gt; 
+      &lt;nonCompliersEffective&gt; 
+          &lt;ACT value="0"/&gt; 
+          &lt;selfTreatment value="0"/&gt; 
+      &lt;/nonCompliersEffective&gt; 
+      &lt;treatmentActions&gt; &lt;!-- only from schema 32 --&gt;
+          &lt;ACT name="clear blood-stage infections"&gt;
+              &lt;clearInfections stage="blood" timesteps="1"/&gt;
+          &lt;/ACT&gt;
+          &lt;QN name="clear blood-stage infections"&gt;
+              &lt;clearInfections stage="blood" timesteps="1"/&gt;
+          &lt;/QN&gt;
+      &lt;/treatmentActions&gt;
+      &lt;pSeekOfficialCareUncomplicated1 value="0.04"/&gt;
+      &lt;pSelfTreatUncomplicated value="0.0"/&gt;
+      &lt;pSeekOfficialCareUncomplicated2 value="0.04"/&gt;
+      &lt;pSeekOfficialCareSevere value="0.48"/&gt;
+  &lt;/ImmediateOutcomes&gt;</code></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../structure/" class="btn btn-neutral float-left" title="Model structure"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../core_parameters/" class="btn btn-neutral float-right" title="Core parameters">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../structure/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../core_parameters/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      <script src="../../javascripts/tablesort.js"></script>
+      <script src="../../javascripts/freeze-table.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(false);
+        });
+    </script>
+
+</body>
+</html>

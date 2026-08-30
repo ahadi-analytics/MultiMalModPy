@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="AHADI Analytics" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/api/launch_sim/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>launch_sim.py - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "launch_sim.py";
+        var mkdocs_page_input_path = "api/launch_sim.md";
+        var mkdocs_page_url = "/MultiMalModPy/api/launch_sim/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/software/">Software overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/documentation-and-sourcecode/">Source Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/input_output/">Input and output files</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview/">Overview of MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">First time configurations (manifest.py)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/usage/">Quickstart: Run your first simulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_run/">Launch simulations by platform</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Population & age structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/scenarios/">Scenarios</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness & uncertainty</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developer Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/add_new_interventions/">Add new interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_models/">Update malaria models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/code_testing/">Write tests</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/create_new_release/">Create new releases</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_docs/">Update the documentation</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">launch_sim.py</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configuration-steps">Configuration Steps</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#execution">Execution</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#custom-functions-overview">Custom Functions Overview</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#parse_launch_args">parse_launch_args()</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pickleloadfile">pickle.load(file)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#get_intervention_paramsexp">get_intervention_params(exp)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#loadexperimentargs-manifest">LoadExperiment(args, manifest)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#get_seasonal_eirexp">get_seasonal_eir(exp)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#get_param_from_dataframeexp_scen_df-col">get_param_from_dataframe(exp_scen_df, col)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#make_dirsexp">make_dirs(exp)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#get_simulation_time_paramsexp">get_simulation_time_params(exp)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#check_exp_inputsexp">check_exp_inputs(exp)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#create_scenarios_csvexp-expsweep_list">create_scenarios_csv(exp, exp.sweep_list)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#save_exp_scenexp-scen_df-save_dirsexpjob_directory-expsim_out_dir">save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#create_simsetup_csvexp">create_simsetup_csv(exp)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#submit_run_emodexp-scen_df">submit_run_EMOD(exp, scen_df)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#submit_run_malariasimulationexp">submit_run_malariasimulation(exp)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#submit_run_openmalariaexp-scen_df">submit_run_OpenMalaria(exp, scen_df)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#submit_run_plottersexp">submit_run_plotters(exp)</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../utility/helper_local/">helper_local.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD/functions/calib_params/">calib_params.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../EMOD/functions/reporters/">reporters.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../malariasimulation/functions/interventions/">interventions.R</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../malariasimulation/functions/run_simulations/">run_simulations.R</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plotter/plot_sampleplots/">plot_sampleplots.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plotter/plot_ccstep/">plot_ccstep.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../plotter/plot_custom/">plot_custom.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact and Contributions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Release Notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Support & Troubleshooting</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API</li>
+      <li class="breadcrumb-item active">launch_sim.py</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/api/launch_sim.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="launch_simpy">launch_sim.py<a class="headerlink" href="#launch_simpy" title="Permanent link">&para;</a></h1>
+<p>This script is designed to set up and launch simulations, enabling users to easily customize 
+and manage their simulation experiments:<br />
+<a href="#dependencies">Dependencies</a>
+<a href="#configuration-steps">Configuration Steps</a>
+<a href="#execution">Execution</a>
+<a href="#custom-functions-overview">Custom Functions Overview </a></p>
+<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h2>
+<p>This script requires the following Python modules:
+- <code>logging</code>
+- <code>manifest</code>
+- <code>utility.helper</code>
+- <code>utility.helper_slurm</code>
+- <code>utility.helper_simulation</code>
+- <code>config_exp</code>
+- <code>os</code>
+- <code>pickle</code>
+- <code>pandas</code></p>
+<p>The script sets up various EMOD flags to determine how simulations are run. 
+It can execute in a single run or separate into burn-in and pickup phases, depending on the specified <code>emodstep</code>.
+In addition, the script retrieves parsed arguments from the command line, allowing users to specify configurations such as the simulation directory, models to run, and specific scenarios.</p>
+<h2 id="configuration-steps">Configuration Steps<a class="headerlink" href="#configuration-steps" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p><strong>Pickup or New Pickup</strong>:<br />
+   If the <code>emodstep</code> is set to <code>pickup</code> or <code>new_pickup</code>, the script loads an existing experiment object and updates it based on the parsed arguments. This allows for running simulations using pre-existing data.</p>
+</li>
+<li>
+<p><strong>Experiment Initialization</strong>:<br />
+   If the <code>emodstep</code> is not pickup, an experiment object is created, and its attributes are initialized. This includes loading calibration parameters if specified.</p>
+</li>
+<li>
+<p><strong>Scenario Configuration</strong>:<br />
+   Users can specify simulation parameters using a CSV file. The script reads the specified row and updates the experiment object with those parameters.</p>
+</li>
+<li>
+<p><strong>Dynamic EIR Configuration</strong>:<br />
+   The script configures entomological inputs, allowing for seasonal variations if selected.</p>
+</li>
+<li>
+<p><strong>Simulation Time Parameters</strong>:<br />
+   The script sets up the duration of the simulation based on user-defined parameters.</p>
+</li>
+</ol>
+<h2 id="execution">Execution<a class="headerlink" href="#execution" title="Permanent link">&para;</a></h2>
+<p>To execute the script, run it directly from the command line.<br />
+The script will:<br />
+- Validate input parameters.<br />
+- Create directories for storing simulation results.<br />
+- Set up the simulation environment.<br />
+- Submit jobs for running EMOD, malariasimulation, or OpenMalaria as specified in the experiment configuration.  </p>
+<h2 id="custom-functions-overview">Custom Functions Overview<a class="headerlink" href="#custom-functions-overview" title="Permanent link">&para;</a></h2>
+<p>For further details on specific functions, refer to the relevant documentation within the imported modules.</p>
+<h3 id="parse_launch_args"><code>parse_launch_args()</code><a class="headerlink" href="#parse_launch_args" title="Permanent link">&para;</a></h3>
+<p>This function retrieves command-line arguments for the simulation setup. These arguments include settings for the simulation directory, models to run, and specific configurations like <code>emodstep</code>, <code>suite</code>, and <code>expname</code>.</p>
+<h3 id="pickleloadfile"><code>pickle.load(file)</code><a class="headerlink" href="#pickleloadfile" title="Permanent link">&para;</a></h3>
+<p>This function loads the previously saved experiment object (<code>exp.obj</code>) from the specified directory. This is used when the <code>emodstep</code> is set to <code>pickup</code> or <code>new_pickup</code>, allowing the script to continue a simulation from a saved state.</p>
+<h3 id="get_intervention_paramsexp"><code>get_intervention_params(exp)</code><a class="headerlink" href="#get_intervention_paramsexp" title="Permanent link">&para;</a></h3>
+<p>This function retrieves and configures intervention parameters for the experiment. It ensures that the parameters are updated correctly, especially between burn-in and pickup phases. This function is called for both pickup and new pickup scenarios.</p>
+<h3 id="loadexperimentargs-manifest"><code>LoadExperiment(args, manifest)</code><a class="headerlink" href="#loadexperimentargs-manifest" title="Permanent link">&para;</a></h3>
+<p>This function initializes a new Experiment object, setting its attributes based on the parsed arguments and the manifest. It is called if the <code>emodstep</code> is not pickup, indicating a new simulation.</p>
+<h3 id="get_seasonal_eirexp"><code>get_seasonal_eir(exp)</code><a class="headerlink" href="#get_seasonal_eirexp" title="Permanent link">&para;</a></h3>
+<p>This function configures the seasonal entomological inoculation rate (EIR) if selected. It allows for dynamic adjustments based on seasonality, enhancing the realism of the simulation.</p>
+<h3 id="get_param_from_dataframeexp_scen_df-col"><code>get_param_from_dataframe(exp_scen_df, col)</code><a class="headerlink" href="#get_param_from_dataframeexp_scen_df-col" title="Permanent link">&para;</a></h3>
+<p>This function retrieves specific parameters from the scenario CSV file for the current simulation run. It updates the Experiment object with user-defined parameters from the CSV.</p>
+<h3 id="make_dirsexp"><code>make_dirs(exp)</code><a class="headerlink" href="#make_dirsexp" title="Permanent link">&para;</a></h3>
+<p>This function creates necessary directories for storing simulation results. It ensures that all required directories are set up before the simulation begins.</p>
+<h3 id="get_simulation_time_paramsexp"><code>get_simulation_time_params(exp)</code><a class="headerlink" href="#get_simulation_time_paramsexp" title="Permanent link">&para;</a></h3>
+<p>This function sets the simulation duration, including start and end times. It prepares the timing parameters essential for running the simulation.</p>
+<h3 id="check_exp_inputsexp"><code>check_exp_inputs(exp)</code><a class="headerlink" href="#check_exp_inputsexp" title="Permanent link">&para;</a></h3>
+<p>This function validates all defined input parameters to ensure they are valid and compatible for the simulation. It raises errors if any issues are found.</p>
+<h3 id="create_scenarios_csvexp-expsweep_list"><code>create_scenarios_csv(exp, exp.sweep_list)</code><a class="headerlink" href="#create_scenarios_csvexp-expsweep_list" title="Permanent link">&para;</a></h3>
+<p>This function generates a DataFrame containing scenarios based on the parameters specified in <code>sweep_list</code>. It prepares for the various experimental scenarios to be executed during the simulation.</p>
+<h3 id="save_exp_scenexp-scen_df-save_dirsexpjob_directory-expsim_out_dir"><code>save_exp_scen(exp, scen_df, save_dirs=[exp.job_directory, exp.sim_out_dir])</code><a class="headerlink" href="#save_exp_scenexp-scen_df-save_dirsexpjob_directory-expsim_out_dir" title="Permanent link">&para;</a></h3>
+<p>This function saves the experiment scenarios to CSV files in the specified directories, ensuring that all scenario configurations are recorded for future reference.</p>
+<h3 id="create_simsetup_csvexp"><code>create_simsetup_csv(exp)</code><a class="headerlink" href="#create_simsetup_csvexp" title="Permanent link">&para;</a></h3>
+<p>This function writes out the simulation setup required for running the malaria simulation. It prepares the necessary configuration files for the simulation engines.</p>
+<h3 id="submit_run_emodexp-scen_df"><code>submit_run_EMOD(exp, scen_df)</code><a class="headerlink" href="#submit_run_emodexp-scen_df" title="Permanent link">&para;</a></h3>
+<p>This function submits the EMOD simulation job to the SLURM job scheduler. It includes configurations for job management, such as memory allocation and job partition.</p>
+<h3 id="submit_run_malariasimulationexp"><code>submit_run_malariasimulation(exp)</code><a class="headerlink" href="#submit_run_malariasimulationexp" title="Permanent link">&para;</a></h3>
+<p>This function submits the malariasimulation job to the SLURM scheduler if included in the models to run. It prepares the job for execution.</p>
+<h3 id="submit_run_openmalariaexp-scen_df"><code>submit_run_OpenMalaria(exp, scen_df)</code><a class="headerlink" href="#submit_run_openmalariaexp-scen_df" title="Permanent link">&para;</a></h3>
+<p>This function submits the OpenMalaria simulation job, creating the necessary XML files for the simulation engine based on the experiment setup.</p>
+<h3 id="submit_run_plottersexp"><code>submit_run_plotters(exp)</code><a class="headerlink" href="#submit_run_plottersexp" title="Permanent link">&para;</a></h3>
+<p>This function submits jobs for generating plots after the main simulations have run. It ensures that visualization of results is scheduled appropriately.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../manifest/" class="btn btn-neutral float-left" title="manifest.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../utility/experiment/" class="btn btn-neutral float-right" title="experiment.py">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../manifest/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../utility/experiment/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      <script src="../../javascripts/tablesort.js"></script>
+      <script src="../../javascripts/freeze-table.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(false);
+        });
+    </script>
+
+</body>
+</html>

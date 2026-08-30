@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="AHADI Analytics" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/getting_started/example_run/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Launch simulations by platform - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Launch simulations by platform";
+        var mkdocs_page_input_path = "getting_started/example_run.md";
+        var mkdocs_page_url = "/MultiMalModPy/getting_started/example_run/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/software/">Software overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/documentation-and-sourcecode/">Source Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/input_output/">Input and output files</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview of MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration/">First time configurations (manifest.py)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../usage/">Quickstart: Run your first simulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Launch simulations by platform</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#using-python-virtual-environment-hpc-or-local">Using Python virtual environment (HPC or local)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-singularity-container-hpc">Using singularity container (HPC)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-docker-local">Using Docker (local)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#postprocessing">Postprocessing</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Population & age structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/scenarios/">Scenarios</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness & uncertainty</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developer Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/add_new_interventions/">Add new interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_models/">Update malaria models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/code_testing/">Write tests</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/create_new_release/">Create new releases</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_docs/">Update the documentation</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_local/">helper_local.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/calib_params/">calib_params.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">interventions.R</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations.R</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_sampleplots/">plot_sampleplots.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_ccstep/">plot_ccstep.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_custom/">plot_custom.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact and Contributions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Release Notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Support & Troubleshooting</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">User Guide</li>
+      <li class="breadcrumb-item active">Launch simulations by platform</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/getting_started/example_run.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="how-to-launch-simulations-by-platform">How to Launch Simulations By Platform<a class="headerlink" href="#how-to-launch-simulations-by-platform" title="Permanent link">&para;</a></h1>
+<div style="background-color: #f4f4f4; padding: 20px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+  <strong style="font-size: 18px; color: #00796b;"><em>Continue on this page if:</em></strong>
+  <ul style="padding-left: 20px; line-height: 1.6; margin-top: 10px; margin-bottom: 0;">
+    <li>✅ You have installed all required software
+    </li>
+    <li> ✅Your simulation is configured in <code>manifest.py</code>
+    </li>
+    <li> ✅You want to run MultiMalModPy from a container without manual installation
+    </li>
+    <li> ❌ If not, revisit the
+    </li>
+     &nbsp;➡️ <a href="../getting_started/installation.md">Installation guide</a>
+     &nbsp;➡️ <a href="../getting_started/configuration.md">First-time configuration</a>
+  </ul>
+</div>
+
+<hr />
+<p><strong>Jump to</strong>
+Quickly navigate to your preferred execution method: <br />
+🔹 <a href="#using-python-virtual-environment-hpc-or-local">Run simulation – using Python virtual environment (HPC or local)</a>  <br />
+🔹 <a href="#using-singularity-container-hpc">Run simulation – using Singularity container (HPC)</a>  <br />
+🔹 <a href="#using-docker-local">Run simulation – using Docker (local)</a>  <br />
+🔹 <a href="#-troubleshooting">Troubleshooting</a>  </p>
+<h2 id="using-python-virtual-environment-hpc-or-local">Using Python virtual environment (HPC or local)<a class="headerlink" href="#using-python-virtual-environment-hpc-or-local" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>Navigate to the cloned MultiMalModPy repository and activate the virtual environment.<br />
+If you haven’t set up the virtual environment yet, follow the installation instructions <a href="../installation/">here</a>.      </p>
+</li>
+<li>
+<p>Launch test simulations.  </p>
+</li>
+<li>
+<p><strong>HPC</strong>:</p>
+</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>python launch_sim.py --models EMOD malariasimulation OpenMalaria --test
+</code></pre></div>
+
+<ul>
+<li><strong>Windows</strong>:<ul>
+<li>Open a command-line interface (CLI) terminal such as CMD, PyCharm terminal, or RStudio terminal.</li>
+</ul>
+</li>
+</ul>
+<details class="info">
+<summary>Show image run_from_pycharm</summary>
+<p><img alt="-launch_sim.py" src="../../img/run_from_pycharm.png" />  </p>
+</details>
+<p><br/></p>
+<details class="info">
+<summary>Show image</summary>
+<p><img alt="-run_simulations.R" src="../../img/2025-02-02%2019_34_10-run_simulations.R.png" /><br />
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/2025-02-02 19_34_10-run_simulations.R.png">View image file</a></p>
+</details>
+<p><br/></p>
+<p>You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly.</p>
+<ul>
+<li><strong>Monitor Simulation Progress</strong></li>
+<li>on <strong>HPC</strong>:   <ul>
+<li>Check you simulations via <code>squeue -u &lt;username&gt;</code>.  </li>
+</ul>
+</li>
+<li>on Windows:  <ul>
+<li>EMOD: type in terminal <code>idmtools container status</code>  </li>
+<li>malariasimulation and OpenMalaria: terminal windows per model appear.  </li>
+</ul>
+</li>
+</ul>
+<details class="info">
+<summary>View CMD terminals</summary>
+<p><strong>OpenMalaria PSI</strong></p>
+<p><img alt="OpenMalaria PSI" src="../../img/run_OpenMalaria_local.png" /><br />
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/blob/main/docs/img/run_OpenMalaria_local.png">View image file</a></p>
+<p><strong>malariasimulation PSI</strong></p>
+<p><img alt="malariasimulation PSI" src="../../img/run_malariasimulation_local.png" /><br />
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/blob/main/docs/img/run_malariasimulation_local.png">View image file</a></p>
+</details>
+<hr />
+<h2 id="using-singularity-container-hpc">Using singularity container (HPC)<a class="headerlink" href="#using-singularity-container-hpc" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Navigate to the Repository</strong> <br />
+    Open a terminal on your cluster and move into the MultiMalModPy repository using:
+    <code>cd &lt;your_path&gt;/MultiMalModPy</code>
+    Replace <your_path> with the actual path where the repository is located.  </p>
+</li>
+<li>
+<p><strong>Load singularity and ensure image file exists</strong>
+    <code>module load singularity</code>
+    If you haven’t downloaded the image file yet, follow the download it from <a href="../installation/">here</a> and save it under any directory on your HPC.     </p>
+</li>
+<li>
+<p>You can look inside the container via:  <br />
+<code>singularity shell /path/to/emodpy4.1-OM46-R4.4.1.sif</code></p>
+</li>
+<li>
+<p><strong>Launch the Simulation</strong><br />
+   To run the simulation, use the following command:  </p>
+<p><code>cd dependencies
+dos2unix run_mmmpy_container.sh
+bash run_mmmpy_container.sh</code>   </p>
+</li>
+</ul>
+<p>You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria) or specify only one or two by modifying the command accordingly.    </p>
+<details class="info">
+<summary>View terminal</summary>
+<p><img alt="hpc_container_run_terminal" src="../../img/hpc_container_run_terminal.png" /><br />
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/blob/main/docs/img/hpc_container_run_terminal.png">View image file</a></p>
+</details>
+<ul>
+<li><strong>Monitor Simulation Progress</strong>   <ul>
+<li>Check simulations via 
+   <code>squeue -u &lt;username&gt;</code>  </li>
+</ul>
+</li>
+</ul>
+<hr />
+<p><br></p>
+<h2 id="using-docker-local">Using Docker (local)<a class="headerlink" href="#using-docker-local" title="Permanent link">&para;</a></h2>
+<ul>
+<li>To run MultiMalModPy inside a Docker container, double-click on <code>dependencies/run_mmmpy_docker.bat</code>.  </li>
+<li>Alternatively, you can follow manual steps as below (for developer, or troubleshooting).     </li>
+</ul>
+<details class="info">
+<summary>Manual steps to run using docker</summary>
+<p><br>  </p>
+<p><strong>Ensure the Docker image is available on your computer</strong> <br />
+- If you haven’t installed it yet, refer to the <a href="../installation/#local-docker-image">installation page</a>     </p>
+<p><strong>Set up your directory path:</strong> <br />
+- In the example command below, replace <code>PATH_TO_REPO</code> with the directory path to your <em>MultiMalModPy</em> folder on your computer, excluding the <em>MultiMalModPy</em> directory itself. 
+  - Example, if MultiMalModPy is in <code>C:/Users/&lt;USER&gt;/Documents/MultiMalModPy</code>, then type  <code>C:/Users/&lt;USER&gt;/Documents/</code></p>
+<p><strong>Modify manifest.py:</strong>   <br />
+- Open the file and add the following line:<br />
+<code>container_run = True</code></p>
+<p><strong>Run the Docker container:</strong>   <br />
+- Use the following command, replacing PATH_TO_REPO with the actual path:  </p>
+<p><code>docker run -it -v &lt;PATH_TO_REPO&gt;:/mnt/c/projects mmmpy_local:rocky8 /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate &amp;&amp; cd /mnt/c/projects/MultiMalModPy &amp;&amp; python launch_sim.py --models OpenMalaria --test"</code></p>
+<p><strong>What This Command Does:</strong> 
+- Mount the local directory in which MultiMalModPy is located to /mnt/c/projects in the Docker container.<br />
+  - Activate the Python virtual environment inside the container.<br />
+  - Navigate to the MultiMalModPy directory inside the container and run the simulation script (<code>launch_sim.py</code>) with the specified models and test flag.  </p>
+<p>Example Terminal Output: </p>
+<div class="codehilite"><pre><span></span><code><span class="err">```</span>
+<span class="n">PS</span><span class="w"> </span><span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="o">&lt;</span><span class="n">USER</span><span class="o">&gt;</span>\<span class="n">Documents</span>\<span class="n">MultiMalModPy</span><span class="o">&gt;</span><span class="w"> </span><span class="n">docker</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="n">C</span><span class="p">:</span><span class="o">/</span><span class="n">Users</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/</span><span class="n">Documents</span><span class="o">/</span><span class="p">:</span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">projects</span><span class="w"> </span><span class="n">mmmpy_local</span><span class="p">:</span><span class="n">rocky8</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="s2">&quot;source /opt/envs/mmmpy_local/bin/activate &amp;&amp; cd /mnt/c/projects/MultiMalModPy &amp;&amp; python launch_sim.py --models  OpenMalaria --test&quot;</span>
+
+<span class="n">No</span><span class="w"> </span><span class="n">interventions</span><span class="w"> </span><span class="n">specified</span>
+<span class="n">Warning</span><span class="p">:</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">popsize</span><span class="w"> </span><span class="n">specified</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">malariasimulation</span><span class="w"> </span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">interpolation</span><span class="w"> </span><span class="n">dataset</span><span class="p">,</span><span class="w"> </span><span class="n">since</span><span class="w"> </span><span class="n">running</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">test</span><span class="o">.</span><span class="w"> </span><span class="n">Using</span><span class="w"> </span><span class="n">interpolation</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">lowest</span><span class="w"> </span><span class="n">popsize</span><span class="w"> </span><span class="p">(</span><span class="mi">50000</span><span class="p">)</span>
+<span class="n">Warning</span><span class="p">:</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">popsize</span><span class="w"> </span><span class="n">specified</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">OpenMalaria</span><span class="w"> </span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">interpolation</span><span class="w"> </span><span class="n">dataset</span><span class="p">,</span><span class="w"> </span><span class="n">since</span><span class="w"> </span><span class="n">running</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">test</span><span class="o">.</span><span class="w"> </span><span class="n">Using</span><span class="w"> </span><span class="n">interpolation</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">lowest</span><span class="w"> </span><span class="n">popsize</span><span class="w"> </span><span class="p">(</span><span class="mi">50000</span><span class="p">)</span>
+<span class="n">Warning</span><span class="p">:</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="n">burn</span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="n">period</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">least</span><span class="w"> </span><span class="mi">80</span><span class="w"> </span><span class="n">years</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">recommended</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">OpenMalaria</span><span class="o">.</span><span class="w"> </span><span class="n">Currently</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">shorter</span><span class="w"> </span><span class="n">burn</span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="n">years</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">been</span><span class="w"> </span><span class="n">configured</span><span class="p">,</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">lead</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">inaccurate</span><span class="w"> </span><span class="n">results</span><span class="o">.</span>
+<span class="n">Warning</span><span class="p">:</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="n">population</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">least</span><span class="w"> </span><span class="mi">10000</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">recommended</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">OpenMalaria</span><span class="o">.</span><span class="w"> </span><span class="n">Current</span><span class="w"> </span><span class="n">pop_size</span><span class="w"> </span><span class="mi">1000</span><span class="w">  </span><span class="n">may</span><span class="w"> </span><span class="n">lead</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">inaccurate</span><span class="w"> </span><span class="n">results</span><span class="o">.</span>
+<span class="n">Warning</span><span class="p">:</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="n">burn</span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="n">period</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">least</span><span class="w"> </span><span class="mi">80</span><span class="w"> </span><span class="n">years</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">recommended</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">malariasimulation</span><span class="o">.</span><span class="w"> </span><span class="n">Currently</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">shorter</span><span class="w"> </span><span class="n">burn</span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="n">years</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">been</span><span class="w"> </span><span class="n">configured</span><span class="p">,</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">lead</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">inaccurate</span><span class="w"> </span><span class="n">results</span><span class="o">.</span>
+<span class="w"> </span><span class="o">--------|</span><span class="w"> </span><span class="n">Running</span><span class="w"> </span><span class="n">sims_dynamic_perennial_10_28_39</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">malariasimulation</span><span class="p">,</span><span class="w"> </span><span class="n">OpenMalaria</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">varying</span><span class="w"> </span><span class="n">parameters</span><span class="p">:</span><span class="w"> </span><span class="n">target_output_values</span><span class="p">,</span><span class="w"> </span><span class="n">case_management</span><span class="p">,</span><span class="w"> </span><span class="n">seasonality</span><span class="o">.</span><span class="w"> </span><span class="n">Run</span><span class="w"> </span><span class="n">mode</span><span class="p">:</span><span class="w">  </span><span class="n">custom</span><span class="w"> </span><span class="o">|--------</span>
+<span class="err">```</span>
+</code></pre></div>
+
+</details>
+<p><br>  </p>
+<hr />
+<h2 id="postprocessing">Postprocessing<a class="headerlink" href="#postprocessing" title="Permanent link">&para;</a></h2>
+<p><strong>HPC</strong> <br />
+Postprocessing runs automatically once the simulation job completes. No additional steps are needed to generate outputs or plots.</p>
+<p><strong>Windows (Local)</strong> <br />
+After the simulation finishes:</p>
+<ol>
+<li>Navigate to the <code>experiments/</code> folder.</li>
+<li>Double-click <code>plotter.bat</code> to generate the standard output plots.</li>
+</ol>
+<blockquote>
+<p>📝 Note: Plotting does <strong>not run automatically</strong> on Windows unless you&rsquo;re using the containerized setup. Run the plot script manually after each simulation.  </p>
+</blockquote>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<p>If expected output files are missing, first check the <code>log/</code> folder inside the experiment directory for error messages.<br />
+The <code>.err</code> and <code>.out</code> files can help determine whether the simulations completed successfully or if any issues occurred during execution.</p>
+<div style="background-color: #E9F2F9; padding: 15px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif;">
+  <strong><em>📝 NOTE</em></strong><br>
+  To rerun specific steps, use the saved <code>.sh</code> scripts (HPC) or <code>.psi</code> files (local) to execute each step individually.<br>
+  For debugging, you can also interactively use the framework from a Python console or Jupyter environment.
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../parameters/" class="btn btn-neutral float-left" title="User-modifiable parameters and defaults"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../glossary/" class="btn btn-neutral float-right" title="Glossary">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../parameters/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../glossary/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      <script src="../../javascripts/tablesort.js"></script>
+      <script src="../../javascripts/freeze-table.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(false);
+        });
+    </script>
+
+</body>
+</html>

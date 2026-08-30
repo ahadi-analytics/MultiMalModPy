@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="AHADI Analytics" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/about/changelog/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Release Notes - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Release Notes";
+        var mkdocs_page_input_path = "about/changelog.md";
+        var mkdocs_page_url = "/MultiMalModPy/about/changelog/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/software/">Software overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/documentation-and-sourcecode/">Source Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/input_output/">Input and output files</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview/">Overview of MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">First time configurations (manifest.py)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/usage/">Quickstart: Run your first simulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_run/">Launch simulations by platform</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Population & age structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/scenarios/">Scenarios</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness & uncertainty</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developer Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/add_new_interventions/">Add new interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_models/">Update malaria models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/code_testing/">Write tests</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/create_new_release/">Create new releases</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_docs/">Update the documentation</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_local/">helper_local.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/calib_params/">calib_params.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">interventions.R</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations.R</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_sampleplots/">plot_sampleplots.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_ccstep/">plot_ccstep.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_custom/">plot_custom.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../contributors/">Contact and Contributions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Release Notes</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#stable-releases">Stable Releases</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#100-expected-q4-2025">1.0.0 (Expected Q4 2025)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#pre-releases">Pre-Releases</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#0120-dev1-4-jul-2025">0.12.0-dev.1 (4 Jul 2025)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#0110-dev1-9-apr-2025">0.11.0-dev.1 (9 Apr 2025)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#0100-dev1-8-jan-2025">0.10.0-dev.1 (8 Jan 2025)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#090-dev1-2-jan-2025">0.9.0-dev.1 (2 Jan 2025)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#080-dev1-12-nov-2024">0.8.0-dev.1 (12 Nov 2024)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#070-dev1-25-oct-2024">0.7.0-dev.1 (25 Oct 2024)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#060-dev1-9-sep-2024">0.6.0-dev.1 (9 Sep 2024)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#050-dev1-16-aug-2024">0.5.0-dev.1 (16 Aug 2024)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#040-dev1-31-jul-2024">0.4.0-dev.1 (31 Jul 2024)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#030-dev1-23-feb-2024">0.3.0-dev.1 (23 Feb 2024)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#020-dev1-26-sep-2023">0.2.0-dev.1 (26 Sep 2023)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#010-dev1-22-may-2023">0.1.0-dev.1 (22 May 2023)</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_help/">Support & Troubleshooting</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">About</li>
+      <li class="breadcrumb-item active">Release Notes</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/about/changelog.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="release-notes">Release Notes<a class="headerlink" href="#release-notes" title="Permanent link">&para;</a></h1>
+<div style="margin: 20px 0;">
+  <a href="https://github.com/ahadi-analytics/MultiMalModPy" style="display: inline-block; margin-right: 15px;">
+    <button class="btn btn-primary btn-lg" type="button">
+      GitHub Repository
+      <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
+           alt="GitHub Logo" 
+           style="width: 20px; height: 20px; vertical-align: middle; margin-left: 8px;">
+    </button>
+  </a>
+</div>
+
+<hr />
+<h2 id="stable-releases">Stable Releases<a class="headerlink" href="#stable-releases" title="Permanent link">&para;</a></h2>
+<h3 id="100-expected-q4-2025">1.0.0 (Expected Q4 2025)<a class="headerlink" href="#100-expected-q4-2025" title="Permanent link">&para;</a></h3>
+<p><strong>Initial full release</strong> of MultiMalModPy.  </p>
+<hr />
+<h2 id="pre-releases">Pre-Releases<a class="headerlink" href="#pre-releases" title="Permanent link">&para;</a></h2>
+<h3 id="0120-dev1-4-jul-2025">0.12.0-dev.1 (4 Jul 2025)<a class="headerlink" href="#0120-dev1-4-jul-2025" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Added support for running <strong>EMOD</strong> locally via <code>idmtools</code> container </li>
+<li>Updated seasonal interpolation datasets across models  </li>
+<li>Improved plot layout customization and formatting  </li>
+<li>Fixed bugs in analyzers, plotter, and <strong>EMOD</strong> serialization  </li>
+<li>Refined local and containerized run modes  </li>
+<li>Enhanced documentation and install scripts  </li>
+<li>General framework cleanup     </li>
+</ul>
+<h3 id="0110-dev1-9-apr-2025">0.11.0-dev.1  (9 Apr 2025)<a class="headerlink" href="#0110-dev1-9-apr-2025" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Refactored internal structure and cleaned up <code>manifest.py</code>  </li>
+<li>Improved plotter behavior and output handling for better customization and clarity  </li>
+<li>Fixed bugs related to <code>cc_step</code>, interpolation, <strong>EMOD</strong> outputs, and local execution  </li>
+<li>Enhanced support for containerized runs (e.g., Singularity on HPC)  </li>
+<li>Updated seasonal and calibration datasets for <strong>OpenMalaria</strong> and <strong>malariasimulation</strong>  </li>
+<li>Streamlined run argument parsing and added shell script support  </li>
+<li>Improved logging, parameter validation, and handling of <code>runmode</code> logic  </li>
+<li>Updated documentation, added online doc files, and renamed project structure  </li>
+</ul>
+<h3 id="0100-dev1-8-jan-2025">0.10.0-dev.1  (8 Jan 2025)<a class="headerlink" href="#0100-dev1-8-jan-2025" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Enabled simple <code>local launch</code> for test runs with <strong>malariasimulation</strong> and <strong>OpenMalaria</strong>   </li>
+<li>Improved support for CSV-based runs and expanded run_mode logic     </li>
+<li>Introduced separate <code>run_mode=test</code> option and refined argument parsing    </li>
+<li>Added climate and population size checks to ensure valid <strong>EMOD</strong> runs  </li>
+<li>Enhanced plotter functionality with better handling of age groups, sweep order, and sample plots  </li>
+<li>Cleaned up and reorganized figures, adding support for custom outputs  </li>
+<li>Applied multiple bugfixes across interpolation, experiment setup, and analyzers</li>
+</ul>
+<h3 id="090-dev1-2-jan-2025">0.9.0-dev.1  (2 Jan 2025)<a class="headerlink" href="#090-dev1-2-jan-2025" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Alignment improvements and bugfixes across model-characterization branches  </li>
+<li>Improved seasonality handling and interpolation stability  </li>
+<li>Framework restructuring and repository cleanup  </li>
+<li>Added <code>setup_sim.py</code> and restored key configuration files  </li>
+<li>Fixed <strong>EMOD</strong> population sizing and pfpr issues  </li>
+<li>Reintroduced and updated function docstrings  </li>
+<li>Enabled module loading with added <code>__init__.py</code> files  </li>
+<li>Applied automatic code formatting and restored missing documentation  </li>
+</ul>
+<h3 id="080-dev1-12-nov-2024">0.8.0-dev.1  (12 Nov 2024)<a class="headerlink" href="#080-dev1-12-nov-2024" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Other bugfixes and improvements </li>
+<li><strong>EMOD</strong> multi-habitat  </li>
+<li>age demography and age group aggregation  </li>
+</ul>
+<h3 id="070-dev1-25-oct-2024">0.7.0-dev.1  (25 Oct 2024)<a class="headerlink" href="#070-dev1-25-oct-2024" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Updated and aligned age demographics </li>
+<li>removed dependency between cm_clinical and cm_severe </li>
+<li>Other bugfixes and improvements </li>
+<li>allow to run multiple seasonality patterns in same simulation</li>
+<li>fixed burnin issue </li>
+<li>updated <strong>EMOD</strong> multiple calibration parameter setup </li>
+<li>removed config_exp.py </li>
+</ul>
+<h3 id="060-dev1-9-sep-2024">0.6.0-dev.1  (9 Sep 2024)<a class="headerlink" href="#060-dev1-9-sep-2024" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Framework restructuring </li>
+<li>intriduced  <code>utility</code>, <code>plotter</code> folders</li>
+<li>added config_exp.py</li>
+<li>Bugfixes and improvements</li>
+</ul>
+<h3 id="050-dev1-16-aug-2024">0.5.0-dev.1  (16 Aug 2024)<a class="headerlink" href="#050-dev1-16-aug-2024" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Bugfixes and improvements</li>
+<li>Initial &lsquo;production run&rsquo; for all three models</li>
+</ul>
+<h3 id="040-dev1-31-jul-2024">0.4.0-dev.1  (31 Jul 2024)<a class="headerlink" href="#040-dev1-31-jul-2024" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Calibration run added to framework using simple interpolation</li>
+<li>Bugfixes and improvements</li>
+<li>case management in malariasimulation </li>
+<li>CC step improvements</li>
+<li>New calibration parameters tested for specific models</li>
+<li>terminology alignment</li>
+<li>removed remaining &lsquo;emodom&rsquo; terms used</li>
+</ul>
+<h3 id="030-dev1-23-feb-2024">0.3.0-dev.1  (23 Feb 2024)<a class="headerlink" href="#030-dev1-23-feb-2024" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Improved integration of <strong>malariasimulation</strong> to &lsquo;MultiMalModPy&rsquo;</li>
+<li>CC step initial setup</li>
+<li>Bugfixes and improvements </li>
+<li>Alignment of analyzers</li>
+<li>Unified use of <code>exp</code> object</li>
+<li>Added ValueErrors and Warnings to helper.py</li>
+<li>EMOD step (burnin, pickup) automatized setup</li>
+</ul>
+<h3 id="020-dev1-26-sep-2023">0.2.0-dev.1  (26 Sep 2023)<a class="headerlink" href="#020-dev1-26-sep-2023" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Initial integration of <strong>malariasimulation</strong> </li>
+<li>Bugfixes and improvements </li>
+<li><strong>EMOD</strong> step (burnin, pickup) initial setup</li>
+</ul>
+<h3 id="010-dev1-22-may-2023">0.1.0-dev.1  (22 May 2023)<a class="headerlink" href="#010-dev1-22-may-2023" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Initial upload <strong>EMOD</strong> and <strong>OpenMalaria</strong> &lsquo;emodom&rsquo; framework</li>
+</ul>
+<hr />
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../license/" class="btn btn-neutral float-left" title="License"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../getting_help/" class="btn btn-neutral float-right" title="Support & Troubleshooting">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../license/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../getting_help/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      <script src="../../javascripts/tablesort.js"></script>
+      <script src="../../javascripts/freeze-table.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(false);
+        });
+    </script>
+
+</body>
+</html>

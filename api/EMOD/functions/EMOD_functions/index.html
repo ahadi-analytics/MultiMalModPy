@@ -1,0 +1,2209 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="AHADI Analytics" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/api/EMOD/functions/EMOD_functions/" />
+      <link rel="shortcut icon" href="../../../../img/favicon.ico" />
+    <title>EMOD_functions.py - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "EMOD_functions.py";
+        var mkdocs_page_input_path = "api/EMOD/functions/EMOD_functions.md";
+        var mkdocs_page_url = "/MultiMalModPy/api/EMOD/functions/EMOD_functions/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../../..">
+          <img src="../../../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/software/">Software overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/documentation-and-sourcecode/">Source Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../malaria_models/input_output/">Input and output files</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/overview/">Overview of MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/configuration/">First time configurations (manifest.py)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/usage/">Quickstart: Run your first simulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/example_run/">Launch simulations by platform</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/glossary/">Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/time/">Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/age_demography/">Population & age structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/seasonality/">Seasonality</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/transmission_calibration/">Transmission calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/scenarios/">Scenarios</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../guide/uncertainty/">Randomness & uncertainty</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developer Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../developer/add_new_interventions/">Add new interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../developer/update_models/">Update malaria models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../developer/code_testing/">Write tests</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../developer/create_new_release/">Create new releases</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../developer/update_docs/">Update the documentation</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../../manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../utility/helper_local/">helper_local.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >EMOD</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../../utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../calib_params/">calib_params.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../forcedEIR/">forcedEIR.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">EMOD_functions.py</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions">EMOD_functions</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.CfgFn">CfgFn</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.ItvFn">ItvFn</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.SwpFn">SwpFn</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.all_campaigns">all_campaigns</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.build_burnin_df">build_burnin_df</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.climate_setup">climate_setup</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.create_sim_directory_map">create_sim_directory_map</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.drug_setup">drug_setup</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.get_burnin_exp_name">get_burnin_exp_name</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.get_scendf_burnin">get_scendf_burnin</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.get_workdir_from_simulations">get_workdir_from_simulations</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.habitat_setup">habitat_setup</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.set_inputEIR_seasonality">set_inputEIR_seasonality</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.set_param">set_param</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.sweep_functions">sweep_functions</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.treatment_camp_simple">treatment_camp_simple</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#EMOD.functions.EMOD_functions.update_mab">update_mab</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../reporters/">reporters.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../malariasimulation/functions/interventions/">interventions.R</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../malariasimulation/functions/run_simulations/">run_simulations.R</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_sampleplots/">plot_sampleplots.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_ccstep/">plot_ccstep.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../plotter/plot_custom/">plot_custom.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/contributors/">Contact and Contributions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/changelog/">Release Notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../about/getting_help/">Support & Troubleshooting</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">API</li>
+          <li class="breadcrumb-item">EMOD</li>
+      <li class="breadcrumb-item active">EMOD_functions.py</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/api/EMOD/functions/EMOD_functions.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="emod_functionspy">EMOD_functions.py<a class="headerlink" href="#emod_functionspy" title="Permanent link">&para;</a></h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="EMOD.functions.EMOD_functions"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="EMOD.functions.EMOD_functions.CfgFn" class="doc doc-heading">
+            <code>CfgFn</code>
+
+
+<a href="#EMOD.functions.EMOD_functions.CfgFn" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Obtained from IDM&rsquo;s emodpy-snt framework that had been modified for bf-seasonal
+https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py</p>
+<p>Sweeping utility: works for sweeping on config parameters.
+Requirements:
+ - func is a method that takes config as first parameter
+ - func return a dict</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>dict</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-402">402</a></span>
+<span class="normal"><a href="#__codelineno-0-403">403</a></span>
+<span class="normal"><a href="#__codelineno-0-404">404</a></span>
+<span class="normal"><a href="#__codelineno-0-405">405</a></span>
+<span class="normal"><a href="#__codelineno-0-406">406</a></span>
+<span class="normal"><a href="#__codelineno-0-407">407</a></span>
+<span class="normal"><a href="#__codelineno-0-408">408</a></span>
+<span class="normal"><a href="#__codelineno-0-409">409</a></span>
+<span class="normal"><a href="#__codelineno-0-410">410</a></span>
+<span class="normal"><a href="#__codelineno-0-411">411</a></span>
+<span class="normal"><a href="#__codelineno-0-412">412</a></span>
+<span class="normal"><a href="#__codelineno-0-413">413</a></span>
+<span class="normal"><a href="#__codelineno-0-414">414</a></span>
+<span class="normal"><a href="#__codelineno-0-415">415</a></span>
+<span class="normal"><a href="#__codelineno-0-416">416</a></span>
+<span class="normal"><a href="#__codelineno-0-417">417</a></span>
+<span class="normal"><a href="#__codelineno-0-418">418</a></span>
+<span class="normal"><a href="#__codelineno-0-419">419</a></span>
+<span class="normal"><a href="#__codelineno-0-420">420</a></span>
+<span class="normal"><a href="#__codelineno-0-421">421</a></span>
+<span class="normal"><a href="#__codelineno-0-422">422</a></span>
+<span class="normal"><a href="#__codelineno-0-423">423</a></span>
+<span class="normal"><a href="#__codelineno-0-424">424</a></span>
+<span class="normal"><a href="#__codelineno-0-425">425</a></span>
+<span class="normal"><a href="#__codelineno-0-426">426</a></span>
+<span class="normal"><a href="#__codelineno-0-427">427</a></span>
+<span class="normal"><a href="#__codelineno-0-428">428</a></span>
+<span class="normal"><a href="#__codelineno-0-429">429</a></span>
+<span class="normal"><a href="#__codelineno-0-430">430</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-402" name="__codelineno-0-402"></a><span class="k">class</span> <span class="nc">CfgFn</span><span class="p">:</span>
+<a id="__codelineno-0-403" name="__codelineno-0-403"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-404" name="__codelineno-0-404"></a><span class="sd">    Obtained from IDM&#39;s emodpy-snt framework that had been modified for bf-seasonal</span>
+<a id="__codelineno-0-405" name="__codelineno-0-405"></a><span class="sd">    https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py</span>
+<a id="__codelineno-0-406" name="__codelineno-0-406"></a>
+<a id="__codelineno-0-407" name="__codelineno-0-407"></a><span class="sd">    Sweeping utility: works for sweeping on config parameters.</span>
+<a id="__codelineno-0-408" name="__codelineno-0-408"></a><span class="sd">    Requirements:</span>
+<a id="__codelineno-0-409" name="__codelineno-0-409"></a><span class="sd">     - func is a method that takes config as first parameter</span>
+<a id="__codelineno-0-410" name="__codelineno-0-410"></a><span class="sd">     - func return a dict</span>
+<a id="__codelineno-0-411" name="__codelineno-0-411"></a>
+<a id="__codelineno-0-412" name="__codelineno-0-412"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-413" name="__codelineno-0-413"></a><span class="sd">        dict</span>
+<a id="__codelineno-0-414" name="__codelineno-0-414"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-415" name="__codelineno-0-415"></a>
+<a id="__codelineno-0-416" name="__codelineno-0-416"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<a id="__codelineno-0-417" name="__codelineno-0-417"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+<a id="__codelineno-0-418" name="__codelineno-0-418"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+<a id="__codelineno-0-419" name="__codelineno-0-419"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+<a id="__codelineno-0-420" name="__codelineno-0-420"></a>
+<a id="__codelineno-0-421" name="__codelineno-0-421"></a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">):</span>
+<a id="__codelineno-0-422" name="__codelineno-0-422"></a>        <span class="n">md</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-0-423" name="__codelineno-0-423"></a>
+<a id="__codelineno-0-424" name="__codelineno-0-424"></a>        <span class="c1"># Make sure we cast numpy types into normal system types</span>
+<a id="__codelineno-0-425" name="__codelineno-0-425"></a>        <span class="k">if</span> <span class="n">md</span><span class="p">:</span>
+<a id="__codelineno-0-426" name="__codelineno-0-426"></a>            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">md</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-427" name="__codelineno-0-427"></a>                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)):</span>
+<a id="__codelineno-0-428" name="__codelineno-0-428"></a>                    <span class="n">md</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<a id="__codelineno-0-429" name="__codelineno-0-429"></a>
+<a id="__codelineno-0-430" name="__codelineno-0-430"></a>        <span class="k">return</span> <span class="n">md</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="EMOD.functions.EMOD_functions.ItvFn" class="doc doc-heading">
+            <code>ItvFn</code>
+
+
+<a href="#EMOD.functions.EMOD_functions.ItvFn" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Obtained from IDM&rsquo;s emodpy-snt framework that had been modified for bf-seasonal
+https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py</p>
+<p>Sweeping utility: works for sweeping on interventions.
+Requirements:
+ - func is a method that takes campaign as first parameter
+ - func return a dict</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>dict</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-354">354</a></span>
+<span class="normal"><a href="#__codelineno-0-355">355</a></span>
+<span class="normal"><a href="#__codelineno-0-356">356</a></span>
+<span class="normal"><a href="#__codelineno-0-357">357</a></span>
+<span class="normal"><a href="#__codelineno-0-358">358</a></span>
+<span class="normal"><a href="#__codelineno-0-359">359</a></span>
+<span class="normal"><a href="#__codelineno-0-360">360</a></span>
+<span class="normal"><a href="#__codelineno-0-361">361</a></span>
+<span class="normal"><a href="#__codelineno-0-362">362</a></span>
+<span class="normal"><a href="#__codelineno-0-363">363</a></span>
+<span class="normal"><a href="#__codelineno-0-364">364</a></span>
+<span class="normal"><a href="#__codelineno-0-365">365</a></span>
+<span class="normal"><a href="#__codelineno-0-366">366</a></span>
+<span class="normal"><a href="#__codelineno-0-367">367</a></span>
+<span class="normal"><a href="#__codelineno-0-368">368</a></span>
+<span class="normal"><a href="#__codelineno-0-369">369</a></span>
+<span class="normal"><a href="#__codelineno-0-370">370</a></span>
+<span class="normal"><a href="#__codelineno-0-371">371</a></span>
+<span class="normal"><a href="#__codelineno-0-372">372</a></span>
+<span class="normal"><a href="#__codelineno-0-373">373</a></span>
+<span class="normal"><a href="#__codelineno-0-374">374</a></span>
+<span class="normal"><a href="#__codelineno-0-375">375</a></span>
+<span class="normal"><a href="#__codelineno-0-376">376</a></span>
+<span class="normal"><a href="#__codelineno-0-377">377</a></span>
+<span class="normal"><a href="#__codelineno-0-378">378</a></span>
+<span class="normal"><a href="#__codelineno-0-379">379</a></span>
+<span class="normal"><a href="#__codelineno-0-380">380</a></span>
+<span class="normal"><a href="#__codelineno-0-381">381</a></span>
+<span class="normal"><a href="#__codelineno-0-382">382</a></span>
+<span class="normal"><a href="#__codelineno-0-383">383</a></span>
+<span class="normal"><a href="#__codelineno-0-384">384</a></span>
+<span class="normal"><a href="#__codelineno-0-385">385</a></span>
+<span class="normal"><a href="#__codelineno-0-386">386</a></span>
+<span class="normal"><a href="#__codelineno-0-387">387</a></span>
+<span class="normal"><a href="#__codelineno-0-388">388</a></span>
+<span class="normal"><a href="#__codelineno-0-389">389</a></span>
+<span class="normal"><a href="#__codelineno-0-390">390</a></span>
+<span class="normal"><a href="#__codelineno-0-391">391</a></span>
+<span class="normal"><a href="#__codelineno-0-392">392</a></span>
+<span class="normal"><a href="#__codelineno-0-393">393</a></span>
+<span class="normal"><a href="#__codelineno-0-394">394</a></span>
+<span class="normal"><a href="#__codelineno-0-395">395</a></span>
+<span class="normal"><a href="#__codelineno-0-396">396</a></span>
+<span class="normal"><a href="#__codelineno-0-397">397</a></span>
+<span class="normal"><a href="#__codelineno-0-398">398</a></span>
+<span class="normal"><a href="#__codelineno-0-399">399</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-354" name="__codelineno-0-354"></a><span class="k">class</span> <span class="nc">ItvFn</span><span class="p">:</span>
+<a id="__codelineno-0-355" name="__codelineno-0-355"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-356" name="__codelineno-0-356"></a><span class="sd">    Obtained from IDM&#39;s emodpy-snt framework that had been modified for bf-seasonal</span>
+<a id="__codelineno-0-357" name="__codelineno-0-357"></a><span class="sd">    https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py</span>
+<a id="__codelineno-0-358" name="__codelineno-0-358"></a>
+<a id="__codelineno-0-359" name="__codelineno-0-359"></a><span class="sd">    Sweeping utility: works for sweeping on interventions.</span>
+<a id="__codelineno-0-360" name="__codelineno-0-360"></a><span class="sd">    Requirements:</span>
+<a id="__codelineno-0-361" name="__codelineno-0-361"></a><span class="sd">     - func is a method that takes campaign as first parameter</span>
+<a id="__codelineno-0-362" name="__codelineno-0-362"></a><span class="sd">     - func return a dict</span>
+<a id="__codelineno-0-363" name="__codelineno-0-363"></a>
+<a id="__codelineno-0-364" name="__codelineno-0-364"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-365" name="__codelineno-0-365"></a><span class="sd">        dict</span>
+<a id="__codelineno-0-366" name="__codelineno-0-366"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-367" name="__codelineno-0-367"></a>
+<a id="__codelineno-0-368" name="__codelineno-0-368"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<a id="__codelineno-0-369" name="__codelineno-0-369"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+<a id="__codelineno-0-370" name="__codelineno-0-370"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+<a id="__codelineno-0-371" name="__codelineno-0-371"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+<a id="__codelineno-0-372" name="__codelineno-0-372"></a>
+<a id="__codelineno-0-373" name="__codelineno-0-373"></a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">):</span>
+<a id="__codelineno-0-374" name="__codelineno-0-374"></a>        <span class="kn">import</span> <span class="nn">emod_api.campaign</span> <span class="k">as</span> <span class="nn">campaign</span>
+<a id="__codelineno-0-375" name="__codelineno-0-375"></a>        <span class="n">campaign</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<a id="__codelineno-0-376" name="__codelineno-0-376"></a>        <span class="n">md</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">campaign</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-0-377" name="__codelineno-0-377"></a>
+<a id="__codelineno-0-378" name="__codelineno-0-378"></a>        <span class="c1"># add events</span>
+<a id="__codelineno-0-379" name="__codelineno-0-379"></a>        <span class="n">events</span> <span class="o">=</span> <span class="n">campaign</span><span class="o">.</span><span class="n">campaign_dict</span><span class="p">[</span><span class="s2">&quot;Events&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-380" name="__codelineno-0-380"></a>        <span class="n">simulation</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">campaign</span><span class="o">.</span><span class="n">add_events</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
+<a id="__codelineno-0-381" name="__codelineno-0-381"></a>
+<a id="__codelineno-0-382" name="__codelineno-0-382"></a>        <span class="c1"># update config for adhoc events</span>
+<a id="__codelineno-0-383" name="__codelineno-0-383"></a>        <span class="n">adhoc_events</span> <span class="o">=</span> <span class="n">campaign</span><span class="o">.</span><span class="n">get_adhocs</span><span class="p">()</span>
+<a id="__codelineno-0-384" name="__codelineno-0-384"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">adhoc_events</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-0-385" name="__codelineno-0-385"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found adhoc events in campaign. Needs some special processing behind the scenes.&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-386" name="__codelineno-0-386"></a>            <span class="k">if</span> <span class="s2">&quot;Custom_Individual_Events&quot;</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+<a id="__codelineno-0-387" name="__codelineno-0-387"></a>                <span class="n">ev_exist</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Custom_Individual_Events</span><span class="p">)</span>
+<a id="__codelineno-0-388" name="__codelineno-0-388"></a>                <span class="n">ev_addhoc</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">adhoc_events</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<a id="__codelineno-0-389" name="__codelineno-0-389"></a>                <span class="n">simulation</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Custom_Individual_Events</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ev_exist</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">ev_addhoc</span><span class="p">))</span>
+<a id="__codelineno-0-390" name="__codelineno-0-390"></a>            <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-391" name="__codelineno-0-391"></a>                <span class="n">simulation</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Custom_Individual_Events</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">adhoc_events</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+<a id="__codelineno-0-392" name="__codelineno-0-392"></a>
+<a id="__codelineno-0-393" name="__codelineno-0-393"></a>        <span class="c1"># Make sure we cast numpy types into normal system types</span>
+<a id="__codelineno-0-394" name="__codelineno-0-394"></a>        <span class="k">if</span> <span class="n">md</span><span class="p">:</span>
+<a id="__codelineno-0-395" name="__codelineno-0-395"></a>            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">md</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-396" name="__codelineno-0-396"></a>                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)):</span>
+<a id="__codelineno-0-397" name="__codelineno-0-397"></a>                    <span class="n">md</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<a id="__codelineno-0-398" name="__codelineno-0-398"></a>
+<a id="__codelineno-0-399" name="__codelineno-0-399"></a>        <span class="k">return</span> <span class="n">md</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="EMOD.functions.EMOD_functions.SwpFn" class="doc doc-heading">
+            <code>SwpFn</code>
+
+
+<a href="#EMOD.functions.EMOD_functions.SwpFn" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Sweeping utility: works for sweeping on report, demographics, migrations and climate, etc.
+Requirements:
+ - func is a method that takes task as first parameter
+ - func return a dict
+Returns:
+    dict</p>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-433">433</a></span>
+<span class="normal"><a href="#__codelineno-0-434">434</a></span>
+<span class="normal"><a href="#__codelineno-0-435">435</a></span>
+<span class="normal"><a href="#__codelineno-0-436">436</a></span>
+<span class="normal"><a href="#__codelineno-0-437">437</a></span>
+<span class="normal"><a href="#__codelineno-0-438">438</a></span>
+<span class="normal"><a href="#__codelineno-0-439">439</a></span>
+<span class="normal"><a href="#__codelineno-0-440">440</a></span>
+<span class="normal"><a href="#__codelineno-0-441">441</a></span>
+<span class="normal"><a href="#__codelineno-0-442">442</a></span>
+<span class="normal"><a href="#__codelineno-0-443">443</a></span>
+<span class="normal"><a href="#__codelineno-0-444">444</a></span>
+<span class="normal"><a href="#__codelineno-0-445">445</a></span>
+<span class="normal"><a href="#__codelineno-0-446">446</a></span>
+<span class="normal"><a href="#__codelineno-0-447">447</a></span>
+<span class="normal"><a href="#__codelineno-0-448">448</a></span>
+<span class="normal"><a href="#__codelineno-0-449">449</a></span>
+<span class="normal"><a href="#__codelineno-0-450">450</a></span>
+<span class="normal"><a href="#__codelineno-0-451">451</a></span>
+<span class="normal"><a href="#__codelineno-0-452">452</a></span>
+<span class="normal"><a href="#__codelineno-0-453">453</a></span>
+<span class="normal"><a href="#__codelineno-0-454">454</a></span>
+<span class="normal"><a href="#__codelineno-0-455">455</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-433" name="__codelineno-0-433"></a><span class="k">class</span> <span class="nc">SwpFn</span><span class="p">:</span>
+<a id="__codelineno-0-434" name="__codelineno-0-434"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-435" name="__codelineno-0-435"></a><span class="sd">    Sweeping utility: works for sweeping on report, demographics, migrations and climate, etc.</span>
+<a id="__codelineno-0-436" name="__codelineno-0-436"></a><span class="sd">    Requirements:</span>
+<a id="__codelineno-0-437" name="__codelineno-0-437"></a><span class="sd">     - func is a method that takes task as first parameter</span>
+<a id="__codelineno-0-438" name="__codelineno-0-438"></a><span class="sd">     - func return a dict</span>
+<a id="__codelineno-0-439" name="__codelineno-0-439"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-440" name="__codelineno-0-440"></a><span class="sd">        dict</span>
+<a id="__codelineno-0-441" name="__codelineno-0-441"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-442" name="__codelineno-0-442"></a>
+<a id="__codelineno-0-443" name="__codelineno-0-443"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<a id="__codelineno-0-444" name="__codelineno-0-444"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+<a id="__codelineno-0-445" name="__codelineno-0-445"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+<a id="__codelineno-0-446" name="__codelineno-0-446"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+<a id="__codelineno-0-447" name="__codelineno-0-447"></a>
+<a id="__codelineno-0-448" name="__codelineno-0-448"></a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">):</span>
+<a id="__codelineno-0-449" name="__codelineno-0-449"></a>        <span class="n">md</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">task</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-0-450" name="__codelineno-0-450"></a>        <span class="c1"># Make sure we cast numpy types into normal system types</span>
+<a id="__codelineno-0-451" name="__codelineno-0-451"></a>        <span class="k">if</span> <span class="n">md</span><span class="p">:</span>
+<a id="__codelineno-0-452" name="__codelineno-0-452"></a>            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">md</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-453" name="__codelineno-0-453"></a>                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)):</span>
+<a id="__codelineno-0-454" name="__codelineno-0-454"></a>                    <span class="n">md</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<a id="__codelineno-0-455" name="__codelineno-0-455"></a>        <span class="k">return</span> <span class="n">md</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.all_campaigns" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">all_campaigns</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">exp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intervention_list</span><span class="o">=</span><span class="p">[])</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.all_campaigns" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Defines and adds various interventions and campaigns to be included in the <code>campaigns.json</code> for EMOD.
+The function serves as a wrapper that conditionally applies different campaigns based on the values in
+the provided <code>row</code> (e.g., from a scenario DataFrame), experiment configuration (<code>exp</code>), and the
+<code>intervention_list</code> parameter.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>camp</code></b>
+                  (<code>object</code>)
+              –
+              <div class="doc-md-description">
+                <p>The campaign object to which the interventions will be applied.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>exp</code></b>
+                  (<code>object</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The experiment configuration containing simulation parameters (default is None).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>row</code></b>
+                  (<code>Series</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>A row of data containing scenario parameters for the campaign (default is None).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>intervention_list</code></b>
+                  (<code>list</code>, default:
+                      <code>[]</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>List of interventions to be included in the simulation (default is empty list).</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>dict</code></b>              –
+              <div class="doc-md-description">
+                <p>A dictionary containing the scenario ID (scen_id) associated with the campaign.
+  Example: {&lsquo;scen_id&rsquo;: 1}</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-79"> 79</a></span>
+<span class="normal"><a href="#__codelineno-0-80"> 80</a></span>
+<span class="normal"><a href="#__codelineno-0-81"> 81</a></span>
+<span class="normal"><a href="#__codelineno-0-82"> 82</a></span>
+<span class="normal"><a href="#__codelineno-0-83"> 83</a></span>
+<span class="normal"><a href="#__codelineno-0-84"> 84</a></span>
+<span class="normal"><a href="#__codelineno-0-85"> 85</a></span>
+<span class="normal"><a href="#__codelineno-0-86"> 86</a></span>
+<span class="normal"><a href="#__codelineno-0-87"> 87</a></span>
+<span class="normal"><a href="#__codelineno-0-88"> 88</a></span>
+<span class="normal"><a href="#__codelineno-0-89"> 89</a></span>
+<span class="normal"><a href="#__codelineno-0-90"> 90</a></span>
+<span class="normal"><a href="#__codelineno-0-91"> 91</a></span>
+<span class="normal"><a href="#__codelineno-0-92"> 92</a></span>
+<span class="normal"><a href="#__codelineno-0-93"> 93</a></span>
+<span class="normal"><a href="#__codelineno-0-94"> 94</a></span>
+<span class="normal"><a href="#__codelineno-0-95"> 95</a></span>
+<span class="normal"><a href="#__codelineno-0-96"> 96</a></span>
+<span class="normal"><a href="#__codelineno-0-97"> 97</a></span>
+<span class="normal"><a href="#__codelineno-0-98"> 98</a></span>
+<span class="normal"><a href="#__codelineno-0-99"> 99</a></span>
+<span class="normal"><a href="#__codelineno-0-100">100</a></span>
+<span class="normal"><a href="#__codelineno-0-101">101</a></span>
+<span class="normal"><a href="#__codelineno-0-102">102</a></span>
+<span class="normal"><a href="#__codelineno-0-103">103</a></span>
+<span class="normal"><a href="#__codelineno-0-104">104</a></span>
+<span class="normal"><a href="#__codelineno-0-105">105</a></span>
+<span class="normal"><a href="#__codelineno-0-106">106</a></span>
+<span class="normal"><a href="#__codelineno-0-107">107</a></span>
+<span class="normal"><a href="#__codelineno-0-108">108</a></span>
+<span class="normal"><a href="#__codelineno-0-109">109</a></span>
+<span class="normal"><a href="#__codelineno-0-110">110</a></span>
+<span class="normal"><a href="#__codelineno-0-111">111</a></span>
+<span class="normal"><a href="#__codelineno-0-112">112</a></span>
+<span class="normal"><a href="#__codelineno-0-113">113</a></span>
+<span class="normal"><a href="#__codelineno-0-114">114</a></span>
+<span class="normal"><a href="#__codelineno-0-115">115</a></span>
+<span class="normal"><a href="#__codelineno-0-116">116</a></span>
+<span class="normal"><a href="#__codelineno-0-117">117</a></span>
+<span class="normal"><a href="#__codelineno-0-118">118</a></span>
+<span class="normal"><a href="#__codelineno-0-119">119</a></span>
+<span class="normal"><a href="#__codelineno-0-120">120</a></span>
+<span class="normal"><a href="#__codelineno-0-121">121</a></span>
+<span class="normal"><a href="#__codelineno-0-122">122</a></span>
+<span class="normal"><a href="#__codelineno-0-123">123</a></span>
+<span class="normal"><a href="#__codelineno-0-124">124</a></span>
+<span class="normal"><a href="#__codelineno-0-125">125</a></span>
+<span class="normal"><a href="#__codelineno-0-126">126</a></span>
+<span class="normal"><a href="#__codelineno-0-127">127</a></span>
+<span class="normal"><a href="#__codelineno-0-128">128</a></span>
+<span class="normal"><a href="#__codelineno-0-129">129</a></span>
+<span class="normal"><a href="#__codelineno-0-130">130</a></span>
+<span class="normal"><a href="#__codelineno-0-131">131</a></span>
+<span class="normal"><a href="#__codelineno-0-132">132</a></span>
+<span class="normal"><a href="#__codelineno-0-133">133</a></span>
+<span class="normal"><a href="#__codelineno-0-134">134</a></span>
+<span class="normal"><a href="#__codelineno-0-135">135</a></span>
+<span class="normal"><a href="#__codelineno-0-136">136</a></span>
+<span class="normal"><a href="#__codelineno-0-137">137</a></span>
+<span class="normal"><a href="#__codelineno-0-138">138</a></span>
+<span class="normal"><a href="#__codelineno-0-139">139</a></span>
+<span class="normal"><a href="#__codelineno-0-140">140</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="k">def</span> <span class="nf">all_campaigns</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">exp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intervention_list</span><span class="o">=</span><span class="p">[]):</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="sd">    Defines and adds various interventions and campaigns to be included in the `campaigns.json` for EMOD.</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="sd">    The function serves as a wrapper that conditionally applies different campaigns based on the values in</span>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">    the provided `row` (e.g., from a scenario DataFrame), experiment configuration (`exp`), and the</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="sd">    `intervention_list` parameter.</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="sd">        camp (object): The campaign object to which the interventions will be applied.</span>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="sd">        exp (object, optional): The experiment configuration containing simulation parameters (default is None).</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="sd">        row (pandas.Series, optional): A row of data containing scenario parameters for the campaign (default is None).</span>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a><span class="sd">        intervention_list (list, optional): List of interventions to be included in the simulation (default is empty list).</span>
+<a id="__codelineno-0-91" name="__codelineno-0-91"></a>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="sd">        dict: A dictionary containing the scenario ID (scen_id) associated with the campaign.</span>
+<a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="sd">              Example: {&#39;scen_id&#39;: 1}</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a>
+<a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-97" name="__codelineno-0-97"></a>
+<a id="__codelineno-0-98" name="__codelineno-0-98"></a>    <span class="c1">## If forced EIR, treated as campaign in EMOD</span>
+<a id="__codelineno-0-99" name="__codelineno-0-99"></a>    <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;forced&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-100" name="__codelineno-0-100"></a>        <span class="n">set_inputEIR_seasonality</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">transmission_intensity_EMOD</span><span class="p">),</span> <span class="n">row</span><span class="o">.</span><span class="n">seasonality</span><span class="p">)</span>
+<a id="__codelineno-0-101" name="__codelineno-0-101"></a>
+<a id="__codelineno-0-102" name="__codelineno-0-102"></a>    <span class="c1"># Case management</span>
+<a id="__codelineno-0-103" name="__codelineno-0-103"></a>    <span class="n">treatment_camp_simple</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">cm_start</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">cm_start</span><span class="p">,</span> <span class="n">cm_clinical</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">cm_clinical</span><span class="p">,</span> <span class="n">cm_severe</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">cm_severe</span><span class="p">)</span>
+<a id="__codelineno-0-104" name="__codelineno-0-104"></a>
+<a id="__codelineno-0-105" name="__codelineno-0-105"></a>    <span class="c1">## Carrying capacity step change</span>
+<a id="__codelineno-0-106" name="__codelineno-0-106"></a>    <span class="c1"># Make sure to include the ccstep change only at pickup simulations.</span>
+<a id="__codelineno-0-107" name="__codelineno-0-107"></a>    <span class="k">if</span> <span class="s1">&#39;ccstep&#39;</span> <span class="ow">in</span> <span class="n">intervention_list</span> <span class="ow">and</span> <span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;pickup&#39;</span> <span class="ow">or</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>  
+<a id="__codelineno-0-108" name="__codelineno-0-108"></a>        <span class="n">camp</span> <span class="o">=</span> <span class="n">carrying_capacity</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+<a id="__codelineno-0-109" name="__codelineno-0-109"></a>
+<a id="__codelineno-0-110" name="__codelineno-0-110"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_importation_rate</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-0-111" name="__codelineno-0-111"></a>        <span class="n">ncases_per_year_per1000pop</span> <span class="o">=</span> <span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_importation_rate</span> <span class="o">*</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>
+<a id="__codelineno-0-112" name="__codelineno-0-112"></a>        <span class="k">if</span> <span class="n">ncases_per_year_per1000pop</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+<a id="__codelineno-0-113" name="__codelineno-0-113"></a>            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: ncases_per_year_per1000pop &lt; 1. Setting to minimum of 1.&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-114" name="__codelineno-0-114"></a>            <span class="n">ncases_per_year_per1000pop</span> <span class="o">=</span> <span class="mi">1</span>
+<a id="__codelineno-0-115" name="__codelineno-0-115"></a>
+<a id="__codelineno-0-116" name="__codelineno-0-116"></a>        <span class="n">add_outbreak_individual</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">target_num_individuals</span><span class="o">=</span><span class="n">ncases_per_year_per1000pop</span><span class="p">,</span>
+<a id="__codelineno-0-117" name="__codelineno-0-117"></a>                                <span class="n">repetitions</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">timesteps_between_repetitions</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
+<a id="__codelineno-0-118" name="__codelineno-0-118"></a>        <span class="n">add_outbreak_individual</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="mi">146</span><span class="p">,</span> <span class="n">target_num_individuals</span><span class="o">=</span><span class="n">ncases_per_year_per1000pop</span><span class="p">,</span>
+<a id="__codelineno-0-119" name="__codelineno-0-119"></a>                                <span class="n">repetitions</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">timesteps_between_repetitions</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
+<a id="__codelineno-0-120" name="__codelineno-0-120"></a>        <span class="n">add_outbreak_individual</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="mi">219</span><span class="p">,</span> <span class="n">target_num_individuals</span><span class="o">=</span><span class="n">ncases_per_year_per1000pop</span><span class="p">,</span>
+<a id="__codelineno-0-121" name="__codelineno-0-121"></a>                                <span class="n">repetitions</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">timesteps_between_repetitions</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
+<a id="__codelineno-0-122" name="__codelineno-0-122"></a>        <span class="n">add_outbreak_individual</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="mi">292</span><span class="p">,</span> <span class="n">target_num_individuals</span><span class="o">=</span><span class="n">ncases_per_year_per1000pop</span><span class="p">,</span>
+<a id="__codelineno-0-123" name="__codelineno-0-123"></a>                                <span class="n">repetitions</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">timesteps_between_repetitions</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
+<a id="__codelineno-0-124" name="__codelineno-0-124"></a>        <span class="n">add_outbreak_individual</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="mi">365</span><span class="p">,</span> <span class="n">target_num_individuals</span><span class="o">=</span><span class="n">ncases_per_year_per1000pop</span><span class="p">,</span>
+<a id="__codelineno-0-125" name="__codelineno-0-125"></a>                                <span class="n">repetitions</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">timesteps_between_repetitions</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
+<a id="__codelineno-0-126" name="__codelineno-0-126"></a>
+<a id="__codelineno-0-127" name="__codelineno-0-127"></a>    <span class="c1"># SMC currently not supported</span>
+<a id="__codelineno-0-128" name="__codelineno-0-128"></a>    <span class="c1"># SMC using PKPD model</span>
+<a id="__codelineno-0-129" name="__codelineno-0-129"></a>    <span class="c1">#if &#39;smc&#39; in intervention_list and exp.emod_step == &#39;pickup&#39;:</span>
+<a id="__codelineno-0-130" name="__codelineno-0-130"></a>    <span class="c1">#    print(row.smc_coverage)</span>
+<a id="__codelineno-0-131" name="__codelineno-0-131"></a>    <span class="c1">#    if row.transmission_intensity_EMOD == 4:</span>
+<a id="__codelineno-0-132" name="__codelineno-0-132"></a>    <span class="c1">#        start_array = [366, 731, 1096, 1461, 1826]</span>
+<a id="__codelineno-0-133" name="__codelineno-0-133"></a>    <span class="c1">#    elif row.transmission_intensity_EMOD == 8:</span>
+<a id="__codelineno-0-134" name="__codelineno-0-134"></a>    <span class="c1">#        start_array = [366, 731, 1096, 1461, 1826]</span>
+<a id="__codelineno-0-135" name="__codelineno-0-135"></a>    <span class="c1">#    else:</span>
+<a id="__codelineno-0-136" name="__codelineno-0-136"></a>    <span class="c1">#        start_array = [335, 700, 1065, 1430, 1795]</span>
+<a id="__codelineno-0-137" name="__codelineno-0-137"></a>    <span class="c1">#        # add_drug_campaign(camp, campaign_type = &quot;SMC&quot;, start_days = [396,761,1126,1491,1856],</span>
+<a id="__codelineno-0-138" name="__codelineno-0-138"></a>    <span class="c1">#    smc_campaign(camp, row, start_array)</span>
+<a id="__codelineno-0-139" name="__codelineno-0-139"></a>
+<a id="__codelineno-0-140" name="__codelineno-0-140"></a>    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;scen_id&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">scen_id</span><span class="p">)}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.build_burnin_df" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">build_burnin_df</span><span class="p">(</span><span class="n">exp_id</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">serialize_days</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.build_burnin_df" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Builds a DataFrame containing information about serialized files and simulation configurations
+for the burn-in process of the experiment.
+The serialized population filenames are in the format: <code>state-{step}-{core}.dtk</code>, where <code>{step}</code> refers to
+the serialization timestep and <code>{core}</code> refers to the core number.
+The <code>Serialized_Population_Filenames</code> field varies based on the number of cores used. For example,
+if <code>Num_Cores = 2</code>, the filenames will look like this: <code>state-00050-000.dtk</code> and <code>state-00050-001.dtk</code>.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp_id</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The unique experiment identifier for which the burn-in DataFrame is being created.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>platform</code></b>
+                  (<code>object</code>)
+              –
+              <div class="doc-md-description">
+                <p>The platform object that represents the high-performance computing environment.
+               Used to retrieve core count and other platform-related information.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>serialize_days</code></b>
+                  (<code>int</code>)
+              –
+              <div class="doc-md-description">
+                <p>The number of days over which serialization occurs. This is used to determine
+                   the length of time steps for the serialized population.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>pd.DataFrame: A DataFrame containing the following columns:
+- <code>Run_Number</code>: The simulation run number.
+- <code>Serialization_Time_Steps</code>: The number of time steps for serialization.
+- <code>task_type</code>: Type of the task being run (e.g., simulation).
+- <code>sweep_tag</code>: The tag associated with the current simulation sweep.
+- <code>simid</code>: The unique simulation ID.
+- <code>serialized_file_path</code>: Path to the serialized files for the simulation.
+- <code>Num_Cores</code>: The number of cores allocated for the simulation.
+- <code>Serialized_Population_Filenames</code>: The filenames of the serialized population files.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span>
+<span class="normal"><a href="#__codelineno-0-40">40</a></span>
+<span class="normal"><a href="#__codelineno-0-41">41</a></span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#__codelineno-0-44">44</a></span>
+<span class="normal"><a href="#__codelineno-0-45">45</a></span>
+<span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span>
+<span class="normal"><a href="#__codelineno-0-48">48</a></span>
+<span class="normal"><a href="#__codelineno-0-49">49</a></span>
+<span class="normal"><a href="#__codelineno-0-50">50</a></span>
+<span class="normal"><a href="#__codelineno-0-51">51</a></span>
+<span class="normal"><a href="#__codelineno-0-52">52</a></span>
+<span class="normal"><a href="#__codelineno-0-53">53</a></span>
+<span class="normal"><a href="#__codelineno-0-54">54</a></span>
+<span class="normal"><a href="#__codelineno-0-55">55</a></span>
+<span class="normal"><a href="#__codelineno-0-56">56</a></span>
+<span class="normal"><a href="#__codelineno-0-57">57</a></span>
+<span class="normal"><a href="#__codelineno-0-58">58</a></span>
+<span class="normal"><a href="#__codelineno-0-59">59</a></span>
+<span class="normal"><a href="#__codelineno-0-60">60</a></span>
+<span class="normal"><a href="#__codelineno-0-61">61</a></span>
+<span class="normal"><a href="#__codelineno-0-62">62</a></span>
+<span class="normal"><a href="#__codelineno-0-63">63</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="k">def</span> <span class="nf">build_burnin_df</span><span class="p">(</span><span class="n">exp_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">serialize_days</span><span class="p">):</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="sd">    Builds a DataFrame containing information about serialized files and simulation configurations</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">    for the burn-in process of the experiment.</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="sd">    The serialized population filenames are in the format: `state-{step}-{core}.dtk`, where `{step}` refers to</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="sd">    the serialization timestep and `{core}` refers to the core number.</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">    The `Serialized_Population_Filenames` field varies based on the number of cores used. For example,</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">    if `Num_Cores = 2`, the filenames will look like this: `state-00050-000.dtk` and `state-00050-001.dtk`.</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="sd">        exp_id (str): The unique experiment identifier for which the burn-in DataFrame is being created.</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">        platform (object): The platform object that represents the high-performance computing environment.</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">                           Used to retrieve core count and other platform-related information.</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">        serialize_days (int): The number of days over which serialization occurs. This is used to determine</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">                               the length of time steps for the serialized population.</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">        pd.DataFrame: A DataFrame containing the following columns:</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">            - `Run_Number`: The simulation run number.</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">            - `Serialization_Time_Steps`: The number of time steps for serialization.</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">            - `task_type`: Type of the task being run (e.g., simulation).</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">            - `sweep_tag`: The tag associated with the current simulation sweep.</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="sd">            - `simid`: The unique simulation ID.</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="sd">            - `serialized_file_path`: Path to the serialized files for the simulation.</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="sd">            - `Num_Cores`: The number of cores allocated for the simulation.</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">            - `Serialized_Population_Filenames`: The filenames of the serialized population files.</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">create_sim_directory_map</span><span class="p">(</span><span class="n">exp_id</span><span class="p">,</span> <span class="n">platform</span><span class="p">)</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="c1"># add Num_Cores to df</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a>    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Num_Cores&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;simid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_get_core_counts</span><span class="p">,</span> <span class="n">platform</span><span class="o">=</span><span class="n">platform</span><span class="p">)</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a>    <span class="c1"># try:</span>
+<a id="__codelineno-0-55" name="__codelineno-0-55"></a>    <span class="n">burnin_length_in_days</span> <span class="o">=</span> <span class="n">serialize_days</span>  <span class="c1"># int(df[&quot;Serialization_Time_Steps&quot;].iloc[0].strip(&#39;[]&#39;))</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56"></a>    <span class="c1"># except AttributeError:</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57"></a>    <span class="c1"># different versions of pandas save this as either a string or a list</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a>    <span class="c1"># burnin_length_in_days = df[&quot;Serialization_Time_Steps&quot;].iloc[0][-1]</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a>    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Serialized_Population_Filenames&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Num_Cores&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_get_serialized_filenames</span><span class="p">,</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61"></a>                                                                  <span class="n">timesteps</span><span class="o">=</span><span class="n">burnin_length_in_days</span><span class="p">)</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a>    <span class="k">return</span> <span class="n">df</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.climate_setup" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">climate_setup</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">seasonality</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.climate_setup" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The function sets up the climate input filenames for EMOD.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>task</code></b>
+                  (<code>object</code>)
+              –
+              <div class="doc-md-description">
+                <p>The task object that holds the configuration and parameters for the simulation.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>seasonality</code></b>
+                  (<code>str</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>The seasonality type (e.g., &lsquo;perennial&rsquo; or &lsquo;seasonal&rsquo;) that determines the climate files.
+                          If not provided, defaults to None.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>None</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-192">192</a></span>
+<span class="normal"><a href="#__codelineno-0-193">193</a></span>
+<span class="normal"><a href="#__codelineno-0-194">194</a></span>
+<span class="normal"><a href="#__codelineno-0-195">195</a></span>
+<span class="normal"><a href="#__codelineno-0-196">196</a></span>
+<span class="normal"><a href="#__codelineno-0-197">197</a></span>
+<span class="normal"><a href="#__codelineno-0-198">198</a></span>
+<span class="normal"><a href="#__codelineno-0-199">199</a></span>
+<span class="normal"><a href="#__codelineno-0-200">200</a></span>
+<span class="normal"><a href="#__codelineno-0-201">201</a></span>
+<span class="normal"><a href="#__codelineno-0-202">202</a></span>
+<span class="normal"><a href="#__codelineno-0-203">203</a></span>
+<span class="normal"><a href="#__codelineno-0-204">204</a></span>
+<span class="normal"><a href="#__codelineno-0-205">205</a></span>
+<span class="normal"><a href="#__codelineno-0-206">206</a></span>
+<span class="normal"><a href="#__codelineno-0-207">207</a></span>
+<span class="normal"><a href="#__codelineno-0-208">208</a></span>
+<span class="normal"><a href="#__codelineno-0-209">209</a></span>
+<span class="normal"><a href="#__codelineno-0-210">210</a></span>
+<span class="normal"><a href="#__codelineno-0-211">211</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-192" name="__codelineno-0-192"></a><span class="k">def</span> <span class="nf">climate_setup</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">seasonality</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<a id="__codelineno-0-193" name="__codelineno-0-193"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-194" name="__codelineno-0-194"></a><span class="sd">    The function sets up the climate input filenames for EMOD.</span>
+<a id="__codelineno-0-195" name="__codelineno-0-195"></a>
+<a id="__codelineno-0-196" name="__codelineno-0-196"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-197" name="__codelineno-0-197"></a><span class="sd">        task (object): The task object that holds the configuration and parameters for the simulation.</span>
+<a id="__codelineno-0-198" name="__codelineno-0-198"></a><span class="sd">        seasonality (str, optional): The seasonality type (e.g., &#39;perennial&#39; or &#39;seasonal&#39;) that determines the climate files.</span>
+<a id="__codelineno-0-199" name="__codelineno-0-199"></a><span class="sd">                                      If not provided, defaults to None.</span>
+<a id="__codelineno-0-200" name="__codelineno-0-200"></a>
+<a id="__codelineno-0-201" name="__codelineno-0-201"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-202" name="__codelineno-0-202"></a><span class="sd">        None</span>
+<a id="__codelineno-0-203" name="__codelineno-0-203"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-204" name="__codelineno-0-204"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Climate_Model</span> <span class="o">=</span> <span class="s2">&quot;CLIMATE_BY_DATA&quot;</span>
+<a id="__codelineno-0-205" name="__codelineno-0-205"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Air_Temperature_Filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;climate&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-206" name="__codelineno-0-206"></a>                                                                   <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">seasonality</span><span class="si">}</span><span class="s1">_air_temperature_daily.bin&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-207" name="__codelineno-0-207"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Land_Temperature_Filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;climate&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-208" name="__codelineno-0-208"></a>                                                                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">seasonality</span><span class="si">}</span><span class="s1">_air_temperature_daily.bin&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-209" name="__codelineno-0-209"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Rainfall_Filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;climate&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">seasonality</span><span class="si">}</span><span class="s1">_rainfall_daily.bin&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-210" name="__codelineno-0-210"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Relative_Humidity_Filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;climate&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-211" name="__codelineno-0-211"></a>                                                                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">seasonality</span><span class="si">}</span><span class="s1">_relative_humidity_daily.bin&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.create_sim_directory_map" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_sim_directory_map</span><span class="p">(</span><span class="n">exp_id</span><span class="p">,</span> <span class="n">platform</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.create_sim_directory_map" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <div class="codehilite"><pre><span></span><code>Return a dataframe which contains simulation&#39;s working_path and tags.
+</code></pre></div>
+
+<p>Args:
+    exp_id: experiment id
+    platform: idmtools platform
+Returns:
+    dataframe</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-262">262</a></span>
+<span class="normal"><a href="#__codelineno-0-263">263</a></span>
+<span class="normal"><a href="#__codelineno-0-264">264</a></span>
+<span class="normal"><a href="#__codelineno-0-265">265</a></span>
+<span class="normal"><a href="#__codelineno-0-266">266</a></span>
+<span class="normal"><a href="#__codelineno-0-267">267</a></span>
+<span class="normal"><a href="#__codelineno-0-268">268</a></span>
+<span class="normal"><a href="#__codelineno-0-269">269</a></span>
+<span class="normal"><a href="#__codelineno-0-270">270</a></span>
+<span class="normal"><a href="#__codelineno-0-271">271</a></span>
+<span class="normal"><a href="#__codelineno-0-272">272</a></span>
+<span class="normal"><a href="#__codelineno-0-273">273</a></span>
+<span class="normal"><a href="#__codelineno-0-274">274</a></span>
+<span class="normal"><a href="#__codelineno-0-275">275</a></span>
+<span class="normal"><a href="#__codelineno-0-276">276</a></span>
+<span class="normal"><a href="#__codelineno-0-277">277</a></span>
+<span class="normal"><a href="#__codelineno-0-278">278</a></span>
+<span class="normal"><a href="#__codelineno-0-279">279</a></span>
+<span class="normal"><a href="#__codelineno-0-280">280</a></span>
+<span class="normal"><a href="#__codelineno-0-281">281</a></span>
+<span class="normal"><a href="#__codelineno-0-282">282</a></span>
+<span class="normal"><a href="#__codelineno-0-283">283</a></span>
+<span class="normal"><a href="#__codelineno-0-284">284</a></span>
+<span class="normal"><a href="#__codelineno-0-285">285</a></span>
+<span class="normal"><a href="#__codelineno-0-286">286</a></span>
+<span class="normal"><a href="#__codelineno-0-287">287</a></span>
+<span class="normal"><a href="#__codelineno-0-288">288</a></span>
+<span class="normal"><a href="#__codelineno-0-289">289</a></span>
+<span class="normal"><a href="#__codelineno-0-290">290</a></span>
+<span class="normal"><a href="#__codelineno-0-291">291</a></span>
+<span class="normal"><a href="#__codelineno-0-292">292</a></span>
+<span class="normal"><a href="#__codelineno-0-293">293</a></span>
+<span class="normal"><a href="#__codelineno-0-294">294</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-262" name="__codelineno-0-262"></a><span class="k">def</span> <span class="nf">create_sim_directory_map</span><span class="p">(</span><span class="n">exp_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">platform</span><span class="p">:</span> <span class="s1">&#39;IPlatform&#39;</span><span class="p">):</span>
+<a id="__codelineno-0-263" name="__codelineno-0-263"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-264" name="__codelineno-0-264"></a><span class="sd">        Return a dataframe which contains simulation&#39;s working_path and tags.</span>
+<a id="__codelineno-0-265" name="__codelineno-0-265"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-266" name="__codelineno-0-266"></a><span class="sd">        exp_id: experiment id</span>
+<a id="__codelineno-0-267" name="__codelineno-0-267"></a><span class="sd">        platform: idmtools platform</span>
+<a id="__codelineno-0-268" name="__codelineno-0-268"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-269" name="__codelineno-0-269"></a><span class="sd">        dataframe</span>
+<a id="__codelineno-0-270" name="__codelineno-0-270"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-271" name="__codelineno-0-271"></a>    <span class="c1"># Get idmtools Experiment</span>
+<a id="__codelineno-0-272" name="__codelineno-0-272"></a>    <span class="n">exp</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">get_item</span><span class="p">(</span><span class="n">exp_id</span><span class="p">,</span> <span class="n">ItemType</span><span class="o">.</span><span class="n">EXPERIMENT</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<a id="__codelineno-0-273" name="__codelineno-0-273"></a>
+<a id="__codelineno-0-274" name="__codelineno-0-274"></a>    <span class="n">tags_list</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-275" name="__codelineno-0-275"></a>    <span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">simulations</span><span class="p">:</span>
+<a id="__codelineno-0-276" name="__codelineno-0-276"></a>        <span class="n">tags</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
+<a id="__codelineno-0-277" name="__codelineno-0-277"></a>        <span class="n">tags</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">simid</span><span class="o">=</span><span class="n">sim</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+<a id="__codelineno-0-278" name="__codelineno-0-278"></a>        <span class="n">tags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+<a id="__codelineno-0-279" name="__codelineno-0-279"></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">tags_list</span><span class="p">)</span>
+<a id="__codelineno-0-280" name="__codelineno-0-280"></a>
+<a id="__codelineno-0-281" name="__codelineno-0-281"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">simulations</span><span class="p">):</span>
+<a id="__codelineno-0-282" name="__codelineno-0-282"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Warning: not all jobs in </span><span class="si">{</span><span class="n">exp_id</span><span class="si">}</span><span class="s1"> succeeded&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="p">)</span>
+<a id="__codelineno-0-283" name="__codelineno-0-283"></a>        <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">simulations</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="s1">&#39;unsucceeded&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-284" name="__codelineno-0-284"></a>
+<a id="__codelineno-0-285" name="__codelineno-0-285"></a>    <span class="n">simulations</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">simulations</span>
+<a id="__codelineno-0-286" name="__codelineno-0-286"></a>    <span class="n">dir_list</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-287" name="__codelineno-0-287"></a>    <span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
+<a id="__codelineno-0-288" name="__codelineno-0-288"></a>        <span class="n">dir_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;simid&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="s2">&quot;serialized_file_path&quot;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">_op_client</span><span class="o">.</span><span class="n">get_directory</span><span class="p">(</span><span class="n">sim</span><span class="p">)}</span>
+<a id="__codelineno-0-289" name="__codelineno-0-289"></a>        <span class="n">dir_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dir_dict</span><span class="p">)</span>
+<a id="__codelineno-0-290" name="__codelineno-0-290"></a>
+<a id="__codelineno-0-291" name="__codelineno-0-291"></a>    <span class="n">df_dir</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dir_list</span><span class="p">)</span>
+<a id="__codelineno-0-292" name="__codelineno-0-292"></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">df_dir</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;simid&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-293" name="__codelineno-0-293"></a>
+<a id="__codelineno-0-294" name="__codelineno-0-294"></a>    <span class="k">return</span> <span class="n">df</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.drug_setup" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">drug_setup</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.drug_setup" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Functions to alter drug parameters specific to MultiMalModPy drug campaigns.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-142">142</a></span>
+<span class="normal"><a href="#__codelineno-0-143">143</a></span>
+<span class="normal"><a href="#__codelineno-0-144">144</a></span>
+<span class="normal"><a href="#__codelineno-0-145">145</a></span>
+<span class="normal"><a href="#__codelineno-0-146">146</a></span>
+<span class="normal"><a href="#__codelineno-0-147">147</a></span>
+<span class="normal"><a href="#__codelineno-0-148">148</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-142" name="__codelineno-0-142"></a><span class="k">def</span> <span class="nf">drug_setup</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<a id="__codelineno-0-143" name="__codelineno-0-143"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-144" name="__codelineno-0-144"></a><span class="sd">    Functions to alter drug parameters specific to MultiMalModPy drug campaigns.</span>
+<a id="__codelineno-0-145" name="__codelineno-0-145"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-146" name="__codelineno-0-146"></a>    <span class="c1">#SMC currently not supported</span>
+<a id="__codelineno-0-147" name="__codelineno-0-147"></a>    <span class="k">if</span> <span class="s1">&#39;smc&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
+<a id="__codelineno-0-148" name="__codelineno-0-148"></a>        <span class="k">return</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.get_burnin_exp_name" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_burnin_exp_name</span><span class="p">(</span><span class="n">serialized_df</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.get_burnin_exp_name" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Retrieve the name of the EMOD burnin experiment from the metadata.json file
+Args:
+    serialized_df (DataFrame): A pandas DataFrame containing serialized data information.
+Returns:
+    str: The name of the burnin experiment as defined in the serialization df from emod_serialized_id.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-297">297</a></span>
+<span class="normal"><a href="#__codelineno-0-298">298</a></span>
+<span class="normal"><a href="#__codelineno-0-299">299</a></span>
+<span class="normal"><a href="#__codelineno-0-300">300</a></span>
+<span class="normal"><a href="#__codelineno-0-301">301</a></span>
+<span class="normal"><a href="#__codelineno-0-302">302</a></span>
+<span class="normal"><a href="#__codelineno-0-303">303</a></span>
+<span class="normal"><a href="#__codelineno-0-304">304</a></span>
+<span class="normal"><a href="#__codelineno-0-305">305</a></span>
+<span class="normal"><a href="#__codelineno-0-306">306</a></span>
+<span class="normal"><a href="#__codelineno-0-307">307</a></span>
+<span class="normal"><a href="#__codelineno-0-308">308</a></span>
+<span class="normal"><a href="#__codelineno-0-309">309</a></span>
+<span class="normal"><a href="#__codelineno-0-310">310</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-297" name="__codelineno-0-297"></a><span class="k">def</span> <span class="nf">get_burnin_exp_name</span><span class="p">(</span><span class="n">serialized_df</span><span class="p">):</span>
+<a id="__codelineno-0-298" name="__codelineno-0-298"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-299" name="__codelineno-0-299"></a><span class="sd">    Retrieve the name of the EMOD burnin experiment from the metadata.json file</span>
+<a id="__codelineno-0-300" name="__codelineno-0-300"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-301" name="__codelineno-0-301"></a><span class="sd">        serialized_df (DataFrame): A pandas DataFrame containing serialized data information.</span>
+<a id="__codelineno-0-302" name="__codelineno-0-302"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-303" name="__codelineno-0-303"></a><span class="sd">        str: The name of the burnin experiment as defined in the serialization df from emod_serialized_id.</span>
+<a id="__codelineno-0-304" name="__codelineno-0-304"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-305" name="__codelineno-0-305"></a>
+<a id="__codelineno-0-306" name="__codelineno-0-306"></a>    <span class="kn">import</span> <span class="nn">json</span>
+<a id="__codelineno-0-307" name="__codelineno-0-307"></a>    <span class="n">metadata_path</span> <span class="o">=</span> <span class="n">serialized_df</span><span class="o">.</span><span class="n">serialized_file_path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;metadata.json&#39;</span>
+<a id="__codelineno-0-308" name="__codelineno-0-308"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">metadata_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+<a id="__codelineno-0-309" name="__codelineno-0-309"></a>        <span class="n">metadata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+<a id="__codelineno-0-310" name="__codelineno-0-310"></a>    <span class="k">return</span> <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.get_scendf_burnin" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_scendf_burnin</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">emod_serialized_id</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">burnin</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.get_scendf_burnin" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Load the scenarios.csv file associated with the EMOD burnin experiment.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>exp</code></b>
+                  (<code>Experiment</code>)
+              –
+              <div class="doc-md-description">
+                <p>An experiment object containing information about the experiment.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>emod_serialized_id</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>The serialized ID for the EMOD input data.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>manifest</code></b>
+                  (<code>Manifest</code>)
+              –
+              <div class="doc-md-description">
+                <p>A manifest object containing job directory information.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>platform</code></b>
+                  (<code>Platform</code>)
+              –
+              <div class="doc-md-description">
+                <p>A platform object specifying the execution platform.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>burnin</code></b>
+                  (<code>int</code>)
+              –
+              <div class="doc-md-description">
+                <p>The duration of the burnin period in days.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>        <p>Returns:
+    pandas.DataFrame: A DataFrame containing scenarios from the burn-in experiment.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-313">313</a></span>
+<span class="normal"><a href="#__codelineno-0-314">314</a></span>
+<span class="normal"><a href="#__codelineno-0-315">315</a></span>
+<span class="normal"><a href="#__codelineno-0-316">316</a></span>
+<span class="normal"><a href="#__codelineno-0-317">317</a></span>
+<span class="normal"><a href="#__codelineno-0-318">318</a></span>
+<span class="normal"><a href="#__codelineno-0-319">319</a></span>
+<span class="normal"><a href="#__codelineno-0-320">320</a></span>
+<span class="normal"><a href="#__codelineno-0-321">321</a></span>
+<span class="normal"><a href="#__codelineno-0-322">322</a></span>
+<span class="normal"><a href="#__codelineno-0-323">323</a></span>
+<span class="normal"><a href="#__codelineno-0-324">324</a></span>
+<span class="normal"><a href="#__codelineno-0-325">325</a></span>
+<span class="normal"><a href="#__codelineno-0-326">326</a></span>
+<span class="normal"><a href="#__codelineno-0-327">327</a></span>
+<span class="normal"><a href="#__codelineno-0-328">328</a></span>
+<span class="normal"><a href="#__codelineno-0-329">329</a></span>
+<span class="normal"><a href="#__codelineno-0-330">330</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-313" name="__codelineno-0-313"></a><span class="k">def</span> <span class="nf">get_scendf_burnin</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">emod_serialized_id</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">burnin</span><span class="p">):</span>
+<a id="__codelineno-0-314" name="__codelineno-0-314"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-315" name="__codelineno-0-315"></a><span class="sd">    Load the scenarios.csv file associated with the EMOD burnin experiment.</span>
+<a id="__codelineno-0-316" name="__codelineno-0-316"></a>
+<a id="__codelineno-0-317" name="__codelineno-0-317"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-318" name="__codelineno-0-318"></a><span class="sd">        exp (Experiment): An experiment object containing information about the experiment.</span>
+<a id="__codelineno-0-319" name="__codelineno-0-319"></a><span class="sd">        emod_serialized_id (str): The serialized ID for the EMOD input data.</span>
+<a id="__codelineno-0-320" name="__codelineno-0-320"></a><span class="sd">        manifest (Manifest): A manifest object containing job directory information.</span>
+<a id="__codelineno-0-321" name="__codelineno-0-321"></a><span class="sd">        platform (Platform): A platform object specifying the execution platform.</span>
+<a id="__codelineno-0-322" name="__codelineno-0-322"></a><span class="sd">        burnin (int): The duration of the burnin period in days.</span>
+<a id="__codelineno-0-323" name="__codelineno-0-323"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-324" name="__codelineno-0-324"></a><span class="sd">        pandas.DataFrame: A DataFrame containing scenarios from the burn-in experiment.</span>
+<a id="__codelineno-0-325" name="__codelineno-0-325"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-326" name="__codelineno-0-326"></a>    <span class="n">serialized_df</span> <span class="o">=</span> <span class="n">build_burnin_df</span><span class="p">(</span><span class="n">emod_serialized_id</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">burnin</span> <span class="o">*</span> <span class="mi">365</span><span class="p">)</span>
+<a id="__codelineno-0-327" name="__codelineno-0-327"></a>    <span class="n">exp_name_burnin</span> <span class="o">=</span> <span class="n">get_burnin_exp_name</span><span class="p">(</span><span class="n">serialized_df</span><span class="p">)</span>
+<a id="__codelineno-0-328" name="__codelineno-0-328"></a>    <span class="n">scen_df_burnin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">suite_directory</span><span class="p">,</span> <span class="n">exp_name_burnin</span><span class="p">)</span>
+<a id="__codelineno-0-329" name="__codelineno-0-329"></a>    <span class="n">scen_df_burnin</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scen_df_burnin_path</span><span class="p">,</span> <span class="s1">&#39;scenarios.csv&#39;</span><span class="p">))</span>
+<a id="__codelineno-0-330" name="__codelineno-0-330"></a>    <span class="k">return</span> <span class="n">scen_df_burnin</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.get_workdir_from_simulations" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_workdir_from_simulations</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span> <span class="n">comps_simulations</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.get_workdir_from_simulations" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get COMPS filepath
+Args:
+    platform: idmtools Platform
+    comps_simulations: COMPS Simulations
+Returns: dictionary with simid as key and filepath as value</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-242">242</a></span>
+<span class="normal"><a href="#__codelineno-0-243">243</a></span>
+<span class="normal"><a href="#__codelineno-0-244">244</a></span>
+<span class="normal"><a href="#__codelineno-0-245">245</a></span>
+<span class="normal"><a href="#__codelineno-0-246">246</a></span>
+<span class="normal"><a href="#__codelineno-0-247">247</a></span>
+<span class="normal"><a href="#__codelineno-0-248">248</a></span>
+<span class="normal"><a href="#__codelineno-0-249">249</a></span>
+<span class="normal"><a href="#__codelineno-0-250">250</a></span>
+<span class="normal"><a href="#__codelineno-0-251">251</a></span>
+<span class="normal"><a href="#__codelineno-0-252">252</a></span>
+<span class="normal"><a href="#__codelineno-0-253">253</a></span>
+<span class="normal"><a href="#__codelineno-0-254">254</a></span>
+<span class="normal"><a href="#__codelineno-0-255">255</a></span>
+<span class="normal"><a href="#__codelineno-0-256">256</a></span>
+<span class="normal"><a href="#__codelineno-0-257">257</a></span>
+<span class="normal"><a href="#__codelineno-0-258">258</a></span>
+<span class="normal"><a href="#__codelineno-0-259">259</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-242" name="__codelineno-0-242"></a><span class="k">def</span> <span class="nf">get_workdir_from_simulations</span><span class="p">(</span><span class="n">platform</span><span class="p">:</span> <span class="s1">&#39;IPlatform&#39;</span><span class="p">,</span> <span class="n">comps_simulations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Simulation</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<a id="__codelineno-0-243" name="__codelineno-0-243"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-244" name="__codelineno-0-244"></a><span class="sd">    Get COMPS filepath</span>
+<a id="__codelineno-0-245" name="__codelineno-0-245"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-246" name="__codelineno-0-246"></a><span class="sd">        platform: idmtools Platform</span>
+<a id="__codelineno-0-247" name="__codelineno-0-247"></a><span class="sd">        comps_simulations: COMPS Simulations</span>
+<a id="__codelineno-0-248" name="__codelineno-0-248"></a><span class="sd">    Returns: dictionary with simid as key and filepath as value</span>
+<a id="__codelineno-0-249" name="__codelineno-0-249"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-250" name="__codelineno-0-250"></a>
+<a id="__codelineno-0-251" name="__codelineno-0-251"></a>    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;SLURMSTAGE&quot;</span> <span class="ow">or</span> <span class="n">platform</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;CALCULON&quot;</span><span class="p">:</span>
+<a id="__codelineno-0-252" name="__codelineno-0-252"></a>        <span class="n">mounts</span> <span class="o">=</span> <span class="n">AuthManager</span><span class="o">.</span><span class="n">get_environment_macros</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">environment</span><span class="p">)[</span><span class="s1">&#39;DOCKER_MOUNTS&#39;</span><span class="p">]</span>
+<a id="__codelineno-0-253" name="__codelineno-0-253"></a>        <span class="n">mounts</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mounts</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)]}</span>
+<a id="__codelineno-0-254" name="__codelineno-0-254"></a>        <span class="c1"># pretend I&#39;m on Linux and set the Linux mapping environment variables</span>
+<a id="__codelineno-0-255" name="__codelineno-0-255"></a>        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mounts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-256" name="__codelineno-0-256"></a>            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+<a id="__codelineno-0-257" name="__codelineno-0-257"></a>    <span class="n">sim_work_dir</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">id</span><span class="p">):</span> <span class="n">sim</span><span class="o">.</span><span class="n">hpc_jobs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">working_directory</span> <span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">comps_simulations</span> <span class="k">if</span> <span class="n">sim</span><span class="o">.</span><span class="n">hpc_jobs</span><span class="p">}</span>
+<a id="__codelineno-0-258" name="__codelineno-0-258"></a>
+<a id="__codelineno-0-259" name="__codelineno-0-259"></a>    <span class="k">return</span> <span class="n">sim_work_dir</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.habitat_setup" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">habitat_setup</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.habitat_setup" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Sets up the habitat parameters for malaria vector species in EMOD, based on the climate seasonality
+and experiment configuration. The function configures different habitat types (&ldquo;CONSTANT&rdquo; or &ldquo;TEMPORARY_RAINFALL&rdquo;)
+and larval capacity based on the seasonality condition (&lsquo;perennial&rsquo; or &lsquo;seasonal&rsquo;) for the specified malaria species (gambiae).</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>config</code></b>
+                  (<code>object</code>)
+              –
+              <div class="doc-md-description">
+                <p>The configuration object that holds the simulation settings and parameters.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>exp</code></b>
+                  (<code>object</code>)
+              –
+              <div class="doc-md-description">
+                <p>The experiment object containing the population size and other simulation configurations.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>row</code></b>
+                  (<code>Series</code>)
+              –
+              <div class="doc-md-description">
+                <p>A row of data containing scenario-specific information, such as seasonality.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>None</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-151">151</a></span>
+<span class="normal"><a href="#__codelineno-0-152">152</a></span>
+<span class="normal"><a href="#__codelineno-0-153">153</a></span>
+<span class="normal"><a href="#__codelineno-0-154">154</a></span>
+<span class="normal"><a href="#__codelineno-0-155">155</a></span>
+<span class="normal"><a href="#__codelineno-0-156">156</a></span>
+<span class="normal"><a href="#__codelineno-0-157">157</a></span>
+<span class="normal"><a href="#__codelineno-0-158">158</a></span>
+<span class="normal"><a href="#__codelineno-0-159">159</a></span>
+<span class="normal"><a href="#__codelineno-0-160">160</a></span>
+<span class="normal"><a href="#__codelineno-0-161">161</a></span>
+<span class="normal"><a href="#__codelineno-0-162">162</a></span>
+<span class="normal"><a href="#__codelineno-0-163">163</a></span>
+<span class="normal"><a href="#__codelineno-0-164">164</a></span>
+<span class="normal"><a href="#__codelineno-0-165">165</a></span>
+<span class="normal"><a href="#__codelineno-0-166">166</a></span>
+<span class="normal"><a href="#__codelineno-0-167">167</a></span>
+<span class="normal"><a href="#__codelineno-0-168">168</a></span>
+<span class="normal"><a href="#__codelineno-0-169">169</a></span>
+<span class="normal"><a href="#__codelineno-0-170">170</a></span>
+<span class="normal"><a href="#__codelineno-0-171">171</a></span>
+<span class="normal"><a href="#__codelineno-0-172">172</a></span>
+<span class="normal"><a href="#__codelineno-0-173">173</a></span>
+<span class="normal"><a href="#__codelineno-0-174">174</a></span>
+<span class="normal"><a href="#__codelineno-0-175">175</a></span>
+<span class="normal"><a href="#__codelineno-0-176">176</a></span>
+<span class="normal"><a href="#__codelineno-0-177">177</a></span>
+<span class="normal"><a href="#__codelineno-0-178">178</a></span>
+<span class="normal"><a href="#__codelineno-0-179">179</a></span>
+<span class="normal"><a href="#__codelineno-0-180">180</a></span>
+<span class="normal"><a href="#__codelineno-0-181">181</a></span>
+<span class="normal"><a href="#__codelineno-0-182">182</a></span>
+<span class="normal"><a href="#__codelineno-0-183">183</a></span>
+<span class="normal"><a href="#__codelineno-0-184">184</a></span>
+<span class="normal"><a href="#__codelineno-0-185">185</a></span>
+<span class="normal"><a href="#__codelineno-0-186">186</a></span>
+<span class="normal"><a href="#__codelineno-0-187">187</a></span>
+<span class="normal"><a href="#__codelineno-0-188">188</a></span>
+<span class="normal"><a href="#__codelineno-0-189">189</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-151" name="__codelineno-0-151"></a><span class="k">def</span> <span class="nf">habitat_setup</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+<a id="__codelineno-0-152" name="__codelineno-0-152"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-153" name="__codelineno-0-153"></a><span class="sd">    Sets up the habitat parameters for malaria vector species in EMOD, based on the climate seasonality</span>
+<a id="__codelineno-0-154" name="__codelineno-0-154"></a><span class="sd">    and experiment configuration. The function configures different habitat types (&quot;CONSTANT&quot; or &quot;TEMPORARY_RAINFALL&quot;)</span>
+<a id="__codelineno-0-155" name="__codelineno-0-155"></a><span class="sd">    and larval capacity based on the seasonality condition (&#39;perennial&#39; or &#39;seasonal&#39;) for the specified malaria species (gambiae).</span>
+<a id="__codelineno-0-156" name="__codelineno-0-156"></a>
+<a id="__codelineno-0-157" name="__codelineno-0-157"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-158" name="__codelineno-0-158"></a><span class="sd">        config (object): The configuration object that holds the simulation settings and parameters.</span>
+<a id="__codelineno-0-159" name="__codelineno-0-159"></a><span class="sd">        exp (object): The experiment object containing the population size and other simulation configurations.</span>
+<a id="__codelineno-0-160" name="__codelineno-0-160"></a><span class="sd">        row (pandas.Series): A row of data containing scenario-specific information, such as seasonality.</span>
+<a id="__codelineno-0-161" name="__codelineno-0-161"></a>
+<a id="__codelineno-0-162" name="__codelineno-0-162"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-163" name="__codelineno-0-163"></a><span class="sd">        None</span>
+<a id="__codelineno-0-164" name="__codelineno-0-164"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-165" name="__codelineno-0-165"></a>
+<a id="__codelineno-0-166" name="__codelineno-0-166"></a>    <span class="c1"># Parameter configurations on climate for dynamic EIR</span>
+<a id="__codelineno-0-167" name="__codelineno-0-167"></a>    <span class="n">malaria_config</span><span class="o">.</span><span class="n">add_species</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;gambiae&quot;</span><span class="p">])</span>  <span class="c1"># , &quot;arabiensis&quot;, &quot;funestus&quot;</span>
+<a id="__codelineno-0-168" name="__codelineno-0-168"></a>    <span class="n">max_capacity_multiplier</span> <span class="o">=</span> <span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+<a id="__codelineno-0-169" name="__codelineno-0-169"></a>    <span class="kn">import</span> <span class="nn">emod_api.config.default_from_schema_no_validation</span> <span class="k">as</span> <span class="nn">dfs</span>
+<a id="__codelineno-0-170" name="__codelineno-0-170"></a>    <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">seasonality</span> <span class="o">==</span> <span class="s1">&#39;perennial&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-171" name="__codelineno-0-171"></a>        <span class="n">habitat1</span> <span class="o">=</span> <span class="n">dfs</span><span class="o">.</span><span class="n">schema_to_config_subnode</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">schema_file</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;idmTypes&quot;</span><span class="p">,</span> <span class="s2">&quot;idmType:VectorHabitat&quot;</span><span class="p">])</span>
+<a id="__codelineno-0-172" name="__codelineno-0-172"></a>        <span class="n">habitat1</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Habitat_Type</span> <span class="o">=</span> <span class="s2">&quot;CONSTANT&quot;</span>
+<a id="__codelineno-0-173" name="__codelineno-0-173"></a>        <span class="n">habitat1</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Max_Larval_Capacity</span> <span class="o">=</span> <span class="mi">5265700</span> <span class="o">*</span> <span class="n">max_capacity_multiplier</span>
+<a id="__codelineno-0-174" name="__codelineno-0-174"></a>        <span class="n">habitat_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;Habitat_Type&quot;</span><span class="p">:</span> <span class="n">habitat1</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Habitat_Type</span><span class="p">,</span>
+<a id="__codelineno-0-175" name="__codelineno-0-175"></a>                         <span class="s2">&quot;Max_Larval_Capacity&quot;</span><span class="p">:</span> <span class="n">habitat1</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Max_Larval_Capacity</span><span class="p">}]</span>
+<a id="__codelineno-0-176" name="__codelineno-0-176"></a>        <span class="n">malaria_config</span><span class="o">.</span><span class="n">set_species_param</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s1">&#39;gambiae&#39;</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="s2">&quot;Habitats&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">habitat_list</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-0-177" name="__codelineno-0-177"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-178" name="__codelineno-0-178"></a>        <span class="n">habitat1</span> <span class="o">=</span> <span class="n">dfs</span><span class="o">.</span><span class="n">schema_to_config_subnode</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">schema_file</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;idmTypes&quot;</span><span class="p">,</span> <span class="s2">&quot;idmType:VectorHabitat&quot;</span><span class="p">])</span>
+<a id="__codelineno-0-179" name="__codelineno-0-179"></a>        <span class="n">habitat1</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Habitat_Type</span> <span class="o">=</span> <span class="s2">&quot;TEMPORARY_RAINFALL&quot;</span>
+<a id="__codelineno-0-180" name="__codelineno-0-180"></a>        <span class="n">habitat1</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Max_Larval_Capacity</span> <span class="o">=</span> <span class="mi">90000000</span> <span class="o">*</span> <span class="n">max_capacity_multiplier</span>
+<a id="__codelineno-0-181" name="__codelineno-0-181"></a>        <span class="n">habitat_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;Habitat_Type&quot;</span><span class="p">:</span> <span class="n">habitat1</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Habitat_Type</span><span class="p">,</span>
+<a id="__codelineno-0-182" name="__codelineno-0-182"></a>                         <span class="s2">&quot;Max_Larval_Capacity&quot;</span><span class="p">:</span> <span class="n">habitat1</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Max_Larval_Capacity</span><span class="p">}]</span>
+<a id="__codelineno-0-183" name="__codelineno-0-183"></a>        <span class="n">malaria_config</span><span class="o">.</span><span class="n">set_species_param</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s1">&#39;gambiae&#39;</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="s2">&quot;Habitats&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">habitat_list</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-0-184" name="__codelineno-0-184"></a>        <span class="n">habitat2</span> <span class="o">=</span> <span class="n">dfs</span><span class="o">.</span><span class="n">schema_to_config_subnode</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">schema_file</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;idmTypes&quot;</span><span class="p">,</span> <span class="s2">&quot;idmType:VectorHabitat&quot;</span><span class="p">])</span>
+<a id="__codelineno-0-185" name="__codelineno-0-185"></a>        <span class="n">habitat2</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Habitat_Type</span> <span class="o">=</span> <span class="s2">&quot;CONSTANT&quot;</span>
+<a id="__codelineno-0-186" name="__codelineno-0-186"></a>        <span class="n">habitat2</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Max_Larval_Capacity</span> <span class="o">=</span> <span class="mi">2850000</span> <span class="o">*</span> <span class="n">max_capacity_multiplier</span>
+<a id="__codelineno-0-187" name="__codelineno-0-187"></a>        <span class="n">habitat_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;Habitat_Type&quot;</span><span class="p">:</span> <span class="n">habitat2</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Habitat_Type</span><span class="p">,</span>
+<a id="__codelineno-0-188" name="__codelineno-0-188"></a>                         <span class="s2">&quot;Max_Larval_Capacity&quot;</span><span class="p">:</span> <span class="n">habitat2</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Max_Larval_Capacity</span><span class="p">}]</span>
+<a id="__codelineno-0-189" name="__codelineno-0-189"></a>        <span class="n">malaria_config</span><span class="o">.</span><span class="n">set_species_param</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s1">&#39;gambiae&#39;</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="s2">&quot;Habitats&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">habitat_list</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.set_inputEIR_seasonality" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_inputEIR_seasonality</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">EIR_scale_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seasonality</span><span class="o">=</span><span class="s1">&#39;perennial&#39;</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.set_inputEIR_seasonality" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set input EIR (Entomological Inoculation Rate) based on seasonality.</p>
+<p>Parameters:
+- camp: Campaign object from EMOD.
+- EIR_scale_factor: Scaling factor for EIR (default is 1).
+- seasonality: Type of seasonality, either &lsquo;perennial&rsquo; or &lsquo;seasonal&rsquo; (default is &lsquo;perennial&rsquo;).</p>
+<p>Returns:
+A dictionary containing the EIR scale factor and the specified seasonality.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/forcedEIR.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span>
+<span class="normal"><a href="#__codelineno-0-40">40</a></span>
+<span class="normal"><a href="#__codelineno-0-41">41</a></span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#__codelineno-0-44">44</a></span>
+<span class="normal"><a href="#__codelineno-0-45">45</a></span>
+<span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span>
+<span class="normal"><a href="#__codelineno-0-48">48</a></span>
+<span class="normal"><a href="#__codelineno-0-49">49</a></span>
+<span class="normal"><a href="#__codelineno-0-50">50</a></span>
+<span class="normal"><a href="#__codelineno-0-51">51</a></span>
+<span class="normal"><a href="#__codelineno-0-52">52</a></span>
+<span class="normal"><a href="#__codelineno-0-53">53</a></span>
+<span class="normal"><a href="#__codelineno-0-54">54</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="k">def</span> <span class="nf">set_inputEIR_seasonality</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">EIR_scale_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seasonality</span><span class="o">=</span><span class="s1">&#39;perennial&#39;</span><span class="p">):</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">    Set input EIR (Entomological Inoculation Rate) based on seasonality.</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">    Parameters:</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">    - camp: Campaign object from EMOD.</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">    - EIR_scale_factor: Scaling factor for EIR (default is 1).</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">    - seasonality: Type of seasonality, either &#39;perennial&#39; or &#39;seasonal&#39; (default is &#39;perennial&#39;).</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">    A dictionary containing the EIR scale factor and the specified seasonality.</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a>    <span class="n">season_daily</span> <span class="o">=</span> <span class="n">get_seasonal_eir</span><span class="p">()</span> 
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="k">if</span> <span class="n">seasonality</span> <span class="o">==</span> <span class="s1">&#39;perennial&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a>        <span class="n">daily_EIR</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">/</span> <span class="mi">365</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">365</span><span class="p">]</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="k">elif</span> <span class="n">seasonality</span> <span class="o">==</span> <span class="s1">&#39;seasonal&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a>        <span class="n">daily_EIR</span> <span class="o">=</span> <span class="n">season_daily</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a>        <span class="n">eir_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">daily_EIR</span><span class="p">])</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="n">daily_EIR</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span> <span class="o">/</span> <span class="n">eir_sum</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">daily_EIR</span><span class="p">]</span>  <span class="c1"># rescale to sum = 1</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please specify valid seasonality&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="n">add_scheduled_input_eir</span><span class="p">(</span><span class="n">campaign</span><span class="o">=</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">daily_eir</span><span class="o">=</span><span class="n">daily_EIR</span><span class="p">,</span> <span class="n">age_dependence</span><span class="o">=</span><span class="s2">&quot;SURFACE_AREA_DEPENDENT&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a>                            <span class="n">node_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scaling_factor</span><span class="o">=</span><span class="n">EIR_scale_factor</span><span class="p">)</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a>    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;EIR_scale_factor&#39;</span><span class="p">:</span> <span class="n">EIR_scale_factor</span><span class="p">,</span><span class="s1">&#39;seasonality&#39;</span><span class="p">:</span> <span class="n">seasonality</span><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.set_param" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_param</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.set_param" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set specific parameter value
+Args:
+    simulation: idmtools Simulation
+    param: parameter
+    value: new value
+Returns:
+    dict</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-66">66</a></span>
+<span class="normal"><a href="#__codelineno-0-67">67</a></span>
+<span class="normal"><a href="#__codelineno-0-68">68</a></span>
+<span class="normal"><a href="#__codelineno-0-69">69</a></span>
+<span class="normal"><a href="#__codelineno-0-70">70</a></span>
+<span class="normal"><a href="#__codelineno-0-71">71</a></span>
+<span class="normal"><a href="#__codelineno-0-72">72</a></span>
+<span class="normal"><a href="#__codelineno-0-73">73</a></span>
+<span class="normal"><a href="#__codelineno-0-74">74</a></span>
+<span class="normal"><a href="#__codelineno-0-75">75</a></span>
+<span class="normal"><a href="#__codelineno-0-76">76</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="k">def</span> <span class="nf">set_param</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="sd">    Set specific parameter value</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a><span class="sd">        simulation: idmtools Simulation</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="sd">        param: parameter</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="sd">        value: new value</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="sd">        dict</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a>    <span class="k">return</span> <span class="n">simulation</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.sweep_functions" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">sweep_functions</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">func_list</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.sweep_functions" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Obtained from IDM&rsquo;s emodpy-snt framework that had been modified for bf-seasonal
+https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py</p>
+<p>Apply funcs on simulation.
+Args:
+    simulation: idmtools Simulation
+    func_list: a list of functions</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>Dict[str, Any]</code>
+              –
+              <div class="doc-md-description">
+                <p>dict of parameters</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/EMOD_functions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-333">333</a></span>
+<span class="normal"><a href="#__codelineno-0-334">334</a></span>
+<span class="normal"><a href="#__codelineno-0-335">335</a></span>
+<span class="normal"><a href="#__codelineno-0-336">336</a></span>
+<span class="normal"><a href="#__codelineno-0-337">337</a></span>
+<span class="normal"><a href="#__codelineno-0-338">338</a></span>
+<span class="normal"><a href="#__codelineno-0-339">339</a></span>
+<span class="normal"><a href="#__codelineno-0-340">340</a></span>
+<span class="normal"><a href="#__codelineno-0-341">341</a></span>
+<span class="normal"><a href="#__codelineno-0-342">342</a></span>
+<span class="normal"><a href="#__codelineno-0-343">343</a></span>
+<span class="normal"><a href="#__codelineno-0-344">344</a></span>
+<span class="normal"><a href="#__codelineno-0-345">345</a></span>
+<span class="normal"><a href="#__codelineno-0-346">346</a></span>
+<span class="normal"><a href="#__codelineno-0-347">347</a></span>
+<span class="normal"><a href="#__codelineno-0-348">348</a></span>
+<span class="normal"><a href="#__codelineno-0-349">349</a></span>
+<span class="normal"><a href="#__codelineno-0-350">350</a></span>
+<span class="normal"><a href="#__codelineno-0-351">351</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-333" name="__codelineno-0-333"></a><span class="k">def</span> <span class="nf">sweep_functions</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">func_list</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-334" name="__codelineno-0-334"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-335" name="__codelineno-0-335"></a><span class="sd">    Obtained from IDM&#39;s emodpy-snt framework that had been modified for bf-seasonal</span>
+<a id="__codelineno-0-336" name="__codelineno-0-336"></a><span class="sd">    https://github.com/numalariamodeling/bf-seasonal/blob/main/sweeping.py</span>
+<a id="__codelineno-0-337" name="__codelineno-0-337"></a>
+<a id="__codelineno-0-338" name="__codelineno-0-338"></a><span class="sd">    Apply funcs on simulation.</span>
+<a id="__codelineno-0-339" name="__codelineno-0-339"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-340" name="__codelineno-0-340"></a><span class="sd">        simulation: idmtools Simulation</span>
+<a id="__codelineno-0-341" name="__codelineno-0-341"></a><span class="sd">        func_list: a list of functions</span>
+<a id="__codelineno-0-342" name="__codelineno-0-342"></a>
+<a id="__codelineno-0-343" name="__codelineno-0-343"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-344" name="__codelineno-0-344"></a><span class="sd">        dict of parameters</span>
+<a id="__codelineno-0-345" name="__codelineno-0-345"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-346" name="__codelineno-0-346"></a>    <span class="n">tags_updated</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-0-347" name="__codelineno-0-347"></a>    <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">func_list</span><span class="p">:</span>
+<a id="__codelineno-0-348" name="__codelineno-0-348"></a>        <span class="n">tags</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
+<a id="__codelineno-0-349" name="__codelineno-0-349"></a>        <span class="k">if</span> <span class="n">tags</span><span class="p">:</span>
+<a id="__codelineno-0-350" name="__codelineno-0-350"></a>            <span class="n">tags_updated</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+<a id="__codelineno-0-351" name="__codelineno-0-351"></a>    <span class="k">return</span> <span class="n">tags_updated</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.treatment_camp_simple" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">treatment_camp_simple</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">cm_start</span><span class="p">,</span> <span class="n">cm_clinical</span><span class="p">,</span> <span class="n">cm_severe</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.treatment_camp_simple" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>This function helps us establish treatment seeking behavior in an EMOD simulation.</p>
+<p>Parameters:
+- camp: Campaign object from EMOD.
+- cm_start: Day when the treatment campaign starts.
+- cm_clinical: Clinical case coverage (float).
+- cm_severe: Severe case coverage (float).</p>
+<p>Returns:
+A dictionary containing the start day of the treatment campaign, clinical case coverage, and severe case coverage.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/interventions.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">def</span> <span class="nf">treatment_camp_simple</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">cm_start</span><span class="p">,</span> <span class="n">cm_clinical</span><span class="p">,</span> <span class="n">cm_severe</span><span class="p">):</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="sd">    This function helps us establish treatment seeking behavior in an EMOD simulation.</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="sd">    Parameters:</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="sd">    - camp: Campaign object from EMOD.</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="sd">    - cm_start: Day when the treatment campaign starts.</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="sd">    - cm_clinical: Clinical case coverage (float).</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="sd">    - cm_severe: Severe case coverage (float).</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="sd">    A dictionary containing the start day of the treatment campaign, clinical case coverage, and severe case coverage.</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a>    <span class="n">cm_clinical</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cm_clinical</span><span class="p">)</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a>    <span class="n">cm_severe</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cm_severe</span><span class="p">)</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a>    <span class="k">if</span> <span class="n">cm_clinical</span> <span class="o">*</span> <span class="mf">1.15</span> <span class="o">&gt;</span> <span class="n">cm_severe</span><span class="p">:</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a>        <span class="n">cm_severe</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cm_clinical</span> <span class="o">*</span> <span class="mf">1.15</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a>    <span class="k">if</span> <span class="n">cm_clinical</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a>        <span class="n">cm_severe</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>    <span class="n">add_treatment_seeking</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">cm_start</span><span class="p">,</span> <span class="n">drug</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Artemether&#39;</span><span class="p">,</span> <span class="s1">&#39;Lumefantrine&#39;</span><span class="p">],</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a>                             <span class="n">targets</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a>                                 <span class="p">{</span><span class="s1">&#39;trigger&#39;</span><span class="p">:</span> <span class="s1">&#39;NewClinicalCase&#39;</span><span class="p">,</span> <span class="s1">&#39;coverage&#39;</span><span class="p">:</span> <span class="n">cm_clinical</span><span class="p">,</span> <span class="s1">&#39;agemin&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;agemax&#39;</span><span class="p">:</span> <span class="mi">115</span><span class="p">,</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a>                                  <span class="s1">&#39;rate&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}],</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a>                             <span class="n">broadcast_event_name</span><span class="o">=</span><span class="s2">&quot;Received_Treatment&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a>    <span class="n">add_treatment_seeking</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">cm_start</span><span class="p">,</span> <span class="n">drug</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Artemether&#39;</span><span class="p">,</span> <span class="s1">&#39;Lumefantrine&#39;</span><span class="p">],</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a>                             <span class="n">targets</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a>                                 <span class="p">{</span><span class="s1">&#39;trigger&#39;</span><span class="p">:</span> <span class="s1">&#39;NewSevereCase&#39;</span><span class="p">,</span> <span class="s1">&#39;coverage&#39;</span><span class="p">:</span> <span class="n">cm_severe</span><span class="p">,</span> <span class="s1">&#39;agemin&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;agemax&#39;</span><span class="p">:</span> <span class="mi">115</span><span class="p">,</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a>                                  <span class="s1">&#39;rate&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}],</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a>                             <span class="n">broadcast_event_name</span><span class="o">=</span><span class="s2">&quot;Received_Severe_Treatment&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a>    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;cm_start&#39;</span><span class="p">:</span> <span class="n">cm_start</span><span class="p">,</span><span class="s1">&#39;cm_clinical&#39;</span><span class="p">:</span> <span class="n">cm_clinical</span><span class="p">,</span> <span class="s1">&#39;cm_severe&#39;</span><span class="p">:</span> <span class="n">cm_severe</span><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="EMOD.functions.EMOD_functions.update_mab" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">update_mab</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></code>
+
+<a href="#EMOD.functions.EMOD_functions.update_mab" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Update the Maternal Antibody Protection parameter within the simulation.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>simulation</code></b>
+                  (<code>object</code>)
+              –
+              <div class="doc-md-description">
+                <p>The simulation object from EMOD.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>value</code></b>
+                  (<code>float</code>)
+              –
+              <div class="doc-md-description">
+                <p>The value by which to multiply the Maternal Antibody Protection parameter.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>None. The function modifies the simulation object in place.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>EMOD/functions/forcedEIR.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="k">def</span> <span class="nf">update_mab</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="sd">    Update the Maternal Antibody Protection parameter within the simulation.</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="sd">    Parameters:</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="sd">        simulation (object): The simulation object from EMOD.</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="sd">        value (float): The value by which to multiply the Maternal Antibody Protection parameter.</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="sd">        None. The function modifies the simulation object in place.</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a>    <span class="n">simulation</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Maternal_Antibody_Protection</span> <span class="o">*=</span> <span class="n">value</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a>    <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../interventions/" class="btn btn-neutral float-left" title="interventions.py"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../reporters/" class="btn btn-neutral float-right" title="reporters.py">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../interventions/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../reporters/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../../..";</script>
+    <script src="../../../../js/theme_extra.js"></script>
+    <script src="../../../../js/theme.js"></script>
+      <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      <script src="../../../../javascripts/tablesort.js"></script>
+      <script src="../../../../javascripts/freeze-table.js"></script>
+      <script src="../../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(false);
+        });
+    </script>
+
+</body>
+</html>
