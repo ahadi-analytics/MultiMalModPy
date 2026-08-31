@@ -99,8 +99,10 @@ def all_campaigns(camp, exp=None, row=None, intervention_list=[]):
     if row.entomology_mode == 'forced':
         set_inputEIR_seasonality(camp, float(row.transmission_intensity_EMOD), row.seasonality)
 
-    # Case management
-    treatment_camp_simple(camp, cm_start=row.cm_start, cm_clinical=row.cm_clinical, cm_severe=row.cm_severe)
+    # Case management (granular, year/age/drug-specific — see utility/helper.py process_case_management)
+    cm_csv_path = os.path.join(exp.cm_path, row.cm_schedule_file)
+    cm_df = load_cm_schedule(cm_csv_path, exp.ds_name)
+    treatment_camp_granular(camp, cm_df)
 
     ## Carrying capacity step change
     # Make sure to include the ccstep change only at pickup simulations.

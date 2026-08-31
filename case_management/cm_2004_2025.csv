@@ -1,0 +1,4 @@
+DS_Name,year,coverage_u5,coverage_o5,drugs_used,severe_cov,simday,duration
+JOMORO,2005,0.5,0.5,AL,0.8,1,365
+JOMORO,2006,0.7,0.7,AL,0.8,366,365
+JOMORO,2007,0.77,0.77,AL,0.8,731,365

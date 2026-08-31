@@ -460,7 +460,7 @@ class TimeavrgAgebinAnalyzer(IAnalyzer):
             all_ages = cdf[cdf['ageGroup'] == '0-100'].groupby('scen_id')['clinical_incidence'].agg(
                 'mean').reset_index()
             cdf = cdf[cdf['ageGroup'] == '0-100']
-            cdf = cdf.groupby(['scen_id', 'transmission_intensity_EMOD', 'seasonality', 'cm_clinical', 'cm_severe'])[
+            cdf = cdf.groupby(['scen_id', 'transmission_intensity_EMOD', 'seasonality', 'ds_name'])[
                 mean_columns].agg('mean').reset_index()
             cdf = cdf.merge(all_ages, on='scen_id')
             cdf = cdf.merge(u5, on='scen_id')

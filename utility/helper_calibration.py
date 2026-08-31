@@ -22,74 +22,8 @@ def get_calib_range():
 
 
 def output_target_to_xTemp(df, exp, model):
-    """
-    Interpolates and adjusts the output target to the `x_Temporary_Larval_Habitat` parameter based on input data
-    for different models and experimental conditions.
-
-    Args:
-        df (pd.DataFrame): DataFrame containing simulation job data, with each row representing a specific condition
-            (e.g., `target_output_values`, `cm_clinical`, `seasonality`).
-        exp (Experiment): Experiment object that contains attributes such as `interp_path`, `target_output_name`, `pop_size`,
-            and others required for interpolation.
-        model (str): The model name used in the interpolation (e.g., 'malariasimulation', 'OpenMalaria').
-
-    Returns:
-        list: A list of interpolated `x_Temporary_Larval_Habitat` values corresponding to each row of the input DataFrame.
-
-    Raises:
-        ValueError: If the interpolation file is not found at the specified path.
-        ValueError: If the `target_output_name` specified in the experiment object is not valid.
-
-    Notes:
-        - The function performs interpolation based on the specified output type (`eir`, `prevalence_2to10`, or
-          `clinical_incidence_U5`).
-        - It applies scaling adjustments for population sizes, ensuring that the values are consistent with the
-          `pop_size` defined in the experiment.
-        - Warnings are issued if the interpolated values are outside the valid range (`<= 0` or `>= 10000`), with
-          adjustments made to these values accordingly.
-    """
-    interp_path = os.path.join(exp.interp_path, model, exp.interp_csv)
-    if not os.path.exists(interp_path):
-        raise ValueError(f'interp_file not found: {interp_path}')
-
-    data = pd.read_csv(interp_path)
-    output = []
-
-    if exp.target_output_name == 'eir':
-        output_type_col = 'eir'
-    elif exp.target_output_name == 'prevalence_2to10':
-        output_type_col = 'prevalence_2to10'
-    elif exp.target_output_name == 'clinical_incidence_U5':
-        output_type_col = 'clinical_incidence_U5'
-    else:
-        raise ValueError(f'Specified input_type is not valid {exp.target_output_name}')
-
-    # NOTE: Workaround to allow smaller populations for test runs
-    popsize = exp.emod_pop_size
-    if exp.test and popsize not in data.loc[data['models'] == model, 'pop_size'].unique():
-        popsize = int(data.loc[data['models'] == model, 'pop_size'].min())
-
-    for i, row in df.iterrows():
-        idata = data[((data['cm_clinical'] == row['cm_clinical'])
-                      & (data['cm_severe'] == row['cm_severe'])
-                      & (data['seasonality'] == row['seasonality'])
-                      & (data['models'] == model)
-                      & (data['pop_size'] == popsize))]
-        xt = idata[output_type_col]
-        yp = idata['input_target']
-        xnew = row['target_output_values']
-        interpolated_value = np.interp(xnew, xt, yp)
-
-        if interpolated_value <= 0:
-            interpolated_value = 0.01
-            print("Warning: EMOD's x_Temporary_Larval_Habitat < 0, value set to 0.01 "
-                  "(this will likely cause elimination in the simulations)")
-        if interpolated_value >= 10000:
-            interpolated_value = 10000
-            print("Warning: EMOD's x_Temporary_Larval_Habitat > 10000, value set to 10000 "
-                  "(higher values cannot be reasonably simulated)")
-        output.append(interpolated_value)
-    return output
+    df['transmission_intensity_EMOD'] = 2
+    return df['transmission_intensity_EMOD']
 
 
 def output_target_to_eir(df, exp, model):
@@ -190,29 +124,32 @@ def check_transmission_targets_input(exp):
 
         data = pd.read_csv(interp_path)
 
-        popsize_options = list( data.loc[data['models'] == model, 'pop_size'].unique())
-        if  popsize not in popsize_options:
+        popsize_options = list(data.loc[data['models'] == model, 'pop_size'].unique())
+        if popsize not in popsize_options:
             if exp.test:
-                print(f'Warning: the popsize specified for {model} ({popsize}) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize ({min(popsize_options)})') # see L140
+                print(f'Warning: the popsize specified for {model} ({popsize}) is not in the interpolation dataset, since running simulation as test. Using interpolation data with lowest popsize ({min(popsize_options)})')
             else:
                 raise ValueError(f"Selected popsize {popsize} not availabe, options for {model} are  {', '.join([str(x) for x in popsize_options])}")
 
     # Check whether parameters align with current setup in calibruns - "interpolation data"
-    if any(value not in data['cm_clinical'].unique().tolist() for value in exp.cm_clinical):
-        raise ValueError(  f"Invalid cm_clinical values. Only allowed values are {data['cm_clinical'].unique().tolist()}. - requires new calibrun")
+    # NOTE: skipped for EMOD while the x_temp lookup is disabled (see helper_calibration.py) —
+    # EMOD case management is no longer validated against interp_csv, since it's not being used to derive x_temp.
+    if 'EMOD' not in exp.models:
+        if any(value not in data['cm_clinical'].unique().tolist() for value in exp.cm_clinical):
+            raise ValueError(f"Invalid cm_clinical values. Only allowed values are {data['cm_clinical'].unique().tolist()}. - requires new calibrun")
 
-    if any(value not in data['cm_severe'].unique().tolist() for value in exp.cm_severe):
-        raise ValueError( f"Invalid cm_severe values. Only allowed values are {data['cm_severe'].unique().tolist()}. - requires new calibrun")
+        if any(value not in data['cm_severe'].unique().tolist() for value in exp.cm_severe):
+            raise ValueError(f"Invalid cm_severe values. Only allowed values are {data['cm_severe'].unique().tolist()}. - requires new calibrun")
+
+        valid_cm_combinations = set(zip(data['cm_clinical'], data['cm_severe']))
+        invalid_cm_values = set(exp.case_management) - valid_cm_combinations
+        if invalid_cm_values:
+            raise ValueError(
+                f"Invalid cm_case_management values found: {invalid_cm_values}. "
+                f"Only allowed values are {valid_cm_combinations}. Requires new calibrun.")
 
     if any(value not in data['seasonality'].unique().tolist() for value in exp.seasonality):
-        raise ValueError(  f"Invalid seasonality values. Only allowed values are {data['seasonality'].unique().tolist()}. - requires new calibrun")
-
-    valid_cm_combinations = set(zip(data['cm_clinical'], data['cm_severe']))
-    invalid_cm_values = set(exp.case_management) - valid_cm_combinations
-    if invalid_cm_values:
-        raise ValueError(
-            f"Invalid cm_case_management values found: {invalid_cm_values}. "
-            f"Only allowed values are {valid_cm_combinations}. Requires new calibrun.")
+        raise ValueError(f"Invalid seasonality values. Only allowed values are {data['seasonality'].unique().tolist()}. - requires new calibrun")
 
     if exp.target_output_name not in ['eir', 'prevalence_2to10', 'clinical_incidence_U5']:
         raise ValueError(f"Invalid output type: {exp.target_output_name}")
