@@ -138,7 +138,7 @@ elif hpc == 'LOCAL':
     
     image_path = 'mmmpy_local:rocky8'
     image_venv_name = ''
-    EMOD_venv_container ='source /opt/envs/mmmpy_container/bin/activate'
+    EMOD_venv_container ='source /opt/envs/mmmpy_local/bin/activate'
     bind_path = ROOT_DIR
 
 else:
