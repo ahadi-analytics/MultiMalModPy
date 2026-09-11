@@ -8,11 +8,9 @@ Each version represents a distinct state of the codebase, including core framewo
  
 ## Versioning 
 
-MultiMalModPy follows a scheme inspired by [Google's versioning guidelines](https://google.github.io/styleguide/versioning.html), using:  
-- **Semantic versioning** (`MAJOR.MINOR.PATCH`) for public releases  
-- A `-devN` suffix for development/pre-release versions  
+MultiMalModPy follows [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`) for public releases with a  `-devN` suffix used for development and pre-release versions.
 
- There are two version types used in MultiMalModPy: 
+There are two version types used in MultiMalModPy: 
 
 ### Stable (Public) Releases
 
@@ -28,7 +26,7 @@ These versions are:
 - Uploaded to the [GitHub Releases](https://github.com/ahadi-analytics/MultiMalModPy/releases) page  
 
 
-### Development (Pre-)Releases
+### Development Releases 
 
 Development versions use the same format as stable releases but include a `-devN` suffix: `MAJOR.MINOR.PATCH-devN`  
 
