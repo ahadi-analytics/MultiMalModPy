@@ -397,7 +397,7 @@ r_local = "C:/Program Files/R/R-4.2.3/bin"
 singularity pull --arch amd64 library://rungma/multimalmodpy/mmmpy_hpc:rocky8 
 ``` 
 
-See full run instructions:  [Example run](../getting_started/example_run.md#using-singularity-container)   
+See full run instructions:  [Example run](../getting_started/example_run.md#using-singularity-container-hpc)   
 
 ### Using Docker (Local)    
 
@@ -539,7 +539,7 @@ Replace OpenMalaria with malariasimulation, Running both models at once via dock
 
     🔁 Replace `<USERPATH>` (e.g., `C:\Users\<USER>\Documents`) with the full path to your MultiMalModPy folder.  
 
-    📘 More details: [Example Run – Docker Container](../getting_started/example_run.md#using-docker-container)  
+    📘 More details: [Example Run – Docker Container](../getting_started/example_run.md#using-docker-local)  
 
 <br />
 

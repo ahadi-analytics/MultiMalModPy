@@ -49,26 +49,27 @@ Details on their function and implementation can be found in the framework’s  
 
 #### treatment seeking 
 
-  ```python    
+```python    
 
-  def add_treatment_seeking(campaign, 
-                            start_day: int = 1,  
-                            targets: list = None, 
-                            drug: list = None, 
-                            node_ids: list = None, 
-                            ind_property_restrictions: list = None, 
-                            drug_ineligibility_duration: float = 0, 
-                            duration: int = -1, 
-                            broadcast_event_name: str = 'Received_Treatment'): 
-      camp_events = _get_events(campaign=campaign, start_day=start_day, targets=targets, drug=drug, node_ids=node_ids, 
-                                ind_property_restrictions=ind_property_restrictions, 
-                                drug_ineligibility_duration=drug_ineligibility_duration, duration=duration, 
-                                broadcast_event_name=broadcast_event_name) 
-      for event in camp_events: 
-          campaign.add(event) 
-  ```  
+def add_treatment_seeking(campaign, 
+                          start_day: int = 1,  
+                          targets: list = None, 
+                          drug: list = None, 
+                          node_ids: list = None, 
+                          ind_property_restrictions: list = None, 
+                          drug_ineligibility_duration: float = 0, 
+                          duration: int = -1, 
+                          broadcast_event_name: str = 'Received_Treatment'): 
+    camp_events = _get_events(campaign=campaign, start_day=start_day, targets=targets, drug=drug, node_ids=node_ids, 
+                              ind_property_restrictions=ind_property_restrictions, 
+                              drug_ineligibility_duration=drug_ineligibility_duration, duration=duration, 
+                              broadcast_event_name=broadcast_event_name) 
+    for event in camp_events: 
+        campaign.add(event) 
+```  
 
-  ```  
+
+```bash  
 targets is a list of dictionaries defining the trigger event and coverage for and  
   properties of individuals to target with the intervention with all possible options being:  
   [{"trigger":"NewClinicalCase","coverage":0.8,"agemin":15,"agemax":70, "rate":0.3}]  
@@ -77,7 +78,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
   coverage = 1, affects all  
   agemin/agemax = 0/125, affects all 
   rate = 0, no delay, seek treatment immediately  
-  ```  
+```  
 
  
 #### json snippet (example)     
@@ -178,7 +179,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
     "Start_Day": 1 
   } 
   
-  ```
+```
 
 
 
@@ -193,7 +194,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
 ####  set_clinical_treatment  
         
 
-  ```R 
+```R 
   
   set_clinical_treatment <- function(parameters, drug, timesteps, coverages) { 
     stopifnot(all(coverages >= 0) && all(coverages <= 1)) 
@@ -217,7 +218,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
     } 
     parameters 
   } 
-  ``` 
+``` 
 
 
 <br> 
@@ -236,7 +237,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
  
 ####  ImmediateOutcomes  
   
-  ```XML
+```XML
   <ImmediateOutcomes name="example name"> 
       <drugRegimen firstLine="ACT" inpatient="QN" secondLine="ACT"/> 
       <initialACR> 
@@ -265,7 +266,7 @@ targets is a list of dictionaries defining the trigger event and coverage for an
       <pSeekOfficialCareUncomplicated2 value="0.04"/>
       <pSeekOfficialCareSevere value="0.48"/>
   </ImmediateOutcomes>
-  ```
+```
 
 
 

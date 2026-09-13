@@ -57,7 +57,7 @@ The plotting system is modular and easily extendable.
 
 ## Repository Breakdown       
  
-### 🔹 Back-End (Model-Specific Logic)  
+### Back-End (Model-Specific Logic)  
  
 Each model has its own directory with input handling, simulation execution, and output processing logic:  
 
@@ -66,7 +66,7 @@ Each model has its own directory with input handling, simulation execution, and 
 - `OpenMalaria/` — OpenMalaria-specific scripts  
 - `utility/` — generic helper functions  
 
-### 🔹 Front-End (User Scripts)  
+### Front-End (User Scripts)  
 
 Located in the project root, these user-facing components control setup and execution:  
 
@@ -76,7 +76,7 @@ Located in the project root, these user-facing components control setup and exec
 - `interventions/` — optional: parameter scripts for intervention scenarios 
 
 
-### 🔹 Support and Infrastructure  
+### Support and Infrastructure  
 
 - `dependencies/` — virtual environment setup, requirements.txt, and install scripts
 - `target_calibration/` — model-specific simulation outputs used for transmission calibration  
