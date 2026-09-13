@@ -2,20 +2,19 @@
 
 
 
-<div style="background-color: #f4f4f4; padding: 20px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif; font-size: 16px; color: #333;">
-  <strong style="font-size: 18px; color: #00796b;"><em>Continue on this page if:</em></strong>
-  <ul style="padding-left: 20px; line-height: 1.6; margin-top: 10px; margin-bottom: 0;">
-    <li>✅ You have installed all required software
-    </li>
-    <li> ✅Your simulation is configured in <code>manifest.py</code>
-    </li>
-    <li> ✅You want to run MultiMalModPy from a container without manual installation
-    </li>
-    <li> ❌ If not, revisit the
-    </li>
-     &nbsp;➡️ <a href="../getting_started/installation.md">Installation guide</a>
-     &nbsp;➡️ <a href="../getting_started/configuration.md">First-time configuration</a>
-  </ul>
+<div style="background-color: #f4f4f4; padding: 20px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif; font-size: 16px; color: #333;"> 
+  <strong style="font-size: 18px; color: #00796b;"><em>Continue on this page if:</em></strong> 
+
+  <ul style="padding-left: 20px; line-height: 1.6; margin-top: 10px; margin-bottom: 0;"> 
+    <li>✅ You have installed all required software</li> 
+    <li>✅ Your simulation is configured in <code>manifest.py</code></li> 
+    <li>✅ You want to run MultiMalModPy from a container without manual installation</li> 
+    <li>
+      ❌ If not, revisit the<br>
+      &nbsp;&nbsp;➡️ <a href="../installation/">Installation guide</a><br>
+      &nbsp;&nbsp;➡️ <a href="../configuration/">First-time configuration</a>
+    </li> 
+  </ul> 
 </div>
 
 ---
@@ -26,7 +25,7 @@ Quickly navigate to your preferred execution method:
 🔹 [Run simulation – using Python virtual environment (HPC or local)](#using-python-virtual-environment-hpc-or-local)    
 🔹 [Run simulation – using Singularity container (HPC)](#using-singularity-container-hpc)    
 🔹 [Run simulation – using Docker (local)](#using-docker-local)    
-🔹 [Troubleshooting](#-troubleshooting)  
+🔹 [Troubleshooting](#troubleshooting)  
 
 
 
@@ -141,7 +140,7 @@ You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria
 <br>
 
 
-## Using Docker (local)
+## Using Docker (Local)
 
 - To run MultiMalModPy inside a Docker container, double-click on `dependencies/run_mmmpy_docker.bat`.  
 - Alternatively, you can follow manual steps as below (for developer, or troubleshooting).     
@@ -152,7 +151,7 @@ You can choose to run all three models (EMOD, malariasimulation, and OpenMalaria
     <br>  
 
     **Ensure the Docker image is available on your computer**   
-    - If you haven’t installed it yet, refer to the [installation page](../getting_started/installation.md#local-docker-image)     
+    - If you haven’t installed it yet, refer to the [installation page](../getting_started/installation.md#using-docker-local)     
     
     **Set up your directory path:**   
     - In the example command below, replace `PATH_TO_REPO` with the directory path to your _MultiMalModPy_ folder on your computer, excluding the _MultiMalModPy_ directory itself. 
