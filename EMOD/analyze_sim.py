@@ -62,7 +62,7 @@ class SurveyAllAgeAnalyzer(IAnalyzer):
     Args:
         expt_name (str): Name of the experiment.
         sweep_variables (list): List of sweep variables. Defaults to None.
-        inset_channels (list): List of inset channels. Defaults to None.
+        channels (list): List of inset channels. Defaults to None.
         daily (bool): Flag indicating whether the data is daily. Defaults to False.
         working_dir (str): Working directory for the analysis. Defaults to "./".
         start_year (int): Start year of the simulation. Defaults to 2022.
@@ -482,19 +482,19 @@ class AnnualAgebinAnalyzer(IAnalyzer):
     and save a results dataframe for defined age groups over time (years).
 
     Parameters:
-        - expt_name (str): Name of the experiment.
-        - sweep_variables (list): List of sweep variables. Defaults to None.
-        - working_dir (str): Working directory for the analysis. Defaults to './'.
-        - start_year (int): Start year of the simulation experiment. Defaults to 1920.
-        - end_year (int): End year of the simulation experiment. Defaults to 2020.
-        - age_groups_aggregates (list): List of age group aggregates. Defaults to None.
-        - burnin (None or int): Number of burn-in iterations. Defaults to None.
+        expt_name (str): Name of the experiment.
+        sweep_variables (list): List of sweep variables. Defaults to None.
+        working_dir (str): Working directory for the analysis. Defaults to './'.
+        start_year (int): Start year of the simulation experiment. Defaults to 1920.
+        end_year (int): End year of the simulation experiment. Defaults to 2020.
+        age_groups_aggregates (list): List of age group aggregates. Defaults to None.
+        burnin (None or int): Number of burn-in iterations. Defaults to None.
 
     Saves:
         mmmpy_yr.csv
 
     Returns:
-        None
+        None: This method does not return a value.
     """
 
     def __init__(self, expt_name, sweep_variables=None, working_dir='./', start_year=1920,
@@ -806,10 +806,9 @@ class FiveDayAgebinAnalyzer(IAnalyzer):
         end_year (int): End year of the simulation experiment. Defaults to 2020.
         age_groups_aggregates (list): List of age group aggregates. Defaults to None.
         burnin (None or int): Number of burn-in iterations. Defaults to None.
-        cc (bool): Flag for change in conditions. Defaults to False.
 
     Saves:
-        mmmpy_5day.csv (or mmmpy_ccstep_daily.csv if cc is True)
+        mmmpy_5day.csv 
 
     Returns:
         None

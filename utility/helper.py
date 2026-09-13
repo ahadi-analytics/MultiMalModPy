@@ -22,9 +22,6 @@ def parse_launch_args():
     The arguments specify parameters such as the job directory, suite name, experiment name, model to run, user directory,
     interventions, run mode, and output type. The parsed arguments are returned as a Namespace object.
 
-    Args:
-        None
-
     Returns:
         argparse.Namespace: An object containing the parsed command-line arguments.
 
@@ -525,8 +522,8 @@ def create_scenarios_csv(exp, col_list):
             Defaults to ['target_output_values', 'case_management', 'seasonality'].
 
     Returns:
-        pandas.DataFrame: A DataFrame representing all generated scenarios, including metadata
-                          and mapped inputs.
+        pandas.DataFrame: DataFrame containing the generated scenarios and
+            associated experiment metadata and input parameters.
     """
 
     if col_list is None:

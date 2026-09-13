@@ -19,9 +19,6 @@ def parse_args():
     specifically for specifying the job directory and an optional experiment ID.
     The job directory is required to locate the `exp.obj` file.
 
-    Args:
-        None
-
     Returns:
         Namespace: A namespace object containing the parsed command-line arguments.
         The attributes include:
@@ -49,15 +46,16 @@ def parse_args():
 def convert_to_long(output, age_groups):
     """
     Convert the dataframe to long form for the desired columns.
-
+    For each specified age group, age-specific population, prevalence,
+    incidence, and mosquito-related outputs are extracted and combined
+    into a single long-format DataFrame.
+    
     Args:
         output (pandas.DataFrame): Input dataframe.
-        age_min (list): Minimum age values.
-
-        age_max (list): Maximum age values.
+        age_groups (list): List of age groups, where each element contains the lower and upper age bounds in days.
 
     Returns:
-        pandas.DataFrame: Long-form output.
+        pandas.DataFrame: Long-format DataFrame with one set of rows per specified age group.
     """
     result = []
     for pair in age_groups:
@@ -94,8 +92,9 @@ def post_processing(exp, job_directory, pv_suffix=''):
     This was previously done in R, but was brought to python to match the two other models.
 
     Args:
-        exp: Experiment object.
-        job_directory: Directory containing raw simulation output files.
+        exp (ExperimentConfig): The experiment configuration object.
+        job_directory (str): Directory containing raw simulation output files.
+        pv_suffix (str): Suffix for parameter variation files.
 
     Saves:
         {i}_daily.csv: for each simulation {i} in an experiment, saves the processed daily output.

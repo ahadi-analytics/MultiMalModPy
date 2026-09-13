@@ -281,15 +281,15 @@ def config_sweep_builder(exp, scen_df):
     and configures EMOD simulation parameters related to demographics and mortality.
 
     Args:
-        task (EMODTask): The EMOD task object that represents the simulation run. The task will be updated with
-                         demographic data and the relevant parameters.
-        exp (ExperimentConfig): An instance of the `ExperimentConfig` class containing the experiment settings,
-                                 including population size and input file paths. This object is used to update the
-                                 demographics and configuration for the simulation.
+        exp (ExperimentConfig): An instance of the `ExperimentConfig` class that contains all the parameters
+                                necessary to configure and run the EMOD simulation. This includes simulation
+                                duration, entomology mode, burn-in period, platform configuration, and more.
+        scen_df (pandas.DataFrame): A DataFrame containing the scenario data to be used for the experiment.
+                                    The dataframe should include the scenario IDs and relevant parameters
+                                    that define the experiment conditions.
 
     Returns:
-        EMODTask: The updated `task` object with demographic and simulation parameters configured.
-
+        list[SimulationBuilder]: A list containing the configured simulation builder with all sweep definitions added.
     """
     builder = SimulationBuilder()
     nseeds = exp.num_seeds

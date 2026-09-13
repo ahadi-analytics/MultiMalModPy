@@ -94,30 +94,33 @@ def output_target_to_xTemp(df, exp, model):
 
 def output_target_to_eir(df, exp, model):
     """
-    Interpolates and adjusts the output target to the expected EIR (Entomological Inoculation Rate) values
-    based on input data for different models and experimental conditions.
+    Interpolate target outputs to expected EIR (Entomological Inoculation Rate) 
+    values for different models and experimental conditions.
 
     Args:
-        df (pd.DataFrame): DataFrame containing simulation job data, where each row represents a specific condition
-            (e.g., `target_output_values`, `cm_clinical`, `seasonality`).
-        exp (Experiment): Experiment object that contains attributes such as `interp_path`, `target_output_name`, `pop_size`,
-            and others required for interpolation.
-        model (str): The model name used in the interpolation (e.g., 'malariasimulation', 'OpenMalaria').
+        df (pd.DataFrame): Simulation scenario data, with one row per condition
+            and columns such as `target_output_values`, `cm_clinical`, and
+            `seasonality`.
+        exp (Experiment): Experiment configuration containing interpolation
+            settings, including `interp_path`, `target_output_name`, `pop_size`,
+            and related parameters.
+        model (str): Model used for interpolation, for example
+            'malariasimulation' or 'OpenMalaria'.
 
     Returns:
-        list: A list of interpolated EIR values corresponding to each row of the input DataFrame.
+        list[float]: Interpolated EIR values corresponding to the rows of `df`.
 
     Raises:
-        ValueError: If the interpolation file is not found at the specified path.
-        ValueError: If the `target_output_name` specified in the experiment object is not valid.
+        ValueError: If the interpolation file cannot be found at `interp_path`.
+        ValueError: If `target_output_name` is not one of the supported output
+            types.
 
     Notes:
-        - The function performs interpolation based on the specified output type (`eir`, `prevalence_2to10`, or
-          `clinical_incidence_U5`).
-        - It applies scaling adjustments for population sizes, ensuring that the values are consistent with the
-          `pop_size` defined in the experiment.
-        - Warnings are issued if the interpolated values are outside the valid range (`<= 0` or `>= 1000`), with
-          adjustments made to these values accordingly.
+        The interpolation depends on the selected target output, such as `eir`,
+        `prevalence_2to10`, or `clinical_incidence_U5`. Population-size scaling
+        may be applied based on `exp.pop_size`. Interpolated values outside the
+        allowed range are adjusted, with warnings issued for values <= 0 or
+        >= 1000.
     """
     interp_path = os.path.join(exp.interp_path, model, exp.interp_csv)
     if not os.path.exists(interp_path):

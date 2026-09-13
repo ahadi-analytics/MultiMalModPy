@@ -100,7 +100,7 @@ def write_ps1_runmodel(exp, filename, model):
         ValueError: If the provided models is empty or if exp.job_directory is not valid.
 
     Returns:
-        None: This function does not return a value but writes the PowerShell script to the specified file.
+        None: The PowerShell script is written to `filename`.
     """
 
     # Check for valid models and experiment directory
@@ -205,14 +205,18 @@ def create_ps1_script(exp, fname, subdir, job_name, py_command):
     4. Pauses the script to keep the console open until the user presses Enter.
 
     Args:
-        exp (object): An experiment object containing the 'job_directory' attribute for saving the script.
-        fname (str): The name of the PowerShell script file to be created.
-        subdir (str): The subdirectory within the working directory where the Python command should be executed.
-        job_name (str): The name of the job, used for log file naming and script content.
-        pycommand  (str): The Python command to be executed within the PowerShell script.
+        exp (object): Experiment object containing the `job_directory`
+            attribute used to save the script and log files.
+        fname (str): Name of the PowerShell script file to create.
+        subdir (str): Subdirectory in which the Python command is executed.
+        job_name (str): Job name used in the script and log file names.
+        py_command (str): Python command to execute within the PowerShell script.
 
     Raises:
-        IOError: If there is an issue with writing the PowerShell script to the file.
+        IOError: If the PowerShell script cannot be written to disk.
+
+    Returns:
+        None: The function writes the PowerShell script to disk.
     """
     # Construct paths
     file_path = os.path.join(exp.job_directory, fname)
@@ -314,10 +318,10 @@ def write_bat_submission_plots(exp):
 
     Args:
         exp (Experiment): The experiment object containing the necessary directories and model names.
-        filename (str): The file path where the batch script will be saved.
 
     Returns:
-        None
+        None: The batch submission script is written to the experiment
+        job directory.
     """
     # Extract relevant data from the experiment object
     wdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))

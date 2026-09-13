@@ -343,8 +343,8 @@ def get_label(channel):
     Args:
         channel (str): The name of the channel for which to retrieve the label.
             Possible values include (but are not limited to):
-            - 'prevalence_2to10': Represents $\it{Pf}$PR$_{2-10}$ (%) prevalence.
-            - 'prevalence': Represents $\it{Pf}$PR (%) prevalence.
+            - 'prevalence_2to10': Represents $\mathit{Pf}$PR$_{2-10}$ (%) prevalence.
+            - 'prevalence': Represents $\mathit{Pf}$PR (%) prevalence.
             - 'clinical_incidence': Represents clinical incidence (per person per year).
             - 'severe_incidence': Represents severe incidence (per person per year).
             - 'eir': Represents simulated entomological inoculation rate (EIR).
@@ -412,14 +412,13 @@ def clean_fname(fname, sweepvar=None, unique_groups=None, facet_var=None, unique
     Args:
         fname (str): The filename to be cleaned and modified.
         sweepvar (str, optional): The name of the sweep variable in the filename. Defaults to None.
-        unique_groups (list, optional): A list of unique group names (e.g., model names) to replace
-            the sweep variable placeholder. Defaults to None.
+        unique_groups (list, optional): A list of unique group names (e.g., model names) to replacethe sweep variable placeholder. Defaults to None.
         facet_var (str, optional): The name of the facet variable in the filename. Defaults to None.
         unique_facets (list, optional): A list of unique facet names to replace the facet variable
             placeholder. Defaults to None.
 
     Returns:
-        str: The cleaned and modified filename.
+        str: Cleaned and modified filename.
     """
     if unique_facets is not None:
         if len(unique_facets) == 1 and not isinstance(unique_facets[0], int):
@@ -457,7 +456,7 @@ def subset_dataframe_for_plot(df, figure_vars, agegrps=None, filter_target=True)
 
     Raises:
         ValueError: If 'models' is not included in `figure_vars` and there
-        are multiple unique model names in the DataFrame.
+            are multiple unique model names in the DataFrame.
     """
 
     txt = 'Filtered dataset by: '

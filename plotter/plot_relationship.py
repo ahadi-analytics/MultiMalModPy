@@ -110,7 +110,7 @@ def prevalence2to10_to_outcome(
         ax.set_xlim(0, 1)
         ax.set_xticks([0, 0.2, 0.4, 0.6, 0.8, 1])
         ax.set_ylabel(get_label(channel))
-        ax.set_xlabel('$\it{Pf}$PR$_{2-10}$ (%)')
+        ax.set_xlabel(r'$\mathit{Pf}$PR$_{2-10}$')
         if firstPlot:
             lg_title = get_legend_title(sweepvar, exp)
             lg = ax.legend(loc='upper left', bbox_to_anchor=(0.5, 1.2), title=lg_title)
@@ -229,7 +229,7 @@ def prevalence2to10_to_outcome_by_age_and_model(fdir, df, channel='clinical_inci
             ax.set_xlim(0, 1)
             ax.set_xticks([0, 0.20, 0.40, 0.60, 0.80, 1])
             ax.set_ylabel(f'{ages_labels[a]}\n,{get_label(channel)}')
-            ax.set_xlabel('$\it{Pf}$PR$_{2-10}$')
+            ax.set_xlabel(r'$\mathit{Pf}$PR$_{2-10}$')
 
     fname = f'pfpr2to10_to_{channel}_age_model_{season}'
     fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_inches='tight')

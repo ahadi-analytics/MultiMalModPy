@@ -50,7 +50,7 @@ def age_curves(fdir, df, channel, sweepvar='models', facet_var='target_output_va
         ValueError: If `facet_var` is set to 'ageGroup'.
 
     Returns:
-        None: The function saves the generated plot to disk in the specified format.
+        None: The generated plot is saved to disk in the specified format.
     """
 
     if facet_name is None:
