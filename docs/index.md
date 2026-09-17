@@ -1,7 +1,7 @@
 
 # MultiMalModPy: A Python Framework for Multi-Model Malaria Simulation
 
-A HPC-oriented framework in [Python](https://www.python.org/) and [R](https://www.r-project.org/) that enables users to interact with  [EMOD](https://docs.idmod.org/projects/emod-malaria/en/2.20_a/)-malaria, [malariasimulation](https://mrc-ide.github.io/malariasimulation/index.html), and [OpenMalaria](https://github.com/SwissTPH/openmalaria/wiki).  
+A HPC-oriented framework in [Python](https://www.python.org/) and [R](https://www.r-project.org/) that enables users to interact with  [EMOD](https://emod.idmod.org/emodpy-malaria/)-malaria, [malariasimulation](https://mrc-ide.github.io/malariasimulation/index.html), and [OpenMalaria](https://github.com/SwissTPH/openmalaria/wiki).  
 MultiMalModPy is designed for modelers already familiar with one of these models, 
 as well as for those who wish to learn more about all three models in a unified and accessible approach.
 It allows to run the models in combination or alone for model characterization and comparison. 
@@ -19,7 +19,7 @@ _This guide is a supplementary resource and should be used alongside the officia
  Overview and comparison of the malaria models supported by MultiMalModPy.  
 - <a href="https://ahadi-analytics.github.io/MultiMalModPy/getting_started/overview/" style="color:#53A5D1; font-weight:bold; text-decoration: underline;">USER GUIDE</a>
  Step-by-step instructions for installing, configuring, and running MultiMalModPy, with details on parameter customization and platform-specific execution.     
-➡ [**Glossary**](http://127.0.0.1:8000/MultiMalModPy/getting_started/glossary/)  
+➡ [**Glossary**](https://ahadi-analytics.github.io/MultiMalModPy/getting_started/glossary/)  
 - <a href="https://ahadi-analytics.github.io/MultiMalModPy/guide/time/" style="color:#53A5D1; font-weight:bold; text-decoration: underline;">SIMULATION GUIDE</a>
    Parameters and configuration options for defining simulations in MultiMalModPy.  
 - <a href="https://ahadi-analytics.github.io/MultiMalModPy/developer/add_new_interventions/" style="color:#53A5D1; font-weight:bold; text-decoration: underline;">DEVELOPER GUIDE</a>

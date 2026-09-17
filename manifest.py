@@ -150,6 +150,7 @@ emod_input_path = os.path.normpath(os.path.join(ROOT_DIR, 'EMOD/inputs'))
 openmalaria_input_path = os.path.normpath(os.path.join(ROOT_DIR, 'OpenMalaria/'))
 malariasimulation_input_path = os.path.normpath(os.path.join(ROOT_DIR, 'malariasimulation/'))
 interp_path = os.path.normpath(os.path.join(ROOT_DIR, 'target_calibration/'))
+cm_path = os.path.normpath(os.path.join(ROOT_DIR, 'case_management/'))
 
 job_directory = os.path.normpath(os.path.join(projdir, 'experiments'))
 output_directory = os.path.normpath(os.path.join(projdir, 'simulation_outputs'))

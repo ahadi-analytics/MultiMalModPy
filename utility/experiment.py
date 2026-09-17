@@ -253,6 +253,7 @@ class ManifestConfig:
         self.job_directory_manifest = manifest.job_directory
         self.output_directory_manifest = manifest.output_directory
         self.interp_path = manifest.interp_path
+        self.cm_path = manifest.cm_path
         self.interp_csv = manifest.interp_csv
         self.ROOT_DIR= manifest.ROOT_DIR
         self.use_container = manifest.use_container

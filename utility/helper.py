@@ -459,26 +459,30 @@ def create_simsetup_csv(exp):
         setup_df.to_csv(save_path, index=False)
 
 
-def process_case_management(df):
+def process_case_management(df, exp):
     """
-    Processes and splits the case management column.
+    Renames the case_management column (holding a schedule CSV filename) to
+    cm_schedule_file for downstream use by the granular case management path,
+    and adds ds_name so downstream analyzers can group by district instead of
+    cm_clinical/cm_severe (per Ricky: this scales to multi-district runs later,
+    where grouping by district will be needed and grouping by cm won't).
 
-    Handles cases where `case_management` contains either a list of two values
-    or a single value in a list.
+    NOTE: this replaces the old tuple-unpacking logic (cm_clinical/cm_severe
+    from a (clinical, severe) pair). This is the granular branch's version;
+    the simple flat-coverage path (treatment_camp_simple) is untouched and
+    still lives in EMOD/functions/interventions.py, per Ricky's "uncouple,
+    don't remove" instruction.
 
     Args:
         df (pandas.DataFrame): The DataFrame.
+        exp (Experiment): The experiment object, used to pull ds_name.
 
     Returns:
         pandas.DataFrame: Updated DataFrame.
     """
-    
-    for i, row in df.iterrows():
-        df.loc[i, 'cm_clinical'] = pd.to_numeric(df.loc[i, 'case_management'][0], errors='coerce')
-        df.loc[i, 'cm_severe'] = pd.to_numeric(df.loc[i, 'case_management'][1], errors='coerce')
+    df = df.rename(columns={'case_management': 'cm_schedule_file'})
     df['cm_start'] = 1
-    df = df.drop('case_management', axis=1)
-
+    df['ds_name'] = exp.ds_name
     return df
 
 def map_model_calib_inputs(exp, df):
@@ -546,7 +550,7 @@ def create_scenarios_csv(exp, col_list):
     df['num_seeds'] = exp.num_seeds  # optional, same across all scenarios+seeds (total number of seeds)
 
     # Specifc process for clinical and severe case management (not full factorial)
-    df = process_case_management(df)
+    df = process_case_management(df, exp)
 
     # Add calibration target inputs
     df = map_model_calib_inputs(exp, df)
