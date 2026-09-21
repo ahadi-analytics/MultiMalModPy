@@ -33,7 +33,7 @@ _Box is checked if aligned_
 | Target population            | ✔        | Whole population treated equally (no age-specific targeting).                                     |
 | Resistance                   | ✔        | Drug resistance **not included** in this release.                                                 |
 | Deployment time & duration   | ✔        | Intervention begins at **start of simulation** and remains constant.                              |
-=======
+
 
 Details on their function and implementation can be found in the framework’s  **API** under the `intervention.py` script for each model.
 
