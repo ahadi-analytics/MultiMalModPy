@@ -42,7 +42,7 @@ malariasimulation comes with an R packages that includes all the necessary objec
 
 ### OpenMalaria  
 
-In OpenMalaria, each simulation scenario is defined by a single XML input file (more details on the OpenMalaria wiki [here](https://github.com/SwissTPH/openmalaria/wiki/ScenarioDesign)).   
+In OpenMalaria, each simulation scenario is defined by a single XML input file (more details on the OpenMalaria wiki [here](https://github.com/OpenMalaria-Org/openmalaria/wiki/ScenarioDesign)).   
 
 **Implementation in MultiMalModPy**    
 
@@ -77,7 +77,7 @@ By default, InsetChart.json is always created.
 
 Key output files used in MultiMalModPy and examples 
 
-- [InsetChart.json](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/parameter-configuration-output.html)    
+- [InsetChart.json](https://emod.idmod.org/emodpy-malaria/emod/parameter-configuration-output/)    
 - [MalariaSummary report](https://emod.idmod.org/emodpy-malaria/emod/software-report-malaria-summary/)     
 
 **Implementation in MultiMalModPy**    
@@ -179,7 +179,7 @@ This example file shows output for 1 scenario, for 12 values for 1 year, for 8 a
 
 ### OpenMalaria   
 
-OpenMalaria simulations generate two types of output **survey-based** and  **continuous monitoring** (details [here](https://github.com/SwissTPH/openmalaria/wiki/MonitoringOutput)).  
+OpenMalaria simulations generate two types of output **survey-based** and  **continuous monitoring** (details [here](https://github.com/OpenMalaria-Org/openmalaria/wiki/MonitoringOutput)).  
 
 **Implementation in MultiMalModPy:**  
 

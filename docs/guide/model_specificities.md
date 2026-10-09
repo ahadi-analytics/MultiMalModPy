@@ -134,7 +134,7 @@ You can find details on parameter sweeping for building scenarios under [simulat
 ### OpenMalaria  
 
 `entomology_mode` in OpenMalaria defines the feedback from human infectiousness to subsequent Entomological Infection Rate (EIR).   
-`entomology_mode` in OpenMalaria is setup by literally defining the ['mode of entomology'](https://github.com/SwissTPH/openmalaria/wiki/ModelTransmission#simulation-mode):
+`entomology_mode` in OpenMalaria is setup by literally defining the ['mode of entomology'](https://github.com/OpenMalaria-Org/openmalaria/wiki/ModelTransmission#simulation-mode):
 The specific XML chunk, as used in MultiMalModPy [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/OpenMalaria/scaffolds/R0000GA.xml#L131C6-L131C21), is shown below:  
 
 ```XML 

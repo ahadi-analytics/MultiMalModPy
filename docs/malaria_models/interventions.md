@@ -42,7 +42,7 @@ Details on their function and implementation can be found in the framework’s  
 ### EMOD  
 
 - Documentation main   
-  page:[malaria-model-antimalarial-drugs](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/malaria-model-antimalarial-drugs.html)    
+  page:[malaria-model-antimalarial-drugs](https://emod.idmod.org/emodpy-malaria/emod/malaria-model-antimalarial-drugs/)    
 - Function: [treatment_seeking.py](https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/interventions/treatment_seeking.py)    
 - Related publications: [Gerardin et al 2015](https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-015-0887-y)   
 - Additional: [malaria_drug_params.csv](https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/malaria_drug_params.csv)    
@@ -226,8 +226,8 @@ targets is a list of dictionaries defining the trigger event and coverage for an
 ### OpenMalaria   
 
 - Documentation main page:   
-    - [ScenarioHealthSystem](https://github.com/SwissTPH/openmalaria/wiki/ScenarioHealthSystem)   
-    - [ScenarioPharmacology](https://github.com/SwissTPH/openmalaria/wiki/ScenarioPharmacology#antimalarial-drug-modelling)   
+    - [ScenarioHealthSystem](https://github.com/OpenMalaria-Org/openmalaria/wiki/ScenarioHealthSystem)   
+    - [ScenarioPharmacology](https://github.com/OpenMalaria-Org/openmalaria/wiki/ScenarioPharmacology#antimalarial-drug-modelling)   
 - Function: [set_clinical_treatment](https://github.com/mrc-ide/malariasimulation/blob/master/R/drug_parameters.R#L49)   
 - Related publications:  [Galactionova et al (2015).](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0127818)  
 

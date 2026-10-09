@@ -14,7 +14,7 @@ The malaria model structure for EMOD is detailed in the [malaria-model-overview]
 
 **malariasimulation**: The model structure for malariasimulation is outlined in the [model structure](https://mrc-ide.github.io/malariasimulation/articles/Model.html) and related publications.    
 
-**OpenMalaria**: The model structure for OpenMalaria can be found in the [openmalaria/wiki](https://github.com/SwissTPH/openmalaria/wiki) and related publications.  
+**OpenMalaria**: The model structure for OpenMalaria can be found in the [openmalaria/wiki](https://github.com/OpenMalaria-Org/openmalaria/wiki) and related publications.  
 
 
 ## Model components configured in MultiMalModPy    
@@ -40,15 +40,15 @@ The malaria model structure for EMOD is detailed in the [malaria-model-overview]
 
 - **EMOD**:  [Population dynamics](https://emod.idmod.org/emodpy-malaria/emod/parameter-configuration-population/)   
 - **malariasimulation**: [ModelDemography]()    
-- **OpenMalaria**:  [Demography](https://github.com/SwissTPH/openmalaria/wiki/ModelDemography)   
+- **OpenMalaria**:  [Demography](https://github.com/OpenMalaria-Org/openmalaria/wiki/ModelDemography)   
 
 
 ### Transmission dynamics     
 
 **EMOD** 
 
-- 'dynamic' transmission, using [Larval Habitat](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/vector-model-larval-habitat.html) and [climate](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/vector-model-climate-demographics.html) as inputs.        
-- 'forced' transmission, using [InputEIR](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/parameter-campaign-node-inputeir.html). 
+- 'dynamic' transmission, using [Larval Habitat](https://emod.idmod.org/emodpy-malaria/emod/vector-model-larval-habitat/) and [climate](https://emod.idmod.org/emodpy-malaria/emod/vector-model-climate-demographics/) as inputs.        
+- 'forced' transmission, using [InputEIR](https://emod.idmod.org/emodpy-malaria/emod/parameter-campaign-node-inputeir/). 
 
 **malariasimulation** 
 
@@ -56,6 +56,6 @@ The malaria model structure for EMOD is detailed in the [malaria-model-overview]
 
 **OpenMalaria** 
 
-- 'dynamic' transmission, using EIR as input [ModelTransmission](https://github.com/SwissTPH/openmalaria/wiki/ModelTransmission).  
-- 'forced' transmission, using EIR as input [ModelTransmission](https://github.com/SwissTPH/openmalaria/wiki/ModelTransmission).  
+- 'dynamic' and 'forced' transmission [ModelTransmission](https://github.com/OpenMalaria-Org/openmalaria/wiki/ModelTransmission).  
+
 
