@@ -50,32 +50,38 @@ A stable release should include:
 - Documentation updates reflecting the changes
 - Passing unit and integration tests
 
-###  Release workflow:
+### Release workflow
 
-Releases are made manually and  not yet compiled and tested automatically by the Continuous Integration system and uploaded to the Github Releases page.
+Releases are currently made manually and are not yet automatically built, tested, or uploaded to the GitHub Releases page by the Continuous Integration (CI) system.
 
-1. **Tag the version in Git:**  
-   ```bash  
-   git tag v1.12.0  
-   git push origin v1.12.0  
+1. **Tag the version in Git:**
 
-2. **Update version references:**  
-   - In `docs/about/changelog.md`  
-   - Push documentation `mkdocs gh-deploy`   
+```
+git tag v1.12.0
+git push origin v1.12.0
+```
 
-3. Create a GitHub Release:  
- - Add a summary of changes  
- - Attach release assets  
+2. **Update version references:**
 
+    - Update `docs/about/changelog.md`.
+    - Deploy the documentation:
 
-## Tests   
-Testing is under active development and will be organized into:
-- Unit Tests: For low-level logic (e.g., parameter calculation, configuration validation)  
-- Integration Tests: For full simulation workflows, platform integration, and CLI usage  
+```
+mkdocs gh-deploy
+```
 
+3. **Create a GitHub Release:** 
 
-##  Future Plans   
+    - Add a summary of changes. 
+    - Attach release assets. 
 
-- Automate version tagging, release creation, changelog creation, and tests, with GitHub Actions
- 
- 
+## Tests  
+
+Testing is under active development and will be organized into:  
+
+- **Unit tests:** For low-level logic, such as parameter calculations and configuration validation. 
+- **Integration tests:** For full simulation workflows, platform integration, and CLI usage. 
+
+## Future plans
+
+Automate version tagging, release creation, changelog generation, and testing using GitHub Actions. 

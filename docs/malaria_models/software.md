@@ -1,8 +1,8 @@
 # Software
 
 - **EMOD** (Epidemiological MODeling software) has been developed and is maintained by
-  the [Institute for Disease Modeling (IDM)](https://www.idmod.org/), and also used by
-  the [Malaria Modeling Group at Northwestern University](https://www.numalariamodeling.org/).
+  the [Institute for Disease Modeling (IDM)](https://www.idmod.org/), and EMOD Malaria is used by [AHADI](https://www.appliedhealthanalytics.org/), 
+    by the Malaria Modeling Group at Northwestern University (2019-2025), and other groups of the [Faculty Enrichment Program](https://mesamalaria.org/resource-hub/faculty-enrichment-program-in-applied-malaria-modeling-using-emod/).
 
 - **OpenMalaria** has been developed and is maintained by
   the [Global Disease Modelling team](https://www.thekids.org.au/our-research/early-environment/infection-and-vaccines/global-disease-modelling/)
