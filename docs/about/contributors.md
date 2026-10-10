@@ -25,24 +25,24 @@ For developers, how to update the online documentation is described in the [./do
 
 ## Developers  
 
-- **Tom Brewer** — *Imperial College London, UK* 
-- **Aurelien Cavelan** — *University of Basel, Switzerland* 
-- **Jaline Gerardin** — *Northwestern University & AHADI, Chicago, USA* 
-- **Melissa Penny** — *University of Western Australia & Kids Research Institute, Australia* 
-- **Ricky Richter** — *Northwestern University, Chicago, USA* 
-- **Manuela Runge** — *Northwestern University, Chicago, USA*
-- **Peter Winskill** — *Imperial College London, UK* 
+- **Tom Brewer** 
+- **Aurelien Cavelan** 
+- **Jaline Gerardin**
+- **Melissa Penny** 
+- **Ricky Richter** 
+- **Manuela Runge** 
+- **Peter Winskill** 
 
 ## Contributors  
 
-- **Caitlin Bever** — *Institute for Disease Modeling, USA* 
-- **Scott Coughlin** — *Northwestern University, USA* 
-- **Matthew Gorby** — *Northwestern University, USA* 
-- **Tobias Holden** — *Northwestern University, USA* 
-- **Josephine Malinga** — *Swiss TPH, Switzerland* 
-- **Narimane Nekkab** — *Swiss TPH, Switzerland* 
-- **Andrew Shattock** — *University of Western Australia & Kids Research Institute, Australia* 
-- **Sophie van Genderen** — *Northwestern University, USA* 
+- **Caitlin Bever** 
+- **Scott Coughlin** 
+- **Matthew Gorby** 
+- **Tobias Holden** 
+- **Josephine Malinga** 
+- **Narimane Nekkab** 
+- **Andrew Shattock** 
+- **Sophie van Genderen** 
 
 <br>
 
