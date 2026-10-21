@@ -19,22 +19,23 @@ The following parameters need editing when running `launch_sim.py`:
     - The experiment ID for this burnin simulation will be needed when running the pickup simulation (and is saved
       automatically in <exp_name> folder, and also printed to console).  
   
-- To run a pickup simulation(s):  
-    - In latest version of the framework, submitting a burnin simulation will automatically create and run a  
-      corresponding pickup simulation via  `launch_pickup.sh`  
-    - In the files, `emod_step` is set to `pickup` and `emod_serialized_id` automatically to `<burnin experiment id>`
-    - Note, pickup simulations cannot run without an attached experiment id (for EMOD).  
-    - The `launch_pickup.sh` includes the following lines after the required SBATCH specifications:  
-  
-       ```
-         ml singularity/3.8.1  
-         ml python/3.9.16
-         source /projects/b1139/environments/mmmpy_venv/bin/activate
-    
-         cd /projects/b1139/emod-om/MultiMalModPy
-         python launch_sim.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name> --emodstep pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria
-         
-       ```
+- To run pickup simulation(s):
+    - In the latest version of the framework, submitting a burn-in simulation will automatically create and run a corresponding pickup simulation via `launch_pickup.sh`.
+    - In the files, `emod_step` is set to `pickup` and `emod_serialized_id` is automatically set to `<burnin experiment id>`.
+    - Note that pickup simulations cannot run without an attached experiment ID for EMOD.
+    - The `launch_pickup.sh` script includes the following lines after the required SBATCH specifications:
+
+```bash
+ml singularity/3.8.1
+ml python/3.9.16
+source /projects/b1139/environments/mmmpy_venv/bin/activate
+```
+
+```bash
+cd /projects/b1139/emod-om/MultiMalModPy
+python launch_sim.py -d <job_directory>/<exp_name>_burnin80 --suite <SUITE_Name> --expname <exp_name> --emodstep pickup --serializedid <emod_serialized_id> --models EMOD MalSim OpenMalaria
+``` 
+
 
 - To run a customized (new) pickup simulation(s):  
     - Use the generated `launch_pickup.sh` as a template:
@@ -54,19 +55,15 @@ The following parameters need editing when running `launch_sim.py`:
 ## Using alternative base calibration
 
 ### EMOD
-This section is under construction... 
+No alternative base calibration publicly available at this time. 
 
 ### OpenMalaria     
 
-Model variants  
 OpenMalaria allows to take into account model and parameter uncertainty through varying  [model variants](https://github.com/SwissTPH/openmalaria/wiki/ModelWithinHost#specification-of-model-variants)). 
 However, for simplicity in MultiMalModPy, only the base model is included. 
 
 
-## Parameter sampling    
-
 ### malariasimulation 
-malariasimulation allows paramter sampling.  
 
 In malariasimulation, accounting for parameter uncertainty to better reflect potential variability in the simulation results has been integrated by drawing parameter values
 from posterior distributions around defined parameter sets.   
@@ -107,6 +104,10 @@ The specific XML chunk, as used in MultiMalModPy [here](https://github.com/ahadi
 </importedInfections>
 ```
 
+### malariasimulation 
+Importation not setup for malariasimulation in MultiMalModPy. 
+
+
 ## Entomology mode
 
 ### EMOD  
@@ -133,11 +134,13 @@ You can find details on parameter sweeping for building scenarios under [simulat
 ### OpenMalaria  
 
 `entomology_mode` in OpenMalaria defines the feedback from human infectiousness to subsequent Entomological Infection Rate (EIR).   
-`entomology_mode` in OpenMalaria is setup by literally defining the ['mode of entomology'](https://github.com/SwissTPH/openmalaria/wiki/ModelTransmission#simulation-mode):
+`entomology_mode` in OpenMalaria is setup by literally defining the ['mode of entomology'](https://github.com/OpenMalaria-Org/openmalaria/wiki/ModelTransmission#simulation-mode):
 The specific XML chunk, as used in MultiMalModPy [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/OpenMalaria/scaffolds/R0000GA.xml#L131C6-L131C21), is shown below:  
 
 ```XML 
 <entomology mode="@entomology_mode@" name="Namawala" scaledAnnualEIR="@eir@">
 ```
 
+### malariasimulation 
 
+By default, the malariasimulation transmission setup in MultiMalModPy most closely corresponds to the framework's dynamic entomology mode.

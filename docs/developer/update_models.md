@@ -83,7 +83,7 @@ These instructions were adapted from the original setup notes by **Scott Coughli
 
 ```   
 cd /gpfs/projects/b1139/OpenMalaria/  
-wget https://github.com/SwissTPH/openmalaria/releases/download/schema-48.0/openMalaria-ubuntu-24.04.tar.gz  
+wget https://github.com/OpenMalaria-Org/openmalaria/releases/download/schema-48.0/openMalaria-ubuntu-24.04.tar.gz  
 tar -xvzf openMalaria-ubuntu-24.04.tar.gz  
 rm openMalaria-ubuntu-24.04.tar.gz  
 mv openMalaria-ubuntu-24.04 om_v48  

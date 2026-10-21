@@ -5,7 +5,7 @@ site_url: https://ahadi-analytics.github.io/MultiMalModPy/
 repo_url: https://github.com/ahadi-analytics/MultiMalModPy
 edit_uri: edit/main/docs/
 site_author: AHADI Analytics
-copyright: Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a>
+copyright: Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a>
 
 plugins:
   - search

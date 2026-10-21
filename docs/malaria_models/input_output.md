@@ -22,30 +22,29 @@ details, and interventions.
 For a detailed overview of these input files, refer to the official  
 documentation: https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-inputs.html.
 
-Key input files:     
+Key input files 
+
 - demographics file   
 - configuration file   
 - campaign file     
 - climate files    
 
-**Implementation in MultiMalModPy:**    
-- ...   
-- ...  
-- ...   
-
+ **Implementation in MultiMalModPy**    
+ - speicifc python scripts generate required input files
 
 ### malariasimulation   
 malariasimulation comes with an R packages that includes all the necessary objects and configurations and no additional files are required.
 
-**Implementation in MultiMalModPy:**    
+**Implementation in MultiMalModPy** 
+
 - a scenario CSV (`scen_df.csv`) is handled as an input for generate simulation scenarios    
 - simulation parameters are derived from the `get_parameters` function and overwritten with scenario specific parameters (view script [here](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/malariasimulation/functions/run_simulations.R#L77))   
 
 ### OpenMalaria  
 
-In OpenMalaria, each simulation scenario is defined by a single XML input file (more details on the OpenMalaria wiki [here](https://github.com/SwissTPH/openmalaria/wiki/ScenarioDesign)).   
+In OpenMalaria, each simulation scenario is defined by a single XML input file (more details on the OpenMalaria wiki [here](https://github.com/OpenMalaria-Org/openmalaria/wiki/ScenarioDesign)).   
 
-**Implementation in MultiMalModPy:**    
+**Implementation in MultiMalModPy**    
 
 - one XML main scaffold with placeholders for parameters or 'snippets' of XML lines to replace   
 - parameter replacements `@parameter_value@`   
@@ -71,16 +70,17 @@ The format and number of output files per single scenario varies across the thre
 After a simulation finishes, a reporter extracts, aggregates, and saves the data as an output report in the working directory.   
 These reports summarize different aspects of the simulation and can be in JSON, CSV, or binary formats.  
 For a detailed overview of output files, refer to the official documentation:  
-https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-outputs.html 
+[https://emod.idmod.org/emodpy-malaria/emod/software-outputs/ ](https://emod.idmod.org/emodpy-malaria/emod/software-outputs/ )  
+
 EMOD allows users to configure which reports are generated through specific settings.  
-By default, InsetChart.json is always created. More information described at:  
-https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/parameter-configuration-output.html  
+By default, InsetChart.json is always created.  
 
-Key output files used in MultiMalModPy and examples:  
-- [InsetChart.json](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-report-inset-chart.html)    
-- [MalariaSummary report](https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/software-report-malaria-summary.html#)    
+Key output files used in MultiMalModPy and examples 
 
-**Implementation in MultiMalModPy:**   
+- [InsetChart.json](https://emod.idmod.org/emodpy-malaria/emod/parameter-configuration-output/)    
+- [MalariaSummary report](https://emod.idmod.org/emodpy-malaria/emod/software-report-malaria-summary/)     
+
+**Implementation in MultiMalModPy**    
 
 - Raw output files are written into the EMOD specific experiments folder `experiments/<emod_id>/outputs`.  
 - Each output file is written into a scenario specific folder with unique IDs that are automatically assigned in  
@@ -179,7 +179,7 @@ This example file shows output for 1 scenario, for 12 values for 1 year, for 8 a
 
 ### OpenMalaria   
 
-OpenMalaria simulations generate two types of output **survey-based** and  **continuous monitoring** (details [here](https://github.com/SwissTPH/openmalaria/wiki/MonitoringOutput)).  
+OpenMalaria simulations generate two types of output **survey-based** and  **continuous monitoring** (details [here](https://github.com/OpenMalaria-Org/openmalaria/wiki/MonitoringOutput)).  
 
 **Implementation in MultiMalModPy:**  
 
