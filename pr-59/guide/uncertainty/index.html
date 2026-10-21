@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="AHADI Analytics" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/guide/uncertainty/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Randomness & uncertainty - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Randomness \u0026 uncertainty";
+        var mkdocs_page_input_path = "guide/uncertainty.md";
+        var mkdocs_page_url = "/MultiMalModPy/guide/uncertainty/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/software/">Software overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/documentation-and-sourcecode/">Source Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/input_output/">Input and output files</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview/">Overview of MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">First time configurations (manifest.py)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/usage/">Quickstart: Run your first simulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_run/">Launch simulations by platform</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../time/">Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../age_demography/">Population & age structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../seasonality/">Seasonality</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../transmission_calibration/">Transmission calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../scenarios/">Scenarios</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Randomness & uncertainty</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#randomness">Randomness</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#model-and-parameter-uncertainty">Model and parameter uncertainty</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developer Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/add_new_interventions/">Add new interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_models/">Update malaria models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/code_testing/">Write tests</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/create_new_release/">Create new releases</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_docs/">Update the documentation</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_local/">helper_local.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/calib_params/">calib_params.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">interventions.R</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations.R</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_sampleplots/">plot_sampleplots.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_ccstep/">plot_ccstep.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_custom/">plot_custom.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact and Contributions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Release Notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Support & Troubleshooting</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Simulation Guide</li>
+      <li class="breadcrumb-item active">Randomness & uncertainty</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/guide/uncertainty.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="accounting-for-sources-of-uncertainty">Accounting for sources of uncertainty<a class="headerlink" href="#accounting-for-sources-of-uncertainty" title="Permanent link">&para;</a></h1>
+<h2 id="randomness">Randomness<a class="headerlink" href="#randomness" title="Permanent link">&para;</a></h2>
+<p><strong>EMOD</strong>, <strong>OpenMalaria</strong>, and <strong>malariasimulation</strong> are each stochastic models that use a ‘seed’ (or the equivalent term ‘run number’ used in EMOD) 
+to determine starting position of their respective (pseudo-) random number generators.
+Thus seed selection can alter simulation outcomes that rely on stochastic decisions. 
+For consistency the same set of seeds across all three models is run, for instance, selecting 20 seeds in the experiment set-up, will result in running 20 seeds across each model. </p>
+<h2 id="model-and-parameter-uncertainty">Model and parameter uncertainty<a class="headerlink" href="#model-and-parameter-uncertainty" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>OpenMalaria</strong> provides a mechanism to account for model and parameter uncertainty by varying <em>model variants</em>. 
+This approach allows the user to explore different model configurations and their impact on simulation outcomes. 
+For more information, refer to the work by <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3260300/">Smith et al 2012</a>. 
+In the initial framework release, only the base model is included. Future updates may include additional model variants.</p>
+</li>
+<li>
+<p><strong>EMOD’s</strong> currently does not include built-in functionality for accounting for parameter uncertainty in its framework. 
+However, an alternative approach for base calibration in EMOD will soon be available, enabling users to better account for parameter variability in future simulations. 
+For details, see the guide on <a href="../model_specificities/#using-alternative-base-calibration">alternative base calibration</a>.   </p>
+</li>
+<li>
+<p>In <strong>malariasimulation</strong>, parameter uncertainty is addressed by drawing parameter values from posterior distributions around defined parameter sets. 
+This technique allows for a more realistic representation of parameter variability, which can influence the outcomes of the simulation 
+For more detailed information on how parameter sampling is implemented, see the section on <a href="../model_specificities/#parameter-sampling">Paramerer sampling</a>. </p>
+</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../model_specificities/" class="btn btn-neutral float-left" title="Model specific options"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../developer/add_new_interventions/" class="btn btn-neutral float-right" title="Add new interventions">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../model_specificities/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../developer/add_new_interventions/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      <script src="../../javascripts/tablesort.js"></script>
+      <script src="../../javascripts/freeze-table.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(false);
+        });
+    </script>
+
+</body>
+</html>
