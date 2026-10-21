@@ -261,7 +261,7 @@ If you&rsquo;re looking to <strong>run simulations using existing interventions<
 └── smc.py # Placeholder, not currently supported<br />
 └── <intervention>.py # Any new interventions user may add</p>
 <p>To activate interventions, import them in your experiment setup:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">interventions.ccstep</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">interventions.ccstep</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 <span class="c1"># from interventions.smc import *  # Currently not supported</span>
 </code></pre></div>
 
@@ -299,15 +299,15 @@ Edit these functions (usually found in your experiment setup or helper file):</p
 <li><code>intervention_params_to_check</code>: Validates experiment parameters for each active intervention</li>
 </ol>
 <div class="codehilite"><pre><span></span><code>    # In exp_params_to_update
-    if &#39;smc&#39; in exp.intervention_list:
+    if 'smc' in exp.intervention_list:
         exp = smc_params(exp)
 
     # In scenario_df_to_update
-    if &#39;smc&#39; in exp.intervention_list:
+    if 'smc' in exp.intervention_list:
         df = smc_columns(exp, df)
 
     # In intervention_params_to_check
-    if &#39;smc&#39; in exp.intervention_list:
+    if 'smc' in exp.intervention_list:
         smc_input_check(exp)
 </code></pre></div>
 
@@ -333,7 +333,7 @@ Edit these functions (usually found in your experiment setup or helper file):</p
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

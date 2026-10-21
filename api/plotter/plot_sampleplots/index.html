@@ -290,7 +290,10 @@
 
 
 
+
+
   <div class="doc doc-children">
+
 
 
 
@@ -328,7 +331,7 @@ Each plot shows the mean of the channels over time (based on the provided timest
         <ul class="first simple">
             <li>
               <b><code>wdir</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>Working directory where the &lsquo;All_Age_Outputs.csv&rsquo; file is located, and where the plots will be saved.</p>
@@ -336,7 +339,7 @@ Each plot shows the mean of the channels over time (based on the provided timest
             </li>
             <li>
               <b><code>df</code></b>
-                  (<code>DataFrame</code>)
+                  (<code><span title="DataFrame">DataFrame</span></code>)
               –
               <div class="doc-md-description">
                 <p>The input DataFrame containing the data for plotting, including columns for the sweep variables, timestep, and channels.</p>
@@ -344,7 +347,7 @@ Each plot shows the mean of the channels over time (based on the provided timest
             </li>
             <li>
               <b><code>model</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The model name used in the file name of the saved plot.</p>
@@ -352,7 +355,7 @@ Each plot shows the mean of the channels over time (based on the provided timest
             </li>
             <li>
               <b><code>timestep_var</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The name of the column that represents the timestep (or time variable).</p>
@@ -360,7 +363,7 @@ Each plot shows the mean of the channels over time (based on the provided timest
             </li>
             <li>
               <b><code>sweep_variables</code></b>
-                  (<code>list</code>)
+                  (<code><span title="list">list</span></code>)
               –
               <div class="doc-md-description">
                 <p>List of columns to group the data by for plotting (e.g., different simulation conditions).</p>
@@ -368,7 +371,7 @@ Each plot shows the mean of the channels over time (based on the provided timest
             </li>
             <li>
               <b><code>sample_channels</code></b>
-                  (<code>list</code>)
+                  (<code><span title="list">list</span></code>)
               –
               <div class="doc-md-description">
                 <p>List of column names representing the channels to be plotted (e.g., prevalence, incidence, etc.).</p>
@@ -406,7 +409,8 @@ Each plot shows the mean of the channels over time (based on the provided timest
   <summary>Saves</summary>
   <p>sampleplot_all_age_{model}.png: A PNG file containing the generated plots.</p>
 </details>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_sampleplots.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-20">20</a></span>
 <span class="normal"><a href="#__codelineno-0-21">21</a></span>
@@ -476,14 +480,14 @@ Each plot shows the mean of the channels over time (based on the provided timest
 <span class="normal"><a href="#__codelineno-0-85">85</a></span>
 <span class="normal"><a href="#__codelineno-0-86">86</a></span>
 <span class="normal"><a href="#__codelineno-0-87">87</a></span>
-<span class="normal"><a href="#__codelineno-0-88">88</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="k">def</span> <span class="nf">all_age_sample_plot</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">timestep_var</span><span class="p">,</span> <span class="n">sweep_variables</span><span class="p">,</span> <span class="n">sample_channels</span><span class="p">):</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-88">88</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="k">def</span><span class="w"> </span><span class="nf">all_age_sample_plot</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">timestep_var</span><span class="p">,</span> <span class="n">sweep_variables</span><span class="p">,</span> <span class="n">sample_channels</span><span class="p">):</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="sd">    Generate a sample plot for all age data.</span>
 <a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="sd">    This function aggregates data based on the provided sweep variables and generates a set of plots for specified channels.</span>
 <a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">    Each plot shows the mean of the channels over time (based on the provided timestep variable). The plots are saved as a PNG file.</span>
 <a id="__codelineno-0-25" name="__codelineno-0-25"></a>
 <a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">        wdir (str): Working directory where the &#39;All_Age_Outputs.csv&#39; file is located, and where the plots will be saved.</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">        wdir (str): Working directory where the 'All_Age_Outputs.csv' file is located, and where the plots will be saved.</span>
 <a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">        df (DataFrame): The input DataFrame containing the data for plotting, including columns for the sweep variables, timestep, and channels.</span>
 <a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">        model (str): The model name used in the file name of the saved plot.</span>
 <a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">        timestep_var (str): The name of the column that represents the timestep (or time variable).</span>
@@ -495,7 +499,7 @@ Each plot shows the mean of the channels over time (based on the provided timest
 <a id="__codelineno-0-36" name="__codelineno-0-36"></a>
 <a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">    Saves:</span>
 <a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">        sampleplot_all_age_{model}.png: A PNG file containing the generated plots.</span>
-<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">    """</span>
 <a id="__codelineno-0-40" name="__codelineno-0-40"></a>
 <a id="__codelineno-0-41" name="__codelineno-0-41"></a>    <span class="c1"># Take mean across seeds</span>
 <a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="n">sample_channels</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sample_channels</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
@@ -518,33 +522,33 @@ Each plot shows the mean of the channels over time (based on the provided timest
 <a id="__codelineno-0-59" name="__codelineno-0-59"></a>            <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span>
 <a id="__codelineno-0-60" name="__codelineno-0-60"></a>            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">pdf</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">sweep_variables</span><span class="p">)):</span>
 <a id="__codelineno-0-61" name="__codelineno-0-61"></a>                <span class="n">pdf_aggr</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">timestep_var</span><span class="p">]</span> <span class="o">+</span> <span class="n">sweep_variables</span><span class="p">)[</span><span class="n">sample_channels</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-<a id="__codelineno-0-62" name="__codelineno-0-62"></a>                <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sweep_variables</span><span class="p">,</span> <span class="n">p</span><span class="p">)])</span> \
-<a id="__codelineno-0-63" name="__codelineno-0-63"></a>                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sweep_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a>                <span class="n">label</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sweep_variables</span><span class="p">,</span> <span class="n">p</span><span class="p">)])</span> \
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a>                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">sweep_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">"</span>
 <a id="__codelineno-0-64" name="__codelineno-0-64"></a>
-<a id="__codelineno-0-65" name="__codelineno-0-65"></a>                <span class="c1"># Set color from the default color cycle (using &#39;C0&#39;, &#39;C1&#39;, &#39;C2&#39; etc.)</span>
-<a id="__codelineno-0-66" name="__codelineno-0-66"></a>                <span class="n">color</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;C</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">10</span><span class="si">}</span><span class="s1">&#39;</span>  <span class="c1"># To handle more than 10 colors, cycling through &#39;C0&#39;, &#39;C1&#39;, ...</span>
-<a id="__codelineno-0-67" name="__codelineno-0-67"></a>                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">seed</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()):</span>
-<a id="__codelineno-0-68" name="__codelineno-0-68"></a>                    <span class="n">seed_data</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[</span><span class="n">pdf</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">seed</span><span class="p">]</span>
-<a id="__codelineno-0-69" name="__codelineno-0-69"></a>                    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">seed_data</span><span class="p">[</span><span class="n">timestep_var</span><span class="p">],</span> <span class="n">seed_data</span><span class="p">[</span><span class="n">channel</span><span class="p">],</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
-<a id="__codelineno-0-70" name="__codelineno-0-70"></a>                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pdf_aggr</span><span class="p">[</span><span class="n">timestep_var</span><span class="p">],</span> <span class="n">pdf_aggr</span><span class="p">[</span><span class="n">channel</span><span class="p">],</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a>                <span class="c1"># Set color from the default color cycle (using 'C0', 'C1', 'C2' etc.)</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66"></a>                <span class="n">color</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'C</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">10</span><span class="si">}</span><span class="s1">'</span>  <span class="c1"># To handle more than 10 colors, cycling through 'C0', 'C1', ...</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a>                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">seed</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="s1">'seed'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()):</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a>                    <span class="n">seed_data</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[</span><span class="n">pdf</span><span class="p">[</span><span class="s1">'seed'</span><span class="p">]</span> <span class="o">==</span> <span class="n">seed</span><span class="p">]</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a>                    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">seed_data</span><span class="p">[</span><span class="n">timestep_var</span><span class="p">],</span> <span class="n">seed_data</span><span class="p">[</span><span class="n">channel</span><span class="p">],</span> <span class="s1">'-'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pdf_aggr</span><span class="p">[</span><span class="n">timestep_var</span><span class="p">],</span> <span class="n">pdf_aggr</span><span class="p">[</span><span class="n">channel</span><span class="p">],</span> <span class="s1">'-'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
 <a id="__codelineno-0-71" name="__codelineno-0-71"></a>
 <a id="__codelineno-0-72" name="__codelineno-0-72"></a>            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <a id="__codelineno-0-73" name="__codelineno-0-73"></a>            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 <a id="__codelineno-0-74" name="__codelineno-0-74"></a>
 <a id="__codelineno-0-75" name="__codelineno-0-75"></a>            <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_channels</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-<a id="__codelineno-0-76" name="__codelineno-0-76"></a>                <span class="n">lg</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a>                <span class="n">lg</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'upper left'</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <a id="__codelineno-0-77" name="__codelineno-0-77"></a>
 <a id="__codelineno-0-78" name="__codelineno-0-78"></a>    <span class="c1"># Remove unused subplots</span>
 <a id="__codelineno-0-79" name="__codelineno-0-79"></a>    <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">[</span><span class="n">n_channels</span><span class="p">:]:</span>
 <a id="__codelineno-0-80" name="__codelineno-0-80"></a>        <span class="n">fig</span><span class="o">.</span><span class="n">delaxes</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
 <a id="__codelineno-0-81" name="__codelineno-0-81"></a>
 <a id="__codelineno-0-82" name="__codelineno-0-82"></a>    <span class="c1"># Add overall labels</span>
-<a id="__codelineno-0-83" name="__codelineno-0-83"></a>    <span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Time [</span><span class="si">{</span><span class="n">timestep_var</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
-<a id="__codelineno-0-84" name="__codelineno-0-84"></a>    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;All-Age Sample Plot&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a>    <span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'Time [</span><span class="si">{</span><span class="n">timestep_var</span><span class="si">}</span><span class="s1">]'</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a>    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">'All-Age Sample Plot'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 <a id="__codelineno-0-85" name="__codelineno-0-85"></a>
 <a id="__codelineno-0-86" name="__codelineno-0-86"></a>    <span class="c1"># Save the plot</span>
-<a id="__codelineno-0-87" name="__codelineno-0-87"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;sampleplot_all_age_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.png&#39;</span>
-<a id="__codelineno-0-88" name="__codelineno-0-88"></a>    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s1">&#39;plots&#39;</span><span class="p">,</span> <span class="n">fname</span><span class="p">),</span> <span class="n">bbox_extra_artists</span><span class="o">=</span><span class="p">(</span><span class="n">lg</span><span class="p">,),</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-87" name="__codelineno-0-87"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'sampleplot_all_age_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.png'</span>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a>    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s1">'plots'</span><span class="p">,</span> <span class="n">fname</span><span class="p">),</span> <span class="n">bbox_extra_artists</span><span class="o">=</span><span class="p">(</span><span class="n">lg</span><span class="p">,),</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">'tight'</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -581,7 +585,7 @@ the function returns None.</p>
         <ul class="first simple">
             <li>
               <b><code>age_range</code></b>
-                  (<code>tuple</code>)
+                  (<code><span title="tuple">tuple</span></code>)
               –
               <div class="doc-md-description">
                 <p>A tuple containing the minimum and maximum age of the range (e.g., (0.5, 1)).</p>
@@ -589,7 +593,7 @@ the function returns None.</p>
             </li>
             <li>
               <b><code>categories</code></b>
-                  (<code>dict</code>)
+                  (<code><span title="dict">dict</span></code>)
               –
               <div class="doc-md-description">
                 <p>A dictionary of age categories, where each key is a category name, and
@@ -624,7 +628,8 @@ the function returns None.</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-504">504</a></span>
 <span class="normal"><a href="#__codelineno-0-505">505</a></span>
@@ -651,8 +656,8 @@ the function returns None.</p>
 <span class="normal"><a href="#__codelineno-0-526">526</a></span>
 <span class="normal"><a href="#__codelineno-0-527">527</a></span>
 <span class="normal"><a href="#__codelineno-0-528">528</a></span>
-<span class="normal"><a href="#__codelineno-0-529">529</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-504" name="__codelineno-0-504"></a><span class="k">def</span> <span class="nf">assign_age_group</span><span class="p">(</span><span class="n">age_range</span><span class="p">,</span> <span class="n">categories</span><span class="p">):</span>
-<a id="__codelineno-0-505" name="__codelineno-0-505"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-529">529</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-504" name="__codelineno-0-504"></a><span class="k">def</span><span class="w"> </span><span class="nf">assign_age_group</span><span class="p">(</span><span class="n">age_range</span><span class="p">,</span> <span class="n">categories</span><span class="p">):</span>
+<a id="__codelineno-0-505" name="__codelineno-0-505"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-506" name="__codelineno-0-506"></a><span class="sd">    Assign an age group based on a given age range and predefined category bounds.</span>
 <a id="__codelineno-0-507" name="__codelineno-0-507"></a><span class="sd">    This function checks which predefined age category a given age range falls into by comparing</span>
 <a id="__codelineno-0-508" name="__codelineno-0-508"></a><span class="sd">    the minimum and maximum age values with the bounds of each category. If the range overlaps</span>
@@ -662,19 +667,19 @@ the function returns None.</p>
 <a id="__codelineno-0-512" name="__codelineno-0-512"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-513" name="__codelineno-0-513"></a><span class="sd">        age_range (tuple): A tuple containing the minimum and maximum age of the range (e.g., (0.5, 1)).</span>
 <a id="__codelineno-0-514" name="__codelineno-0-514"></a><span class="sd">        categories (dict): A dictionary of age categories, where each key is a category name, and</span>
-<a id="__codelineno-0-515" name="__codelineno-0-515"></a><span class="sd">                           the value is another dictionary with &#39;min&#39; and &#39;max&#39; keys defining the</span>
+<a id="__codelineno-0-515" name="__codelineno-0-515"></a><span class="sd">                           the value is another dictionary with 'min' and 'max' keys defining the</span>
 <a id="__codelineno-0-516" name="__codelineno-0-516"></a><span class="sd">                           age bounds of the category.</span>
 <a id="__codelineno-0-517" name="__codelineno-0-517"></a>
 <a id="__codelineno-0-518" name="__codelineno-0-518"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-519" name="__codelineno-0-519"></a><span class="sd">        str or None: The name of the category the age range fits into, or None if no match is found.</span>
-<a id="__codelineno-0-520" name="__codelineno-0-520"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-520" name="__codelineno-0-520"></a><span class="sd">    """</span>
 <a id="__codelineno-0-521" name="__codelineno-0-521"></a>    <span class="n">min_age</span><span class="p">,</span> <span class="n">max_age</span> <span class="o">=</span> <span class="n">age_range</span>
 <a id="__codelineno-0-522" name="__codelineno-0-522"></a>    <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="n">categories</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a id="__codelineno-0-523" name="__codelineno-0-523"></a>        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_age</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_age</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]:</span>
+<a id="__codelineno-0-523" name="__codelineno-0-523"></a>        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_age</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_age</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]:</span>
 <a id="__codelineno-0-524" name="__codelineno-0-524"></a>            <span class="k">return</span> <span class="n">category</span>
 <a id="__codelineno-0-525" name="__codelineno-0-525"></a>    <span class="c1"># Handle overlapping or inclusive ranges</span>
 <a id="__codelineno-0-526" name="__codelineno-0-526"></a>    <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="n">categories</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a id="__codelineno-0-527" name="__codelineno-0-527"></a>        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_age</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_age</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]:</span>
+<a id="__codelineno-0-527" name="__codelineno-0-527"></a>        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_age</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_age</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]:</span>
 <a id="__codelineno-0-528" name="__codelineno-0-528"></a>            <span class="k">return</span> <span class="n">category</span>
 <a id="__codelineno-0-529" name="__codelineno-0-529"></a>    <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># If no category fits</span>
 </code></pre></div></td></tr></table></div>
@@ -712,7 +717,7 @@ with values from the unique groups and facets, if applicable, and changes &lsquo
         <ul class="first simple">
             <li>
               <b><code>fname</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The filename to be cleaned and modified.</p>
@@ -720,7 +725,7 @@ with values from the unique groups and facets, if applicable, and changes &lsquo
             </li>
             <li>
               <b><code>sweepvar</code></b>
-                  (<code>str</code>, default:
+                  (<code><span title="str">str</span></code>, default:
                       <code>None</code>
 )
               –
@@ -730,7 +735,7 @@ with values from the unique groups and facets, if applicable, and changes &lsquo
             </li>
             <li>
               <b><code>unique_groups</code></b>
-                  (<code>list</code>, default:
+                  (<code><span title="list">list</span></code>, default:
                       <code>None</code>
 )
               –
@@ -741,7 +746,7 @@ the sweep variable placeholder. Defaults to None.</p>
             </li>
             <li>
               <b><code>facet_var</code></b>
-                  (<code>str</code>, default:
+                  (<code><span title="str">str</span></code>, default:
                       <code>None</code>
 )
               –
@@ -751,7 +756,7 @@ the sweep variable placeholder. Defaults to None.</p>
             </li>
             <li>
               <b><code>unique_facets</code></b>
-                  (<code>list</code>, default:
+                  (<code><span title="list">list</span></code>, default:
                       <code>None</code>
 )
               –
@@ -787,7 +792,8 @@ placeholder. Defaults to None.</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-405">405</a></span>
 <span class="normal"><a href="#__codelineno-0-406">406</a></span>
@@ -815,12 +821,12 @@ placeholder. Defaults to None.</p>
 <span class="normal"><a href="#__codelineno-0-428">428</a></span>
 <span class="normal"><a href="#__codelineno-0-429">429</a></span>
 <span class="normal"><a href="#__codelineno-0-430">430</a></span>
-<span class="normal"><a href="#__codelineno-0-431">431</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-405" name="__codelineno-0-405"></a><span class="k">def</span> <span class="nf">clean_fname</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">facet_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_facets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<a id="__codelineno-0-406" name="__codelineno-0-406"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-431">431</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-405" name="__codelineno-0-405"></a><span class="k">def</span><span class="w"> </span><span class="nf">clean_fname</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">facet_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_facets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<a id="__codelineno-0-406" name="__codelineno-0-406"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-407" name="__codelineno-0-407"></a><span class="sd">    Clean and modify a given filename by replacing placeholder variables with actual values.</span>
 <a id="__codelineno-0-408" name="__codelineno-0-408"></a><span class="sd">    This function replaces placeholder values in the provided filename based on the provided</span>
 <a id="__codelineno-0-409" name="__codelineno-0-409"></a><span class="sd">    parameters. Specifically, it replaces instances of the sweep variable and facet variable</span>
-<a id="__codelineno-0-410" name="__codelineno-0-410"></a><span class="sd">    with values from the unique groups and facets, if applicable, and changes &#39;models&#39; to &#39;model&#39;.</span>
+<a id="__codelineno-0-410" name="__codelineno-0-410"></a><span class="sd">    with values from the unique groups and facets, if applicable, and changes 'models' to 'model'.</span>
 <a id="__codelineno-0-411" name="__codelineno-0-411"></a>
 <a id="__codelineno-0-412" name="__codelineno-0-412"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-413" name="__codelineno-0-413"></a><span class="sd">        fname (str): The filename to be cleaned and modified.</span>
@@ -833,14 +839,14 @@ placeholder. Defaults to None.</p>
 <a id="__codelineno-0-420" name="__codelineno-0-420"></a>
 <a id="__codelineno-0-421" name="__codelineno-0-421"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-422" name="__codelineno-0-422"></a><span class="sd">        str: The cleaned and modified filename.</span>
-<a id="__codelineno-0-423" name="__codelineno-0-423"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-423" name="__codelineno-0-423"></a><span class="sd">    """</span>
 <a id="__codelineno-0-424" name="__codelineno-0-424"></a>    <span class="k">if</span> <span class="n">unique_facets</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-0-425" name="__codelineno-0-425"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
 <a id="__codelineno-0-426" name="__codelineno-0-426"></a>            <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">facet_var</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 <a id="__codelineno-0-427" name="__codelineno-0-427"></a>    <span class="k">if</span> <span class="n">sweepvar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-0-428" name="__codelineno-0-428"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_groups</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unique_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
 <a id="__codelineno-0-429" name="__codelineno-0-429"></a>            <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">sweepvar</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">unique_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-<a id="__codelineno-0-430" name="__codelineno-0-430"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-430" name="__codelineno-0-430"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'models'</span><span class="p">,</span> <span class="s1">'model'</span><span class="p">)</span>
 <a id="__codelineno-0-431" name="__codelineno-0-431"></a>    <span class="k">return</span> <span class="n">fname</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -852,7 +858,7 @@ placeholder. Defaults to None.</p>
 
 
 <h2 id="plotter.plot_sampleplots.color_selector" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">color_selector</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">color_selector</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="s1">'models'</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></code>
 
 <a href="#plotter.plot_sampleplots.color_selector" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -912,7 +918,8 @@ placeholder. Defaults to None.</p>
      - For &lsquo;models&rsquo;, predefined colors are returned for &lsquo;EMOD&rsquo;, &lsquo;malariasimulation&rsquo; and &lsquo;OpenMalaria&rsquo;.
      - For any other string or sweepvar type, colors are taken from the seaborn colorblind palette.</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-305">305</a></span>
 <span class="normal"><a href="#__codelineno-0-306">306</a></span>
@@ -941,15 +948,15 @@ placeholder. Defaults to None.</p>
 <span class="normal"><a href="#__codelineno-0-329">329</a></span>
 <span class="normal"><a href="#__codelineno-0-330">330</a></span>
 <span class="normal"><a href="#__codelineno-0-331">331</a></span>
-<span class="normal"><a href="#__codelineno-0-332">332</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-305" name="__codelineno-0-305"></a><span class="k">def</span> <span class="nf">color_selector</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="s1">&#39;models&#39;</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-<a id="__codelineno-0-306" name="__codelineno-0-306"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-332">332</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-305" name="__codelineno-0-305"></a><span class="k">def</span><span class="w"> </span><span class="nf">color_selector</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="s1">'models'</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<a id="__codelineno-0-306" name="__codelineno-0-306"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-307" name="__codelineno-0-307"></a><span class="sd">     Select a color for plotting based on a model name or sweep variable index.</span>
 <a id="__codelineno-0-308" name="__codelineno-0-308"></a>
 <a id="__codelineno-0-309" name="__codelineno-0-309"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-310" name="__codelineno-0-310"></a><span class="sd">         i (int) : Index of the current item in the sweep. Used for cycling through colors.</span>
 <a id="__codelineno-0-311" name="__codelineno-0-311"></a><span class="sd">         s (str) : Name of the model or item to select a specific color for.</span>
-<a id="__codelineno-0-312" name="__codelineno-0-312"></a><span class="sd">         sweepvar (str), optional:  Type of variable being swept (&#39;models&#39; or other). Default is &#39;models&#39;.</span>
-<a id="__codelineno-0-313" name="__codelineno-0-313"></a><span class="sd">                 If &#39;models&#39;, specific model colors are applied.</span>
+<a id="__codelineno-0-312" name="__codelineno-0-312"></a><span class="sd">         sweepvar (str), optional:  Type of variable being swept ('models' or other). Default is 'models'.</span>
+<a id="__codelineno-0-313" name="__codelineno-0-313"></a><span class="sd">                 If 'models', specific model colors are applied.</span>
 <a id="__codelineno-0-314" name="__codelineno-0-314"></a><span class="sd">                 Otherwise, colors are selected from a colorblind palette.</span>
 <a id="__codelineno-0-315" name="__codelineno-0-315"></a><span class="sd">         n_colors (int), optional:   Number of colors in the palette to cycle through. Default is 4.</span>
 <a id="__codelineno-0-316" name="__codelineno-0-316"></a>
@@ -957,18 +964,18 @@ placeholder. Defaults to None.</p>
 <a id="__codelineno-0-318" name="__codelineno-0-318"></a><span class="sd">         str:  A hex color code or RGB tuple suitable for plotting in matplotlib/seaborn.</span>
 <a id="__codelineno-0-319" name="__codelineno-0-319"></a>
 <a id="__codelineno-0-320" name="__codelineno-0-320"></a><span class="sd">     Notes</span>
-<a id="__codelineno-0-321" name="__codelineno-0-321"></a><span class="sd">         - For &#39;models&#39;, predefined colors are returned for &#39;EMOD&#39;, &#39;malariasimulation&#39; and &#39;OpenMalaria&#39;.</span>
+<a id="__codelineno-0-321" name="__codelineno-0-321"></a><span class="sd">         - For 'models', predefined colors are returned for 'EMOD', 'malariasimulation' and 'OpenMalaria'.</span>
 <a id="__codelineno-0-322" name="__codelineno-0-322"></a><span class="sd">         - For any other string or sweepvar type, colors are taken from the seaborn colorblind palette.</span>
-<a id="__codelineno-0-323" name="__codelineno-0-323"></a><span class="sd">     &quot;&quot;&quot;</span>
-<a id="__codelineno-0-324" name="__codelineno-0-324"></a>    <span class="k">if</span> <span class="n">sweepvar</span> <span class="o">==</span> <span class="s1">&#39;models&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-323" name="__codelineno-0-323"></a><span class="sd">     """</span>
+<a id="__codelineno-0-324" name="__codelineno-0-324"></a>    <span class="k">if</span> <span class="n">sweepvar</span> <span class="o">==</span> <span class="s1">'models'</span><span class="p">:</span>
 <a id="__codelineno-0-325" name="__codelineno-0-325"></a>        <span class="n">model_colors</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-0-326" name="__codelineno-0-326"></a>            <span class="s1">&#39;EMOD&#39;</span><span class="p">:</span> <span class="s1">&#39;#1a9e77&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-327" name="__codelineno-0-327"></a>            <span class="s1">&#39;malariasimulation&#39;</span><span class="p">:</span> <span class="s1">&#39;#7a5c9f&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-328" name="__codelineno-0-328"></a>            <span class="s1">&#39;OpenMalaria&#39;</span><span class="p">:</span> <span class="s1">&#39;#e97926&#39;</span>
+<a id="__codelineno-0-326" name="__codelineno-0-326"></a>            <span class="s1">'EMOD'</span><span class="p">:</span> <span class="s1">'#1a9e77'</span><span class="p">,</span>
+<a id="__codelineno-0-327" name="__codelineno-0-327"></a>            <span class="s1">'malariasimulation'</span><span class="p">:</span> <span class="s1">'#7a5c9f'</span><span class="p">,</span>
+<a id="__codelineno-0-328" name="__codelineno-0-328"></a>            <span class="s1">'OpenMalaria'</span><span class="p">:</span> <span class="s1">'#e97926'</span>
 <a id="__codelineno-0-329" name="__codelineno-0-329"></a>        <span class="p">}</span>
-<a id="__codelineno-0-330" name="__codelineno-0-330"></a>        <span class="k">return</span> <span class="n">model_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">&#39;colorblind&#39;</span><span class="p">,</span> <span class="n">n_colors</span><span class="p">)[</span><span class="n">i</span> <span class="o">%</span> <span class="n">n_colors</span><span class="p">])</span>
+<a id="__codelineno-0-330" name="__codelineno-0-330"></a>        <span class="k">return</span> <span class="n">model_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">'colorblind'</span><span class="p">,</span> <span class="n">n_colors</span><span class="p">)[</span><span class="n">i</span> <span class="o">%</span> <span class="n">n_colors</span><span class="p">])</span>
 <a id="__codelineno-0-331" name="__codelineno-0-331"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-332" name="__codelineno-0-332"></a>        <span class="k">return</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">&#39;colorblind&#39;</span><span class="p">,</span> <span class="n">n_colors</span><span class="p">)[</span><span class="n">i</span> <span class="o">%</span> <span class="n">n_colors</span><span class="p">]</span>
+<a id="__codelineno-0-332" name="__codelineno-0-332"></a>        <span class="k">return</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">'colorblind'</span><span class="p">,</span> <span class="n">n_colors</span><span class="p">)[</span><span class="n">i</span> <span class="o">%</span> <span class="n">n_colors</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1003,7 +1010,7 @@ since January 1, 2005, and returns the corresponding date.</p>
         <ul class="first simple">
             <li>
               <b><code>x</code></b>
-                  (<code>int</code>)
+                  (<code><span title="int">int</span></code>)
               –
               <div class="doc-md-description">
                 <p>The number of days since January 1, 2005.</p>
@@ -1036,7 +1043,8 @@ since January 1, 2005, and returns the corresponding date.</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-287">287</a></span>
 <span class="normal"><a href="#__codelineno-0-288">288</a></span>
@@ -1053,8 +1061,8 @@ since January 1, 2005, and returns the corresponding date.</p>
 <span class="normal"><a href="#__codelineno-0-299">299</a></span>
 <span class="normal"><a href="#__codelineno-0-300">300</a></span>
 <span class="normal"><a href="#__codelineno-0-301">301</a></span>
-<span class="normal"><a href="#__codelineno-0-302">302</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-287" name="__codelineno-0-287"></a><span class="k">def</span> <span class="nf">convert_to_date</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<a id="__codelineno-0-288" name="__codelineno-0-288"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-302">302</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-287" name="__codelineno-0-287"></a><span class="k">def</span><span class="w"> </span><span class="nf">convert_to_date</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<a id="__codelineno-0-288" name="__codelineno-0-288"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-289" name="__codelineno-0-289"></a><span class="sd">    Convert a number of days since January 1, 2005, to a date.</span>
 <a id="__codelineno-0-290" name="__codelineno-0-290"></a>
 <a id="__codelineno-0-291" name="__codelineno-0-291"></a><span class="sd">    This function takes an integer representing the number of days</span>
@@ -1065,9 +1073,9 @@ since January 1, 2005, and returns the corresponding date.</p>
 <a id="__codelineno-0-296" name="__codelineno-0-296"></a>
 <a id="__codelineno-0-297" name="__codelineno-0-297"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-298" name="__codelineno-0-298"></a><span class="sd">        date: A datetime.date object representing the corresponding date.</span>
-<a id="__codelineno-0-299" name="__codelineno-0-299"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-299" name="__codelineno-0-299"></a><span class="sd">    """</span>
 <a id="__codelineno-0-300" name="__codelineno-0-300"></a>
-<a id="__codelineno-0-301" name="__codelineno-0-301"></a>    <span class="kn">import</span> <span class="nn">datetime</span>
+<a id="__codelineno-0-301" name="__codelineno-0-301"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <a id="__codelineno-0-302" name="__codelineno-0-302"></a>    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2005</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1105,7 +1113,7 @@ their lower bounds.</p>
         <ul class="first simple">
             <li>
               <b><code>age_group</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The age group string in the format &lsquo;X-Y&rsquo;,
@@ -1139,7 +1147,8 @@ their lower bounds.</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-105">105</a></span>
 <span class="normal"><a href="#__codelineno-0-106">106</a></span>
@@ -1158,24 +1167,24 @@ their lower bounds.</p>
 <span class="normal"><a href="#__codelineno-0-119">119</a></span>
 <span class="normal"><a href="#__codelineno-0-120">120</a></span>
 <span class="normal"><a href="#__codelineno-0-121">121</a></span>
-<span class="normal"><a href="#__codelineno-0-122">122</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-105" name="__codelineno-0-105"></a><span class="k">def</span> <span class="nf">custom_sort_key</span><span class="p">(</span><span class="n">age_group</span><span class="p">):</span>
-<a id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-122">122</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-105" name="__codelineno-0-105"></a><span class="k">def</span><span class="w"> </span><span class="nf">custom_sort_key</span><span class="p">(</span><span class="n">age_group</span><span class="p">):</span>
+<a id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-107" name="__codelineno-0-107"></a><span class="sd">    Custom sort key function for sorting age groups.</span>
 <a id="__codelineno-0-108" name="__codelineno-0-108"></a>
 <a id="__codelineno-0-109" name="__codelineno-0-109"></a><span class="sd">    This function extracts the lower bound of an age group represented as</span>
-<a id="__codelineno-0-110" name="__codelineno-0-110"></a><span class="sd">    a string in the format &#39;X-Y&#39; and returns it as an integer. It is</span>
+<a id="__codelineno-0-110" name="__codelineno-0-110"></a><span class="sd">    a string in the format 'X-Y' and returns it as an integer. It is</span>
 <a id="__codelineno-0-111" name="__codelineno-0-111"></a><span class="sd">    primarily used for sorting age groups in ascending order based on</span>
 <a id="__codelineno-0-112" name="__codelineno-0-112"></a><span class="sd">    their lower bounds.</span>
 <a id="__codelineno-0-113" name="__codelineno-0-113"></a>
 <a id="__codelineno-0-114" name="__codelineno-0-114"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-115" name="__codelineno-0-115"></a><span class="sd">        age_group (str): The age group string in the format &#39;X-Y&#39;,</span>
+<a id="__codelineno-0-115" name="__codelineno-0-115"></a><span class="sd">        age_group (str): The age group string in the format 'X-Y',</span>
 <a id="__codelineno-0-116" name="__codelineno-0-116"></a><span class="sd">                         where X is the lower bound and Y is the upper bound.</span>
 <a id="__codelineno-0-117" name="__codelineno-0-117"></a>
 <a id="__codelineno-0-118" name="__codelineno-0-118"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-119" name="__codelineno-0-119"></a><span class="sd">        int: The lower bound of the age group as an integer.</span>
-<a id="__codelineno-0-120" name="__codelineno-0-120"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-120" name="__codelineno-0-120"></a><span class="sd">    """</span>
 <a id="__codelineno-0-121" name="__codelineno-0-121"></a>
-<a id="__codelineno-0-122" name="__codelineno-0-122"></a>    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">age_group</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<a id="__codelineno-0-122" name="__codelineno-0-122"></a>    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">age_group</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'-'</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1212,7 +1221,7 @@ simply returns the input channel name as-is.</p>
         <ul class="first simple">
             <li>
               <b><code>channel</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The name of the channel for which to retrieve the label.
@@ -1258,7 +1267,8 @@ Possible values include (but are not limited to):
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-335">335</a></span>
 <span class="normal"><a href="#__codelineno-0-336">336</a></span>
@@ -1293,8 +1303,8 @@ Possible values include (but are not limited to):
 <span class="normal"><a href="#__codelineno-0-365">365</a></span>
 <span class="normal"><a href="#__codelineno-0-366">366</a></span>
 <span class="normal"><a href="#__codelineno-0-367">367</a></span>
-<span class="normal"><a href="#__codelineno-0-368">368</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-335" name="__codelineno-0-335"></a><span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="n">channel</span><span class="p">):</span>
-<a id="__codelineno-0-336" name="__codelineno-0-336"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-368">368</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-335" name="__codelineno-0-335"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_label</span><span class="p">(</span><span class="n">channel</span><span class="p">):</span>
+<a id="__codelineno-0-336" name="__codelineno-0-336"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-337" name="__codelineno-0-337"></a><span class="sd">    Retrieve the label for a given outcome.</span>
 <a id="__codelineno-0-338" name="__codelineno-0-338"></a><span class="sd">    This function returns a formatted string representing the y-axis label</span>
 <a id="__codelineno-0-339" name="__codelineno-0-339"></a><span class="sd">    based on the specified channel name. The labels correspond to specific</span>
@@ -1304,25 +1314,25 @@ Possible values include (but are not limited to):
 <a id="__codelineno-0-343" name="__codelineno-0-343"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-344" name="__codelineno-0-344"></a><span class="sd">        channel (str): The name of the channel for which to retrieve the label.</span>
 <a id="__codelineno-0-345" name="__codelineno-0-345"></a><span class="sd">            Possible values include (but are not limited to):</span>
-<a id="__codelineno-0-346" name="__codelineno-0-346"></a><span class="sd">            - &#39;prevalence_2to10&#39;: Represents $\it{Pf}$PR$_{2-10}$ (%) prevalence.</span>
-<a id="__codelineno-0-347" name="__codelineno-0-347"></a><span class="sd">            - &#39;prevalence&#39;: Represents $\it{Pf}$PR (%) prevalence.</span>
-<a id="__codelineno-0-348" name="__codelineno-0-348"></a><span class="sd">            - &#39;clinical_incidence&#39;: Represents clinical incidence (per person per year).</span>
-<a id="__codelineno-0-349" name="__codelineno-0-349"></a><span class="sd">            - &#39;severe_incidence&#39;: Represents severe incidence (per person per year).</span>
-<a id="__codelineno-0-350" name="__codelineno-0-350"></a><span class="sd">            - &#39;eir&#39;: Represents simulated entomological inoculation rate (EIR).</span>
-<a id="__codelineno-0-351" name="__codelineno-0-351"></a><span class="sd">            - &#39;n_total_mos_pop&#39;: Represents the total female mosquito population.</span>
+<a id="__codelineno-0-346" name="__codelineno-0-346"></a><span class="sd">            - 'prevalence_2to10': Represents $\it{Pf}$PR$_{2-10}$ (%) prevalence.</span>
+<a id="__codelineno-0-347" name="__codelineno-0-347"></a><span class="sd">            - 'prevalence': Represents $\it{Pf}$PR (%) prevalence.</span>
+<a id="__codelineno-0-348" name="__codelineno-0-348"></a><span class="sd">            - 'clinical_incidence': Represents clinical incidence (per person per year).</span>
+<a id="__codelineno-0-349" name="__codelineno-0-349"></a><span class="sd">            - 'severe_incidence': Represents severe incidence (per person per year).</span>
+<a id="__codelineno-0-350" name="__codelineno-0-350"></a><span class="sd">            - 'eir': Represents simulated entomological inoculation rate (EIR).</span>
+<a id="__codelineno-0-351" name="__codelineno-0-351"></a><span class="sd">            - 'n_total_mos_pop': Represents the total female mosquito population.</span>
 <a id="__codelineno-0-352" name="__codelineno-0-352"></a>
 <a id="__codelineno-0-353" name="__codelineno-0-353"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-354" name="__codelineno-0-354"></a><span class="sd">        str: The corresponding y-axis label for the channel if recognized.</span>
 <a id="__codelineno-0-355" name="__codelineno-0-355"></a><span class="sd">        If the channel is not recognized, the channel name itself is returned.</span>
-<a id="__codelineno-0-356" name="__codelineno-0-356"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-356" name="__codelineno-0-356"></a><span class="sd">    """</span>
 <a id="__codelineno-0-357" name="__codelineno-0-357"></a>
-<a id="__codelineno-0-358" name="__codelineno-0-358"></a>    <span class="n">channel_labels</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">:</span> <span class="s1">&#39;Age group&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-359" name="__codelineno-0-359"></a>                      <span class="s1">&#39;prevalence_2to10&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\it</span><span class="si">{Pf}</span><span class="s1">$PR$_{2-10}$&#39;</span><span class="p">,</span>  <span class="c1"># (%) if %, then pfpr outcomes need to be *100</span>
-<a id="__codelineno-0-360" name="__codelineno-0-360"></a>                      <span class="s1">&#39;prevalence&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\it</span><span class="si">{Pf}</span><span class="s1">$PR&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-361" name="__codelineno-0-361"></a>                      <span class="s1">&#39;clinical_incidence&#39;</span><span class="p">:</span> <span class="s1">&#39;Clinical incidence (pppy)&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-362" name="__codelineno-0-362"></a>                      <span class="s1">&#39;severe_incidence&#39;</span><span class="p">:</span> <span class="s1">&#39;Severe incidence (pppy)&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-363" name="__codelineno-0-363"></a>                      <span class="s1">&#39;eir&#39;</span><span class="p">:</span> <span class="s1">&#39;simulated EIR&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-364" name="__codelineno-0-364"></a>                      <span class="s1">&#39;n_total_mos_pop&#39;</span><span class="p">:</span> <span class="s1">&#39;Total female mosquito population&#39;</span>
+<a id="__codelineno-0-358" name="__codelineno-0-358"></a>    <span class="n">channel_labels</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'ageGroup'</span><span class="p">:</span> <span class="s1">'Age group'</span><span class="p">,</span>
+<a id="__codelineno-0-359" name="__codelineno-0-359"></a>                      <span class="s1">'prevalence_2to10'</span><span class="p">:</span> <span class="sa">r</span><span class="s1">'$\it</span><span class="si">{Pf}</span><span class="s1">$PR$_{2-10}$'</span><span class="p">,</span>  <span class="c1"># (%) if %, then pfpr outcomes need to be *100</span>
+<a id="__codelineno-0-360" name="__codelineno-0-360"></a>                      <span class="s1">'prevalence'</span><span class="p">:</span> <span class="sa">r</span><span class="s1">'$\it</span><span class="si">{Pf}</span><span class="s1">$PR'</span><span class="p">,</span>
+<a id="__codelineno-0-361" name="__codelineno-0-361"></a>                      <span class="s1">'clinical_incidence'</span><span class="p">:</span> <span class="s1">'Clinical incidence (pppy)'</span><span class="p">,</span>
+<a id="__codelineno-0-362" name="__codelineno-0-362"></a>                      <span class="s1">'severe_incidence'</span><span class="p">:</span> <span class="s1">'Severe incidence (pppy)'</span><span class="p">,</span>
+<a id="__codelineno-0-363" name="__codelineno-0-363"></a>                      <span class="s1">'eir'</span><span class="p">:</span> <span class="s1">'simulated EIR'</span><span class="p">,</span>
+<a id="__codelineno-0-364" name="__codelineno-0-364"></a>                      <span class="s1">'n_total_mos_pop'</span><span class="p">:</span> <span class="s1">'Total female mosquito population'</span>
 <a id="__codelineno-0-365" name="__codelineno-0-365"></a>                      <span class="p">}</span>
 <a id="__codelineno-0-366" name="__codelineno-0-366"></a>
 <a id="__codelineno-0-367" name="__codelineno-0-367"></a>    <span class="c1"># If channel is not found in channel_labels, it defaults to returning the value of channel itself</span>
@@ -1359,7 +1369,7 @@ Possible values include (but are not limited to):
         <ul class="first simple">
             <li>
               <b><code>sweepvar</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The sweep variable for which the legend title is required.</p>
@@ -1367,7 +1377,7 @@ Possible values include (but are not limited to):
             </li>
             <li>
               <b><code>exp</code></b>
-                  (<code>optional</code>, default:
+                  (<code><span title="optional">optional</span></code>, default:
                       <code>None</code>
 )
               –
@@ -1402,7 +1412,8 @@ Possible values include (but are not limited to):
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-371">371</a></span>
 <span class="normal"><a href="#__codelineno-0-372">372</a></span>
@@ -1435,34 +1446,34 @@ Possible values include (but are not limited to):
 <span class="normal"><a href="#__codelineno-0-399">399</a></span>
 <span class="normal"><a href="#__codelineno-0-400">400</a></span>
 <span class="normal"><a href="#__codelineno-0-401">401</a></span>
-<span class="normal"><a href="#__codelineno-0-402">402</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-371" name="__codelineno-0-371"></a><span class="k">def</span> <span class="nf">get_legend_title</span><span class="p">(</span><span class="n">sweepvar</span><span class="p">,</span> <span class="n">exp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<a id="__codelineno-0-372" name="__codelineno-0-372"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-402">402</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-371" name="__codelineno-0-371"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_legend_title</span><span class="p">(</span><span class="n">sweepvar</span><span class="p">,</span> <span class="n">exp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<a id="__codelineno-0-372" name="__codelineno-0-372"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-373" name="__codelineno-0-373"></a><span class="sd">    Retrieves the corresponding legend title for a given sweep variable.</span>
 <a id="__codelineno-0-374" name="__codelineno-0-374"></a>
 <a id="__codelineno-0-375" name="__codelineno-0-375"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-376" name="__codelineno-0-376"></a><span class="sd">        sweepvar (str): The sweep variable for which the legend title is required.</span>
-<a id="__codelineno-0-377" name="__codelineno-0-377"></a><span class="sd">        exp (optional): An experiment object, used to adjust the title for &#39;target_output_values&#39; if provided.</span>
+<a id="__codelineno-0-377" name="__codelineno-0-377"></a><span class="sd">        exp (optional): An experiment object, used to adjust the title for 'target_output_values' if provided.</span>
 <a id="__codelineno-0-378" name="__codelineno-0-378"></a>
 <a id="__codelineno-0-379" name="__codelineno-0-379"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-380" name="__codelineno-0-380"></a><span class="sd">        str: The legend title associated with the sweep variable, or the sweep variable name if not found.</span>
-<a id="__codelineno-0-381" name="__codelineno-0-381"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-381" name="__codelineno-0-381"></a><span class="sd">    """</span>
 <a id="__codelineno-0-382" name="__codelineno-0-382"></a>
-<a id="__codelineno-0-383" name="__codelineno-0-383"></a>    <span class="k">if</span> <span class="n">exp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sweepvar</span> <span class="o">==</span> <span class="s1">&#39;target_output_values&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-383" name="__codelineno-0-383"></a>    <span class="k">if</span> <span class="n">exp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sweepvar</span> <span class="o">==</span> <span class="s1">'target_output_values'</span><span class="p">:</span>
 <a id="__codelineno-0-384" name="__codelineno-0-384"></a>        <span class="n">sweepvar</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">target_output_name</span>
 <a id="__codelineno-0-385" name="__codelineno-0-385"></a>
-<a id="__codelineno-0-386" name="__codelineno-0-386"></a>    <span class="n">channel_title</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">:</span> <span class="s1">&#39;Age group&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-387" name="__codelineno-0-387"></a>                     <span class="s1">&#39;prevalence_2to10&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\it</span><span class="si">{Pf}</span><span class="s1">$PR$_{2-10}$&#39;</span><span class="p">,</span>  <span class="c1"># (%) if %, then pfpr outcomes need to be *100</span>
-<a id="__codelineno-0-388" name="__codelineno-0-388"></a>                     <span class="s1">&#39;prevalence&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;$\it</span><span class="si">{Pf}</span><span class="s1">$PR&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-389" name="__codelineno-0-389"></a>                     <span class="s1">&#39;clinical_incidence&#39;</span><span class="p">:</span> <span class="s1">&#39;Clinical incidence (pppy)&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-390" name="__codelineno-0-390"></a>                     <span class="s1">&#39;severe_incidence&#39;</span><span class="p">:</span> <span class="s1">&#39;Severe incidence (pppy)&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-391" name="__codelineno-0-391"></a>                     <span class="s1">&#39;eir&#39;</span><span class="p">:</span> <span class="s1">&#39;simulated EIR&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-392" name="__codelineno-0-392"></a>                     <span class="s1">&#39;n_total_mos_pop&#39;</span><span class="p">:</span> <span class="s1">&#39;Total female mosquito population&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-386" name="__codelineno-0-386"></a>    <span class="n">channel_title</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'ageGroup'</span><span class="p">:</span> <span class="s1">'Age group'</span><span class="p">,</span>
+<a id="__codelineno-0-387" name="__codelineno-0-387"></a>                     <span class="s1">'prevalence_2to10'</span><span class="p">:</span> <span class="sa">r</span><span class="s1">'$\it</span><span class="si">{Pf}</span><span class="s1">$PR$_{2-10}$'</span><span class="p">,</span>  <span class="c1"># (%) if %, then pfpr outcomes need to be *100</span>
+<a id="__codelineno-0-388" name="__codelineno-0-388"></a>                     <span class="s1">'prevalence'</span><span class="p">:</span> <span class="sa">r</span><span class="s1">'$\it</span><span class="si">{Pf}</span><span class="s1">$PR'</span><span class="p">,</span>
+<a id="__codelineno-0-389" name="__codelineno-0-389"></a>                     <span class="s1">'clinical_incidence'</span><span class="p">:</span> <span class="s1">'Clinical incidence (pppy)'</span><span class="p">,</span>
+<a id="__codelineno-0-390" name="__codelineno-0-390"></a>                     <span class="s1">'severe_incidence'</span><span class="p">:</span> <span class="s1">'Severe incidence (pppy)'</span><span class="p">,</span>
+<a id="__codelineno-0-391" name="__codelineno-0-391"></a>                     <span class="s1">'eir'</span><span class="p">:</span> <span class="s1">'simulated EIR'</span><span class="p">,</span>
+<a id="__codelineno-0-392" name="__codelineno-0-392"></a>                     <span class="s1">'n_total_mos_pop'</span><span class="p">:</span> <span class="s1">'Total female mosquito population'</span><span class="p">,</span>
 <a id="__codelineno-0-393" name="__codelineno-0-393"></a>                     <span class="c1"># Input parameters to sweep over</span>
-<a id="__codelineno-0-394" name="__codelineno-0-394"></a>                     <span class="s1">&#39;models&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-395" name="__codelineno-0-395"></a>                     <span class="s1">&#39;cm_clinical&#39;</span><span class="p">:</span> <span class="s1">&#39;Clinical case management&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-396" name="__codelineno-0-396"></a>                     <span class="s1">&#39;seasonality&#39;</span><span class="p">:</span> <span class="s1">&#39;Seasonality&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-397" name="__codelineno-0-397"></a>                     <span class="s1">&#39;entomology_mode&#39;</span><span class="p">:</span> <span class="s1">&#39;Entomology mode&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-398" name="__codelineno-0-398"></a>                     <span class="s1">&#39;eir&#39;</span><span class="p">:</span> <span class="s1">&#39;EIR&#39;</span>
+<a id="__codelineno-0-394" name="__codelineno-0-394"></a>                     <span class="s1">'models'</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+<a id="__codelineno-0-395" name="__codelineno-0-395"></a>                     <span class="s1">'cm_clinical'</span><span class="p">:</span> <span class="s1">'Clinical case management'</span><span class="p">,</span>
+<a id="__codelineno-0-396" name="__codelineno-0-396"></a>                     <span class="s1">'seasonality'</span><span class="p">:</span> <span class="s1">'Seasonality'</span><span class="p">,</span>
+<a id="__codelineno-0-397" name="__codelineno-0-397"></a>                     <span class="s1">'entomology_mode'</span><span class="p">:</span> <span class="s1">'Entomology mode'</span><span class="p">,</span>
+<a id="__codelineno-0-398" name="__codelineno-0-398"></a>                     <span class="s1">'eir'</span><span class="p">:</span> <span class="s1">'EIR'</span>
 <a id="__codelineno-0-399" name="__codelineno-0-399"></a>                     <span class="p">}</span>
 <a id="__codelineno-0-400" name="__codelineno-0-400"></a>
 <a id="__codelineno-0-401" name="__codelineno-0-401"></a>    <span class="c1"># If channel is not found in channel_labels, it defaults to returning the value of channel itself</span>
@@ -1503,7 +1514,7 @@ data.</p>
         <ul class="first simple">
             <li>
               <b><code>wdir</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>Working directory where the data files are located.</p>
@@ -1520,7 +1531,7 @@ data.</p>
             </li>
             <li>
               <b><code>yr</code></b>
-                  (<code>bool</code>, default:
+                  (<code><span title="bool">bool</span></code>, default:
                       <code>False</code>
 )
               –
@@ -1531,7 +1542,7 @@ data.</p>
             </li>
             <li>
               <b><code>mth</code></b>
-                  (<code>bool</code>, default:
+                  (<code><span title="bool">bool</span></code>, default:
                       <code>False</code>
 )
               –
@@ -1542,7 +1553,7 @@ data.</p>
             </li>
             <li>
               <b><code>daily</code></b>
-                  (<code>bool</code>, default:
+                  (<code><span title="bool">bool</span></code>, default:
                       <code>False</code>
 )
               –
@@ -1554,7 +1565,7 @@ data.</p>
             </li>
             <li>
               <b><code>custom_name</code></b>
-                  (<code>str</code>, default:
+                  (<code><span title="str">str</span></code>, default:
                       <code>None</code>
 )
               –
@@ -1565,7 +1576,7 @@ data.</p>
             </li>
             <li>
               <b><code>save_combined</code></b>
-                  (<code>bool</code>, default:
+                  (<code><span title="bool">bool</span></code>, default:
                       <code>False</code>
 )
               –
@@ -1616,7 +1627,7 @@ data.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If an invalid models value is specified.</p>
@@ -1627,7 +1638,8 @@ data.</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-154">154</a></span>
 <span class="normal"><a href="#__codelineno-0-155">155</a></span>
@@ -1723,9 +1735,9 @@ data.</p>
 <span class="normal"><a href="#__codelineno-0-245">245</a></span>
 <span class="normal"><a href="#__codelineno-0-246">246</a></span>
 <span class="normal"><a href="#__codelineno-0-247">247</a></span>
-<span class="normal"><a href="#__codelineno-0-248">248</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-154" name="__codelineno-0-154"></a><span class="k">def</span> <span class="nf">get_output_df</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">yr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mth</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">daily</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="normal"><a href="#__codelineno-0-248">248</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-154" name="__codelineno-0-154"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_output_df</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">yr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mth</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">daily</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">custom_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <a id="__codelineno-0-155" name="__codelineno-0-155"></a>                  <span class="n">save_combined</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<a id="__codelineno-0-156" name="__codelineno-0-156"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-156" name="__codelineno-0-156"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-157" name="__codelineno-0-157"></a><span class="sd">    Load and combine data from the model output files.</span>
 <a id="__codelineno-0-158" name="__codelineno-0-158"></a>
 <a id="__codelineno-0-159" name="__codelineno-0-159"></a><span class="sd">    This function reads model output files from a specified working directory</span>
@@ -1757,66 +1769,66 @@ data.</p>
 <a id="__codelineno-0-185" name="__codelineno-0-185"></a>
 <a id="__codelineno-0-186" name="__codelineno-0-186"></a><span class="sd">    Raises:</span>
 <a id="__codelineno-0-187" name="__codelineno-0-187"></a><span class="sd">        ValueError: If an invalid models value is specified.</span>
-<a id="__codelineno-0-188" name="__codelineno-0-188"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-188" name="__codelineno-0-188"></a><span class="sd">    """</span>
 <a id="__codelineno-0-189" name="__codelineno-0-189"></a>
 <a id="__codelineno-0-190" name="__codelineno-0-190"></a>    <span class="n">columns_to_keep</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># default read all</span>
-<a id="__codelineno-0-191" name="__codelineno-0-191"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;mmmpy_timeavrg.csv&#39;</span>
+<a id="__codelineno-0-191" name="__codelineno-0-191"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="s1">'mmmpy_timeavrg.csv'</span>
 <a id="__codelineno-0-192" name="__codelineno-0-192"></a>    <span class="k">if</span> <span class="n">yr</span><span class="p">:</span>
-<a id="__codelineno-0-193" name="__codelineno-0-193"></a>        <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;mmmpy_yr.csv&#39;</span>
+<a id="__codelineno-0-193" name="__codelineno-0-193"></a>        <span class="n">fname</span> <span class="o">=</span> <span class="s1">'mmmpy_yr.csv'</span>
 <a id="__codelineno-0-194" name="__codelineno-0-194"></a>    <span class="k">if</span> <span class="n">mth</span><span class="p">:</span>
-<a id="__codelineno-0-195" name="__codelineno-0-195"></a>        <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;mmmpy_mth.csv&#39;</span>
+<a id="__codelineno-0-195" name="__codelineno-0-195"></a>        <span class="n">fname</span> <span class="o">=</span> <span class="s1">'mmmpy_mth.csv'</span>
 <a id="__codelineno-0-196" name="__codelineno-0-196"></a>    <span class="k">if</span> <span class="n">daily</span><span class="p">:</span>
-<a id="__codelineno-0-197" name="__codelineno-0-197"></a>        <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;mmmpy_daily.csv&#39;</span>
+<a id="__codelineno-0-197" name="__codelineno-0-197"></a>        <span class="n">fname</span> <span class="o">=</span> <span class="s1">'mmmpy_daily.csv'</span>
 <a id="__codelineno-0-198" name="__codelineno-0-198"></a>    <span class="k">if</span> <span class="n">custom_name</span><span class="p">:</span>
-<a id="__codelineno-0-199" name="__codelineno-0-199"></a>        <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">custom_name</span><span class="si">}</span><span class="s1">.csv&#39;</span>
+<a id="__codelineno-0-199" name="__codelineno-0-199"></a>        <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">custom_name</span><span class="si">}</span><span class="s1">.csv'</span>
 <a id="__codelineno-0-200" name="__codelineno-0-200"></a>
 <a id="__codelineno-0-201" name="__codelineno-0-201"></a>    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)):</span>
 <a id="__codelineno-0-202" name="__codelineno-0-202"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)),</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <a id="__codelineno-0-203" name="__codelineno-0-203"></a>    <span class="k">else</span><span class="p">:</span>
 <a id="__codelineno-0-204" name="__codelineno-0-204"></a>        <span class="n">dfs</span> <span class="o">=</span> <span class="p">[]</span>
 <a id="__codelineno-0-205" name="__codelineno-0-205"></a>        <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
-<a id="__codelineno-0-206" name="__codelineno-0-206"></a>            <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;malariasimulation&#39;</span><span class="p">:</span>
-<a id="__codelineno-0-207" name="__codelineno-0-207"></a>                <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;malariasimulation&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-206" name="__codelineno-0-206"></a>            <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'malariasimulation'</span><span class="p">:</span>
+<a id="__codelineno-0-207" name="__codelineno-0-207"></a>                <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'malariasimulation'</span><span class="p">:</span>
 <a id="__codelineno-0-208" name="__codelineno-0-208"></a>                    <span class="n">df_malariasimulation</span> <span class="o">=</span> <span class="n">get_output_df_malariasimulation</span><span class="p">(</span><span class="n">wdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">model</span><span class="p">),</span>
 <a id="__codelineno-0-209" name="__codelineno-0-209"></a>                                                                           <span class="n">base_fname</span><span class="o">=</span><span class="n">fname</span><span class="p">)</span>
 <a id="__codelineno-0-210" name="__codelineno-0-210"></a>                <span class="k">if</span> <span class="ow">not</span> <span class="n">df_malariasimulation</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-<a id="__codelineno-0-211" name="__codelineno-0-211"></a>                    <span class="n">df_malariasimulation</span><span class="p">[</span><span class="s1">&#39;models&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span>
+<a id="__codelineno-0-211" name="__codelineno-0-211"></a>                    <span class="n">df_malariasimulation</span><span class="p">[</span><span class="s1">'models'</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span>
 <a id="__codelineno-0-212" name="__codelineno-0-212"></a>                    <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_malariasimulation</span><span class="p">)</span>
 <a id="__codelineno-0-213" name="__codelineno-0-213"></a>            <span class="k">else</span><span class="p">:</span>
 <a id="__codelineno-0-214" name="__codelineno-0-214"></a>                <span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
 <a id="__codelineno-0-215" name="__codelineno-0-215"></a>                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
 <a id="__codelineno-0-216" name="__codelineno-0-216"></a>                    <span class="k">try</span><span class="p">:</span>
 <a id="__codelineno-0-217" name="__codelineno-0-217"></a>                        <span class="n">df_tmp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="n">columns_to_keep</span><span class="p">)</span>
-<a id="__codelineno-0-218" name="__codelineno-0-218"></a>                        <span class="n">df_tmp</span><span class="p">[</span><span class="s1">&#39;models&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span>
-<a id="__codelineno-0-219" name="__codelineno-0-219"></a>                        <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">and</span> <span class="s1">&#39;seed&#39;</span> <span class="ow">in</span> <span class="n">df_tmp</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-<a id="__codelineno-0-220" name="__codelineno-0-220"></a>                            <span class="n">df_tmp</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_tmp</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+<a id="__codelineno-0-218" name="__codelineno-0-218"></a>                        <span class="n">df_tmp</span><span class="p">[</span><span class="s1">'models'</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span>
+<a id="__codelineno-0-219" name="__codelineno-0-219"></a>                        <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">'EMOD'</span> <span class="ow">and</span> <span class="s1">'seed'</span> <span class="ow">in</span> <span class="n">df_tmp</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+<a id="__codelineno-0-220" name="__codelineno-0-220"></a>                            <span class="n">df_tmp</span><span class="p">[</span><span class="s1">'seed'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_tmp</span><span class="p">[</span><span class="s1">'seed'</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
 <a id="__codelineno-0-221" name="__codelineno-0-221"></a>                        <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_tmp</span><span class="p">)</span>
 <a id="__codelineno-0-222" name="__codelineno-0-222"></a>                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-0-223" name="__codelineno-0-223"></a>                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-223" name="__codelineno-0-223"></a>                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error reading </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-0-224" name="__codelineno-0-224"></a>                <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-225" name="__codelineno-0-225"></a>                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found for </span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-225" name="__codelineno-0-225"></a>                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"File not found for </span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-0-226" name="__codelineno-0-226"></a>
 <a id="__codelineno-0-227" name="__codelineno-0-227"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">dfs</span><span class="p">:</span>
 <a id="__codelineno-0-228" name="__codelineno-0-228"></a>            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">wdir</span>
 <a id="__codelineno-0-229" name="__codelineno-0-229"></a>
 <a id="__codelineno-0-230" name="__codelineno-0-230"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a id="__codelineno-0-231" name="__codelineno-0-231"></a>
-<a id="__codelineno-0-232" name="__codelineno-0-232"></a>        <span class="k">if</span> <span class="s1">&#39;ageGroup&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+<a id="__codelineno-0-232" name="__codelineno-0-232"></a>        <span class="k">if</span> <span class="s1">'ageGroup'</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
 <a id="__codelineno-0-233" name="__codelineno-0-233"></a>            <span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-0-234" name="__codelineno-0-234"></a>                <span class="n">age_grps</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="n">custom_sort_key</span><span class="p">)</span>
+<a id="__codelineno-0-234" name="__codelineno-0-234"></a>                <span class="n">age_grps</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="n">custom_sort_key</span><span class="p">)</span>
 <a id="__codelineno-0-235" name="__codelineno-0-235"></a>            <span class="k">except</span><span class="p">:</span>
-<a id="__codelineno-0-236" name="__codelineno-0-236"></a>                <span class="n">age_grps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
-<a id="__codelineno-0-237" name="__codelineno-0-237"></a>            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-238" name="__codelineno-0-238"></a>            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">reorder_categories</span><span class="p">(</span><span class="n">age_grps</span><span class="p">)</span>
+<a id="__codelineno-0-236" name="__codelineno-0-236"></a>                <span class="n">age_grps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+<a id="__codelineno-0-237" name="__codelineno-0-237"></a>            <span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'category'</span><span class="p">)</span>
+<a id="__codelineno-0-238" name="__codelineno-0-238"></a>            <span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">reorder_categories</span><span class="p">(</span><span class="n">age_grps</span><span class="p">)</span>
 <a id="__codelineno-0-239" name="__codelineno-0-239"></a>
-<a id="__codelineno-0-240" name="__codelineno-0-240"></a>        <span class="n">warning_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;eir&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
-<a id="__codelineno-0-241" name="__codelineno-0-241"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">warning_df</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">daily</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>  <span class="c1"># we don&#39;t want to include simulations were eir was 0 or less, because we won&#39;t get any outcome measures and that crashes the system</span>
-<a id="__codelineno-0-242" name="__codelineno-0-242"></a>            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: some eirs had simulated EIRS of 0, and were removed&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-243" name="__codelineno-0-243"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;eir&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
-<a id="__codelineno-0-244" name="__codelineno-0-244"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;eir&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span>
+<a id="__codelineno-0-240" name="__codelineno-0-240"></a>        <span class="n">warning_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'eir'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-0-241" name="__codelineno-0-241"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">warning_df</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">daily</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>  <span class="c1"># we don't want to include simulations were eir was 0 or less, because we won't get any outcome measures and that crashes the system</span>
+<a id="__codelineno-0-242" name="__codelineno-0-242"></a>            <span class="nb">print</span><span class="p">(</span><span class="s1">'Warning: some eirs had simulated EIRS of 0, and were removed'</span><span class="p">)</span>
+<a id="__codelineno-0-243" name="__codelineno-0-243"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'eir'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-0-244" name="__codelineno-0-244"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'eir'</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span>
 <a id="__codelineno-0-245" name="__codelineno-0-245"></a>
 <a id="__codelineno-0-246" name="__codelineno-0-246"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">daily</span> <span class="ow">and</span> <span class="n">save_combined</span><span class="p">:</span>
-<a id="__codelineno-0-247" name="__codelineno-0-247"></a>            <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<a id="__codelineno-0-247" name="__codelineno-0-247"></a>            <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">'</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <a id="__codelineno-0-248" name="__codelineno-0-248"></a>    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">wdir</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1838,7 +1850,8 @@ data.</p>
         <p>Automatically detect baseline and _pv CSV files in wdir.
 Adds a &lsquo;parameter_variation&rsquo; column indicating source.</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-125">125</a></span>
 <span class="normal"><a href="#__codelineno-0-126">126</a></span>
@@ -1865,25 +1878,25 @@ Adds a &lsquo;parameter_variation&rsquo; column indicating source.</p>
 <span class="normal"><a href="#__codelineno-0-147">147</a></span>
 <span class="normal"><a href="#__codelineno-0-148">148</a></span>
 <span class="normal"><a href="#__codelineno-0-149">149</a></span>
-<span class="normal"><a href="#__codelineno-0-150">150</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-125" name="__codelineno-0-125"></a><span class="k">def</span> <span class="nf">get_output_df_malariasimulation</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">base_fname</span><span class="p">):</span>
-<a id="__codelineno-0-126" name="__codelineno-0-126"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-150">150</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-125" name="__codelineno-0-125"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_output_df_malariasimulation</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">base_fname</span><span class="p">):</span>
+<a id="__codelineno-0-126" name="__codelineno-0-126"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-127" name="__codelineno-0-127"></a><span class="sd">    Automatically detect baseline and _pv CSV files in wdir.</span>
-<a id="__codelineno-0-128" name="__codelineno-0-128"></a><span class="sd">    Adds a &#39;parameter_variation&#39; column indicating source.</span>
-<a id="__codelineno-0-129" name="__codelineno-0-129"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-128" name="__codelineno-0-128"></a><span class="sd">    Adds a 'parameter_variation' column indicating source.</span>
+<a id="__codelineno-0-129" name="__codelineno-0-129"></a><span class="sd">    """</span>
 <a id="__codelineno-0-130" name="__codelineno-0-130"></a>
 <a id="__codelineno-0-131" name="__codelineno-0-131"></a>    <span class="n">columns_to_keep</span> <span class="o">=</span> <span class="kc">None</span>
 <a id="__codelineno-0-132" name="__codelineno-0-132"></a>    <span class="n">dfs</span> <span class="o">=</span> <span class="p">[]</span>
 <a id="__codelineno-0-133" name="__codelineno-0-133"></a>
-<a id="__codelineno-0-134" name="__codelineno-0-134"></a>    <span class="k">for</span> <span class="n">suffix</span><span class="p">,</span> <span class="n">pv_flag</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;_pv&#39;</span><span class="p">,</span> <span class="s1">&#39;parameter_variation&#39;</span><span class="p">)]:</span>
-<a id="__codelineno-0-135" name="__codelineno-0-135"></a>        <span class="n">fname</span> <span class="o">=</span> <span class="n">base_fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s1">.csv&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-134" name="__codelineno-0-134"></a>    <span class="k">for</span> <span class="n">suffix</span><span class="p">,</span> <span class="n">pv_flag</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">''</span><span class="p">,</span> <span class="s1">'default'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'_pv'</span><span class="p">,</span> <span class="s1">'parameter_variation'</span><span class="p">)]:</span>
+<a id="__codelineno-0-135" name="__codelineno-0-135"></a>        <span class="n">fname</span> <span class="o">=</span> <span class="n">base_fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.csv'</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s1">.csv'</span><span class="p">)</span>
 <a id="__codelineno-0-136" name="__codelineno-0-136"></a>        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
 <a id="__codelineno-0-137" name="__codelineno-0-137"></a>        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <a id="__codelineno-0-138" name="__codelineno-0-138"></a>            <span class="k">try</span><span class="p">:</span>
 <a id="__codelineno-0-139" name="__codelineno-0-139"></a>                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="n">columns_to_keep</span><span class="p">)</span>
-<a id="__codelineno-0-140" name="__codelineno-0-140"></a>                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;custom_model_spec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pv_flag</span>
+<a id="__codelineno-0-140" name="__codelineno-0-140"></a>                <span class="n">df</span><span class="p">[</span><span class="s1">'custom_model_spec'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pv_flag</span>
 <a id="__codelineno-0-141" name="__codelineno-0-141"></a>                <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <a id="__codelineno-0-142" name="__codelineno-0-142"></a>            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-0-143" name="__codelineno-0-143"></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-143" name="__codelineno-0-143"></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error reading </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-0-144" name="__codelineno-0-144"></a>        <span class="c1"># else: skip missing files silently</span>
 <a id="__codelineno-0-145" name="__codelineno-0-145"></a>
 <a id="__codelineno-0-146" name="__codelineno-0-146"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">dfs</span><span class="p">:</span>
@@ -1926,7 +1939,7 @@ computes the 95% confidence interval for the y values.</p>
         <ul class="first simple">
             <li>
               <b><code>df</code></b>
-                  (<code>DataFrame</code>)
+                  (<code><span title="DataFrame">DataFrame</span></code>)
               –
               <div class="doc-md-description">
                 <p>The DataFrame used to group and calculate x and y values.</p>
@@ -1934,7 +1947,7 @@ computes the 95% confidence interval for the y values.</p>
             </li>
             <li>
               <b><code>grpvar</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The variable in the DataFrame used to group the x and y values.</p>
@@ -1942,7 +1955,7 @@ computes the 95% confidence interval for the y values.</p>
             </li>
             <li>
               <b><code>x_channel</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The variable serving as the x-axis in the graph.</p>
@@ -1950,7 +1963,7 @@ computes the 95% confidence interval for the y values.</p>
             </li>
             <li>
               <b><code>y_channel</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The variable serving as the y-axis in the graph.</p>
@@ -1986,7 +1999,8 @@ computes the 95% confidence interval for the y values.</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-252">252</a></span>
 <span class="normal"><a href="#__codelineno-0-253">253</a></span>
@@ -2020,8 +2034,8 @@ computes the 95% confidence interval for the y values.</p>
 <span class="normal"><a href="#__codelineno-0-281">281</a></span>
 <span class="normal"><a href="#__codelineno-0-282">282</a></span>
 <span class="normal"><a href="#__codelineno-0-283">283</a></span>
-<span class="normal"><a href="#__codelineno-0-284">284</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-252" name="__codelineno-0-252"></a><span class="k">def</span> <span class="nf">get_x_y</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">grpvar</span><span class="p">,</span> <span class="n">x_channel</span><span class="p">,</span> <span class="n">y_channel</span><span class="p">):</span>
-<a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-284">284</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-252" name="__codelineno-0-252"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_x_y</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">grpvar</span><span class="p">,</span> <span class="n">x_channel</span><span class="p">,</span> <span class="n">y_channel</span><span class="p">):</span>
+<a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-254" name="__codelineno-0-254"></a><span class="sd">    Calculate x-axis and y-axis values for each plot.</span>
 <a id="__codelineno-0-255" name="__codelineno-0-255"></a>
 <a id="__codelineno-0-256" name="__codelineno-0-256"></a><span class="sd">    This function groups the input DataFrame by a specified variable and</span>
@@ -2039,16 +2053,16 @@ computes the 95% confidence interval for the y values.</p>
 <a id="__codelineno-0-268" name="__codelineno-0-268"></a><span class="sd">            - xmean (DataFrame): A DataFrame containing values for the x-axis.</span>
 <a id="__codelineno-0-269" name="__codelineno-0-269"></a><span class="sd">            - ymean (DataFrame): A DataFrame containing values for the y-axis,</span>
 <a id="__codelineno-0-270" name="__codelineno-0-270"></a><span class="sd">                                 including the 95% confidence interval (min and max).</span>
-<a id="__codelineno-0-271" name="__codelineno-0-271"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-271" name="__codelineno-0-271"></a><span class="sd">    """</span>
 <a id="__codelineno-0-272" name="__codelineno-0-272"></a>
-<a id="__codelineno-0-273" name="__codelineno-0-273"></a>    <span class="n">xmean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grpvar</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="n">x_channel</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-<a id="__codelineno-0-274" name="__codelineno-0-274"></a>    <span class="n">ymean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grpvar</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="n">y_channel</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-<a id="__codelineno-0-275" name="__codelineno-0-275"></a>    <span class="n">p_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">grpvar</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_min&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_max&#39;</span><span class="p">])</span>
+<a id="__codelineno-0-273" name="__codelineno-0-273"></a>    <span class="n">xmean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grpvar</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="n">x_channel</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"mean"</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<a id="__codelineno-0-274" name="__codelineno-0-274"></a>    <span class="n">ymean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grpvar</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="n">y_channel</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"mean"</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<a id="__codelineno-0-275" name="__codelineno-0-275"></a>    <span class="n">p_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">grpvar</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_min'</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_max'</span><span class="p">])</span>
 <a id="__codelineno-0-276" name="__codelineno-0-276"></a>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">ymean</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
 <a id="__codelineno-0-277" name="__codelineno-0-277"></a>        <span class="n">p</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">grpvar</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="n">grpvar</span><span class="p">]]</span>
 <a id="__codelineno-0-278" name="__codelineno-0-278"></a>        <span class="n">pmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">y_channel</span><span class="p">],</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <a id="__codelineno-0-279" name="__codelineno-0-279"></a>        <span class="n">pmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">y_channel</span><span class="p">],</span> <span class="mf">97.5</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<a id="__codelineno-0-280" name="__codelineno-0-280"></a>        <span class="n">new_row</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span><span class="n">grpvar</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="n">grpvar</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_min&#39;</span><span class="p">:</span> <span class="n">pmin</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_max&#39;</span><span class="p">:</span> <span class="n">pmax</span><span class="p">}])</span>
+<a id="__codelineno-0-280" name="__codelineno-0-280"></a>        <span class="n">new_row</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span><span class="n">grpvar</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="n">grpvar</span><span class="p">],</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_min'</span><span class="p">:</span> <span class="n">pmin</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">y_channel</span><span class="si">}</span><span class="s1">_max'</span><span class="p">:</span> <span class="n">pmax</span><span class="p">}])</span>
 <a id="__codelineno-0-281" name="__codelineno-0-281"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">new_row</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">new_row</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <a id="__codelineno-0-282" name="__codelineno-0-282"></a>            <span class="n">p_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">p_df</span><span class="p">,</span> <span class="n">new_row</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a id="__codelineno-0-283" name="__codelineno-0-283"></a>    <span class="n">ymean</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">ymean</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">p_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">grpvar</span><span class="p">)</span>
@@ -2076,7 +2090,8 @@ computes the 95% confidence interval for the y values.</p>
         <p>Exp: An object with attributes set from &lsquo;exp.obj&rsquo;, or dynamically built
      from &lsquo;exp_setup_df.csv&rsquo; and &lsquo;scenarios.csv&rsquo;.</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-59"> 59</a></span>
 <span class="normal"><a href="#__codelineno-0-60"> 60</a></span>
@@ -2121,33 +2136,33 @@ computes the 95% confidence interval for the y values.</p>
 <span class="normal"><a href="#__codelineno-0-99"> 99</a></span>
 <span class="normal"><a href="#__codelineno-0-100">100</a></span>
 <span class="normal"><a href="#__codelineno-0-101">101</a></span>
-<span class="normal"><a href="#__codelineno-0-102">102</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="k">def</span> <span class="nf">load_exp</span><span class="p">(</span><span class="n">wdir</span><span class="p">):</span>
-<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-102">102</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="k">def</span><span class="w"> </span><span class="nf">load_exp</span><span class="p">(</span><span class="n">wdir</span><span class="p">):</span>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="sd">    Load experiment setup and scenario data into an Exp object.</span>
 <a id="__codelineno-0-62" name="__codelineno-0-62"></a>
 <a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="sd">    Parameters:</span>
-<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">    wdir (str): The working directory containing &#39;exp_setup_df.csv&#39;, &#39;scenarios.csv&#39;,</span>
-<a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="sd">                and optionally &#39;exp.obj&#39;.</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">    wdir (str): The working directory containing 'exp_setup_df.csv', 'scenarios.csv',</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="sd">                and optionally 'exp.obj'.</span>
 <a id="__codelineno-0-66" name="__codelineno-0-66"></a>
 <a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="sd">    Exp: An object with attributes set from &#39;exp.obj&#39;, or dynamically built</span>
-<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="sd">         from &#39;exp_setup_df.csv&#39; and &#39;scenarios.csv&#39;.</span>
-<a id="__codelineno-0-70" name="__codelineno-0-70"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="sd">    Exp: An object with attributes set from 'exp.obj', or dynamically built</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="sd">         from 'exp_setup_df.csv' and 'scenarios.csv'.</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a><span class="sd">    """</span>
 <a id="__codelineno-0-71" name="__codelineno-0-71"></a>    <span class="k">try</span><span class="p">:</span>
 <a id="__codelineno-0-72" name="__codelineno-0-72"></a>        <span class="c1"># Attempt to load the Exp object from a pickle file</span>
-<a id="__codelineno-0-73" name="__codelineno-0-73"></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s2">&quot;exp.obj&quot;</span><span class="p">),</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s2">"exp.obj"</span><span class="p">),</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
 <a id="__codelineno-0-74" name="__codelineno-0-74"></a>            <span class="n">exp</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 <a id="__codelineno-0-75" name="__codelineno-0-75"></a>    <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">UnpicklingError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-0-76" name="__codelineno-0-76"></a>        <span class="c1"># If the pickle file doesn&#39;t exist or is corrupted, build the object from CSV files</span>
-<a id="__codelineno-0-77" name="__codelineno-0-77"></a>        <span class="k">class</span> <span class="nc">Exp</span><span class="p">:</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a>        <span class="c1"># If the pickle file doesn't exist or is corrupted, build the object from CSV files</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a>        <span class="k">class</span><span class="w"> </span><span class="nc">Exp</span><span class="p">:</span>
 <a id="__codelineno-0-78" name="__codelineno-0-78"></a>            <span class="k">pass</span>
 <a id="__codelineno-0-79" name="__codelineno-0-79"></a>
-<a id="__codelineno-0-80" name="__codelineno-0-80"></a>        <span class="n">exp_setup_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s1">&#39;exp_setup_df.csv&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-81" name="__codelineno-0-81"></a>        <span class="n">scen_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s1">&#39;scenarios.csv&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a>        <span class="n">exp_setup_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s1">'exp_setup_df.csv'</span><span class="p">)</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a>        <span class="n">scen_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s1">'scenarios.csv'</span><span class="p">)</span>
 <a id="__codelineno-0-82" name="__codelineno-0-82"></a>
 <a id="__codelineno-0-83" name="__codelineno-0-83"></a>        <span class="c1"># Check if the required CSV files exist</span>
 <a id="__codelineno-0-84" name="__codelineno-0-84"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">exp_setup_file</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">scen_file</span><span class="p">):</span>
-<a id="__codelineno-0-85" name="__codelineno-0-85"></a>            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;Required files &#39;exp_setup_df.csv&#39; and &#39;scenarios.csv&#39; are missing.&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a>            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">"Required files 'exp_setup_df.csv' and 'scenarios.csv' are missing."</span><span class="p">)</span>
 <a id="__codelineno-0-86" name="__codelineno-0-86"></a>
 <a id="__codelineno-0-87" name="__codelineno-0-87"></a>        <span class="c1"># Load data from CSV files</span>
 <a id="__codelineno-0-88" name="__codelineno-0-88"></a>        <span class="n">exp_setup_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">exp_setup_file</span><span class="p">)</span>
@@ -2158,7 +2173,7 @@ computes the 95% confidence interval for the y values.</p>
 <a id="__codelineno-0-93" name="__codelineno-0-93"></a>
 <a id="__codelineno-0-94" name="__codelineno-0-94"></a>        <span class="c1"># Set attributes from exp_setup_df</span>
 <a id="__codelineno-0-95" name="__codelineno-0-95"></a>        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">exp_setup_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-<a id="__codelineno-0-96" name="__codelineno-0-96"></a>            <span class="nb">setattr</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;parameter&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;Value&quot;</span><span class="p">])</span>
+<a id="__codelineno-0-96" name="__codelineno-0-96"></a>            <span class="nb">setattr</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">"parameter"</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">"Value"</span><span class="p">])</span>
 <a id="__codelineno-0-97" name="__codelineno-0-97"></a>
 <a id="__codelineno-0-98" name="__codelineno-0-98"></a>        <span class="c1"># Set attributes from scen_df</span>
 <a id="__codelineno-0-99" name="__codelineno-0-99"></a>        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">scen_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
@@ -2216,7 +2231,8 @@ arguments, including the job directory and model names.</p>
 -m/&ndash;models (str): One or more model names to compare. This argument is optional
                       and defaults to [&lsquo;EMOD&rsquo;, &lsquo;OpenMalaria&rsquo;, &lsquo;malariasimulation&rsquo;].</p>
 </details>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-19">19</a></span>
 <span class="normal"><a href="#__codelineno-0-20">20</a></span>
@@ -2255,8 +2271,8 @@ arguments, including the job directory and model names.</p>
 <span class="normal"><a href="#__codelineno-0-53">53</a></span>
 <span class="normal"><a href="#__codelineno-0-54">54</a></span>
 <span class="normal"><a href="#__codelineno-0-55">55</a></span>
-<span class="normal"><a href="#__codelineno-0-56">56</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">():</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-56">56</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="k">def</span><span class="w"> </span><span class="nf">parse_args</span><span class="p">():</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="sd">    Parses command-line arguments for simulation specifications.</span>
 <a id="__codelineno-0-22" name="__codelineno-0-22"></a>
 <a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="sd">    This function uses the argparse library to handle command-line inputs</span>
@@ -2269,27 +2285,27 @@ arguments, including the job directory and model names.</p>
 <a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">    Command Line Arguments:</span>
 <a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="sd">        -d/--directory (str): The job directory where the exp.obj file is located. This argument is required.</span>
 <a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">        -m/--models (str): One or more model names to compare. This argument is optional</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">                              and defaults to [&#39;EMOD&#39;, &#39;OpenMalaria&#39;, &#39;malariasimulation&#39;].</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">                              and defaults to ['EMOD', 'OpenMalaria', 'malariasimulation'].</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">    """</span>
 <a id="__codelineno-0-35" name="__codelineno-0-35"></a>
-<a id="__codelineno-0-36" name="__codelineno-0-36"></a>    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Simulation specifications&quot;</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a>    <span class="n">description</span> <span class="o">=</span> <span class="s2">"Simulation specifications"</span>
 <a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">)</span>
 <a id="__codelineno-0-38" name="__codelineno-0-38"></a>
 <a id="__codelineno-0-39" name="__codelineno-0-39"></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40"></a>        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-41" name="__codelineno-0-41"></a>        <span class="s2">&quot;--directory&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a>        <span class="s2">"-d"</span><span class="p">,</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a>        <span class="s2">"--directory"</span><span class="p">,</span>
 <a id="__codelineno-0-42" name="__codelineno-0-42"></a>        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
 <a id="__codelineno-0-43" name="__codelineno-0-43"></a>        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<a id="__codelineno-0-44" name="__codelineno-0-44"></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Job Directory where exp.obj is located&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>        <span class="n">help</span><span class="o">=</span><span class="s2">"Job Directory where exp.obj is located"</span><span class="p">,</span>
 <a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="p">)</span>
 <a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-<a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="s2">&quot;-m&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-48" name="__codelineno-0-48"></a>        <span class="s2">&quot;--models&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-49" name="__codelineno-0-49"></a>        <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="s2">"-m"</span><span class="p">,</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a>        <span class="s2">"--models"</span><span class="p">,</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>        <span class="n">nargs</span><span class="o">=</span><span class="s1">'+'</span><span class="p">,</span>
 <a id="__codelineno-0-50" name="__codelineno-0-50"></a>        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
 <a id="__codelineno-0-51" name="__codelineno-0-51"></a>        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-0-52" name="__codelineno-0-52"></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Name of models to compare&quot;</span><span class="p">,</span>
-<a id="__codelineno-0-53" name="__codelineno-0-53"></a>        <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;EMOD&#39;</span><span class="p">,</span> <span class="s1">&#39;OpenMalaria&#39;</span><span class="p">,</span> <span class="s1">&#39;malariasimulation&#39;</span><span class="p">]</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a>        <span class="n">help</span><span class="o">=</span><span class="s2">"Name of models to compare"</span><span class="p">,</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a>        <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s1">'EMOD'</span><span class="p">,</span> <span class="s1">'OpenMalaria'</span><span class="p">,</span> <span class="s1">'malariasimulation'</span><span class="p">]</span>
 <a id="__codelineno-0-54" name="__codelineno-0-54"></a>    <span class="p">)</span>
 <a id="__codelineno-0-55" name="__codelineno-0-55"></a>
 <a id="__codelineno-0-56" name="__codelineno-0-56"></a>    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
@@ -2328,7 +2344,7 @@ visualization. It also returns a string summarizing the filtering applied.</p>
         <ul class="first simple">
             <li>
               <b><code>df</code></b>
-                  (<code>DataFrame</code>)
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
               –
               <div class="doc-md-description">
                 <p>The input DataFrame containing simulation results.</p>
@@ -2357,7 +2373,7 @@ Defaults to None, meaning no filtering by age group will occur.</p>
             </li>
             <li>
               <b><code>filter_target</code></b>
-                  (<code>bool</code>, default:
+                  (<code><span title="bool">bool</span></code>, default:
                       <code>True</code>
 )
               –
@@ -2408,7 +2424,7 @@ present in <code>figure_vars</code>. Defaults to True.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If &lsquo;models&rsquo; is not included in <code>figure_vars</code> and there</p>
@@ -2419,7 +2435,8 @@ present in <code>figure_vars</code>. Defaults to True.</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-434">434</a></span>
 <span class="normal"><a href="#__codelineno-0-435">435</a></span>
@@ -2483,8 +2500,8 @@ present in <code>figure_vars</code>. Defaults to True.</p>
 <span class="normal"><a href="#__codelineno-0-493">493</a></span>
 <span class="normal"><a href="#__codelineno-0-494">494</a></span>
 <span class="normal"><a href="#__codelineno-0-495">495</a></span>
-<span class="normal"><a href="#__codelineno-0-496">496</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-434" name="__codelineno-0-434"></a><span class="k">def</span> <span class="nf">subset_dataframe_for_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">figure_vars</span><span class="p">,</span> <span class="n">agegrps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filter_target</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<a id="__codelineno-0-435" name="__codelineno-0-435"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-496">496</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-434" name="__codelineno-0-434"></a><span class="k">def</span><span class="w"> </span><span class="nf">subset_dataframe_for_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">figure_vars</span><span class="p">,</span> <span class="n">agegrps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filter_target</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<a id="__codelineno-0-435" name="__codelineno-0-435"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-436" name="__codelineno-0-436"></a><span class="sd">    Filter the input DataFrame for plotting based on specified criteria.</span>
 <a id="__codelineno-0-437" name="__codelineno-0-437"></a>
 <a id="__codelineno-0-438" name="__codelineno-0-438"></a><span class="sd">    This function filters the DataFrame according to the provided figure variables,</span>
@@ -2508,41 +2525,41 @@ present in <code>figure_vars</code>. Defaults to True.</p>
 <a id="__codelineno-0-456" name="__codelineno-0-456"></a><span class="sd">            - str: A summary string describing the filtering that was applied.</span>
 <a id="__codelineno-0-457" name="__codelineno-0-457"></a>
 <a id="__codelineno-0-458" name="__codelineno-0-458"></a><span class="sd">    Raises:</span>
-<a id="__codelineno-0-459" name="__codelineno-0-459"></a><span class="sd">        ValueError: If &#39;models&#39; is not included in `figure_vars` and there</span>
+<a id="__codelineno-0-459" name="__codelineno-0-459"></a><span class="sd">        ValueError: If 'models' is not included in `figure_vars` and there</span>
 <a id="__codelineno-0-460" name="__codelineno-0-460"></a><span class="sd">        are multiple unique model names in the DataFrame.</span>
-<a id="__codelineno-0-461" name="__codelineno-0-461"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-461" name="__codelineno-0-461"></a><span class="sd">    """</span>
 <a id="__codelineno-0-462" name="__codelineno-0-462"></a>
-<a id="__codelineno-0-463" name="__codelineno-0-463"></a>    <span class="n">txt</span> <span class="o">=</span> <span class="s1">&#39;Filtered dataset by: &#39;</span>
+<a id="__codelineno-0-463" name="__codelineno-0-463"></a>    <span class="n">txt</span> <span class="o">=</span> <span class="s1">'Filtered dataset by: '</span>
 <a id="__codelineno-0-464" name="__codelineno-0-464"></a>
 <a id="__codelineno-0-465" name="__codelineno-0-465"></a>    <span class="k">if</span> <span class="n">agegrps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-0-466" name="__codelineno-0-466"></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agegrps</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-<a id="__codelineno-0-467" name="__codelineno-0-467"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">agegrps</span><span class="p">)]</span>
-<a id="__codelineno-0-468" name="__codelineno-0-468"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ageGroup in </span><span class="si">{</span><span class="n">agegrps</span><span class="si">}</span><span class="s1">, &#39;</span>
+<a id="__codelineno-0-467" name="__codelineno-0-467"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">agegrps</span><span class="p">)]</span>
+<a id="__codelineno-0-468" name="__codelineno-0-468"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'ageGroup in </span><span class="si">{</span><span class="n">agegrps</span><span class="si">}</span><span class="s1">, '</span>
 <a id="__codelineno-0-469" name="__codelineno-0-469"></a>        <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-470" name="__codelineno-0-470"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ageGroup&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">agegrps</span><span class="p">]</span>
-<a id="__codelineno-0-471" name="__codelineno-0-471"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ageGroup </span><span class="si">{</span><span class="n">agegrps</span><span class="si">}</span><span class="s1">, &#39;</span>
+<a id="__codelineno-0-470" name="__codelineno-0-470"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span> <span class="o">==</span> <span class="n">agegrps</span><span class="p">]</span>
+<a id="__codelineno-0-471" name="__codelineno-0-471"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'ageGroup </span><span class="si">{</span><span class="n">agegrps</span><span class="si">}</span><span class="s1">, '</span>
 <a id="__codelineno-0-472" name="__codelineno-0-472"></a>
-<a id="__codelineno-0-473" name="__codelineno-0-473"></a>    <span class="k">if</span> <span class="s1">&#39;cm_clinical&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span><span class="p">:</span>
-<a id="__codelineno-0-474" name="__codelineno-0-474"></a>        <span class="n">selected_cm</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cm_clinical&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-<a id="__codelineno-0-475" name="__codelineno-0-475"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;cm_clinical&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_cm</span><span class="p">]</span>
-<a id="__codelineno-0-476" name="__codelineno-0-476"></a>        <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;cm_clinical </span><span class="si">{</span><span class="n">selected_cm</span><span class="si">}</span><span class="s1">, &#39;</span>
+<a id="__codelineno-0-473" name="__codelineno-0-473"></a>    <span class="k">if</span> <span class="s1">'cm_clinical'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span><span class="p">:</span>
+<a id="__codelineno-0-474" name="__codelineno-0-474"></a>        <span class="n">selected_cm</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'cm_clinical'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<a id="__codelineno-0-475" name="__codelineno-0-475"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'cm_clinical'</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_cm</span><span class="p">]</span>
+<a id="__codelineno-0-476" name="__codelineno-0-476"></a>        <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'cm_clinical </span><span class="si">{</span><span class="n">selected_cm</span><span class="si">}</span><span class="s1">, '</span>
 <a id="__codelineno-0-477" name="__codelineno-0-477"></a>
-<a id="__codelineno-0-478" name="__codelineno-0-478"></a>    <span class="k">if</span> <span class="s1">&#39;seasonality&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span><span class="p">:</span>
-<a id="__codelineno-0-479" name="__codelineno-0-479"></a>        <span class="n">selected_season</span> <span class="o">=</span> <span class="s1">&#39;seasonal&#39;</span> <span class="k">if</span> <span class="s1">&#39;seasonal&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;seasonality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="k">else</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;seasonality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-<a id="__codelineno-0-480" name="__codelineno-0-480"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;seasonality&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_season</span><span class="p">]</span>
-<a id="__codelineno-0-481" name="__codelineno-0-481"></a>        <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;seasonality </span><span class="si">{</span><span class="n">selected_season</span><span class="si">}</span><span class="s1">, &#39;</span>
+<a id="__codelineno-0-478" name="__codelineno-0-478"></a>    <span class="k">if</span> <span class="s1">'seasonality'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span><span class="p">:</span>
+<a id="__codelineno-0-479" name="__codelineno-0-479"></a>        <span class="n">selected_season</span> <span class="o">=</span> <span class="s1">'seasonal'</span> <span class="k">if</span> <span class="s1">'seasonal'</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">'seasonality'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="k">else</span> <span class="n">df</span><span class="p">[</span><span class="s1">'seasonality'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-0-480" name="__codelineno-0-480"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'seasonality'</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_season</span><span class="p">]</span>
+<a id="__codelineno-0-481" name="__codelineno-0-481"></a>        <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'seasonality </span><span class="si">{</span><span class="n">selected_season</span><span class="si">}</span><span class="s1">, '</span>
 <a id="__codelineno-0-482" name="__codelineno-0-482"></a>
 <a id="__codelineno-0-483" name="__codelineno-0-483"></a>    <span class="k">if</span> <span class="n">filter_target</span><span class="p">:</span>
-<a id="__codelineno-0-484" name="__codelineno-0-484"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">var</span> <span class="ow">in</span> <span class="n">figure_vars</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;eir&#39;</span><span class="p">,</span> <span class="s1">&#39;prevalence_2to10&#39;</span><span class="p">,</span> <span class="s1">&#39;target_output_values&#39;</span><span class="p">]):</span>
-<a id="__codelineno-0-485" name="__codelineno-0-485"></a>            <span class="n">selected_output</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;target_output_values&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-<a id="__codelineno-0-486" name="__codelineno-0-486"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;target_output_values&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_output</span><span class="p">]</span>
-<a id="__codelineno-0-487" name="__codelineno-0-487"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;target_output_values </span><span class="si">{</span><span class="n">selected_output</span><span class="si">}</span><span class="s1">, &#39;</span>
+<a id="__codelineno-0-484" name="__codelineno-0-484"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">var</span> <span class="ow">in</span> <span class="n">figure_vars</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'eir'</span><span class="p">,</span> <span class="s1">'prevalence_2to10'</span><span class="p">,</span> <span class="s1">'target_output_values'</span><span class="p">]):</span>
+<a id="__codelineno-0-485" name="__codelineno-0-485"></a>            <span class="n">selected_output</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'target_output_values'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<a id="__codelineno-0-486" name="__codelineno-0-486"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'target_output_values'</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_output</span><span class="p">]</span>
+<a id="__codelineno-0-487" name="__codelineno-0-487"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'target_output_values </span><span class="si">{</span><span class="n">selected_output</span><span class="si">}</span><span class="s1">, '</span>
 <a id="__codelineno-0-488" name="__codelineno-0-488"></a>
-<a id="__codelineno-0-489" name="__codelineno-0-489"></a>    <span class="k">if</span> <span class="s1">&#39;models&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span> <span class="ow">and</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;models&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-<a id="__codelineno-0-490" name="__codelineno-0-490"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;models needs to be specified in plot if results were combined for more than 1 model&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-489" name="__codelineno-0-489"></a>    <span class="k">if</span> <span class="s1">'models'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span> <span class="ow">and</span> <span class="n">df</span><span class="p">[</span><span class="s1">'models'</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+<a id="__codelineno-0-490" name="__codelineno-0-490"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'models needs to be specified in plot if results were combined for more than 1 model'</span><span class="p">)</span>
 <a id="__codelineno-0-491" name="__codelineno-0-491"></a>
 <a id="__codelineno-0-492" name="__codelineno-0-492"></a>    <span class="c1"># Remove trailing comma and space if any filtering has been done</span>
-<a id="__codelineno-0-493" name="__codelineno-0-493"></a>    <span class="k">if</span> <span class="n">txt</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">):</span>
+<a id="__codelineno-0-493" name="__codelineno-0-493"></a>    <span class="k">if</span> <span class="n">txt</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">', '</span><span class="p">):</span>
 <a id="__codelineno-0-494" name="__codelineno-0-494"></a>        <span class="n">txt</span> <span class="o">=</span> <span class="n">txt</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
 <a id="__codelineno-0-495" name="__codelineno-0-495"></a>
 <a id="__codelineno-0-496" name="__codelineno-0-496"></a>    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">txt</span>
@@ -2571,7 +2588,7 @@ present in <code>figure_vars</code>. Defaults to True.</p>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

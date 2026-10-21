@@ -266,7 +266,10 @@
 
 
 
+
+
   <div class="doc doc-children">
+
 
 
 
@@ -280,7 +283,7 @@
 
 
 <h2 id="EMOD.functions.forcedEIR.set_inputEIR_seasonality" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">set_inputEIR_seasonality</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">EIR_scale_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seasonality</span><span class="o">=</span><span class="s1">&#39;perennial&#39;</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">set_inputEIR_seasonality</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">EIR_scale_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seasonality</span><span class="o">=</span><span class="s1">'perennial'</span><span class="p">)</span></code>
 
 <a href="#EMOD.functions.forcedEIR.set_inputEIR_seasonality" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -295,7 +298,8 @@
 <p>Returns:
 A dictionary containing the EIR scale factor and the specified seasonality.</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/functions/forcedEIR.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-28">28</a></span>
 <span class="normal"><a href="#__codelineno-0-29">29</a></span>
@@ -323,33 +327,33 @@ A dictionary containing the EIR scale factor and the specified seasonality.</p>
 <span class="normal"><a href="#__codelineno-0-51">51</a></span>
 <span class="normal"><a href="#__codelineno-0-52">52</a></span>
 <span class="normal"><a href="#__codelineno-0-53">53</a></span>
-<span class="normal"><a href="#__codelineno-0-54">54</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="k">def</span> <span class="nf">set_inputEIR_seasonality</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">EIR_scale_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seasonality</span><span class="o">=</span><span class="s1">&#39;perennial&#39;</span><span class="p">):</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-54">54</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="k">def</span><span class="w"> </span><span class="nf">set_inputEIR_seasonality</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">EIR_scale_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seasonality</span><span class="o">=</span><span class="s1">'perennial'</span><span class="p">):</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">    Set input EIR (Entomological Inoculation Rate) based on seasonality.</span>
 <a id="__codelineno-0-31" name="__codelineno-0-31"></a>
 <a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="sd">    Parameters:</span>
 <a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">    - camp: Campaign object from EMOD.</span>
 <a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="sd">    - EIR_scale_factor: Scaling factor for EIR (default is 1).</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">    - seasonality: Type of seasonality, either &#39;perennial&#39; or &#39;seasonal&#39; (default is &#39;perennial&#39;).</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">    - seasonality: Type of seasonality, either 'perennial' or 'seasonal' (default is 'perennial').</span>
 <a id="__codelineno-0-36" name="__codelineno-0-36"></a>
 <a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">    A dictionary containing the EIR scale factor and the specified seasonality.</span>
-<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">    """</span>
 <a id="__codelineno-0-40" name="__codelineno-0-40"></a>
 <a id="__codelineno-0-41" name="__codelineno-0-41"></a>    <span class="n">season_daily</span> <span class="o">=</span> <span class="n">get_seasonal_eir</span><span class="p">()</span> 
-<a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="k">if</span> <span class="n">seasonality</span> <span class="o">==</span> <span class="s1">&#39;perennial&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="k">if</span> <span class="n">seasonality</span> <span class="o">==</span> <span class="s1">'perennial'</span><span class="p">:</span>
 <a id="__codelineno-0-43" name="__codelineno-0-43"></a>        <span class="n">daily_EIR</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">/</span> <span class="mi">365</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">365</span><span class="p">]</span>
-<a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="k">elif</span> <span class="n">seasonality</span> <span class="o">==</span> <span class="s1">&#39;seasonal&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="k">elif</span> <span class="n">seasonality</span> <span class="o">==</span> <span class="s1">'seasonal'</span><span class="p">:</span>
 <a id="__codelineno-0-45" name="__codelineno-0-45"></a>        <span class="n">daily_EIR</span> <span class="o">=</span> <span class="n">season_daily</span>
 <a id="__codelineno-0-46" name="__codelineno-0-46"></a>        <span class="n">eir_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">daily_EIR</span><span class="p">])</span>
 <a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="n">daily_EIR</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span> <span class="o">/</span> <span class="n">eir_sum</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">daily_EIR</span><span class="p">]</span>  <span class="c1"># rescale to sum = 1</span>
 <a id="__codelineno-0-48" name="__codelineno-0-48"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-49" name="__codelineno-0-49"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please specify valid seasonality&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Please specify valid seasonality"</span><span class="p">)</span>
 <a id="__codelineno-0-50" name="__codelineno-0-50"></a>
-<a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="n">add_scheduled_input_eir</span><span class="p">(</span><span class="n">campaign</span><span class="o">=</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">daily_eir</span><span class="o">=</span><span class="n">daily_EIR</span><span class="p">,</span> <span class="n">age_dependence</span><span class="o">=</span><span class="s2">&quot;SURFACE_AREA_DEPENDENT&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="n">add_scheduled_input_eir</span><span class="p">(</span><span class="n">campaign</span><span class="o">=</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">daily_eir</span><span class="o">=</span><span class="n">daily_EIR</span><span class="p">,</span> <span class="n">age_dependence</span><span class="o">=</span><span class="s2">"SURFACE_AREA_DEPENDENT"</span><span class="p">,</span>
 <a id="__codelineno-0-52" name="__codelineno-0-52"></a>                            <span class="n">node_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scaling_factor</span><span class="o">=</span><span class="n">EIR_scale_factor</span><span class="p">)</span>
 <a id="__codelineno-0-53" name="__codelineno-0-53"></a>
-<a id="__codelineno-0-54" name="__codelineno-0-54"></a>    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;EIR_scale_factor&#39;</span><span class="p">:</span> <span class="n">EIR_scale_factor</span><span class="p">,</span><span class="s1">&#39;seasonality&#39;</span><span class="p">:</span> <span class="n">seasonality</span><span class="p">}</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a>    <span class="k">return</span> <span class="p">{</span><span class="s1">'EIR_scale_factor'</span><span class="p">:</span> <span class="n">EIR_scale_factor</span><span class="p">,</span><span class="s1">'seasonality'</span><span class="p">:</span> <span class="n">seasonality</span><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -382,7 +386,7 @@ A dictionary containing the EIR scale factor and the specified seasonality.</p>
         <ul class="first simple">
             <li>
               <b><code>simulation</code></b>
-                  (<code>object</code>)
+                  (<code><span title="object">object</span></code>)
               –
               <div class="doc-md-description">
                 <p>The simulation object from EMOD.</p>
@@ -390,7 +394,7 @@ A dictionary containing the EIR scale factor and the specified seasonality.</p>
             </li>
             <li>
               <b><code>value</code></b>
-                  (<code>float</code>)
+                  (<code><span title="float">float</span></code>)
               –
               <div class="doc-md-description">
                 <p>The value by which to multiply the Maternal Antibody Protection parameter.</p>
@@ -423,7 +427,8 @@ A dictionary containing the EIR scale factor and the specified seasonality.</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/functions/forcedEIR.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-12">12</a></span>
 <span class="normal"><a href="#__codelineno-0-13">13</a></span>
@@ -437,8 +442,8 @@ A dictionary containing the EIR scale factor and the specified seasonality.</p>
 <span class="normal"><a href="#__codelineno-0-21">21</a></span>
 <span class="normal"><a href="#__codelineno-0-22">22</a></span>
 <span class="normal"><a href="#__codelineno-0-23">23</a></span>
-<span class="normal"><a href="#__codelineno-0-24">24</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="k">def</span> <span class="nf">update_mab</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="k">def</span><span class="w"> </span><span class="nf">update_mab</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="sd">    Update the Maternal Antibody Protection parameter within the simulation.</span>
 <a id="__codelineno-0-15" name="__codelineno-0-15"></a>
 <a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="sd">    Parameters:</span>
@@ -447,7 +452,7 @@ A dictionary containing the EIR scale factor and the specified seasonality.</p>
 <a id="__codelineno-0-19" name="__codelineno-0-19"></a>
 <a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="sd">        None. The function modifies the simulation object in place.</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="sd">    """</span>
 <a id="__codelineno-0-23" name="__codelineno-0-23"></a>    <span class="n">simulation</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Maternal_Antibody_Protection</span> <span class="o">*=</span> <span class="n">value</span>
 <a id="__codelineno-0-24" name="__codelineno-0-24"></a>    <span class="k">return</span> <span class="kc">None</span>
 </code></pre></div></td></tr></table></div>
@@ -475,7 +480,7 @@ A dictionary containing the EIR scale factor and the specified seasonality.</p>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

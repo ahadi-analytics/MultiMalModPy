@@ -111,10 +111,6 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#openmalaria">OpenMalaria</a>
     </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#parameter-sampling">Parameter sampling</a>
-        <ul>
     <li class="toctree-l3"><a class="reference internal" href="#malariasimulation">malariasimulation</a>
     </li>
         </ul>
@@ -125,6 +121,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#openmalaria_1">OpenMalaria</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#malariasimulation_1">malariasimulation</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#entomology-mode">Entomology mode</a>
@@ -132,6 +130,8 @@
     <li class="toctree-l3"><a class="reference internal" href="#emod_3">EMOD</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#openmalaria_2">OpenMalaria</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#malariasimulation_2">malariasimulation</a>
     </li>
         </ul>
     </li>
@@ -297,24 +297,25 @@ immunity is established, followed by the <code>pickup</code> which defines the o
 </ul>
 </li>
 <li>
-<p>To run a pickup simulation(s):  </p>
+<p>To run pickup simulation(s):</p>
 <ul>
-<li>In latest version of the framework, submitting a burnin simulation will automatically create and run a<br />
-  corresponding pickup simulation via  <code>launch_pickup.sh</code>  </li>
-<li>In the files, <code>emod_step</code> is set to <code>pickup</code> and <code>emod_serialized_id</code> automatically to <code>&lt;burnin experiment id&gt;</code></li>
-<li>Note, pickup simulations cannot run without an attached experiment id (for EMOD).  </li>
-<li>The <code>launch_pickup.sh</code> includes the following lines after the required SBATCH specifications:  </li>
+<li>In the latest version of the framework, submitting a burn-in simulation will automatically create and run a corresponding pickup simulation via <code>launch_pickup.sh</code>.</li>
+<li>In the files, <code>emod_step</code> is set to <code>pickup</code> and <code>emod_serialized_id</code> is automatically set to <code>&lt;burnin experiment id&gt;</code>.</li>
+<li>Note that pickup simulations cannot run without an attached experiment ID for EMOD.</li>
+<li>The <code>launch_pickup.sh</code> script includes the following lines after the required SBATCH specifications:</li>
 </ul>
-<p>```
-     ml singularity/3.8.1<br />
-     ml python/3.9.16
-     source /projects/b1139/environments/mmmpy_venv/bin/activate</p>
-<div class="codehilite"><pre><span></span><code> cd /projects/b1139/emod-om/MultiMalModPy
- python launch_sim.py -d &lt;job_directory&gt;/&lt;exp_name&gt;_burnin80 --suite &lt;SUITE_Name&gt; --expname &lt;exp_name&gt; --emodstep pickup --serializedid &lt;emod_serialized_id&gt; --models EMOD MalSim OpenMalaria
+</li>
+</ul>
+<div class="codehilite"><pre><span></span><code>ml<span class="w"> </span>singularity/3.8.1
+ml<span class="w"> </span>python/3.9.16
+<span class="nb">source</span><span class="w"> </span>/projects/b1139/environments/mmmpy_venv/bin/activate
 </code></pre></div>
 
-<p>```</p>
-</li>
+<div class="codehilite"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/projects/b1139/emod-om/MultiMalModPy
+python<span class="w"> </span>launch_sim.py<span class="w"> </span>-d<span class="w"> </span>&lt;job_directory&gt;/&lt;exp_name&gt;_burnin80<span class="w"> </span>--suite<span class="w"> </span>&lt;SUITE_Name&gt;<span class="w"> </span>--expname<span class="w"> </span>&lt;exp_name&gt;<span class="w"> </span>--emodstep<span class="w"> </span>pickup<span class="w"> </span>--serializedid<span class="w"> </span>&lt;emod_serialized_id&gt;<span class="w"> </span>--models<span class="w"> </span>EMOD<span class="w"> </span>MalSim<span class="w"> </span>OpenMalaria
+</code></pre></div>
+
+<ul>
 <li>
 <p>To run a customized (new) pickup simulation(s):  </p>
 <ul>
@@ -339,14 +340,11 @@ immunity is established, followed by the <code>pickup</code> which defines the o
 </ul>
 <h2 id="using-alternative-base-calibration">Using alternative base calibration<a class="headerlink" href="#using-alternative-base-calibration" title="Permanent link">&para;</a></h2>
 <h3 id="emod_1">EMOD<a class="headerlink" href="#emod_1" title="Permanent link">&para;</a></h3>
-<p>This section is under construction&hellip; </p>
+<p>No alternative base calibration publicly available at this time. </p>
 <h3 id="openmalaria">OpenMalaria<a class="headerlink" href="#openmalaria" title="Permanent link">&para;</a></h3>
-<p>Model variants<br />
-OpenMalaria allows to take into account model and parameter uncertainty through varying  <a href="https://github.com/SwissTPH/openmalaria/wiki/ModelWithinHost#specification-of-model-variants">model variants</a>). 
+<p>OpenMalaria allows to take into account model and parameter uncertainty through varying  <a href="https://github.com/SwissTPH/openmalaria/wiki/ModelWithinHost#specification-of-model-variants">model variants</a>). 
 However, for simplicity in MultiMalModPy, only the base model is included. </p>
-<h2 id="parameter-sampling">Parameter sampling<a class="headerlink" href="#parameter-sampling" title="Permanent link">&para;</a></h2>
 <h3 id="malariasimulation">malariasimulation<a class="headerlink" href="#malariasimulation" title="Permanent link">&para;</a></h3>
-<p>malariasimulation allows paramter sampling.  </p>
 <p>In malariasimulation, accounting for parameter uncertainty to better reflect potential variability in the simulation results has been integrated by drawing parameter values
 from posterior distributions around defined parameter sets.   </p>
 <p>Via the set_parameter_draw function up to 1000 different parameter sets for 32 simulation parameters can be selected.
@@ -370,33 +368,38 @@ The specific python code snippet, as used in MultiMalModPy <a href="https://gith
 The specific XML chunk, as used in MultiMalModPy <a href="https://github.com/ahadi-analytics/MultiMalModPy/blob/main/OpenMalaria/scaffolds/R0000GA.xml#L72">here</a>, is shown below:  </p>
 <div class="codehilite"><pre><span></span><code><span class="nt">&lt;importedInfections&gt;</span>
 <span class="w">    </span><span class="nt">&lt;timed&gt;</span>
-<span class="w">        </span><span class="nt">&lt;rate</span><span class="w"> </span><span class="na">time=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;@importation_rate@&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;rate</span><span class="w"> </span><span class="na">time=</span><span class="s">"0"</span><span class="w"> </span><span class="na">value=</span><span class="s">"@importation_rate@"</span><span class="nt">/&gt;</span>
 <span class="w">    </span><span class="nt">&lt;/timed&gt;</span>
 <span class="nt">&lt;/importedInfections&gt;</span>
 </code></pre></div>
 
+<h3 id="malariasimulation_1">malariasimulation<a class="headerlink" href="#malariasimulation_1" title="Permanent link">&para;</a></h3>
+<p>Importation not setup for malariasimulation in MultiMalModPy. </p>
 <h2 id="entomology-mode">Entomology mode<a class="headerlink" href="#entomology-mode" title="Permanent link">&para;</a></h2>
 <h3 id="emod_3">EMOD<a class="headerlink" href="#emod_3" title="Permanent link">&para;</a></h3>
 <p>Relevant code chunks are under EMOD_functions.py <a href="https://github.com/ahadi-analytics/MultiMalModPy/blob/main/EMOD/functions/EMOD_functions.py#L100">here</a> and
  under EMOD/utils.py <a href="https://github.com/ahadi-analytics/MultiMalModPy/blob/main/EMOD/utils.py#L61">here</a>.</p>
 <p>&lsquo;Forced&rsquo; EIR uses the <a href="https://docs.idmod.org/projects/emodpy-malaria/en/latest/emodpy_malaria.interventions.inputeir.html#emodpy_malaria.interventions.inputeir.add_scheduled_input_eir">add_scheduled_input_eir</a> function from emodpy-malaria.</p>
 <div class="codehilite"><pre><span></span><code><span class="c1">## If forced EIR, treated as campaign in EMOD</span>
-<span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;forced&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">'forced'</span><span class="p">:</span>
     <span class="n">set_inputEIR_seasonality</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">model_input_em</span><span class="p">),</span> <span class="n">row</span><span class="o">.</span><span class="n">seasonality</span><span class="p">)</span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">:</span>
-    <span class="n">task</span><span class="o">.</span><span class="n">common_assets</span><span class="o">.</span><span class="n">add_directory</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">input_dir</span><span class="p">,</span> <span class="s2">&quot;example_weather&quot;</span><span class="p">),</span> <span class="n">relative_path</span><span class="o">=</span><span class="s2">&quot;climate&quot;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">'dynamic'</span><span class="p">:</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">common_assets</span><span class="o">.</span><span class="n">add_directory</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">input_dir</span><span class="p">,</span> <span class="s2">"example_weather"</span><span class="p">),</span> <span class="n">relative_path</span><span class="o">=</span><span class="s2">"climate"</span><span class="p">)</span>
 </code></pre></div>
 
 <p>They also require different sweeping, defined in <code>config_sweep_builder</code> (and <code>config_sweep_builder_pickup</code>) <a href="https://github.com/ahadi-analytics/MultiMalModPy/blob/main/EMOD/utils.py#L251C1-L265C42">see code</a>.
 You can find details on parameter sweeping for building scenarios under <a href="">simulation guide/scenarios</a></p>
 <h3 id="openmalaria_2">OpenMalaria<a class="headerlink" href="#openmalaria_2" title="Permanent link">&para;</a></h3>
 <p><code>entomology_mode</code> in OpenMalaria defines the feedback from human infectiousness to subsequent Entomological Infection Rate (EIR). <br />
-<code>entomology_mode</code> in OpenMalaria is setup by literally defining the <a href="https://github.com/SwissTPH/openmalaria/wiki/ModelTransmission#simulation-mode">&lsquo;mode of entomology&rsquo;</a>:
+<code>entomology_mode</code> in OpenMalaria is setup by literally defining the <a href="https://github.com/OpenMalaria-Org/openmalaria/wiki/ModelTransmission#simulation-mode">&lsquo;mode of entomology&rsquo;</a>:
 The specific XML chunk, as used in MultiMalModPy <a href="https://github.com/ahadi-analytics/MultiMalModPy/blob/main/OpenMalaria/scaffolds/R0000GA.xml#L131C6-L131C21">here</a>, is shown below:  </p>
-<div class="codehilite"><pre><span></span><code><span class="nt">&lt;entomology</span><span class="w"> </span><span class="na">mode=</span><span class="s">&quot;@entomology_mode@&quot;</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;Namawala&quot;</span><span class="w"> </span><span class="na">scaledAnnualEIR=</span><span class="s">&quot;@eir@&quot;</span><span class="nt">&gt;</span>
+<div class="codehilite"><pre><span></span><code><span class="nt">&lt;entomology</span><span class="w"> </span><span class="na">mode=</span><span class="s">"@entomology_mode@"</span><span class="w"> </span><span class="na">name=</span><span class="s">"Namawala"</span><span class="w"> </span><span class="na">scaledAnnualEIR=</span><span class="s">"@eir@"</span><span class="nt">&gt;</span>
 </code></pre></div>
+
+<h3 id="malariasimulation_2">malariasimulation<a class="headerlink" href="#malariasimulation_2" title="Permanent link">&para;</a></h3>
+<p>By default, the malariasimulation transmission setup in MultiMalModPy most closely corresponds to the framework&rsquo;s dynamic entomology mode.</p>
               
             </div>
           </div><footer>
@@ -409,7 +412,7 @@ The specific XML chunk, as used in MultiMalModPy <a href="https://github.com/aha
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

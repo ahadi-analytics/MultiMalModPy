@@ -268,7 +268,10 @@
 
 
 
+
+
   <div class="doc doc-children">
+
 
 
 
@@ -310,7 +313,7 @@ for other potential interventions (e.g., <code>smc</code>).</p>
         <ul class="first simple">
             <li>
               <b><code>exp</code></b>
-                  (<code>object</code>)
+                  (<code><span title="object">object</span></code>)
               –
               <div class="doc-md-description">
                 <p>An object representing the experiment, which should have an
@@ -356,7 +359,7 @@ for other potential interventions (e.g., <code>smc</code>).</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If an invalid intervention is specified in the <code>intervention_list</code>.</p>
@@ -367,7 +370,8 @@ for other potential interventions (e.g., <code>smc</code>).</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_interventions.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
 <span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
@@ -410,8 +414,8 @@ for other potential interventions (e.g., <code>smc</code>).</p>
 <span class="normal"><a href="#__codelineno-0-45">45</a></span>
 <span class="normal"><a href="#__codelineno-0-46">46</a></span>
 <span class="normal"><a href="#__codelineno-0-47">47</a></span>
-<span class="normal"><a href="#__codelineno-0-48">48</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="k">def</span> <span class="nf">exp_params_to_update</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-48">48</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">exp_params_to_update</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="sd">    Configures the `exp` object by adding parameters for all user-specified interventions.</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10"></a>
 <a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="sd">    This function checks the list of interventions in the `exp` object and updates the</span>
@@ -432,7 +436,7 @@ for other potential interventions (e.g., <code>smc</code>).</p>
 <a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="sd">    Raises:</span>
 <a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">        ValueError: If an invalid intervention is specified in the `intervention_list`.</span>
 <a id="__codelineno-0-28" name="__codelineno-0-28"></a>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">    """</span>
 <a id="__codelineno-0-30" name="__codelineno-0-30"></a>
 <a id="__codelineno-0-31" name="__codelineno-0-31"></a>    <span class="c1"># Note having unique levels of those two parameters is currently needed in the plotting scripts</span>
 <a id="__codelineno-0-32" name="__codelineno-0-32"></a>    <span class="n">exp</span><span class="o">.</span><span class="n">cm_clinical</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">case_management</span><span class="p">]</span>
@@ -440,16 +444,16 @@ for other potential interventions (e.g., <code>smc</code>).</p>
 <a id="__codelineno-0-34" name="__codelineno-0-34"></a>
 <a id="__codelineno-0-35" name="__codelineno-0-35"></a>    <span class="n">exp</span><span class="o">.</span><span class="n">intervention_analyzer_columns</span> <span class="o">=</span> <span class="p">[]</span>
 <a id="__codelineno-0-36" name="__codelineno-0-36"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span> <span class="ow">or</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span> <span class="o">==</span> <span class="p">[]:</span>
-<a id="__codelineno-0-37" name="__codelineno-0-37"></a>        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No interventions specified&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a>        <span class="nb">print</span><span class="p">(</span><span class="s1">'No interventions specified'</span><span class="p">)</span>
 <a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-39" name="__codelineno-0-39"></a>        <span class="k">if</span> <span class="s1">&#39;ccstep&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40"></a>            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Adding parameters for ccstep&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a>        <span class="k">if</span> <span class="s1">'ccstep'</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a>            <span class="nb">print</span><span class="p">(</span><span class="s1">'Adding parameters for ccstep'</span><span class="p">)</span>
 <a id="__codelineno-0-41" name="__codelineno-0-41"></a>            <span class="n">exp</span> <span class="o">=</span> <span class="n">ccstep_params</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
 <a id="__codelineno-0-42" name="__codelineno-0-42"></a>        <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-43" name="__codelineno-0-43"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid intervention specified. Note that case management is automatically included.&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Invalid intervention specified. Note that case management is automatically included.'</span><span class="p">)</span>
 <a id="__codelineno-0-44" name="__codelineno-0-44"></a>
-<a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="c1"># if &#39;smc&#39; in exp.intervention_list:	</span>
-<a id="__codelineno-0-46" name="__codelineno-0-46"></a>        <span class="c1">#    print(&#39;Adding parameters for smc&#39;)	</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="c1"># if 'smc' in exp.intervention_list:	</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a>        <span class="c1">#    print('Adding parameters for smc')	</span>
 <a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="c1">#    exp = smc_params(exp)</span>
 <a id="__codelineno-0-48" name="__codelineno-0-48"></a>    <span class="k">return</span> <span class="n">exp</span>
 </code></pre></div></td></tr></table></div>
@@ -518,7 +522,8 @@ The experiment configuration object. It must have an attribute
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_interventions.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-80">80</a></span>
 <span class="normal"><a href="#__codelineno-0-81">81</a></span>
@@ -536,9 +541,9 @@ The experiment configuration object. It must have an attribute
 <span class="normal"><a href="#__codelineno-0-93">93</a></span>
 <span class="normal"><a href="#__codelineno-0-94">94</a></span>
 <span class="normal"><a href="#__codelineno-0-95">95</a></span>
-<span class="normal"><a href="#__codelineno-0-96">96</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="k">def</span> <span class="nf">intervention_params_to_check</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-96">96</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="k">def</span><span class="w"> </span><span class="nf">intervention_params_to_check</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
 <a id="__codelineno-0-81" name="__codelineno-0-81"></a>
-<a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">    Validates experiment configuration specific for the intervention recognized by the framework.</span>
 <a id="__codelineno-0-84" name="__codelineno-0-84"></a>
 <a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">    Args:</span>
@@ -549,9 +554,9 @@ The experiment configuration object. It must have an attribute
 <a id="__codelineno-0-90" name="__codelineno-0-90"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="sd">        None</span>
 <a id="__codelineno-0-92" name="__codelineno-0-92"></a>
-<a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="sd">    """</span>
 <a id="__codelineno-0-94" name="__codelineno-0-94"></a>
-<a id="__codelineno-0-95" name="__codelineno-0-95"></a>    <span class="k">if</span> <span class="s2">&quot;ccstep&quot;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a>    <span class="k">if</span> <span class="s2">"ccstep"</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
 <a id="__codelineno-0-96" name="__codelineno-0-96"></a>        <span class="n">ccstep_input_check</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -588,7 +593,7 @@ intervention by removing invalid combinations and adding related columns.</p>
         <ul class="first simple">
             <li>
               <b><code>exp</code></b>
-                  (<code>Experiment</code>)
+                  (<code><span title="Experiment">Experiment</span></code>)
               –
               <div class="doc-md-description">
                 <p>The experiment object containing the intervention list
@@ -597,7 +602,7 @@ intervention by removing invalid combinations and adding related columns.</p>
             </li>
             <li>
               <b><code>df</code></b>
-                  (<code>DataFrame</code>)
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
               –
               <div class="doc-md-description">
                 <p>The DataFrame containing generated scenario combinations.</p>
@@ -633,7 +638,8 @@ intervention by removing invalid combinations and adding related columns.</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_interventions.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-51">51</a></span>
 <span class="normal"><a href="#__codelineno-0-52">52</a></span>
@@ -661,8 +667,8 @@ intervention by removing invalid combinations and adding related columns.</p>
 <span class="normal"><a href="#__codelineno-0-74">74</a></span>
 <span class="normal"><a href="#__codelineno-0-75">75</a></span>
 <span class="normal"><a href="#__codelineno-0-76">76</a></span>
-<span class="normal"><a href="#__codelineno-0-77">77</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="k">def</span> <span class="nf">scenario_df_to_update</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
-<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-77">77</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="k">def</span><span class="w"> </span><span class="nf">scenario_df_to_update</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">    Update a scenarios DataFrame to handle intervention-specific requirements.</span>
 <a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">    This function modifies the provided scenarios DataFrame (`df`) based on</span>
 <a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">    the attributes of the experiment (`exp`), specifically handling the `ccstep`</span>
@@ -678,9 +684,9 @@ intervention by removing invalid combinations and adding related columns.</p>
 <a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="sd">                          intervention, including:</span>
 <a id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="sd">                          - Removal of invalid combinations where `target_output_values` equals `ccstep`.</span>
 <a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="sd">                          - Addition of columns specific to the `ccstep` intervention.</span>
-<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="sd">    """</span>
 <a id="__codelineno-0-69" name="__codelineno-0-69"></a>
-<a id="__codelineno-0-70" name="__codelineno-0-70"></a>    <span class="k">if</span> <span class="s1">&#39;ccstep&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>    <span class="k">if</span> <span class="s1">'ccstep'</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
 <a id="__codelineno-0-71" name="__codelineno-0-71"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a id="__codelineno-0-72" name="__codelineno-0-72"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
 <a id="__codelineno-0-73" name="__codelineno-0-73"></a>
@@ -713,7 +719,7 @@ intervention by removing invalid combinations and adding related columns.</p>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

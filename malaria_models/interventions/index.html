@@ -326,144 +326,141 @@
 <td>✔</td>
 <td>Intervention begins at <strong>start of simulation</strong> and remains constant.</td>
 </tr>
-<tr>
-<td>=======</td>
-<td></td>
-<td></td>
-</tr>
 </tbody>
 </table>
 <p>Details on their function and implementation can be found in the framework’s  <strong>API</strong> under the <code>intervention.py</code> script for each model.</p>
 <h3 id="emod">EMOD<a class="headerlink" href="#emod" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Documentation main <br />
-  page:<a href="https://docs.idmod.org/projects/emodpy-malaria/en/latest/emod/malaria-model-antimalarial-drugs.html">malaria-model-antimalarial-drugs</a>    </li>
+  page:<a href="https://emod.idmod.org/emodpy-malaria/emod/malaria-model-antimalarial-drugs/">malaria-model-antimalarial-drugs</a>    </li>
 <li>Function: <a href="https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/interventions/treatment_seeking.py">treatment_seeking.py</a>    </li>
 <li>Related publications: <a href="https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-015-0887-y">Gerardin et al 2015</a>   </li>
 <li>Additional: <a href="https://github.com/EMOD-Hub/emodpy-malaria/blob/main/emodpy_malaria/malaria_drug_params.csv">malaria_drug_params.csv</a>    </li>
 </ul>
 <h4 id="treatment-seeking">treatment seeking<a class="headerlink" href="#treatment-seeking" title="Permanent link">&para;</a></h4>
-<p>```python    </p>
-<p>def add_treatment_seeking(campaign, 
-                            start_day: int = 1,<br />
-                            targets: list = None, 
-                            drug: list = None, 
-                            node_ids: list = None, 
-                            ind_property_restrictions: list = None, 
-                            drug_ineligibility_duration: float = 0, 
-                            duration: int = -1, 
-                            broadcast_event_name: str = &lsquo;Received_Treatment&rsquo;): 
-      camp_events = _get_events(campaign=campaign, start_day=start_day, targets=targets, drug=drug, node_ids=node_ids, 
-                                ind_property_restrictions=ind_property_restrictions, 
-                                drug_ineligibility_duration=drug_ineligibility_duration, duration=duration, 
-                                broadcast_event_name=broadcast_event_name) 
-      for event in camp_events: 
-          campaign.add(event) 
-  ```  </p>
-<p><code>targets is a list of dictionaries defining the trigger event and coverage for and  
-  properties of individuals to target with the intervention with all possible options being:  
-  [{"trigger":"NewClinicalCase","coverage":0.8,"agemin":15,"agemax":70, "rate":0.3}]  
-  "rate" is the inverse of the average delay in time to treatment seeking from an exponential distribution  
-  "trigger" must be defined, but everything else has defaults: 
-  coverage = 1, affects all  
-  agemin/agemax = 0/125, affects all 
-  rate = 0, no delay, seek treatment immediately</code>  </p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_treatment_seeking</span><span class="p">(</span><span class="n">campaign</span><span class="p">,</span> 
+                          <span class="n">start_day</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>  
+                          <span class="n">targets</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                          <span class="n">drug</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                          <span class="n">node_ids</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                          <span class="n">ind_property_restrictions</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                          <span class="n">drug_ineligibility_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> 
+                          <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> 
+                          <span class="n">broadcast_event_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'Received_Treatment'</span><span class="p">):</span> 
+    <span class="n">camp_events</span> <span class="o">=</span> <span class="n">_get_events</span><span class="p">(</span><span class="n">campaign</span><span class="o">=</span><span class="n">campaign</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">start_day</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span> <span class="n">drug</span><span class="o">=</span><span class="n">drug</span><span class="p">,</span> <span class="n">node_ids</span><span class="o">=</span><span class="n">node_ids</span><span class="p">,</span> 
+                              <span class="n">ind_property_restrictions</span><span class="o">=</span><span class="n">ind_property_restrictions</span><span class="p">,</span> 
+                              <span class="n">drug_ineligibility_duration</span><span class="o">=</span><span class="n">drug_ineligibility_duration</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span> 
+                              <span class="n">broadcast_event_name</span><span class="o">=</span><span class="n">broadcast_event_name</span><span class="p">)</span> 
+    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">camp_events</span><span class="p">:</span> 
+        <span class="n">campaign</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">event</span><span class="p">)</span> 
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>targets<span class="w"> </span>is<span class="w"> </span>a<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>dictionaries<span class="w"> </span>defining<span class="w"> </span>the<span class="w"> </span>trigger<span class="w"> </span>event<span class="w"> </span>and<span class="w"> </span>coverage<span class="w"> </span><span class="k">for</span><span class="w"> </span>and<span class="w">  </span>
+<span class="w">  </span>properties<span class="w"> </span>of<span class="w"> </span>individuals<span class="w"> </span>to<span class="w"> </span>target<span class="w"> </span>with<span class="w"> </span>the<span class="w"> </span>intervention<span class="w"> </span>with<span class="w"> </span>all<span class="w"> </span>possible<span class="w"> </span>options<span class="w"> </span>being:<span class="w">  </span>
+<span class="w">  </span><span class="o">[{</span><span class="s2">"trigger"</span>:<span class="s2">"NewClinicalCase"</span>,<span class="s2">"coverage"</span>:0.8,<span class="s2">"agemin"</span>:15,<span class="s2">"agemax"</span>:70,<span class="w"> </span><span class="s2">"rate"</span>:0.3<span class="o">}]</span><span class="w">  </span>
+<span class="w">  </span><span class="s2">"rate"</span><span class="w"> </span>is<span class="w"> </span>the<span class="w"> </span>inverse<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>average<span class="w"> </span>delay<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nb">time</span><span class="w"> </span>to<span class="w"> </span>treatment<span class="w"> </span>seeking<span class="w"> </span>from<span class="w"> </span>an<span class="w"> </span>exponential<span class="w"> </span>distribution<span class="w">  </span>
+<span class="w">  </span><span class="s2">"trigger"</span><span class="w"> </span>must<span class="w"> </span>be<span class="w"> </span>defined,<span class="w"> </span>but<span class="w"> </span>everything<span class="w"> </span><span class="k">else</span><span class="w"> </span>has<span class="w"> </span>defaults:<span class="w"> </span>
+<span class="w">  </span><span class="nv">coverage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>,<span class="w"> </span>affects<span class="w"> </span>all<span class="w">  </span>
+<span class="w">  </span>agemin/agemax<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>/125,<span class="w"> </span>affects<span class="w"> </span>all<span class="w"> </span>
+<span class="w">  </span><span class="nv">rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span>,<span class="w"> </span>no<span class="w"> </span>delay,<span class="w"> </span>seek<span class="w"> </span>treatment<span class="w"> </span>immediately<span class="w">  </span>
+</code></pre></div>
+
 <h4 id="json-snippet-example">json snippet (example)<a class="headerlink" href="#json-snippet-example" title="Permanent link">&para;</a></h4>
-<p>```json  </p>
-<p>{ 
-    &ldquo;class&rdquo;: &ldquo;CampaignEvent&rdquo;, 
-    &ldquo;Event_Coordinator_Config&rdquo;: { 
-      &ldquo;class&rdquo;: &ldquo;StandardInterventionDistributionEventCoordinator&rdquo;, 
-      &ldquo;Demographic_Coverage&rdquo;: 1, 
-      &ldquo;Individual_Selection_Type&rdquo;: &ldquo;DEMOGRAPHIC_COVERAGE&rdquo;, 
-      &ldquo;Intervention_Config&rdquo;: { 
-        &ldquo;class&rdquo;: &ldquo;NodeLevelHealthTriggeredIV&rdquo;, 
-        &ldquo;Actual_IndividualIntervention_Config&rdquo;: { 
-          &ldquo;class&rdquo;: &ldquo;DelayedIntervention&rdquo;, 
-          &ldquo;Actual_IndividualIntervention_Configs&rdquo;: [ 
-            { 
-              &ldquo;class&rdquo;: &ldquo;AntimalarialDrug&rdquo;, 
-              &ldquo;Cost_To_Consumer&rdquo;: 0, 
-              &ldquo;Disqualifying_Properties&rdquo;: [], 
-              &ldquo;Dont_Allow_Duplicates&rdquo;: 0, 
-              &ldquo;Drug_Type&rdquo;: &ldquo;Artemether&rdquo;, 
-              &ldquo;Intervention_Name&rdquo;: &ldquo;AntimalarialDrug_Artemether&rdquo;, 
-              &ldquo;New_Property_Value&rdquo;: &ldquo;&rdquo; 
-            }, 
-            { 
-              &ldquo;class&rdquo;: &ldquo;AntimalarialDrug&rdquo;, 
-              &ldquo;Cost_To_Consumer&rdquo;: 0, 
-              &ldquo;Disqualifying_Properties&rdquo;: [], 
-              &ldquo;Dont_Allow_Duplicates&rdquo;: 0, 
-              &ldquo;Drug_Type&rdquo;: &ldquo;Lumefantrine&rdquo;, 
-              &ldquo;Intervention_Name&rdquo;: &ldquo;AntimalarialDrug_Lumefantrine&rdquo;, 
-              &ldquo;New_Property_Value&rdquo;: &ldquo;&rdquo; 
-            }, 
-            { 
-              &ldquo;class&rdquo;: &ldquo;BroadcastEvent&rdquo;, 
-              &ldquo;Broadcast_Event&rdquo;: &ldquo;Received_Treatment&rdquo;, 
-              &ldquo;Disqualifying_Properties&rdquo;: [], 
-              &ldquo;Dont_Allow_Duplicates&rdquo;: 0, 
-              &ldquo;Intervention_Name&rdquo;: &ldquo;BroadcastEvent&rdquo;, 
-              &ldquo;New_Property_Value&rdquo;: &ldquo;&rdquo; 
-            } 
-          ], 
-          &ldquo;Coverage&rdquo;: 1, 
-          &ldquo;Delay_Period_Distribution&rdquo;: &ldquo;EXPONENTIAL_DISTRIBUTION&rdquo;, 
-          &ldquo;Delay_Period_Exponential&rdquo;: 3.3333333333333335, 
-          &ldquo;Disqualifying_Properties&rdquo;: [], 
-          &ldquo;Dont_Allow_Duplicates&rdquo;: 0, 
-          &ldquo;Intervention_Name&rdquo;: &ldquo;DelayedIntervention&rdquo;, 
-          &ldquo;New_Property_Value&rdquo;: &ldquo;&rdquo; 
-        }, 
-        &ldquo;Blackout_Event_Trigger&rdquo;: &ldquo;&rdquo;, 
-        &ldquo;Blackout_On_First_Occurrence&rdquo;: 0, 
-        &ldquo;Blackout_Period&rdquo;: 0, 
-        &ldquo;Demographic_Coverage&rdquo;: 0.0, 
-        &ldquo;Disqualifying_Properties&rdquo;: [], 
-        &ldquo;Distribute_On_Return_Home&rdquo;: 0, 
-        &ldquo;Dont_Allow_Duplicates&rdquo;: 0, 
-        &ldquo;Duration&rdquo;: -1, 
-        &ldquo;Intervention_Name&rdquo;: &ldquo;NodeLevelHealthTriggeredIV&rdquo;, 
-        &ldquo;New_Property_Value&rdquo;: &ldquo;&rdquo;,<br />
-        &ldquo;Node_Property_Restrictions&rdquo;: [], 
-        &ldquo;Property_Restrictions&rdquo;: [], 
-        &ldquo;Target_Age_Max&rdquo;: 115, 
-        &ldquo;Target_Age_Min&rdquo;: 0, 
-        &ldquo;Target_Demographic&rdquo;: &ldquo;ExplicitAgeRanges&rdquo;, 
-        &ldquo;Target_Gender&rdquo;: &ldquo;All&rdquo;, 
-        &ldquo;Target_Residents_Only&rdquo;: 0, 
-        &ldquo;Targeting_Config&rdquo;: { 
-          &ldquo;HasIP&rdquo;: {}, 
-          &ldquo;HasIntervention&rdquo;: {}, 
-          &ldquo;IsPregnant&rdquo;: {}, 
-          &ldquo;TargetingLogic&rdquo;: {} 
-        }, 
-        &ldquo;Trigger_Condition_List&rdquo;: [ 
-          &ldquo;NewClinicalCase&rdquo; 
-        ] 
-      }, 
-      &ldquo;Node_Property_Restrictions&rdquo;: [], 
-      &ldquo;Number_Repetitions&rdquo;: 1, 
-      &ldquo;Property_Restrictions&rdquo;: [], 
-      &ldquo;Property_Restrictions_Within_Node&rdquo;: [], 
-      &ldquo;Target_Demographic&rdquo;: &ldquo;Everyone&rdquo;, 
-      &ldquo;Target_Gender&rdquo;: &ldquo;All&rdquo;, 
-      &ldquo;Target_Residents_Only&rdquo;: 0, 
-      &ldquo;Targeting_Config&rdquo;: { 
-        &ldquo;HasIP&rdquo;: {}, 
-        &ldquo;HasIntervention&rdquo;: {}, 
-        &ldquo;IsPregnant&rdquo;: {}, 
-        &ldquo;TargetingLogic&rdquo;: {} 
-      }, 
-      &ldquo;Timesteps_Between_Repetitions&rdquo;: -1 
-    }, 
-    &ldquo;Nodeset_Config&rdquo;: { 
-      &ldquo;class&rdquo;: &ldquo;NodeSetAll&rdquo; 
-    }, 
-    &ldquo;Start_Day&rdquo;: 1 
-  } </p>
-<p>```</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="p">{</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CampaignEvent"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">"Event_Coordinator_Config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"StandardInterventionDistributionEventCoordinator"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Demographic_Coverage"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Individual_Selection_Type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DEMOGRAPHIC_COVERAGE"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Intervention_Config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NodeLevelHealthTriggeredIV"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Actual_IndividualIntervention_Config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DelayedIntervention"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"Actual_IndividualIntervention_Configs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AntimalarialDrug"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Cost_To_Consumer"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Disqualifying_Properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Dont_Allow_Duplicates"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Drug_Type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Artemether"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Intervention_Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AntimalarialDrug_Artemether"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"New_Property_Value"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span>
+<span class="w">            </span><span class="p">},</span><span class="w"> </span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AntimalarialDrug"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Cost_To_Consumer"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Disqualifying_Properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Dont_Allow_Duplicates"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Drug_Type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lumefantrine"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Intervention_Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AntimalarialDrug_Lumefantrine"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"New_Property_Value"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span>
+<span class="w">            </span><span class="p">},</span><span class="w"> </span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BroadcastEvent"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Broadcast_Event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Received_Treatment"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Disqualifying_Properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Dont_Allow_Duplicates"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"Intervention_Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BroadcastEvent"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="nt">"New_Property_Value"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span>
+<span class="w">          </span><span class="p">],</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"Coverage"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"Delay_Period_Distribution"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EXPONENTIAL_DISTRIBUTION"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"Delay_Period_Exponential"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.3333333333333335</span><span class="p">,</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"Disqualifying_Properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"Dont_Allow_Duplicates"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"Intervention_Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DelayedIntervention"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"New_Property_Value"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span>
+<span class="w">        </span><span class="p">},</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Blackout_Event_Trigger"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Blackout_On_First_Occurrence"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Blackout_Period"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Demographic_Coverage"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Disqualifying_Properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Distribute_On_Return_Home"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Dont_Allow_Duplicates"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Duration"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Intervention_Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NodeLevelHealthTriggeredIV"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"New_Property_Value"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">  </span>
+<span class="w">        </span><span class="nt">"Node_Property_Restrictions"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Property_Restrictions"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Target_Age_Max"</span><span class="p">:</span><span class="w"> </span><span class="mi">115</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Target_Age_Min"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Target_Demographic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ExplicitAgeRanges"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Target_Gender"</span><span class="p">:</span><span class="w"> </span><span class="s2">"All"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Target_Residents_Only"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Targeting_Config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"HasIP"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"HasIntervention"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"IsPregnant"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">"TargetingLogic"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span>
+<span class="w">        </span><span class="p">},</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"Trigger_Condition_List"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span>
+<span class="w">          </span><span class="s2">"NewClinicalCase"</span><span class="w"> </span>
+<span class="w">        </span><span class="p">]</span><span class="w"> </span>
+<span class="w">      </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Node_Property_Restrictions"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Number_Repetitions"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Property_Restrictions"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Property_Restrictions_Within_Node"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Target_Demographic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Everyone"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Target_Gender"</span><span class="p">:</span><span class="w"> </span><span class="s2">"All"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Target_Residents_Only"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Targeting_Config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"HasIP"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"HasIntervention"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"IsPregnant"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span>
+<span class="w">        </span><span class="nt">"TargetingLogic"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span>
+<span class="w">      </span><span class="p">},</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"Timesteps_Between_Repetitions"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">"Nodeset_Config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NodeSetAll"</span><span class="w"> </span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">"Start_Day"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span>
+</code></pre></div>
+
 <p><br>  </p>
 <h3 id="malariasimulation">malariasimulation<a class="headerlink" href="#malariasimulation" title="Permanent link">&para;</a></h3>
 <ul>
@@ -472,37 +469,36 @@
 <li>Related publications:  <a href="https://doi.org/10.1038/ncomms6606">Okell et al (2014).</a>  </li>
 </ul>
 <h4 id="set_clinical_treatment">set_clinical_treatment<a class="headerlink" href="#set_clinical_treatment" title="Permanent link">&para;</a></h4>
-<p>```R </p>
-<p>set_clinical_treatment &lt;- function(parameters, drug, timesteps, coverages) { 
-    stopifnot(all(coverages &gt;= 0) &amp;&amp; all(coverages &lt;= 1)) 
-    n_drugs &lt;- length(parameters$drug_efficacy) 
-    if (drug &lt; 1 | drug &gt; n_drugs) { 
-      stop(&lsquo;Drug index is invalid, please set drugs using set_drugs&rsquo;) 
-    } 
-    drug_index &lt;- which(parameters$clinical_treatment_drugs == drug) 
-    if (length(drug_index) == 0) { 
-      drug_index &lt;- length(parameters$clinical_treatment_drugs) + 1 
-    } 
-    parameters$clinical_treatment_drugs[[drug_index]] &lt;- drug 
-    parameters$clinical_treatment_timesteps[[drug_index]] &lt;- timesteps 
-    parameters$clinical_treatment_coverages[[drug_index]] &lt;- coverages 
-    last_timestep &lt;- max(unlist(parameters$clinical_treatment_timesteps)) </p>
-<div class="codehilite"><pre><span></span><code>for (t in seq(last_timestep)) { 
-  if (sum(get_treatment_coverages(parameters, t)) &gt; 1) { 
-    stop(&#39;The sum of drug coverages cannot be greater than 1 at any timestep&#39;) 
-  } 
-} 
-parameters
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="n">set_clinical_treatment</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span><span class="w"> </span><span class="n">drug</span><span class="p">,</span><span class="w"> </span><span class="n">timesteps</span><span class="p">,</span><span class="w"> </span><span class="n">coverages</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">    </span><span class="nf">stopifnot</span><span class="p">(</span><span class="nf">all</span><span class="p">(</span><span class="n">coverages</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="n">coverages</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">1</span><span class="p">))</span><span class="w"> </span>
+<span class="w">    </span><span class="n">n_drugs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">parameters</span><span class="o">$</span><span class="n">drug_efficacy</span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="n">drug</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">drug</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">n_drugs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">      </span><span class="nf">stop</span><span class="p">(</span><span class="s">'Drug index is invalid, please set drugs using set_drugs'</span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span>
+<span class="w">    </span><span class="n">drug_index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_drugs</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">drug</span><span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">drug_index</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">      </span><span class="n">drug_index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_drugs</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span>
+<span class="w">    </span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_drugs</span><span class="p">[[</span><span class="n">drug_index</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">drug</span><span class="w"> </span>
+<span class="w">    </span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_timesteps</span><span class="p">[[</span><span class="n">drug_index</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">timesteps</span><span class="w"> </span>
+<span class="w">    </span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_coverages</span><span class="p">[[</span><span class="n">drug_index</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">coverages</span><span class="w"> </span>
+<span class="w">    </span><span class="n">last_timestep</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="nf">unlist</span><span class="p">(</span><span class="n">parameters</span><span class="o">$</span><span class="n">clinical_treatment_timesteps</span><span class="p">))</span><span class="w"> </span>
+
+<span class="w">    </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="n">last_timestep</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">      </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="nf">get_treatment_coverages</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">))</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">        </span><span class="nf">stop</span><span class="p">(</span><span class="s">'The sum of drug coverages cannot be greater than 1 at any timestep'</span><span class="p">)</span><span class="w"> </span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span>
+<span class="w">    </span><span class="n">parameters</span><span class="w"> </span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span>
 </code></pre></div>
 
-<p>} 
-  ``` </p>
 <p><br> </p>
 <h3 id="openmalaria">OpenMalaria<a class="headerlink" href="#openmalaria" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Documentation main page:   <ul>
-<li><a href="https://github.com/SwissTPH/openmalaria/wiki/ScenarioHealthSystem">ScenarioHealthSystem</a>   </li>
-<li><a href="https://github.com/SwissTPH/openmalaria/wiki/ScenarioPharmacology#antimalarial-drug-modelling">ScenarioPharmacology</a>   </li>
+<li><a href="https://github.com/OpenMalaria-Org/openmalaria/wiki/ScenarioHealthSystem">ScenarioHealthSystem</a>   </li>
+<li><a href="https://github.com/OpenMalaria-Org/openmalaria/wiki/ScenarioPharmacology#antimalarial-drug-modelling">ScenarioPharmacology</a>   </li>
 </ul>
 </li>
 <li>Function: <a href="https://github.com/mrc-ide/malariasimulation/blob/master/R/drug_parameters.R#L49">set_clinical_treatment</a>   </li>
@@ -512,35 +508,35 @@ parameters
 <p>Multiple options for simulating &lsquo;case management&rsquo; exist. Below is the  implementation as used in MultiMalModPy.  </p>
 </blockquote>
 <h4 id="immediateoutcomes">ImmediateOutcomes<a class="headerlink" href="#immediateoutcomes" title="Permanent link">&para;</a></h4>
-<p><code>XML
-  &lt;ImmediateOutcomes name="example name"&gt; 
-      &lt;drugRegimen firstLine="ACT" inpatient="QN" secondLine="ACT"/&gt; 
-      &lt;initialACR&gt; 
-          &lt;ACT value="1.0"/&gt; 
-          &lt;QN value="1.0"/&gt; 
-          &lt;selfTreatment value="0.0"/&gt; 
-      &lt;/initialACR&gt; 
-      &lt;compliance&gt; 
-          &lt;ACT value="1.00"/&gt; 
-          &lt;selfTreatment value="1.0"/&gt; 
-      &lt;/compliance&gt; 
-      &lt;nonCompliersEffective&gt; 
-          &lt;ACT value="0"/&gt; 
-          &lt;selfTreatment value="0"/&gt; 
-      &lt;/nonCompliersEffective&gt; 
-      &lt;treatmentActions&gt; &lt;!-- only from schema 32 --&gt;
-          &lt;ACT name="clear blood-stage infections"&gt;
-              &lt;clearInfections stage="blood" timesteps="1"/&gt;
-          &lt;/ACT&gt;
-          &lt;QN name="clear blood-stage infections"&gt;
-              &lt;clearInfections stage="blood" timesteps="1"/&gt;
-          &lt;/QN&gt;
-      &lt;/treatmentActions&gt;
-      &lt;pSeekOfficialCareUncomplicated1 value="0.04"/&gt;
-      &lt;pSelfTreatUncomplicated value="0.0"/&gt;
-      &lt;pSeekOfficialCareUncomplicated2 value="0.04"/&gt;
-      &lt;pSeekOfficialCareSevere value="0.48"/&gt;
-  &lt;/ImmediateOutcomes&gt;</code></p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="nt">&lt;ImmediateOutcomes</span><span class="w"> </span><span class="na">name=</span><span class="s">"example name"</span><span class="nt">&gt;</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">&lt;drugRegimen</span><span class="w"> </span><span class="na">firstLine=</span><span class="s">"ACT"</span><span class="w"> </span><span class="na">inpatient=</span><span class="s">"QN"</span><span class="w"> </span><span class="na">secondLine=</span><span class="s">"ACT"</span><span class="nt">/&gt;</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">&lt;initialACR&gt;</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">&lt;ACT</span><span class="w"> </span><span class="na">value=</span><span class="s">"1.0"</span><span class="nt">/&gt;</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">&lt;QN</span><span class="w"> </span><span class="na">value=</span><span class="s">"1.0"</span><span class="nt">/&gt;</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">&lt;selfTreatment</span><span class="w"> </span><span class="na">value=</span><span class="s">"0.0"</span><span class="nt">/&gt;</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">&lt;/initialACR&gt;</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">&lt;compliance&gt;</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">&lt;ACT</span><span class="w"> </span><span class="na">value=</span><span class="s">"1.00"</span><span class="nt">/&gt;</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">&lt;selfTreatment</span><span class="w"> </span><span class="na">value=</span><span class="s">"1.0"</span><span class="nt">/&gt;</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">&lt;/compliance&gt;</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">&lt;nonCompliersEffective&gt;</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">&lt;ACT</span><span class="w"> </span><span class="na">value=</span><span class="s">"0"</span><span class="nt">/&gt;</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">&lt;selfTreatment</span><span class="w"> </span><span class="na">value=</span><span class="s">"0"</span><span class="nt">/&gt;</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">&lt;/nonCompliersEffective&gt;</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">&lt;treatmentActions&gt;</span><span class="w"> </span><span class="cm">&lt;!-- only from schema 32 --&gt;</span>
+<span class="w">          </span><span class="nt">&lt;ACT</span><span class="w"> </span><span class="na">name=</span><span class="s">"clear blood-stage infections"</span><span class="nt">&gt;</span>
+<span class="w">              </span><span class="nt">&lt;clearInfections</span><span class="w"> </span><span class="na">stage=</span><span class="s">"blood"</span><span class="w"> </span><span class="na">timesteps=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+<span class="w">          </span><span class="nt">&lt;/ACT&gt;</span>
+<span class="w">          </span><span class="nt">&lt;QN</span><span class="w"> </span><span class="na">name=</span><span class="s">"clear blood-stage infections"</span><span class="nt">&gt;</span>
+<span class="w">              </span><span class="nt">&lt;clearInfections</span><span class="w"> </span><span class="na">stage=</span><span class="s">"blood"</span><span class="w"> </span><span class="na">timesteps=</span><span class="s">"1"</span><span class="nt">/&gt;</span>
+<span class="w">          </span><span class="nt">&lt;/QN&gt;</span>
+<span class="w">      </span><span class="nt">&lt;/treatmentActions&gt;</span>
+<span class="w">      </span><span class="nt">&lt;pSeekOfficialCareUncomplicated1</span><span class="w"> </span><span class="na">value=</span><span class="s">"0.04"</span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;pSelfTreatUncomplicated</span><span class="w"> </span><span class="na">value=</span><span class="s">"0.0"</span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;pSeekOfficialCareUncomplicated2</span><span class="w"> </span><span class="na">value=</span><span class="s">"0.04"</span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;pSeekOfficialCareSevere</span><span class="w"> </span><span class="na">value=</span><span class="s">"0.48"</span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/ImmediateOutcomes&gt;</span>
+</code></pre></div>
               
             </div>
           </div><footer>
@@ -553,7 +549,7 @@ parameters
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

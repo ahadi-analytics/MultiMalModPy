@@ -309,11 +309,11 @@ The folder also contains model specific folders to verify model installations an
 </ul>
 <hr />
 <h2 id="example-parameter-handling">Example: Parameter Handling<a class="headerlink" href="#example-parameter-handling" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">test_get_param_from_dataframe</span><span class="p">(</span><span class="n">dummy_exp</span><span class="p">,</span> <span class="n">example_scenario_CSV</span><span class="p">):</span>
-    <span class="n">exp_scen_df</span> <span class="o">=</span> <span class="n">example_scenario_CSV</span><span class="p">[</span><span class="n">example_scenario_CSV</span><span class="p">[</span><span class="s2">&quot;rownum&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">test_get_param_from_dataframe</span><span class="p">(</span><span class="n">dummy_exp</span><span class="p">,</span> <span class="n">example_scenario_CSV</span><span class="p">):</span>
+    <span class="n">exp_scen_df</span> <span class="o">=</span> <span class="n">example_scenario_CSV</span><span class="p">[</span><span class="n">example_scenario_CSV</span><span class="p">[</span><span class="s2">"rownum"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># Overwrite defaults with CSV parameters</span>
-    <span class="n">not_param_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rownum&quot;</span><span class="p">,</span> <span class="s2">&quot;exp_name&quot;</span><span class="p">]</span>
+    <span class="n">not_param_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"rownum"</span><span class="p">,</span> <span class="s2">"exp_name"</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">exp_scen_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">not_param_columns</span><span class="p">:</span>
             <span class="nb">setattr</span><span class="p">(</span>
@@ -322,21 +322,21 @@ The folder also contains model specific folders to verify model installations an
                 <span class="n">get_param_from_dataframe</span><span class="p">(</span><span class="n">exp_scen_df</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">dummy_exp</span><span class="o">.</span><span class="n">sim_params_list</span><span class="p">),</span>
             <span class="p">)</span>
 
-    <span class="k">assert</span> <span class="n">dummy_exp</span><span class="o">.</span><span class="n">seasonality</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;perennial&quot;</span><span class="p">]</span>
-    <span class="k">assert</span> <span class="n">dummy_exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s2">&quot;dynamic&quot;</span>
-    <span class="k">assert</span> <span class="n">dummy_exp</span><span class="o">.</span><span class="n">target_output_name</span> <span class="o">==</span> <span class="s2">&quot;eir&quot;</span>
+    <span class="k">assert</span> <span class="n">dummy_exp</span><span class="o">.</span><span class="n">seasonality</span> <span class="o">==</span> <span class="p">[</span><span class="s2">"perennial"</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">dummy_exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s2">"dynamic"</span>
+    <span class="k">assert</span> <span class="n">dummy_exp</span><span class="o">.</span><span class="n">target_output_name</span> <span class="o">==</span> <span class="s2">"eir"</span>
 </code></pre></div>
 
 <p>This test ensures experiment parameters from a CSV are mapped into the <code>dummy_exp</code> object correctly.  </p>
 <hr />
 <h2 id="example-scenario-replication">Example: Scenario Replication<a class="headerlink" href="#example-scenario-replication" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">test_rep_scen_df_basic_repetition</span><span class="p">(</span><span class="n">basic_scenario_df</span><span class="p">):</span>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">test_rep_scen_df_basic_repetition</span><span class="p">(</span><span class="n">basic_scenario_df</span><span class="p">):</span>
     <span class="n">rep_df</span> <span class="o">=</span> <span class="n">rep_scen_df</span><span class="p">(</span><span class="n">basic_scenario_df</span><span class="p">)</span>
 
     <span class="c1"># 2 rows × 3 seeds = 6 rows expected</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rep_df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
-    <span class="k">assert</span> <span class="n">rep_df</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
-    <span class="k">assert</span> <span class="n">rep_df</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="k">assert</span> <span class="n">rep_df</span><span class="p">[</span><span class="s2">"seed"</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">assert</span> <span class="n">rep_df</span><span class="p">[</span><span class="s2">"seed"</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span>
 </code></pre></div>
 
 <p>This checks that scenario replication logic correctly expands DataFrames by <code>num_seeds</code>.</p>
@@ -375,7 +375,7 @@ The folder also contains model specific folders to verify model installations an
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

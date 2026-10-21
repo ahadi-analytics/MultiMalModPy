@@ -245,85 +245,85 @@
               
                 <h1 id="measurespy">measures.py<a class="headerlink" href="#measurespy" title="Permanent link">&para;</a></h1>
 <div class="codehilite"><pre><span></span><code><span class="n">mm</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;nHost&#39;</span><span class="p">,</span>
-    <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;nInfect&#39;</span><span class="p">,</span>
-    <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;nExpectd&#39;</span><span class="p">,</span>
-    <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;nPatent&#39;</span><span class="p">,</span>
-    <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;sumLogPyrogenThres&#39;</span><span class="p">,</span>
-    <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;sumlogDens&#39;</span><span class="p">,</span>
-    <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;totalInfs&#39;</span><span class="p">,</span>
-    <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;nTransmit&#39;</span><span class="p">,</span>
-    <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;totalPatentInf&#39;</span><span class="p">,</span>
-    <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;contrib&#39;</span><span class="p">,</span>
-    <span class="mi">10</span><span class="p">:</span> <span class="s1">&#39;sumPyrogenThresh&#39;</span><span class="p">,</span>
-    <span class="mi">11</span><span class="p">:</span> <span class="s1">&#39;nTreatments1&#39;</span><span class="p">,</span>
-    <span class="mi">12</span><span class="p">:</span> <span class="s1">&#39;nTreatments2&#39;</span><span class="p">,</span>
-    <span class="mi">13</span><span class="p">:</span> <span class="s1">&#39;nTreatments3&#39;</span><span class="p">,</span>
-    <span class="mi">14</span><span class="p">:</span> <span class="s1">&#39;nUncomp&#39;</span><span class="p">,</span>
-    <span class="mi">15</span><span class="p">:</span> <span class="s1">&#39;nSevere&#39;</span><span class="p">,</span>
-    <span class="mi">16</span><span class="p">:</span> <span class="s1">&#39;nSeq&#39;</span><span class="p">,</span>
-    <span class="mi">17</span><span class="p">:</span> <span class="s1">&#39;nHospitalDeaths&#39;</span><span class="p">,</span>
-    <span class="mi">18</span><span class="p">:</span> <span class="s1">&#39;nIndDeaths&#39;</span><span class="p">,</span>
-    <span class="mi">19</span><span class="p">:</span> <span class="s1">&#39;nDirDeaths&#39;</span><span class="p">,</span>
-    <span class="mi">20</span><span class="p">:</span> <span class="s1">&#39;nEPIVaccinations&#39;</span><span class="p">,</span>
-    <span class="mi">21</span><span class="p">:</span> <span class="s1">&#39;allCauseIMR&#39;</span><span class="p">,</span>
-    <span class="mi">22</span><span class="p">:</span> <span class="s1">&#39;nMassVaccinations&#39;</span><span class="p">,</span>
-    <span class="mi">23</span><span class="p">:</span> <span class="s1">&#39;nHospitalRecovs&#39;</span><span class="p">,</span>
-    <span class="mi">24</span><span class="p">:</span> <span class="s1">&#39;nHospitalSeqs&#39;</span><span class="p">,</span>
-    <span class="mi">25</span><span class="p">:</span> <span class="s1">&#39;nIPTDoses&#39;</span><span class="p">,</span>
-    <span class="mi">26</span><span class="p">:</span> <span class="s1">&#39;annAvgK&#39;</span><span class="p">,</span>
-    <span class="mi">27</span><span class="p">:</span> <span class="s1">&#39;nNMFever&#39;</span><span class="p">,</span>
-    <span class="mi">30</span><span class="p">:</span> <span class="s1">&#39;innoculationsPerAgeGroup&#39;</span><span class="p">,</span>
-    <span class="mi">28</span><span class="p">:</span> <span class="s1">&#39;innoculationsPerDayOfYear&#39;</span><span class="p">,</span>
-    <span class="mi">29</span><span class="p">:</span> <span class="s1">&#39;kappaPerDayOfYear&#39;</span><span class="p">,</span>
-    <span class="mi">31</span><span class="p">:</span> <span class="s1">&#39;Vector_Nv0&#39;</span><span class="p">,</span>
-    <span class="mi">32</span><span class="p">:</span> <span class="s1">&#39;Vector_Nv&#39;</span><span class="p">,</span>
-    <span class="mi">33</span><span class="p">:</span> <span class="s1">&#39;Vector_Ov&#39;</span><span class="p">,</span>
-    <span class="mi">34</span><span class="p">:</span> <span class="s1">&#39;Vector_Sv&#39;</span><span class="p">,</span>
-    <span class="mi">35</span><span class="p">:</span> <span class="s1">&#39;InputEIR&#39;</span><span class="p">,</span>
-    <span class="mi">36</span><span class="p">:</span> <span class="s1">&#39;SimulatedEIR&#39;</span><span class="p">,</span>
-    <span class="mi">39</span><span class="p">:</span> <span class="s1">&#39;Clinical_RDTs&#39;</span><span class="p">,</span>
-    <span class="mi">40</span><span class="p">:</span> <span class="s1">&#39;Clinical_DrugUsage&#39;</span><span class="p">,</span>
-    <span class="mi">41</span><span class="p">:</span> <span class="s1">&#39;Clinical_FirstDayDeaths&#39;</span><span class="p">,</span>
-    <span class="mi">42</span><span class="p">:</span> <span class="s1">&#39;Clinical_HospitalFirstDayDeaths&#39;</span><span class="p">,</span>
-    <span class="mi">43</span><span class="p">:</span> <span class="s1">&#39;nNewInfections&#39;</span><span class="p">,</span>
-    <span class="mi">44</span><span class="p">:</span> <span class="s1">&#39;nMassITNs&#39;</span><span class="p">,</span>
-    <span class="mi">45</span><span class="p">:</span> <span class="s1">&#39;nEPI_ITNs&#39;</span><span class="p">,</span>
-    <span class="mi">46</span><span class="p">:</span> <span class="s1">&#39;nMassIRS&#39;</span><span class="p">,</span>
-    <span class="mi">47</span><span class="p">:</span> <span class="s1">&#39;nMassVA&#39;</span><span class="p">,</span>
-    <span class="mi">48</span><span class="p">:</span> <span class="s1">&#39;Clinical_Microscopy&#39;</span><span class="p">,</span>
-    <span class="mi">49</span><span class="p">:</span> <span class="s1">&#39;Clinical_DrugUsageIV&#39;</span><span class="p">,</span>
-    <span class="mi">50</span><span class="p">:</span> <span class="s1">&#39;nAddedToCohort&#39;</span><span class="p">,</span>
-    <span class="mi">51</span><span class="p">:</span> <span class="s1">&#39;nRemovedFromCohort&#39;</span><span class="p">,</span>
-    <span class="mi">52</span><span class="p">:</span> <span class="s1">&#39;nMDAs&#39;</span><span class="p">,</span>
-    <span class="mi">53</span><span class="p">:</span> <span class="s1">&#39;nNmfDeaths&#39;</span><span class="p">,</span>
-    <span class="mi">54</span><span class="p">:</span> <span class="s1">&#39;nAntibioticTreatments&#39;</span><span class="p">,</span>
-    <span class="mi">55</span><span class="p">:</span> <span class="s1">&#39;nMassScreenings&#39;</span><span class="p">,</span>
-    <span class="mi">56</span><span class="p">:</span> <span class="s1">&#39;nMassGVI&#39;</span><span class="p">,</span>
-    <span class="mi">57</span><span class="p">:</span> <span class="s1">&#39;nCtsIRS&#39;</span><span class="p">,</span>
-    <span class="mi">58</span><span class="p">:</span> <span class="s1">&#39;nCtsGVI&#39;</span><span class="p">,</span>
-    <span class="mi">59</span><span class="p">:</span> <span class="s1">&#39;nCtsMDA&#39;</span><span class="p">,</span>
-    <span class="mi">60</span><span class="p">:</span> <span class="s1">&#39;nCtsScreenings&#39;</span><span class="p">,</span>
-    <span class="mi">61</span><span class="p">:</span> <span class="s1">&#39;nSubPopRemovalTooOld&#39;</span><span class="p">,</span>
-    <span class="mi">62</span><span class="p">:</span> <span class="s1">&#39;nSubPopRemovalFirstEvent&#39;</span><span class="p">,</span>
-    <span class="mi">63</span><span class="p">:</span> <span class="s1">&#39;nPQTreatments&#39;</span><span class="p">,</span>
-    <span class="mi">64</span><span class="p">:</span> <span class="s1">&#39;nTreatDiagnostics&#39;</span><span class="p">,</span>
-    <span class="mi">65</span><span class="p">:</span> <span class="s1">&#39;nMassRecruitOnly&#39;</span><span class="p">,</span>
-    <span class="mi">66</span><span class="p">:</span> <span class="s1">&#39;nCtsRecruitOnly&#39;</span><span class="p">,</span>
-    <span class="mi">67</span><span class="p">:</span> <span class="s1">&#39;nTreatDeployments&#39;</span><span class="p">,</span>
-    <span class="mi">68</span><span class="p">:</span> <span class="s1">&#39;sumAge&#39;</span><span class="p">,</span>
-    <span class="mi">69</span><span class="p">:</span> <span class="s1">&#39;nInfectByGenotype&#39;</span><span class="p">,</span>
-    <span class="mi">70</span><span class="p">:</span> <span class="s1">&#39;nPatentByGenotype&#39;</span><span class="p">,</span>
-    <span class="mi">71</span><span class="p">:</span> <span class="s1">&#39;logDensByGenotype&#39;</span><span class="p">,</span>
-    <span class="mi">72</span><span class="p">:</span> <span class="s1">&#39;nHostDrugConcNonZero&#39;</span><span class="p">,</span>
-    <span class="mi">73</span><span class="p">:</span> <span class="s1">&#39;sumLogDrugConcNonZero&#39;</span><span class="p">,</span>
-    <span class="mi">74</span><span class="p">:</span> <span class="s1">&#39;expectedDirectDeaths&#39;</span><span class="p">,</span>
-    <span class="mi">75</span><span class="p">:</span> <span class="s1">&#39;expectedHospitalDeaths&#39;</span><span class="p">,</span>
-    <span class="mi">76</span><span class="p">:</span> <span class="s1">&#39;expectedIndirectDeaths&#39;</span><span class="p">,</span>
-    <span class="mi">77</span><span class="p">:</span> <span class="s1">&#39;expectedSequelae&#39;</span><span class="p">,</span>
-    <span class="mi">78</span><span class="p">:</span> <span class="s1">&#39;expectedSevere&#39;</span><span class="p">,</span>
-    <span class="mi">79</span><span class="p">:</span> <span class="s1">&#39;innoculationsPerVector&#39;</span><span class="p">,</span>
-    <span class="mi">82</span><span class="p">:</span> <span class="s1">&#39;expectedSevereWithoutComorbidities&#39;</span>        
+    <span class="mi">0</span><span class="p">:</span> <span class="s1">'nHost'</span><span class="p">,</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="s1">'nInfect'</span><span class="p">,</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="s1">'nExpectd'</span><span class="p">,</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="s1">'nPatent'</span><span class="p">,</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="s1">'sumLogPyrogenThres'</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="s1">'sumlogDens'</span><span class="p">,</span>
+    <span class="mi">6</span><span class="p">:</span> <span class="s1">'totalInfs'</span><span class="p">,</span>
+    <span class="mi">7</span><span class="p">:</span> <span class="s1">'nTransmit'</span><span class="p">,</span>
+    <span class="mi">8</span><span class="p">:</span> <span class="s1">'totalPatentInf'</span><span class="p">,</span>
+    <span class="mi">9</span><span class="p">:</span> <span class="s1">'contrib'</span><span class="p">,</span>
+    <span class="mi">10</span><span class="p">:</span> <span class="s1">'sumPyrogenThresh'</span><span class="p">,</span>
+    <span class="mi">11</span><span class="p">:</span> <span class="s1">'nTreatments1'</span><span class="p">,</span>
+    <span class="mi">12</span><span class="p">:</span> <span class="s1">'nTreatments2'</span><span class="p">,</span>
+    <span class="mi">13</span><span class="p">:</span> <span class="s1">'nTreatments3'</span><span class="p">,</span>
+    <span class="mi">14</span><span class="p">:</span> <span class="s1">'nUncomp'</span><span class="p">,</span>
+    <span class="mi">15</span><span class="p">:</span> <span class="s1">'nSevere'</span><span class="p">,</span>
+    <span class="mi">16</span><span class="p">:</span> <span class="s1">'nSeq'</span><span class="p">,</span>
+    <span class="mi">17</span><span class="p">:</span> <span class="s1">'nHospitalDeaths'</span><span class="p">,</span>
+    <span class="mi">18</span><span class="p">:</span> <span class="s1">'nIndDeaths'</span><span class="p">,</span>
+    <span class="mi">19</span><span class="p">:</span> <span class="s1">'nDirDeaths'</span><span class="p">,</span>
+    <span class="mi">20</span><span class="p">:</span> <span class="s1">'nEPIVaccinations'</span><span class="p">,</span>
+    <span class="mi">21</span><span class="p">:</span> <span class="s1">'allCauseIMR'</span><span class="p">,</span>
+    <span class="mi">22</span><span class="p">:</span> <span class="s1">'nMassVaccinations'</span><span class="p">,</span>
+    <span class="mi">23</span><span class="p">:</span> <span class="s1">'nHospitalRecovs'</span><span class="p">,</span>
+    <span class="mi">24</span><span class="p">:</span> <span class="s1">'nHospitalSeqs'</span><span class="p">,</span>
+    <span class="mi">25</span><span class="p">:</span> <span class="s1">'nIPTDoses'</span><span class="p">,</span>
+    <span class="mi">26</span><span class="p">:</span> <span class="s1">'annAvgK'</span><span class="p">,</span>
+    <span class="mi">27</span><span class="p">:</span> <span class="s1">'nNMFever'</span><span class="p">,</span>
+    <span class="mi">30</span><span class="p">:</span> <span class="s1">'innoculationsPerAgeGroup'</span><span class="p">,</span>
+    <span class="mi">28</span><span class="p">:</span> <span class="s1">'innoculationsPerDayOfYear'</span><span class="p">,</span>
+    <span class="mi">29</span><span class="p">:</span> <span class="s1">'kappaPerDayOfYear'</span><span class="p">,</span>
+    <span class="mi">31</span><span class="p">:</span> <span class="s1">'Vector_Nv0'</span><span class="p">,</span>
+    <span class="mi">32</span><span class="p">:</span> <span class="s1">'Vector_Nv'</span><span class="p">,</span>
+    <span class="mi">33</span><span class="p">:</span> <span class="s1">'Vector_Ov'</span><span class="p">,</span>
+    <span class="mi">34</span><span class="p">:</span> <span class="s1">'Vector_Sv'</span><span class="p">,</span>
+    <span class="mi">35</span><span class="p">:</span> <span class="s1">'InputEIR'</span><span class="p">,</span>
+    <span class="mi">36</span><span class="p">:</span> <span class="s1">'SimulatedEIR'</span><span class="p">,</span>
+    <span class="mi">39</span><span class="p">:</span> <span class="s1">'Clinical_RDTs'</span><span class="p">,</span>
+    <span class="mi">40</span><span class="p">:</span> <span class="s1">'Clinical_DrugUsage'</span><span class="p">,</span>
+    <span class="mi">41</span><span class="p">:</span> <span class="s1">'Clinical_FirstDayDeaths'</span><span class="p">,</span>
+    <span class="mi">42</span><span class="p">:</span> <span class="s1">'Clinical_HospitalFirstDayDeaths'</span><span class="p">,</span>
+    <span class="mi">43</span><span class="p">:</span> <span class="s1">'nNewInfections'</span><span class="p">,</span>
+    <span class="mi">44</span><span class="p">:</span> <span class="s1">'nMassITNs'</span><span class="p">,</span>
+    <span class="mi">45</span><span class="p">:</span> <span class="s1">'nEPI_ITNs'</span><span class="p">,</span>
+    <span class="mi">46</span><span class="p">:</span> <span class="s1">'nMassIRS'</span><span class="p">,</span>
+    <span class="mi">47</span><span class="p">:</span> <span class="s1">'nMassVA'</span><span class="p">,</span>
+    <span class="mi">48</span><span class="p">:</span> <span class="s1">'Clinical_Microscopy'</span><span class="p">,</span>
+    <span class="mi">49</span><span class="p">:</span> <span class="s1">'Clinical_DrugUsageIV'</span><span class="p">,</span>
+    <span class="mi">50</span><span class="p">:</span> <span class="s1">'nAddedToCohort'</span><span class="p">,</span>
+    <span class="mi">51</span><span class="p">:</span> <span class="s1">'nRemovedFromCohort'</span><span class="p">,</span>
+    <span class="mi">52</span><span class="p">:</span> <span class="s1">'nMDAs'</span><span class="p">,</span>
+    <span class="mi">53</span><span class="p">:</span> <span class="s1">'nNmfDeaths'</span><span class="p">,</span>
+    <span class="mi">54</span><span class="p">:</span> <span class="s1">'nAntibioticTreatments'</span><span class="p">,</span>
+    <span class="mi">55</span><span class="p">:</span> <span class="s1">'nMassScreenings'</span><span class="p">,</span>
+    <span class="mi">56</span><span class="p">:</span> <span class="s1">'nMassGVI'</span><span class="p">,</span>
+    <span class="mi">57</span><span class="p">:</span> <span class="s1">'nCtsIRS'</span><span class="p">,</span>
+    <span class="mi">58</span><span class="p">:</span> <span class="s1">'nCtsGVI'</span><span class="p">,</span>
+    <span class="mi">59</span><span class="p">:</span> <span class="s1">'nCtsMDA'</span><span class="p">,</span>
+    <span class="mi">60</span><span class="p">:</span> <span class="s1">'nCtsScreenings'</span><span class="p">,</span>
+    <span class="mi">61</span><span class="p">:</span> <span class="s1">'nSubPopRemovalTooOld'</span><span class="p">,</span>
+    <span class="mi">62</span><span class="p">:</span> <span class="s1">'nSubPopRemovalFirstEvent'</span><span class="p">,</span>
+    <span class="mi">63</span><span class="p">:</span> <span class="s1">'nPQTreatments'</span><span class="p">,</span>
+    <span class="mi">64</span><span class="p">:</span> <span class="s1">'nTreatDiagnostics'</span><span class="p">,</span>
+    <span class="mi">65</span><span class="p">:</span> <span class="s1">'nMassRecruitOnly'</span><span class="p">,</span>
+    <span class="mi">66</span><span class="p">:</span> <span class="s1">'nCtsRecruitOnly'</span><span class="p">,</span>
+    <span class="mi">67</span><span class="p">:</span> <span class="s1">'nTreatDeployments'</span><span class="p">,</span>
+    <span class="mi">68</span><span class="p">:</span> <span class="s1">'sumAge'</span><span class="p">,</span>
+    <span class="mi">69</span><span class="p">:</span> <span class="s1">'nInfectByGenotype'</span><span class="p">,</span>
+    <span class="mi">70</span><span class="p">:</span> <span class="s1">'nPatentByGenotype'</span><span class="p">,</span>
+    <span class="mi">71</span><span class="p">:</span> <span class="s1">'logDensByGenotype'</span><span class="p">,</span>
+    <span class="mi">72</span><span class="p">:</span> <span class="s1">'nHostDrugConcNonZero'</span><span class="p">,</span>
+    <span class="mi">73</span><span class="p">:</span> <span class="s1">'sumLogDrugConcNonZero'</span><span class="p">,</span>
+    <span class="mi">74</span><span class="p">:</span> <span class="s1">'expectedDirectDeaths'</span><span class="p">,</span>
+    <span class="mi">75</span><span class="p">:</span> <span class="s1">'expectedHospitalDeaths'</span><span class="p">,</span>
+    <span class="mi">76</span><span class="p">:</span> <span class="s1">'expectedIndirectDeaths'</span><span class="p">,</span>
+    <span class="mi">77</span><span class="p">:</span> <span class="s1">'expectedSequelae'</span><span class="p">,</span>
+    <span class="mi">78</span><span class="p">:</span> <span class="s1">'expectedSevere'</span><span class="p">,</span>
+    <span class="mi">79</span><span class="p">:</span> <span class="s1">'innoculationsPerVector'</span><span class="p">,</span>
+    <span class="mi">82</span><span class="p">:</span> <span class="s1">'expectedSevereWithoutComorbidities'</span>        
 <span class="p">}</span>
 
 <span class="n">mmi</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mm</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
@@ -340,7 +340,7 @@
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

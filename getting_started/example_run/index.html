@@ -84,7 +84,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#using-singularity-container-hpc">Using singularity container (HPC)</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#using-docker-local">Using Docker (local)</a>
+    <li class="toctree-l2"><a class="reference internal" href="#using-docker-local">Using Docker (Local)</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#postprocessing">Postprocessing</a>
     </li>
@@ -253,20 +253,19 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="how-to-launch-simulations-by-platform">How to Launch Simulations By Platform<a class="headerlink" href="#how-to-launch-simulations-by-platform" title="Permanent link">&para;</a></h1>
-<div style="background-color: #f4f4f4; padding: 20px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif; font-size: 16px; color: #333;">
-  <strong style="font-size: 18px; color: #00796b;"><em>Continue on this page if:</em></strong>
-  <ul style="padding-left: 20px; line-height: 1.6; margin-top: 10px; margin-bottom: 0;">
-    <li>✅ You have installed all required software
-    </li>
-    <li> ✅Your simulation is configured in <code>manifest.py</code>
-    </li>
-    <li> ✅You want to run MultiMalModPy from a container without manual installation
-    </li>
-    <li> ❌ If not, revisit the
-    </li>
-     &nbsp;➡️ <a href="../getting_started/installation.md">Installation guide</a>
-     &nbsp;➡️ <a href="../getting_started/configuration.md">First-time configuration</a>
-  </ul>
+<div style="background-color: #f4f4f4; padding: 20px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif; font-size: 16px; color: #333;"> 
+  <strong style="font-size: 18px; color: #00796b;"><em>Continue on this page if:</em></strong> 
+
+  <ul style="padding-left: 20px; line-height: 1.6; margin-top: 10px; margin-bottom: 0;"> 
+    <li>✅ You have installed all required software</li> 
+    <li>✅ Your simulation is configured in <code>manifest.py</code></li> 
+    <li>✅ You want to run MultiMalModPy from a container without manual installation</li> 
+    <li>
+      ❌ If not, revisit the<br>
+      &nbsp;&nbsp;➡️ <a href="../installation/">Installation guide</a><br>
+      &nbsp;&nbsp;➡️ <a href="../configuration/">First-time configuration</a>
+    </li> 
+  </ul> 
 </div>
 
 <hr />
@@ -275,7 +274,7 @@ Quickly navigate to your preferred execution method: <br />
 🔹 <a href="#using-python-virtual-environment-hpc-or-local">Run simulation – using Python virtual environment (HPC or local)</a>  <br />
 🔹 <a href="#using-singularity-container-hpc">Run simulation – using Singularity container (HPC)</a>  <br />
 🔹 <a href="#using-docker-local">Run simulation – using Docker (local)</a>  <br />
-🔹 <a href="#-troubleshooting">Troubleshooting</a>  </p>
+🔹 <a href="#troubleshooting">Troubleshooting</a>  </p>
 <h2 id="using-python-virtual-environment-hpc-or-local">Using Python virtual environment (HPC or local)<a class="headerlink" href="#using-python-virtual-environment-hpc-or-local" title="Permanent link">&para;</a></h2>
 <ul>
 <li>
@@ -372,7 +371,7 @@ bash run_mmmpy_container.sh</code>   </p>
 </ul>
 <hr />
 <p><br></p>
-<h2 id="using-docker-local">Using Docker (local)<a class="headerlink" href="#using-docker-local" title="Permanent link">&para;</a></h2>
+<h2 id="using-docker-local">Using Docker (Local)<a class="headerlink" href="#using-docker-local" title="Permanent link">&para;</a></h2>
 <ul>
 <li>To run MultiMalModPy inside a Docker container, double-click on <code>dependencies/run_mmmpy_docker.bat</code>.  </li>
 <li>Alternatively, you can follow manual steps as below (for developer, or troubleshooting).     </li>
@@ -381,7 +380,7 @@ bash run_mmmpy_container.sh</code>   </p>
 <summary>Manual steps to run using docker</summary>
 <p><br>  </p>
 <p><strong>Ensure the Docker image is available on your computer</strong> <br />
-- If you haven’t installed it yet, refer to the <a href="../installation/#local-docker-image">installation page</a>     </p>
+- If you haven’t installed it yet, refer to the <a href="../installation/#using-docker-local">installation page</a>     </p>
 <p><strong>Set up your directory path:</strong> <br />
 - In the example command below, replace <code>PATH_TO_REPO</code> with the directory path to your <em>MultiMalModPy</em> folder on your computer, excluding the <em>MultiMalModPy</em> directory itself. 
   - Example, if MultiMalModPy is in <code>C:/Users/&lt;USER&gt;/Documents/MultiMalModPy</code>, then type  <code>C:/Users/&lt;USER&gt;/Documents/</code></p>
@@ -397,7 +396,7 @@ bash run_mmmpy_container.sh</code>   </p>
   - Navigate to the MultiMalModPy directory inside the container and run the simulation script (<code>launch_sim.py</code>) with the specified models and test flag.  </p>
 <p>Example Terminal Output: </p>
 <div class="codehilite"><pre><span></span><code><span class="err">```</span>
-<span class="n">PS</span><span class="w"> </span><span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="o">&lt;</span><span class="n">USER</span><span class="o">&gt;</span>\<span class="n">Documents</span>\<span class="n">MultiMalModPy</span><span class="o">&gt;</span><span class="w"> </span><span class="n">docker</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="n">C</span><span class="p">:</span><span class="o">/</span><span class="n">Users</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/</span><span class="n">Documents</span><span class="o">/</span><span class="p">:</span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">projects</span><span class="w"> </span><span class="n">mmmpy_local</span><span class="p">:</span><span class="n">rocky8</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="s2">&quot;source /opt/envs/mmmpy_local/bin/activate &amp;&amp; cd /mnt/c/projects/MultiMalModPy &amp;&amp; python launch_sim.py --models  OpenMalaria --test&quot;</span>
+<span class="n">PS</span><span class="w"> </span><span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="o">&lt;</span><span class="n">USER</span><span class="o">&gt;</span>\<span class="n">Documents</span>\<span class="n">MultiMalModPy</span><span class="o">&gt;</span><span class="w"> </span><span class="n">docker</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="n">C</span><span class="p">:</span><span class="o">/</span><span class="n">Users</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/</span><span class="n">Documents</span><span class="o">/</span><span class="p">:</span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">projects</span><span class="w"> </span><span class="n">mmmpy_local</span><span class="p">:</span><span class="n">rocky8</span><span class="w"> </span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="s2">"source /opt/envs/mmmpy_local/bin/activate &amp;&amp; cd /mnt/c/projects/MultiMalModPy &amp;&amp; python launch_sim.py --models  OpenMalaria --test"</span>
 
 <span class="n">No</span><span class="w"> </span><span class="n">interventions</span><span class="w"> </span><span class="n">specified</span>
 <span class="n">Warning</span><span class="p">:</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">popsize</span><span class="w"> </span><span class="n">specified</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">malariasimulation</span><span class="w"> </span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">interpolation</span><span class="w"> </span><span class="n">dataset</span><span class="p">,</span><span class="w"> </span><span class="n">since</span><span class="w"> </span><span class="n">running</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">test</span><span class="o">.</span><span class="w"> </span><span class="n">Using</span><span class="w"> </span><span class="n">interpolation</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">lowest</span><span class="w"> </span><span class="n">popsize</span><span class="w"> </span><span class="p">(</span><span class="mi">50000</span><span class="p">)</span>
@@ -444,7 +443,7 @@ The <code>.err</code> and <code>.out</code> files can help determine whether the
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

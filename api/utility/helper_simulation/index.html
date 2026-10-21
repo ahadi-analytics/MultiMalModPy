@@ -282,7 +282,10 @@
 
 
 
+
+
   <div class="doc doc-children">
+
 
 
 
@@ -322,7 +325,7 @@
         <ul class="first simple">
             <li>
               <b><code>exp</code></b>
-                  (<code>object</code>)
+                  (<code><span title="object">object</span></code>)
               –
               <div class="doc-md-description">
                 <p>An experiment object containing the attributes &lsquo;age_groups_aggregates&rsquo;, &lsquo;agebins&rsquo;, and &lsquo;seasonality&rsquo;.</p>
@@ -345,7 +348,7 @@
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If any of the validation checks fail, an error is raised with a descriptive message indicating the issue.</p>
@@ -356,7 +359,8 @@
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_simulation.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-190">190</a></span>
 <span class="normal"><a href="#__codelineno-0-191">191</a></span>
@@ -401,49 +405,49 @@
 <span class="normal"><a href="#__codelineno-0-230">230</a></span>
 <span class="normal"><a href="#__codelineno-0-231">231</a></span>
 <span class="normal"><a href="#__codelineno-0-232">232</a></span>
-<span class="normal"><a href="#__codelineno-0-233">233</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="k">def</span> <span class="nf">check_exp_input_parameters</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-191" name="__codelineno-0-191"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-233">233</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="k">def</span><span class="w"> </span><span class="nf">check_exp_input_parameters</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-191" name="__codelineno-0-191"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-192" name="__codelineno-0-192"></a><span class="sd">    Validates the input parameters and experiment configuration.</span>
 <a id="__codelineno-0-193" name="__codelineno-0-193"></a>
 <a id="__codelineno-0-194" name="__codelineno-0-194"></a><span class="sd">    This function performs the following checks:</span>
-<a id="__codelineno-0-195" name="__codelineno-0-195"></a><span class="sd">    1. Verifies that the &#39;agebins&#39; parameter contains all age groups referenced in &#39;age_groups_aggregates&#39;.</span>
-<a id="__codelineno-0-196" name="__codelineno-0-196"></a><span class="sd">    2. Ensures that &#39;agebins&#39; includes both the values 2 and 10.</span>
-<a id="__codelineno-0-197" name="__codelineno-0-197"></a><span class="sd">    3. Confirms that the &#39;seasonality&#39; parameter contains no more than two seasonality patterns.</span>
+<a id="__codelineno-0-195" name="__codelineno-0-195"></a><span class="sd">    1. Verifies that the 'agebins' parameter contains all age groups referenced in 'age_groups_aggregates'.</span>
+<a id="__codelineno-0-196" name="__codelineno-0-196"></a><span class="sd">    2. Ensures that 'agebins' includes both the values 2 and 10.</span>
+<a id="__codelineno-0-197" name="__codelineno-0-197"></a><span class="sd">    3. Confirms that the 'seasonality' parameter contains no more than two seasonality patterns.</span>
 <a id="__codelineno-0-198" name="__codelineno-0-198"></a>
 <a id="__codelineno-0-199" name="__codelineno-0-199"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-200" name="__codelineno-0-200"></a><span class="sd">        exp (object): An experiment object containing the attributes &#39;age_groups_aggregates&#39;, &#39;agebins&#39;, and &#39;seasonality&#39;.</span>
+<a id="__codelineno-0-200" name="__codelineno-0-200"></a><span class="sd">        exp (object): An experiment object containing the attributes 'age_groups_aggregates', 'agebins', and 'seasonality'.</span>
 <a id="__codelineno-0-201" name="__codelineno-0-201"></a>
 <a id="__codelineno-0-202" name="__codelineno-0-202"></a><span class="sd">    Raises:</span>
 <a id="__codelineno-0-203" name="__codelineno-0-203"></a><span class="sd">        ValueError: If any of the validation checks fail, an error is raised with a descriptive message indicating the issue.</span>
-<a id="__codelineno-0-204" name="__codelineno-0-204"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-204" name="__codelineno-0-204"></a><span class="sd">    """</span>
 <a id="__codelineno-0-205" name="__codelineno-0-205"></a>
 <a id="__codelineno-0-206" name="__codelineno-0-206"></a>    <span class="c1"># Check agebins against age_groups_aggregates</span>
 <a id="__codelineno-0-207" name="__codelineno-0-207"></a>    <span class="n">missing_agebins</span>  <span class="o">=</span> <span class="p">{</span><span class="n">age</span> <span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">age_groups_aggregates</span> <span class="k">for</span> <span class="n">age</span> <span class="ow">in</span> <span class="n">interval</span> <span class="k">if</span> <span class="n">age</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">age</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">agebins</span><span class="p">}</span>
 <a id="__codelineno-0-208" name="__codelineno-0-208"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_agebins</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
 <a id="__codelineno-0-209" name="__codelineno-0-209"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-<a id="__codelineno-0-210" name="__codelineno-0-210"></a>            <span class="sa">f</span><span class="s2">&quot;The &#39;agebins&#39; parameter is not granular enough to allow aggregation by &#39;age_groups_aggregates&#39;. &quot;</span>
-<a id="__codelineno-0-211" name="__codelineno-0-211"></a>            <span class="sa">f</span><span class="s2">&quot;The following age groups are missing from &#39;agebins&#39;: </span><span class="si">{</span><span class="n">missing_agebins</span><span class="si">}</span><span class="s2">. Please ensure they are included.&quot;</span>
+<a id="__codelineno-0-210" name="__codelineno-0-210"></a>            <span class="sa">f</span><span class="s2">"The 'agebins' parameter is not granular enough to allow aggregation by 'age_groups_aggregates'. "</span>
+<a id="__codelineno-0-211" name="__codelineno-0-211"></a>            <span class="sa">f</span><span class="s2">"The following age groups are missing from 'agebins': </span><span class="si">{</span><span class="n">missing_agebins</span><span class="si">}</span><span class="s2">. Please ensure they are included."</span>
 <a id="__codelineno-0-212" name="__codelineno-0-212"></a>        <span class="p">)</span>
 <a id="__codelineno-0-213" name="__codelineno-0-213"></a>
 <a id="__codelineno-0-214" name="__codelineno-0-214"></a>    <span class="c1"># Ensure agebins contain required values</span>
 <a id="__codelineno-0-215" name="__codelineno-0-215"></a>    <span class="k">if</span> <span class="mi">2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">agebins</span> <span class="ow">or</span> <span class="mi">10</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">agebins</span><span class="p">:</span>
 <a id="__codelineno-0-216" name="__codelineno-0-216"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-<a id="__codelineno-0-217" name="__codelineno-0-217"></a>            <span class="sa">f</span><span class="s2">&quot;The &#39;agebins&#39; parameter must include both 2 and 10. Current &#39;agebins&#39; values are </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">agebins</span><span class="si">}</span><span class="s2">. &quot;</span>
-<a id="__codelineno-0-218" name="__codelineno-0-218"></a>            <span class="s2">&quot;Please include both values to meet the framework&#39;s requirements.&quot;</span>
+<a id="__codelineno-0-217" name="__codelineno-0-217"></a>            <span class="sa">f</span><span class="s2">"The 'agebins' parameter must include both 2 and 10. Current 'agebins' values are </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">agebins</span><span class="si">}</span><span class="s2">. "</span>
+<a id="__codelineno-0-218" name="__codelineno-0-218"></a>            <span class="s2">"Please include both values to meet the framework's requirements."</span>
 <a id="__codelineno-0-219" name="__codelineno-0-219"></a>        <span class="p">)</span>
 <a id="__codelineno-0-220" name="__codelineno-0-220"></a>
 <a id="__codelineno-0-221" name="__codelineno-0-221"></a>    <span class="c1"># Check that only two seasonality patterns are specified</span>
 <a id="__codelineno-0-222" name="__codelineno-0-222"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">seasonality</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
 <a id="__codelineno-0-223" name="__codelineno-0-223"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-<a id="__codelineno-0-224" name="__codelineno-0-224"></a>            <span class="sa">f</span><span class="s2">&quot;Only two seasonality patterns are allowed, but </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">seasonality</span><span class="p">)</span><span class="si">}</span><span class="s2"> were specified. &quot;</span>
-<a id="__codelineno-0-225" name="__codelineno-0-225"></a>            <span class="s2">&quot;Please limit the number of seasonality patterns to two.&quot;</span>
+<a id="__codelineno-0-224" name="__codelineno-0-224"></a>            <span class="sa">f</span><span class="s2">"Only two seasonality patterns are allowed, but </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">seasonality</span><span class="p">)</span><span class="si">}</span><span class="s2"> were specified. "</span>
+<a id="__codelineno-0-225" name="__codelineno-0-225"></a>            <span class="s2">"Please limit the number of seasonality patterns to two."</span>
 <a id="__codelineno-0-226" name="__codelineno-0-226"></a>        <span class="p">)</span>
 <a id="__codelineno-0-227" name="__codelineno-0-227"></a>
 <a id="__codelineno-0-228" name="__codelineno-0-228"></a>    <span class="k">for</span> <span class="n">seasonal_name</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">seasonality</span><span class="p">:</span>
-<a id="__codelineno-0-229" name="__codelineno-0-229"></a>        <span class="k">if</span> <span class="n">seasonal_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;seasonal&#39;</span><span class="p">,</span><span class="s1">&#39;perennial&#39;</span><span class="p">]:</span>
+<a id="__codelineno-0-229" name="__codelineno-0-229"></a>        <span class="k">if</span> <span class="n">seasonal_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'seasonal'</span><span class="p">,</span><span class="s1">'perennial'</span><span class="p">]:</span>
 <a id="__codelineno-0-230" name="__codelineno-0-230"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-<a id="__codelineno-0-231" name="__codelineno-0-231"></a>                <span class="sa">f</span><span class="s2">&quot;Seasonality </span><span class="si">{</span><span class="n">seasonal_name</span><span class="si">}</span><span class="s2"> not in interpolation datasets.&quot;</span>
-<a id="__codelineno-0-232" name="__codelineno-0-232"></a>                <span class="s2">&quot;Please indicate either seasonal or perennial instead.&quot;</span>
+<a id="__codelineno-0-231" name="__codelineno-0-231"></a>                <span class="sa">f</span><span class="s2">"Seasonality </span><span class="si">{</span><span class="n">seasonal_name</span><span class="si">}</span><span class="s2"> not in interpolation datasets."</span>
+<a id="__codelineno-0-232" name="__codelineno-0-232"></a>                <span class="s2">"Please indicate either seasonal or perennial instead."</span>
 <a id="__codelineno-0-233" name="__codelineno-0-233"></a>            <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -482,7 +486,7 @@
         <ul class="first simple">
             <li>
               <b><code>exp</code></b>
-                  (<code>object</code>)
+                  (<code><span title="object">object</span></code>)
               –
               <div class="doc-md-description">
                 <p>An experiment object containing the attributes &lsquo;emod_step&rsquo;, &lsquo;num_seeds_burnin&rsquo;,
@@ -506,7 +510,7 @@
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If the &lsquo;num_seeds_burnin&rsquo; is not set to 1 during an EMOD burn-in simulation.</p>
@@ -517,7 +521,8 @@
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_simulation.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-235">235</a></span>
 <span class="normal"><a href="#__codelineno-0-236">236</a></span>
@@ -565,8 +570,8 @@
 <span class="normal"><a href="#__codelineno-0-278">278</a></span>
 <span class="normal"><a href="#__codelineno-0-279">279</a></span>
 <span class="normal"><a href="#__codelineno-0-280">280</a></span>
-<span class="normal"><a href="#__codelineno-0-281">281</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-235" name="__codelineno-0-235"></a><span class="k">def</span> <span class="nf">check_exp_inputs_emod</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-236" name="__codelineno-0-236"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-281">281</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-235" name="__codelineno-0-235"></a><span class="k">def</span><span class="w"> </span><span class="nf">check_exp_inputs_emod</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-236" name="__codelineno-0-236"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-237" name="__codelineno-0-237"></a><span class="sd">    Checks input parameter compatibility with the framework configurations for EMOD.</span>
 <a id="__codelineno-0-238" name="__codelineno-0-238"></a>
 <a id="__codelineno-0-239" name="__codelineno-0-239"></a><span class="sd">    This function performs the following checks:</span>
@@ -576,41 +581,41 @@
 <a id="__codelineno-0-243" name="__codelineno-0-243"></a><span class="sd">    4. Issues a warning if the population size exceeds 10000, which may cause computational or memory issues.</span>
 <a id="__codelineno-0-244" name="__codelineno-0-244"></a>
 <a id="__codelineno-0-245" name="__codelineno-0-245"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-246" name="__codelineno-0-246"></a><span class="sd">        exp (object): An experiment object containing the attributes &#39;emod_step&#39;, &#39;num_seeds_burnin&#39;,</span>
-<a id="__codelineno-0-247" name="__codelineno-0-247"></a><span class="sd">                      &#39;emod_burnin&#39;, &#39;emod_pop_size&#39;, and &#39;models&#39;.</span>
+<a id="__codelineno-0-246" name="__codelineno-0-246"></a><span class="sd">        exp (object): An experiment object containing the attributes 'emod_step', 'num_seeds_burnin',</span>
+<a id="__codelineno-0-247" name="__codelineno-0-247"></a><span class="sd">                      'emod_burnin', 'emod_pop_size', and 'models'.</span>
 <a id="__codelineno-0-248" name="__codelineno-0-248"></a>
 <a id="__codelineno-0-249" name="__codelineno-0-249"></a><span class="sd">    Raises:</span>
-<a id="__codelineno-0-250" name="__codelineno-0-250"></a><span class="sd">        ValueError: If the &#39;num_seeds_burnin&#39; is not set to 1 during an EMOD burn-in simulation.</span>
-<a id="__codelineno-0-251" name="__codelineno-0-251"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-250" name="__codelineno-0-250"></a><span class="sd">        ValueError: If the 'num_seeds_burnin' is not set to 1 during an EMOD burn-in simulation.</span>
+<a id="__codelineno-0-251" name="__codelineno-0-251"></a><span class="sd">    """</span>
 <a id="__codelineno-0-252" name="__codelineno-0-252"></a>
-<a id="__codelineno-0-253" name="__codelineno-0-253"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">hpc</span> <span class="o">==</span> <span class="s1">&#39;LOCAL&#39;</span> <span class="ow">and</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-254" name="__codelineno-0-254"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Local execution of EMOD does not allow serialization.&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-253" name="__codelineno-0-253"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">hpc</span> <span class="o">==</span> <span class="s1">'LOCAL'</span> <span class="ow">and</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-254" name="__codelineno-0-254"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Local execution of EMOD does not allow serialization."</span><span class="p">)</span>
 <a id="__codelineno-0-255" name="__codelineno-0-255"></a>
 <a id="__codelineno-0-256" name="__codelineno-0-256"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span><span class="p">:</span>
 <a id="__codelineno-0-257" name="__codelineno-0-257"></a>        <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds_burnin</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
 <a id="__codelineno-0-258" name="__codelineno-0-258"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-<a id="__codelineno-0-259" name="__codelineno-0-259"></a>                <span class="s2">&quot;The current framework supports only a single seed for EMOD burn-in simulations. &quot;</span>
-<a id="__codelineno-0-260" name="__codelineno-0-260"></a>                <span class="s2">&quot;Please set &#39;num_seeds_burnin&#39; to 1 to proceed.&quot;</span>
+<a id="__codelineno-0-259" name="__codelineno-0-259"></a>                <span class="s2">"The current framework supports only a single seed for EMOD burn-in simulations. "</span>
+<a id="__codelineno-0-260" name="__codelineno-0-260"></a>                <span class="s2">"Please set 'num_seeds_burnin' to 1 to proceed."</span>
 <a id="__codelineno-0-261" name="__codelineno-0-261"></a>            <span class="p">)</span>
 <a id="__codelineno-0-262" name="__codelineno-0-262"></a>
 <a id="__codelineno-0-263" name="__codelineno-0-263"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_burnin</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="ow">and</span> <span class="p">(</span>
-<a id="__codelineno-0-264" name="__codelineno-0-264"></a>            <span class="p">(</span><span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models</span> <span class="ow">and</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">!=</span> <span class="s1">&#39;pickup&#39;</span><span class="p">)</span> <span class="ow">or</span>
-<a id="__codelineno-0-265" name="__codelineno-0-265"></a>            <span class="s1">&#39;EMOD&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models</span> <span class="p">):</span>
+<a id="__codelineno-0-264" name="__codelineno-0-264"></a>            <span class="p">(</span><span class="s1">'EMOD'</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models</span> <span class="ow">and</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">!=</span> <span class="s1">'pickup'</span><span class="p">)</span> <span class="ow">or</span>
+<a id="__codelineno-0-265" name="__codelineno-0-265"></a>            <span class="s1">'EMOD'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">models</span> <span class="p">):</span>
 <a id="__codelineno-0-266" name="__codelineno-0-266"></a>        <span class="nb">print</span><span class="p">(</span>
-<a id="__codelineno-0-267" name="__codelineno-0-267"></a>            <span class="sa">f</span><span class="s2">&quot;Warning: A burn-in period of at least 100 years is recommended for EMOD. &quot;</span>
-<a id="__codelineno-0-268" name="__codelineno-0-268"></a>            <span class="sa">f</span><span class="s2">&quot;Currently, a shorter burn-in of </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_burnin</span><span class="si">}</span><span class="s2"> years has been configured, which may lead to inaccurate results.&quot;</span>
+<a id="__codelineno-0-267" name="__codelineno-0-267"></a>            <span class="sa">f</span><span class="s2">"Warning: A burn-in period of at least 100 years is recommended for EMOD. "</span>
+<a id="__codelineno-0-268" name="__codelineno-0-268"></a>            <span class="sa">f</span><span class="s2">"Currently, a shorter burn-in of </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_burnin</span><span class="si">}</span><span class="s2"> years has been configured, which may lead to inaccurate results."</span>
 <a id="__codelineno-0-269" name="__codelineno-0-269"></a>        <span class="p">)</span>
 <a id="__codelineno-0-270" name="__codelineno-0-270"></a>
 <a id="__codelineno-0-271" name="__codelineno-0-271"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
 <a id="__codelineno-0-272" name="__codelineno-0-272"></a>        <span class="nb">print</span><span class="p">(</span>
-<a id="__codelineno-0-273" name="__codelineno-0-273"></a>            <span class="sa">f</span><span class="s2">&quot;Warning: A population of at least 1000 is recommended for EMOD. &quot;</span>
-<a id="__codelineno-0-274" name="__codelineno-0-274"></a>            <span class="sa">f</span><span class="s2">&quot;Current pop_size </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">  may lead to inaccurate results.&quot;</span>
+<a id="__codelineno-0-273" name="__codelineno-0-273"></a>            <span class="sa">f</span><span class="s2">"Warning: A population of at least 1000 is recommended for EMOD. "</span>
+<a id="__codelineno-0-274" name="__codelineno-0-274"></a>            <span class="sa">f</span><span class="s2">"Current pop_size </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">  may lead to inaccurate results."</span>
 <a id="__codelineno-0-275" name="__codelineno-0-275"></a>        <span class="p">)</span>
 <a id="__codelineno-0-276" name="__codelineno-0-276"></a>
 <a id="__codelineno-0-277" name="__codelineno-0-277"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span> <span class="o">&gt;</span> <span class="mi">10000</span><span class="p">:</span>
 <a id="__codelineno-0-278" name="__codelineno-0-278"></a>        <span class="nb">print</span><span class="p">(</span>
-<a id="__codelineno-0-279" name="__codelineno-0-279"></a>            <span class="sa">f</span><span class="s2">&quot;Warning: A high population of over 10000 is causing computational challenges for EMOD&quot;</span>
-<a id="__codelineno-0-280" name="__codelineno-0-280"></a>            <span class="sa">f</span><span class="s2">&quot;Current pop_size </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">  may lead to memory related issues.&quot;</span>
+<a id="__codelineno-0-279" name="__codelineno-0-279"></a>            <span class="sa">f</span><span class="s2">"Warning: A high population of over 10000 is causing computational challenges for EMOD"</span>
+<a id="__codelineno-0-280" name="__codelineno-0-280"></a>            <span class="sa">f</span><span class="s2">"Current pop_size </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">  may lead to memory related issues."</span>
 <a id="__codelineno-0-281" name="__codelineno-0-281"></a>        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -648,7 +653,7 @@
         <ul class="first simple">
             <li>
               <b><code>exp</code></b>
-                  (<code>object</code>)
+                  (<code><span title="object">object</span></code>)
               –
               <div class="doc-md-description">
                 <p>An experiment object containing the attributes &lsquo;entomology_mode&rsquo;, &lsquo;malariasimulation_burnin&rsquo;,
@@ -672,7 +677,7 @@
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If the &lsquo;forced EIR&rsquo; entomology mode is selected for MalariaSimulation.</p>
@@ -683,7 +688,8 @@
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_simulation.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-357">357</a></span>
 <span class="normal"><a href="#__codelineno-0-358">358</a></span>
@@ -715,36 +721,36 @@
 <span class="normal"><a href="#__codelineno-0-384">384</a></span>
 <span class="normal"><a href="#__codelineno-0-385">385</a></span>
 <span class="normal"><a href="#__codelineno-0-386">386</a></span>
-<span class="normal"><a href="#__codelineno-0-387">387</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-357" name="__codelineno-0-357"></a><span class="k">def</span> <span class="nf">check_exp_inputs_malariasimulation</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-358" name="__codelineno-0-358"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-387">387</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-357" name="__codelineno-0-357"></a><span class="k">def</span><span class="w"> </span><span class="nf">check_exp_inputs_malariasimulation</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-358" name="__codelineno-0-358"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-359" name="__codelineno-0-359"></a><span class="sd">    Checks input parameter compatibility with the framework configurations for malariasimulation</span>
 <a id="__codelineno-0-360" name="__codelineno-0-360"></a>
 <a id="__codelineno-0-361" name="__codelineno-0-361"></a><span class="sd">    This function performs the following checks:</span>
-<a id="__codelineno-0-362" name="__codelineno-0-362"></a><span class="sd">    1. Raises a ValueError if the &#39;forced EIR&#39; option is selected for entomology mode, as it is not supported.</span>
+<a id="__codelineno-0-362" name="__codelineno-0-362"></a><span class="sd">    1. Raises a ValueError if the 'forced EIR' option is selected for entomology mode, as it is not supported.</span>
 <a id="__codelineno-0-363" name="__codelineno-0-363"></a><span class="sd">    2. Issues a warning if the burn-in period is less than 80 years, which may lead to inaccurate results.</span>
 <a id="__codelineno-0-364" name="__codelineno-0-364"></a><span class="sd">    3. Issues a warning if the population size is below 1000, which may lead to inaccurate results.</span>
 <a id="__codelineno-0-365" name="__codelineno-0-365"></a>
 <a id="__codelineno-0-366" name="__codelineno-0-366"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-367" name="__codelineno-0-367"></a><span class="sd">        exp (object): An experiment object containing the attributes &#39;entomology_mode&#39;, &#39;malariasimulation_burnin&#39;,</span>
-<a id="__codelineno-0-368" name="__codelineno-0-368"></a><span class="sd">                      and &#39;malariasimulation_pop_size&#39;.</span>
+<a id="__codelineno-0-367" name="__codelineno-0-367"></a><span class="sd">        exp (object): An experiment object containing the attributes 'entomology_mode', 'malariasimulation_burnin',</span>
+<a id="__codelineno-0-368" name="__codelineno-0-368"></a><span class="sd">                      and 'malariasimulation_pop_size'.</span>
 <a id="__codelineno-0-369" name="__codelineno-0-369"></a>
 <a id="__codelineno-0-370" name="__codelineno-0-370"></a><span class="sd">    Raises:</span>
-<a id="__codelineno-0-371" name="__codelineno-0-371"></a><span class="sd">        ValueError: If the &#39;forced EIR&#39; entomology mode is selected for MalariaSimulation.</span>
-<a id="__codelineno-0-372" name="__codelineno-0-372"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-371" name="__codelineno-0-371"></a><span class="sd">        ValueError: If the 'forced EIR' entomology mode is selected for MalariaSimulation.</span>
+<a id="__codelineno-0-372" name="__codelineno-0-372"></a><span class="sd">    """</span>
 <a id="__codelineno-0-373" name="__codelineno-0-373"></a>
-<a id="__codelineno-0-374" name="__codelineno-0-374"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;forced&#39;</span> <span class="p">:</span>
-<a id="__codelineno-0-375" name="__codelineno-0-375"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;forced EIR&#39; option is not supported in malariasimulation. Please select a valid entomology mode.&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-374" name="__codelineno-0-374"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">'forced'</span> <span class="p">:</span>
+<a id="__codelineno-0-375" name="__codelineno-0-375"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The 'forced EIR' option is not supported in malariasimulation. Please select a valid entomology mode."</span><span class="p">)</span>
 <a id="__codelineno-0-376" name="__codelineno-0-376"></a>
 <a id="__codelineno-0-377" name="__codelineno-0-377"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">malariasimulation_burnin</span> <span class="o">&lt;</span> <span class="mi">80</span><span class="p">:</span>
 <a id="__codelineno-0-378" name="__codelineno-0-378"></a>        <span class="nb">print</span><span class="p">(</span>
-<a id="__codelineno-0-379" name="__codelineno-0-379"></a>            <span class="sa">f</span><span class="s2">&quot;Warning: A burn-in period of at least 80 years is recommended for malariasimulation. &quot;</span>
-<a id="__codelineno-0-380" name="__codelineno-0-380"></a>            <span class="sa">f</span><span class="s2">&quot;Currently, a shorter burn-in of </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">malariasimulation_burnin</span><span class="si">}</span><span class="s2"> years has been configured, which may lead to inaccurate results.&quot;</span>
+<a id="__codelineno-0-379" name="__codelineno-0-379"></a>            <span class="sa">f</span><span class="s2">"Warning: A burn-in period of at least 80 years is recommended for malariasimulation. "</span>
+<a id="__codelineno-0-380" name="__codelineno-0-380"></a>            <span class="sa">f</span><span class="s2">"Currently, a shorter burn-in of </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">malariasimulation_burnin</span><span class="si">}</span><span class="s2"> years has been configured, which may lead to inaccurate results."</span>
 <a id="__codelineno-0-381" name="__codelineno-0-381"></a>        <span class="p">)</span>
 <a id="__codelineno-0-382" name="__codelineno-0-382"></a>
 <a id="__codelineno-0-383" name="__codelineno-0-383"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">malariasimulation_pop_size</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
 <a id="__codelineno-0-384" name="__codelineno-0-384"></a>        <span class="nb">print</span><span class="p">(</span>
-<a id="__codelineno-0-385" name="__codelineno-0-385"></a>            <span class="sa">f</span><span class="s2">&quot;Warning: A population of at least 1000 is recommended for malariasimulation. &quot;</span>
-<a id="__codelineno-0-386" name="__codelineno-0-386"></a>            <span class="sa">f</span><span class="s2">&quot;Current pop_size </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">malariasimulation_pop_size</span><span class="si">}</span><span class="s2">  may lead to inaccurate results.&quot;</span>
+<a id="__codelineno-0-385" name="__codelineno-0-385"></a>            <span class="sa">f</span><span class="s2">"Warning: A population of at least 1000 is recommended for malariasimulation. "</span>
+<a id="__codelineno-0-386" name="__codelineno-0-386"></a>            <span class="sa">f</span><span class="s2">"Current pop_size </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">malariasimulation_pop_size</span><span class="si">}</span><span class="s2">  may lead to inaccurate results."</span>
 <a id="__codelineno-0-387" name="__codelineno-0-387"></a>        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -783,7 +789,7 @@
         <ul class="first simple">
             <li>
               <b><code>exp</code></b>
-                  (<code>object</code>)
+                  (<code><span title="object">object</span></code>)
               –
               <div class="doc-md-description">
                 <p>An experiment object containing the attributes &lsquo;openmalaria_survey_step&rsquo;, &lsquo;analyzer_list&rsquo;,
@@ -807,7 +813,7 @@
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If the &lsquo;ccstep&rsquo; intervention is specified with a 30-day survey step in OpenMalaria.</p>
@@ -818,7 +824,8 @@
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_simulation.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-285">285</a></span>
 <span class="normal"><a href="#__codelineno-0-286">286</a></span>
@@ -888,36 +895,36 @@
 <span class="normal"><a href="#__codelineno-0-350">350</a></span>
 <span class="normal"><a href="#__codelineno-0-351">351</a></span>
 <span class="normal"><a href="#__codelineno-0-352">352</a></span>
-<span class="normal"><a href="#__codelineno-0-353">353</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-285" name="__codelineno-0-285"></a><span class="k">def</span> <span class="nf">check_exp_inputs_openmalaria</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-286" name="__codelineno-0-286"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-353">353</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-285" name="__codelineno-0-285"></a><span class="k">def</span><span class="w"> </span><span class="nf">check_exp_inputs_openmalaria</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-286" name="__codelineno-0-286"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-287" name="__codelineno-0-287"></a><span class="sd">    Checks input parameter compatibility with the framework configurations for OpenMalaria.</span>
 <a id="__codelineno-0-288" name="__codelineno-0-288"></a>
 <a id="__codelineno-0-289" name="__codelineno-0-289"></a><span class="sd">    This function performs the following checks:</span>
 <a id="__codelineno-0-290" name="__codelineno-0-290"></a><span class="sd">    1. Issues a warning if OpenMalaria is configured with 30-day survey steps and a 5-day analyzer, as this configuration will cause errors during post-processing.</span>
-<a id="__codelineno-0-291" name="__codelineno-0-291"></a><span class="sd">    2. Raises a ValueError if the &#39;ccstep&#39; intervention is specified with 30-day survey steps, which is incompatible.</span>
+<a id="__codelineno-0-291" name="__codelineno-0-291"></a><span class="sd">    2. Raises a ValueError if the 'ccstep' intervention is specified with 30-day survey steps, which is incompatible.</span>
 <a id="__codelineno-0-292" name="__codelineno-0-292"></a><span class="sd">    3. Issues a warning if the burn-in period is less than 80 years, which may lead to inaccurate results.</span>
 <a id="__codelineno-0-293" name="__codelineno-0-293"></a><span class="sd">    4. Issues a warning if the population size is below 10000, which may lead to inaccurate results.</span>
 <a id="__codelineno-0-294" name="__codelineno-0-294"></a>
 <a id="__codelineno-0-295" name="__codelineno-0-295"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-296" name="__codelineno-0-296"></a><span class="sd">        exp (object): An experiment object containing the attributes &#39;openmalaria_survey_step&#39;, &#39;analyzer_list&#39;,</span>
-<a id="__codelineno-0-297" name="__codelineno-0-297"></a><span class="sd">                      &#39;intervention_list&#39;, &#39;openmalaria_burnin&#39;, and &#39;openmalaria_pop_size&#39;.</span>
+<a id="__codelineno-0-296" name="__codelineno-0-296"></a><span class="sd">        exp (object): An experiment object containing the attributes 'openmalaria_survey_step', 'analyzer_list',</span>
+<a id="__codelineno-0-297" name="__codelineno-0-297"></a><span class="sd">                      'intervention_list', 'openmalaria_burnin', and 'openmalaria_pop_size'.</span>
 <a id="__codelineno-0-298" name="__codelineno-0-298"></a>
 <a id="__codelineno-0-299" name="__codelineno-0-299"></a><span class="sd">    Raises:</span>
-<a id="__codelineno-0-300" name="__codelineno-0-300"></a><span class="sd">        ValueError: If the &#39;ccstep&#39; intervention is specified with a 30-day survey step in OpenMalaria.</span>
-<a id="__codelineno-0-301" name="__codelineno-0-301"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-300" name="__codelineno-0-300"></a><span class="sd">        ValueError: If the 'ccstep' intervention is specified with a 30-day survey step in OpenMalaria.</span>
+<a id="__codelineno-0-301" name="__codelineno-0-301"></a><span class="sd">    """</span>
 <a id="__codelineno-0-302" name="__codelineno-0-302"></a>
 <a id="__codelineno-0-303" name="__codelineno-0-303"></a>    <span class="c1"># Check required files</span>
 <a id="__codelineno-0-304" name="__codelineno-0-304"></a>    <span class="c1"># Define schema</span>
-<a id="__codelineno-0-305" name="__codelineno-0-305"></a>    <span class="n">schema</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;scenario_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_version</span><span class="si">}</span><span class="s2">.xsd&quot;</span>
+<a id="__codelineno-0-305" name="__codelineno-0-305"></a>    <span class="n">schema</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"scenario_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_version</span><span class="si">}</span><span class="s2">.xsd"</span>
 <a id="__codelineno-0-306" name="__codelineno-0-306"></a>    <span class="n">schema_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_path</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
 <a id="__codelineno-0-307" name="__codelineno-0-307"></a>
 <a id="__codelineno-0-308" name="__codelineno-0-308"></a>    <span class="c1"># List of possible locations for the schema</span>
 <a id="__codelineno-0-309" name="__codelineno-0-309"></a>    <span class="n">possible_paths</span> <span class="o">=</span> <span class="p">[</span>
 <a id="__codelineno-0-310" name="__codelineno-0-310"></a>        <span class="n">schema_path</span><span class="p">,</span>  <span class="c1"># default location</span>
-<a id="__codelineno-0-311" name="__codelineno-0-311"></a>        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;schema&#39;</span><span class="p">),</span> <span class="n">schema</span><span class="p">),</span>
-<a id="__codelineno-0-312" name="__codelineno-0-312"></a>        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="sa">f</span><span class="s1">&#39;/openmalaria-schema-</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_version</span><span class="si">}</span><span class="s1">.0/build/schema/&#39;</span><span class="p">,</span> <span class="s1">&#39;scenario_current.xsd&#39;</span><span class="p">),</span>
-<a id="__codelineno-0-313" name="__codelineno-0-313"></a>        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">ROOT_DIR</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;dependencies/OpenMalaria/om_v</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_version</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">schema</span><span class="p">),</span>
-<a id="__codelineno-0-314" name="__codelineno-0-314"></a>        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">ROOT_DIR</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;dependencies/OpenMalaria/&#39;</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
+<a id="__codelineno-0-311" name="__codelineno-0-311"></a>        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'test'</span><span class="p">,</span> <span class="s1">'schema'</span><span class="p">),</span> <span class="n">schema</span><span class="p">),</span>
+<a id="__codelineno-0-312" name="__codelineno-0-312"></a>        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="sa">f</span><span class="s1">'/openmalaria-schema-</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_version</span><span class="si">}</span><span class="s1">.0/build/schema/'</span><span class="p">,</span> <span class="s1">'scenario_current.xsd'</span><span class="p">),</span>
+<a id="__codelineno-0-313" name="__codelineno-0-313"></a>        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">ROOT_DIR</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'dependencies/OpenMalaria/om_v</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_version</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">schema</span><span class="p">),</span>
+<a id="__codelineno-0-314" name="__codelineno-0-314"></a>        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">ROOT_DIR</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'dependencies/OpenMalaria/'</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
 <a id="__codelineno-0-315" name="__codelineno-0-315"></a>    <span class="p">]</span>
 <a id="__codelineno-0-316" name="__codelineno-0-316"></a>
 <a id="__codelineno-0-317" name="__codelineno-0-317"></a>    <span class="c1"># Try to copy schema if missing</span>
@@ -925,37 +932,37 @@
 <a id="__codelineno-0-319" name="__codelineno-0-319"></a>        <span class="k">for</span> <span class="n">alt_path</span> <span class="ow">in</span> <span class="n">possible_paths</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
 <a id="__codelineno-0-320" name="__codelineno-0-320"></a>            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">alt_path</span><span class="p">):</span>
 <a id="__codelineno-0-321" name="__codelineno-0-321"></a>                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">alt_path</span><span class="p">,</span> <span class="n">schema_path</span><span class="p">)</span>
-<a id="__codelineno-0-322" name="__codelineno-0-322"></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Copied schema from </span><span class="si">{</span><span class="n">alt_path</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">schema_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-322" name="__codelineno-0-322"></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Copied schema from </span><span class="si">{</span><span class="n">alt_path</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">schema_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-0-323" name="__codelineno-0-323"></a>                <span class="k">break</span>
 <a id="__codelineno-0-324" name="__codelineno-0-324"></a>        <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-325" name="__codelineno-0-325"></a>            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Required schema file not found in any location: </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-325" name="__codelineno-0-325"></a>            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Required schema file not found in any location: </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-0-326" name="__codelineno-0-326"></a>
 <a id="__codelineno-0-327" name="__codelineno-0-327"></a>    <span class="c1"># Ensure required files exist</span>
 <a id="__codelineno-0-328" name="__codelineno-0-328"></a>    <span class="n">required_files</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-0-329" name="__codelineno-0-329"></a>        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_path</span><span class="p">,</span> <span class="s2">&quot;densities.csv&quot;</span><span class="p">),</span>
+<a id="__codelineno-0-329" name="__codelineno-0-329"></a>        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_path</span><span class="p">,</span> <span class="s2">"densities.csv"</span><span class="p">),</span>
 <a id="__codelineno-0-330" name="__codelineno-0-330"></a>        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_path</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
 <a id="__codelineno-0-331" name="__codelineno-0-331"></a>    <span class="p">]</span>
 <a id="__codelineno-0-332" name="__codelineno-0-332"></a>
 <a id="__codelineno-0-333" name="__codelineno-0-333"></a>    <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">required_files</span><span class="p">:</span>
 <a id="__codelineno-0-334" name="__codelineno-0-334"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
-<a id="__codelineno-0-335" name="__codelineno-0-335"></a>            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Required file not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-335" name="__codelineno-0-335"></a>            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Required file not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-0-336" name="__codelineno-0-336"></a>
-<a id="__codelineno-0-337" name="__codelineno-0-337"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_survey_step</span> <span class="o">==</span> <span class="s1">&#39;30d&#39;</span> <span class="ow">and</span> <span class="s2">&quot;5day&quot;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span><span class="p">:</span>
-<a id="__codelineno-0-338" name="__codelineno-0-338"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: OpenMalaria is configured with 30-day survey steps. Using a 5-day analyzer will cause errors during post-processing. Adjust your configuration to ensure compatibility.&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-337" name="__codelineno-0-337"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_survey_step</span> <span class="o">==</span> <span class="s1">'30d'</span> <span class="ow">and</span> <span class="s2">"5day"</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span><span class="p">:</span>
+<a id="__codelineno-0-338" name="__codelineno-0-338"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">"Warning: OpenMalaria is configured with 30-day survey steps. Using a 5-day analyzer will cause errors during post-processing. Adjust your configuration to ensure compatibility."</span><span class="p">)</span>
 <a id="__codelineno-0-339" name="__codelineno-0-339"></a>
-<a id="__codelineno-0-340" name="__codelineno-0-340"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_survey_step</span> <span class="o">==</span> <span class="s1">&#39;30d&#39;</span> <span class="ow">and</span> <span class="s2">&quot;ccstep&quot;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
-<a id="__codelineno-0-341" name="__codelineno-0-341"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;ccstep&#39; intervention requires 5-day survey steps in OpenMalaria. Please update the survey step configuration.&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-340" name="__codelineno-0-340"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_survey_step</span> <span class="o">==</span> <span class="s1">'30d'</span> <span class="ow">and</span> <span class="s2">"ccstep"</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">:</span>
+<a id="__codelineno-0-341" name="__codelineno-0-341"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The 'ccstep' intervention requires 5-day survey steps in OpenMalaria. Please update the survey step configuration."</span><span class="p">)</span>
 <a id="__codelineno-0-342" name="__codelineno-0-342"></a>
 <a id="__codelineno-0-343" name="__codelineno-0-343"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_burnin</span> <span class="o">&lt;</span> <span class="mi">80</span><span class="p">:</span>
 <a id="__codelineno-0-344" name="__codelineno-0-344"></a>        <span class="nb">print</span><span class="p">(</span>
-<a id="__codelineno-0-345" name="__codelineno-0-345"></a>            <span class="sa">f</span><span class="s2">&quot;Warning: A burn-in period of at least 80 years is recommended for OpenMalaria. &quot;</span>
-<a id="__codelineno-0-346" name="__codelineno-0-346"></a>            <span class="sa">f</span><span class="s2">&quot;Currently, a shorter burn-in of </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_burnin</span><span class="si">}</span><span class="s2"> years has been configured, which may lead to inaccurate results.&quot;</span>
+<a id="__codelineno-0-345" name="__codelineno-0-345"></a>            <span class="sa">f</span><span class="s2">"Warning: A burn-in period of at least 80 years is recommended for OpenMalaria. "</span>
+<a id="__codelineno-0-346" name="__codelineno-0-346"></a>            <span class="sa">f</span><span class="s2">"Currently, a shorter burn-in of </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_burnin</span><span class="si">}</span><span class="s2"> years has been configured, which may lead to inaccurate results."</span>
 <a id="__codelineno-0-347" name="__codelineno-0-347"></a>        <span class="p">)</span>
 <a id="__codelineno-0-348" name="__codelineno-0-348"></a>
 <a id="__codelineno-0-349" name="__codelineno-0-349"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_pop_size</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">:</span>
 <a id="__codelineno-0-350" name="__codelineno-0-350"></a>        <span class="nb">print</span><span class="p">(</span>
-<a id="__codelineno-0-351" name="__codelineno-0-351"></a>            <span class="sa">f</span><span class="s2">&quot;Warning: A population of at least 10000 is recommended for OpenMalaria. &quot;</span>
-<a id="__codelineno-0-352" name="__codelineno-0-352"></a>            <span class="sa">f</span><span class="s2">&quot;Current pop_size </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_pop_size</span><span class="si">}</span><span class="s2">  may lead to inaccurate results.&quot;</span>
+<a id="__codelineno-0-351" name="__codelineno-0-351"></a>            <span class="sa">f</span><span class="s2">"Warning: A population of at least 10000 is recommended for OpenMalaria. "</span>
+<a id="__codelineno-0-352" name="__codelineno-0-352"></a>            <span class="sa">f</span><span class="s2">"Current pop_size </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_pop_size</span><span class="si">}</span><span class="s2">  may lead to inaccurate results."</span>
 <a id="__codelineno-0-353" name="__codelineno-0-353"></a>        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -980,7 +987,8 @@
 <p>Returns:
 Intervention parameters based on the specified experiment.</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_simulation.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-17">17</a></span>
 <span class="normal"><a href="#__codelineno-0-18">18</a></span>
@@ -993,8 +1001,8 @@ Intervention parameters based on the specified experiment.</p>
 <span class="normal"><a href="#__codelineno-0-25">25</a></span>
 <span class="normal"><a href="#__codelineno-0-26">26</a></span>
 <span class="normal"><a href="#__codelineno-0-27">27</a></span>
-<span class="normal"><a href="#__codelineno-0-28">28</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="k">def</span> <span class="nf">get_intervention_params</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_intervention_params</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="sd">    Retrieve intervention parameters for a specific experiment.</span>
 <a id="__codelineno-0-20" name="__codelineno-0-20"></a>
 <a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="sd">    Parameters:</span>
@@ -1002,8 +1010,8 @@ Intervention parameters based on the specified experiment.</p>
 <a id="__codelineno-0-23" name="__codelineno-0-23"></a>
 <a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="sd">    Intervention parameters based on the specified experiment.</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27"></a>    <span class="kn">from</span> <span class="nn">utility.helper_interventions</span> <span class="kn">import</span> <span class="n">exp_params_to_update</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="sd">    """</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">utility.helper_interventions</span><span class="w"> </span><span class="kn">import</span> <span class="n">exp_params_to_update</span>
 <a id="__codelineno-0-28" name="__codelineno-0-28"></a>    <span class="k">return</span> <span class="n">exp_params_to_update</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1042,7 +1050,7 @@ exp = get_seasonal_eir(exp)</p>
         <ul class="first simple">
             <li>
               <b><code>exp</code></b>
-                  (<code>Experiment</code>, default:
+                  (<code><span title="Experiment">Experiment</span></code>, default:
                       <code>None</code>
 )
               –
@@ -1135,7 +1143,8 @@ exp = get_seasonal_eir(exp)</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_simulation.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-110">110</a></span>
 <span class="normal"><a href="#__codelineno-0-111">111</a></span>
@@ -1176,8 +1185,8 @@ exp = get_seasonal_eir(exp)</p>
 <span class="normal"><a href="#__codelineno-0-146">146</a></span>
 <span class="normal"><a href="#__codelineno-0-147">147</a></span>
 <span class="normal"><a href="#__codelineno-0-148">148</a></span>
-<span class="normal"><a href="#__codelineno-0-149">149</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-110" name="__codelineno-0-110"></a><span class="k">def</span> <span class="nf">get_seasonal_eir</span><span class="p">(</span><span class="n">exp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<a id="__codelineno-0-111" name="__codelineno-0-111"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-149">149</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-110" name="__codelineno-0-110"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_seasonal_eir</span><span class="p">(</span><span class="n">exp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<a id="__codelineno-0-111" name="__codelineno-0-111"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-112" name="__codelineno-0-112"></a><span class="sd">    Generates seasonal EIR (Entomological Inoculation Rate) values.</span>
 <a id="__codelineno-0-113" name="__codelineno-0-113"></a>
 <a id="__codelineno-0-114" name="__codelineno-0-114"></a><span class="sd">    Examples:</span>
@@ -1199,7 +1208,7 @@ exp = get_seasonal_eir(exp)</p>
 <a id="__codelineno-0-130" name="__codelineno-0-130"></a>
 <a id="__codelineno-0-131" name="__codelineno-0-131"></a><span class="sd">        If exp is provided:</span>
 <a id="__codelineno-0-132" name="__codelineno-0-132"></a><span class="sd">        -  exp (Experiment): Experiment object with updated seasonality attributes.</span>
-<a id="__codelineno-0-133" name="__codelineno-0-133"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-133" name="__codelineno-0-133"></a><span class="sd">    """</span>
 <a id="__codelineno-0-134" name="__codelineno-0-134"></a>    <span class="n">seasonal</span> <span class="o">=</span> <span class="n">seasonal_inputs</span><span class="o">.</span><span class="n">monthly_seasonal_inputs</span>
 <a id="__codelineno-0-135" name="__codelineno-0-135"></a>    <span class="n">eir_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">seasonal</span><span class="p">)</span>
 <a id="__codelineno-0-136" name="__codelineno-0-136"></a>    <span class="n">seasonal</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span> <span class="o">/</span> <span class="n">eir_sum</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">seasonal</span><span class="p">]</span> <span class="c1"># rescale to sum =1</span>
@@ -1248,7 +1257,7 @@ exp = get_seasonal_eir(exp)</p>
         <ul class="first simple">
             <li>
               <b><code>exp</code></b>
-                  (<code>Experiment</code>)
+                  (<code><span title="Experiment">Experiment</span></code>)
               –
               <div class="doc-md-description">
                 <p>Experiment object containing experiment specifications.
@@ -1275,7 +1284,7 @@ exp = get_seasonal_eir(exp)</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
-<b><code>exp</code></b>(                  <code>Experiment</code>
+<b><code>exp</code></b>(                  <code><span title="Experiment">Experiment</span></code>
 )              –
               <div class="doc-md-description">
                 <p>Experiment object with updated simulation time parameters.
@@ -1289,7 +1298,8 @@ exp = get_seasonal_eir(exp)</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_simulation.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-31">31</a></span>
 <span class="normal"><a href="#__codelineno-0-32">32</a></span>
@@ -1343,8 +1353,8 @@ exp = get_seasonal_eir(exp)</p>
 <span class="normal"><a href="#__codelineno-0-80">80</a></span>
 <span class="normal"><a href="#__codelineno-0-81">81</a></span>
 <span class="normal"><a href="#__codelineno-0-82">82</a></span>
-<span class="normal"><a href="#__codelineno-0-83">83</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="k">def</span> <span class="nf">get_simulation_time_params</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-83">83</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_simulation_time_params</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="sd">    Calculates simulation time parameters for EMOD, malariasimulation and OpenMalaria based on the provided arguments.</span>
 <a id="__codelineno-0-34" name="__codelineno-0-34"></a>
 <a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="sd">    Args:</span>
@@ -1352,14 +1362,14 @@ exp = get_seasonal_eir(exp)</p>
 <a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">            - start_year (int): Monitoring start year (required by OpenMalaria utils).</span>
 <a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">            - end_year (int): Monitoring and simulation end year (required by OpenMalaria utils).</span>
 <a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">            - burnin (int): Duration of pre-monitoring years to run.</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">            - emod_step (str): Whether EMOD runs in one or two steps (&#39;None&#39; (one run), &#39;burnin&#39;, or &#39;pickup&#39; (two separate runs)).</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">            - emod_step (str): Whether EMOD runs in one or two steps ('None' (one run), 'burnin', or 'pickup' (two separate runs)).</span>
 <a id="__codelineno-0-41" name="__codelineno-0-41"></a>
 <a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="sd">        exp (Experiment): Experiment object with updated simulation time parameters.</span>
 <a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="sd">            - sim_start_year: Simulation start year</span>
 <a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="sd">            - monitoring_years: Number of years to monitor (requried in EMOD analyzer)</span>
 <a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">            - sim_dur_years: Total simulation duration years</span>
-<a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="sd">    """</span>
 <a id="__codelineno-0-48" name="__codelineno-0-48"></a>
 <a id="__codelineno-0-49" name="__codelineno-0-49"></a>    <span class="n">start_year</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">start_year</span>
 <a id="__codelineno-0-50" name="__codelineno-0-50"></a>    <span class="n">end_year</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">end_year</span>
@@ -1370,24 +1380,24 @@ exp = get_seasonal_eir(exp)</p>
 <a id="__codelineno-0-55" name="__codelineno-0-55"></a>    <span class="n">monitoring_years</span> <span class="o">=</span> <span class="n">end_year</span> <span class="o">-</span> <span class="n">start_year</span>
 <a id="__codelineno-0-56" name="__codelineno-0-56"></a>
 <a id="__codelineno-0-57" name="__codelineno-0-57"></a>    <span class="k">if</span> <span class="n">emod_step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-58" name="__codelineno-0-58"></a>        <span class="k">if</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
-<a id="__codelineno-0-59" name="__codelineno-0-59"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; --------| Running EMOD burnin + pickup time in one simulation run |--------&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a>        <span class="k">if</span> <span class="s1">'EMOD'</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">" --------| Running EMOD burnin + pickup time in one simulation run |--------"</span><span class="p">)</span>
 <a id="__codelineno-0-60" name="__codelineno-0-60"></a>        <span class="n">burnin_start_year</span> <span class="o">=</span> <span class="n">start_year</span> <span class="o">-</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_burnin</span>
 <a id="__codelineno-0-61" name="__codelineno-0-61"></a>        <span class="n">sim_dur_years</span> <span class="o">=</span> <span class="n">end_year</span> <span class="o">-</span> <span class="n">burnin_start_year</span>
 <a id="__codelineno-0-62" name="__codelineno-0-62"></a>        <span class="n">sim_start_year</span> <span class="o">=</span> <span class="n">burnin_start_year</span>
-<a id="__codelineno-0-63" name="__codelineno-0-63"></a>    <span class="k">elif</span> <span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;burnin&#39;</span><span class="p">:</span>
-<a id="__codelineno-0-64" name="__codelineno-0-64"></a>        <span class="k">if</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
-<a id="__codelineno-0-65" name="__codelineno-0-65"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; --------| Running EMOD burnin (step 1) |--------&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a>    <span class="k">elif</span> <span class="n">emod_step</span> <span class="o">==</span> <span class="s1">'burnin'</span><span class="p">:</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a>        <span class="k">if</span> <span class="s1">'EMOD'</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">" --------| Running EMOD burnin (step 1) |--------"</span><span class="p">)</span>
 <a id="__codelineno-0-66" name="__codelineno-0-66"></a>        <span class="n">sim_dur_years</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_burnin</span>
 <a id="__codelineno-0-67" name="__codelineno-0-67"></a>        <span class="n">burnin_start_year</span> <span class="o">=</span> <span class="n">start_year</span> <span class="o">-</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_burnin</span>
 <a id="__codelineno-0-68" name="__codelineno-0-68"></a>        <span class="n">sim_start_year</span> <span class="o">=</span> <span class="n">burnin_start_year</span>
-<a id="__codelineno-0-69" name="__codelineno-0-69"></a>    <span class="k">elif</span> <span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;pickup&#39;</span><span class="p">:</span>
-<a id="__codelineno-0-70" name="__codelineno-0-70"></a>        <span class="k">if</span> <span class="s1">&#39;EMOD&#39;</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
-<a id="__codelineno-0-71" name="__codelineno-0-71"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; --------| Running EMOD pickup from serialized burnin (step 2) |--------&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a>    <span class="k">elif</span> <span class="n">emod_step</span> <span class="o">==</span> <span class="s1">'pickup'</span><span class="p">:</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>        <span class="k">if</span> <span class="s1">'EMOD'</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">" --------| Running EMOD pickup from serialized burnin (step 2) |--------"</span><span class="p">)</span>
 <a id="__codelineno-0-72" name="__codelineno-0-72"></a>        <span class="n">sim_dur_years</span> <span class="o">=</span> <span class="n">end_year</span> <span class="o">-</span> <span class="n">start_year</span>
 <a id="__codelineno-0-73" name="__codelineno-0-73"></a>        <span class="n">sim_start_year</span> <span class="o">=</span> <span class="n">start_year</span>
 <a id="__codelineno-0-74" name="__codelineno-0-74"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-75" name="__codelineno-0-75"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Please specify valid emod_step, </span><span class="si">{</span><span class="n">emod_step</span><span class="si">}</span><span class="s1"> is not valid&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Please specify valid emod_step, </span><span class="si">{</span><span class="n">emod_step</span><span class="si">}</span><span class="s1"> is not valid'</span><span class="p">)</span>
 <a id="__codelineno-0-76" name="__codelineno-0-76"></a>
 <a id="__codelineno-0-77" name="__codelineno-0-77"></a>    <span class="c1"># Update experiment object with simulation start year and duration</span>
 <a id="__codelineno-0-78" name="__codelineno-0-78"></a>    <span class="n">exp</span><span class="o">.</span><span class="n">sim_start_year_emod</span> <span class="o">=</span> <span class="n">sim_start_year</span>
@@ -1461,7 +1471,8 @@ exp = get_seasonal_eir(exp)</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_simulation.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-152">152</a></span>
 <span class="normal"><a href="#__codelineno-0-153">153</a></span>
@@ -1481,8 +1492,8 @@ exp = get_seasonal_eir(exp)</p>
 <span class="normal"><a href="#__codelineno-0-167">167</a></span>
 <span class="normal"><a href="#__codelineno-0-168">168</a></span>
 <span class="normal"><a href="#__codelineno-0-169">169</a></span>
-<span class="normal"><a href="#__codelineno-0-170">170</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-152" name="__codelineno-0-152"></a><span class="k">def</span> <span class="nf">monthly_to_daily_EIR</span><span class="p">(</span><span class="n">monthly_EIR</span><span class="p">):</span>
-<a id="__codelineno-0-153" name="__codelineno-0-153"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-170">170</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-152" name="__codelineno-0-152"></a><span class="k">def</span><span class="w"> </span><span class="nf">monthly_to_daily_EIR</span><span class="p">(</span><span class="n">monthly_EIR</span><span class="p">):</span>
+<a id="__codelineno-0-153" name="__codelineno-0-153"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-154" name="__codelineno-0-154"></a><span class="sd">    Convert monthly EIR values to daily using cubic spline interpolation.</span>
 <a id="__codelineno-0-155" name="__codelineno-0-155"></a>
 <a id="__codelineno-0-156" name="__codelineno-0-156"></a><span class="sd">    Args:</span>
@@ -1490,10 +1501,10 @@ exp = get_seasonal_eir(exp)</p>
 <a id="__codelineno-0-158" name="__codelineno-0-158"></a>
 <a id="__codelineno-0-159" name="__codelineno-0-159"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-160" name="__codelineno-0-160"></a><span class="sd">        list of floats: List of daily EIRs.</span>
-<a id="__codelineno-0-161" name="__codelineno-0-161"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-161" name="__codelineno-0-161"></a><span class="sd">    """</span>
 <a id="__codelineno-0-162" name="__codelineno-0-162"></a>    <span class="n">x_monthly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">364</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a id="__codelineno-0-163" name="__codelineno-0-163"></a>    <span class="n">x_daily</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">364</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">365</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-0-164" name="__codelineno-0-164"></a>    <span class="n">EIR</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">x_monthly</span><span class="p">,</span> <span class="n">monthly_EIR</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-164" name="__codelineno-0-164"></a>    <span class="n">EIR</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">x_monthly</span><span class="p">,</span> <span class="n">monthly_EIR</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">'linear'</span><span class="p">)</span>
 <a id="__codelineno-0-165" name="__codelineno-0-165"></a>    <span class="n">daily_EIR</span> <span class="o">=</span> <span class="n">EIR</span><span class="p">(</span><span class="n">x_daily</span><span class="p">)</span>
 <a id="__codelineno-0-166" name="__codelineno-0-166"></a>    <span class="n">daily_EIR</span> <span class="o">/=</span> <span class="mi">30</span>
 <a id="__codelineno-0-167" name="__codelineno-0-167"></a>    <span class="n">daily_EIR</span> <span class="o">=</span> <span class="n">daily_EIR</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
@@ -1524,7 +1535,8 @@ exp = get_seasonal_eir(exp)</p>
 <p>Returns:
 DataFrame with added column &lsquo;malariasimulation_pv&rsquo; representing malariasimulation parameter variation values.</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_simulation.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-86"> 86</a></span>
 <span class="normal"><a href="#__codelineno-0-87"> 87</a></span>
@@ -1547,8 +1559,8 @@ DataFrame with added column &lsquo;malariasimulation_pv&rsquo; representing mala
 <span class="normal"><a href="#__codelineno-0-104">104</a></span>
 <span class="normal"><a href="#__codelineno-0-105">105</a></span>
 <span class="normal"><a href="#__codelineno-0-106">106</a></span>
-<span class="normal"><a href="#__codelineno-0-107">107</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="k">def</span> <span class="nf">param_variation</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-107">107</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="k">def</span><span class="w"> </span><span class="nf">param_variation</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="sd">    Perform parameter variation for malariasimulation simulations.</span>
 <a id="__codelineno-0-89" name="__codelineno-0-89"></a>
 <a id="__codelineno-0-90" name="__codelineno-0-90"></a><span class="sd">    Parameters:</span>
@@ -1556,18 +1568,18 @@ DataFrame with added column &lsquo;malariasimulation_pv&rsquo; representing mala
 <a id="__codelineno-0-92" name="__codelineno-0-92"></a><span class="sd">    - exp: Experiment object.</span>
 <a id="__codelineno-0-93" name="__codelineno-0-93"></a>
 <a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="sd">    DataFrame with added column &#39;malariasimulation_pv&#39; representing malariasimulation parameter variation values.</span>
-<a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-97" name="__codelineno-0-97"></a>    <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">sample</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="sd">    DataFrame with added column 'malariasimulation_pv' representing malariasimulation parameter variation values.</span>
+<a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="sd">    """</span>
+<a id="__codelineno-0-97" name="__codelineno-0-97"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">sample</span>
 <a id="__codelineno-0-98" name="__codelineno-0-98"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
-<a id="__codelineno-0-99" name="__codelineno-0-99"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: num_seeds &gt; 1000, therefore malariasimulation parameter variation will have repeat values&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-99" name="__codelineno-0-99"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">"Warning: num_seeds &gt; 1000, therefore malariasimulation parameter variation will have repeat values"</span><span class="p">)</span>
 <a id="__codelineno-0-100" name="__codelineno-0-100"></a>        <span class="n">par_var</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds</span><span class="p">)]</span>
 <a id="__codelineno-0-101" name="__codelineno-0-101"></a>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-<a id="__codelineno-0-102" name="__codelineno-0-102"></a>            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;malariasimulation_pv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">par_var</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;seed&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+<a id="__codelineno-0-102" name="__codelineno-0-102"></a>            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">'malariasimulation_pv'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">par_var</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">'seed'</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
 <a id="__codelineno-0-103" name="__codelineno-0-103"></a>    <span class="k">else</span><span class="p">:</span>
 <a id="__codelineno-0-104" name="__codelineno-0-104"></a>        <span class="n">par_var</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1001</span><span class="p">),</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds</span><span class="p">)</span>
 <a id="__codelineno-0-105" name="__codelineno-0-105"></a>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-<a id="__codelineno-0-106" name="__codelineno-0-106"></a>            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;malariasimulation_pv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">par_var</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;seed&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+<a id="__codelineno-0-106" name="__codelineno-0-106"></a>            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">'malariasimulation_pv'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">par_var</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">'seed'</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
 <a id="__codelineno-0-107" name="__codelineno-0-107"></a>    <span class="k">return</span> <span class="n">df</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1603,7 +1615,7 @@ DataFrame with added column &lsquo;malariasimulation_pv&rsquo; representing mala
         <ul class="first simple">
             <li>
               <b><code>exp</code></b>
-                  (<code>object</code>)
+                  (<code><span title="object">object</span></code>)
               –
               <div class="doc-md-description">
                 <p>An experiment object containing the necessary attributes, such as &lsquo;hpc&rsquo;,
@@ -1615,7 +1627,8 @@ DataFrame with added column &lsquo;malariasimulation_pv&rsquo; representing mala
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_simulation.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-173">173</a></span>
 <span class="normal"><a href="#__codelineno-0-174">174</a></span>
@@ -1632,21 +1645,21 @@ DataFrame with added column &lsquo;malariasimulation_pv&rsquo; representing mala
 <span class="normal"><a href="#__codelineno-0-185">185</a></span>
 <span class="normal"><a href="#__codelineno-0-186">186</a></span>
 <span class="normal"><a href="#__codelineno-0-187">187</a></span>
-<span class="normal"><a href="#__codelineno-0-188">188</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-173" name="__codelineno-0-173"></a><span class="k">def</span> <span class="nf">submit_run_plotters</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-174" name="__codelineno-0-174"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-188">188</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-173" name="__codelineno-0-173"></a><span class="k">def</span><span class="w"> </span><span class="nf">submit_run_plotters</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-174" name="__codelineno-0-174"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-175" name="__codelineno-0-175"></a><span class="sd">    Submits a plotter job for execution, either locally or via SLURM based on the HPC configuration:</span>
 <a id="__codelineno-0-176" name="__codelineno-0-176"></a><span class="sd">    - If running locally, it generates and submits the plotter job using a local submission script.</span>
 <a id="__codelineno-0-177" name="__codelineno-0-177"></a><span class="sd">    - If using SLURM, it delegates the submission to the SLURM-specific plotter submission function.</span>
 <a id="__codelineno-0-178" name="__codelineno-0-178"></a>
 <a id="__codelineno-0-179" name="__codelineno-0-179"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-180" name="__codelineno-0-180"></a><span class="sd">        exp (object): An experiment object containing the necessary attributes, such as &#39;hpc&#39;,</span>
+<a id="__codelineno-0-180" name="__codelineno-0-180"></a><span class="sd">        exp (object): An experiment object containing the necessary attributes, such as 'hpc',</span>
 <a id="__codelineno-0-181" name="__codelineno-0-181"></a><span class="sd">                      to determine the appropriate submission method.</span>
-<a id="__codelineno-0-182" name="__codelineno-0-182"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-183" name="__codelineno-0-183"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">hpc</span> <span class="o">==</span> <span class="s1">&#39;LOCAL&#39;</span><span class="p">:</span>
-<a id="__codelineno-0-184" name="__codelineno-0-184"></a>        <span class="kn">from</span> <span class="nn">utility.helper_local</span> <span class="kn">import</span> <span class="n">submit_run_plotters_local</span>
+<a id="__codelineno-0-182" name="__codelineno-0-182"></a><span class="sd">    """</span>
+<a id="__codelineno-0-183" name="__codelineno-0-183"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">hpc</span> <span class="o">==</span> <span class="s1">'LOCAL'</span><span class="p">:</span>
+<a id="__codelineno-0-184" name="__codelineno-0-184"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">utility.helper_local</span><span class="w"> </span><span class="kn">import</span> <span class="n">submit_run_plotters_local</span>
 <a id="__codelineno-0-185" name="__codelineno-0-185"></a>        <span class="n">submit_run_plotters_local</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
 <a id="__codelineno-0-186" name="__codelineno-0-186"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-187" name="__codelineno-0-187"></a>        <span class="kn">from</span> <span class="nn">utility.helper_slurm</span> <span class="kn">import</span> <span class="n">submit_run_plotters_slurm</span>
+<a id="__codelineno-0-187" name="__codelineno-0-187"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">utility.helper_slurm</span><span class="w"> </span><span class="kn">import</span> <span class="n">submit_run_plotters_slurm</span>
 <a id="__codelineno-0-188" name="__codelineno-0-188"></a>        <span class="n">submit_run_plotters_slurm</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1673,7 +1686,7 @@ DataFrame with added column &lsquo;malariasimulation_pv&rsquo; representing mala
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

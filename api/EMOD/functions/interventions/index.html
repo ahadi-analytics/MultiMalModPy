@@ -264,7 +264,10 @@
 
 
 
+
+
   <div class="doc doc-children">
+
 
 
 
@@ -294,7 +297,8 @@
 <p>Returns:
 A dictionary containing the start day of the treatment campaign, clinical case coverage, and severe case coverage.</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/functions/interventions.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
 <span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
@@ -329,8 +333,8 @@ A dictionary containing the start day of the treatment campaign, clinical case c
 <span class="normal"><a href="#__codelineno-0-36">36</a></span>
 <span class="normal"><a href="#__codelineno-0-37">37</a></span>
 <span class="normal"><a href="#__codelineno-0-38">38</a></span>
-<span class="normal"><a href="#__codelineno-0-39">39</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">def</span> <span class="nf">treatment_camp_simple</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">cm_start</span><span class="p">,</span> <span class="n">cm_clinical</span><span class="p">,</span> <span class="n">cm_severe</span><span class="p">):</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">treatment_camp_simple</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">cm_start</span><span class="p">,</span> <span class="n">cm_clinical</span><span class="p">,</span> <span class="n">cm_severe</span><span class="p">):</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="sd">    This function helps us establish treatment seeking behavior in an EMOD simulation.</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9"></a>
 <a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="sd">    Parameters:</span>
@@ -341,7 +345,7 @@ A dictionary containing the start day of the treatment campaign, clinical case c
 <a id="__codelineno-0-15" name="__codelineno-0-15"></a>
 <a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="sd">    A dictionary containing the start day of the treatment campaign, clinical case coverage, and severe case coverage.</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="sd">    """</span>
 <a id="__codelineno-0-19" name="__codelineno-0-19"></a>    <span class="n">cm_clinical</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cm_clinical</span><span class="p">)</span>
 <a id="__codelineno-0-20" name="__codelineno-0-20"></a>    <span class="n">cm_severe</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cm_severe</span><span class="p">)</span>
 <a id="__codelineno-0-21" name="__codelineno-0-21"></a>
@@ -350,19 +354,19 @@ A dictionary containing the start day of the treatment campaign, clinical case c
 <a id="__codelineno-0-24" name="__codelineno-0-24"></a>    <span class="k">if</span> <span class="n">cm_clinical</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 <a id="__codelineno-0-25" name="__codelineno-0-25"></a>        <span class="n">cm_severe</span> <span class="o">=</span> <span class="mi">0</span>
 <a id="__codelineno-0-26" name="__codelineno-0-26"></a>
-<a id="__codelineno-0-27" name="__codelineno-0-27"></a>    <span class="n">add_treatment_seeking</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">cm_start</span><span class="p">,</span> <span class="n">drug</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Artemether&#39;</span><span class="p">,</span> <span class="s1">&#39;Lumefantrine&#39;</span><span class="p">],</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>    <span class="n">add_treatment_seeking</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">cm_start</span><span class="p">,</span> <span class="n">drug</span><span class="o">=</span><span class="p">[</span><span class="s1">'Artemether'</span><span class="p">,</span> <span class="s1">'Lumefantrine'</span><span class="p">],</span>
 <a id="__codelineno-0-28" name="__codelineno-0-28"></a>                             <span class="n">targets</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a>                                 <span class="p">{</span><span class="s1">&#39;trigger&#39;</span><span class="p">:</span> <span class="s1">&#39;NewClinicalCase&#39;</span><span class="p">,</span> <span class="s1">&#39;coverage&#39;</span><span class="p">:</span> <span class="n">cm_clinical</span><span class="p">,</span> <span class="s1">&#39;agemin&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;agemax&#39;</span><span class="p">:</span> <span class="mi">115</span><span class="p">,</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30"></a>                                  <span class="s1">&#39;rate&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}],</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31"></a>                             <span class="n">broadcast_event_name</span><span class="o">=</span><span class="s2">&quot;Received_Treatment&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a>                                 <span class="p">{</span><span class="s1">'trigger'</span><span class="p">:</span> <span class="s1">'NewClinicalCase'</span><span class="p">,</span> <span class="s1">'coverage'</span><span class="p">:</span> <span class="n">cm_clinical</span><span class="p">,</span> <span class="s1">'agemin'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'agemax'</span><span class="p">:</span> <span class="mi">115</span><span class="p">,</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a>                                  <span class="s1">'rate'</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}],</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a>                             <span class="n">broadcast_event_name</span><span class="o">=</span><span class="s2">"Received_Treatment"</span><span class="p">)</span>
 <a id="__codelineno-0-32" name="__codelineno-0-32"></a>
-<a id="__codelineno-0-33" name="__codelineno-0-33"></a>    <span class="n">add_treatment_seeking</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">cm_start</span><span class="p">,</span> <span class="n">drug</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Artemether&#39;</span><span class="p">,</span> <span class="s1">&#39;Lumefantrine&#39;</span><span class="p">],</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a>    <span class="n">add_treatment_seeking</span><span class="p">(</span><span class="n">camp</span><span class="p">,</span> <span class="n">start_day</span><span class="o">=</span><span class="n">cm_start</span><span class="p">,</span> <span class="n">drug</span><span class="o">=</span><span class="p">[</span><span class="s1">'Artemether'</span><span class="p">,</span> <span class="s1">'Lumefantrine'</span><span class="p">],</span>
 <a id="__codelineno-0-34" name="__codelineno-0-34"></a>                             <span class="n">targets</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35"></a>                                 <span class="p">{</span><span class="s1">&#39;trigger&#39;</span><span class="p">:</span> <span class="s1">&#39;NewSevereCase&#39;</span><span class="p">,</span> <span class="s1">&#39;coverage&#39;</span><span class="p">:</span> <span class="n">cm_severe</span><span class="p">,</span> <span class="s1">&#39;agemin&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;agemax&#39;</span><span class="p">:</span> <span class="mi">115</span><span class="p">,</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36"></a>                                  <span class="s1">&#39;rate&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}],</span>
-<a id="__codelineno-0-37" name="__codelineno-0-37"></a>                             <span class="n">broadcast_event_name</span><span class="o">=</span><span class="s2">&quot;Received_Severe_Treatment&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a>                                 <span class="p">{</span><span class="s1">'trigger'</span><span class="p">:</span> <span class="s1">'NewSevereCase'</span><span class="p">,</span> <span class="s1">'coverage'</span><span class="p">:</span> <span class="n">cm_severe</span><span class="p">,</span> <span class="s1">'agemin'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'agemax'</span><span class="p">:</span> <span class="mi">115</span><span class="p">,</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a>                                  <span class="s1">'rate'</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}],</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a>                             <span class="n">broadcast_event_name</span><span class="o">=</span><span class="s2">"Received_Severe_Treatment"</span><span class="p">)</span>
 <a id="__codelineno-0-38" name="__codelineno-0-38"></a>
-<a id="__codelineno-0-39" name="__codelineno-0-39"></a>    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;cm_start&#39;</span><span class="p">:</span> <span class="n">cm_start</span><span class="p">,</span><span class="s1">&#39;cm_clinical&#39;</span><span class="p">:</span> <span class="n">cm_clinical</span><span class="p">,</span> <span class="s1">&#39;cm_severe&#39;</span><span class="p">:</span> <span class="n">cm_severe</span><span class="p">}</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a>    <span class="k">return</span> <span class="p">{</span><span class="s1">'cm_start'</span><span class="p">:</span> <span class="n">cm_start</span><span class="p">,</span><span class="s1">'cm_clinical'</span><span class="p">:</span> <span class="n">cm_clinical</span><span class="p">,</span> <span class="s1">'cm_severe'</span><span class="p">:</span> <span class="n">cm_severe</span><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -388,7 +392,7 @@ A dictionary containing the start day of the treatment campaign, clinical case c
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

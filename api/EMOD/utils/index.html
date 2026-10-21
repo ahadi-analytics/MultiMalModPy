@@ -288,7 +288,10 @@
 
 
 
+
+
   <div class="doc doc-children">
+
 
 
 
@@ -311,7 +314,8 @@
 
         <p>Builds the demographic structure for the EMOD simulation.</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-252">252</a></span>
 <span class="normal"><a href="#__codelineno-0-253">253</a></span>
@@ -334,22 +338,22 @@
 <span class="normal"><a href="#__codelineno-0-270">270</a></span>
 <span class="normal"><a href="#__codelineno-0-271">271</a></span>
 <span class="normal"><a href="#__codelineno-0-272">272</a></span>
-<span class="normal"><a href="#__codelineno-0-273">273</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-252" name="__codelineno-0-252"></a><span class="k">def</span> <span class="nf">build_demog</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-273">273</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-252" name="__codelineno-0-252"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_demog</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-254" name="__codelineno-0-254"></a><span class="sd">    Builds the demographic structure for the EMOD simulation.</span>
-<a id="__codelineno-0-255" name="__codelineno-0-255"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-255" name="__codelineno-0-255"></a><span class="sd">    """</span>
 <a id="__codelineno-0-256" name="__codelineno-0-256"></a>    <span class="c1"># Create a Demographics object and set location and population size</span>
-<a id="__codelineno-0-257" name="__codelineno-0-257"></a>    <span class="c1">#demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name=&quot;Example_Site&quot;)</span>
-<a id="__codelineno-0-258" name="__codelineno-0-258"></a>    <span class="n">demog</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_input_path</span><span class="p">,</span><span class="s2">&quot;demographics.json&quot;</span><span class="p">)))</span>
-<a id="__codelineno-0-259" name="__codelineno-0-259"></a>    <span class="c1">#This calculation is the same as using crude rate, but jsons don&#39;t recognize </span>
+<a id="__codelineno-0-257" name="__codelineno-0-257"></a>    <span class="c1">#demog = Demographics.from_template_node(lat=1, lon=2, pop=1000, name="Example_Site")</span>
+<a id="__codelineno-0-258" name="__codelineno-0-258"></a>    <span class="n">demog</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_input_path</span><span class="p">,</span><span class="s2">"demographics.json"</span><span class="p">)))</span>
+<a id="__codelineno-0-259" name="__codelineno-0-259"></a>    <span class="c1">#This calculation is the same as using crude rate, but jsons don't recognize </span>
 <a id="__codelineno-0-260" name="__codelineno-0-260"></a>    <span class="n">birthrate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mf">34.95</span><span class="o">*</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="o">/</span><span class="mi">365</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>
-<a id="__codelineno-0-261" name="__codelineno-0-261"></a>    <span class="n">demog</span><span class="p">[</span><span class="s2">&quot;Defaults&quot;</span><span class="p">][</span><span class="s2">&quot;NodeAttributes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;BirthRate&quot;</span><span class="p">:</span> <span class="n">birthrate</span><span class="p">})</span>
-<a id="__codelineno-0-262" name="__codelineno-0-262"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_input_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;demographics_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span> 
+<a id="__codelineno-0-261" name="__codelineno-0-261"></a>    <span class="n">demog</span><span class="p">[</span><span class="s2">"Defaults"</span><span class="p">][</span><span class="s2">"NodeAttributes"</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">"BirthRate"</span><span class="p">:</span> <span class="n">birthrate</span><span class="p">})</span>
+<a id="__codelineno-0-262" name="__codelineno-0-262"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_input_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"demographics_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">.json"</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span> 
 <a id="__codelineno-0-263" name="__codelineno-0-263"></a>        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">demog</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
-<a id="__codelineno-0-264" name="__codelineno-0-264"></a>    <span class="n">task</span><span class="o">.</span><span class="n">transient_assets</span><span class="o">.</span><span class="n">add_asset</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_input_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;demographics_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">))</span>
-<a id="__codelineno-0-265" name="__codelineno-0-265"></a>    <span class="n">task</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="s2">&quot;Demographics_Filenames&quot;</span><span class="p">,</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;demographics_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">])</span>
-<a id="__codelineno-0-266" name="__codelineno-0-266"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Age_Initialization_Distribution_Type</span> <span class="o">=</span> <span class="s2">&quot;DISTRIBUTION_COMPLEX&quot;</span>
-<a id="__codelineno-0-267" name="__codelineno-0-267"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Death_Rate_Dependence</span> <span class="o">=</span> <span class="s2">&quot;NONDISEASE_MORTALITY_BY_AGE_AND_GENDER&quot;</span>
+<a id="__codelineno-0-264" name="__codelineno-0-264"></a>    <span class="n">task</span><span class="o">.</span><span class="n">transient_assets</span><span class="o">.</span><span class="n">add_asset</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_input_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"demographics_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">.json"</span><span class="p">))</span>
+<a id="__codelineno-0-265" name="__codelineno-0-265"></a>    <span class="n">task</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="s2">"Demographics_Filenames"</span><span class="p">,</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"demographics_</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span><span class="si">}</span><span class="s2">.json"</span><span class="p">])</span>
+<a id="__codelineno-0-266" name="__codelineno-0-266"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Age_Initialization_Distribution_Type</span> <span class="o">=</span> <span class="s2">"DISTRIBUTION_COMPLEX"</span>
+<a id="__codelineno-0-267" name="__codelineno-0-267"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Death_Rate_Dependence</span> <span class="o">=</span> <span class="s2">"NONDISEASE_MORTALITY_BY_AGE_AND_GENDER"</span>
 <a id="__codelineno-0-268" name="__codelineno-0-268"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Enable_Demographics_Risk</span> <span class="o">=</span> <span class="mi">0</span>
 <a id="__codelineno-0-269" name="__codelineno-0-269"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Enable_Demographics_Birth</span> <span class="o">=</span> <span class="mi">0</span>
 <a id="__codelineno-0-270" name="__codelineno-0-270"></a>    <span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Enable_Initial_Prevalence</span> <span class="o">=</span> <span class="mi">1</span>
@@ -379,7 +383,8 @@ Args:
 Returns:
     campaign_obj: The built campaign object.</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-183">183</a></span>
 <span class="normal"><a href="#__codelineno-0-184">184</a></span>
@@ -391,15 +396,15 @@ Returns:
 <span class="normal"><a href="#__codelineno-0-190">190</a></span>
 <span class="normal"><a href="#__codelineno-0-191">191</a></span>
 <span class="normal"><a href="#__codelineno-0-192">192</a></span>
-<span class="normal"><a href="#__codelineno-0-193">193</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-183" name="__codelineno-0-183"></a><span class="k">def</span> <span class="nf">build_standard_campaign_object</span><span class="p">():</span>
-<a id="__codelineno-0-184" name="__codelineno-0-184"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-193">193</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-183" name="__codelineno-0-183"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_standard_campaign_object</span><span class="p">():</span>
+<a id="__codelineno-0-184" name="__codelineno-0-184"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-185" name="__codelineno-0-185"></a><span class="sd">    Builds a standard campaign object for the simulation.</span>
 <a id="__codelineno-0-186" name="__codelineno-0-186"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-187" name="__codelineno-0-187"></a><span class="sd">        manifest: The manifest object containing the schema file.</span>
 <a id="__codelineno-0-188" name="__codelineno-0-188"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-189" name="__codelineno-0-189"></a><span class="sd">        campaign_obj: The built campaign object.</span>
-<a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-191" name="__codelineno-0-191"></a>    <span class="kn">import</span> <span class="nn">emod_api.campaign</span> <span class="k">as</span> <span class="nn">camp</span>
+<a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="sd">    """</span>
+<a id="__codelineno-0-191" name="__codelineno-0-191"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">emod_api.campaign</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">camp</span>
 <a id="__codelineno-0-192" name="__codelineno-0-192"></a>    <span class="n">camp</span><span class="o">.</span><span class="n">set_schema</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">schema_file</span><span class="p">)</span>
 <a id="__codelineno-0-193" name="__codelineno-0-193"></a>    <span class="k">return</span> <span class="n">camp</span>
 </code></pre></div></td></tr></table></div>
@@ -437,7 +442,7 @@ and configures EMOD simulation parameters related to demographics and mortality.
         <ul class="first simple">
             <li>
               <b><code>task</code></b>
-                  (<code>EMODTask</code>)
+                  (<code><span title="emodpy.emod_task.EMODTask">EMODTask</span></code>)
               –
               <div class="doc-md-description">
                 <p>The EMOD task object that represents the simulation run. The task will be updated with
@@ -446,7 +451,7 @@ and configures EMOD simulation parameters related to demographics and mortality.
             </li>
             <li>
               <b><code>exp</code></b>
-                  (<code>ExperimentConfig</code>)
+                  (<code><span title="ExperimentConfig">ExperimentConfig</span></code>)
               –
               <div class="doc-md-description">
                 <p>An instance of the <code>ExperimentConfig</code> class containing the experiment settings,
@@ -481,7 +486,8 @@ and configures EMOD simulation parameters related to demographics and mortality.
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-276">276</a></span>
 <span class="normal"><a href="#__codelineno-0-277">277</a></span>
@@ -531,8 +537,8 @@ and configures EMOD simulation parameters related to demographics and mortality.
 <span class="normal"><a href="#__codelineno-0-321">321</a></span>
 <span class="normal"><a href="#__codelineno-0-322">322</a></span>
 <span class="normal"><a href="#__codelineno-0-323">323</a></span>
-<span class="normal"><a href="#__codelineno-0-324">324</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-276" name="__codelineno-0-276"></a><span class="k">def</span> <span class="nf">config_sweep_builder</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">):</span>
-<a id="__codelineno-0-277" name="__codelineno-0-277"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-324">324</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-276" name="__codelineno-0-276"></a><span class="k">def</span><span class="w"> </span><span class="nf">config_sweep_builder</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">):</span>
+<a id="__codelineno-0-277" name="__codelineno-0-277"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-278" name="__codelineno-0-278"></a><span class="sd">    Builds the demographic structure for the EMOD simulation and updates the task configuration.</span>
 <a id="__codelineno-0-279" name="__codelineno-0-279"></a><span class="sd">    This function reads a demographic template, modifies the birth rate based on the experiment population size,</span>
 <a id="__codelineno-0-280" name="__codelineno-0-280"></a><span class="sd">    and writes the updated demographic data to a new JSON file. It then adds this file to the task as a transient asset</span>
@@ -548,33 +554,33 @@ and configures EMOD simulation parameters related to demographics and mortality.
 <a id="__codelineno-0-290" name="__codelineno-0-290"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-291" name="__codelineno-0-291"></a><span class="sd">        EMODTask: The updated `task` object with demographic and simulation parameters configured.</span>
 <a id="__codelineno-0-292" name="__codelineno-0-292"></a>
-<a id="__codelineno-0-293" name="__codelineno-0-293"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-293" name="__codelineno-0-293"></a><span class="sd">    """</span>
 <a id="__codelineno-0-294" name="__codelineno-0-294"></a>    <span class="n">builder</span> <span class="o">=</span> <span class="n">SimulationBuilder</span><span class="p">()</span>
 <a id="__codelineno-0-295" name="__codelineno-0-295"></a>    <span class="n">nseeds</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds</span>
-<a id="__codelineno-0-296" name="__codelineno-0-296"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;burnin&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-296" name="__codelineno-0-296"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">'burnin'</span><span class="p">:</span>
 <a id="__codelineno-0-297" name="__codelineno-0-297"></a>        <span class="n">nseeds</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds_burnin</span>
-<a id="__codelineno-0-298" name="__codelineno-0-298"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;forced&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-298" name="__codelineno-0-298"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">'forced'</span><span class="p">:</span>
 <a id="__codelineno-0-299" name="__codelineno-0-299"></a>        <span class="n">matAP</span> <span class="o">=</span> <span class="mf">0.1327</span>
 <a id="__codelineno-0-300" name="__codelineno-0-300"></a>        <span class="n">sweeps</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ItvFn</span><span class="p">(</span><span class="n">all_campaigns</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">intervention_list</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">),</span>
 <a id="__codelineno-0-301" name="__codelineno-0-301"></a>                   <span class="n">CfgFn</span><span class="p">(</span><span class="n">drug_setup</span><span class="p">,</span> <span class="n">exp</span><span class="p">),</span>
-<a id="__codelineno-0-302" name="__codelineno-0-302"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Maternal_Antibody_Protection&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">matAP</span> <span class="o">*</span> <span class="n">mAb_vs_EIR</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">transmission_intensity_EMOD</span><span class="p">)),</span>
-<a id="__codelineno-0-303" name="__codelineno-0-303"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Run_Number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
+<a id="__codelineno-0-302" name="__codelineno-0-302"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'Maternal_Antibody_Protection'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">matAP</span> <span class="o">*</span> <span class="n">mAb_vs_EIR</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">transmission_intensity_EMOD</span><span class="p">)),</span>
+<a id="__codelineno-0-303" name="__codelineno-0-303"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'Run_Number'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
 <a id="__codelineno-0-304" name="__codelineno-0-304"></a>                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">scen_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
 <a id="__codelineno-0-305" name="__codelineno-0-305"></a>                  <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nseeds</span><span class="p">)]</span>
-<a id="__codelineno-0-306" name="__codelineno-0-306"></a>    <span class="k">elif</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-306" name="__codelineno-0-306"></a>    <span class="k">elif</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">'dynamic'</span><span class="p">:</span>
 <a id="__codelineno-0-307" name="__codelineno-0-307"></a>        <span class="n">sweeps</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ItvFn</span><span class="p">(</span><span class="n">all_campaigns</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">intervention_list</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">),</span>
 <a id="__codelineno-0-308" name="__codelineno-0-308"></a>                   <span class="n">CfgFn</span><span class="p">(</span><span class="n">drug_setup</span><span class="p">,</span> <span class="n">exp</span><span class="p">),</span>
 <a id="__codelineno-0-309" name="__codelineno-0-309"></a>                   <span class="n">CfgFn</span><span class="p">(</span><span class="n">habitat_setup</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">),</span>
 <a id="__codelineno-0-310" name="__codelineno-0-310"></a>                   <span class="n">SwpFn</span><span class="p">(</span><span class="n">climate_setup</span><span class="p">,</span>  <span class="n">seasonality</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">seasonality</span><span class="p">),</span>
-<a id="__codelineno-0-311" name="__codelineno-0-311"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;x_Temporary_Larval_Habitat&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">transmission_intensity_EMOD</span><span class="p">),</span>
-<a id="__codelineno-0-312" name="__codelineno-0-312"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Run_Number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
+<a id="__codelineno-0-311" name="__codelineno-0-311"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'x_Temporary_Larval_Habitat'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">transmission_intensity_EMOD</span><span class="p">),</span>
+<a id="__codelineno-0-312" name="__codelineno-0-312"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'Run_Number'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
 <a id="__codelineno-0-313" name="__codelineno-0-313"></a>                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">scen_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
 <a id="__codelineno-0-314" name="__codelineno-0-314"></a>                  <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nseeds</span><span class="p">)]</span>
 <a id="__codelineno-0-315" name="__codelineno-0-315"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-316" name="__codelineno-0-316"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span><span class="si">}</span><span class="s1"> not valid&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-316" name="__codelineno-0-316"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span><span class="si">}</span><span class="s1"> not valid'</span><span class="p">)</span>
 <a id="__codelineno-0-317" name="__codelineno-0-317"></a>
-<a id="__codelineno-0-318" name="__codelineno-0-318"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_calib_params</span><span class="p">:</span> <span class="c1">#This will allow us to vary EMOD parameters associated with NU&#39;s within-host calibration efforts.</span>
-<a id="__codelineno-0-319" name="__codelineno-0-319"></a>        <span class="kn">from</span> <span class="nn">EMOD.functions.calib_params</span> <span class="kn">import</span> <span class="n">get_emod_calib_params</span>
+<a id="__codelineno-0-318" name="__codelineno-0-318"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_calib_params</span><span class="p">:</span> <span class="c1">#This will allow us to vary EMOD parameters associated with NU's within-host calibration efforts.</span>
+<a id="__codelineno-0-319" name="__codelineno-0-319"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">EMOD.functions.calib_params</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_emod_calib_params</span>
 <a id="__codelineno-0-320" name="__codelineno-0-320"></a>        <span class="n">calib_params</span> <span class="o">=</span> <span class="n">get_emod_calib_params</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span><span class="n">scen_df</span><span class="p">)</span>
 <a id="__codelineno-0-321" name="__codelineno-0-321"></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">calib_params</span><span class="p">)):</span>
 <a id="__codelineno-0-322" name="__codelineno-0-322"></a>            <span class="n">sweeps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sweeps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">calib_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -616,7 +622,7 @@ It sets up intervention strategies, serialized population paths, and entomology-
         <ul class="first simple">
             <li>
               <b><code>exp</code></b>
-                  (<code>ExperimentConfig</code>)
+                  (<code><span title="ExperimentConfig">ExperimentConfig</span></code>)
               –
               <div class="doc-md-description">
                 <p>The experiment configuration object containing various experiment parameters,
@@ -626,7 +632,7 @@ It sets up intervention strategies, serialized population paths, and entomology-
             </li>
             <li>
               <b><code>scen_df_pickup</code></b>
-                  (<code>DataFrame</code>)
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
               –
               <div class="doc-md-description">
                 <p>The scenario data frame containing the specific scenario settings for
@@ -672,7 +678,7 @@ It sets up intervention strategies, serialized population paths, and entomology-
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If the <code>entomology_mode</code> in <code>exp</code> is not recognized (&lsquo;forced&rsquo; or &lsquo;dynamic&rsquo;).</p>
@@ -683,7 +689,8 @@ It sets up intervention strategies, serialized population paths, and entomology-
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-327">327</a></span>
 <span class="normal"><a href="#__codelineno-0-328">328</a></span>
@@ -744,14 +751,14 @@ It sets up intervention strategies, serialized population paths, and entomology-
 <span class="normal"><a href="#__codelineno-0-383">383</a></span>
 <span class="normal"><a href="#__codelineno-0-384">384</a></span>
 <span class="normal"><a href="#__codelineno-0-385">385</a></span>
-<span class="normal"><a href="#__codelineno-0-386">386</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-327" name="__codelineno-0-327"></a><span class="k">def</span> <span class="nf">config_sweep_builder_pickup</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df_pickup</span><span class="p">):</span>
-<a id="__codelineno-0-328" name="__codelineno-0-328"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<a id="__codelineno-0-329" name="__codelineno-0-329"></a><span class="sd">    Configures the sweep builder for an EMOD experiment in &#39;pickup&#39; mode, where a previous simulation&#39;s state</span>
+<span class="normal"><a href="#__codelineno-0-386">386</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-327" name="__codelineno-0-327"></a><span class="k">def</span><span class="w"> </span><span class="nf">config_sweep_builder_pickup</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df_pickup</span><span class="p">):</span>
+<a id="__codelineno-0-328" name="__codelineno-0-328"></a><span class="w">    </span><span class="sd">"""</span>
+<a id="__codelineno-0-329" name="__codelineno-0-329"></a><span class="sd">    Configures the sweep builder for an EMOD experiment in 'pickup' mode, where a previous simulation's state</span>
 <a id="__codelineno-0-330" name="__codelineno-0-330"></a><span class="sd">    is loaded to continue the experiment.</span>
 <a id="__codelineno-0-331" name="__codelineno-0-331"></a>
 <a id="__codelineno-0-332" name="__codelineno-0-332"></a><span class="sd">    This function creates a sweep configuration based on the experiment settings and the given scenario data frame.</span>
 <a id="__codelineno-0-333" name="__codelineno-0-333"></a><span class="sd">    It sets up intervention strategies, serialized population paths, and entomology-related parameters for both</span>
-<a id="__codelineno-0-334" name="__codelineno-0-334"></a><span class="sd">    &#39;forced&#39; and &#39;dynamic&#39; entomology modes. It also handles adding calibration parameters if specified.</span>
+<a id="__codelineno-0-334" name="__codelineno-0-334"></a><span class="sd">    'forced' and 'dynamic' entomology modes. It also handles adding calibration parameters if specified.</span>
 <a id="__codelineno-0-335" name="__codelineno-0-335"></a>
 <a id="__codelineno-0-336" name="__codelineno-0-336"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-337" name="__codelineno-0-337"></a><span class="sd">        exp (ExperimentConfig): The experiment configuration object containing various experiment parameters,</span>
@@ -764,41 +771,41 @@ It sets up intervention strategies, serialized population paths, and entomology-
 <a id="__codelineno-0-344" name="__codelineno-0-344"></a><span class="sd">        list: A list containing the configured `SimulationBuilder` object with the sweep definition added.</span>
 <a id="__codelineno-0-345" name="__codelineno-0-345"></a>
 <a id="__codelineno-0-346" name="__codelineno-0-346"></a><span class="sd">    Raises:</span>
-<a id="__codelineno-0-347" name="__codelineno-0-347"></a><span class="sd">        ValueError: If the `entomology_mode` in `exp` is not recognized (&#39;forced&#39; or &#39;dynamic&#39;).</span>
+<a id="__codelineno-0-347" name="__codelineno-0-347"></a><span class="sd">        ValueError: If the `entomology_mode` in `exp` is not recognized ('forced' or 'dynamic').</span>
 <a id="__codelineno-0-348" name="__codelineno-0-348"></a>
-<a id="__codelineno-0-349" name="__codelineno-0-349"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-349" name="__codelineno-0-349"></a><span class="sd">    """</span>
 <a id="__codelineno-0-350" name="__codelineno-0-350"></a>    <span class="n">builder</span> <span class="o">=</span> <span class="n">SimulationBuilder</span><span class="p">()</span>
 <a id="__codelineno-0-351" name="__codelineno-0-351"></a>    <span class="n">nseeds</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds</span>
-<a id="__codelineno-0-352" name="__codelineno-0-352"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;forced&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-352" name="__codelineno-0-352"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">'forced'</span><span class="p">:</span>
 <a id="__codelineno-0-353" name="__codelineno-0-353"></a>        <span class="n">matAP</span> <span class="o">=</span> <span class="mf">0.1327</span>
 <a id="__codelineno-0-354" name="__codelineno-0-354"></a>        <span class="n">sweeps</span> <span class="o">=</span> <span class="p">[[</span>
 <a id="__codelineno-0-355" name="__codelineno-0-355"></a>            <span class="n">ItvFn</span><span class="p">(</span><span class="n">all_campaigns</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">intervention_list</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">),</span>
 <a id="__codelineno-0-356" name="__codelineno-0-356"></a>            <span class="n">CfgFn</span><span class="p">(</span><span class="n">drug_setup</span><span class="p">,</span> <span class="n">exp</span><span class="p">),</span>
-<a id="__codelineno-0-357" name="__codelineno-0-357"></a>            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Serialized_Population_Path&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-358" name="__codelineno-0-358"></a>                    <span class="n">value</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;serialized_file_path&quot;</span><span class="p">],</span> <span class="s2">&quot;output&quot;</span><span class="p">)),</span>
-<a id="__codelineno-0-359" name="__codelineno-0-359"></a>            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Serialized_Population_Filenames&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;Serialized_Population_Filenames&quot;</span><span class="p">]),</span>
-<a id="__codelineno-0-360" name="__codelineno-0-360"></a>            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Maternal_Antibody_Protection&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">matAP</span> <span class="o">*</span> <span class="n">mAb_vs_EIR</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">transmission_intensity_EMOD</span><span class="p">)),</span>
-<a id="__codelineno-0-361" name="__codelineno-0-361"></a>            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Run_Number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
+<a id="__codelineno-0-357" name="__codelineno-0-357"></a>            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'Serialized_Population_Path'</span><span class="p">,</span>
+<a id="__codelineno-0-358" name="__codelineno-0-358"></a>                    <span class="n">value</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"serialized_file_path"</span><span class="p">],</span> <span class="s2">"output"</span><span class="p">)),</span>
+<a id="__codelineno-0-359" name="__codelineno-0-359"></a>            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'Serialized_Population_Filenames'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"Serialized_Population_Filenames"</span><span class="p">]),</span>
+<a id="__codelineno-0-360" name="__codelineno-0-360"></a>            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'Maternal_Antibody_Protection'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">matAP</span> <span class="o">*</span> <span class="n">mAb_vs_EIR</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">transmission_intensity_EMOD</span><span class="p">)),</span>
+<a id="__codelineno-0-361" name="__codelineno-0-361"></a>            <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'Run_Number'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
 <a id="__codelineno-0-362" name="__codelineno-0-362"></a>            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">scen_df_pickup</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
 <a id="__codelineno-0-363" name="__codelineno-0-363"></a>            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nseeds</span><span class="p">)]</span>
-<a id="__codelineno-0-364" name="__codelineno-0-364"></a>    <span class="k">elif</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-364" name="__codelineno-0-364"></a>    <span class="k">elif</span> <span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">'dynamic'</span><span class="p">:</span>
 <a id="__codelineno-0-365" name="__codelineno-0-365"></a>        <span class="n">sweeps</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ItvFn</span><span class="p">(</span><span class="n">all_campaigns</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">intervention_list</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">intervention_list</span><span class="p">),</span>
 <a id="__codelineno-0-366" name="__codelineno-0-366"></a>                   <span class="n">CfgFn</span><span class="p">(</span><span class="n">drug_setup</span><span class="p">,</span> <span class="n">exp</span><span class="p">),</span>
 <a id="__codelineno-0-367" name="__codelineno-0-367"></a>                   <span class="n">CfgFn</span><span class="p">(</span><span class="n">habitat_setup</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">),</span>
 <a id="__codelineno-0-368" name="__codelineno-0-368"></a>                   <span class="n">SwpFn</span><span class="p">(</span><span class="n">climate_setup</span><span class="p">,</span>  <span class="n">seasonality</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">seasonality</span><span class="p">),</span>
-<a id="__codelineno-0-369" name="__codelineno-0-369"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Serialized_Population_Path&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-370" name="__codelineno-0-370"></a>                           <span class="n">value</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;serialized_file_path&quot;</span><span class="p">],</span> <span class="s2">&quot;output&quot;</span><span class="p">)),</span>
-<a id="__codelineno-0-371" name="__codelineno-0-371"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Serialized_Population_Filenames&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-372" name="__codelineno-0-372"></a>                           <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;Serialized_Population_Filenames&quot;</span><span class="p">]),</span>
-<a id="__codelineno-0-373" name="__codelineno-0-373"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;x_Temporary_Larval_Habitat&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">transmission_intensity_EMOD</span><span class="p">),</span>
-<a id="__codelineno-0-374" name="__codelineno-0-374"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">&#39;Run_Number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
+<a id="__codelineno-0-369" name="__codelineno-0-369"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'Serialized_Population_Path'</span><span class="p">,</span>
+<a id="__codelineno-0-370" name="__codelineno-0-370"></a>                           <span class="n">value</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"serialized_file_path"</span><span class="p">],</span> <span class="s2">"output"</span><span class="p">)),</span>
+<a id="__codelineno-0-371" name="__codelineno-0-371"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'Serialized_Population_Filenames'</span><span class="p">,</span>
+<a id="__codelineno-0-372" name="__codelineno-0-372"></a>                           <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">"Serialized_Population_Filenames"</span><span class="p">]),</span>
+<a id="__codelineno-0-373" name="__codelineno-0-373"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'x_Temporary_Larval_Habitat'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">transmission_intensity_EMOD</span><span class="p">),</span>
+<a id="__codelineno-0-374" name="__codelineno-0-374"></a>                   <span class="n">partial</span><span class="p">(</span><span class="n">set_param</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="s1">'Run_Number'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">s</span><span class="p">)]</span>
 <a id="__codelineno-0-375" name="__codelineno-0-375"></a>                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">scen_df_pickup</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
 <a id="__codelineno-0-376" name="__codelineno-0-376"></a>                  <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nseeds</span><span class="p">)]</span>
 <a id="__codelineno-0-377" name="__codelineno-0-377"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-378" name="__codelineno-0-378"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span><span class="si">}</span><span class="s1"> not valid&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-378" name="__codelineno-0-378"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">entomology_mode</span><span class="si">}</span><span class="s1"> not valid'</span><span class="p">)</span>
 <a id="__codelineno-0-379" name="__codelineno-0-379"></a>
-<a id="__codelineno-0-380" name="__codelineno-0-380"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_calib_params</span><span class="p">:</span> <span class="c1">#This will allow us to vary EMOD parameters associated with  NU&#39;s within-host calibration efforts.</span>
-<a id="__codelineno-0-381" name="__codelineno-0-381"></a>        <span class="kn">from</span> <span class="nn">EMOD.functions.calib_params</span> <span class="kn">import</span> <span class="n">get_emod_calib_params</span>
+<a id="__codelineno-0-380" name="__codelineno-0-380"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_calib_params</span><span class="p">:</span> <span class="c1">#This will allow us to vary EMOD parameters associated with  NU's within-host calibration efforts.</span>
+<a id="__codelineno-0-381" name="__codelineno-0-381"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">EMOD.functions.calib_params</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_emod_calib_params</span>
 <a id="__codelineno-0-382" name="__codelineno-0-382"></a>        <span class="n">calib_params</span> <span class="o">=</span> <span class="n">get_emod_calib_params</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span><span class="n">scen_df_pickup</span><span class="p">)</span>
 <a id="__codelineno-0-383" name="__codelineno-0-383"></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">calib_params</span><span class="p">)):</span>
 <a id="__codelineno-0-384" name="__codelineno-0-384"></a>            <span class="n">sweeps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sweeps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">calib_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -838,7 +845,7 @@ and configuring simulation parameters.</p>
         <ul class="first simple">
             <li>
               <b><code>platform</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The platform on which the simulation is to be executed (e.g., HPC, local machine).</p>
@@ -846,7 +853,7 @@ and configuring simulation parameters.</p>
             </li>
             <li>
               <b><code>exp</code></b>
-                  (<code>ExperimentConfig</code>)
+                  (<code><span title="ExperimentConfig">ExperimentConfig</span></code>)
               –
               <div class="doc-md-description">
                 <p>An instance of the <code>ExperimentConfig</code> class containing all necessary parameters
@@ -894,7 +901,7 @@ and configuring simulation parameters.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>FileNotFoundError</code>
+                  <code><span title="FileNotFoundError">FileNotFoundError</span></code>
               –
               <div class="doc-md-description">
                 <p>If the required configuration files (e.g., &ldquo;config.json&rdquo;, schema files) are not found
@@ -902,7 +909,7 @@ and configuring simulation parameters.</p>
               </div>
             </li>
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If there are any issues in setting up the EMODTask, such as missing or incorrect experiment parameters.</p>
@@ -913,7 +920,8 @@ and configuring simulation parameters.</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-142">142</a></span>
 <span class="normal"><a href="#__codelineno-0-143">143</a></span>
@@ -953,8 +961,8 @@ and configuring simulation parameters.</p>
 <span class="normal"><a href="#__codelineno-0-177">177</a></span>
 <span class="normal"><a href="#__codelineno-0-178">178</a></span>
 <span class="normal"><a href="#__codelineno-0-179">179</a></span>
-<span class="normal"><a href="#__codelineno-0-180">180</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-142" name="__codelineno-0-142"></a><span class="k">def</span> <span class="nf">config_task</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-143" name="__codelineno-0-143"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-180">180</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-142" name="__codelineno-0-142"></a><span class="k">def</span><span class="w"> </span><span class="nf">config_task</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-143" name="__codelineno-0-143"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-144" name="__codelineno-0-144"></a><span class="sd">    Configure and create an EMODTask for running EMOD.</span>
 <a id="__codelineno-0-145" name="__codelineno-0-145"></a><span class="sd">    This function initializes an EMODTask by loading configuration files, setting up custom campaign parameters,</span>
 <a id="__codelineno-0-146" name="__codelineno-0-146"></a><span class="sd">    and configuring simulation parameters.</span>
@@ -970,14 +978,14 @@ and configuring simulation parameters.</p>
 <a id="__codelineno-0-156" name="__codelineno-0-156"></a><span class="sd">                  and is ready to be run on the specified platform.</span>
 <a id="__codelineno-0-157" name="__codelineno-0-157"></a>
 <a id="__codelineno-0-158" name="__codelineno-0-158"></a><span class="sd">    Raises:</span>
-<a id="__codelineno-0-159" name="__codelineno-0-159"></a><span class="sd">        FileNotFoundError: If the required configuration files (e.g., &quot;config.json&quot;, schema files) are not found</span>
+<a id="__codelineno-0-159" name="__codelineno-0-159"></a><span class="sd">        FileNotFoundError: If the required configuration files (e.g., "config.json", schema files) are not found</span>
 <a id="__codelineno-0-160" name="__codelineno-0-160"></a><span class="sd">                            at the specified paths.</span>
 <a id="__codelineno-0-161" name="__codelineno-0-161"></a><span class="sd">        ValueError: If there are any issues in setting up the EMODTask, such as missing or incorrect experiment parameters.</span>
 <a id="__codelineno-0-162" name="__codelineno-0-162"></a>
-<a id="__codelineno-0-163" name="__codelineno-0-163"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-164" name="__codelineno-0-164"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating EMODTask (from files)...&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-163" name="__codelineno-0-163"></a><span class="sd">    """</span>
+<a id="__codelineno-0-164" name="__codelineno-0-164"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Creating EMODTask (from files)..."</span><span class="p">)</span>
 <a id="__codelineno-0-165" name="__codelineno-0-165"></a>    <span class="n">task</span> <span class="o">=</span> <span class="n">EMODTask</span><span class="o">.</span><span class="n">from_default2</span><span class="p">(</span>
-<a id="__codelineno-0-166" name="__codelineno-0-166"></a>        <span class="n">config_path</span><span class="o">=</span><span class="s2">&quot;config.json&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-166" name="__codelineno-0-166"></a>        <span class="n">config_path</span><span class="o">=</span><span class="s2">"config.json"</span><span class="p">,</span>
 <a id="__codelineno-0-167" name="__codelineno-0-167"></a>        <span class="n">eradication_path</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">eradication_path</span><span class="p">,</span>
 <a id="__codelineno-0-168" name="__codelineno-0-168"></a>        <span class="n">campaign_builder</span><span class="o">=</span><span class="n">build_standard_campaign_object</span><span class="p">,</span>
 <a id="__codelineno-0-169" name="__codelineno-0-169"></a>        <span class="n">schema_path</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">schema_file</span><span class="p">,</span>
@@ -988,7 +996,7 @@ and configuring simulation parameters.</p>
 <a id="__codelineno-0-174" name="__codelineno-0-174"></a>    <span class="p">)</span>
 <a id="__codelineno-0-175" name="__codelineno-0-175"></a>    <span class="n">set_emod_exp_parameters</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span>
 <a id="__codelineno-0-176" name="__codelineno-0-176"></a>
-<a id="__codelineno-0-177" name="__codelineno-0-177"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">selected_platform</span> <span class="o">!=</span><span class="s1">&#39;Container&#39;</span> <span class="p">:</span> <span class="c1"># Relates to container used locally, not on HPC</span>
+<a id="__codelineno-0-177" name="__codelineno-0-177"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">selected_platform</span> <span class="o">!=</span><span class="s1">'Container'</span> <span class="p">:</span> <span class="c1"># Relates to container used locally, not on HPC</span>
 <a id="__codelineno-0-178" name="__codelineno-0-178"></a>        <span class="n">task</span><span class="o">.</span><span class="n">set_sif</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">SIF_PATH</span><span class="p">,</span> <span class="n">exp</span><span class="o">.</span><span class="n">platform</span><span class="p">)</span>
 <a id="__codelineno-0-179" name="__codelineno-0-179"></a>
 <a id="__codelineno-0-180" name="__codelineno-0-180"></a>    <span class="k">return</span> <span class="n">task</span>
@@ -1002,7 +1010,7 @@ and configuring simulation parameters.</p>
 
 
 <h2 id="EMOD.utils.generate_run_EMOD_file" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">generate_run_EMOD_file</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">suite_directory</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;00:30:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">generate_run_EMOD_file</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">suite_directory</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">'00:30:00'</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span></code>
 
 <a href="#EMOD.utils.generate_run_EMOD_file" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -1025,7 +1033,7 @@ This function creates a SLURM shell script for re-submitting EMOD simulations.</
         <ul class="first simple">
             <li>
               <b><code>experiment</code></b>
-                  (<code>Experiment</code>)
+                  (<code><span title="idmtools.entities.experiment.Experiment">Experiment</span></code>)
               –
               <div class="doc-md-description">
                 <p>The experiment object containing relevant parameters such as emod suite and emod experiment id.</p>
@@ -1033,7 +1041,7 @@ This function creates a SLURM shell script for re-submitting EMOD simulations.</
             </li>
             <li>
               <b><code>platform</code></b>
-                  (<code>Platform</code>)
+                  (<code><span title="Platform">Platform</span></code>)
               –
               <div class="doc-md-description">
                 <p>The platform object representing the HPC system where the job will be submitted.</p>
@@ -1041,7 +1049,7 @@ This function creates a SLURM shell script for re-submitting EMOD simulations.</
             </li>
             <li>
               <b><code>suite_directory</code></b>
-                  (<code>str</code>)
+                  (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
                 <p>The parent directory of job directory, so the sbatch can cd into the correct directory.</p>
@@ -1049,7 +1057,7 @@ This function creates a SLURM shell script for re-submitting EMOD simulations.</
             </li>
             <li>
               <b><code>t</code></b>
-                  (<code>str</code>, default:
+                  (<code><span title="str">str</span></code>, default:
                       <code>&#39;00:30:00&#39;</code>
 )
               –
@@ -1059,7 +1067,7 @@ This function creates a SLURM shell script for re-submitting EMOD simulations.</
             </li>
             <li>
               <b><code>memG</code></b>
-                  (<code>int</code>, default:
+                  (<code><span title="int">int</span></code>, default:
                       <code>5</code>
 )
               –
@@ -1094,7 +1102,8 @@ This function creates a SLURM shell script for re-submitting EMOD simulations.</
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-389">389</a></span>
 <span class="normal"><a href="#__codelineno-0-390">390</a></span>
@@ -1120,8 +1129,8 @@ This function creates a SLURM shell script for re-submitting EMOD simulations.</
 <span class="normal"><a href="#__codelineno-0-410">410</a></span>
 <span class="normal"><a href="#__codelineno-0-411">411</a></span>
 <span class="normal"><a href="#__codelineno-0-412">412</a></span>
-<span class="normal"><a href="#__codelineno-0-413">413</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-389" name="__codelineno-0-389"></a><span class="k">def</span> <span class="nf">generate_run_EMOD_file</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">suite_directory</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="s1">&#39;00:30:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-<a id="__codelineno-0-390" name="__codelineno-0-390"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-413">413</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-389" name="__codelineno-0-389"></a><span class="k">def</span><span class="w"> </span><span class="nf">generate_run_EMOD_file</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">suite_directory</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="s1">'00:30:00'</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<a id="__codelineno-0-390" name="__codelineno-0-390"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-391" name="__codelineno-0-391"></a><span class="sd">    Generates a SBATCH file to re-run EMOD simulations, in case the user wants to re-run simulation</span>
 <a id="__codelineno-0-392" name="__codelineno-0-392"></a><span class="sd">    This function creates a SLURM shell script for re-submitting EMOD simulations.</span>
 <a id="__codelineno-0-393" name="__codelineno-0-393"></a>
@@ -1129,21 +1138,21 @@ This function creates a SLURM shell script for re-submitting EMOD simulations.</
 <a id="__codelineno-0-395" name="__codelineno-0-395"></a><span class="sd">        experiment (Experiment): The experiment object containing relevant parameters such as emod suite and emod experiment id.</span>
 <a id="__codelineno-0-396" name="__codelineno-0-396"></a><span class="sd">        platform (Platform): The platform object representing the HPC system where the job will be submitted.</span>
 <a id="__codelineno-0-397" name="__codelineno-0-397"></a><span class="sd">        suite_directory (str): The parent directory of job directory, so the sbatch can cd into the correct directory.</span>
-<a id="__codelineno-0-398" name="__codelineno-0-398"></a><span class="sd">        t (str, optional): The time limit for the job in HH:MM:SS format. Defaults to &#39;04:00:00&#39;.</span>
+<a id="__codelineno-0-398" name="__codelineno-0-398"></a><span class="sd">        t (str, optional): The time limit for the job in HH:MM:SS format. Defaults to '04:00:00'.</span>
 <a id="__codelineno-0-399" name="__codelineno-0-399"></a><span class="sd">        memG (int, optional): The amount of memory (in GB) allocated for the job. Defaults to 20 GB.</span>
 <a id="__codelineno-0-400" name="__codelineno-0-400"></a>
 <a id="__codelineno-0-401" name="__codelineno-0-401"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-402" name="__codelineno-0-402"></a><span class="sd">        None</span>
-<a id="__codelineno-0-403" name="__codelineno-0-403"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-404" name="__codelineno-0-404"></a>    <span class="n">header_post</span> <span class="o">=</span> <span class="n">shell_header_quest</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">memG</span><span class="p">,</span> <span class="n">job_name</span><span class="o">=</span><span class="s1">&#39;run_EMOD&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-403" name="__codelineno-0-403"></a><span class="sd">    """</span>
+<a id="__codelineno-0-404" name="__codelineno-0-404"></a>    <span class="n">header_post</span> <span class="o">=</span> <span class="n">shell_header_quest</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">memG</span><span class="p">,</span> <span class="n">job_name</span><span class="o">=</span><span class="s1">'run_EMOD'</span><span class="p">,</span>
 <a id="__codelineno-0-405" name="__codelineno-0-405"></a>                                     <span class="n">mem_scl</span><span class="o">=</span><span class="n">experiment</span><span class="o">.</span><span class="n">mem_increase_factor</span><span class="p">)</span>
 <a id="__codelineno-0-406" name="__codelineno-0-406"></a>    <span class="n">emodpy_venv</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">EMOD_venv</span>
-<a id="__codelineno-0-407" name="__codelineno-0-407"></a>    <span class="n">pycommand</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">bash batch.sh&#39;</span>
-<a id="__codelineno-0-408" name="__codelineno-0-408"></a>    <span class="n">suite</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-0-407" name="__codelineno-0-407"></a>    <span class="n">pycommand</span> <span class="o">=</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">bash batch.sh'</span>
+<a id="__codelineno-0-408" name="__codelineno-0-408"></a>    <span class="n">suite</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span>
 <a id="__codelineno-0-409" name="__codelineno-0-409"></a>    <span class="n">emod_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">suite_directory</span><span class="p">,</span> <span class="n">suite</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-<a id="__codelineno-0-410" name="__codelineno-0-410"></a>    <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;run_EMOD.sh&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-411" name="__codelineno-0-411"></a>    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-412" name="__codelineno-0-412"></a>    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header_post</span> <span class="o">+</span> <span class="n">emodpy_venv</span><span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">cd </span><span class="si">{</span><span class="n">emod_directory</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">+</span> <span class="n">pycommand</span><span class="p">)</span>
+<a id="__codelineno-0-410" name="__codelineno-0-410"></a>    <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">'run_EMOD.sh'</span><span class="p">)</span>
+<a id="__codelineno-0-411" name="__codelineno-0-411"></a>    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span>
+<a id="__codelineno-0-412" name="__codelineno-0-412"></a>    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header_post</span> <span class="o">+</span> <span class="n">emodpy_venv</span><span class="o">+</span> <span class="sa">f</span><span class="s1">'</span><span class="se">\n</span><span class="s1">cd </span><span class="si">{</span><span class="n">emod_directory</span><span class="si">}</span><span class="s1">'</span><span class="o">+</span> <span class="n">pycommand</span><span class="p">)</span>
 <a id="__codelineno-0-413" name="__codelineno-0-413"></a>    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1165,7 +1174,8 @@ This function creates a SLURM shell script for re-submitting EMOD simulations.</
         <p>Run <code>idmtools container jobs</code> and parse output to get running simulations count.
 Returns number of running simulations (int).</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-509">509</a></span>
 <span class="normal"><a href="#__codelineno-0-510">510</a></span>
@@ -1188,27 +1198,27 @@ Returns number of running simulations (int).</p>
 <span class="normal"><a href="#__codelineno-0-527">527</a></span>
 <span class="normal"><a href="#__codelineno-0-528">528</a></span>
 <span class="normal"><a href="#__codelineno-0-529">529</a></span>
-<span class="normal"><a href="#__codelineno-0-530">530</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-509" name="__codelineno-0-509"></a><span class="k">def</span> <span class="nf">get_container_jobs_status</span><span class="p">(</span><span class="n">container_id</span><span class="p">):</span>
-<a id="__codelineno-0-510" name="__codelineno-0-510"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-530">530</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-509" name="__codelineno-0-509"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_container_jobs_status</span><span class="p">(</span><span class="n">container_id</span><span class="p">):</span>
+<a id="__codelineno-0-510" name="__codelineno-0-510"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-511" name="__codelineno-0-511"></a><span class="sd">    Run `idmtools container jobs` and parse output to get running simulations count.</span>
 <a id="__codelineno-0-512" name="__codelineno-0-512"></a><span class="sd">    Returns number of running simulations (int).</span>
-<a id="__codelineno-0-513" name="__codelineno-0-513"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-513" name="__codelineno-0-513"></a><span class="sd">    """</span>
 <a id="__codelineno-0-514" name="__codelineno-0-514"></a>    <span class="k">try</span><span class="p">:</span>
 <a id="__codelineno-0-515" name="__codelineno-0-515"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-<a id="__codelineno-0-516" name="__codelineno-0-516"></a>            <span class="p">[</span><span class="s2">&quot;idmtools&quot;</span><span class="p">,</span> <span class="s2">&quot;container&quot;</span><span class="p">,</span> <span class="s2">&quot;jobs&quot;</span><span class="p">,</span> <span class="n">container_id</span><span class="p">],</span>
+<a id="__codelineno-0-516" name="__codelineno-0-516"></a>            <span class="p">[</span><span class="s2">"idmtools"</span><span class="p">,</span> <span class="s2">"container"</span><span class="p">,</span> <span class="s2">"jobs"</span><span class="p">,</span> <span class="n">container_id</span><span class="p">],</span>
 <a id="__codelineno-0-517" name="__codelineno-0-517"></a>            <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <a id="__codelineno-0-518" name="__codelineno-0-518"></a>            <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <a id="__codelineno-0-519" name="__codelineno-0-519"></a>            <span class="n">check</span><span class="o">=</span><span class="kc">True</span>
 <a id="__codelineno-0-520" name="__codelineno-0-520"></a>        <span class="p">)</span>
 <a id="__codelineno-0-521" name="__codelineno-0-521"></a>        <span class="n">output</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span>
-<a id="__codelineno-0-522" name="__codelineno-0-522"></a>        <span class="c1"># Simple parse: count how many lines contain &#39;running&#39; under SIMULATION entity</span>
+<a id="__codelineno-0-522" name="__codelineno-0-522"></a>        <span class="c1"># Simple parse: count how many lines contain 'running' under SIMULATION entity</span>
 <a id="__codelineno-0-523" name="__codelineno-0-523"></a>        <span class="n">running_sims</span> <span class="o">=</span> <span class="mi">0</span>
 <a id="__codelineno-0-524" name="__codelineno-0-524"></a>        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
-<a id="__codelineno-0-525" name="__codelineno-0-525"></a>            <span class="k">if</span> <span class="s2">&quot;SIMULATION&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;running&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+<a id="__codelineno-0-525" name="__codelineno-0-525"></a>            <span class="k">if</span> <span class="s2">"SIMULATION"</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">"running"</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
 <a id="__codelineno-0-526" name="__codelineno-0-526"></a>                <span class="n">running_sims</span> <span class="o">+=</span> <span class="mi">1</span>
 <a id="__codelineno-0-527" name="__codelineno-0-527"></a>        <span class="k">return</span> <span class="n">running_sims</span>
 <a id="__codelineno-0-528" name="__codelineno-0-528"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-0-529" name="__codelineno-0-529"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error checking container jobs: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-529" name="__codelineno-0-529"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error checking container jobs: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-0-530" name="__codelineno-0-530"></a>        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1229,7 +1239,8 @@ Returns number of running simulations (int).</p>
 
         <p>Poll container jobs for running simulations; when all done, run analyzer script.</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-533">533</a></span>
 <span class="normal"><a href="#__codelineno-0-534">534</a></span>
@@ -1267,43 +1278,43 @@ Returns number of running simulations (int).</p>
 <span class="normal"><a href="#__codelineno-0-566">566</a></span>
 <span class="normal"><a href="#__codelineno-0-567">567</a></span>
 <span class="normal"><a href="#__codelineno-0-568">568</a></span>
-<span class="normal"><a href="#__codelineno-0-569">569</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-533" name="__codelineno-0-533"></a><span class="k">def</span> <span class="nf">run_analyze_EMOD_local_with_polling</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">container_id</span><span class="p">,</span> <span class="n">poll_interval</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">7200</span><span class="p">):</span>
-<a id="__codelineno-0-534" name="__codelineno-0-534"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-569">569</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-533" name="__codelineno-0-533"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_analyze_EMOD_local_with_polling</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">container_id</span><span class="p">,</span> <span class="n">poll_interval</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">7200</span><span class="p">):</span>
+<a id="__codelineno-0-534" name="__codelineno-0-534"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-535" name="__codelineno-0-535"></a><span class="sd">    Poll container jobs for running simulations; when all done, run analyzer script.</span>
-<a id="__codelineno-0-536" name="__codelineno-0-536"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-537" name="__codelineno-0-537"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Polling container </span><span class="si">{</span><span class="n">container_id</span><span class="si">}</span><span class="s2"> for running simulations...&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-536" name="__codelineno-0-536"></a><span class="sd">    """</span>
+<a id="__codelineno-0-537" name="__codelineno-0-537"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Polling container </span><span class="si">{</span><span class="n">container_id</span><span class="si">}</span><span class="s2"> for running simulations..."</span><span class="p">)</span>
 <a id="__codelineno-0-538" name="__codelineno-0-538"></a>
 <a id="__codelineno-0-539" name="__codelineno-0-539"></a>    <span class="n">elapsed</span> <span class="o">=</span> <span class="mi">0</span>
 <a id="__codelineno-0-540" name="__codelineno-0-540"></a>    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
 <a id="__codelineno-0-541" name="__codelineno-0-541"></a>        <span class="n">running_sims</span> <span class="o">=</span> <span class="n">get_container_jobs_status</span><span class="p">(</span><span class="n">container_id</span><span class="p">)</span>
 <a id="__codelineno-0-542" name="__codelineno-0-542"></a>        <span class="k">if</span> <span class="n">running_sims</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-<a id="__codelineno-0-543" name="__codelineno-0-543"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All simulations completed.&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-543" name="__codelineno-0-543"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">"All simulations completed."</span><span class="p">)</span>
 <a id="__codelineno-0-544" name="__codelineno-0-544"></a>            <span class="k">break</span>
 <a id="__codelineno-0-545" name="__codelineno-0-545"></a>        <span class="k">elif</span> <span class="n">running_sims</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-<a id="__codelineno-0-546" name="__codelineno-0-546"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error checking running jobs; continuing polling.&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-546" name="__codelineno-0-546"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">"Error checking running jobs; continuing polling."</span><span class="p">)</span>
 <a id="__codelineno-0-547" name="__codelineno-0-547"></a>        <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-548" name="__codelineno-0-548"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">running_sims</span><span class="si">}</span><span class="s2"> simulations still running. Elapsed time: </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-548" name="__codelineno-0-548"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">running_sims</span><span class="si">}</span><span class="s2"> simulations still running. Elapsed time: </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
 <a id="__codelineno-0-549" name="__codelineno-0-549"></a>
 <a id="__codelineno-0-550" name="__codelineno-0-550"></a>        <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;=</span> <span class="n">timeout</span><span class="p">:</span>
-<a id="__codelineno-0-551" name="__codelineno-0-551"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Timeout waiting for simulations to finish. Exiting.&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-551" name="__codelineno-0-551"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">"Timeout waiting for simulations to finish. Exiting."</span><span class="p">)</span>
 <a id="__codelineno-0-552" name="__codelineno-0-552"></a>            <span class="k">return</span>
 <a id="__codelineno-0-553" name="__codelineno-0-553"></a>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval</span><span class="p">)</span>
 <a id="__codelineno-0-554" name="__codelineno-0-554"></a>        <span class="n">elapsed</span> <span class="o">+=</span> <span class="n">poll_interval</span>
 <a id="__codelineno-0-555" name="__codelineno-0-555"></a>
 <a id="__codelineno-0-556" name="__codelineno-0-556"></a>    <span class="c1"># All done, run analyzer script</span>
-<a id="__codelineno-0-557" name="__codelineno-0-557"></a>    <span class="c1">#py_command = [&#39;python&#39;, exp.analyzer_script[0], &#39;-d&#39;, exp.job_directory, &#39;-i&#39;, exp.id]</span>
+<a id="__codelineno-0-557" name="__codelineno-0-557"></a>    <span class="c1">#py_command = ['python', exp.analyzer_script[0], '-d', exp.job_directory, '-i', exp.id]</span>
 <a id="__codelineno-0-558" name="__codelineno-0-558"></a>
-<a id="__codelineno-0-559" name="__codelineno-0-559"></a>    <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;run_analyze_EMOD.ps1&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-559" name="__codelineno-0-559"></a>    <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">'run_analyze_EMOD.ps1'</span><span class="p">)</span>
 <a id="__codelineno-0-560" name="__codelineno-0-560"></a>    <span class="k">try</span><span class="p">:</span>
 <a id="__codelineno-0-561" name="__codelineno-0-561"></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-<a id="__codelineno-0-562" name="__codelineno-0-562"></a>            <span class="p">[</span><span class="s2">&quot;powershell&quot;</span><span class="p">,</span> <span class="s2">&quot;-ExecutionPolicy&quot;</span><span class="p">,</span> <span class="s2">&quot;Bypass&quot;</span><span class="p">,</span> <span class="s2">&quot;-File&quot;</span><span class="p">,</span> <span class="n">script_path</span><span class="p">],</span>
+<a id="__codelineno-0-562" name="__codelineno-0-562"></a>            <span class="p">[</span><span class="s2">"powershell"</span><span class="p">,</span> <span class="s2">"-ExecutionPolicy"</span><span class="p">,</span> <span class="s2">"Bypass"</span><span class="p">,</span> <span class="s2">"-File"</span><span class="p">,</span> <span class="n">script_path</span><span class="p">],</span>
 <a id="__codelineno-0-563" name="__codelineno-0-563"></a>            <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <a id="__codelineno-0-564" name="__codelineno-0-564"></a>            <span class="n">text</span><span class="o">=</span><span class="kc">True</span>
 <a id="__codelineno-0-565" name="__codelineno-0-565"></a>        <span class="p">)</span>
-<a id="__codelineno-0-566" name="__codelineno-0-566"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Analyzer STDOUT:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
-<a id="__codelineno-0-567" name="__codelineno-0-567"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Analyzer STDERR:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<a id="__codelineno-0-566" name="__codelineno-0-566"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">"Analyzer STDOUT:</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+<a id="__codelineno-0-567" name="__codelineno-0-567"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">"Analyzer STDERR:</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
 <a id="__codelineno-0-568" name="__codelineno-0-568"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-0-569" name="__codelineno-0-569"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to run analyzer script: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-569" name="__codelineno-0-569"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to run analyzer script: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1328,7 +1339,8 @@ Args:
 Returns:
     object: The modified configuration object.</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-196">196</a></span>
 <span class="normal"><a href="#__codelineno-0-197">197</a></span>
@@ -1340,15 +1352,15 @@ Returns:
 <span class="normal"><a href="#__codelineno-0-203">203</a></span>
 <span class="normal"><a href="#__codelineno-0-204">204</a></span>
 <span class="normal"><a href="#__codelineno-0-205">205</a></span>
-<span class="normal"><a href="#__codelineno-0-206">206</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-196" name="__codelineno-0-196"></a><span class="k">def</span> <span class="nf">set_config_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
-<a id="__codelineno-0-197" name="__codelineno-0-197"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-206">206</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-196" name="__codelineno-0-196"></a><span class="k">def</span><span class="w"> </span><span class="nf">set_config_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+<a id="__codelineno-0-197" name="__codelineno-0-197"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-198" name="__codelineno-0-198"></a><span class="sd">    This function is a callback that is passed to emod-api.config to set config parameters,</span>
 <a id="__codelineno-0-199" name="__codelineno-0-199"></a><span class="sd">    including the malaria defaults.</span>
 <a id="__codelineno-0-200" name="__codelineno-0-200"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-201" name="__codelineno-0-201"></a><span class="sd">        config (object): The configuration object to be modified.</span>
 <a id="__codelineno-0-202" name="__codelineno-0-202"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-203" name="__codelineno-0-203"></a><span class="sd">        object: The modified configuration object.</span>
-<a id="__codelineno-0-204" name="__codelineno-0-204"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-204" name="__codelineno-0-204"></a><span class="sd">    """</span>
 <a id="__codelineno-0-205" name="__codelineno-0-205"></a>    <span class="n">config</span> <span class="o">=</span> <span class="n">malaria_config</span><span class="o">.</span><span class="n">set_team_defaults</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">manifest</span><span class="p">)</span>
 <a id="__codelineno-0-206" name="__codelineno-0-206"></a>    <span class="k">return</span> <span class="n">config</span>
 </code></pre></div></td></tr></table></div>
@@ -1387,7 +1399,7 @@ on the experiment step (e.g., &ldquo;burnin&rdquo; or &ldquo;pickup&rdquo;).</p>
         <ul class="first simple">
             <li>
               <b><code>config</code></b>
-                  (<code>EMODConfig</code>)
+                  (<code><span title="EMODConfig">EMODConfig</span></code>)
               –
               <div class="doc-md-description">
                 <p>The EMOD configuration object to be modified with experiment parameters.</p>
@@ -1395,7 +1407,7 @@ on the experiment step (e.g., &ldquo;burnin&rdquo; or &ldquo;pickup&rdquo;).</p>
             </li>
             <li>
               <b><code>exp</code></b>
-                  (<code>ExperimentConfig</code>)
+                  (<code><span title="ExperimentConfig">ExperimentConfig</span></code>)
               –
               <div class="doc-md-description">
                 <p>An instance of the <code>ExperimentConfig</code> class containing parameters for the simulation,
@@ -1441,7 +1453,7 @@ on the experiment step (e.g., &ldquo;burnin&rdquo; or &ldquo;pickup&rdquo;).</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If the <code>exp.emod_step</code> is not one of the expected values (&ldquo;burnin&rdquo;, &ldquo;pickup&rdquo;).</p>
@@ -1452,7 +1464,8 @@ on the experiment step (e.g., &ldquo;burnin&rdquo; or &ldquo;pickup&rdquo;).</p>
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-209">209</a></span>
 <span class="normal"><a href="#__codelineno-0-210">210</a></span>
@@ -1494,13 +1507,13 @@ on the experiment step (e.g., &ldquo;burnin&rdquo; or &ldquo;pickup&rdquo;).</p>
 <span class="normal"><a href="#__codelineno-0-246">246</a></span>
 <span class="normal"><a href="#__codelineno-0-247">247</a></span>
 <span class="normal"><a href="#__codelineno-0-248">248</a></span>
-<span class="normal"><a href="#__codelineno-0-249">249</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-209" name="__codelineno-0-209"></a><span class="k">def</span> <span class="nf">set_emod_exp_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-210" name="__codelineno-0-210"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-249">249</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-209" name="__codelineno-0-209"></a><span class="k">def</span><span class="w"> </span><span class="nf">set_emod_exp_parameters</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-210" name="__codelineno-0-210"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-211" name="__codelineno-0-211"></a><span class="sd">    Set the experiment-specific parameters in the EMOD configuration.</span>
 <a id="__codelineno-0-212" name="__codelineno-0-212"></a><span class="sd">    This function takes an `exp` object containing experiment settings and applies these settings to the</span>
 <a id="__codelineno-0-213" name="__codelineno-0-213"></a><span class="sd">    provided EMOD `config` object. The parameters configured include population size, simulation duration,</span>
 <a id="__codelineno-0-214" name="__codelineno-0-214"></a><span class="sd">    detection thresholds, and serialization settings. The function handles different configurations depending</span>
-<a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="sd">    on the experiment step (e.g., &quot;burnin&quot; or &quot;pickup&quot;).</span>
+<a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="sd">    on the experiment step (e.g., "burnin" or "pickup").</span>
 <a id="__codelineno-0-216" name="__codelineno-0-216"></a>
 <a id="__codelineno-0-217" name="__codelineno-0-217"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-218" name="__codelineno-0-218"></a><span class="sd">        config (EMODConfig): The EMOD configuration object to be modified with experiment parameters.</span>
@@ -1511,9 +1524,9 @@ on the experiment step (e.g., &ldquo;burnin&rdquo; or &ldquo;pickup&rdquo;).</p>
 <a id="__codelineno-0-223" name="__codelineno-0-223"></a><span class="sd">        None: The function modifies the `config` object in place.</span>
 <a id="__codelineno-0-224" name="__codelineno-0-224"></a>
 <a id="__codelineno-0-225" name="__codelineno-0-225"></a><span class="sd">    Raises:</span>
-<a id="__codelineno-0-226" name="__codelineno-0-226"></a><span class="sd">        ValueError: If the `exp.emod_step` is not one of the expected values (&quot;burnin&quot;, &quot;pickup&quot;).</span>
+<a id="__codelineno-0-226" name="__codelineno-0-226"></a><span class="sd">        ValueError: If the `exp.emod_step` is not one of the expected values ("burnin", "pickup").</span>
 <a id="__codelineno-0-227" name="__codelineno-0-227"></a>
-<a id="__codelineno-0-228" name="__codelineno-0-228"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-228" name="__codelineno-0-228"></a><span class="sd">    """</span>
 <a id="__codelineno-0-229" name="__codelineno-0-229"></a>    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">x_Base_Population</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_pop_size</span> <span class="o">/</span> <span class="mi">1000</span>
 <a id="__codelineno-0-230" name="__codelineno-0-230"></a>    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Simulation_Duration</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">sim_dur_years</span> <span class="o">*</span> <span class="mi">365</span>
 <a id="__codelineno-0-231" name="__codelineno-0-231"></a>    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Report_Detection_Threshold_Blood_Smear_Parasites</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">detectionLimit</span>
@@ -1521,18 +1534,18 @@ on the experiment step (e.g., &ldquo;burnin&rdquo; or &ldquo;pickup&rdquo;).</p>
 <a id="__codelineno-0-233" name="__codelineno-0-233"></a>    <span class="c1">#We may no longer need to indicate blood smear parasites and gametocytes, instead we do need to indicate true parasite density</span>
 <a id="__codelineno-0-234" name="__codelineno-0-234"></a>    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Report_Detection_Threshold_True_Parasite_Density</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">detectionLimit</span>
 <a id="__codelineno-0-235" name="__codelineno-0-235"></a>    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Report_Parasite_Smear_Sensitivity</span> <span class="o">=</span> <span class="mi">1</span>
-<a id="__codelineno-0-236" name="__codelineno-0-236"></a>    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Birth_Rate_Dependence</span> <span class="o">=</span> <span class="s2">&quot;FIXED_BIRTH_RATE&quot;</span>
+<a id="__codelineno-0-236" name="__codelineno-0-236"></a>    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Birth_Rate_Dependence</span> <span class="o">=</span> <span class="s2">"FIXED_BIRTH_RATE"</span>
 <a id="__codelineno-0-237" name="__codelineno-0-237"></a>    <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Min_Days_Between_Clinical_Incidents</span> <span class="o">=</span> <span class="mi">14</span>  
 <a id="__codelineno-0-238" name="__codelineno-0-238"></a>
 <a id="__codelineno-0-239" name="__codelineno-0-239"></a>
 <a id="__codelineno-0-240" name="__codelineno-0-240"></a>    <span class="c1"># Serialization configuration</span>
-<a id="__codelineno-0-241" name="__codelineno-0-241"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;burnin&#39;</span><span class="p">:</span>
-<a id="__codelineno-0-242" name="__codelineno-0-242"></a>        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialized_Population_Writing_Type</span> <span class="o">=</span> <span class="s2">&quot;TIMESTEP&quot;</span>
+<a id="__codelineno-0-241" name="__codelineno-0-241"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">'burnin'</span><span class="p">:</span>
+<a id="__codelineno-0-242" name="__codelineno-0-242"></a>        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialized_Population_Writing_Type</span> <span class="o">=</span> <span class="s2">"TIMESTEP"</span>
 <a id="__codelineno-0-243" name="__codelineno-0-243"></a>        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialization_Time_Steps</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp</span><span class="o">.</span><span class="n">sim_dur_years</span> <span class="o">*</span> <span class="mi">365</span><span class="p">]</span>
 <a id="__codelineno-0-244" name="__codelineno-0-244"></a>        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialization_Mask_Node_Write</span> <span class="o">=</span> <span class="mi">0</span>
-<a id="__codelineno-0-245" name="__codelineno-0-245"></a>        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialization_Precision</span> <span class="o">=</span> <span class="s2">&quot;REDUCED&quot;</span>
-<a id="__codelineno-0-246" name="__codelineno-0-246"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;pickup&#39;</span><span class="p">:</span>
-<a id="__codelineno-0-247" name="__codelineno-0-247"></a>        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialized_Population_Reading_Type</span> <span class="o">=</span> <span class="s2">&quot;READ&quot;</span>
+<a id="__codelineno-0-245" name="__codelineno-0-245"></a>        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialization_Precision</span> <span class="o">=</span> <span class="s2">"REDUCED"</span>
+<a id="__codelineno-0-246" name="__codelineno-0-246"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">'pickup'</span><span class="p">:</span>
+<a id="__codelineno-0-247" name="__codelineno-0-247"></a>        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialized_Population_Reading_Type</span> <span class="o">=</span> <span class="s2">"READ"</span>
 <a id="__codelineno-0-248" name="__codelineno-0-248"></a>        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialization_Mask_Node_Read</span> <span class="o">=</span> <span class="mi">0</span>
 <a id="__codelineno-0-249" name="__codelineno-0-249"></a>        <span class="n">config</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Serialization_Time_Steps</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_burnin</span> <span class="o">*</span> <span class="mi">365</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -1545,7 +1558,7 @@ on the experiment step (e.g., &ldquo;burnin&rdquo; or &ldquo;pickup&rdquo;).</p>
 
 
 <h2 id="EMOD.utils.submit_analyze_EMOD" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">submit_analyze_EMOD</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;04:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">submit_analyze_EMOD</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">'04:00:00'</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span></code>
 
 <a href="#EMOD.utils.submit_analyze_EMOD" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -1569,7 +1582,7 @@ outputs. It sets up the job environment, defines dependencies on previous jobs, 
         <ul class="first simple">
             <li>
               <b><code>experiment</code></b>
-                  (<code>Experiment</code>)
+                  (<code><span title="idmtools.entities.experiment.Experiment">Experiment</span></code>)
               –
               <div class="doc-md-description">
                 <p>The experiment object containing relevant parameters such as job directory,
@@ -1578,7 +1591,7 @@ outputs. It sets up the job environment, defines dependencies on previous jobs, 
             </li>
             <li>
               <b><code>platform</code></b>
-                  (<code>Platform</code>)
+                  (<code><span title="Platform">Platform</span></code>)
               –
               <div class="doc-md-description">
                 <p>The platform object representing the HPC system where the job will be submitted.</p>
@@ -1586,7 +1599,7 @@ outputs. It sets up the job environment, defines dependencies on previous jobs, 
             </li>
             <li>
               <b><code>t</code></b>
-                  (<code>str</code>, default:
+                  (<code><span title="str">str</span></code>, default:
                       <code>&#39;04:00:00&#39;</code>
 )
               –
@@ -1596,7 +1609,7 @@ outputs. It sets up the job environment, defines dependencies on previous jobs, 
             </li>
             <li>
               <b><code>memG</code></b>
-                  (<code>int</code>, default:
+                  (<code><span title="int">int</span></code>, default:
                       <code>20</code>
 )
               –
@@ -1631,7 +1644,8 @@ outputs. It sets up the job environment, defines dependencies on previous jobs, 
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-416">416</a></span>
 <span class="normal"><a href="#__codelineno-0-417">417</a></span>
@@ -1688,8 +1702,8 @@ outputs. It sets up the job environment, defines dependencies on previous jobs, 
 <span class="normal"><a href="#__codelineno-0-468">468</a></span>
 <span class="normal"><a href="#__codelineno-0-469">469</a></span>
 <span class="normal"><a href="#__codelineno-0-470">470</a></span>
-<span class="normal"><a href="#__codelineno-0-471">471</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-416" name="__codelineno-0-416"></a><span class="k">def</span> <span class="nf">submit_analyze_EMOD</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;04:00:00&#39;</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
-<a id="__codelineno-0-417" name="__codelineno-0-417"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-471">471</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-416" name="__codelineno-0-416"></a><span class="k">def</span><span class="w"> </span><span class="nf">submit_analyze_EMOD</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">'04:00:00'</span><span class="p">,</span> <span class="n">memG</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+<a id="__codelineno-0-417" name="__codelineno-0-417"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-418" name="__codelineno-0-418"></a><span class="sd">    Submits a job to analyze EMOD simulation outputs on a high-performance computing (HPC) platform.</span>
 <a id="__codelineno-0-419" name="__codelineno-0-419"></a>
 <a id="__codelineno-0-420" name="__codelineno-0-420"></a><span class="sd">    This function creates a SLURM shell script for submitting an analysis job, which processes the EMOD simulation</span>
@@ -1699,18 +1713,18 @@ outputs. It sets up the job environment, defines dependencies on previous jobs, 
 <a id="__codelineno-0-424" name="__codelineno-0-424"></a><span class="sd">        experiment (Experiment): The experiment object containing relevant parameters such as job directory,</span>
 <a id="__codelineno-0-425" name="__codelineno-0-425"></a><span class="sd">                                  EMOD virtual environment, and analyzer script(s).</span>
 <a id="__codelineno-0-426" name="__codelineno-0-426"></a><span class="sd">        platform (Platform): The platform object representing the HPC system where the job will be submitted.</span>
-<a id="__codelineno-0-427" name="__codelineno-0-427"></a><span class="sd">        t (str, optional): The time limit for the job in HH:MM:SS format. Defaults to &#39;04:00:00&#39;.</span>
+<a id="__codelineno-0-427" name="__codelineno-0-427"></a><span class="sd">        t (str, optional): The time limit for the job in HH:MM:SS format. Defaults to '04:00:00'.</span>
 <a id="__codelineno-0-428" name="__codelineno-0-428"></a><span class="sd">        memG (int, optional): The amount of memory (in GB) allocated for the job. Defaults to 20 GB.</span>
 <a id="__codelineno-0-429" name="__codelineno-0-429"></a>
 <a id="__codelineno-0-430" name="__codelineno-0-430"></a><span class="sd">    Returns:</span>
 <a id="__codelineno-0-431" name="__codelineno-0-431"></a><span class="sd">        None</span>
-<a id="__codelineno-0-432" name="__codelineno-0-432"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-432" name="__codelineno-0-432"></a><span class="sd">    """</span>
 <a id="__codelineno-0-433" name="__codelineno-0-433"></a>
 <a id="__codelineno-0-434" name="__codelineno-0-434"></a>    <span class="c1"># Get the current working directory</span>
 <a id="__codelineno-0-435" name="__codelineno-0-435"></a>    <span class="n">wdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 <a id="__codelineno-0-436" name="__codelineno-0-436"></a>
 <a id="__codelineno-0-437" name="__codelineno-0-437"></a>    <span class="c1"># Generate the SLURM shell script header for the job</span>
-<a id="__codelineno-0-438" name="__codelineno-0-438"></a>    <span class="n">header_post</span> <span class="o">=</span> <span class="n">shell_header_quest</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">memG</span><span class="p">,</span> <span class="n">job_name</span><span class="o">=</span><span class="s1">&#39;analyze_EMODsim&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-438" name="__codelineno-0-438"></a>    <span class="n">header_post</span> <span class="o">=</span> <span class="n">shell_header_quest</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">memG</span><span class="p">,</span> <span class="n">job_name</span><span class="o">=</span><span class="s1">'analyze_EMODsim'</span><span class="p">,</span>
 <a id="__codelineno-0-439" name="__codelineno-0-439"></a>                                     <span class="n">mem_scl</span><span class="o">=</span><span class="n">experiment</span><span class="o">.</span><span class="n">mem_increase_factor</span><span class="p">)</span>
 <a id="__codelineno-0-440" name="__codelineno-0-440"></a>
 <a id="__codelineno-0-441" name="__codelineno-0-441"></a>    <span class="c1"># Get the EMODpy virtual environment path</span>
@@ -1718,32 +1732,32 @@ outputs. It sets up the job environment, defines dependencies on previous jobs, 
 <a id="__codelineno-0-443" name="__codelineno-0-443"></a>
 <a id="__codelineno-0-444" name="__codelineno-0-444"></a>    <span class="c1"># Generate the Python commands to run additional scripts</span>
 <a id="__codelineno-0-445" name="__codelineno-0-445"></a>    <span class="c1"># If any, add  python or R scripts to directly run after analyzer can be added below</span>
-<a id="__codelineno-0-446" name="__codelineno-0-446"></a>    <span class="n">pycommand</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-<a id="__codelineno-0-447" name="__codelineno-0-447"></a>        <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">python </span><span class="si">{</span><span class="n">scr</span><span class="si">}</span><span class="s1"> -d </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s1"> -i </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">scr</span> <span class="ow">in</span> <span class="n">experiment</span><span class="o">.</span><span class="n">analyzer_script</span><span class="p">])</span>
+<a id="__codelineno-0-446" name="__codelineno-0-446"></a>    <span class="n">pycommand</span> <span class="o">=</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<a id="__codelineno-0-447" name="__codelineno-0-447"></a>        <span class="p">[</span><span class="sa">f</span><span class="s1">'</span><span class="se">\n</span><span class="s1">python </span><span class="si">{</span><span class="n">scr</span><span class="si">}</span><span class="s1"> -d </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s1"> -i </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">'</span> <span class="k">for</span> <span class="n">scr</span> <span class="ow">in</span> <span class="n">experiment</span><span class="o">.</span><span class="n">analyzer_script</span><span class="p">])</span>
 <a id="__codelineno-0-448" name="__codelineno-0-448"></a>
 <a id="__codelineno-0-449" name="__codelineno-0-449"></a>    <span class="c1"># Write the shell script to a file</span>
-<a id="__codelineno-0-450" name="__codelineno-0-450"></a>    <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;run_analyzer_EMOD.sh&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-451" name="__codelineno-0-451"></a>    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-452" name="__codelineno-0-452"></a>    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header_post</span> <span class="o">+</span> <span class="n">emodpy_venv</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">cd </span><span class="si">{</span><span class="n">wdir</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">pycommand</span><span class="p">)</span>
+<a id="__codelineno-0-450" name="__codelineno-0-450"></a>    <span class="n">script_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">'run_analyzer_EMOD.sh'</span><span class="p">)</span>
+<a id="__codelineno-0-451" name="__codelineno-0-451"></a>    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_path</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span>
+<a id="__codelineno-0-452" name="__codelineno-0-452"></a>    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header_post</span> <span class="o">+</span> <span class="n">emodpy_venv</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">'</span><span class="se">\n</span><span class="s1">cd </span><span class="si">{</span><span class="n">wdir</span><span class="si">}</span><span class="s1">'</span> <span class="o">+</span> <span class="n">pycommand</span><span class="p">)</span>
 <a id="__codelineno-0-453" name="__codelineno-0-453"></a>    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 <a id="__codelineno-0-454" name="__codelineno-0-454"></a>
 <a id="__codelineno-0-455" name="__codelineno-0-455"></a>    <span class="c1"># Get the job ID</span>
 <a id="__codelineno-0-456" name="__codelineno-0-456"></a>    <span class="n">job_id</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">_op_client</span><span class="o">.</span><span class="n">get_job_id</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">item_type</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <a id="__codelineno-0-457" name="__codelineno-0-457"></a>
 <a id="__codelineno-0-458" name="__codelineno-0-458"></a>    <span class="c1"># Submit the job with dependency on the previous job</span>
-<a id="__codelineno-0-459" name="__codelineno-0-459"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;sbatch&#39;</span><span class="p">,</span> <span class="s1">&#39;--parsable&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;--dependency=afterany:</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">script_path</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+<a id="__codelineno-0-459" name="__codelineno-0-459"></a>    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">'sbatch'</span><span class="p">,</span> <span class="s1">'--parsable'</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'--dependency=afterany:</span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">script_path</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
 <a id="__codelineno-0-460" name="__codelineno-0-460"></a>                       <span class="n">cwd</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">))</span>
 <a id="__codelineno-0-461" name="__codelineno-0-461"></a>
 <a id="__codelineno-0-462" name="__codelineno-0-462"></a>    <span class="c1"># Extract the SLURM job ID from the output</span>
-<a id="__codelineno-0-463" name="__codelineno-0-463"></a>    <span class="n">slurm_job_id</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-0-463" name="__codelineno-0-463"></a>    <span class="n">slurm_job_id</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">';'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <a id="__codelineno-0-464" name="__codelineno-0-464"></a>
 <a id="__codelineno-0-465" name="__codelineno-0-465"></a>    <span class="c1"># Print the submitted job ID</span>
-<a id="__codelineno-0-466" name="__codelineno-0-466"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Submitted EMOD analyzer - job id: </span><span class="si">{</span><span class="n">slurm_job_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-466" name="__codelineno-0-466"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Submitted EMOD analyzer - job id: </span><span class="si">{</span><span class="n">slurm_job_id</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 <a id="__codelineno-0-467" name="__codelineno-0-467"></a>
 <a id="__codelineno-0-468" name="__codelineno-0-468"></a>    <span class="c1"># Write out the job IDs and experiment ID to files</span>
-<a id="__codelineno-0-469" name="__codelineno-0-469"></a>    <span class="n">write_txt</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;job_id_EMODsim.txt&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-470" name="__codelineno-0-470"></a>    <span class="n">write_txt</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;exp_id_EMODsim.txt&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-471" name="__codelineno-0-471"></a>    <span class="n">write_txt</span><span class="p">(</span><span class="n">slurm_job_id</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">&#39;job_id_EMODanalyze.txt&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-469" name="__codelineno-0-469"></a>    <span class="n">write_txt</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">'job_id_EMODsim.txt'</span><span class="p">)</span>
+<a id="__codelineno-0-470" name="__codelineno-0-470"></a>    <span class="n">write_txt</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">'exp_id_EMODsim.txt'</span><span class="p">)</span>
+<a id="__codelineno-0-471" name="__codelineno-0-471"></a>    <span class="n">write_txt</span><span class="p">(</span><span class="n">slurm_job_id</span><span class="p">,</span> <span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="s1">'job_id_EMODanalyze.txt'</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1782,7 +1796,7 @@ for execution on the provided platform, and the experiment analysis is scheduled
         <ul class="first simple">
             <li>
               <b><code>exp</code></b>
-                  (<code>ExperimentConfig</code>)
+                  (<code><span title="ExperimentConfig">ExperimentConfig</span></code>)
               –
               <div class="doc-md-description">
                 <p>An instance of the <code>ExperimentConfig</code> class that contains all the parameters
@@ -1792,7 +1806,7 @@ for execution on the provided platform, and the experiment analysis is scheduled
             </li>
             <li>
               <b><code>scen_df</code></b>
-                  (<code>DataFrame</code>)
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
               –
               <div class="doc-md-description">
                 <p>A DataFrame containing the scenario data to be used for the experiment.
@@ -1817,7 +1831,7 @@ for execution on the provided platform, and the experiment analysis is scheduled
       <td class="field-body">
         <ul class="first simple">
             <li>
-<b><code>experiment</code></b>(                  <code>Experiment</code>
+<b><code>experiment</code></b>(                  <code><span title="idmtools.entities.experiment.Experiment">Experiment</span></code>
 )              –
               <div class="doc-md-description">
                 <p>The configured and submitted <code>Experiment</code> object that represents the
@@ -1841,7 +1855,7 @@ for execution on the provided platform, and the experiment analysis is scheduled
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If the experiment configuration or scenario data is incomplete or invalid.</p>
@@ -1852,7 +1866,8 @@ for execution on the provided platform, and the experiment analysis is scheduled
     </tr>
   </tbody>
 </table>
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-22"> 22</a></span>
 <span class="normal"><a href="#__codelineno-0-23"> 23</a></span>
@@ -1971,14 +1986,14 @@ for execution on the provided platform, and the experiment analysis is scheduled
 <span class="normal"><a href="#__codelineno-0-136">136</a></span>
 <span class="normal"><a href="#__codelineno-0-137">137</a></span>
 <span class="normal"><a href="#__codelineno-0-138">138</a></span>
-<span class="normal"><a href="#__codelineno-0-139">139</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="k">def</span> <span class="nf">submit_run_EMOD</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">):</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-139">139</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="k">def</span><span class="w"> </span><span class="nf">submit_run_EMOD</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">):</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">    Submit and run an EMOD experiment, parameterizing various steps involved in the simulation.</span>
 <a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="sd">    This function sets up the experiment, configures input files, manages reporting, and submits the experiment.</span>
 <a id="__codelineno-0-26" name="__codelineno-0-26"></a>
 <a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">    This function handles the creation and configuration of the EMOD task based on the provided</span>
 <a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">    experiment parameters, including setting up entomology, serialized input data, and specifying</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">    how to handle different simulation steps (e.g., &#39;pickup&#39;, &#39;burnin&#39;). It also schedules necessary</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">    how to handle different simulation steps (e.g., 'pickup', 'burnin'). It also schedules necessary</span>
 <a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">    reports for analysis and prepares the experiment for execution. The experiment is then submitted</span>
 <a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="sd">    for execution on the provided platform, and the experiment analysis is scheduled.</span>
 <a id="__codelineno-0-32" name="__codelineno-0-32"></a>
@@ -1997,10 +2012,10 @@ for execution on the provided platform, and the experiment analysis is scheduled
 <a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="sd">    Raises:</span>
 <a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="sd">        ValueError: If the experiment configuration or scenario data is incomplete or invalid.</span>
 <a id="__codelineno-0-47" name="__codelineno-0-47"></a>
-<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-49" name="__codelineno-0-49"></a>    <span class="kn">import</span> <span class="nn">emod_malaria.bootstrap</span> <span class="k">as</span> <span class="nn">dtk</span>
-<a id="__codelineno-0-50" name="__codelineno-0-50"></a>    <span class="kn">import</span> <span class="nn">pathlib</span>
-<a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="kn">from</span> <span class="nn">idmtools.core.platform_factory</span> <span class="kn">import</span> <span class="n">Platform</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="sd">    """</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">emod_malaria.bootstrap</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dtk</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a>    <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">idmtools.core.platform_factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Platform</span>
 <a id="__codelineno-0-52" name="__codelineno-0-52"></a>
 <a id="__codelineno-0-53" name="__codelineno-0-53"></a>    <span class="n">dtk</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">eradication_path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
 <a id="__codelineno-0-54" name="__codelineno-0-54"></a>    <span class="n">emod_serialized_id</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_serialized_id</span>
@@ -2011,7 +2026,7 @@ for execution on the provided platform, and the experiment analysis is scheduled
 <a id="__codelineno-0-59" name="__codelineno-0-59"></a>    <span class="n">agebins</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">agebins</span>
 <a id="__codelineno-0-60" name="__codelineno-0-60"></a>    <span class="n">sim_start_year_emod</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">sim_start_year_emod</span>
 <a id="__codelineno-0-61" name="__codelineno-0-61"></a>
-<a id="__codelineno-0-62" name="__codelineno-0-62"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">hpc</span> <span class="o">==</span> <span class="s1">&#39;LOCAL&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">hpc</span> <span class="o">==</span> <span class="s1">'LOCAL'</span><span class="p">:</span>
 <a id="__codelineno-0-63" name="__codelineno-0-63"></a>        <span class="c1">#platform = exp.platform = Platform(manifest.selected_platform, job_directory=exp.suite_directory)</span>
 <a id="__codelineno-0-64" name="__codelineno-0-64"></a>        <span class="c1"># EMOD local gives Error message when type and block are not defined</span>
 <a id="__codelineno-0-65" name="__codelineno-0-65"></a>        <span class="n">platform</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">selected_platform</span><span class="p">,</span>
@@ -2020,46 +2035,46 @@ for execution on the provided platform, and the experiment analysis is scheduled
 <a id="__codelineno-0-68" name="__codelineno-0-68"></a>    <span class="k">else</span><span class="p">:</span>
 <a id="__codelineno-0-69" name="__codelineno-0-69"></a>        <span class="n">platform</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">Platform</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">selected_platform</span><span class="p">,</span>
 <a id="__codelineno-0-70" name="__codelineno-0-70"></a>                                           <span class="n">job_directory</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">suite_directory</span><span class="p">,</span>
-<a id="__codelineno-0-71" name="__codelineno-0-71"></a>                                           <span class="n">mem_per_cpu</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_memory_per_sim</span><span class="si">}</span><span class="s1">G&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-72" name="__codelineno-0-72"></a>                                           <span class="n">partition</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">],</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a>                                           <span class="n">mem_per_cpu</span><span class="o">=</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_memory_per_sim</span><span class="si">}</span><span class="s1">G'</span><span class="p">,</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a>                                           <span class="n">partition</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">[</span><span class="s1">'p'</span><span class="p">],</span>
 <a id="__codelineno-0-73" name="__codelineno-0-73"></a>                                           <span class="n">time</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_time_per_sim</span><span class="p">,</span>
-<a id="__codelineno-0-74" name="__codelineno-0-74"></a>                                           <span class="n">account</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">],</span>
-<a id="__codelineno-0-75" name="__codelineno-0-75"></a>                                           <span class="n">modules</span><span class="o">=</span><span class="p">[</span><span class="n">manifest</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">[</span><span class="s1">&#39;em_modules&#39;</span><span class="p">]],</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a>                                           <span class="n">account</span><span class="o">=</span><span class="n">manifest</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">[</span><span class="s1">'A'</span><span class="p">],</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a>                                           <span class="n">modules</span><span class="o">=</span><span class="p">[</span><span class="n">manifest</span><span class="o">.</span><span class="n">sh_hpc_config</span><span class="p">[</span><span class="s1">'em_modules'</span><span class="p">]],</span>
 <a id="__codelineno-0-76" name="__codelineno-0-76"></a>                                           <span class="n">max_running_jobs</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">max_running_jobs</span><span class="p">)</span>
 <a id="__codelineno-0-77" name="__codelineno-0-77"></a>
 <a id="__codelineno-0-78" name="__codelineno-0-78"></a>    <span class="c1"># create EMODTask</span>
-<a id="__codelineno-0-79" name="__codelineno-0-79"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating EMODTask (from files)...&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Creating EMODTask (from files)..."</span><span class="p">)</span>
 <a id="__codelineno-0-80" name="__codelineno-0-80"></a>    <span class="n">task</span> <span class="o">=</span> <span class="n">config_task</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span>
 <a id="__codelineno-0-81" name="__codelineno-0-81"></a>    <span class="n">task</span> <span class="o">=</span> <span class="n">build_demog</span><span class="p">(</span><span class="n">task</span><span class="p">,</span><span class="n">exp</span><span class="p">)</span>
 <a id="__codelineno-0-82" name="__codelineno-0-82"></a>
-<a id="__codelineno-0-83" name="__codelineno-0-83"></a>    <span class="k">if</span> <span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">:</span>
-<a id="__codelineno-0-84" name="__codelineno-0-84"></a>        <span class="n">task</span><span class="o">.</span><span class="n">common_assets</span><span class="o">.</span><span class="n">add_directory</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">input_dir</span><span class="p">,</span> <span class="s2">&quot;climate&quot;</span><span class="p">),</span> <span class="n">relative_path</span><span class="o">=</span><span class="s2">&quot;climate&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a>    <span class="k">if</span> <span class="n">entomology_mode</span> <span class="o">==</span> <span class="s1">'dynamic'</span><span class="p">:</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a>        <span class="n">task</span><span class="o">.</span><span class="n">common_assets</span><span class="o">.</span><span class="n">add_directory</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">input_dir</span><span class="p">,</span> <span class="s2">"climate"</span><span class="p">),</span> <span class="n">relative_path</span><span class="o">=</span><span class="s2">"climate"</span><span class="p">)</span>
 <a id="__codelineno-0-85" name="__codelineno-0-85"></a>
-<a id="__codelineno-0-86" name="__codelineno-0-86"></a>    <span class="k">if</span> <span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;pickup&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a>    <span class="k">if</span> <span class="n">emod_step</span> <span class="o">==</span> <span class="s1">'pickup'</span><span class="p">:</span>
 <a id="__codelineno-0-87" name="__codelineno-0-87"></a>        <span class="n">serialized_df</span> <span class="o">=</span> <span class="n">build_burnin_df</span><span class="p">(</span><span class="n">emod_serialized_id</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">burnin</span> <span class="o">*</span> <span class="mi">365</span><span class="p">)</span>
-<a id="__codelineno-0-88" name="__codelineno-0-88"></a>        <span class="n">serialized_df</span> <span class="o">=</span> <span class="n">serialized_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x_Temporary_Larval_Habitat&#39;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-89" name="__codelineno-0-89"></a>        <span class="n">scen_df_pickup</span> <span class="o">=</span> <span class="n">scen_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">serialized_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;scen_id&#39;</span><span class="p">],</span>
-<a id="__codelineno-0-90" name="__codelineno-0-90"></a>                                       <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>  <span class="c1">## FIXME when running expanded pickup from burnin</span>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a>        <span class="n">serialized_df</span> <span class="o">=</span> <span class="n">serialized_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'x_Temporary_Larval_Habitat'</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s1">'ignore'</span><span class="p">)</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a>        <span class="n">scen_df_pickup</span> <span class="o">=</span> <span class="n">scen_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">serialized_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">'scen_id'</span><span class="p">],</span>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a>                                       <span class="n">how</span><span class="o">=</span><span class="s1">'inner'</span><span class="p">)</span>  <span class="c1">## FIXME when running expanded pickup from burnin</span>
 <a id="__codelineno-0-91" name="__codelineno-0-91"></a>        <span class="n">builder</span> <span class="o">=</span> <span class="n">config_sweep_builder_pickup</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df_pickup</span><span class="p">)</span>
 <a id="__codelineno-0-92" name="__codelineno-0-92"></a>    <span class="k">else</span><span class="p">:</span>
 <a id="__codelineno-0-93" name="__codelineno-0-93"></a>        <span class="n">builder</span> <span class="o">=</span> <span class="n">config_sweep_builder</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">scen_df</span><span class="p">)</span>
 <a id="__codelineno-0-94" name="__codelineno-0-94"></a>
-<a id="__codelineno-0-95" name="__codelineno-0-95"></a>    <span class="c1">#add_report_vector_stats(task, manifest, species_list=[&quot;gambiae&quot;], stratify_by_species =True)</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a>    <span class="c1">#add_report_vector_stats(task, manifest, species_list=["gambiae"], stratify_by_species =True)</span>
 <a id="__codelineno-0-96" name="__codelineno-0-96"></a>    <span class="n">add_annual_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="n">agebins</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="o">=</span><span class="n">sim_start_year_emod</span><span class="p">,</span> 
 <a id="__codelineno-0-97" name="__codelineno-0-97"></a>                       <span class="n">num_year</span><span class="o">=</span><span class="n">sim_dur_years</span><span class="p">,</span> <span class="n">detection_threshold</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">detectionLimit</span><span class="p">)</span>
 <a id="__codelineno-0-98" name="__codelineno-0-98"></a>
-<a id="__codelineno-0-99" name="__codelineno-0-99"></a>    <span class="k">if</span> <span class="n">emod_step</span> <span class="o">!=</span> <span class="s1">&#39;burnin&#39;</span><span class="p">:</span>  <span class="c1"># do not generate more granular reports for burnin</span>
-<a id="__codelineno-0-100" name="__codelineno-0-100"></a>        <span class="k">if</span> <span class="s1">&#39;daily&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span><span class="p">:</span>
+<a id="__codelineno-0-99" name="__codelineno-0-99"></a>    <span class="k">if</span> <span class="n">emod_step</span> <span class="o">!=</span> <span class="s1">'burnin'</span><span class="p">:</span>  <span class="c1"># do not generate more granular reports for burnin</span>
+<a id="__codelineno-0-100" name="__codelineno-0-100"></a>        <span class="k">if</span> <span class="s1">'daily'</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span><span class="p">:</span>
 <a id="__codelineno-0-101" name="__codelineno-0-101"></a>            <span class="n">add_daily_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="n">agebins</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="o">=</span><span class="n">sim_start_year_emod</span><span class="p">,</span> <span class="n">num_year</span><span class="o">=</span><span class="n">sim_dur_years</span><span class="p">,</span>
 <a id="__codelineno-0-102" name="__codelineno-0-102"></a>                              <span class="n">detection_threshold</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">detectionLimit</span><span class="p">)</span> 
 <a id="__codelineno-0-103" name="__codelineno-0-103"></a>        <span class="n">add_monthly_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="n">agebins</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="o">=</span><span class="n">sim_start_year_emod</span><span class="p">,</span> <span class="n">num_year</span><span class="o">=</span><span class="n">sim_dur_years</span><span class="p">,</span>
 <a id="__codelineno-0-104" name="__codelineno-0-104"></a>                            <span class="n">detection_threshold</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">detectionLimit</span><span class="p">)</span>
-<a id="__codelineno-0-105" name="__codelineno-0-105"></a>        <span class="k">if</span> <span class="s1">&#39;5day&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span> <span class="ow">or</span> <span class="s1">&#39;ccstep&#39;</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span><span class="p">:</span>
+<a id="__codelineno-0-105" name="__codelineno-0-105"></a>        <span class="k">if</span> <span class="s1">'5day'</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span> <span class="ow">or</span> <span class="s1">'ccstep'</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">analyzer_list</span><span class="p">:</span>
 <a id="__codelineno-0-106" name="__codelineno-0-106"></a>            <span class="n">add_5daily_reports</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">manifest</span><span class="p">,</span> <span class="n">age_bins</span><span class="o">=</span><span class="n">agebins</span><span class="p">,</span> <span class="n">sim_start_year</span><span class="o">=</span><span class="n">sim_start_year_emod</span><span class="p">,</span> <span class="n">num_year</span><span class="o">=</span><span class="n">sim_dur_years</span><span class="p">,</span>
 <a id="__codelineno-0-107" name="__codelineno-0-107"></a>                               <span class="n">detection_threshold</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">detectionLimit</span><span class="p">)</span>
 <a id="__codelineno-0-108" name="__codelineno-0-108"></a>
 <a id="__codelineno-0-109" name="__codelineno-0-109"></a>    <span class="c1"># Create experiment from builder and run</span>
-<a id="__codelineno-0-110" name="__codelineno-0-110"></a>    <span class="n">experiment</span> <span class="o">=</span> <span class="n">Experiment</span><span class="o">.</span><span class="n">from_builder</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-110" name="__codelineno-0-110"></a>    <span class="n">experiment</span> <span class="o">=</span> <span class="n">Experiment</span><span class="o">.</span><span class="n">from_builder</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span>
 <a id="__codelineno-0-111" name="__codelineno-0-111"></a>    <span class="n">experiment</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">wait_until_done</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">platform</span><span class="o">=</span><span class="n">platform</span><span class="p">)</span>
 <a id="__codelineno-0-112" name="__codelineno-0-112"></a>
 <a id="__codelineno-0-113" name="__codelineno-0-113"></a>    <span class="c1"># Additional step to schedule analyzer</span>
@@ -2073,22 +2088,22 @@ for execution on the provided platform, and the experiment analysis is scheduled
 <a id="__codelineno-0-121" name="__codelineno-0-121"></a>    <span class="n">experiment</span><span class="o">.</span><span class="n">start_end</span> <span class="o">=</span> <span class="p">[</span><span class="n">sim_start_year_emod</span><span class="p">,</span> <span class="n">sim_start_year_emod</span> <span class="o">+</span> <span class="n">sim_dur_years</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
 <a id="__codelineno-0-122" name="__codelineno-0-122"></a>    <span class="n">exp</span><span class="o">.</span><span class="n">emod_id</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">id</span>
 <a id="__codelineno-0-123" name="__codelineno-0-123"></a>
-<a id="__codelineno-0-124" name="__codelineno-0-124"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">hpc</span> <span class="o">!=</span> <span class="s2">&quot;LOCAL&quot;</span><span class="p">:</span>
+<a id="__codelineno-0-124" name="__codelineno-0-124"></a>    <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">hpc</span> <span class="o">!=</span> <span class="s2">"LOCAL"</span><span class="p">:</span>
 <a id="__codelineno-0-125" name="__codelineno-0-125"></a>        <span class="n">generate_run_EMOD_file</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">suite_directory</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">suite_directory</span><span class="p">)</span>
 <a id="__codelineno-0-126" name="__codelineno-0-126"></a>        <span class="n">submit_analyze_EMOD</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">)</span>
-<a id="__codelineno-0-127" name="__codelineno-0-127"></a>        <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">&#39;burnin&#39;</span><span class="p">:</span>
-<a id="__codelineno-0-128" name="__codelineno-0-128"></a>            <span class="n">exp</span><span class="o">.</span><span class="n">exp_name_pickup</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">exp_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;_burnin</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_burnin</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-129" name="__codelineno-0-129"></a>            <span class="n">submit_run_pyscript</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">pyscript</span><span class="o">=</span><span class="s1">&#39;launch_sim.py&#39;</span><span class="p">,</span> <span class="n">shname</span><span class="o">=</span><span class="s1">&#39;launch_pickup.sh&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-130" name="__codelineno-0-130"></a>                                <span class="n">custom_args</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;--suite </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">SUITEname</span><span class="si">}</span><span class="s2"> --expname </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">exp_name_pickup</span><span class="si">}</span><span class="s2"> &quot;</span>
-<a id="__codelineno-0-131" name="__codelineno-0-131"></a>                                            <span class="sa">f</span><span class="s2">&quot;--emod_step pickup --serializedid </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_id</span><span class="si">}</span><span class="s2"> &quot;</span>
-<a id="__codelineno-0-132" name="__codelineno-0-132"></a>                                            <span class="sa">f</span><span class="s2">&quot;--models </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">m</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">exp</span><span class="o">.</span><span class="n">models_pickup</span><span class="p">])</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">,</span>
-<a id="__codelineno-0-133" name="__codelineno-0-133"></a>                                <span class="n">job_id_EMOD</span><span class="o">=</span><span class="s1">&#39;job_id_EMODanalyze&#39;</span><span class="p">,</span><span class="n">memG</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">mem_increase_factor</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span> <span class="n">job</span><span class="o">=</span><span class="s1">&#39;pickup_launch&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-127" name="__codelineno-0-127"></a>        <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">emod_step</span> <span class="o">==</span> <span class="s1">'burnin'</span><span class="p">:</span>
+<a id="__codelineno-0-128" name="__codelineno-0-128"></a>            <span class="n">exp</span><span class="o">.</span><span class="n">exp_name_pickup</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">exp_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">f</span><span class="s1">'_burnin</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_burnin</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+<a id="__codelineno-0-129" name="__codelineno-0-129"></a>            <span class="n">submit_run_pyscript</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">pyscript</span><span class="o">=</span><span class="s1">'launch_sim.py'</span><span class="p">,</span> <span class="n">shname</span><span class="o">=</span><span class="s1">'launch_pickup.sh'</span><span class="p">,</span>
+<a id="__codelineno-0-130" name="__codelineno-0-130"></a>                                <span class="n">custom_args</span><span class="o">=</span><span class="sa">f</span><span class="s2">"--suite </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">SUITEname</span><span class="si">}</span><span class="s2"> --expname </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">exp_name_pickup</span><span class="si">}</span><span class="s2"> "</span>
+<a id="__codelineno-0-131" name="__codelineno-0-131"></a>                                            <span class="sa">f</span><span class="s2">"--emod_step pickup --serializedid </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">emod_id</span><span class="si">}</span><span class="s2"> "</span>
+<a id="__codelineno-0-132" name="__codelineno-0-132"></a>                                            <span class="sa">f</span><span class="s2">"--models </span><span class="si">{</span><span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">m</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">exp</span><span class="o">.</span><span class="n">models_pickup</span><span class="p">])</span><span class="si">}</span><span class="s2"> "</span><span class="p">,</span>
+<a id="__codelineno-0-133" name="__codelineno-0-133"></a>                                <span class="n">job_id_EMOD</span><span class="o">=</span><span class="s1">'job_id_EMODanalyze'</span><span class="p">,</span><span class="n">memG</span><span class="o">=</span><span class="n">exp</span><span class="o">.</span><span class="n">mem_increase_factor</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span> <span class="n">job</span><span class="o">=</span><span class="s1">'pickup_launch'</span><span class="p">)</span>
 <a id="__codelineno-0-134" name="__codelineno-0-134"></a>    <span class="k">else</span><span class="p">:</span>
 <a id="__codelineno-0-135" name="__codelineno-0-135"></a>        <span class="n">write_analyze_EMOD_local</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">)</span>
 <a id="__codelineno-0-136" name="__codelineno-0-136"></a>        <span class="n">exp</span><span class="o">.</span><span class="n">container_id</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">container_id</span>
-<a id="__codelineno-0-137" name="__codelineno-0-137"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Container ID: </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">container_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-137" name="__codelineno-0-137"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Container ID: </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">container_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a id="__codelineno-0-138" name="__codelineno-0-138"></a>
-<a id="__codelineno-0-139" name="__codelineno-0-139"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Experiment submission </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">uid</span><span class="si">}</span><span class="s2"> succeeded.&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-139" name="__codelineno-0-139"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Experiment submission </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">uid</span><span class="si">}</span><span class="s2"> succeeded."</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2108,7 +2123,8 @@ for execution on the provided platform, and the experiment analysis is scheduled
 
         <p>Runs the analyzer script directly inside the container (no SLURM).</p>
 
-            <details class="quote">
+
+            <details class="mkdocstrings-source">
               <summary>Source code in <code>EMOD/utils.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-474">474</a></span>
 <span class="normal"><a href="#__codelineno-0-475">475</a></span>
@@ -2142,39 +2158,39 @@ for execution on the provided platform, and the experiment analysis is scheduled
 <span class="normal"><a href="#__codelineno-0-503">503</a></span>
 <span class="normal"><a href="#__codelineno-0-504">504</a></span>
 <span class="normal"><a href="#__codelineno-0-505">505</a></span>
-<span class="normal"><a href="#__codelineno-0-506">506</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-474" name="__codelineno-0-474"></a><span class="k">def</span> <span class="nf">write_analyze_EMOD_local</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">):</span>
-<a id="__codelineno-0-475" name="__codelineno-0-475"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="normal"><a href="#__codelineno-0-506">506</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-474" name="__codelineno-0-474"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_analyze_EMOD_local</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">platform</span><span class="p">):</span>
+<a id="__codelineno-0-475" name="__codelineno-0-475"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-476" name="__codelineno-0-476"></a><span class="sd">    Runs the analyzer script directly inside the container (no SLURM).</span>
-<a id="__codelineno-0-477" name="__codelineno-0-477"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-477" name="__codelineno-0-477"></a><span class="sd">    """</span>
 <a id="__codelineno-0-478" name="__codelineno-0-478"></a>    <span class="c1"># Write local submission script (for   analyzer_script[0] only)</span>
-<a id="__codelineno-0-479" name="__codelineno-0-479"></a>    <span class="n">job_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;analyzer_EMOD&quot;</span>
-<a id="__codelineno-0-480" name="__codelineno-0-480"></a>    <span class="n">subdir</span> <span class="o">=</span> <span class="s1">&#39;EMOD&#39;</span>
-<a id="__codelineno-0-481" name="__codelineno-0-481"></a>    <span class="n">py_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;python </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">analyzer_script</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">  -d </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2"> -i </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span>
-<a id="__codelineno-0-482" name="__codelineno-0-482"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;run_analyze_EMOD.ps1&#39;</span>
+<a id="__codelineno-0-479" name="__codelineno-0-479"></a>    <span class="n">job_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"analyzer_EMOD"</span>
+<a id="__codelineno-0-480" name="__codelineno-0-480"></a>    <span class="n">subdir</span> <span class="o">=</span> <span class="s1">'EMOD'</span>
+<a id="__codelineno-0-481" name="__codelineno-0-481"></a>    <span class="n">py_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"python </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">analyzer_script</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">  -d </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2"> -i </span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-482" name="__codelineno-0-482"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'run_analyze_EMOD.ps1'</span>
 <a id="__codelineno-0-483" name="__codelineno-0-483"></a>
 <a id="__codelineno-0-484" name="__codelineno-0-484"></a>    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
 <a id="__codelineno-0-485" name="__codelineno-0-485"></a>    <span class="n">wdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">))</span>
 <a id="__codelineno-0-486" name="__codelineno-0-486"></a>
 <a id="__codelineno-0-487" name="__codelineno-0-487"></a>    <span class="c1"># Define the content of the PowerShell script</span>
-<a id="__codelineno-0-488" name="__codelineno-0-488"></a>    <span class="n">powershell_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-488" name="__codelineno-0-488"></a>    <span class="n">powershell_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
 <a id="__codelineno-0-489" name="__codelineno-0-489"></a><span class="s2">    # Job settings</span>
-<a id="__codelineno-0-490" name="__codelineno-0-490"></a><span class="s2">    $job_name = &quot;</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s2">&quot;</span>
-<a id="__codelineno-0-491" name="__codelineno-0-491"></a><span class="s2">    $work_dir = &quot;</span><span class="si">{</span><span class="n">wdir</span><span class="si">}</span><span class="s2">&quot;</span>
-<a id="__codelineno-0-492" name="__codelineno-0-492"></a><span class="s2">    $jobdir = &quot;</span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2">&quot;</span>
-<a id="__codelineno-0-493" name="__codelineno-0-493"></a><span class="s2">    $log_dir = Join-Path $jobdir &quot;log&quot;</span>
+<a id="__codelineno-0-490" name="__codelineno-0-490"></a><span class="s2">    $job_name = "</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-491" name="__codelineno-0-491"></a><span class="s2">    $work_dir = "</span><span class="si">{</span><span class="n">wdir</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-492" name="__codelineno-0-492"></a><span class="s2">    $jobdir = "</span><span class="si">{</span><span class="n">experiment</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-493" name="__codelineno-0-493"></a><span class="s2">    $log_dir = Join-Path $jobdir "log"</span>
 <a id="__codelineno-0-494" name="__codelineno-0-494"></a>
 <a id="__codelineno-0-495" name="__codelineno-0-495"></a><span class="s2">    # Navigate to the subdirectory</span>
-<a id="__codelineno-0-496" name="__codelineno-0-496"></a><span class="s2">    Set-Location -Path &quot;$work_dir</span><span class="se">\\</span><span class="si">{</span><span class="n">subdir</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-0-496" name="__codelineno-0-496"></a><span class="s2">    Set-Location -Path "$work_dir</span><span class="se">\\</span><span class="si">{</span><span class="n">subdir</span><span class="si">}</span><span class="s2">"</span>
 <a id="__codelineno-0-497" name="__codelineno-0-497"></a>
 <a id="__codelineno-0-498" name="__codelineno-0-498"></a><span class="s2">    # Run the Python command</span>
 <a id="__codelineno-0-499" name="__codelineno-0-499"></a><span class="s2">    </span><span class="si">{</span><span class="n">py_command</span><span class="si">}</span><span class="s2"> </span>
-<a id="__codelineno-0-500" name="__codelineno-0-500"></a><span class="s2">     &quot;&quot;&quot;</span>
+<a id="__codelineno-0-500" name="__codelineno-0-500"></a><span class="s2">     """</span>
 <a id="__codelineno-0-501" name="__codelineno-0-501"></a>
 <a id="__codelineno-0-502" name="__codelineno-0-502"></a>    <span class="c1"># Write the PowerShell script</span>
-<a id="__codelineno-0-503" name="__codelineno-0-503"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+<a id="__codelineno-0-503" name="__codelineno-0-503"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
 <a id="__codelineno-0-504" name="__codelineno-0-504"></a>        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">powershell_content</span><span class="p">)</span>
 <a id="__codelineno-0-505" name="__codelineno-0-505"></a>
-<a id="__codelineno-0-506" name="__codelineno-0-506"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PowerShell script written to </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-506" name="__codelineno-0-506"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PowerShell script written to </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2200,7 +2216,7 @@ for execution on the provided platform, and the experiment analysis is scheduled
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>Copyright &copy; 2023 - 2025 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
