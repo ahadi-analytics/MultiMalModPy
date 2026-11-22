@@ -16,7 +16,7 @@ if exp.openmalaria_survey_step == '1y':
 
 ### Annual analyzer
 
-[survey-measures](https://github.com/SwissTPH/openmalaria/wiki/MonitoringOptions#survey-measures)
+[survey-measures](https://github.com/OpenMalaria-Org/openmalaria/wiki/MonitoringOptions#survey-measures)
 nHost: 	Total number of humans
 nPatent: The number of human hosts whose total (blood-stage) parasite density is above the detection threshold
 nUncomp: 	number of episodes (uncomplicated) [...detailed description on the Wiki]

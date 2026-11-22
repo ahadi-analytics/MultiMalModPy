@@ -10,13 +10,17 @@ _Implementation in MultiMalModPy_
 
 
 In MultiMalModPy, the user can specify the following time related parameters:  
-- `start_year`  
-- `end_year`  
-- `emod_burnin`  `malariasimulation_burnin`  , `openmalaria_burnin` 
-- `openmalaria_survey_step`  
+
+- `start_year`
+- `end_year`
+- *model-specific burn-in*
+    - `emod_burnin`
+    - `malariasimulation_burnin`
+    - `openmalaria_burnin`
+- `openmalaria_survey_step`
 
 
-Example from [setup_sim.py](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/setup_sim.py#L53C14-L53C96): 
+Example from [setup_sim.py](https://github.com/ahadi-analytics/MultiMalModPy/blob/main/setup_sim.py#L88): 
 
 ``` 
 start_year = 2000
@@ -31,11 +35,16 @@ From those values, the burnin period is calculated automatically.
 
 
 <div style="background-color: #E9F2F9; padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
-  <strong><em>NOTE:</em></strong>  
-  In OpenMalaria, surveys track events since the last survey and capture the current state at the survey’s start (e.g., the number of patent hosts).  
-  
-  - The minimum survey interval is <strong>5 days</strong>.  
-  - Only <strong>one</strong> survey interval can be specified per scenario.  
+  <strong><em>NOTE:</em></strong>
+  <p>
+    In OpenMalaria, surveys track events since the last survey and capture the
+    current state at the survey’s start (e.g., the number of patent hosts).
+  </p>
+
+  <ul style="margin-top: 5px; margin-bottom: 0;">
+    <li>The minimum survey interval is <strong>5 days</strong>.</li>
+    <li>Only <strong>one</strong> survey interval can be specified per scenario.</li>
+  </ul>
 </div>
 
 
