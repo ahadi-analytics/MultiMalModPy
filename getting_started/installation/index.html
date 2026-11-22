@@ -401,7 +401,8 @@ source my_venv/bin/activate  # Linux/macOS
 
 <p>Activate the Virtual Environment via:  </p>
 <div class="codehilite"><pre><span></span><code>.\my_venv\Scripts\activate  # Linux/macOS 
-source my_venv/bin/activate   # Windows 
+source my_venv/bin/activate   # Windows (CMD)
+.\my_venv\Scripts\Activate.ps1  # Windows (PowerShell)
 </code></pre></div>
 
 <p>Install Dependencies:    </p>
@@ -579,6 +580,7 @@ In an R session:    </p>
 <div class="codehilite"><pre><span></span><code>r_local = "C:/Program Files/R/R-4.2.3/bin" 
 </code></pre></div>
 
+<p>Replace the version in this example with your installed R version. This directory must contain <code>Rscript.exe</code>, and the packages above must be installed in a library accessible to that R installation. This host setting is not used by the local Docker image.</p>
 <p><br> </p>
 <hr />
 <h2 id="run-multimalmodpy-without-full-installation-optional">Run MultiMalModPy Without Full Installation (Optional)<a class="headerlink" href="#run-multimalmodpy-without-full-installation-optional" title="Permanent link">&para;</a></h2>
@@ -588,7 +590,12 @@ In an R session:    </p>
 
 <p>See full run instructions:  <a href="../example_run/#using-singularity-container-hpc">Example run</a>   </p>
 <h3 id="using-docker-local">Using Docker (Local)<a class="headerlink" href="#using-docker-local" title="Permanent link">&para;</a></h3>
-<p>Navigate to dependencies and double click on <code>run_mmmpy_docker.bat</code>  </p>
+<p>Start Docker Desktop and wait for its Linux engine to be running. Then double-click <code>dependencies/run_mmmpy_docker.bat</code> and select <code>OpenMalaria</code> or <code>malariasimulation</code>. The image provides Python, R, and these model dependencies; a host Python or R installation is not required for this route.</p>
+<p>In the existing <code>elif hpc == 'LOCAL':</code> section of <code>manifest.py</code>, ensure the Docker activation setting is:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">EMOD_venv_container</span> <span class="o">=</span> <span class="s1">'source /opt/envs/mmmpy_local/bin/activate'</span>
+</code></pre></div>
+
+<p>Docker is detected automatically; no <code>container_run</code> setting is required.</p>
 <p>Manual Docker setup:    </p>
 <div class="codehilite"><pre><span></span><code><span class="gh">#</span> Pull the image
 docker pull multimalmodpy/mmmpy_local:rocky8 
@@ -597,13 +604,13 @@ docker pull multimalmodpy/mmmpy_local:rocky8
 docker images 
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="gh">#</span> Run interactively (optional to test it)
+<div class="codehilite"><pre><span></span><code><span class="gh">#</span> Inside a container with the repository mounted at /mnt/c/projects/MultiMalModPy:
 source /opt/envs/mmmpy_local/bin/activate
-cd /mnt/c/projects
+cd /mnt/c/projects/MultiMalModPy
 python launch_sim.py --models OpenMalaria --test
 </code></pre></div>
 
-<p>Note: Inside Docker, you usually don’t need to activate a virtual environment. The Python in the image is ready to use.  </p>
+<p>Use the <code>mmmpy_local</code> environment inside the container, as the launcher and command below do.</p>
 <p>Mount local project to the container to run a test simulation (from host):  </p>
 <div class="codehilite"><pre><span></span><code>docker run -it -v &lt;USERPATH&gt;:/mnt/c/projects mmmpy_local:rocky8 `
   /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate &amp;&amp; cd /mnt/c/projects &amp;&amp; python launch_sim.py --models OpenMalaria --test"

@@ -885,7 +885,8 @@ User-provided values can override these defaults.</p>
                   (<code><span title="object">object</span></code>)
               –
               <div class="doc-md-description">
-                <p>An experiment object containing the &lsquo;job_directory&rsquo; attribute for saving the script.</p>
+                <p>Experiment object containing the <code>job_directory</code>
+attribute used to save the script and log files.</p>
               </div>
             </li>
             <li>
@@ -893,7 +894,7 @@ User-provided values can override these defaults.</p>
                   (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
-                <p>The name of the PowerShell script file to be created.</p>
+                <p>Name of the PowerShell script file to create.</p>
               </div>
             </li>
             <li>
@@ -901,7 +902,7 @@ User-provided values can override these defaults.</p>
                   (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
-                <p>The subdirectory within the working directory where the Python command should be executed.</p>
+                <p>Subdirectory in which the Python command is executed.</p>
               </div>
             </li>
             <li>
@@ -909,15 +910,15 @@ User-provided values can override these defaults.</p>
                   (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
-                <p>The name of the job, used for log file naming and script content.</p>
+                <p>Job name used in the script and log file names.</p>
               </div>
             </li>
             <li>
-              <b><code>pycommand</code></b>
+              <b><code>py_command</code></b>
                   (<code><span title="str">str</span></code>)
               –
               <div class="doc-md-description">
-                <p>The Python command to be executed within the PowerShell script.</p>
+                <p>Python command to execute within the PowerShell script.</p>
               </div>
             </li>
         </ul>
@@ -940,7 +941,29 @@ User-provided values can override these defaults.</p>
                   <code><span title="IOError">IOError</span></code>
               –
               <div class="doc-md-description">
-                <p>If there is an issue with writing the PowerShell script to the file.</p>
+                <p>If the PowerShell script cannot be written to disk.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>None</code></b>              –
+              <div class="doc-md-description">
+                <p>The function writes the PowerShell script to disk.</p>
               </div>
             </li>
         </ul>
@@ -951,12 +974,7 @@ User-provided values can override these defaults.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_local.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-199">199</a></span>
-<span class="normal"><a href="#__codelineno-0-200">200</a></span>
-<span class="normal"><a href="#__codelineno-0-201">201</a></span>
-<span class="normal"><a href="#__codelineno-0-202">202</a></span>
-<span class="normal"><a href="#__codelineno-0-203">203</a></span>
-<span class="normal"><a href="#__codelineno-0-204">204</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-204">204</a></span>
 <span class="normal"><a href="#__codelineno-0-205">205</a></span>
 <span class="normal"><a href="#__codelineno-0-206">206</a></span>
 <span class="normal"><a href="#__codelineno-0-207">207</a></span>
@@ -995,51 +1013,64 @@ User-provided values can override these defaults.</p>
 <span class="normal"><a href="#__codelineno-0-240">240</a></span>
 <span class="normal"><a href="#__codelineno-0-241">241</a></span>
 <span class="normal"><a href="#__codelineno-0-242">242</a></span>
-<span class="normal"><a href="#__codelineno-0-243">243</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-199" name="__codelineno-0-199"></a><span class="k">def</span><span class="w"> </span><span class="nf">create_ps1_script</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">subdir</span><span class="p">,</span> <span class="n">job_name</span><span class="p">,</span> <span class="n">py_command</span><span class="p">):</span>
-<a id="__codelineno-0-200" name="__codelineno-0-200"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-0-201" name="__codelineno-0-201"></a><span class="sd">    This helper function generates a PowerShell script that:</span>
-<a id="__codelineno-0-202" name="__codelineno-0-202"></a><span class="sd">    1. Defines job settings, including job name, working directory, and log directory.</span>
-<a id="__codelineno-0-203" name="__codelineno-0-203"></a><span class="sd">    2. Navigates to the specified subdirectory.</span>
-<a id="__codelineno-0-204" name="__codelineno-0-204"></a><span class="sd">    3. Executes the provided Python command and logs the output to a specified log file.</span>
-<a id="__codelineno-0-205" name="__codelineno-0-205"></a><span class="sd">    4. Pauses the script to keep the console open until the user presses Enter.</span>
-<a id="__codelineno-0-206" name="__codelineno-0-206"></a>
-<a id="__codelineno-0-207" name="__codelineno-0-207"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-208" name="__codelineno-0-208"></a><span class="sd">        exp (object): An experiment object containing the 'job_directory' attribute for saving the script.</span>
-<a id="__codelineno-0-209" name="__codelineno-0-209"></a><span class="sd">        fname (str): The name of the PowerShell script file to be created.</span>
-<a id="__codelineno-0-210" name="__codelineno-0-210"></a><span class="sd">        subdir (str): The subdirectory within the working directory where the Python command should be executed.</span>
-<a id="__codelineno-0-211" name="__codelineno-0-211"></a><span class="sd">        job_name (str): The name of the job, used for log file naming and script content.</span>
-<a id="__codelineno-0-212" name="__codelineno-0-212"></a><span class="sd">        pycommand  (str): The Python command to be executed within the PowerShell script.</span>
-<a id="__codelineno-0-213" name="__codelineno-0-213"></a>
-<a id="__codelineno-0-214" name="__codelineno-0-214"></a><span class="sd">    Raises:</span>
-<a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="sd">        IOError: If there is an issue with writing the PowerShell script to the file.</span>
-<a id="__codelineno-0-216" name="__codelineno-0-216"></a><span class="sd">    """</span>
-<a id="__codelineno-0-217" name="__codelineno-0-217"></a>    <span class="c1"># Construct paths</span>
-<a id="__codelineno-0-218" name="__codelineno-0-218"></a>    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
-<a id="__codelineno-0-219" name="__codelineno-0-219"></a>    <span class="n">wdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">))</span>
-<a id="__codelineno-0-220" name="__codelineno-0-220"></a>
-<a id="__codelineno-0-221" name="__codelineno-0-221"></a>    <span class="c1"># Define the content of the PowerShell script</span>
-<a id="__codelineno-0-222" name="__codelineno-0-222"></a>    <span class="n">powershell_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
-<a id="__codelineno-0-223" name="__codelineno-0-223"></a><span class="s2"># Job settings</span>
-<a id="__codelineno-0-224" name="__codelineno-0-224"></a><span class="s2">$job_name = "</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-0-225" name="__codelineno-0-225"></a><span class="s2">$work_dir = "</span><span class="si">{</span><span class="n">wdir</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-0-226" name="__codelineno-0-226"></a><span class="s2">$jobdir = "</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-0-227" name="__codelineno-0-227"></a><span class="s2">$log_dir = Join-Path $jobdir "log"</span>
-<a id="__codelineno-0-228" name="__codelineno-0-228"></a>
-<a id="__codelineno-0-229" name="__codelineno-0-229"></a><span class="s2"># Navigate to the subdirectory</span>
-<a id="__codelineno-0-230" name="__codelineno-0-230"></a><span class="s2">Set-Location -Path "$work_dir</span><span class="se">\\</span><span class="si">{</span><span class="n">subdir</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-0-231" name="__codelineno-0-231"></a>
-<a id="__codelineno-0-232" name="__codelineno-0-232"></a><span class="s2"># Run the Python command</span>
-<a id="__codelineno-0-233" name="__codelineno-0-233"></a><span class="si">{</span><span class="n">py_command</span><span class="si">}</span><span class="s2">  &gt;&gt; "$log_dir/run_</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s2">.log" 2&gt;&gt; "$log_dir/run_</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s2">.err"</span>
-<a id="__codelineno-0-234" name="__codelineno-0-234"></a>
-<a id="__codelineno-0-235" name="__codelineno-0-235"></a><span class="s2"># Pause to keep the console open</span>
-<a id="__codelineno-0-236" name="__codelineno-0-236"></a><span class="s2">Read-Host "Press Enter to continue"</span>
-<a id="__codelineno-0-237" name="__codelineno-0-237"></a><span class="s2">    """</span>
-<a id="__codelineno-0-238" name="__codelineno-0-238"></a>
-<a id="__codelineno-0-239" name="__codelineno-0-239"></a>    <span class="c1"># Write the PowerShell script</span>
-<a id="__codelineno-0-240" name="__codelineno-0-240"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-<a id="__codelineno-0-241" name="__codelineno-0-241"></a>        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">powershell_content</span><span class="p">)</span>
-<a id="__codelineno-0-242" name="__codelineno-0-242"></a>
-<a id="__codelineno-0-243" name="__codelineno-0-243"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PowerShell script written to </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="normal"><a href="#__codelineno-0-243">243</a></span>
+<span class="normal"><a href="#__codelineno-0-244">244</a></span>
+<span class="normal"><a href="#__codelineno-0-245">245</a></span>
+<span class="normal"><a href="#__codelineno-0-246">246</a></span>
+<span class="normal"><a href="#__codelineno-0-247">247</a></span>
+<span class="normal"><a href="#__codelineno-0-248">248</a></span>
+<span class="normal"><a href="#__codelineno-0-249">249</a></span>
+<span class="normal"><a href="#__codelineno-0-250">250</a></span>
+<span class="normal"><a href="#__codelineno-0-251">251</a></span>
+<span class="normal"><a href="#__codelineno-0-252">252</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-204" name="__codelineno-0-204"></a><span class="k">def</span><span class="w"> </span><span class="nf">create_ps1_script</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">subdir</span><span class="p">,</span> <span class="n">job_name</span><span class="p">,</span> <span class="n">py_command</span><span class="p">):</span>
+<a id="__codelineno-0-205" name="__codelineno-0-205"></a><span class="w">    </span><span class="sd">"""</span>
+<a id="__codelineno-0-206" name="__codelineno-0-206"></a><span class="sd">    This helper function generates a PowerShell script that:</span>
+<a id="__codelineno-0-207" name="__codelineno-0-207"></a><span class="sd">    1. Defines job settings, including job name, working directory, and log directory.</span>
+<a id="__codelineno-0-208" name="__codelineno-0-208"></a><span class="sd">    2. Navigates to the specified subdirectory.</span>
+<a id="__codelineno-0-209" name="__codelineno-0-209"></a><span class="sd">    3. Executes the provided Python command and logs the output to a specified log file.</span>
+<a id="__codelineno-0-210" name="__codelineno-0-210"></a><span class="sd">    4. Pauses the script to keep the console open until the user presses Enter.</span>
+<a id="__codelineno-0-211" name="__codelineno-0-211"></a>
+<a id="__codelineno-0-212" name="__codelineno-0-212"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-213" name="__codelineno-0-213"></a><span class="sd">        exp (object): Experiment object containing the `job_directory`</span>
+<a id="__codelineno-0-214" name="__codelineno-0-214"></a><span class="sd">            attribute used to save the script and log files.</span>
+<a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="sd">        fname (str): Name of the PowerShell script file to create.</span>
+<a id="__codelineno-0-216" name="__codelineno-0-216"></a><span class="sd">        subdir (str): Subdirectory in which the Python command is executed.</span>
+<a id="__codelineno-0-217" name="__codelineno-0-217"></a><span class="sd">        job_name (str): Job name used in the script and log file names.</span>
+<a id="__codelineno-0-218" name="__codelineno-0-218"></a><span class="sd">        py_command (str): Python command to execute within the PowerShell script.</span>
+<a id="__codelineno-0-219" name="__codelineno-0-219"></a>
+<a id="__codelineno-0-220" name="__codelineno-0-220"></a><span class="sd">    Raises:</span>
+<a id="__codelineno-0-221" name="__codelineno-0-221"></a><span class="sd">        IOError: If the PowerShell script cannot be written to disk.</span>
+<a id="__codelineno-0-222" name="__codelineno-0-222"></a>
+<a id="__codelineno-0-223" name="__codelineno-0-223"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-224" name="__codelineno-0-224"></a><span class="sd">        None: The function writes the PowerShell script to disk.</span>
+<a id="__codelineno-0-225" name="__codelineno-0-225"></a><span class="sd">    """</span>
+<a id="__codelineno-0-226" name="__codelineno-0-226"></a>    <span class="c1"># Construct paths</span>
+<a id="__codelineno-0-227" name="__codelineno-0-227"></a>    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+<a id="__codelineno-0-228" name="__codelineno-0-228"></a>    <span class="n">wdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">))</span>
+<a id="__codelineno-0-229" name="__codelineno-0-229"></a>
+<a id="__codelineno-0-230" name="__codelineno-0-230"></a>    <span class="c1"># Define the content of the PowerShell script</span>
+<a id="__codelineno-0-231" name="__codelineno-0-231"></a>    <span class="n">powershell_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span>
+<a id="__codelineno-0-232" name="__codelineno-0-232"></a><span class="s2"># Job settings</span>
+<a id="__codelineno-0-233" name="__codelineno-0-233"></a><span class="s2">$job_name = "</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-234" name="__codelineno-0-234"></a><span class="s2">$work_dir = "</span><span class="si">{</span><span class="n">wdir</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-235" name="__codelineno-0-235"></a><span class="s2">$jobdir = "</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-236" name="__codelineno-0-236"></a><span class="s2">$log_dir = Join-Path $jobdir "log"</span>
+<a id="__codelineno-0-237" name="__codelineno-0-237"></a>
+<a id="__codelineno-0-238" name="__codelineno-0-238"></a><span class="s2"># Navigate to the subdirectory</span>
+<a id="__codelineno-0-239" name="__codelineno-0-239"></a><span class="s2">Set-Location -Path "$work_dir</span><span class="se">\\</span><span class="si">{</span><span class="n">subdir</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-240" name="__codelineno-0-240"></a>
+<a id="__codelineno-0-241" name="__codelineno-0-241"></a><span class="s2"># Run the Python command</span>
+<a id="__codelineno-0-242" name="__codelineno-0-242"></a><span class="si">{</span><span class="n">py_command</span><span class="si">}</span><span class="s2">  &gt;&gt; "$log_dir/run_</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s2">.log" 2&gt;&gt; "$log_dir/run_</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s2">.err"</span>
+<a id="__codelineno-0-243" name="__codelineno-0-243"></a>
+<a id="__codelineno-0-244" name="__codelineno-0-244"></a><span class="s2"># Pause to keep the console open</span>
+<a id="__codelineno-0-245" name="__codelineno-0-245"></a><span class="s2">Read-Host "Press Enter to continue"</span>
+<a id="__codelineno-0-246" name="__codelineno-0-246"></a><span class="s2">    """</span>
+<a id="__codelineno-0-247" name="__codelineno-0-247"></a>
+<a id="__codelineno-0-248" name="__codelineno-0-248"></a>    <span class="c1"># Write the PowerShell script</span>
+<a id="__codelineno-0-249" name="__codelineno-0-249"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+<a id="__codelineno-0-250" name="__codelineno-0-250"></a>        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">powershell_content</span><span class="p">)</span>
+<a id="__codelineno-0-251" name="__codelineno-0-251"></a>
+<a id="__codelineno-0-252" name="__codelineno-0-252"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PowerShell script written to </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1123,16 +1154,7 @@ plots should be processed.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_local.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-272">272</a></span>
-<span class="normal"><a href="#__codelineno-0-273">273</a></span>
-<span class="normal"><a href="#__codelineno-0-274">274</a></span>
-<span class="normal"><a href="#__codelineno-0-275">275</a></span>
-<span class="normal"><a href="#__codelineno-0-276">276</a></span>
-<span class="normal"><a href="#__codelineno-0-277">277</a></span>
-<span class="normal"><a href="#__codelineno-0-278">278</a></span>
-<span class="normal"><a href="#__codelineno-0-279">279</a></span>
-<span class="normal"><a href="#__codelineno-0-280">280</a></span>
-<span class="normal"><a href="#__codelineno-0-281">281</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-281">281</a></span>
 <span class="normal"><a href="#__codelineno-0-282">282</a></span>
 <span class="normal"><a href="#__codelineno-0-283">283</a></span>
 <span class="normal"><a href="#__codelineno-0-284">284</a></span>
@@ -1160,44 +1182,53 @@ plots should be processed.</p>
 <span class="normal"><a href="#__codelineno-0-306">306</a></span>
 <span class="normal"><a href="#__codelineno-0-307">307</a></span>
 <span class="normal"><a href="#__codelineno-0-308">308</a></span>
-<span class="normal"><a href="#__codelineno-0-309">309</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-272" name="__codelineno-0-272"></a><span class="k">def</span><span class="w"> </span><span class="nf">submit_run_plotters_local</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-273" name="__codelineno-0-273"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-0-274" name="__codelineno-0-274"></a><span class="sd">    Submits and manages the creation of shell scripts to run standardized plots</span>
-<a id="__codelineno-0-275" name="__codelineno-0-275"></a><span class="sd">    based on the models specified in the experiment.</span>
-<a id="__codelineno-0-276" name="__codelineno-0-276"></a>
-<a id="__codelineno-0-277" name="__codelineno-0-277"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-278" name="__codelineno-0-278"></a><span class="sd">        exp (Experiment): The experiment object that contains attributes such as</span>
-<a id="__codelineno-0-279" name="__codelineno-0-279"></a><span class="sd">            `models` and `plots_to_run`, which determine which models and</span>
-<a id="__codelineno-0-280" name="__codelineno-0-280"></a><span class="sd">            plots should be processed.</span>
-<a id="__codelineno-0-281" name="__codelineno-0-281"></a>
-<a id="__codelineno-0-282" name="__codelineno-0-282"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-283" name="__codelineno-0-283"></a><span class="sd">        None</span>
-<a id="__codelineno-0-284" name="__codelineno-0-284"></a>
-<a id="__codelineno-0-285" name="__codelineno-0-285"></a><span class="sd">    Notes:</span>
-<a id="__codelineno-0-286" name="__codelineno-0-286"></a><span class="sd">        - The function checks which models (EMOD, malariasimulation, OpenMalaria) are</span>
-<a id="__codelineno-0-287" name="__codelineno-0-287"></a><span class="sd">          specified in `exp.models` and sets corresponding job IDs.</span>
-<a id="__codelineno-0-288" name="__codelineno-0-288"></a><span class="sd">        - It prepares a submission script for a set of default plots (`relationship`,</span>
-<a id="__codelineno-0-289" name="__codelineno-0-289"></a><span class="sd">          `timeseries`, `agecurves`) and also handles custom plots if specified in</span>
-<a id="__codelineno-0-290" name="__codelineno-0-290"></a><span class="sd">          `exp.plots_to_run`.</span>
-<a id="__codelineno-0-291" name="__codelineno-0-291"></a><span class="sd">        - If `exp.plots_to_run` is set to `'all'`, all available plots will be processed.</span>
-<a id="__codelineno-0-292" name="__codelineno-0-292"></a><span class="sd">    """</span>
-<a id="__codelineno-0-293" name="__codelineno-0-293"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">exp</span><span class="o">.</span><span class="n">use_container</span><span class="p">:</span>
-<a id="__codelineno-0-294" name="__codelineno-0-294"></a>        <span class="c1">## Write  submission script for all, even if not running</span>
-<a id="__codelineno-0-295" name="__codelineno-0-295"></a>        <span class="k">for</span> <span class="n">plot_name</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">plots_to_run</span><span class="p">:</span>
-<a id="__codelineno-0-296" name="__codelineno-0-296"></a>            <span class="n">pyscript</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"plot_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s2">.py"</span>
-<a id="__codelineno-0-297" name="__codelineno-0-297"></a>            <span class="n">job_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"run_plot_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-0-298" name="__codelineno-0-298"></a>            <span class="n">subdir</span> <span class="o">=</span> <span class="s2">"plotter"</span>
-<a id="__codelineno-0-299" name="__codelineno-0-299"></a>            <span class="n">model_args</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">models</span><span class="p">)</span>
-<a id="__codelineno-0-300" name="__codelineno-0-300"></a>            <span class="n">pycommand</span>  <span class="o">=</span> <span class="sa">f</span><span class="s2">"python </span><span class="si">{</span><span class="n">pyscript</span><span class="si">}</span><span class="s2"> --directory </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">output_directory</span><span class="si">}</span><span class="s2"> --models </span><span class="si">{</span><span class="n">model_args</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-0-301" name="__codelineno-0-301"></a>
-<a id="__codelineno-0-302" name="__codelineno-0-302"></a>            <span class="n">fname</span> <span class="o">=</span> <span class="n">pyscript</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.py'</span><span class="p">,</span> <span class="s1">'.ps1'</span><span class="p">)</span>
-<a id="__codelineno-0-303" name="__codelineno-0-303"></a>            <span class="n">create_ps1_script</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">subdir</span><span class="p">,</span> <span class="n">job_name</span><span class="p">,</span> <span class="n">pycommand</span> <span class="p">)</span>
-<a id="__codelineno-0-304" name="__codelineno-0-304"></a>
-<a id="__codelineno-0-305" name="__codelineno-0-305"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">utility.helper_local</span><span class="w">  </span><span class="kn">import</span> <span class="n">write_bat_submission_plots</span>
-<a id="__codelineno-0-306" name="__codelineno-0-306"></a>        <span class="n">write_bat_submission_plots</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
-<a id="__codelineno-0-307" name="__codelineno-0-307"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-308" name="__codelineno-0-308"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">utility.helper_local_docker</span><span class="w">  </span><span class="kn">import</span> <span class="n">submit_run_plotters_sh</span>
-<a id="__codelineno-0-309" name="__codelineno-0-309"></a>        <span class="n">submit_run_plotters_sh</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<span class="normal"><a href="#__codelineno-0-309">309</a></span>
+<span class="normal"><a href="#__codelineno-0-310">310</a></span>
+<span class="normal"><a href="#__codelineno-0-311">311</a></span>
+<span class="normal"><a href="#__codelineno-0-312">312</a></span>
+<span class="normal"><a href="#__codelineno-0-313">313</a></span>
+<span class="normal"><a href="#__codelineno-0-314">314</a></span>
+<span class="normal"><a href="#__codelineno-0-315">315</a></span>
+<span class="normal"><a href="#__codelineno-0-316">316</a></span>
+<span class="normal"><a href="#__codelineno-0-317">317</a></span>
+<span class="normal"><a href="#__codelineno-0-318">318</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-281" name="__codelineno-0-281"></a><span class="k">def</span><span class="w"> </span><span class="nf">submit_run_plotters_local</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-282" name="__codelineno-0-282"></a><span class="w">    </span><span class="sd">"""</span>
+<a id="__codelineno-0-283" name="__codelineno-0-283"></a><span class="sd">    Submits and manages the creation of shell scripts to run standardized plots</span>
+<a id="__codelineno-0-284" name="__codelineno-0-284"></a><span class="sd">    based on the models specified in the experiment.</span>
+<a id="__codelineno-0-285" name="__codelineno-0-285"></a>
+<a id="__codelineno-0-286" name="__codelineno-0-286"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-287" name="__codelineno-0-287"></a><span class="sd">        exp (Experiment): The experiment object that contains attributes such as</span>
+<a id="__codelineno-0-288" name="__codelineno-0-288"></a><span class="sd">            `models` and `plots_to_run`, which determine which models and</span>
+<a id="__codelineno-0-289" name="__codelineno-0-289"></a><span class="sd">            plots should be processed.</span>
+<a id="__codelineno-0-290" name="__codelineno-0-290"></a>
+<a id="__codelineno-0-291" name="__codelineno-0-291"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-292" name="__codelineno-0-292"></a><span class="sd">        None</span>
+<a id="__codelineno-0-293" name="__codelineno-0-293"></a>
+<a id="__codelineno-0-294" name="__codelineno-0-294"></a><span class="sd">    Notes:</span>
+<a id="__codelineno-0-295" name="__codelineno-0-295"></a><span class="sd">        - The function checks which models (EMOD, malariasimulation, OpenMalaria) are</span>
+<a id="__codelineno-0-296" name="__codelineno-0-296"></a><span class="sd">          specified in `exp.models` and sets corresponding job IDs.</span>
+<a id="__codelineno-0-297" name="__codelineno-0-297"></a><span class="sd">        - It prepares a submission script for a set of default plots (`relationship`,</span>
+<a id="__codelineno-0-298" name="__codelineno-0-298"></a><span class="sd">          `timeseries`, `agecurves`) and also handles custom plots if specified in</span>
+<a id="__codelineno-0-299" name="__codelineno-0-299"></a><span class="sd">          `exp.plots_to_run`.</span>
+<a id="__codelineno-0-300" name="__codelineno-0-300"></a><span class="sd">        - If `exp.plots_to_run` is set to `'all'`, all available plots will be processed.</span>
+<a id="__codelineno-0-301" name="__codelineno-0-301"></a><span class="sd">    """</span>
+<a id="__codelineno-0-302" name="__codelineno-0-302"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">exp</span><span class="o">.</span><span class="n">use_container</span><span class="p">:</span>
+<a id="__codelineno-0-303" name="__codelineno-0-303"></a>        <span class="c1">## Write  submission script for all, even if not running</span>
+<a id="__codelineno-0-304" name="__codelineno-0-304"></a>        <span class="k">for</span> <span class="n">plot_name</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">plots_to_run</span><span class="p">:</span>
+<a id="__codelineno-0-305" name="__codelineno-0-305"></a>            <span class="n">pyscript</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"plot_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s2">.py"</span>
+<a id="__codelineno-0-306" name="__codelineno-0-306"></a>            <span class="n">job_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"run_plot_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-307" name="__codelineno-0-307"></a>            <span class="n">subdir</span> <span class="o">=</span> <span class="s2">"plotter"</span>
+<a id="__codelineno-0-308" name="__codelineno-0-308"></a>            <span class="n">model_args</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">models</span><span class="p">)</span>
+<a id="__codelineno-0-309" name="__codelineno-0-309"></a>            <span class="n">pycommand</span>  <span class="o">=</span> <span class="sa">f</span><span class="s2">"python </span><span class="si">{</span><span class="n">pyscript</span><span class="si">}</span><span class="s2"> --directory </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">output_directory</span><span class="si">}</span><span class="s2"> --models </span><span class="si">{</span><span class="n">model_args</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-310" name="__codelineno-0-310"></a>
+<a id="__codelineno-0-311" name="__codelineno-0-311"></a>            <span class="n">fname</span> <span class="o">=</span> <span class="n">pyscript</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.py'</span><span class="p">,</span> <span class="s1">'.ps1'</span><span class="p">)</span>
+<a id="__codelineno-0-312" name="__codelineno-0-312"></a>            <span class="n">create_ps1_script</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">subdir</span><span class="p">,</span> <span class="n">job_name</span><span class="p">,</span> <span class="n">pycommand</span> <span class="p">)</span>
+<a id="__codelineno-0-313" name="__codelineno-0-313"></a>
+<a id="__codelineno-0-314" name="__codelineno-0-314"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">utility.helper_local</span><span class="w">  </span><span class="kn">import</span> <span class="n">write_bat_submission_plots</span>
+<a id="__codelineno-0-315" name="__codelineno-0-315"></a>        <span class="n">write_bat_submission_plots</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<a id="__codelineno-0-316" name="__codelineno-0-316"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-317" name="__codelineno-0-317"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">utility.helper_local_docker</span><span class="w">  </span><span class="kn">import</span> <span class="n">submit_run_plotters_sh</span>
+<a id="__codelineno-0-318" name="__codelineno-0-318"></a>        <span class="n">submit_run_plotters_sh</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1276,12 +1307,7 @@ and then executes the script using the &lsquo;cmd.exe&rsquo; command.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_local.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-179">179</a></span>
-<span class="normal"><a href="#__codelineno-0-180">180</a></span>
-<span class="normal"><a href="#__codelineno-0-181">181</a></span>
-<span class="normal"><a href="#__codelineno-0-182">182</a></span>
-<span class="normal"><a href="#__codelineno-0-183">183</a></span>
-<span class="normal"><a href="#__codelineno-0-184">184</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-184">184</a></span>
 <span class="normal"><a href="#__codelineno-0-185">185</a></span>
 <span class="normal"><a href="#__codelineno-0-186">186</a></span>
 <span class="normal"><a href="#__codelineno-0-187">187</a></span>
@@ -1293,24 +1319,29 @@ and then executes the script using the &lsquo;cmd.exe&rsquo; command.</p>
 <span class="normal"><a href="#__codelineno-0-193">193</a></span>
 <span class="normal"><a href="#__codelineno-0-194">194</a></span>
 <span class="normal"><a href="#__codelineno-0-195">195</a></span>
-<span class="normal"><a href="#__codelineno-0-196">196</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-179" name="__codelineno-0-179"></a><span class="k">def</span><span class="w"> </span><span class="nf">submit_runmodel_local</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-<a id="__codelineno-0-180" name="__codelineno-0-180"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-0-181" name="__codelineno-0-181"></a><span class="sd">    This function creates a PowerShell script for running the specified model, saves it in the specified job directory,</span>
-<a id="__codelineno-0-182" name="__codelineno-0-182"></a><span class="sd">    and then executes the script using the 'cmd.exe' command.</span>
-<a id="__codelineno-0-183" name="__codelineno-0-183"></a>
-<a id="__codelineno-0-184" name="__codelineno-0-184"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-185" name="__codelineno-0-185"></a><span class="sd">        exp (object): An experiment object containing the 'job_directory' attribute where the PowerShell script will be saved.</span>
-<a id="__codelineno-0-186" name="__codelineno-0-186"></a><span class="sd">        model (str): The name of the model to be run (e.g., 'OpenMalaria', 'malariasimulation').</span>
-<a id="__codelineno-0-187" name="__codelineno-0-187"></a>
-<a id="__codelineno-0-188" name="__codelineno-0-188"></a><span class="sd">    Raises:</span>
-<a id="__codelineno-0-189" name="__codelineno-0-189"></a><span class="sd">        OSError: If there is an issue with executing the command or running the script.</span>
-<a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="sd">    """</span>
-<a id="__codelineno-0-191" name="__codelineno-0-191"></a>
-<a id="__codelineno-0-192" name="__codelineno-0-192"></a>    <span class="n">file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'jobs_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">_simplerun.ps1'</span>
-<a id="__codelineno-0-193" name="__codelineno-0-193"></a>    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
-<a id="__codelineno-0-194" name="__codelineno-0-194"></a>    <span class="n">write_ps1_runmodel</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
-<a id="__codelineno-0-195" name="__codelineno-0-195"></a>    <span class="n">cmd_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'cmd.exe /c start powershell -ExecutionPolicy Bypass -File "</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s1">"'</span>
-<a id="__codelineno-0-196" name="__codelineno-0-196"></a>    <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd_command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal"><a href="#__codelineno-0-196">196</a></span>
+<span class="normal"><a href="#__codelineno-0-197">197</a></span>
+<span class="normal"><a href="#__codelineno-0-198">198</a></span>
+<span class="normal"><a href="#__codelineno-0-199">199</a></span>
+<span class="normal"><a href="#__codelineno-0-200">200</a></span>
+<span class="normal"><a href="#__codelineno-0-201">201</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-184" name="__codelineno-0-184"></a><span class="k">def</span><span class="w"> </span><span class="nf">submit_runmodel_local</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<a id="__codelineno-0-185" name="__codelineno-0-185"></a><span class="w">    </span><span class="sd">"""</span>
+<a id="__codelineno-0-186" name="__codelineno-0-186"></a><span class="sd">    This function creates a PowerShell script for running the specified model, saves it in the specified job directory,</span>
+<a id="__codelineno-0-187" name="__codelineno-0-187"></a><span class="sd">    and then executes the script using the 'cmd.exe' command.</span>
+<a id="__codelineno-0-188" name="__codelineno-0-188"></a>
+<a id="__codelineno-0-189" name="__codelineno-0-189"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="sd">        exp (object): An experiment object containing the 'job_directory' attribute where the PowerShell script will be saved.</span>
+<a id="__codelineno-0-191" name="__codelineno-0-191"></a><span class="sd">        model (str): The name of the model to be run (e.g., 'OpenMalaria', 'malariasimulation').</span>
+<a id="__codelineno-0-192" name="__codelineno-0-192"></a>
+<a id="__codelineno-0-193" name="__codelineno-0-193"></a><span class="sd">    Raises:</span>
+<a id="__codelineno-0-194" name="__codelineno-0-194"></a><span class="sd">        OSError: If there is an issue with executing the command or running the script.</span>
+<a id="__codelineno-0-195" name="__codelineno-0-195"></a><span class="sd">    """</span>
+<a id="__codelineno-0-196" name="__codelineno-0-196"></a>
+<a id="__codelineno-0-197" name="__codelineno-0-197"></a>    <span class="n">file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'jobs_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">_simplerun.ps1'</span>
+<a id="__codelineno-0-198" name="__codelineno-0-198"></a>    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+<a id="__codelineno-0-199" name="__codelineno-0-199"></a>    <span class="n">write_ps1_runmodel</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+<a id="__codelineno-0-200" name="__codelineno-0-200"></a>    <span class="n">cmd_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'cmd.exe /c start powershell -NoExit -ExecutionPolicy Bypass -File "</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s1">"'</span>
+<a id="__codelineno-0-201" name="__codelineno-0-201"></a>    <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmd_command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1349,14 +1380,6 @@ and then executes the script using the &lsquo;cmd.exe&rsquo; command.</p>
                 <p>The experiment object containing the necessary directories and model names.</p>
               </div>
             </li>
-            <li>
-              <b><code>filename</code></b>
-                  (<code><span title="str">str</span></code>)
-              –
-              <div class="doc-md-description">
-                <p>The file path where the batch script will be saved.</p>
-              </div>
-            </li>
         </ul>
       </td>
     </tr>
@@ -1374,9 +1397,15 @@ and then executes the script using the &lsquo;cmd.exe&rsquo; command.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
+<b><code>None</code></b>              –
+              <div class="doc-md-description">
+                <p>The batch submission script is written to the experiment</p>
+              </div>
+            </li>
+            <li>
               –
               <div class="doc-md-description">
-                <p>None</p>
+                <p>job directory.</p>
               </div>
             </li>
         </ul>
@@ -1387,16 +1416,7 @@ and then executes the script using the &lsquo;cmd.exe&rsquo; command.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_local.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-311">311</a></span>
-<span class="normal"><a href="#__codelineno-0-312">312</a></span>
-<span class="normal"><a href="#__codelineno-0-313">313</a></span>
-<span class="normal"><a href="#__codelineno-0-314">314</a></span>
-<span class="normal"><a href="#__codelineno-0-315">315</a></span>
-<span class="normal"><a href="#__codelineno-0-316">316</a></span>
-<span class="normal"><a href="#__codelineno-0-317">317</a></span>
-<span class="normal"><a href="#__codelineno-0-318">318</a></span>
-<span class="normal"><a href="#__codelineno-0-319">319</a></span>
-<span class="normal"><a href="#__codelineno-0-320">320</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-320">320</a></span>
 <span class="normal"><a href="#__codelineno-0-321">321</a></span>
 <span class="normal"><a href="#__codelineno-0-322">322</a></span>
 <span class="normal"><a href="#__codelineno-0-323">323</a></span>
@@ -1430,50 +1450,59 @@ and then executes the script using the &lsquo;cmd.exe&rsquo; command.</p>
 <span class="normal"><a href="#__codelineno-0-351">351</a></span>
 <span class="normal"><a href="#__codelineno-0-352">352</a></span>
 <span class="normal"><a href="#__codelineno-0-353">353</a></span>
-<span class="normal"><a href="#__codelineno-0-354">354</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-311" name="__codelineno-0-311"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_bat_submission_plots</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
-<a id="__codelineno-0-312" name="__codelineno-0-312"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-0-313" name="__codelineno-0-313"></a><span class="sd">    Writes a .bat submission script to execute Python plotting commands for an experiment.</span>
-<a id="__codelineno-0-314" name="__codelineno-0-314"></a>
-<a id="__codelineno-0-315" name="__codelineno-0-315"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-316" name="__codelineno-0-316"></a><span class="sd">        exp (Experiment): The experiment object containing the necessary directories and model names.</span>
-<a id="__codelineno-0-317" name="__codelineno-0-317"></a><span class="sd">        filename (str): The file path where the batch script will be saved.</span>
-<a id="__codelineno-0-318" name="__codelineno-0-318"></a>
-<a id="__codelineno-0-319" name="__codelineno-0-319"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-320" name="__codelineno-0-320"></a><span class="sd">        None</span>
-<a id="__codelineno-0-321" name="__codelineno-0-321"></a><span class="sd">    """</span>
-<a id="__codelineno-0-322" name="__codelineno-0-322"></a>    <span class="c1"># Extract relevant data from the experiment object</span>
-<a id="__codelineno-0-323" name="__codelineno-0-323"></a>    <span class="n">wdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">))</span>
-<a id="__codelineno-0-324" name="__codelineno-0-324"></a>    <span class="n">filename</span> <span class="o">=</span> <span class="s1">'submit_run_plots.bat'</span>
-<a id="__codelineno-0-325" name="__codelineno-0-325"></a>    <span class="n">work_dir</span> <span class="o">=</span> <span class="n">wdir</span>
-<a id="__codelineno-0-326" name="__codelineno-0-326"></a>    <span class="n">jobdir</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span>
-<a id="__codelineno-0-327" name="__codelineno-0-327"></a>    <span class="n">log_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">jobdir</span><span class="si">}</span><span class="se">\\</span><span class="s2">log"</span>
-<a id="__codelineno-0-328" name="__codelineno-0-328"></a>    <span class="n">model_args</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">models</span><span class="p">)</span>
-<a id="__codelineno-0-329" name="__codelineno-0-329"></a>
-<a id="__codelineno-0-330" name="__codelineno-0-330"></a>    <span class="c1"># List of plot scripts to run</span>
-<a id="__codelineno-0-331" name="__codelineno-0-331"></a>    <span class="n">plot_scripts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">'plot_</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">.py'</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">plots_to_run</span><span class="p">]</span>
-<a id="__codelineno-0-332" name="__codelineno-0-332"></a>
-<a id="__codelineno-0-333" name="__codelineno-0-333"></a>    <span class="c1"># Start creating the batch script content</span>
-<a id="__codelineno-0-334" name="__codelineno-0-334"></a>    <span class="n">bat_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"@echo on</span><span class="se">\n</span><span class="s2">"</span>
-<a id="__codelineno-0-335" name="__codelineno-0-335"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"set job_name=run_plot_all</span><span class="se">\n</span><span class="s2">"</span>
-<a id="__codelineno-0-336" name="__codelineno-0-336"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"set work_dir=</span><span class="si">{</span><span class="n">work_dir</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
-<a id="__codelineno-0-337" name="__codelineno-0-337"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"set jobdir=</span><span class="si">{</span><span class="n">jobdir</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
-<a id="__codelineno-0-338" name="__codelineno-0-338"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"set log_dir=%jobdir%</span><span class="se">\\</span><span class="s2">log</span><span class="se">\n\n</span><span class="s2">"</span>
-<a id="__codelineno-0-339" name="__codelineno-0-339"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'cd "%work_dir%</span><span class="se">\\</span><span class="s1">plotter"</span><span class="se">\n\n</span><span class="s1">'</span>
-<a id="__codelineno-0-340" name="__codelineno-0-340"></a>
-<a id="__codelineno-0-341" name="__codelineno-0-341"></a>    <span class="c1"># Add commands to run the plotting scripts</span>
-<a id="__codelineno-0-342" name="__codelineno-0-342"></a>    <span class="k">for</span> <span class="n">script</span> <span class="ow">in</span> <span class="n">plot_scripts</span><span class="p">:</span>
-<a id="__codelineno-0-343" name="__codelineno-0-343"></a>        <span class="n">plot_name</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.py'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
-<a id="__codelineno-0-344" name="__codelineno-0-344"></a>        <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'python </span><span class="si">{</span><span class="n">script</span><span class="si">}</span><span class="s1"> --directory </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">output_directory</span><span class="si">}</span><span class="s1"> --models </span><span class="si">{</span><span class="n">model_args</span><span class="si">}</span><span class="s1"> &gt;&gt; "%log_dir%</span><span class="se">\\</span><span class="s1">run_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s1">.log" 2&gt;&gt; "%log_dir%</span><span class="se">\\</span><span class="s1">run_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s1">.err"</span><span class="se">\n</span><span class="s1">'</span>
-<a id="__codelineno-0-345" name="__codelineno-0-345"></a>
-<a id="__codelineno-0-346" name="__codelineno-0-346"></a>
-<a id="__codelineno-0-347" name="__codelineno-0-347"></a>    <span class="c1"># Add pause at the end to keep the terminal open</span>
-<a id="__codelineno-0-348" name="__codelineno-0-348"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="s2">"pause</span><span class="se">\n</span><span class="s2">"</span>
+<span class="normal"><a href="#__codelineno-0-354">354</a></span>
+<span class="normal"><a href="#__codelineno-0-355">355</a></span>
+<span class="normal"><a href="#__codelineno-0-356">356</a></span>
+<span class="normal"><a href="#__codelineno-0-357">357</a></span>
+<span class="normal"><a href="#__codelineno-0-358">358</a></span>
+<span class="normal"><a href="#__codelineno-0-359">359</a></span>
+<span class="normal"><a href="#__codelineno-0-360">360</a></span>
+<span class="normal"><a href="#__codelineno-0-361">361</a></span>
+<span class="normal"><a href="#__codelineno-0-362">362</a></span>
+<span class="normal"><a href="#__codelineno-0-363">363</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-320" name="__codelineno-0-320"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_bat_submission_plots</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<a id="__codelineno-0-321" name="__codelineno-0-321"></a><span class="w">    </span><span class="sd">"""</span>
+<a id="__codelineno-0-322" name="__codelineno-0-322"></a><span class="sd">    Writes a .bat submission script to execute Python plotting commands for an experiment.</span>
+<a id="__codelineno-0-323" name="__codelineno-0-323"></a>
+<a id="__codelineno-0-324" name="__codelineno-0-324"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-325" name="__codelineno-0-325"></a><span class="sd">        exp (Experiment): The experiment object containing the necessary directories and model names.</span>
+<a id="__codelineno-0-326" name="__codelineno-0-326"></a>
+<a id="__codelineno-0-327" name="__codelineno-0-327"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-328" name="__codelineno-0-328"></a><span class="sd">        None: The batch submission script is written to the experiment</span>
+<a id="__codelineno-0-329" name="__codelineno-0-329"></a><span class="sd">        job directory.</span>
+<a id="__codelineno-0-330" name="__codelineno-0-330"></a><span class="sd">    """</span>
+<a id="__codelineno-0-331" name="__codelineno-0-331"></a>    <span class="c1"># Extract relevant data from the experiment object</span>
+<a id="__codelineno-0-332" name="__codelineno-0-332"></a>    <span class="n">wdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">))</span>
+<a id="__codelineno-0-333" name="__codelineno-0-333"></a>    <span class="n">filename</span> <span class="o">=</span> <span class="s1">'submit_run_plots.bat'</span>
+<a id="__codelineno-0-334" name="__codelineno-0-334"></a>    <span class="n">work_dir</span> <span class="o">=</span> <span class="n">wdir</span>
+<a id="__codelineno-0-335" name="__codelineno-0-335"></a>    <span class="n">jobdir</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span>
+<a id="__codelineno-0-336" name="__codelineno-0-336"></a>    <span class="n">log_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">jobdir</span><span class="si">}</span><span class="se">\\</span><span class="s2">log"</span>
+<a id="__codelineno-0-337" name="__codelineno-0-337"></a>    <span class="n">model_args</span> <span class="o">=</span> <span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">models</span><span class="p">)</span>
+<a id="__codelineno-0-338" name="__codelineno-0-338"></a>
+<a id="__codelineno-0-339" name="__codelineno-0-339"></a>    <span class="c1"># List of plot scripts to run</span>
+<a id="__codelineno-0-340" name="__codelineno-0-340"></a>    <span class="n">plot_scripts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">'plot_</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">.py'</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">plots_to_run</span><span class="p">]</span>
+<a id="__codelineno-0-341" name="__codelineno-0-341"></a>
+<a id="__codelineno-0-342" name="__codelineno-0-342"></a>    <span class="c1"># Start creating the batch script content</span>
+<a id="__codelineno-0-343" name="__codelineno-0-343"></a>    <span class="n">bat_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"@echo on</span><span class="se">\n</span><span class="s2">"</span>
+<a id="__codelineno-0-344" name="__codelineno-0-344"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"set job_name=run_plot_all</span><span class="se">\n</span><span class="s2">"</span>
+<a id="__codelineno-0-345" name="__codelineno-0-345"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"set work_dir=</span><span class="si">{</span><span class="n">work_dir</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+<a id="__codelineno-0-346" name="__codelineno-0-346"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"set jobdir=</span><span class="si">{</span><span class="n">jobdir</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+<a id="__codelineno-0-347" name="__codelineno-0-347"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"set log_dir=%jobdir%</span><span class="se">\\</span><span class="s2">log</span><span class="se">\n\n</span><span class="s2">"</span>
+<a id="__codelineno-0-348" name="__codelineno-0-348"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'cd "%work_dir%</span><span class="se">\\</span><span class="s1">plotter"</span><span class="se">\n\n</span><span class="s1">'</span>
 <a id="__codelineno-0-349" name="__codelineno-0-349"></a>
-<a id="__codelineno-0-350" name="__codelineno-0-350"></a>    <span class="c1"># Write the content to the batch file</span>
-<a id="__codelineno-0-351" name="__codelineno-0-351"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-<a id="__codelineno-0-352" name="__codelineno-0-352"></a>        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bat_content</span><span class="p">)</span>
-<a id="__codelineno-0-353" name="__codelineno-0-353"></a>
-<a id="__codelineno-0-354" name="__codelineno-0-354"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Batch script written to </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-0-350" name="__codelineno-0-350"></a>    <span class="c1"># Add commands to run the plotting scripts</span>
+<a id="__codelineno-0-351" name="__codelineno-0-351"></a>    <span class="k">for</span> <span class="n">script</span> <span class="ow">in</span> <span class="n">plot_scripts</span><span class="p">:</span>
+<a id="__codelineno-0-352" name="__codelineno-0-352"></a>        <span class="n">plot_name</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.py'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+<a id="__codelineno-0-353" name="__codelineno-0-353"></a>        <span class="n">bat_content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'python </span><span class="si">{</span><span class="n">script</span><span class="si">}</span><span class="s1"> --directory </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">output_directory</span><span class="si">}</span><span class="s1"> --models </span><span class="si">{</span><span class="n">model_args</span><span class="si">}</span><span class="s1"> &gt;&gt; "%log_dir%</span><span class="se">\\</span><span class="s1">run_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s1">.log" 2&gt;&gt; "%log_dir%</span><span class="se">\\</span><span class="s1">run_</span><span class="si">{</span><span class="n">plot_name</span><span class="si">}</span><span class="s1">.err"</span><span class="se">\n</span><span class="s1">'</span>
+<a id="__codelineno-0-354" name="__codelineno-0-354"></a>
+<a id="__codelineno-0-355" name="__codelineno-0-355"></a>
+<a id="__codelineno-0-356" name="__codelineno-0-356"></a>    <span class="c1"># Add pause at the end to keep the terminal open</span>
+<a id="__codelineno-0-357" name="__codelineno-0-357"></a>    <span class="n">bat_content</span> <span class="o">+=</span> <span class="s2">"pause</span><span class="se">\n</span><span class="s2">"</span>
+<a id="__codelineno-0-358" name="__codelineno-0-358"></a>
+<a id="__codelineno-0-359" name="__codelineno-0-359"></a>    <span class="c1"># Write the content to the batch file</span>
+<a id="__codelineno-0-360" name="__codelineno-0-360"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+<a id="__codelineno-0-361" name="__codelineno-0-361"></a>        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bat_content</span><span class="p">)</span>
+<a id="__codelineno-0-362" name="__codelineno-0-362"></a>
+<a id="__codelineno-0-363" name="__codelineno-0-363"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Batch script written to </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1560,16 +1589,7 @@ It calls the <code>create_ps1_script</code> function to generate the PowerShell 
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>utility/helper_local.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-246">246</a></span>
-<span class="normal"><a href="#__codelineno-0-247">247</a></span>
-<span class="normal"><a href="#__codelineno-0-248">248</a></span>
-<span class="normal"><a href="#__codelineno-0-249">249</a></span>
-<span class="normal"><a href="#__codelineno-0-250">250</a></span>
-<span class="normal"><a href="#__codelineno-0-251">251</a></span>
-<span class="normal"><a href="#__codelineno-0-252">252</a></span>
-<span class="normal"><a href="#__codelineno-0-253">253</a></span>
-<span class="normal"><a href="#__codelineno-0-254">254</a></span>
-<span class="normal"><a href="#__codelineno-0-255">255</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-255">255</a></span>
 <span class="normal"><a href="#__codelineno-0-256">256</a></span>
 <span class="normal"><a href="#__codelineno-0-257">257</a></span>
 <span class="normal"><a href="#__codelineno-0-258">258</a></span>
@@ -1584,31 +1604,40 @@ It calls the <code>create_ps1_script</code> function to generate the PowerShell 
 <span class="normal"><a href="#__codelineno-0-267">267</a></span>
 <span class="normal"><a href="#__codelineno-0-268">268</a></span>
 <span class="normal"><a href="#__codelineno-0-269">269</a></span>
-<span class="normal"><a href="#__codelineno-0-270">270</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-246" name="__codelineno-0-246"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_ps1_analyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">pyscript</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-<a id="__codelineno-0-247" name="__codelineno-0-247"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-0-248" name="__codelineno-0-248"></a><span class="sd">    This function generates a batch file that runs the specified analyzer script for the given model.</span>
-<a id="__codelineno-0-249" name="__codelineno-0-249"></a><span class="sd">    It calls the `create_ps1_script` function to generate the PowerShell script file.</span>
-<a id="__codelineno-0-250" name="__codelineno-0-250"></a>
-<a id="__codelineno-0-251" name="__codelineno-0-251"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-252" name="__codelineno-0-252"></a><span class="sd">        exp (object): An experiment object containing the 'job_directory' attribute for saving the script.</span>
-<a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="sd">        pyscript (str): The path to the Python script to be run by the analyzer.</span>
-<a id="__codelineno-0-254" name="__codelineno-0-254"></a><span class="sd">        model (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.</span>
-<a id="__codelineno-0-255" name="__codelineno-0-255"></a>
-<a id="__codelineno-0-256" name="__codelineno-0-256"></a><span class="sd">    Raises:</span>
-<a id="__codelineno-0-257" name="__codelineno-0-257"></a><span class="sd">        ValueError: If the model name or script path is invalid, ensuring correct arguments are passed.</span>
-<a id="__codelineno-0-258" name="__codelineno-0-258"></a><span class="sd">    """</span>
-<a id="__codelineno-0-259" name="__codelineno-0-259"></a>    <span class="n">job_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"analyzer_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-0-260" name="__codelineno-0-260"></a>    <span class="n">subdir</span> <span class="o">=</span> <span class="n">model</span>
-<a id="__codelineno-0-261" name="__codelineno-0-261"></a>    <span class="n">pycommand</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">'python </span><span class="si">{</span><span class="n">pyscript</span><span class="si">}</span><span class="s1"> --directory "</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s1">"</span><span class="se">\n</span><span class="s1">'</span>
-<a id="__codelineno-0-262" name="__codelineno-0-262"></a>
-<a id="__codelineno-0-263" name="__codelineno-0-263"></a>    <span class="k">if</span> <span class="n">model</span> <span class="o">==</span><span class="s1">'malariasimulation'</span><span class="p">:</span>
-<a id="__codelineno-0-264" name="__codelineno-0-264"></a>        <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">malariasimulation_parameter_variation</span> <span class="o">==</span> <span class="s2">"both"</span>  <span class="p">:</span>
-<a id="__codelineno-0-265" name="__codelineno-0-265"></a>            <span class="n">pycommand</span>  <span class="o">=</span> <span class="n">pycommand</span>  <span class="o">+</span> <span class="sa">f</span><span class="s1">'</span><span class="se">\n</span><span class="s1">python analyze_sim.py --dir "</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s1">" --mpv'</span>
-<a id="__codelineno-0-266" name="__codelineno-0-266"></a>        <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">malariasimulation_parameter_variation</span> <span class="o">==</span> <span class="s2">"yes"</span>  <span class="p">:</span>
-<a id="__codelineno-0-267" name="__codelineno-0-267"></a>            <span class="n">pycommand</span>  <span class="o">=</span> <span class="n">pycommand</span>  <span class="o">+</span> <span class="s1">'--mpv'</span>
-<a id="__codelineno-0-268" name="__codelineno-0-268"></a>
-<a id="__codelineno-0-269" name="__codelineno-0-269"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'run_analyze_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.ps1'</span>
-<a id="__codelineno-0-270" name="__codelineno-0-270"></a>    <span class="n">create_ps1_script</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">subdir</span><span class="p">,</span> <span class="n">job_name</span><span class="p">,</span> <span class="n">pycommand</span> <span class="p">)</span>
+<span class="normal"><a href="#__codelineno-0-270">270</a></span>
+<span class="normal"><a href="#__codelineno-0-271">271</a></span>
+<span class="normal"><a href="#__codelineno-0-272">272</a></span>
+<span class="normal"><a href="#__codelineno-0-273">273</a></span>
+<span class="normal"><a href="#__codelineno-0-274">274</a></span>
+<span class="normal"><a href="#__codelineno-0-275">275</a></span>
+<span class="normal"><a href="#__codelineno-0-276">276</a></span>
+<span class="normal"><a href="#__codelineno-0-277">277</a></span>
+<span class="normal"><a href="#__codelineno-0-278">278</a></span>
+<span class="normal"><a href="#__codelineno-0-279">279</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-255" name="__codelineno-0-255"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_ps1_analyzer</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">pyscript</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<a id="__codelineno-0-256" name="__codelineno-0-256"></a><span class="w">    </span><span class="sd">"""</span>
+<a id="__codelineno-0-257" name="__codelineno-0-257"></a><span class="sd">    This function generates a batch file that runs the specified analyzer script for the given model.</span>
+<a id="__codelineno-0-258" name="__codelineno-0-258"></a><span class="sd">    It calls the `create_ps1_script` function to generate the PowerShell script file.</span>
+<a id="__codelineno-0-259" name="__codelineno-0-259"></a>
+<a id="__codelineno-0-260" name="__codelineno-0-260"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-261" name="__codelineno-0-261"></a><span class="sd">        exp (object): An experiment object containing the 'job_directory' attribute for saving the script.</span>
+<a id="__codelineno-0-262" name="__codelineno-0-262"></a><span class="sd">        pyscript (str): The path to the Python script to be run by the analyzer.</span>
+<a id="__codelineno-0-263" name="__codelineno-0-263"></a><span class="sd">        model (str): The model name (e.g., 'OpenMalaria', 'malariasimulation') to customize the script for the specific model.</span>
+<a id="__codelineno-0-264" name="__codelineno-0-264"></a>
+<a id="__codelineno-0-265" name="__codelineno-0-265"></a><span class="sd">    Raises:</span>
+<a id="__codelineno-0-266" name="__codelineno-0-266"></a><span class="sd">        ValueError: If the model name or script path is invalid, ensuring correct arguments are passed.</span>
+<a id="__codelineno-0-267" name="__codelineno-0-267"></a><span class="sd">    """</span>
+<a id="__codelineno-0-268" name="__codelineno-0-268"></a>    <span class="n">job_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"analyzer_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-269" name="__codelineno-0-269"></a>    <span class="n">subdir</span> <span class="o">=</span> <span class="n">model</span>
+<a id="__codelineno-0-270" name="__codelineno-0-270"></a>    <span class="n">pycommand</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">'python </span><span class="si">{</span><span class="n">pyscript</span><span class="si">}</span><span class="s1"> --directory "</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s1">"'</span>
+<a id="__codelineno-0-271" name="__codelineno-0-271"></a>
+<a id="__codelineno-0-272" name="__codelineno-0-272"></a>    <span class="k">if</span> <span class="n">model</span> <span class="o">==</span><span class="s1">'malariasimulation'</span><span class="p">:</span>
+<a id="__codelineno-0-273" name="__codelineno-0-273"></a>        <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">malariasimulation_parameter_variation</span> <span class="o">==</span> <span class="s2">"both"</span>  <span class="p">:</span>
+<a id="__codelineno-0-274" name="__codelineno-0-274"></a>            <span class="n">pycommand</span>  <span class="o">=</span> <span class="n">pycommand</span>  <span class="o">+</span> <span class="sa">f</span><span class="s1">'</span><span class="se">\n</span><span class="s1">python analyze_sim.py --dir "</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s1">" --mpv'</span>
+<a id="__codelineno-0-275" name="__codelineno-0-275"></a>        <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">malariasimulation_parameter_variation</span> <span class="o">==</span> <span class="s2">"yes"</span>  <span class="p">:</span>
+<a id="__codelineno-0-276" name="__codelineno-0-276"></a>            <span class="n">pycommand</span>  <span class="o">=</span> <span class="n">pycommand</span>  <span class="o">+</span> <span class="s1">' --mpv'</span>
+<a id="__codelineno-0-277" name="__codelineno-0-277"></a>
+<a id="__codelineno-0-278" name="__codelineno-0-278"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'run_analyze_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.ps1'</span>
+<a id="__codelineno-0-279" name="__codelineno-0-279"></a>    <span class="n">create_ps1_script</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">subdir</span><span class="p">,</span> <span class="n">job_name</span><span class="p">,</span> <span class="n">pycommand</span> <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1707,7 +1736,7 @@ It calls the <code>create_ps1_script</code> function to generate the PowerShell 
             <li>
 <b><code>None</code></b>              –
               <div class="doc-md-description">
-                <p>This function does not return a value but writes the PowerShell script to the specified file.</p>
+                <p>The PowerShell script is written to <code>filename</code>.</p>
               </div>
             </li>
         </ul>
@@ -1806,7 +1835,12 @@ It calls the <code>create_ps1_script</code> function to generate the PowerShell 
 <span class="normal"><a href="#__codelineno-0-173">173</a></span>
 <span class="normal"><a href="#__codelineno-0-174">174</a></span>
 <span class="normal"><a href="#__codelineno-0-175">175</a></span>
-<span class="normal"><a href="#__codelineno-0-176">176</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_ps1_runmodel</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-176">176</a></span>
+<span class="normal"><a href="#__codelineno-0-177">177</a></span>
+<span class="normal"><a href="#__codelineno-0-178">178</a></span>
+<span class="normal"><a href="#__codelineno-0-179">179</a></span>
+<span class="normal"><a href="#__codelineno-0-180">180</a></span>
+<span class="normal"><a href="#__codelineno-0-181">181</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_ps1_runmodel</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
 <a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-90" name="__codelineno-0-90"></a><span class="sd">    Writes a PowerShell script that manages the execution of two jobs:</span>
 <a id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="sd">    1. Runs the first script (e.g., run_{models}.ps1)</span>
@@ -1821,7 +1855,7 @@ It calls the <code>create_ps1_script</code> function to generate the PowerShell 
 <a id="__codelineno-0-100" name="__codelineno-0-100"></a><span class="sd">        ValueError: If the provided models is empty or if exp.job_directory is not valid.</span>
 <a id="__codelineno-0-101" name="__codelineno-0-101"></a>
 <a id="__codelineno-0-102" name="__codelineno-0-102"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-103" name="__codelineno-0-103"></a><span class="sd">        None: This function does not return a value but writes the PowerShell script to the specified file.</span>
+<a id="__codelineno-0-103" name="__codelineno-0-103"></a><span class="sd">        None: The PowerShell script is written to `filename`.</span>
 <a id="__codelineno-0-104" name="__codelineno-0-104"></a><span class="sd">    """</span>
 <a id="__codelineno-0-105" name="__codelineno-0-105"></a>
 <a id="__codelineno-0-106" name="__codelineno-0-106"></a>    <span class="c1"># Check for valid models and experiment directory</span>
@@ -1841,60 +1875,65 @@ It calls the <code>create_ps1_script</code> function to generate the PowerShell 
 <a id="__codelineno-0-120" name="__codelineno-0-120"></a>
 <a id="__codelineno-0-121" name="__codelineno-0-121"></a><span class="s2">    # Start the first job</span>
 <a id="__codelineno-0-122" name="__codelineno-0-122"></a><span class="s2">    $job1 = Start-Job -ScriptBlock </span><span class="se">{{</span>
-<a id="__codelineno-0-123" name="__codelineno-0-123"></a><span class="s2">        try </span><span class="se">{{</span>
-<a id="__codelineno-0-124" name="__codelineno-0-124"></a><span class="s2">            # Run the first script: run_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">.ps1</span>
-<a id="__codelineno-0-125" name="__codelineno-0-125"></a><span class="s2">            Write-Host "Running job 1: run_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">.ps1"</span>
-<a id="__codelineno-0-126" name="__codelineno-0-126"></a><span class="s2">            &amp; "</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">)</span><span class="si">}</span><span class="se">\\</span><span class="s2">run_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">.ps1"</span>
-<a id="__codelineno-0-127" name="__codelineno-0-127"></a><span class="s2">        </span><span class="se">}}</span><span class="s2"> catch </span><span class="se">{{</span>
-<a id="__codelineno-0-128" name="__codelineno-0-128"></a><span class="s2">            Write-Error "Job 1 failed: $_"</span>
-<a id="__codelineno-0-129" name="__codelineno-0-129"></a><span class="s2">        </span><span class="se">}}</span>
-<a id="__codelineno-0-130" name="__codelineno-0-130"></a><span class="s2">    </span><span class="se">}}</span>
-<a id="__codelineno-0-131" name="__codelineno-0-131"></a>
-<a id="__codelineno-0-132" name="__codelineno-0-132"></a><span class="s2">    # Wait for the first job to complete</span>
-<a id="__codelineno-0-133" name="__codelineno-0-133"></a><span class="s2">    Receive-Job -Job $job1 -Wait</span>
-<a id="__codelineno-0-134" name="__codelineno-0-134"></a><span class="s2">    if ($job1.State -eq 'Completed') </span><span class="se">{{</span>
-<a id="__codelineno-0-135" name="__codelineno-0-135"></a><span class="s2">        Write-Host "Job 1 completed successfully."</span>
-<a id="__codelineno-0-136" name="__codelineno-0-136"></a><span class="s2">    </span><span class="se">}}</span><span class="s2"> else </span><span class="se">{{</span>
-<a id="__codelineno-0-137" name="__codelineno-0-137"></a><span class="s2">        Write-Error "Job 1 did not complete successfully."</span>
-<a id="__codelineno-0-138" name="__codelineno-0-138"></a><span class="s2">    </span><span class="se">}}</span>
-<a id="__codelineno-0-139" name="__codelineno-0-139"></a><span class="s2">    $job1 | Remove-Job</span>
-<a id="__codelineno-0-140" name="__codelineno-0-140"></a><span class="s2">    Stop-Transcript</span>
-<a id="__codelineno-0-141" name="__codelineno-0-141"></a>
-<a id="__codelineno-0-142" name="__codelineno-0-142"></a>
-<a id="__codelineno-0-143" name="__codelineno-0-143"></a><span class="s2">    # Start the second job (only after the first job completes)</span>
-<a id="__codelineno-0-144" name="__codelineno-0-144"></a><span class="s2">    $LogFile = "</span><span class="si">{</span><span class="n">logfile_analyzer</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-0-145" name="__codelineno-0-145"></a><span class="s2">    Start-Transcript -Path $LogFile -Force</span>
+<a id="__codelineno-0-123" name="__codelineno-0-123"></a><span class="s2">        $ErrorActionPreference = "Stop"</span>
+<a id="__codelineno-0-124" name="__codelineno-0-124"></a><span class="s2">        $global:LASTEXITCODE = 0</span>
+<a id="__codelineno-0-125" name="__codelineno-0-125"></a><span class="s2">        try </span><span class="se">{{</span>
+<a id="__codelineno-0-126" name="__codelineno-0-126"></a><span class="s2">            # Run the first script: run_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">.ps1</span>
+<a id="__codelineno-0-127" name="__codelineno-0-127"></a><span class="s2">            Write-Host "Running job 1: run_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">.ps1"</span>
+<a id="__codelineno-0-128" name="__codelineno-0-128"></a><span class="s2">            &amp; "</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">)</span><span class="si">}</span><span class="se">\\</span><span class="s2">run_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">.ps1"</span>
+<a id="__codelineno-0-129" name="__codelineno-0-129"></a><span class="s2">            if ($LASTEXITCODE -ne 0) </span><span class="se">{{</span>
+<a id="__codelineno-0-130" name="__codelineno-0-130"></a><span class="s2">                throw "Simulation exited with code $LASTEXITCODE"</span>
+<a id="__codelineno-0-131" name="__codelineno-0-131"></a><span class="s2">            </span><span class="se">}}</span>
+<a id="__codelineno-0-132" name="__codelineno-0-132"></a><span class="s2">        </span><span class="se">}}</span><span class="s2"> catch </span><span class="se">{{</span>
+<a id="__codelineno-0-133" name="__codelineno-0-133"></a><span class="s2">            throw "Job 1 failed: $_"</span>
+<a id="__codelineno-0-134" name="__codelineno-0-134"></a><span class="s2">        </span><span class="se">}}</span>
+<a id="__codelineno-0-135" name="__codelineno-0-135"></a><span class="s2">    </span><span class="se">}}</span>
+<a id="__codelineno-0-136" name="__codelineno-0-136"></a>
+<a id="__codelineno-0-137" name="__codelineno-0-137"></a><span class="s2">    # Wait for the first job to complete</span>
+<a id="__codelineno-0-138" name="__codelineno-0-138"></a><span class="s2">    Receive-Job -Job $job1 -Wait -ErrorAction Continue</span>
+<a id="__codelineno-0-139" name="__codelineno-0-139"></a><span class="s2">    $simulationFailed = ($job1.State -ne 'Completed') -or ($job1.ChildJobs[0].Error.Count -gt 0)</span>
+<a id="__codelineno-0-140" name="__codelineno-0-140"></a><span class="s2">    $job1 | Remove-Job</span>
+<a id="__codelineno-0-141" name="__codelineno-0-141"></a><span class="s2">    Stop-Transcript</span>
+<a id="__codelineno-0-142" name="__codelineno-0-142"></a><span class="s2">    if ($simulationFailed) </span><span class="se">{{</span>
+<a id="__codelineno-0-143" name="__codelineno-0-143"></a><span class="s2">        throw "Simulation failed; analysis was not started. See $LogFile for details."</span>
+<a id="__codelineno-0-144" name="__codelineno-0-144"></a><span class="s2">    </span><span class="se">}}</span>
+<a id="__codelineno-0-145" name="__codelineno-0-145"></a><span class="s2">    Write-Host "Job 1 completed successfully."</span>
 <a id="__codelineno-0-146" name="__codelineno-0-146"></a>
-<a id="__codelineno-0-147" name="__codelineno-0-147"></a><span class="s2">    $job2 = Start-Job -ScriptBlock </span><span class="se">{{</span>
-<a id="__codelineno-0-148" name="__codelineno-0-148"></a><span class="s2">        try </span><span class="se">{{</span>
-<a id="__codelineno-0-149" name="__codelineno-0-149"></a><span class="s2">            # Run the second script with -ExecutionPolicy Bypass and explicit -File parameter</span>
-<a id="__codelineno-0-150" name="__codelineno-0-150"></a><span class="s2">            Write-Host "Running job 2: analyze_sim_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">.ps1"</span>
-<a id="__codelineno-0-151" name="__codelineno-0-151"></a><span class="s2">            &amp; "powershell.exe" -ExecutionPolicy Bypass -File "</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">)</span><span class="si">}</span><span class="se">\\</span><span class="s2">run_analyze_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">.ps1"</span>
-<a id="__codelineno-0-152" name="__codelineno-0-152"></a><span class="s2">        </span><span class="se">}}</span><span class="s2"> catch </span><span class="se">{{</span>
-<a id="__codelineno-0-153" name="__codelineno-0-153"></a><span class="s2">            Write-Error "Job 2 failed: $_"</span>
-<a id="__codelineno-0-154" name="__codelineno-0-154"></a><span class="s2">        </span><span class="se">}}</span>
-<a id="__codelineno-0-155" name="__codelineno-0-155"></a><span class="s2">    </span><span class="se">}}</span>
-<a id="__codelineno-0-156" name="__codelineno-0-156"></a>
-<a id="__codelineno-0-157" name="__codelineno-0-157"></a><span class="s2">    # Wait for the second job to complete</span>
-<a id="__codelineno-0-158" name="__codelineno-0-158"></a><span class="s2">    Receive-Job -Job $job2 -Wait</span>
-<a id="__codelineno-0-159" name="__codelineno-0-159"></a><span class="s2">    if ($job2.State -eq 'Completed') </span><span class="se">{{</span>
-<a id="__codelineno-0-160" name="__codelineno-0-160"></a><span class="s2">        Write-Host "Job 2 completed successfully."</span>
-<a id="__codelineno-0-161" name="__codelineno-0-161"></a><span class="s2">    </span><span class="se">}}</span><span class="s2"> else </span><span class="se">{{</span>
-<a id="__codelineno-0-162" name="__codelineno-0-162"></a><span class="s2">        Write-Error "Job 2 did not complete successfully."</span>
-<a id="__codelineno-0-163" name="__codelineno-0-163"></a><span class="s2">    </span><span class="se">}}</span>
-<a id="__codelineno-0-164" name="__codelineno-0-164"></a><span class="s2">    $job2 | Remove-Job</span>
-<a id="__codelineno-0-165" name="__codelineno-0-165"></a>
-<a id="__codelineno-0-166" name="__codelineno-0-166"></a><span class="s2">    Write-Host "All jobs completed."</span>
-<a id="__codelineno-0-167" name="__codelineno-0-167"></a><span class="s2">    Stop-Transcript</span>
-<a id="__codelineno-0-168" name="__codelineno-0-168"></a>
-<a id="__codelineno-0-169" name="__codelineno-0-169"></a><span class="s2">    Read-Host "Press Enter to close the terminal"</span>
-<a id="__codelineno-0-170" name="__codelineno-0-170"></a><span class="s2">    """</span>
-<a id="__codelineno-0-171" name="__codelineno-0-171"></a>
-<a id="__codelineno-0-172" name="__codelineno-0-172"></a>    <span class="c1"># Write to the specified file</span>
-<a id="__codelineno-0-173" name="__codelineno-0-173"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-<a id="__codelineno-0-174" name="__codelineno-0-174"></a>        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ps1_content</span><span class="p">)</span>
-<a id="__codelineno-0-175" name="__codelineno-0-175"></a>
-<a id="__codelineno-0-176" name="__codelineno-0-176"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PowerShell script has been written to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-0-147" name="__codelineno-0-147"></a>
+<a id="__codelineno-0-148" name="__codelineno-0-148"></a><span class="s2">    # Start the second job (only after the first job completes)</span>
+<a id="__codelineno-0-149" name="__codelineno-0-149"></a><span class="s2">    $LogFile = "</span><span class="si">{</span><span class="n">logfile_analyzer</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-150" name="__codelineno-0-150"></a><span class="s2">    Start-Transcript -Path $LogFile -Force</span>
+<a id="__codelineno-0-151" name="__codelineno-0-151"></a>
+<a id="__codelineno-0-152" name="__codelineno-0-152"></a><span class="s2">    $job2 = Start-Job -ScriptBlock </span><span class="se">{{</span>
+<a id="__codelineno-0-153" name="__codelineno-0-153"></a><span class="s2">        try </span><span class="se">{{</span>
+<a id="__codelineno-0-154" name="__codelineno-0-154"></a><span class="s2">            # Run the second script with -ExecutionPolicy Bypass and explicit -File parameter</span>
+<a id="__codelineno-0-155" name="__codelineno-0-155"></a><span class="s2">            Write-Host "Running job 2: analyze_sim_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">.ps1"</span>
+<a id="__codelineno-0-156" name="__codelineno-0-156"></a><span class="s2">            &amp; "powershell.exe" -ExecutionPolicy Bypass -File "</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="p">)</span><span class="si">}</span><span class="se">\\</span><span class="s2">run_analyze_</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">.ps1"</span>
+<a id="__codelineno-0-157" name="__codelineno-0-157"></a><span class="s2">        </span><span class="se">}}</span><span class="s2"> catch </span><span class="se">{{</span>
+<a id="__codelineno-0-158" name="__codelineno-0-158"></a><span class="s2">            Write-Error "Job 2 failed: $_"</span>
+<a id="__codelineno-0-159" name="__codelineno-0-159"></a><span class="s2">        </span><span class="se">}}</span>
+<a id="__codelineno-0-160" name="__codelineno-0-160"></a><span class="s2">    </span><span class="se">}}</span>
+<a id="__codelineno-0-161" name="__codelineno-0-161"></a>
+<a id="__codelineno-0-162" name="__codelineno-0-162"></a><span class="s2">    # Wait for the second job to complete</span>
+<a id="__codelineno-0-163" name="__codelineno-0-163"></a><span class="s2">    Receive-Job -Job $job2 -Wait</span>
+<a id="__codelineno-0-164" name="__codelineno-0-164"></a><span class="s2">    if ($job2.State -eq 'Completed') </span><span class="se">{{</span>
+<a id="__codelineno-0-165" name="__codelineno-0-165"></a><span class="s2">        Write-Host "Job 2 completed successfully."</span>
+<a id="__codelineno-0-166" name="__codelineno-0-166"></a><span class="s2">    </span><span class="se">}}</span><span class="s2"> else </span><span class="se">{{</span>
+<a id="__codelineno-0-167" name="__codelineno-0-167"></a><span class="s2">        Write-Error "Job 2 did not complete successfully."</span>
+<a id="__codelineno-0-168" name="__codelineno-0-168"></a><span class="s2">    </span><span class="se">}}</span>
+<a id="__codelineno-0-169" name="__codelineno-0-169"></a><span class="s2">    $job2 | Remove-Job</span>
+<a id="__codelineno-0-170" name="__codelineno-0-170"></a>
+<a id="__codelineno-0-171" name="__codelineno-0-171"></a><span class="s2">    Write-Host "All jobs completed."</span>
+<a id="__codelineno-0-172" name="__codelineno-0-172"></a><span class="s2">    Stop-Transcript</span>
+<a id="__codelineno-0-173" name="__codelineno-0-173"></a>
+<a id="__codelineno-0-174" name="__codelineno-0-174"></a><span class="s2">    Read-Host "Press Enter to close the terminal"</span>
+<a id="__codelineno-0-175" name="__codelineno-0-175"></a><span class="s2">    """</span>
+<a id="__codelineno-0-176" name="__codelineno-0-176"></a>
+<a id="__codelineno-0-177" name="__codelineno-0-177"></a>    <span class="c1"># Write to the specified file</span>
+<a id="__codelineno-0-178" name="__codelineno-0-178"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+<a id="__codelineno-0-179" name="__codelineno-0-179"></a>        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ps1_content</span><span class="p">)</span>
+<a id="__codelineno-0-180" name="__codelineno-0-180"></a>
+<a id="__codelineno-0-181" name="__codelineno-0-181"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PowerShell script has been written to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

@@ -377,7 +377,8 @@ the function returns None.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-504">504</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-503">503</a></span>
+<span class="normal"><a href="#__codelineno-0-504">504</a></span>
 <span class="normal"><a href="#__codelineno-0-505">505</a></span>
 <span class="normal"><a href="#__codelineno-0-506">506</a></span>
 <span class="normal"><a href="#__codelineno-0-507">507</a></span>
@@ -401,33 +402,32 @@ the function returns None.</p>
 <span class="normal"><a href="#__codelineno-0-525">525</a></span>
 <span class="normal"><a href="#__codelineno-0-526">526</a></span>
 <span class="normal"><a href="#__codelineno-0-527">527</a></span>
-<span class="normal"><a href="#__codelineno-0-528">528</a></span>
-<span class="normal"><a href="#__codelineno-0-529">529</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-504" name="__codelineno-0-504"></a><span class="k">def</span><span class="w"> </span><span class="nf">assign_age_group</span><span class="p">(</span><span class="n">age_range</span><span class="p">,</span> <span class="n">categories</span><span class="p">):</span>
-<a id="__codelineno-0-505" name="__codelineno-0-505"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-0-506" name="__codelineno-0-506"></a><span class="sd">    Assign an age group based on a given age range and predefined category bounds.</span>
-<a id="__codelineno-0-507" name="__codelineno-0-507"></a><span class="sd">    This function checks which predefined age category a given age range falls into by comparing</span>
-<a id="__codelineno-0-508" name="__codelineno-0-508"></a><span class="sd">    the minimum and maximum age values with the bounds of each category. If the range overlaps</span>
-<a id="__codelineno-0-509" name="__codelineno-0-509"></a><span class="sd">    or fits entirely within a category, the corresponding category is returned. If no match is found,</span>
-<a id="__codelineno-0-510" name="__codelineno-0-510"></a><span class="sd">    the function returns None.</span>
-<a id="__codelineno-0-511" name="__codelineno-0-511"></a>
-<a id="__codelineno-0-512" name="__codelineno-0-512"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-513" name="__codelineno-0-513"></a><span class="sd">        age_range (tuple): A tuple containing the minimum and maximum age of the range (e.g., (0.5, 1)).</span>
-<a id="__codelineno-0-514" name="__codelineno-0-514"></a><span class="sd">        categories (dict): A dictionary of age categories, where each key is a category name, and</span>
-<a id="__codelineno-0-515" name="__codelineno-0-515"></a><span class="sd">                           the value is another dictionary with 'min' and 'max' keys defining the</span>
-<a id="__codelineno-0-516" name="__codelineno-0-516"></a><span class="sd">                           age bounds of the category.</span>
-<a id="__codelineno-0-517" name="__codelineno-0-517"></a>
-<a id="__codelineno-0-518" name="__codelineno-0-518"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-519" name="__codelineno-0-519"></a><span class="sd">        str or None: The name of the category the age range fits into, or None if no match is found.</span>
-<a id="__codelineno-0-520" name="__codelineno-0-520"></a><span class="sd">    """</span>
-<a id="__codelineno-0-521" name="__codelineno-0-521"></a>    <span class="n">min_age</span><span class="p">,</span> <span class="n">max_age</span> <span class="o">=</span> <span class="n">age_range</span>
-<a id="__codelineno-0-522" name="__codelineno-0-522"></a>    <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="n">categories</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a id="__codelineno-0-523" name="__codelineno-0-523"></a>        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_age</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_age</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]:</span>
-<a id="__codelineno-0-524" name="__codelineno-0-524"></a>            <span class="k">return</span> <span class="n">category</span>
-<a id="__codelineno-0-525" name="__codelineno-0-525"></a>    <span class="c1"># Handle overlapping or inclusive ranges</span>
-<a id="__codelineno-0-526" name="__codelineno-0-526"></a>    <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="n">categories</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a id="__codelineno-0-527" name="__codelineno-0-527"></a>        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_age</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_age</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]:</span>
-<a id="__codelineno-0-528" name="__codelineno-0-528"></a>            <span class="k">return</span> <span class="n">category</span>
-<a id="__codelineno-0-529" name="__codelineno-0-529"></a>    <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># If no category fits</span>
+<span class="normal"><a href="#__codelineno-0-528">528</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-503" name="__codelineno-0-503"></a><span class="k">def</span><span class="w"> </span><span class="nf">assign_age_group</span><span class="p">(</span><span class="n">age_range</span><span class="p">,</span> <span class="n">categories</span><span class="p">):</span>
+<a id="__codelineno-0-504" name="__codelineno-0-504"></a><span class="w">    </span><span class="sd">"""</span>
+<a id="__codelineno-0-505" name="__codelineno-0-505"></a><span class="sd">    Assign an age group based on a given age range and predefined category bounds.</span>
+<a id="__codelineno-0-506" name="__codelineno-0-506"></a><span class="sd">    This function checks which predefined age category a given age range falls into by comparing</span>
+<a id="__codelineno-0-507" name="__codelineno-0-507"></a><span class="sd">    the minimum and maximum age values with the bounds of each category. If the range overlaps</span>
+<a id="__codelineno-0-508" name="__codelineno-0-508"></a><span class="sd">    or fits entirely within a category, the corresponding category is returned. If no match is found,</span>
+<a id="__codelineno-0-509" name="__codelineno-0-509"></a><span class="sd">    the function returns None.</span>
+<a id="__codelineno-0-510" name="__codelineno-0-510"></a>
+<a id="__codelineno-0-511" name="__codelineno-0-511"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-512" name="__codelineno-0-512"></a><span class="sd">        age_range (tuple): A tuple containing the minimum and maximum age of the range (e.g., (0.5, 1)).</span>
+<a id="__codelineno-0-513" name="__codelineno-0-513"></a><span class="sd">        categories (dict): A dictionary of age categories, where each key is a category name, and</span>
+<a id="__codelineno-0-514" name="__codelineno-0-514"></a><span class="sd">                           the value is another dictionary with 'min' and 'max' keys defining the</span>
+<a id="__codelineno-0-515" name="__codelineno-0-515"></a><span class="sd">                           age bounds of the category.</span>
+<a id="__codelineno-0-516" name="__codelineno-0-516"></a>
+<a id="__codelineno-0-517" name="__codelineno-0-517"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-518" name="__codelineno-0-518"></a><span class="sd">        str or None: The name of the category the age range fits into, or None if no match is found.</span>
+<a id="__codelineno-0-519" name="__codelineno-0-519"></a><span class="sd">    """</span>
+<a id="__codelineno-0-520" name="__codelineno-0-520"></a>    <span class="n">min_age</span><span class="p">,</span> <span class="n">max_age</span> <span class="o">=</span> <span class="n">age_range</span>
+<a id="__codelineno-0-521" name="__codelineno-0-521"></a>    <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="n">categories</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-522" name="__codelineno-0-522"></a>        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_age</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_age</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]:</span>
+<a id="__codelineno-0-523" name="__codelineno-0-523"></a>            <span class="k">return</span> <span class="n">category</span>
+<a id="__codelineno-0-524" name="__codelineno-0-524"></a>    <span class="c1"># Handle overlapping or inclusive ranges</span>
+<a id="__codelineno-0-525" name="__codelineno-0-525"></a>    <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="n">categories</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-526" name="__codelineno-0-526"></a>        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_age</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_age</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]:</span>
+<a id="__codelineno-0-527" name="__codelineno-0-527"></a>            <span class="k">return</span> <span class="n">category</span>
+<a id="__codelineno-0-528" name="__codelineno-0-528"></a>    <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># If no category fits</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -486,8 +486,7 @@ with values from the unique groups and facets, if applicable, and changes &lsquo
 )
               –
               <div class="doc-md-description">
-                <p>A list of unique group names (e.g., model names) to replace
-the sweep variable placeholder. Defaults to None.</p>
+                <p>A list of unique group names (e.g., model names) to replacethe sweep variable placeholder. Defaults to None.</p>
               </div>
             </li>
             <li>
@@ -530,7 +529,7 @@ placeholder. Defaults to None.</p>
             <li>
 <b><code>str</code></b>              –
               <div class="doc-md-description">
-                <p>The cleaned and modified filename.</p>
+                <p>Cleaned and modified filename.</p>
               </div>
             </li>
         </ul>
@@ -566,8 +565,7 @@ placeholder. Defaults to None.</p>
 <span class="normal"><a href="#__codelineno-0-427">427</a></span>
 <span class="normal"><a href="#__codelineno-0-428">428</a></span>
 <span class="normal"><a href="#__codelineno-0-429">429</a></span>
-<span class="normal"><a href="#__codelineno-0-430">430</a></span>
-<span class="normal"><a href="#__codelineno-0-431">431</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-405" name="__codelineno-0-405"></a><span class="k">def</span><span class="w"> </span><span class="nf">clean_fname</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">facet_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_facets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-430">430</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-405" name="__codelineno-0-405"></a><span class="k">def</span><span class="w"> </span><span class="nf">clean_fname</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">sweepvar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">facet_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique_facets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <a id="__codelineno-0-406" name="__codelineno-0-406"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-407" name="__codelineno-0-407"></a><span class="sd">    Clean and modify a given filename by replacing placeholder variables with actual values.</span>
 <a id="__codelineno-0-408" name="__codelineno-0-408"></a><span class="sd">    This function replaces placeholder values in the provided filename based on the provided</span>
@@ -577,23 +575,22 @@ placeholder. Defaults to None.</p>
 <a id="__codelineno-0-412" name="__codelineno-0-412"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-413" name="__codelineno-0-413"></a><span class="sd">        fname (str): The filename to be cleaned and modified.</span>
 <a id="__codelineno-0-414" name="__codelineno-0-414"></a><span class="sd">        sweepvar (str, optional): The name of the sweep variable in the filename. Defaults to None.</span>
-<a id="__codelineno-0-415" name="__codelineno-0-415"></a><span class="sd">        unique_groups (list, optional): A list of unique group names (e.g., model names) to replace</span>
-<a id="__codelineno-0-416" name="__codelineno-0-416"></a><span class="sd">            the sweep variable placeholder. Defaults to None.</span>
-<a id="__codelineno-0-417" name="__codelineno-0-417"></a><span class="sd">        facet_var (str, optional): The name of the facet variable in the filename. Defaults to None.</span>
-<a id="__codelineno-0-418" name="__codelineno-0-418"></a><span class="sd">        unique_facets (list, optional): A list of unique facet names to replace the facet variable</span>
-<a id="__codelineno-0-419" name="__codelineno-0-419"></a><span class="sd">            placeholder. Defaults to None.</span>
-<a id="__codelineno-0-420" name="__codelineno-0-420"></a>
-<a id="__codelineno-0-421" name="__codelineno-0-421"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-422" name="__codelineno-0-422"></a><span class="sd">        str: The cleaned and modified filename.</span>
-<a id="__codelineno-0-423" name="__codelineno-0-423"></a><span class="sd">    """</span>
-<a id="__codelineno-0-424" name="__codelineno-0-424"></a>    <span class="k">if</span> <span class="n">unique_facets</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-425" name="__codelineno-0-425"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
-<a id="__codelineno-0-426" name="__codelineno-0-426"></a>            <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">facet_var</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-<a id="__codelineno-0-427" name="__codelineno-0-427"></a>    <span class="k">if</span> <span class="n">sweepvar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-428" name="__codelineno-0-428"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_groups</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unique_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
-<a id="__codelineno-0-429" name="__codelineno-0-429"></a>            <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">sweepvar</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">unique_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-<a id="__codelineno-0-430" name="__codelineno-0-430"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'models'</span><span class="p">,</span> <span class="s1">'model'</span><span class="p">)</span>
-<a id="__codelineno-0-431" name="__codelineno-0-431"></a>    <span class="k">return</span> <span class="n">fname</span>
+<a id="__codelineno-0-415" name="__codelineno-0-415"></a><span class="sd">        unique_groups (list, optional): A list of unique group names (e.g., model names) to replacethe sweep variable placeholder. Defaults to None.</span>
+<a id="__codelineno-0-416" name="__codelineno-0-416"></a><span class="sd">        facet_var (str, optional): The name of the facet variable in the filename. Defaults to None.</span>
+<a id="__codelineno-0-417" name="__codelineno-0-417"></a><span class="sd">        unique_facets (list, optional): A list of unique facet names to replace the facet variable</span>
+<a id="__codelineno-0-418" name="__codelineno-0-418"></a><span class="sd">            placeholder. Defaults to None.</span>
+<a id="__codelineno-0-419" name="__codelineno-0-419"></a>
+<a id="__codelineno-0-420" name="__codelineno-0-420"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-421" name="__codelineno-0-421"></a><span class="sd">        str: Cleaned and modified filename.</span>
+<a id="__codelineno-0-422" name="__codelineno-0-422"></a><span class="sd">    """</span>
+<a id="__codelineno-0-423" name="__codelineno-0-423"></a>    <span class="k">if</span> <span class="n">unique_facets</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-424" name="__codelineno-0-424"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+<a id="__codelineno-0-425" name="__codelineno-0-425"></a>            <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">facet_var</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">unique_facets</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<a id="__codelineno-0-426" name="__codelineno-0-426"></a>    <span class="k">if</span> <span class="n">sweepvar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-427" name="__codelineno-0-427"></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_groups</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unique_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+<a id="__codelineno-0-428" name="__codelineno-0-428"></a>            <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">sweepvar</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">unique_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<a id="__codelineno-0-429" name="__codelineno-0-429"></a>    <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'models'</span><span class="p">,</span> <span class="s1">'model'</span><span class="p">)</span>
+<a id="__codelineno-0-430" name="__codelineno-0-430"></a>    <span class="k">return</span> <span class="n">fname</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -972,8 +969,8 @@ simply returns the input channel name as-is.</p>
               <div class="doc-md-description">
                 <p>The name of the channel for which to retrieve the label.
 Possible values include (but are not limited to):
-- &lsquo;prevalence_2to10&rsquo;: Represents $\it{Pf}$PR$_{2-10}$ (%) prevalence.
-- &lsquo;prevalence&rsquo;: Represents $\it{Pf}$PR (%) prevalence.
+- &lsquo;prevalence_2to10&rsquo;: Represents $\mathit{Pf}$PR$_{2-10}$ (%) prevalence.
+- &lsquo;prevalence&rsquo;: Represents $\mathit{Pf}$PR (%) prevalence.
 - &lsquo;clinical_incidence&rsquo;: Represents clinical incidence (per person per year).
 - &lsquo;severe_incidence&rsquo;: Represents severe incidence (per person per year).
 - &lsquo;eir&rsquo;: Represents simulated entomological inoculation rate (EIR).
@@ -1060,8 +1057,8 @@ Possible values include (but are not limited to):
 <a id="__codelineno-0-343" name="__codelineno-0-343"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-344" name="__codelineno-0-344"></a><span class="sd">        channel (str): The name of the channel for which to retrieve the label.</span>
 <a id="__codelineno-0-345" name="__codelineno-0-345"></a><span class="sd">            Possible values include (but are not limited to):</span>
-<a id="__codelineno-0-346" name="__codelineno-0-346"></a><span class="sd">            - 'prevalence_2to10': Represents $\it{Pf}$PR$_{2-10}$ (%) prevalence.</span>
-<a id="__codelineno-0-347" name="__codelineno-0-347"></a><span class="sd">            - 'prevalence': Represents $\it{Pf}$PR (%) prevalence.</span>
+<a id="__codelineno-0-346" name="__codelineno-0-346"></a><span class="sd">            - 'prevalence_2to10': Represents $\mathit{Pf}$PR$_{2-10}$ (%) prevalence.</span>
+<a id="__codelineno-0-347" name="__codelineno-0-347"></a><span class="sd">            - 'prevalence': Represents $\mathit{Pf}$PR (%) prevalence.</span>
 <a id="__codelineno-0-348" name="__codelineno-0-348"></a><span class="sd">            - 'clinical_incidence': Represents clinical incidence (per person per year).</span>
 <a id="__codelineno-0-349" name="__codelineno-0-349"></a><span class="sd">            - 'severe_incidence': Represents severe incidence (per person per year).</span>
 <a id="__codelineno-0-350" name="__codelineno-0-350"></a><span class="sd">            - 'eir': Represents simulated entomological inoculation rate (EIR).</span>
@@ -2173,7 +2170,8 @@ present in <code>figure_vars</code>. Defaults to True.</p>
                   <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
-                <p>If &lsquo;models&rsquo; is not included in <code>figure_vars</code> and there</p>
+                <p>If &lsquo;models&rsquo; is not included in <code>figure_vars</code> and there
+are multiple unique model names in the DataFrame.</p>
               </div>
             </li>
         </ul>
@@ -2184,7 +2182,8 @@ present in <code>figure_vars</code>. Defaults to True.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>plotter/plot_helper.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-434">434</a></span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-433">433</a></span>
+<span class="normal"><a href="#__codelineno-0-434">434</a></span>
 <span class="normal"><a href="#__codelineno-0-435">435</a></span>
 <span class="normal"><a href="#__codelineno-0-436">436</a></span>
 <span class="normal"><a href="#__codelineno-0-437">437</a></span>
@@ -2245,70 +2244,69 @@ present in <code>figure_vars</code>. Defaults to True.</p>
 <span class="normal"><a href="#__codelineno-0-492">492</a></span>
 <span class="normal"><a href="#__codelineno-0-493">493</a></span>
 <span class="normal"><a href="#__codelineno-0-494">494</a></span>
-<span class="normal"><a href="#__codelineno-0-495">495</a></span>
-<span class="normal"><a href="#__codelineno-0-496">496</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-434" name="__codelineno-0-434"></a><span class="k">def</span><span class="w"> </span><span class="nf">subset_dataframe_for_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">figure_vars</span><span class="p">,</span> <span class="n">agegrps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filter_target</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<a id="__codelineno-0-435" name="__codelineno-0-435"></a><span class="w">    </span><span class="sd">"""</span>
-<a id="__codelineno-0-436" name="__codelineno-0-436"></a><span class="sd">    Filter the input DataFrame for plotting based on specified criteria.</span>
-<a id="__codelineno-0-437" name="__codelineno-0-437"></a>
-<a id="__codelineno-0-438" name="__codelineno-0-438"></a><span class="sd">    This function filters the DataFrame according to the provided figure variables,</span>
-<a id="__codelineno-0-439" name="__codelineno-0-439"></a><span class="sd">    optional age groups, and other selection criteria to prepare the data for</span>
-<a id="__codelineno-0-440" name="__codelineno-0-440"></a><span class="sd">    visualization. It also returns a string summarizing the filtering applied.</span>
-<a id="__codelineno-0-441" name="__codelineno-0-441"></a>
-<a id="__codelineno-0-442" name="__codelineno-0-442"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-443" name="__codelineno-0-443"></a><span class="sd">        df (pd.DataFrame): The input DataFrame containing simulation results.</span>
-<a id="__codelineno-0-444" name="__codelineno-0-444"></a><span class="sd">        figure_vars (list of str): List of variables used for plotting, which influences</span>
-<a id="__codelineno-0-445" name="__codelineno-0-445"></a><span class="sd">            the filtering process.</span>
-<a id="__codelineno-0-446" name="__codelineno-0-446"></a><span class="sd">        agegrps (str or list of str, optional): Specific age group(s) to filter by.</span>
-<a id="__codelineno-0-447" name="__codelineno-0-447"></a><span class="sd">            If provided, only the data for these age groups will be retained.</span>
-<a id="__codelineno-0-448" name="__codelineno-0-448"></a><span class="sd">            Defaults to None, meaning no filtering by age group will occur.</span>
-<a id="__codelineno-0-449" name="__codelineno-0-449"></a><span class="sd">        filter_target (bool, optional): If True, the function will filter the DataFrame</span>
-<a id="__codelineno-0-450" name="__codelineno-0-450"></a><span class="sd">            to retain the maximum output target value if certain variables are not</span>
-<a id="__codelineno-0-451" name="__codelineno-0-451"></a><span class="sd">            present in `figure_vars`. Defaults to True.</span>
-<a id="__codelineno-0-452" name="__codelineno-0-452"></a>
-<a id="__codelineno-0-453" name="__codelineno-0-453"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-454" name="__codelineno-0-454"></a><span class="sd">        tuple: A tuple containing:</span>
-<a id="__codelineno-0-455" name="__codelineno-0-455"></a><span class="sd">            - pd.DataFrame: The filtered DataFrame.</span>
-<a id="__codelineno-0-456" name="__codelineno-0-456"></a><span class="sd">            - str: A summary string describing the filtering that was applied.</span>
-<a id="__codelineno-0-457" name="__codelineno-0-457"></a>
-<a id="__codelineno-0-458" name="__codelineno-0-458"></a><span class="sd">    Raises:</span>
-<a id="__codelineno-0-459" name="__codelineno-0-459"></a><span class="sd">        ValueError: If 'models' is not included in `figure_vars` and there</span>
-<a id="__codelineno-0-460" name="__codelineno-0-460"></a><span class="sd">        are multiple unique model names in the DataFrame.</span>
-<a id="__codelineno-0-461" name="__codelineno-0-461"></a><span class="sd">    """</span>
-<a id="__codelineno-0-462" name="__codelineno-0-462"></a>
-<a id="__codelineno-0-463" name="__codelineno-0-463"></a>    <span class="n">txt</span> <span class="o">=</span> <span class="s1">'Filtered dataset by: '</span>
-<a id="__codelineno-0-464" name="__codelineno-0-464"></a>
-<a id="__codelineno-0-465" name="__codelineno-0-465"></a>    <span class="k">if</span> <span class="n">agegrps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-0-466" name="__codelineno-0-466"></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agegrps</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-<a id="__codelineno-0-467" name="__codelineno-0-467"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">agegrps</span><span class="p">)]</span>
-<a id="__codelineno-0-468" name="__codelineno-0-468"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'ageGroup in </span><span class="si">{</span><span class="n">agegrps</span><span class="si">}</span><span class="s1">, '</span>
-<a id="__codelineno-0-469" name="__codelineno-0-469"></a>        <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-470" name="__codelineno-0-470"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span> <span class="o">==</span> <span class="n">agegrps</span><span class="p">]</span>
-<a id="__codelineno-0-471" name="__codelineno-0-471"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'ageGroup </span><span class="si">{</span><span class="n">agegrps</span><span class="si">}</span><span class="s1">, '</span>
-<a id="__codelineno-0-472" name="__codelineno-0-472"></a>
-<a id="__codelineno-0-473" name="__codelineno-0-473"></a>    <span class="k">if</span> <span class="s1">'cm_clinical'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span><span class="p">:</span>
-<a id="__codelineno-0-474" name="__codelineno-0-474"></a>        <span class="n">selected_cm</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'cm_clinical'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-<a id="__codelineno-0-475" name="__codelineno-0-475"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'cm_clinical'</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_cm</span><span class="p">]</span>
-<a id="__codelineno-0-476" name="__codelineno-0-476"></a>        <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'cm_clinical </span><span class="si">{</span><span class="n">selected_cm</span><span class="si">}</span><span class="s1">, '</span>
-<a id="__codelineno-0-477" name="__codelineno-0-477"></a>
-<a id="__codelineno-0-478" name="__codelineno-0-478"></a>    <span class="k">if</span> <span class="s1">'seasonality'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span><span class="p">:</span>
-<a id="__codelineno-0-479" name="__codelineno-0-479"></a>        <span class="n">selected_season</span> <span class="o">=</span> <span class="s1">'seasonal'</span> <span class="k">if</span> <span class="s1">'seasonal'</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">'seasonality'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="k">else</span> <span class="n">df</span><span class="p">[</span><span class="s1">'seasonality'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-<a id="__codelineno-0-480" name="__codelineno-0-480"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'seasonality'</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_season</span><span class="p">]</span>
-<a id="__codelineno-0-481" name="__codelineno-0-481"></a>        <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'seasonality </span><span class="si">{</span><span class="n">selected_season</span><span class="si">}</span><span class="s1">, '</span>
-<a id="__codelineno-0-482" name="__codelineno-0-482"></a>
-<a id="__codelineno-0-483" name="__codelineno-0-483"></a>    <span class="k">if</span> <span class="n">filter_target</span><span class="p">:</span>
-<a id="__codelineno-0-484" name="__codelineno-0-484"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">var</span> <span class="ow">in</span> <span class="n">figure_vars</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'eir'</span><span class="p">,</span> <span class="s1">'prevalence_2to10'</span><span class="p">,</span> <span class="s1">'target_output_values'</span><span class="p">]):</span>
-<a id="__codelineno-0-485" name="__codelineno-0-485"></a>            <span class="n">selected_output</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'target_output_values'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-<a id="__codelineno-0-486" name="__codelineno-0-486"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'target_output_values'</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_output</span><span class="p">]</span>
-<a id="__codelineno-0-487" name="__codelineno-0-487"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'target_output_values </span><span class="si">{</span><span class="n">selected_output</span><span class="si">}</span><span class="s1">, '</span>
-<a id="__codelineno-0-488" name="__codelineno-0-488"></a>
-<a id="__codelineno-0-489" name="__codelineno-0-489"></a>    <span class="k">if</span> <span class="s1">'models'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span> <span class="ow">and</span> <span class="n">df</span><span class="p">[</span><span class="s1">'models'</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-<a id="__codelineno-0-490" name="__codelineno-0-490"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'models needs to be specified in plot if results were combined for more than 1 model'</span><span class="p">)</span>
-<a id="__codelineno-0-491" name="__codelineno-0-491"></a>
-<a id="__codelineno-0-492" name="__codelineno-0-492"></a>    <span class="c1"># Remove trailing comma and space if any filtering has been done</span>
-<a id="__codelineno-0-493" name="__codelineno-0-493"></a>    <span class="k">if</span> <span class="n">txt</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">', '</span><span class="p">):</span>
-<a id="__codelineno-0-494" name="__codelineno-0-494"></a>        <span class="n">txt</span> <span class="o">=</span> <span class="n">txt</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-<a id="__codelineno-0-495" name="__codelineno-0-495"></a>
-<a id="__codelineno-0-496" name="__codelineno-0-496"></a>    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">txt</span>
+<span class="normal"><a href="#__codelineno-0-495">495</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-433" name="__codelineno-0-433"></a><span class="k">def</span><span class="w"> </span><span class="nf">subset_dataframe_for_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">figure_vars</span><span class="p">,</span> <span class="n">agegrps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filter_target</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<a id="__codelineno-0-434" name="__codelineno-0-434"></a><span class="w">    </span><span class="sd">"""</span>
+<a id="__codelineno-0-435" name="__codelineno-0-435"></a><span class="sd">    Filter the input DataFrame for plotting based on specified criteria.</span>
+<a id="__codelineno-0-436" name="__codelineno-0-436"></a>
+<a id="__codelineno-0-437" name="__codelineno-0-437"></a><span class="sd">    This function filters the DataFrame according to the provided figure variables,</span>
+<a id="__codelineno-0-438" name="__codelineno-0-438"></a><span class="sd">    optional age groups, and other selection criteria to prepare the data for</span>
+<a id="__codelineno-0-439" name="__codelineno-0-439"></a><span class="sd">    visualization. It also returns a string summarizing the filtering applied.</span>
+<a id="__codelineno-0-440" name="__codelineno-0-440"></a>
+<a id="__codelineno-0-441" name="__codelineno-0-441"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-442" name="__codelineno-0-442"></a><span class="sd">        df (pd.DataFrame): The input DataFrame containing simulation results.</span>
+<a id="__codelineno-0-443" name="__codelineno-0-443"></a><span class="sd">        figure_vars (list of str): List of variables used for plotting, which influences</span>
+<a id="__codelineno-0-444" name="__codelineno-0-444"></a><span class="sd">            the filtering process.</span>
+<a id="__codelineno-0-445" name="__codelineno-0-445"></a><span class="sd">        agegrps (str or list of str, optional): Specific age group(s) to filter by.</span>
+<a id="__codelineno-0-446" name="__codelineno-0-446"></a><span class="sd">            If provided, only the data for these age groups will be retained.</span>
+<a id="__codelineno-0-447" name="__codelineno-0-447"></a><span class="sd">            Defaults to None, meaning no filtering by age group will occur.</span>
+<a id="__codelineno-0-448" name="__codelineno-0-448"></a><span class="sd">        filter_target (bool, optional): If True, the function will filter the DataFrame</span>
+<a id="__codelineno-0-449" name="__codelineno-0-449"></a><span class="sd">            to retain the maximum output target value if certain variables are not</span>
+<a id="__codelineno-0-450" name="__codelineno-0-450"></a><span class="sd">            present in `figure_vars`. Defaults to True.</span>
+<a id="__codelineno-0-451" name="__codelineno-0-451"></a>
+<a id="__codelineno-0-452" name="__codelineno-0-452"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-453" name="__codelineno-0-453"></a><span class="sd">        tuple: A tuple containing:</span>
+<a id="__codelineno-0-454" name="__codelineno-0-454"></a><span class="sd">            - pd.DataFrame: The filtered DataFrame.</span>
+<a id="__codelineno-0-455" name="__codelineno-0-455"></a><span class="sd">            - str: A summary string describing the filtering that was applied.</span>
+<a id="__codelineno-0-456" name="__codelineno-0-456"></a>
+<a id="__codelineno-0-457" name="__codelineno-0-457"></a><span class="sd">    Raises:</span>
+<a id="__codelineno-0-458" name="__codelineno-0-458"></a><span class="sd">        ValueError: If 'models' is not included in `figure_vars` and there</span>
+<a id="__codelineno-0-459" name="__codelineno-0-459"></a><span class="sd">            are multiple unique model names in the DataFrame.</span>
+<a id="__codelineno-0-460" name="__codelineno-0-460"></a><span class="sd">    """</span>
+<a id="__codelineno-0-461" name="__codelineno-0-461"></a>
+<a id="__codelineno-0-462" name="__codelineno-0-462"></a>    <span class="n">txt</span> <span class="o">=</span> <span class="s1">'Filtered dataset by: '</span>
+<a id="__codelineno-0-463" name="__codelineno-0-463"></a>
+<a id="__codelineno-0-464" name="__codelineno-0-464"></a>    <span class="k">if</span> <span class="n">agegrps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-465" name="__codelineno-0-465"></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agegrps</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+<a id="__codelineno-0-466" name="__codelineno-0-466"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">agegrps</span><span class="p">)]</span>
+<a id="__codelineno-0-467" name="__codelineno-0-467"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'ageGroup in </span><span class="si">{</span><span class="n">agegrps</span><span class="si">}</span><span class="s1">, '</span>
+<a id="__codelineno-0-468" name="__codelineno-0-468"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-469" name="__codelineno-0-469"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span> <span class="o">==</span> <span class="n">agegrps</span><span class="p">]</span>
+<a id="__codelineno-0-470" name="__codelineno-0-470"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'ageGroup </span><span class="si">{</span><span class="n">agegrps</span><span class="si">}</span><span class="s1">, '</span>
+<a id="__codelineno-0-471" name="__codelineno-0-471"></a>
+<a id="__codelineno-0-472" name="__codelineno-0-472"></a>    <span class="k">if</span> <span class="s1">'cm_clinical'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span><span class="p">:</span>
+<a id="__codelineno-0-473" name="__codelineno-0-473"></a>        <span class="n">selected_cm</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'cm_clinical'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<a id="__codelineno-0-474" name="__codelineno-0-474"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'cm_clinical'</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_cm</span><span class="p">]</span>
+<a id="__codelineno-0-475" name="__codelineno-0-475"></a>        <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'cm_clinical </span><span class="si">{</span><span class="n">selected_cm</span><span class="si">}</span><span class="s1">, '</span>
+<a id="__codelineno-0-476" name="__codelineno-0-476"></a>
+<a id="__codelineno-0-477" name="__codelineno-0-477"></a>    <span class="k">if</span> <span class="s1">'seasonality'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span><span class="p">:</span>
+<a id="__codelineno-0-478" name="__codelineno-0-478"></a>        <span class="n">selected_season</span> <span class="o">=</span> <span class="s1">'seasonal'</span> <span class="k">if</span> <span class="s1">'seasonal'</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">'seasonality'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="k">else</span> <span class="n">df</span><span class="p">[</span><span class="s1">'seasonality'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-0-479" name="__codelineno-0-479"></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'seasonality'</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_season</span><span class="p">]</span>
+<a id="__codelineno-0-480" name="__codelineno-0-480"></a>        <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'seasonality </span><span class="si">{</span><span class="n">selected_season</span><span class="si">}</span><span class="s1">, '</span>
+<a id="__codelineno-0-481" name="__codelineno-0-481"></a>
+<a id="__codelineno-0-482" name="__codelineno-0-482"></a>    <span class="k">if</span> <span class="n">filter_target</span><span class="p">:</span>
+<a id="__codelineno-0-483" name="__codelineno-0-483"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">var</span> <span class="ow">in</span> <span class="n">figure_vars</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'eir'</span><span class="p">,</span> <span class="s1">'prevalence_2to10'</span><span class="p">,</span> <span class="s1">'target_output_values'</span><span class="p">]):</span>
+<a id="__codelineno-0-484" name="__codelineno-0-484"></a>            <span class="n">selected_output</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'target_output_values'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<a id="__codelineno-0-485" name="__codelineno-0-485"></a>            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'target_output_values'</span><span class="p">]</span> <span class="o">==</span> <span class="n">selected_output</span><span class="p">]</span>
+<a id="__codelineno-0-486" name="__codelineno-0-486"></a>            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'target_output_values </span><span class="si">{</span><span class="n">selected_output</span><span class="si">}</span><span class="s1">, '</span>
+<a id="__codelineno-0-487" name="__codelineno-0-487"></a>
+<a id="__codelineno-0-488" name="__codelineno-0-488"></a>    <span class="k">if</span> <span class="s1">'models'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">figure_vars</span> <span class="ow">and</span> <span class="n">df</span><span class="p">[</span><span class="s1">'models'</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+<a id="__codelineno-0-489" name="__codelineno-0-489"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'models needs to be specified in plot if results were combined for more than 1 model'</span><span class="p">)</span>
+<a id="__codelineno-0-490" name="__codelineno-0-490"></a>
+<a id="__codelineno-0-491" name="__codelineno-0-491"></a>    <span class="c1"># Remove trailing comma and space if any filtering has been done</span>
+<a id="__codelineno-0-492" name="__codelineno-0-492"></a>    <span class="k">if</span> <span class="n">txt</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">', '</span><span class="p">):</span>
+<a id="__codelineno-0-493" name="__codelineno-0-493"></a>        <span class="n">txt</span> <span class="o">=</span> <span class="n">txt</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<a id="__codelineno-0-494" name="__codelineno-0-494"></a>
+<a id="__codelineno-0-495" name="__codelineno-0-495"></a>    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">txt</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

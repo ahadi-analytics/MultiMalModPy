@@ -1422,7 +1422,12 @@ in the array.</p>
 <span class="normal"><a href="#__codelineno-0-378">378</a></span>
 <span class="normal"><a href="#__codelineno-0-379">379</a></span>
 <span class="normal"><a href="#__codelineno-0-380">380</a></span>
-<span class="normal"><a href="#__codelineno-0-381">381</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-327" name="__codelineno-0-327"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_sh_OpenMalaria</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-381">381</a></span>
+<span class="normal"><a href="#__codelineno-0-382">382</a></span>
+<span class="normal"><a href="#__codelineno-0-383">383</a></span>
+<span class="normal"><a href="#__codelineno-0-384">384</a></span>
+<span class="normal"><a href="#__codelineno-0-385">385</a></span>
+<span class="normal"><a href="#__codelineno-0-386">386</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-327" name="__codelineno-0-327"></a><span class="k">def</span><span class="w"> </span><span class="nf">write_sh_OpenMalaria</span><span class="p">(</span><span class="n">exp</span><span class="p">):</span>
 <a id="__codelineno-0-328" name="__codelineno-0-328"></a><span class="w">    </span><span class="sd">"""</span>
 <a id="__codelineno-0-329" name="__codelineno-0-329"></a><span class="sd">    Creates a shell script to run OpenMalaria simulations (sequentially) locally.</span>
 <a id="__codelineno-0-330" name="__codelineno-0-330"></a>
@@ -1448,35 +1453,40 @@ in the array.</p>
 <a id="__codelineno-0-350" name="__codelineno-0-350"></a>
 <a id="__codelineno-0-351" name="__codelineno-0-351"></a>    <span class="c1"># Construct the content of the shell script</span>
 <a id="__codelineno-0-352" name="__codelineno-0-352"></a>    <span class="n">sh_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""#!/bin/bash</span>
-<a id="__codelineno-0-353" name="__codelineno-0-353"></a>
-<a id="__codelineno-0-354" name="__codelineno-0-354"></a><span class="s2"># Job settings</span>
-<a id="__codelineno-0-355" name="__codelineno-0-355"></a><span class="s2">job_name="run_openmalaria"</span>
-<a id="__codelineno-0-356" name="__codelineno-0-356"></a><span class="s2">exe_path="</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">OPENMALARIA_venv</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-0-357" name="__codelineno-0-357"></a><span class="s2">jobdir="</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2">"</span>
-<a id="__codelineno-0-358" name="__codelineno-0-358"></a><span class="s2">log_dir="$jobdir/log"</span>
-<a id="__codelineno-0-359" name="__codelineno-0-359"></a>
-<a id="__codelineno-0-360" name="__codelineno-0-360"></a><span class="s2"># Create log directory if it doesn't exist</span>
-<a id="__codelineno-0-361" name="__codelineno-0-361"></a><span class="s2">if [ ! -d "$log_dir" ]; then</span>
-<a id="__codelineno-0-362" name="__codelineno-0-362"></a><span class="s2">    mkdir -p "$log_dir"</span>
-<a id="__codelineno-0-363" name="__codelineno-0-363"></a><span class="s2">fi</span>
-<a id="__codelineno-0-364" name="__codelineno-0-364"></a>
-<a id="__codelineno-0-365" name="__codelineno-0-365"></a><span class="s2"># Navigate to the job directory</span>
-<a id="__codelineno-0-366" name="__codelineno-0-366"></a><span class="s2">cd "$jobdir" || exit 1</span>
-<a id="__codelineno-0-367" name="__codelineno-0-367"></a>
-<a id="__codelineno-0-368" name="__codelineno-0-368"></a><span class="s2"># Run the OpenMalaria simulation for each experiment</span>
-<a id="__codelineno-0-369" name="__codelineno-0-369"></a><span class="s2">for ((i = 1; i &lt;= </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">nexps</span><span class="si">}</span><span class="s2">; i++)); do</span>
-<a id="__codelineno-0-370" name="__codelineno-0-370"></a><span class="s2">    # Run the OpenMalaria command and log output and errors</span>
-<a id="__codelineno-0-371" name="__codelineno-0-371"></a><span class="s2">    "</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">OPENMALARIA_venv</span><span class="si">}</span><span class="s2">/openMalaria" -s "$jobdir/xml/$i.xml" --output "txt/$i.txt" &gt;&gt; "$log_dir/run_openmalaria.log" 2&gt;&gt; "$log_dir/run_openmalaria.err" || true</span>
-<a id="__codelineno-0-372" name="__codelineno-0-372"></a><span class="s2">done</span>
-<a id="__codelineno-0-373" name="__codelineno-0-373"></a>
-<a id="__codelineno-0-374" name="__codelineno-0-374"></a><span class="s2">echo "OpenMalaria simulation complete."</span>
-<a id="__codelineno-0-375" name="__codelineno-0-375"></a><span class="s2">"""</span>
-<a id="__codelineno-0-376" name="__codelineno-0-376"></a>
-<a id="__codelineno-0-377" name="__codelineno-0-377"></a>    <span class="c1"># Write the shell content to a .sh file</span>
-<a id="__codelineno-0-378" name="__codelineno-0-378"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-<a id="__codelineno-0-379" name="__codelineno-0-379"></a>        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sh_content</span><span class="p">)</span>
-<a id="__codelineno-0-380" name="__codelineno-0-380"></a>
-<a id="__codelineno-0-381" name="__codelineno-0-381"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shell script written successfully at </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-0-353" name="__codelineno-0-353"></a><span class="s2">set -e -o pipefail</span>
+<a id="__codelineno-0-354" name="__codelineno-0-354"></a>
+<a id="__codelineno-0-355" name="__codelineno-0-355"></a><span class="s2"># Job settings</span>
+<a id="__codelineno-0-356" name="__codelineno-0-356"></a><span class="s2">job_name="run_openmalaria"</span>
+<a id="__codelineno-0-357" name="__codelineno-0-357"></a><span class="s2">exe_path="</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">OPENMALARIA_venv</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-358" name="__codelineno-0-358"></a><span class="s2">jobdir="</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">job_directory</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-0-359" name="__codelineno-0-359"></a><span class="s2">log_dir="$jobdir/log"</span>
+<a id="__codelineno-0-360" name="__codelineno-0-360"></a>
+<a id="__codelineno-0-361" name="__codelineno-0-361"></a><span class="s2"># Create log directory if it doesn't exist</span>
+<a id="__codelineno-0-362" name="__codelineno-0-362"></a><span class="s2">if [ ! -d "$log_dir" ]; then</span>
+<a id="__codelineno-0-363" name="__codelineno-0-363"></a><span class="s2">    mkdir -p "$log_dir"</span>
+<a id="__codelineno-0-364" name="__codelineno-0-364"></a><span class="s2">fi</span>
+<a id="__codelineno-0-365" name="__codelineno-0-365"></a>
+<a id="__codelineno-0-366" name="__codelineno-0-366"></a><span class="s2"># Navigate to the job directory</span>
+<a id="__codelineno-0-367" name="__codelineno-0-367"></a><span class="s2">cd "$jobdir" || exit 1</span>
+<a id="__codelineno-0-368" name="__codelineno-0-368"></a>
+<a id="__codelineno-0-369" name="__codelineno-0-369"></a><span class="s2">progress_bar="####################"</span>
+<a id="__codelineno-0-370" name="__codelineno-0-370"></a><span class="s2">printf 'OpenMalaria [%-20s] 0/</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">nexps</span><span class="si">}</span><span class="s2"> (0%%)' ""</span>
+<a id="__codelineno-0-371" name="__codelineno-0-371"></a><span class="s2"># Run the OpenMalaria simulation for each experiment</span>
+<a id="__codelineno-0-372" name="__codelineno-0-372"></a><span class="s2">for ((i = 1; i &lt;= </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">nexps</span><span class="si">}</span><span class="s2">; i++)); do</span>
+<a id="__codelineno-0-373" name="__codelineno-0-373"></a><span class="s2">    # Run the OpenMalaria command and log output and errors</span>
+<a id="__codelineno-0-374" name="__codelineno-0-374"></a><span class="s2">    "</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">OPENMALARIA_venv</span><span class="si">}</span><span class="s2">/openMalaria" -s "$jobdir/xml/$i.xml" --output "txt/$i.txt" &gt;&gt; "$log_dir/run_openmalaria.log" 2&gt;&gt; "$log_dir/run_openmalaria.err"</span>
+<a id="__codelineno-0-375" name="__codelineno-0-375"></a><span class="s2">    printf '</span><span class="se">\\</span><span class="s2">rOpenMalaria [%-20s] %d/</span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">nexps</span><span class="si">}</span><span class="s2"> (%d%%)' "$</span><span class="se">{{</span><span class="s2">progress_bar:0:$((20 * i / </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">nexps</span><span class="si">}</span><span class="s2">))</span><span class="se">}}</span><span class="s2">" "$i" "$((100 * i / </span><span class="si">{</span><span class="n">exp</span><span class="o">.</span><span class="n">nexps</span><span class="si">}</span><span class="s2">))"</span>
+<a id="__codelineno-0-376" name="__codelineno-0-376"></a><span class="s2">done</span>
+<a id="__codelineno-0-377" name="__codelineno-0-377"></a><span class="s2">printf '</span><span class="se">\\</span><span class="s2">n'</span>
+<a id="__codelineno-0-378" name="__codelineno-0-378"></a>
+<a id="__codelineno-0-379" name="__codelineno-0-379"></a><span class="s2">echo "OpenMalaria simulation complete."</span>
+<a id="__codelineno-0-380" name="__codelineno-0-380"></a><span class="s2">"""</span>
+<a id="__codelineno-0-381" name="__codelineno-0-381"></a>
+<a id="__codelineno-0-382" name="__codelineno-0-382"></a>    <span class="c1"># Write the shell content to a .sh file</span>
+<a id="__codelineno-0-383" name="__codelineno-0-383"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+<a id="__codelineno-0-384" name="__codelineno-0-384"></a>        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sh_content</span><span class="p">)</span>
+<a id="__codelineno-0-385" name="__codelineno-0-385"></a>
+<a id="__codelineno-0-386" name="__codelineno-0-386"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shell script written successfully at </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

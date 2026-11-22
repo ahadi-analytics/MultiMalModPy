@@ -441,22 +441,23 @@ and configures EMOD simulation parameters related to demographics and mortality.
       <td class="field-body">
         <ul class="first simple">
             <li>
-              <b><code>task</code></b>
-                  (<code><span title="emodpy.emod_task.EMODTask">EMODTask</span></code>)
-              –
-              <div class="doc-md-description">
-                <p>The EMOD task object that represents the simulation run. The task will be updated with
-             demographic data and the relevant parameters.</p>
-              </div>
-            </li>
-            <li>
               <b><code>exp</code></b>
                   (<code><span title="ExperimentConfig">ExperimentConfig</span></code>)
               –
               <div class="doc-md-description">
-                <p>An instance of the <code>ExperimentConfig</code> class containing the experiment settings,
-                     including population size and input file paths. This object is used to update the
-                     demographics and configuration for the simulation.</p>
+                <p>An instance of the <code>ExperimentConfig</code> class that contains all the parameters
+                    necessary to configure and run the EMOD simulation. This includes simulation
+                    duration, entomology mode, burn-in period, platform configuration, and more.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>scen_df</code></b>
+                  (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>A DataFrame containing the scenario data to be used for the experiment.
+                        The dataframe should include the scenario IDs and relevant parameters
+                        that define the experiment conditions.</p>
               </div>
             </li>
         </ul>
@@ -476,9 +477,9 @@ and configures EMOD simulation parameters related to demographics and mortality.
       <td class="field-body">
         <ul class="first simple">
             <li>
-<b><code>EMODTask</code></b>              –
+              –
               <div class="doc-md-description">
-                <p>The updated <code>task</code> object with demographic and simulation parameters configured.</p>
+                <p>list[SimulationBuilder]: A list containing the configured simulation builder with all sweep definitions added.</p>
               </div>
             </li>
         </ul>
@@ -545,15 +546,15 @@ and configures EMOD simulation parameters related to demographics and mortality.
 <a id="__codelineno-0-281" name="__codelineno-0-281"></a><span class="sd">    and configures EMOD simulation parameters related to demographics and mortality.</span>
 <a id="__codelineno-0-282" name="__codelineno-0-282"></a>
 <a id="__codelineno-0-283" name="__codelineno-0-283"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-284" name="__codelineno-0-284"></a><span class="sd">        task (EMODTask): The EMOD task object that represents the simulation run. The task will be updated with</span>
-<a id="__codelineno-0-285" name="__codelineno-0-285"></a><span class="sd">                         demographic data and the relevant parameters.</span>
-<a id="__codelineno-0-286" name="__codelineno-0-286"></a><span class="sd">        exp (ExperimentConfig): An instance of the `ExperimentConfig` class containing the experiment settings,</span>
-<a id="__codelineno-0-287" name="__codelineno-0-287"></a><span class="sd">                                 including population size and input file paths. This object is used to update the</span>
-<a id="__codelineno-0-288" name="__codelineno-0-288"></a><span class="sd">                                 demographics and configuration for the simulation.</span>
-<a id="__codelineno-0-289" name="__codelineno-0-289"></a>
-<a id="__codelineno-0-290" name="__codelineno-0-290"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-291" name="__codelineno-0-291"></a><span class="sd">        EMODTask: The updated `task` object with demographic and simulation parameters configured.</span>
-<a id="__codelineno-0-292" name="__codelineno-0-292"></a>
+<a id="__codelineno-0-284" name="__codelineno-0-284"></a><span class="sd">        exp (ExperimentConfig): An instance of the `ExperimentConfig` class that contains all the parameters</span>
+<a id="__codelineno-0-285" name="__codelineno-0-285"></a><span class="sd">                                necessary to configure and run the EMOD simulation. This includes simulation</span>
+<a id="__codelineno-0-286" name="__codelineno-0-286"></a><span class="sd">                                duration, entomology mode, burn-in period, platform configuration, and more.</span>
+<a id="__codelineno-0-287" name="__codelineno-0-287"></a><span class="sd">        scen_df (pandas.DataFrame): A DataFrame containing the scenario data to be used for the experiment.</span>
+<a id="__codelineno-0-288" name="__codelineno-0-288"></a><span class="sd">                                    The dataframe should include the scenario IDs and relevant parameters</span>
+<a id="__codelineno-0-289" name="__codelineno-0-289"></a><span class="sd">                                    that define the experiment conditions.</span>
+<a id="__codelineno-0-290" name="__codelineno-0-290"></a>
+<a id="__codelineno-0-291" name="__codelineno-0-291"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-292" name="__codelineno-0-292"></a><span class="sd">        list[SimulationBuilder]: A list containing the configured simulation builder with all sweep definitions added.</span>
 <a id="__codelineno-0-293" name="__codelineno-0-293"></a><span class="sd">    """</span>
 <a id="__codelineno-0-294" name="__codelineno-0-294"></a>    <span class="n">builder</span> <span class="o">=</span> <span class="n">SimulationBuilder</span><span class="p">()</span>
 <a id="__codelineno-0-295" name="__codelineno-0-295"></a>    <span class="n">nseeds</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">num_seeds</span>
