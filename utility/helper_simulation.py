@@ -119,17 +119,9 @@ def get_seasonal_eir(exp=None):
         exp (Experiment, optional): Experiment object containing experiment specifications.
 
     Returns:
-        tuple or Experiment: A tuple containing the daily, monthly, seasonal, and perennial EIR values if exp is None.
-        If exp is provided, the Experiment object with updated seasonal EIR attributes is returned.
-
-        If exp is None:
-        - season_daily (list): Defined seasonal shape of daily EIR values.
-        - season_month (list): Monthly EIR values calculated from the seasonal pattern.
-        - seasonal (list): Seasonal EIR values rescaled within 0 to 1.
-        - perennial (list): Perennial EIR values per month.
-
-        If exp is provided:
-        -  exp (Experiment): Experiment object with updated seasonality attributes.
+        tuple[list, list, list, list] or Experiment:
+            If `exp` is None, returns `(season_daily, season_month, seasonal, perennial)`.
+            If `exp` is provided, returns the updated Experiment object.
     """
     seasonal = seasonal_inputs.monthly_seasonal_inputs
     eir_sum = sum(seasonal)
@@ -151,13 +143,18 @@ def get_seasonal_eir(exp=None):
 
 def monthly_to_daily_EIR(monthly_EIR):
     """
-    Convert monthly EIR values to daily using cubic spline interpolation.
+    Convert monthly EIR values to daily EIR values using linear interpolation.
+
+    Monthly EIR values are interpolated across 365 days and converted to
+    approximate daily rates by dividing by 30. Any negative interpolated
+    values are set to zero.
 
     Args:
-        monthly_EIR (list of floats): List of monthly EIRs.
+        monthly_EIR (list[float]): Monthly EIR values for the 12 months
+            of the year.
 
     Returns:
-        list of floats: List of daily EIRs.
+        list[float]: Daily EIR values for 365 days.
     """
     x_monthly = np.linspace(0, 364, num=12, endpoint=True)
     x_daily = np.linspace(0, 364, num=365, endpoint=True)
@@ -172,13 +169,17 @@ def monthly_to_daily_EIR(monthly_EIR):
 
 def submit_run_plotters(exp):
     """
-    Submits a plotter job for execution, either locally or via SLURM based on the HPC configuration:
-    - If running locally, it generates and submits the plotter job using a local submission script.
-    - If using SLURM, it delegates the submission to the SLURM-specific plotter submission function.
+    Submit the plotter job using the configured execution environment.
+
+    If the experiment is configured for local execution, the plotter job is
+    submitted using the local helper function. Otherwise, the job is submitted
+    using the SLURM-specific helper function.
 
     Args:
         exp (object): An experiment object containing the necessary attributes, such as 'hpc',
                       to determine the appropriate submission method.
+    Returns:
+        None: The function submits the plotter job and does not return a value.
     """
     if exp.hpc == 'LOCAL':
         from utility.helper_local import submit_run_plotters_local

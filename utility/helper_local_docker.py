@@ -1,5 +1,6 @@
 import os
 import subprocess
+import shlex
 import stat
 from datetime import datetime as dt
 
@@ -7,9 +8,9 @@ from datetime import datetime as dt
 #### Running locally from inside docker
 def exec(exp, command):
     """
-    Executes a shell command in a subprocess, capturing its output and errors.
+    Executes a shell command in a subprocess, showing its output and errors in the terminal.
     This function runs the specified command within the given experiment's job directory,
-    capturing both standard output and error streams. It also ensures the process runs in a
+    forwarding both standard output and error streams to the terminal. It also ensures the process runs in a
     separate session, preventing it from being terminated if the parent process exits.
 
     Args:
@@ -21,26 +22,10 @@ def exec(exp, command):
         None
     """
 
-    process = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
-                               universal_newlines=True, text=True, cwd=exp.job_directory,
-                               start_new_session=True)
-
-    # Capture the output and errors
-    stdout, stderr = process.communicate()
-
-    # Print output and errors (if any)
-    print("=== STDOUT ===")
-    print(stdout)
-
-    print("=== STDERR ===")
-    if stderr:
-        print(stderr)
-
-        # Check if the process was successful
-    if process.returncode != 0:
-        print(f" Script failed with exit code {process.returncode}")
-    else:
-        print("️ Script completed successfully.")
+    # Show progress immediately and propagate a failed command to the launcher.
+    subprocess.run(command, shell=True, cwd=exp.job_directory,
+                   start_new_session=True, check=True)
+    print("Script completed successfully.", flush=True)
 
 
 def write_and_execute_sh_script(script_path: str, content: str, exp=None, execute: bool = False):
@@ -54,7 +39,7 @@ def write_and_execute_sh_script(script_path: str, content: str, exp=None, execut
         execute (bool, optional): If True, executes the script after writing it. Default is False.
     """
     try:
-        with open(script_path, "w", encoding="utf-8") as file:
+        with open(script_path, "w", encoding="utf-8", newline="\n") as file:
             file.write(content)
         print(f"Shell script written to {script_path}")
     except OSError as e:
@@ -68,7 +53,7 @@ def write_and_execute_sh_script(script_path: str, content: str, exp=None, execut
         if exp is None:
             raise ValueError("Experiment object (exp) is required for script execution.")
         try:
-            exec(exp, command=f"bash {script_path}")
+            exec(exp, command=f"bash {shlex.quote(str(script_path))}")
         except Exception as e:
             raise RuntimeError(f"Error executing shell script: {e}")
 
@@ -115,6 +100,7 @@ def submit_run_pyscript_sh(exp, pyscript='plotter/plot_relationship.py', shname=
 
     # Shell script content
     sh_content = f"""#!/bin/bash
+set -e -o pipefail
 
 # Activate virtual environment
 {exp.EMOD_venv}
@@ -159,7 +145,7 @@ def submit_run_plotters_sh(exp):
 
     # Determine which plots to run
     plots_to_run = [p for p in exp.plots_to_run if not p == 'sampleplots']
-    if exp.plots_to_run[0] == 'all':
+    if 'all' in exp.plots_to_run:
         plots_to_run = plot_names_all
 
     # Create shell scripts for each plot
@@ -265,7 +251,7 @@ def write_sh_analyzer(exp, pyscript, model):
         raise ValueError(f"Invalid job directory: {exp.job_directory}")
 
     # Prepare the shell script content
-    sh_content = "#!/bin/bash\n\n"
+    sh_content = "#!/bin/bash\nset -e -o pipefail\n\n"
 
     # Job settings
     job_name = f"analyze_{model}"
@@ -283,17 +269,21 @@ def write_sh_analyzer(exp, pyscript, model):
     venv_activation = f"{exp.EMOD_venv}\n"
     sh_content += f"# Activate virtual environment\n{venv_activation}\n"
 
-    # Set custom arguments and run the Python command
+    # Only malariasimulation supports the parameter-variation analyzer.
     py_args = f'--directory "{exp.job_directory}"'
-    pycommand = f'python {pyscript} {py_args}\n'
+    flags = ['']
+    if model == 'malariasimulation':
+        variation = exp.malariasimulation_parameter_variation
+        if variation not in ('no', 'yes', 'both'):
+            raise ValueError(f'Invalid parameter variation mode: {variation}')
+        flags = {'no': [''], 'yes': [' --mpv'], 'both': ['', ' --mpv']}[variation]
 
-    if exp.malariasimulation_parameter_variation:
-        py_args_mpv = f'--directory "{exp.job_directory}" --mpv'
-        pycommand = pycommand + f'python {pyscript} {py_args_mpv}\n'
-
-    # Change to the appropriate directory and run the script
-    sh_content += f'cd {os.path.join(exp.ROOT_DIR, model)}\n'
-    sh_content += pycommand + '>> "$log_dir/run_analyzer_openmalaria.log" 2>> "$log_dir/run_analyzer_openmalaria.err"\n'
+    sh_content += f'cd "{os.path.join(exp.ROOT_DIR, model)}"\n'
+    for flag in flags:
+        sh_content += (f'echo "Running {model} analyzer{flag}; logs: $log_dir"\n'
+                       f'python "{pyscript}" {py_args}{flag} '
+                       f'>> "$log_dir/run_analyzer_{model}.log" '
+                       f'2>> "$log_dir/run_analyzer_{model}.err"\n')
 
     # Write the shell script to a file
     write_and_execute_sh_script(script_path=script_path, content=sh_content, exp=exp, execute=False)
@@ -326,6 +316,7 @@ def write_sh_runmodel(exp, filename, model):
 
     # Define the shell script content
     sh_content = f"""#!/bin/bash
+set -e -o pipefail
 
     # Start the first job
     echo "Running job 1: run_{model}.sh"
@@ -333,7 +324,7 @@ def write_sh_runmodel(exp, filename, model):
         # Run the first script: run_{model}.sh
         bash "{os.path.normpath(os.path.join(exp.job_directory, 'run_' + model + '.sh'))}"
     }} || {{
-        echo "Job 1 failed"
+        echo "Simulation failed; analysis skipped. See {exp.job_directory}/log" >&2
         exit 1
     }}
 
@@ -345,7 +336,7 @@ def write_sh_runmodel(exp, filename, model):
         # Run the second script: analyze_sim_{model}.sh
         bash "{os.path.normpath(os.path.join(exp.job_directory, 'run_analyze_' + model + '.sh'))}"
     }} || {{
-        echo "Job 2 failed"
+        echo "Analysis failed. See {exp.job_directory}/log/run_analyzer_{model}.err" >&2
         exit 1
     }}
 
@@ -364,11 +355,10 @@ def write_sh_runmodel(exp, filename, model):
     #echo "Job 3 completed successfully."
     
     echo "All jobs completed."
-    read -p "Press Enter to close the terminal"
     """
 
     # Write the shell script to a file
-    write_and_execute_sh_script(script_path=filename, content=sh_content, exp=exp, execute=True)
+    write_and_execute_sh_script(script_path=filename, content=sh_content, exp=exp, execute=False)
 
 
 def submit_runmodel_sh(exp, model):
@@ -392,4 +382,4 @@ def submit_runmodel_sh(exp, model):
     write_sh_runmodel(exp, filename=file_path, model=model)
 
     # Execute the generated shell script using subprocess
-    exec(exp, command=f"bash {file_path}")
+    exec(exp, command=f"bash {shlex.quote(file_path)}")

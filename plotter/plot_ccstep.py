@@ -24,12 +24,17 @@ from plotter.plot_helper import *
 def daily_timeseries(fdir, df_all, channel_list, sweepvar='models', facet_var='ageGroup', agegrp='5-10'):
     """
     Parameters:
-        fdir (str): Directory where the plot will be saved.
-        df_all (pandas dataframe): Dataframe that includes combined model results.
-        channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'models'.
-        facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
-        agegrp (str, optional): Age group filter for the data. Default is '5-10'.
+        fdir (str): Directory where generated plots are saved.
+        df_all (pandas.DataFrame): Combined model results containing daily
+            simulation outputs and plotting variables.
+        channel_list (list[str]): Variables to plot on the y-axis.
+        sweepvar (str): Variable used to group data into separate lines.
+            Defaults to 'models'.
+        facet_var (str): Variable used to create separate subplot panels.
+            Defaults to 'ageGroup'.
+        agegrp (str or None): Age group used to filter the data when
+            `facet_var` is not 'ageGroup'. If None, data across age groups
+            are combined. Defaults to '5-10'.
     Returns:
         None (plots are saved to disk).
     """
@@ -43,7 +48,7 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='models', facet_var='a
             for channel in channel_list:
                 print(f'#----- Plotting daily timeseries for {channel}-----#')
                 if channel == 'prevalence_2to10':
-                    ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
+                    ylab = channel.replace('prevalence_2to10',  r'$\mathit{Pf}$PR$_{2-10}$ (%)')
                 else:
                     ylab = channel.replace('_', ' ')
 
@@ -105,7 +110,7 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='models', facet_var='a
                     ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=8))
                     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
                     ax.set_xlabel('Year')
-                    ax.set_title('$\it{Pf}$PR$_{2-10}$' + f': {facet}')
+                    ax.set_title(r'$\mathit{Pf}$PR$_{2-10}$' + f': {facet}')
                 fname = f'timeseries_daily_{seasonality}_cm{cm}_{channel}_{agegrp}_by_{sweepvar}'
                 fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')
                 plt.close()
@@ -115,14 +120,19 @@ def daily_timeseries(fdir, df_all, channel_list, sweepvar='models', facet_var='a
 def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='models', facet_var='ageGroup', agegrp='0-100'):
     """
     Parameters:
-        fdir (str): Directory where the plot will be saved.
-        df_all (pandas dataframe): Dataframe that includes combined model results.
-        channel (str): Variable representing the y-axis data to be plotted.
-        sweepvar (str, optional): Variable to group the data and create multiple lines on the plot. Default is 'models'.
-        facet_var (str, optional): Variable used to create subplots based on its unique values. Default is 'ageGroup'. (The default should change)
-        agegrp (str, optional): Age group filter for the data. Default is '5-10'.
+        fdir (str): Directory where generated plots are saved.
+        df_all (pandas.DataFrame): Combined model results containing daily
+            simulation outputs and plotting variables.
+        channel_list (list[str]): Variables to plot on the y-axis.
+        sweepvar (str): Variable used to group data into separate lines.
+            Defaults to 'models'.
+        facet_var (str): Variable used to create separate subplot panels.
+            Defaults to 'ageGroup'.
+        agegrp (str or None): Age group used to filter the data when
+            `facet_var` is not 'ageGroup'. If None, data across age groups
+            are combined. Defaults to '5-10'.
     Returns:
-        None (plots are saved to disk).
+        None: (plots are saved to disk).
     """
 
     df_all = df_all[df_all['timestep'] >= 1460]  # remove the first 4 years of the 55 year monitoring period
@@ -132,7 +142,7 @@ def daily_timeseries_by_seed(fdir, df_all, channel_list, sweepvar='models', face
     for channel in channel_list:
         print(f'#----- Plotting daily timeseries for {channel}-----#')
         if channel == 'prevalence_2to10':
-            ylab = channel.replace('prevalence_2to10', '$\it{Pf}$PR$_{2-10}$ (%)')
+            ylab = channel.replace('prevalence_2to10', r'$\mathit{Pf}$PR$_{2-10}$ (%)')
         else:
             ylab = channel.replace('_', ' ')
 
@@ -266,7 +276,7 @@ def daily_vectors(fdir, df_all, channel, sweepvar='models', facet_var='ageGroup'
             ax.xaxis.set_major_locator(mdates.AutoDateLocator(maxticks=8))
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
             ax.set_xlabel('Year')
-            ax.set_title('$\it{Pf}$PR$_{2-10}$' + f': {fi}')
+            ax.set_title(r'$\mathit{Pf}$PR$_{2-10}$' + f': {fi}')
 
         fname = f'timeseries_daily_{channel}_{agegrp}_by_{ii}'
         fig.savefig(os.path.join(fdir, f'{fname}.png'), bbox_extra_artists=(lg,), bbox_inches='tight')

@@ -100,7 +100,7 @@ def write_ps1_runmodel(exp, filename, model):
         ValueError: If the provided models is empty or if exp.job_directory is not valid.
 
     Returns:
-        None: This function does not return a value but writes the PowerShell script to the specified file.
+        None: The PowerShell script is written to `filename`.
     """
 
     # Check for valid models and experiment directory
@@ -120,24 +120,29 @@ def write_ps1_runmodel(exp, filename, model):
     
     # Start the first job
     $job1 = Start-Job -ScriptBlock {{
+        $ErrorActionPreference = "Stop"
+        $global:LASTEXITCODE = 0
         try {{
             # Run the first script: run_{model}.ps1
             Write-Host "Running job 1: run_{model}.ps1"
             & "{os.path.normpath(exp.job_directory)}\\run_{model}.ps1"
+            if ($LASTEXITCODE -ne 0) {{
+                throw "Simulation exited with code $LASTEXITCODE"
+            }}
         }} catch {{
-            Write-Error "Job 1 failed: $_"
+            throw "Job 1 failed: $_"
         }}
     }}
 
     # Wait for the first job to complete
-    Receive-Job -Job $job1 -Wait
-    if ($job1.State -eq 'Completed') {{
-        Write-Host "Job 1 completed successfully."
-    }} else {{
-        Write-Error "Job 1 did not complete successfully."
-    }}
+    Receive-Job -Job $job1 -Wait -ErrorAction Continue
+    $simulationFailed = ($job1.State -ne 'Completed') -or ($job1.ChildJobs[0].Error.Count -gt 0)
     $job1 | Remove-Job
     Stop-Transcript
+    if ($simulationFailed) {{
+        throw "Simulation failed; analysis was not started. See $LogFile for details."
+    }}
+    Write-Host "Job 1 completed successfully."
     
 
     # Start the second job (only after the first job completes)
@@ -192,7 +197,7 @@ def submit_runmodel_local(exp, model):
     file_name = f'jobs_{model}_simplerun.ps1'
     file_path = os.path.join(exp.job_directory, file_name)
     write_ps1_runmodel(exp,filename=file_path, model=model)
-    cmd_command = f'cmd.exe /c start powershell -ExecutionPolicy Bypass -File "{file_path}"'
+    cmd_command = f'cmd.exe /c start powershell -NoExit -ExecutionPolicy Bypass -File "{file_path}"'
     subprocess.Popen(cmd_command, shell=True)
 
 
@@ -205,14 +210,18 @@ def create_ps1_script(exp, fname, subdir, job_name, py_command):
     4. Pauses the script to keep the console open until the user presses Enter.
 
     Args:
-        exp (object): An experiment object containing the 'job_directory' attribute for saving the script.
-        fname (str): The name of the PowerShell script file to be created.
-        subdir (str): The subdirectory within the working directory where the Python command should be executed.
-        job_name (str): The name of the job, used for log file naming and script content.
-        pycommand  (str): The Python command to be executed within the PowerShell script.
+        exp (object): Experiment object containing the `job_directory`
+            attribute used to save the script and log files.
+        fname (str): Name of the PowerShell script file to create.
+        subdir (str): Subdirectory in which the Python command is executed.
+        job_name (str): Job name used in the script and log file names.
+        py_command (str): Python command to execute within the PowerShell script.
 
     Raises:
-        IOError: If there is an issue with writing the PowerShell script to the file.
+        IOError: If the PowerShell script cannot be written to disk.
+
+    Returns:
+        None: The function writes the PowerShell script to disk.
     """
     # Construct paths
     file_path = os.path.join(exp.job_directory, fname)
@@ -258,13 +267,13 @@ def write_ps1_analyzer(exp, pyscript, model):
     """
     job_name = f"analyzer_{model}"
     subdir = model
-    pycommand  = f'python {pyscript} --directory "{exp.job_directory}"\n'
+    pycommand  = f'python {pyscript} --directory "{exp.job_directory}"'
 
     if model =='malariasimulation':
         if exp.malariasimulation_parameter_variation == "both"  :
             pycommand  = pycommand  + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
         if exp.malariasimulation_parameter_variation == "yes"  :
-            pycommand  = pycommand  + '--mpv'
+            pycommand  = pycommand  + ' --mpv'
 
     fname = f'run_analyze_{model}.ps1'
     create_ps1_script(exp, fname, subdir, job_name, pycommand )
@@ -314,10 +323,10 @@ def write_bat_submission_plots(exp):
 
     Args:
         exp (Experiment): The experiment object containing the necessary directories and model names.
-        filename (str): The file path where the batch script will be saved.
 
     Returns:
-        None
+        None: The batch submission script is written to the experiment
+        job directory.
     """
     # Extract relevant data from the experiment object
     wdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))

@@ -350,6 +350,7 @@ def write_sh_OpenMalaria(exp):
 
     # Construct the content of the shell script
     sh_content = f"""#!/bin/bash
+set -e -o pipefail
 
 # Job settings
 job_name="run_openmalaria"
@@ -365,11 +366,15 @@ fi
 # Navigate to the job directory
 cd "$jobdir" || exit 1
 
+progress_bar="####################"
+printf 'OpenMalaria [%-20s] 0/{exp.nexps} (0%%)' ""
 # Run the OpenMalaria simulation for each experiment
 for ((i = 1; i <= {exp.nexps}; i++)); do
     # Run the OpenMalaria command and log output and errors
-    "{exp.OPENMALARIA_venv}/openMalaria" -s "$jobdir/xml/$i.xml" --output "txt/$i.txt" >> "$log_dir/run_openmalaria.log" 2>> "$log_dir/run_openmalaria.err" || true
+    "{exp.OPENMALARIA_venv}/openMalaria" -s "$jobdir/xml/$i.xml" --output "txt/$i.txt" >> "$log_dir/run_openmalaria.log" 2>> "$log_dir/run_openmalaria.err"
+    printf '\\rOpenMalaria [%-20s] %d/{exp.nexps} (%d%%)' "${{progress_bar:0:$((20 * i / {exp.nexps}))}}" "$i" "$((100 * i / {exp.nexps}))"
 done
+printf '\\n'
 
 echo "OpenMalaria simulation complete."
 """

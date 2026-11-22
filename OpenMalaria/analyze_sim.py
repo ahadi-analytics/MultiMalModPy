@@ -17,9 +17,6 @@ def parse_args():
     specifically for specifying the job directory and an optional experiment ID.
     The job directory is required to locate the `exp.obj` file.
 
-    Args:
-        None
-
     Returns:
         argparse.Namespace: A Namespace object containing the parsed arguments.
         The object has the attribute `directory` which corresponds to the user-provided path
@@ -192,11 +189,11 @@ def InputEIRAnalyzer(exp, mm, start_year, survey_step_days=30, compr='infer'):
     Run the InputEIRAnalyzer for OpenMalaria experiments.
 
     Args:
-        exp: The experiment object.
-        mm: The measure map object.
-        start_year: The start year of the analysis.
-        survey_step_days: The survey step interval in days (default: 30).
-        compr: The compression method for saving the output CSV files (default: 'infer').
+        exp (ExperimentConfig): The experiment configuration object.
+        mm (dict): The measure map object.
+        start_year (int): The start year of the analysis.
+        survey_step_days (int): The survey step interval in days. Defaults to 30.
+        compr (str): Compression method for saving output CSV files. Defaults to 'infer'.
 
     Saves:
         One or more CSV files based on the `daily` flag:
