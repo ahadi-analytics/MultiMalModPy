@@ -131,7 +131,8 @@ Activate the Virtual Environment via:
 
 ``` 
 .\my_venv\Scripts\activate  # Linux/macOS 
-source my_venv/bin/activate   # Windows 
+source my_venv/bin/activate   # Windows (CMD)
+.\my_venv\Scripts\Activate.ps1  # Windows (PowerShell)
 ``` 
 
 Install Dependencies:    
@@ -384,6 +385,8 @@ Update your manifest.py:
 r_local = "C:/Program Files/R/R-4.2.3/bin" 
 ``` 
 
+Replace the version in this example with your installed R version. This directory must contain `Rscript.exe`, and the packages above must be installed in a library accessible to that R installation. This host setting is not used by the local Docker image.
+
 <br> 
 
 ---------------- 
@@ -401,7 +404,15 @@ See full run instructions:  [Example run](../getting_started/example_run.md#usin
 
 ### Using Docker (Local)    
 
-Navigate to dependencies and double click on `run_mmmpy_docker.bat`  
+Start Docker Desktop and wait for its Linux engine to be running. Then double-click `dependencies/run_mmmpy_docker.bat` and select `OpenMalaria` or `malariasimulation`. The image provides Python, R, and these model dependencies; a host Python or R installation is not required for this route.
+
+In the existing `elif hpc == 'LOCAL':` section of `manifest.py`, ensure the Docker activation setting is:
+
+```python
+EMOD_venv_container = 'source /opt/envs/mmmpy_local/bin/activate'
+```
+
+Docker is detected automatically; no `container_run` setting is required.
 
 Manual Docker setup:    
 
@@ -414,12 +425,12 @@ docker images
 ``` 
 
 ``` 
-# Run interactively (optional to test it)
+# Inside a container with the repository mounted at /mnt/c/projects/MultiMalModPy:
 source /opt/envs/mmmpy_local/bin/activate
-cd /mnt/c/projects
+cd /mnt/c/projects/MultiMalModPy
 python launch_sim.py --models OpenMalaria --test
 ``` 
-Note: Inside Docker, you usually don’t need to activate a virtual environment. The Python in the image is ready to use.  
+Use the `mmmpy_local` environment inside the container, as the launcher and command below do.
 
 Mount local project to the container to run a test simulation (from host):  
 
