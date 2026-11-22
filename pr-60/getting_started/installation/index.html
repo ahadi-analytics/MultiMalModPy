@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="AHADI Analytics" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/getting_started/installation/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Installation - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Installation";
+        var mkdocs_page_input_path = "getting_started/installation.md";
+        var mkdocs_page_url = "/MultiMalModPy/getting_started/installation/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/software/">Software overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/documentation-and-sourcecode/">Source Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/input_output/">Input and output files</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../overview/">Overview of MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Installation</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#clone-multimalmodpy">Clone MultiMalModPy</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#set-up-your-environment">Set Up Your Environment</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#install-python-and-virtualvenv">Install Python and virtualvenv</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#create-virtual-environment">Create Virtual Environment</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#install-malaria-models">Install Malaria Models</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#emod">EMOD</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#simple-test-run">Simple test run</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#openmalaria">OpenMalaria</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#simple-test-run_1">Simple test run</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#malariasimulation">malariasimulation</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#run-multimalmodpy-without-full-installation-optional">Run MultiMalModPy Without Full Installation (Optional)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#using-singularity-hpc">Using Singularity (HPC)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#using-docker-local">Using Docker (Local)</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-install-docker-desktop">1️⃣ Install Docker Desktop</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2-pull-the-docker-image">2️⃣ Pull the Docker Image</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3-verify-the-image">3️⃣ Verify the Image</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4-run-the-docker-container">4️⃣ Run the Docker Container</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#5-activate-the-python-virtual-environment">5️⃣ Activate the Python Virtual Environment</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#run-a-test-simulation-from-host-system">Run a Test Simulation (from Host System)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#simple-test-run_2">Simple test run</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#verify-installation">Verify Installation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#emod_1">EMOD</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../configuration/">First time configurations (manifest.py)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../usage/">Quickstart: Run your first simulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../example_run/">Launch simulations by platform</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Population & age structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/scenarios/">Scenarios</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness & uncertainty</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developer Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/add_new_interventions/">Add new interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_models/">Update malaria models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/code_testing/">Write tests</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/create_new_release/">Create new releases</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../developer/update_docs/">Update the documentation</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_local/">helper_local.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/calib_params/">calib_params.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">interventions.R</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations.R</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_sampleplots/">plot_sampleplots.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_ccstep/">plot_ccstep.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_custom/">plot_custom.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact and Contributions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Release Notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Support & Troubleshooting</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">User Guide</li>
+      <li class="breadcrumb-item active">Installation</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/getting_started/installation.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
+<p>This guide will walk you through:</p>
+<ul>
+<li>Choosing and setting up your environment (HPC, Docker, or native Python)  </li>
+<li>Cloning the MultiMalModPy repository  </li>
+<li>Installing required tools: EMOD, OpenMalaria, and malariasimulation  </li>
+<li>Running test simulations and verifying your setup  </li>
+<li>Using containerized options for quick testing (Docker or Singularity)  </li>
+<li>Common troubleshooting tips  </li>
+</ul>
+<blockquote>
+<p>⚙️ <strong>Platform Note</strong><br />
+MultiMalModPy is built for full-scale simulations on <strong>Linux-based HPC clusters</strong>.<br />
+Local Docker or native Python setups are supported for <strong>testing only</strong> — not for large-scale or multi-node runs.</p>
+</blockquote>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<div style="background-color: #f4f4f4; padding: 20px; border-left: 5px solid #00796b; margin: 20px 0; font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+  <strong><em style="font-size: 18px; color: #00796b;">Software Requirements:</em></strong>  
+  <ul style="padding-left: 20px; line-height: 1.5; margin-top: 5px; margin-bottom: 0px;">
+    <li>Python 3.9.4</li>
+    <li>R ≥ 4.0.0</li>
+    <li>EMOD:
+      <ul>
+        <li>emodpy==1.22.1</li>
+        <li>emodpy-malaria==4.1.0</li>
+        <li>idmtools-platform-slurm==2.0.2</li>
+      </ul>
+    </li>
+    <li>malariasimulation==2.0.0</li>
+    <li>OpenMalaria v46+</li>
+    <li>singularity/3.8.1 <em>or</em> Docker</li>
+    <li>git/2.8.2</li>
+  </ul>
+</div>
+
+<p>📦 Note: All Python dependencies are listed in <code>dependencies/requirements.txt</code></p>
+<div style="background-color: #E9F2F9;  padding: 10px; border-left: 5px solid #00796b; margin: 10px 0;">
+  <strong><em>💡 TIP:</em></strong>
+   Knowledge of shell, powershell, xml, json can be helpful when using MultiMalModPy.   
+</div>
+
+<p><br></p>
+<hr />
+<h2 id="clone-multimalmodpy">Clone MultiMalModPy<a class="headerlink" href="#clone-multimalmodpy" title="Permanent link">&para;</a></h2>
+<p>The recommended approach is to <a href="https://github.com/ahadi-analytics/MultiMalModPy/fork">fork the repo</a> and clone it locally or to your HPC. Forking makes it easier to contribute and stay up-to-date.<br />
+Alternatively, you can <a href="https://github.com/ahadi-analytics/MultiMalModPy/releases"><strong>download the latest release</strong></a>.</p>
+<ul>
+<li>To clone using Git:   </li>
+</ul>
+<p><strong>HTTPS</strong>     </p>
+<div class="codehilite"><pre><span></span><code>cd &lt;target_directory&gt;  
+git clone https://github.com/ahadi-analytics/MultiMalModPy.git    
+</code></pre></div>
+
+<p><a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh">SSH</a>     </p>
+<div class="codehilite"><pre><span></span><code><span class="n">git</span><span class="w"> </span><span class="n">clone</span><span class="w"> </span><span class="n">git</span><span class="nv">@github</span><span class="p">.</span><span class="nl">com</span><span class="p">:</span><span class="n">ahadi</span><span class="o">-</span><span class="n">analytics</span><span class="o">/</span><span class="n">MultiMalModPy</span><span class="p">.</span><span class="n">git</span>
+</code></pre></div>
+
+<p>Or use <strong>Git GUI client’s “Clone repository” feature</strong>.</p>
+<hr />
+<h2 id="set-up-your-environment">Set Up Your Environment<a class="headerlink" href="#set-up-your-environment" title="Permanent link">&para;</a></h2>
+<h3 id="install-python-and-virtualvenv">Install Python and virtualvenv<a class="headerlink" href="#install-python-and-virtualvenv" title="Permanent link">&para;</a></h3>
+<p>Ensure Python 3.8+ is installed:   </p>
+<div class="codehilite"><pre><span></span><code>python --version  
+</code></pre></div>
+
+<ul>
+<li><strong>HPC</strong>: Use your environment module system (e.g. module load python/3.9.16)   </li>
+<li><strong>Local</strong>: Download from python.org   </li>
+</ul>
+<p>Install virtualenv if not already available:  </p>
+<div class="codehilite"><pre><span></span><code>pip install virtualenv  
+</code></pre></div>
+
+<h3 id="create-virtual-environment">Create Virtual Environment<a class="headerlink" href="#create-virtual-environment" title="Permanent link">&para;</a></h3>
+<p>Navigate to dependencies/ and run:  </p>
+<ul>
+<li>
+<p><strong>macOS/Linux</strong><br />
+<code>cd dependencies 
+    bash create_mmmpy_venv.sh</code>  </p>
+</li>
+<li>
+<p><strong>Windows</strong>   </p>
+</li>
+<li>click on <code>create_mmmpy_venv.bat</code>    </li>
+</ul>
+<p>Alternatively, create manually:  </p>
+<div class="codehilite"><pre><span></span><code>virtualenv my_venv 
+source my_venv/bin/activate  # Linux/macOS 
+.\my_venv\Scripts\activate   # Windows 
+</code></pre></div>
+
+<p>Then install Python dependencies:  </p>
+<div class="codehilite"><pre><span></span><code>pip install -r dependencies/requirements.txt 
+</code></pre></div>
+
+<p>Activate the Virtual Environment via:  </p>
+<div class="codehilite"><pre><span></span><code>.\my_venv\Scripts\activate  # Linux/macOS 
+source my_venv/bin/activate   # Windows (CMD)
+.\my_venv\Scripts\Activate.ps1  # Windows (PowerShell)
+</code></pre></div>
+
+<p>Install Dependencies:    </p>
+<div class="codehilite"><pre><span></span><code>pip install -r dependencies/requirements.txt 
+</code></pre></div>
+
+<details class="info">
+<summary>Show terminal</summary>
+<p><img alt="create_mmmpy_local_venv.bat" src="../../img/create_mmmpy_local_venv.bat.png" /><br />
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/blob/main/docs/img/create_mmmpy_local_venv.bat.png">View image file</a>  </p>
+</details>
+<details class="info">
+<summary>Show image</summary>
+<p><img alt="-activated_venv_terminal" src="../../img/activated_venv_terminal.png" /><br />
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/activated_venv_terminal.png">View image file</a>  </p>
+</details>
+<hr />
+<h2 id="install-malaria-models">Install Malaria Models<a class="headerlink" href="#install-malaria-models" title="Permanent link">&para;</a></h2>
+<h3 id="emod">EMOD<a class="headerlink" href="#emod" title="Permanent link">&para;</a></h3>
+<p>Refer to  <a href="https://docs.idmod.org/projects/idmtools/en/latest/platforms/slurm/index.html#prerequisites">idmtools SLURM prerequisites</a> for HPC<br />
+ or <a href="https://docs.idmod.org/projects/idmtools/en/latest/platforms/container/index.html#prerequisites">idmtools container prerequisites</a>  for local installs. </p>
+<p>Activate your virtual environment and run:    </p>
+<div class="codehilite"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="n">Pull</span><span class="w"> </span><span class="n">Singularity</span><span class="w"> </span><span class="nc">image</span><span class="w"> </span><span class="p">(</span><span class="n">HPC</span><span class="w"> </span><span class="k">only</span><span class="p">)</span>
+<span class="n">curl</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="p">.</span><span class="n">idmod</span><span class="p">.</span><span class="nl">org</span><span class="p">:</span><span class="mi">443</span><span class="o">/</span><span class="n">artifactory</span><span class="o">/</span><span class="n">idm</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="k">public</span><span class="o">/</span><span class="n">idmtools</span><span class="o">/</span><span class="n">rocky_mpi</span><span class="o">/</span><span class="n">dtk_run_rocky_py39</span><span class="p">.</span><span class="n">sif</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">dtk_run_rocky_py39</span><span class="p">.</span><span class="n">sif</span><span class="w"> </span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Install</span><span class="w"> </span><span class="n">EMOD</span><span class="w"> </span><span class="n">packages</span>
+<span class="n">pip</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">emodpy</span><span class="o">-</span><span class="n">malaria</span><span class="w"> </span><span class="c1">--ignore-installed --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple </span>
+<span class="n">pip</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">idmtools</span><span class="o">[</span><span class="n">slurm</span><span class="o">]</span><span class="w"> </span><span class="c1">--index-url=https://packages.idmod.org/api/pypi/pypi-production/simple  # HPC </span>
+<span class="n">pip</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">idmtools</span><span class="o">[</span><span class="n">container</span><span class="o">]</span><span class="w"> </span><span class="c1">--index-url=https://packages.idmod.org/api/pypi/pypi-production/simple  # Windows </span>
+</code></pre></div>
+
+<p>Verify:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">idmtools</span><span class="w"> </span><span class="o">--</span><span class="n">help</span>
+</code></pre></div>
+
+<p>This may take a few minutes to build. 
+If the &lsquo;pip install&rsquo; warning appears, you can ignore it. 
+The outcome should look as below: </p>
+<p><br></p>
+<details class="info">
+<summary>Show image</summary>
+<p><img alt="-install_idmtools_platform_slurm_terminAL" src="../../img/install_idmtools_platform_slurm_terminal.png" /><br />
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/install_idmtools_platform_slurm_terminal.png">View image file</a></p>
+</details>
+<p><br></p>
+<h4 id="simple-test-run">Simple test run<a class="headerlink" href="#simple-test-run" title="Permanent link">&para;</a></h4>
+<p>Navigate to the tests folder and run </p>
+<div class="codehilite"><pre><span></span><code>cd tests/test_EMOD
+</code></pre></div>
+
+<p>Then run </p>
+<div class="codehilite"><pre><span></span><code>python EMOD_test_run_local.py
+</code></pre></div>
+
+<hr />
+<h3 id="openmalaria">OpenMalaria<a class="headerlink" href="#openmalaria" title="Permanent link">&para;</a></h3>
+<p>Follow the <a href="https://github.com/SwissTPH/openmalaria/wiki/UserGuide#Installing-OpenMalaria">OpenMalaria wiki</a>.  </p>
+<p><br> </p>
+<details>
+<summary>HPC users (e.g. NU cluster)</summary>
+<p>NU IT research built a container and sent instructions which have been edited for completeness and are
+  shown below:
+  One can build the container on Quest using the remote Sylabs build environment.</p>
+<p>Updating to the latest OpenMalaria version:</p>
+<p>Create a new folder for the version to install</p>
+<p><code>mkdir /gpfs/projects/b1139/OpenMalaria/om_v46/</code></p>
+<p>And copy into the new folder the latest schema files (not source code), available 
+  from https://github.com/SwissTPH/openmalaria/releases.</p>
+<p>Copy the OpenMalaria.def and modules from the prevvious release to the new one.
+  Note these files were created
+  by <a href="https://www.it.northwestern.edu/departments/it-services-support/research/staff/coughlin.html">Scott Coughlin</a> to
+  facilitate installation on Quest, without having to use cmake.</p>
+<p><code>cp /gpfs/projects/b1139/OpenMalaria/om_v43/OpenMalaria.def  /gpfs/projects/b1139/OpenMalaria/om_v46/OpenMalaria.def
+  cp -r /gpfs/projects/b1139/OpenMalaria/om_v43/modules  /gpfs/projects/b1139/OpenMalaria/om_v46/</code></p>
+<p>The def files includes the following lines and does not require change (for information shown below) </p>
+<p>```<br />
+  Bootstrap: docker 
+  From: ubuntu:20.04  </p>
+<p>%post
+      apt-get update &amp;&amp; \
+      DEBIAN_FRONTEND=noninteractive apt-get install -y &ndash;no-install-recommends \
+          git \
+          cmake \
+          libboost-dev \
+          libgsl-dev \
+          libxerces-c-dev \
+          xsdcxx \
+          zlib1g-dev \
+          python3 \
+          build-essential</p>
+<div class="codehilite"><pre><span></span><code>  git config --global http.sslverify false
+  git clone https://github.com/SwissTPH/openmalaria.git /openmalaria
+  cd openmalaria &amp;&amp; ./build.sh -r
+</code></pre></div>
+
+<p>```  </p>
+<p>However, the <code>modules/openmalaria/43.0.lua</code> needs to be renamed to the new version, and its content also updated to the
+  latest version. </p>
+<p>```<br />
+  help([[
+  This git-repository contains source-code for Open Malaria, a simulator program for studying malaria epidemiology and the impacts of interventions against malaria.
+  ]])</p>
+<p>local pkgName = &ldquo;openmalaria&rdquo;
+  local version = &ldquo;46.0&rdquo;</p>
+<p>whatis(&ldquo;Name: &rdquo; .. pkgName)
+  whatis(&ldquo;Version: &rdquo; .. version)</p>
+<p>depends_on(&ldquo;singularity&rdquo;)</p>
+<p>local bashStr = &lsquo;singularity exec -B /projects:/projects /gpfs/projects/b1139/OpenMalaria/om_v46/OpenMalaria.sif /openmalaria/openMalaria-46.0/openMalaria &ldquo;$@&rdquo;&rsquo;</p>
+<p>set_shell_function(&ldquo;openMalaria&rdquo;,bashStr)
+  ```  </p>
+<p>Then, actually install the latest OpenMalaria by generating a container following as follows: </p>
+<p><code>module load singularity
+  singularity remote login</code>  </p>
+<p>An access token is already set for this remote. Replace it? [N/y] y 
+  Generate an access token at https://cloud.sylabs.io/auth/tokens, and paste it here. </p>
+<p><code>singularity build --remote OpenMalaria.sif OpenMalaria.def</code>  </p>
+<p>Because calling containers is very annoying, Scott also added a module file in this folder which wraps the call to 
+  openMalaria to make it easier to use, which is located in the modules/openmalaria folder copied and modified in an
+  earlier step (lua file)</p>
+<p>Test to run new version</p>
+<p><code>cd /gpfs/projects/b1139/OpenMalaria/om_v46/
+  module use /gpfs/projects/b1139/OpenMalaria/om_v46/modules/
+  module load openmalaria
+  openMalaria -s example_scenario.xml</code>  </p>
+</details>
+<p><br></p>
+<p><strong>Windows users:</strong>  </p>
+<ul>
+<li>Download the required files from OpenMalaria GitHub release   </li>
+<li>Place them under <code>dependencies/OpenMalaria/om_v46</code> or respective version </li>
+<li>Required files:   <ul>
+<li><code>autoRegressionParameters.csv</code>  </li>
+<li><code>densities.csv</code>  </li>
+<li><code>openMalaria.exe</code>  </li>
+<li><code>scenario_46.xsd</code>  </li>
+</ul>
+</li>
+</ul>
+<p>Update manifest.py with your paths. Example:   </p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># HPC</span>
+<span class="n">OPENMALARIA_PATH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"/gpfs/projects/b1139/OpenMalaria/om_v46/"</span><span class="w"> </span>
+<span class="n">OPENMALARIA_venv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'</span><span class="se">\n\n</span><span class="s1">module use {OPENMALARIA_PATH}/modules/ </span><span class="se">\n</span><span class="s1">module load openmalaria</span><span class="se">\n</span><span class="s1">'</span><span class="w"> </span>
+
+<span class="c1"># Local (Windows) </span>
+<span class="n">OPENMALARIA_PATH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ROOT_DIR</span><span class="p">,</span><span class="w"> </span><span class="s1">'dependencies/OpenMalaria/om_v46'</span><span class="p">)</span><span class="w"> </span>
+<span class="n">OPENMALARIA_venv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">''</span><span class="w">  </span>
+</code></pre></div>
+
+<h3 id="simple-test-run_1">Simple test run<a class="headerlink" href="#simple-test-run_1" title="Permanent link">&para;</a></h3>
+<p>Navigate to the tests folder and run </p>
+<div class="codehilite"><pre><span></span><code>cd tests/test_OpenMalaria
+</code></pre></div>
+
+<p>Then run </p>
+<div class="codehilite"><pre><span></span><code>python OpenMalaria_test_run.py
+</code></pre></div>
+
+<hr />
+<h3 id="malariasimulation">malariasimulation<a class="headerlink" href="#malariasimulation" title="Permanent link">&para;</a></h3>
+<p><strong>Install R or load R module</strong>  </p>
+<ul>
+<li><strong>HPC</strong>:   </li>
+</ul>
+<p><code>module load R/&gt;=4.4.0</code> (required &gt;=4.4.0). </p>
+<ul>
+<li><strong>Local</strong>: </li>
+<li>Install  <a href="https://www.r-project.org/">R</a> and <a href="https://cran.r-project.org/bin/windows/Rtools/">Rtools</a>.   </li>
+</ul>
+<p><strong>Install R packages</strong> 
+In an R session:    </p>
+<div class="codehilite"><pre><span></span><code><span class="nx">source</span><span class="p">(</span><span class="nx">file</span><span class="p">.</span><span class="nx">path</span><span class="p">(</span><span class="err">'</span><span class="nx">dependencies</span><span class="o">/</span><span class="nx">install_packages</span><span class="p">.</span><span class="nx">R</span><span class="err">'</span><span class="p">))</span><span class="w"> </span>
+</code></pre></div>
+
+<p>Update your manifest.py:   </p>
+<div class="codehilite"><pre><span></span><code>r_local = "C:/Program Files/R/R-4.2.3/bin" 
+</code></pre></div>
+
+<p>Replace the version in this example with your installed R version. This directory must contain <code>Rscript.exe</code>, and the packages above must be installed in a library accessible to that R installation. This host setting is not used by the local Docker image.</p>
+<p><br> </p>
+<hr />
+<h2 id="run-multimalmodpy-without-full-installation-optional">Run MultiMalModPy Without Full Installation (Optional)<a class="headerlink" href="#run-multimalmodpy-without-full-installation-optional" title="Permanent link">&para;</a></h2>
+<h3 id="using-singularity-hpc">Using Singularity (HPC)<a class="headerlink" href="#using-singularity-hpc" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="nx">singularity</span><span class="w"> </span><span class="nx">pull</span><span class="w"> </span><span class="o">--</span><span class="nx">arch</span><span class="w"> </span><span class="nx">amd64</span><span class="w"> </span><span class="kn">library</span><span class="p">:</span><span class="c1">//rungma/multimalmodpy/mmmpy_hpc:rocky8 </span>
+</code></pre></div>
+
+<p>See full run instructions:  <a href="../example_run/#using-singularity-container-hpc">Example run</a>   </p>
+<h3 id="using-docker-local">Using Docker (Local)<a class="headerlink" href="#using-docker-local" title="Permanent link">&para;</a></h3>
+<p>Start Docker Desktop and wait for its Linux engine to be running. Then double-click <code>dependencies/run_mmmpy_docker.bat</code> and select <code>OpenMalaria</code> or <code>malariasimulation</code>. The image provides Python, R, and these model dependencies; a host Python or R installation is not required for this route.</p>
+<p>In the existing <code>elif hpc == 'LOCAL':</code> section of <code>manifest.py</code>, ensure the Docker activation setting is:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">EMOD_venv_container</span> <span class="o">=</span> <span class="s1">'source /opt/envs/mmmpy_local/bin/activate'</span>
+</code></pre></div>
+
+<p>Docker is detected automatically; no <code>container_run</code> setting is required.</p>
+<p>Manual Docker setup:    </p>
+<div class="codehilite"><pre><span></span><code><span class="gh">#</span> Pull the image
+docker pull multimalmodpy/mmmpy_local:rocky8 
+
+<span class="gh">#</span> Check that the image exists 
+docker images 
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="gh">#</span> Inside a container with the repository mounted at /mnt/c/projects/MultiMalModPy:
+source /opt/envs/mmmpy_local/bin/activate
+cd /mnt/c/projects/MultiMalModPy
+python launch_sim.py --models OpenMalaria --test
+</code></pre></div>
+
+<p>Use the <code>mmmpy_local</code> environment inside the container, as the launcher and command below do.</p>
+<p>Mount local project to the container to run a test simulation (from host):  </p>
+<div class="codehilite"><pre><span></span><code>docker run -it -v &lt;USERPATH&gt;:/mnt/c/projects mmmpy_local:rocky8 `
+  /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate &amp;&amp; cd /mnt/c/projects &amp;&amp; python launch_sim.py --models OpenMalaria --test"
+</code></pre></div>
+
+<p>🔁 Replace <USERPATH> with your local file path to MultiMalModPy repository (i.e. C:/Users/<USER>/Documents/MultiMalModPy).<br />
+Replace OpenMalaria with malariasimulation, Running both models at once via docker container is not recommended in the current version.  </p>
+<details class="info">
+<summary>Developer view</summary>
+<p><br>  </p>
+<h4 id="1-install-docker-desktop">1️⃣ Install Docker Desktop<a class="headerlink" href="#1-install-docker-desktop" title="Permanent link">&para;</a></h4>
+<p>Download and install from 🔗 <a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a>.<br />
+Ensure the Docker daemon is running:</p>
+<p><code>docker info</code></p>
+<p>If it&rsquo;s not running, open Docker Desktop (especially on Windows).</p>
+<h4 id="2-pull-the-docker-image">2️⃣ Pull the Docker Image<a class="headerlink" href="#2-pull-the-docker-image" title="Permanent link">&para;</a></h4>
+<p>Pull the container image from Docker Hub:</p>
+<p><code>docker pull multimalmodpy/mmmpy_local:rocky8</code></p>
+<p>🔗 <a href="https://hub.docker.com/r/multimalmodpy/mmmpy_local">View image on Docker Hub</a></p>
+<h4 id="3-verify-the-image">3️⃣ Verify the Image<a class="headerlink" href="#3-verify-the-image" title="Permanent link">&para;</a></h4>
+<p>Confirm the image exists locally:</p>
+<p><code>docker images</code></p>
+<p>Look for <code>multimalmodpy/mmmpy_local</code> with the tag <code>rocky8</code>.</p>
+<h4 id="4-run-the-docker-container">4️⃣ Run the Docker Container<a class="headerlink" href="#4-run-the-docker-container" title="Permanent link">&para;</a></h4>
+<p>Start the container in interactive mode:</p>
+<p><code>docker run -it --name mmmpy_local multimalmodpy/mmmpy_local:rocky8 /bin/bash</code></p>
+<p>To resume an existing container instead of creating a new one:</p>
+<p><code>docker ps -a               # List all containers
+docker start -ai mmmpy_local</code></p>
+<p>You should see a terminal like:</p>
+<p><code>[root@74350592befb /]#</code></p>
+<p>🛑 To exit the container, type:</p>
+<p><code>exit</code></p>
+<h4 id="5-activate-the-python-virtual-environment">5️⃣ Activate the Python Virtual Environment<a class="headerlink" href="#5-activate-the-python-virtual-environment" title="Permanent link">&para;</a></h4>
+<p>Check for available environments:</p>
+<p><code>ls /opt/envs/</code></p>
+<p>You&rsquo;ll likely see <code>mmmpy_local</code>.</p>
+<p>Activate the correct one:</p>
+<p><code>source /opt/envs/mmmpy_local/bin/activate</code></p>
+<p>Your prompt should look like:</p>
+<p><code>(mmmpy_local) [root@74350592befb envs]#</code></p>
+<p>Verify the Python setup:</p>
+<p><code>python --version
+pip list</code></p>
+<h4 id="run-a-test-simulation-from-host-system">Run a Test Simulation (from Host System)<a class="headerlink" href="#run-a-test-simulation-from-host-system" title="Permanent link">&para;</a></h4>
+<p>If you&rsquo;re inside the container, <code>exit</code> first.</p>
+<p>Then run from your host terminal:</p>
+<p><code>docker run -it -v &lt;USERPATH&gt;:/mnt/c/projects \
+  mrm9534/mmmpy_local:rocky8 \
+  /bin/bash -c "source /opt/envs/mmmpy_local/bin/activate &amp;&amp; cd /mnt/c/projects/MultiMalModPy &amp;&amp; python launch_sim.py --models OpenMalaria --test"</code></p>
+<p>🔁 Replace <code>&lt;USERPATH&gt;</code> (e.g., <code>C:\Users\&lt;USER&gt;\Documents</code>) with the full path to your MultiMalModPy folder.  </p>
+<p>📘 More details: <a href="../example_run/#using-docker-local">Example Run – Docker Container</a>  </p>
+</details>
+<p><br /></p>
+<h3 id="simple-test-run_2">Simple test run<a class="headerlink" href="#simple-test-run_2" title="Permanent link">&para;</a></h3>
+<p>Navigate to the tests folder and run </p>
+<div class="codehilite"><pre><span></span><code>cd tests/test_malariasismulation
+</code></pre></div>
+
+<p>Then run  via <code>R</code>
+- <code>malariasimulation_test_run.R</code>  <br />
+- <code>malariasimulation_test_run_mmmpy.R</code>   </p>
+<hr />
+<h2 id="verify-installation">Verify Installation<a class="headerlink" href="#verify-installation" title="Permanent link">&para;</a></h2>
+<p>Run:  </p>
+<div class="codehilite"><pre><span></span><code>python launch_sim.py --models EMOD malariasimulation OpenMalaria --test
+</code></pre></div>
+
+<p>Expected output: test simulation runs without errors and logs are generated.  <br />
+To test each single model&rsquo;s installation, navigate to the <code>tests</code> folder and view the model specific example scripts. </p>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="emod_1">EMOD<a class="headerlink" href="#emod_1" title="Permanent link">&para;</a></h3>
+<details class="info">
+<summary>EMOD Test Run Issues  </summary>
+<p>If your test run using EMOD fails, it may be due to missing dependencies or version conflicts. Below are common issues and how to resolve them:  </p>
+<p><strong>Missing python package or version conflict</strong>  </p>
+<p><span style="color:#ff3232">
+ERROR: Could not find a version that satisfies the requirement click==7.1.2
+ERROR: No matching distribution found for click==7.1.2
+</span></p>
+<p>Solution:
+Manually install the required version:
+<code>pip install click==7.1.2</code></p>
+<p>If the installation of idmtools with SLURM support fails, you might see an error like this:</p>
+<details class="info">
+<summary>Show image</summary>
+<p><img alt="-idmtools_slurm_error_terminal" src="../../img/idmtools_slurm_error_terminal.png" /><br />
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/idmtools_slurm_error_terminal.png">View image file</a></p>
+</details>
+<p>Solution:
+Retry the installation using:</p>
+<p><code>pip install idmtools[slurm] --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple</code>  </p>
+<p><strong>Dependency Version Conflict</strong>  </p>
+<p><span style="color:#ff3232"> ERROR: pip&rsquo;s dependency resolver does not currently take into account all the packages that are installed.
+  This behaviour is the source of the following dependency conflicts. emodpy 1.22.1 requires click~=7.1, 
+  but you have click 8.1.8 which is incompatible. </span>  </p>
+<ul>
+<li>
+<p>Run required package installation i.e.   </p>
+<div class="codehilite"><pre><span></span><code>pip install click==8.1.7
+</code></pre></div>
+
+</li>
+</ul>
+<p>If a dependency conflict remains, let us know and try again to verify installation.</p>
+<p><strong>EMOD ValueError (Likely Due to Wrong emodpy-malaria Version)</strong>   </p>
+<ul>
+<li>EMOD ValueError: If it seems that EMOD is running, but you get a ValueError, this indicates that a wrong version of &rsquo;
+  emodpy-malaria&rsquo; has been installed.
+  Please let us know and we will update the online documentation.   <br />
+  An example is shown in the screenshot below: </li>
+</ul>
+<details class="info">
+<summary>Show image</summary>
+<p><img alt="-emodpy_malaria_version_error_example" src="../../img/emodpy_malaria_version_error_example.png" /><br />
+<a href="https://github.com/ahadi-analytics/MultiMalModPy/tree/main/docs/img/emodpy_malaria_version_error_example.png">View image file</a></p>
+</details>
+</details>
+<p><br></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../overview/" class="btn btn-neutral float-left" title="Overview of MultiMalModPy"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../configuration/" class="btn btn-neutral float-right" title="First time configurations (manifest.py)">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../overview/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../configuration/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      <script src="../../javascripts/tablesort.js"></script>
+      <script src="../../javascripts/freeze-table.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(false);
+        });
+    </script>
+
+</body>
+</html>

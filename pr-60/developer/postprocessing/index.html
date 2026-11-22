@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="AHADI Analytics" /><link rel="canonical" href="https://ahadi-analytics.github.io/MultiMalModPy/developer/postprocessing/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Postprocessing explained - MultiMalModPy</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Postprocessing explained";
+        var mkdocs_page_input_path = "developer/postprocessing.md";
+        var mkdocs_page_url = "/MultiMalModPy/developer/postprocessing/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/shell.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../assets/images/logo.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Malaria models</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/software/">Software overview</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/documentation-and-sourcecode/">Source Documentation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/structure/">Model structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/interventions/">Interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/core_parameters/">Core parameters</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../malaria_models/input_output/">Input and output files</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/overview/">Overview of MultiMalModPy</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/configuration/">First time configurations (manifest.py)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/usage/">Quickstart: Run your first simulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/parameters/">User-modifiable parameters and defaults</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_run/">Launch simulations by platform</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/glossary/">Glossary</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Simulation Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/time/">Time</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/age_demography/">Population & age structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/seasonality/">Seasonality</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/case_management/">Case management</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/transmission_calibration/">Transmission calibration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/scenarios/">Scenarios</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/model_specificities/">Model specific options</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../guide/uncertainty/">Randomness & uncertainty</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developer Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../add_new_interventions/">Add new interventions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../update_models/">Update malaria models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../code_testing/">Write tests</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../create_new_release/">Create new releases</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../update_docs/">Update the documentation</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/manifest/">manifest.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/launch_sim/">launch_sim.py</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >utility</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/experiment/">experiment.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper/">helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_calibration/">helper_calibration.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_interventions/">helper_interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_simulation/">helper_simulation.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_slurm/">helper_slurm.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/utility/helper_local/">helper_local.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >EMOD</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/calib_params/">calib_params.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/forcedEIR/">forcedEIR.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/interventions/">interventions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/EMOD_functions/">EMOD_functions.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/EMOD/functions/reporters/">reporters.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >OpenMalaria</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/measures/">measures.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/OpenMalaria/functions/interventions/">interventions.py</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >malariasimulation</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/utils/">utils.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/analyze_sim/">analyze_sim.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/get_seasonality_parameters/">get_seasonality_parameters</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/interventions/">interventions.R</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/malariasimulation/functions/run_simulations/">run_simulations.R</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >plotter</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_helper/">plot_helper.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_agecurves/">plot_agecurves.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_timeseries/">plot_timeseries.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_relationship/">plot_relationship.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_sampleplots/">plot_sampleplots.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_ccstep/">plot_ccstep.py</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../api/plotter/plot_custom/">plot_custom.py</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/contributors/">Contact and Contributions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/citation/">References</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/license/">License</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/changelog/">Release Notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../about/getting_help/">Support & Troubleshooting</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MultiMalModPy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Postprocessing explained</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy/edit/main/docs/developer/postprocessing.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="postprocessing-explained">Postprocessing explained<a class="headerlink" href="#postprocessing-explained" title="Permanent link">&para;</a></h1>
+<h2 id="openmalaria">OpenMalaria<a class="headerlink" href="#openmalaria" title="Permanent link">&para;</a></h2>
+<p><strong>Timesteps</strong></p>
+<div class="codehilite"><pre><span></span><code>    <span class="c1"># Determine survey step size</span>
+<span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_survey_step</span> <span class="o">==</span> <span class="s1">'5d'</span><span class="p">:</span>
+    <span class="n">survey_steps</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_survey_step</span> <span class="o">==</span> <span class="s1">'30d'</span><span class="p">:</span>
+    <span class="n">survey_steps</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">openmalaria_survey_step</span> <span class="o">==</span> <span class="s1">'1y'</span><span class="p">:</span>
+    <span class="n">survey_steps</span> <span class="o">=</span> <span class="mi">365</span>
+</code></pre></div>
+
+<h3 id="annual-analyzer">Annual analyzer<a class="headerlink" href="#annual-analyzer" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/OpenMalaria-Org/openmalaria/wiki/MonitoringOptions#survey-measures">survey-measures</a>
+nHost:  Total number of humans
+nPatent: The number of human hosts whose total (blood-stage) parasite density is above the detection threshold
+nUncomp:    number of episodes (uncomplicated) [&hellip;detailed description on the Wiki]</p>
+<p><strong>Step 1</strong>: Combine output from TXT files into a CSV file and add day-month-year columns</p>
+<div class="codehilite"><pre><span></span><code>    <span class="n">df</span> <span class="o">=</span> <span class="n">to_df</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">format_df</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">survey_to_date</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">survey_step_days</span><span class="o">=</span><span class="n">survey_step_days</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="n">start_year</span><span class="p">)</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>level_0</th>
+<th>survey</th>
+<th>ageGroup</th>
+<th>measure</th>
+<th>value</th>
+<th>index</th>
+<th>days</th>
+<th>month</th>
+<th>year</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>191</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>31</td>
+<td>1</td>
+<td>5</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>192</td>
+<td>1</td>
+<td>2</td>
+<td>0</td>
+<td>18</td>
+<td>1</td>
+<td>5</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>193</td>
+<td>1</td>
+<td>3</td>
+<td>0</td>
+<td>28</td>
+<td>1</td>
+<td>5</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>194</td>
+<td>1</td>
+<td>4</td>
+<td>0</td>
+<td>80</td>
+<td>1</td>
+<td>5</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>195</td>
+<td>1</td>
+<td>5</td>
+<td>0</td>
+<td>124</td>
+<td>1</td>
+<td>5</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>196</td>
+<td>1</td>
+<td>6</td>
+<td>0</td>
+<td>123</td>
+<td>1</td>
+<td>5</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>197</td>
+<td>1</td>
+<td>7</td>
+<td>0</td>
+<td>99</td>
+<td>1</td>
+<td>5</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>198</td>
+<td>1</td>
+<td>8</td>
+<td>0</td>
+<td>497</td>
+<td>1</td>
+<td>5</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>382</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>31</td>
+<td>1</td>
+<td>10</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>383</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>18</td>
+<td>1</td>
+<td>10</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>384</td>
+<td>2</td>
+<td>3</td>
+<td>0</td>
+<td>29</td>
+<td>1</td>
+<td>10</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>385</td>
+<td>2</td>
+<td>4</td>
+<td>0</td>
+<td>80</td>
+<td>1</td>
+<td>10</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>386</td>
+<td>2</td>
+<td>5</td>
+<td>0</td>
+<td>124</td>
+<td>1</td>
+<td>10</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>387</td>
+<td>2</td>
+<td>6</td>
+<td>0</td>
+<td>122</td>
+<td>1</td>
+<td>10</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>388</td>
+<td>2</td>
+<td>7</td>
+<td>0</td>
+<td>99</td>
+<td>1</td>
+<td>10</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>389</td>
+<td>2</td>
+<td>8</td>
+<td>0</td>
+<td>497</td>
+<td>1</td>
+<td>10</td>
+<td>1</td>
+<td>2000</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step 2</strong>: Values per survey are summed per ageGroup, measure and index and for nHost (measure=&lsquo;0&rsquo;) and nPatent (
+measure=&lsquo;3&rsquo;) the value is divided by the annual number of surveysteps.
+If running with 5 day surveysteps, that is 73</p>
+<div class="codehilite"><pre><span></span><code>    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">measure</span> <span class="o">==</span> <span class="n">mmi</span><span class="p">[</span><span class="s1">'nHost'</span><span class="p">]),</span> <span class="s1">'value'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">measure</span> <span class="o">==</span> <span class="n">mmi</span><span class="p">[</span><span class="s1">'nHost'</span><span class="p">])]</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="n">n_surveys_per_year</span>
+<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">measure</span> <span class="o">==</span> <span class="n">mmi</span><span class="p">[</span><span class="s1">'nPatent'</span><span class="p">]),</span> <span class="s1">'value'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">measure</span> <span class="o">==</span> <span class="n">mmi</span><span class="p">[</span><span class="s1">'nPatent'</span><span class="p">])]</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="n">n_surveys_per_year</span>
+</code></pre></div>
+
+<p><strong>nHost</strong>
+In this example, the total population the simulation was run with, was 1000 individuals.</p>
+<table>
+<thead>
+<tr>
+<th>index</th>
+<th>year</th>
+<th>measure</th>
+<th>ageGroup</th>
+<th>value</th>
+<th>value /73</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>0</td>
+<td>1</td>
+<td>2154</td>
+<td>30</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>0</td>
+<td>2</td>
+<td>1259</td>
+<td>17</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>0</td>
+<td>3</td>
+<td>2413</td>
+<td>33</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>0</td>
+<td>4</td>
+<td>5814</td>
+<td>80</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>0</td>
+<td>5</td>
+<td>9178</td>
+<td>126</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>0</td>
+<td>6</td>
+<td>8695</td>
+<td>119</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>0</td>
+<td>7</td>
+<td>7536</td>
+<td>103</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>0</td>
+<td>8</td>
+<td>35951</td>
+<td>492</td>
+</tr>
+</tbody>
+</table>
+<p><strong>nPatent</strong></p>
+<table>
+<thead>
+<tr>
+<th>index</th>
+<th>year</th>
+<th>measure</th>
+<th>ageGroup</th>
+<th>value</th>
+<th>value /73</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>3</td>
+<td>1</td>
+<td>176</td>
+<td>2.4</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>3</td>
+<td>2</td>
+<td>321</td>
+<td>4.4</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>3</td>
+<td>3</td>
+<td>584</td>
+<td>8.0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>3</td>
+<td>4</td>
+<td>1604</td>
+<td>22.0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>3</td>
+<td>5</td>
+<td>2933</td>
+<td>40.2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>3</td>
+<td>6</td>
+<td>3411</td>
+<td>46.7</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>3</td>
+<td>7</td>
+<td>3085</td>
+<td>42.3</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>3</td>
+<td>8</td>
+<td>15907</td>
+<td>217.9</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step 3</strong>: For each year the 1) 2to10 age group measures are obtained and 2) other age groups aggregated</p>
+<div class="codehilite"><pre><span></span><code><span class="n">age_groups_aggregates</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]]</span>
+<span class="n">age_bins</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+<span class="n">grp_channels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">,</span> <span class="s1">'index'</span><span class="p">]</span>
+</code></pre></div>
+
+<p><strong>Step 3.1:</strong></p>
+<div class="codehilite"><pre><span></span><code>    <span class="n">age2to10</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">age_bins</span><span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_bins</span><span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">nHost2to10</span> <span class="o">=</span> <span class="n">g</span><span class="p">[(</span><span class="n">g</span><span class="o">.</span><span class="n">measure</span> <span class="o">==</span> <span class="n">mmi</span><span class="p">[</span><span class="s1">'nHost'</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">age2to10</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'index'</span><span class="p">])</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">nPatent2to10</span> <span class="o">=</span> <span class="n">g</span><span class="p">[(</span><span class="n">g</span><span class="o">.</span><span class="n">measure</span> <span class="o">==</span> <span class="n">mmi</span><span class="p">[</span><span class="s1">'nPatent'</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">age2to10</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'index'</span><span class="p">])</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">grp_channels</span> <span class="o">=</span> <span class="p">[</span><span class="n">ch</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">grp_channels</span> <span class="k">if</span> <span class="n">ch</span> <span class="o">!=</span> <span class="s1">'ageGroup'</span><span class="p">]</span>
+    <span class="n">pfpr2to10</span> <span class="o">=</span> <span class="p">((</span><span class="n">nPatent2to10</span> <span class="o">/</span> <span class="n">nHost2to10</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grp_channels</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">"prevalence_2to10"</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Step 3.2:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">age_groups_aggregates</span><span class="p">)):</span>
+    <span class="n">ages</span> <span class="o">=</span> <span class="n">age_groups_aggregates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">ageCond</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="s1">'ageGroup'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">age_bins</span><span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">ages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">age_bins</span><span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ages</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ageCond_labels</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">ages</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">ages</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s1">'</span>
+</code></pre></div>
+
+<p><em>Example</em></p>
+<div class="codehilite"><pre><span></span><code>ages = [1, 2]
+ageCond_labels='1-2'
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="c1"># Compute various measures for the current age group</span>
+<span class="n">nPatentInfections</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'nPatent'</span><span class="p">]:</span>
+    <span class="n">nPatentInfections</span> <span class="o">+=</span> <span class="n">g</span><span class="p">[(</span><span class="n">g</span><span class="o">.</span><span class="n">measure</span> <span class="o">==</span> <span class="n">mmi</span><span class="p">[</span><span class="n">m</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">ageCond</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grp_channels</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+<span class="n">nClinicalCases</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'nUncomp'</span><span class="p">]:</span>
+    <span class="n">nClinicalCases</span> <span class="o">+=</span> <span class="n">g</span><span class="p">[(</span><span class="n">g</span><span class="o">.</span><span class="n">measure</span> <span class="o">==</span> <span class="n">mmi</span><span class="p">[</span><span class="n">m</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">ageCond</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grp_channels</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+<span class="n">nHost</span> <span class="o">=</span> <span class="n">g</span><span class="p">[(</span><span class="n">g</span><span class="o">.</span><span class="n">measure</span> <span class="o">==</span> <span class="n">mmi</span><span class="p">[</span><span class="s1">'nHost'</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">ageCond</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grp_channels</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</code></pre></div>
+
+<p><em>Example nHost,nPatent and nUncomp</em></p>
+<table>
+<thead>
+<tr>
+<th>index</th>
+<th>year</th>
+<th>ageGroup</th>
+<th>nHost</th>
+<th>nPatentInfections</th>
+<th>nClinicalCases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2000</td>
+<td>3</td>
+<td>33.05479</td>
+<td>8</td>
+<td>60</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2000</td>
+<td>3</td>
+<td>31.82192</td>
+<td>4.575342</td>
+<td>38</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2000</td>
+<td>3</td>
+<td>31.31507</td>
+<td>5.808219</td>
+<td>53</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2000</td>
+<td>3</td>
+<td>30.9589</td>
+<td>3.013699</td>
+<td>32</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2000</td>
+<td>3</td>
+<td>27.63014</td>
+<td>5.342466</td>
+<td>43</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2000</td>
+<td>3</td>
+<td>28.76712</td>
+<td>4.726027</td>
+<td>39</td>
+</tr>
+<tr>
+<td>7</td>
+<td>2000</td>
+<td>3</td>
+<td>28.27397</td>
+<td>12.65753</td>
+<td>91</td>
+</tr>
+<tr>
+<td>8</td>
+<td>2000</td>
+<td>3</td>
+<td>32.13699</td>
+<td>16.76712</td>
+<td>106</td>
+</tr>
+<tr>
+<td>9</td>
+<td>2000</td>
+<td>3</td>
+<td>34.21918</td>
+<td>12.52055</td>
+<td>90</td>
+</tr>
+<tr>
+<td>10</td>
+<td>2000</td>
+<td>3</td>
+<td>30.12329</td>
+<td>13.26027</td>
+<td>96</td>
+</tr>
+<tr>
+<td>11</td>
+<td>2000</td>
+<td>3</td>
+<td>31.24658</td>
+<td>12.24658</td>
+<td>122</td>
+</tr>
+<tr>
+<td>12</td>
+<td>2000</td>
+<td>3</td>
+<td>29.52055</td>
+<td>10.61644</td>
+<td>95</td>
+</tr>
+</tbody>
+</table>
+<p>Since a single age_bin falls under the selected age_group_aggregate , the same values appear as shown in the <code>value</code>
+column above</p>
+<div class="codehilite"><pre><span></span><code> prevalence = nPatentInfections / nHost
+ clinical_incidence = nClinicalCases / nHost
+</code></pre></div>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2026 <a href="https://github.com/ahadi-analytics"  target="_blank" rel="noopener">AHADI</a></p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ahadi-analytics/MultiMalModPy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      <script src="../../javascripts/tablesort.js"></script>
+      <script src="../../javascripts/freeze-table.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(false);
+        });
+    </script>
+
+</body>
+</html>
