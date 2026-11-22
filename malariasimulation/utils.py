@@ -297,23 +297,42 @@ jobdir="{os.path.normpath(exp.job_directory)}"
 log_dir="$jobdir/log"
 
 # Navigate to the working directory
-cd $work_dir
+cd "$work_dir"
 
 # Create log directory if it doesn't exist
 if [ ! -d "$log_dir" ]; then
     mkdir -p "$log_dir"
 fi
 
-# Run the OpenMalaria simulation for each experiment
+# Run each simulation in the background and retain its process ID.
+pids=()
 for ((i = 1; i <= {nexps}; i++)); do
 
     Rscript "$work_dir/malariasimulation.R" "$work_dir" "$jobdir" $i >> "$log_dir/run_malariasimulation.log" 2>> "$log_dir/run_malariasimulation.err"  &
 
-    echo "Simulation $i completed successfully" >> "$log_dir/run_malariasimulation.log"
+    pids+=("$!")
 done
 
-# Wait for all background jobs to finish
-wait  
+# Wait for every child and check its own exit status.
+failed=0
+completed=0
+progress_bar="####################"
+printf 'malariasimulation [%-20s] 0/{nexps} (0%%)' ""
+for i in "${{!pids[@]}}"; do
+    if wait "${{pids[$i]}}"; then
+        echo "Simulation $((i + 1)) completed successfully" >> "$log_dir/run_malariasimulation.log"
+        completed=$((completed + 1))
+        printf '\\rmalariasimulation [%-20s] %d/{nexps} (%d%%)' "${{progress_bar:0:$((20 * completed / {nexps}))}}" "$completed" "$((100 * completed / {nexps}))"
+    else
+        printf '\\n'
+        echo "Simulation $((i + 1)) failed. See $log_dir/run_malariasimulation.err" >&2
+        failed=1
+    fi
+done
+printf '\\n'
+if ((failed)); then
+    exit 1
+fi
 
 echo "All simulations completed successfully."
 """

@@ -120,24 +120,29 @@ def write_ps1_runmodel(exp, filename, model):
     
     # Start the first job
     $job1 = Start-Job -ScriptBlock {{
+        $ErrorActionPreference = "Stop"
+        $global:LASTEXITCODE = 0
         try {{
             # Run the first script: run_{model}.ps1
             Write-Host "Running job 1: run_{model}.ps1"
             & "{os.path.normpath(exp.job_directory)}\\run_{model}.ps1"
+            if ($LASTEXITCODE -ne 0) {{
+                throw "Simulation exited with code $LASTEXITCODE"
+            }}
         }} catch {{
-            Write-Error "Job 1 failed: $_"
+            throw "Job 1 failed: $_"
         }}
     }}
 
     # Wait for the first job to complete
-    Receive-Job -Job $job1 -Wait
-    if ($job1.State -eq 'Completed') {{
-        Write-Host "Job 1 completed successfully."
-    }} else {{
-        Write-Error "Job 1 did not complete successfully."
-    }}
+    Receive-Job -Job $job1 -Wait -ErrorAction Continue
+    $simulationFailed = ($job1.State -ne 'Completed') -or ($job1.ChildJobs[0].Error.Count -gt 0)
     $job1 | Remove-Job
     Stop-Transcript
+    if ($simulationFailed) {{
+        throw "Simulation failed; analysis was not started. See $LogFile for details."
+    }}
+    Write-Host "Job 1 completed successfully."
     
 
     # Start the second job (only after the first job completes)
@@ -192,7 +197,7 @@ def submit_runmodel_local(exp, model):
     file_name = f'jobs_{model}_simplerun.ps1'
     file_path = os.path.join(exp.job_directory, file_name)
     write_ps1_runmodel(exp,filename=file_path, model=model)
-    cmd_command = f'cmd.exe /c start powershell -ExecutionPolicy Bypass -File "{file_path}"'
+    cmd_command = f'cmd.exe /c start powershell -NoExit -ExecutionPolicy Bypass -File "{file_path}"'
     subprocess.Popen(cmd_command, shell=True)
 
 
@@ -262,13 +267,13 @@ def write_ps1_analyzer(exp, pyscript, model):
     """
     job_name = f"analyzer_{model}"
     subdir = model
-    pycommand  = f'python {pyscript} --directory "{exp.job_directory}"\n'
+    pycommand  = f'python {pyscript} --directory "{exp.job_directory}"'
 
     if model =='malariasimulation':
         if exp.malariasimulation_parameter_variation == "both"  :
             pycommand  = pycommand  + f'\npython analyze_sim.py --dir "{exp.job_directory}" --mpv'
         if exp.malariasimulation_parameter_variation == "yes"  :
-            pycommand  = pycommand  + '--mpv'
+            pycommand  = pycommand  + ' --mpv'
 
     fname = f'run_analyze_{model}.ps1'
     create_ps1_script(exp, fname, subdir, job_name, pycommand )
